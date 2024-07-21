@@ -1,0 +1,67 @@
+﻿<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Transliteration in Rich Text Editor</title>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        var s = document.getElementsByClassName('assign-me')[0];
+
+      // Load the Google Transliteration API
+      google.load("elements", "1", {
+            packages: "transliteration"
+          });
+      function onLoad() {
+        var options = {
+            sourceLanguage:
+                google.elements.transliteration.LanguageCode.ENGLISH,
+            destinationLanguage:
+                [google.elements.transliteration.LanguageCode.URDU],
+            shortcutKey: 'ctrl+g',
+            transliterationEnabled: true
+        };
+
+        // Create an instance on TransliterationControl with the required
+        // options.
+        var control =
+            new google.elements.transliteration.TransliterationControl(options);
+
+        // Enable transliteration in the editable DIV with id
+        // 'transliterateDiv'.
+        control.makeTransliteratable(['transliterateDiv']);
+      }
+      google.setOnLoadCallback(onLoad);
+    </script>
+  </head>
+  <body>
+
+    Type in Hindi (Press Ctrl+g to toggle between English and Hindi)<br>
+    <!--<div id="transliterateDiv" contenteditable="true" style="width:600px;height:200px;border:1px solid;overflow-y:scroll"></div>-->
+
+      <div id="sample">
+          <script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
+          <script type="text/javascript">
+              //<![CDATA[
+              bkLib.onDomLoaded(function () { nicEditors.allTextAreas() });
+              //]]>
+          </script>
+          <!--<h4>
+              First Textarea
+          </h4>
+          <textarea name="area1" cols="40"></textarea><br />
+          <h4>
+              Second Textarea
+          </h4>
+          <textarea name="area2" style="width: 100%;">
+              Some Initial Content was in this textarea
+          </textarea><br />-->
+          <h4>
+              Third Textarea
+          </h4>
+          <textarea name="transliterateDiv" id="transliterateDiv" style="width: 300px; height: 100px;">
+              HTML content default in textarea
+          </textarea>
+      </div>
+
+  </body>
+</html>
+

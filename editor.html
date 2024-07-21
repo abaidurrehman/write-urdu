@@ -1,0 +1,51 @@
+﻿<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Transliteration in Rich Text Editor</title>
+      <script src="http://cdn.tinymce.com/4/tinymce.min.js"></script>
+      <script>tinymce.init({ selector: 'textarea' });</script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+   
+      // Load the Google Transliteration API
+      google.load("elements", "1", {
+            packages: "transliteration"
+          });
+      function onLoad() {
+        var options = {
+            sourceLanguage:
+                google.elements.transliteration.LanguageCode.ENGLISH,
+            destinationLanguage:
+                [google.elements.transliteration.LanguageCode.URDU],
+            shortcutKey: 'ctrl+g',
+            transliterationEnabled: true
+        };
+
+        // Create an instance on TransliterationControl with the required
+        // options.
+        var control =
+            new google.elements.transliteration.TransliterationControl(options);
+
+        // Enable transliteration in the editable DIV with id
+        // 'transliterateDiv'.
+        control.makeTransliteratable(['mce_0_ifr']);
+      }
+      google.setOnLoadCallback(onLoad);
+    </script>
+      <style type="text/css">
+          #tinymce {  font-size: 32px;}
+
+      </style>
+  </head>
+  <body>
+
+    Type in Hindi (Press Ctrl+g to toggle between English and Hindi)<br>
+    <!--<div id="transliterateDiv" contenteditable="true" style="width:600px;height:200px;border:1px solid;overflow-y:scroll"></div>-->
+
+      <div id="sample" style="max-width:700px;">
+          <textarea style="max-width:700px;" dir="rtl"></textarea>
+      </div>
+
+  </body>
+</html>
+
