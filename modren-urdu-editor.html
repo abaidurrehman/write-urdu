@@ -310,9 +310,10 @@
 
                 <p class="lead">
                 <div id="sample" style="min-height:300px;">
-                    <div id="editor" dir="rtl" style="min-height:400px;">
+                    <!-- <div id="editor" dir="rtl" style="min-height:400px;">
                         <p>لکھنا شروع کریں"</p>
-                    </div>
+                    </div> -->
+                    <textarea id="editor" style="min-height:400px;" dir="rtl" placeholder="لکھنا شروع کریں"></textarea>
                 </div>
                 </p>
 
@@ -502,8 +503,7 @@
 
             // Enable transliteration in the editable DIV with id
             // 'transliterateDiv'.
-            var elements = document.getElementsByClassName('ck-editor__editable');
-            control.makeTransliteratable([elements[0]]);
+            control.makeTransliteratable(['editor']);
             //   control.makeTransliteratable(['sample']);
 
         }

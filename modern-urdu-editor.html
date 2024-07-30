@@ -443,7 +443,7 @@
             <span class="Footer-credit">
                 <a href="https://www.onlinekidsmadrasa.com" target="_blank"
                     title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a>
-            </span </div>
+            </span> </div>
     </footer>
 
 
@@ -502,8 +502,11 @@
 
             // Enable transliteration in the editable DIV with id
             // 'transliterateDiv'.
+            const area = document.querySelector('#editor');
+            debugger;
             var elements = document.getElementsByClassName('ck-editor__editable');
-            control.makeTransliteratable([elements[0]]);
+            control.makeTransliteratable(elements);
+           // control.makeTransliteratable([area.id]);
             //   control.makeTransliteratable(['sample']);
 
         }
