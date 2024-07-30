@@ -503,11 +503,11 @@
 
             // Enable transliteration in the editable DIV with id
             // 'transliterateDiv'.
-            const area = document.querySelector('#editor');
+            const area = window.editor;
             debugger;
-            var elements = document.getElementsByClassName('ck-editor__editable_inline');
-            elements[0].id='urdu-editor';
-            control.makeTransliteratable([elements[0].id]);
+           // var elements = document.getElementsByClassName('ck-editor__editable_inline');
+           // elements[0].id='urdu-editor';
+            control.makeTransliteratable(area);
           //  control.makeTransliteratable(['transliterateTextarea']);
 
            // control.makeTransliteratable([area.id]);
