@@ -506,7 +506,8 @@
             const area = document.querySelector('#editor');
             debugger;
             var elements = document.getElementsByClassName('ck-editor__editable_inline');
-            control.makeTransliteratable([elements[0]]);
+            elements[0].id='urdu-editor';
+            control.makeTransliteratable([elements[0]].id);
           //  control.makeTransliteratable(['transliterateTextarea']);
 
            // control.makeTransliteratable([area.id]);
