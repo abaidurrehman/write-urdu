@@ -438,7 +438,8 @@
         }
 
         function DownloadAsImage() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+          
+            var element =   document.getElementsByClassName('ql-editor')[0];
             element.style.textAlign = "right";
             var w = element.offsetWidth - 10;
             var h = element.offsetHeight + 200;
@@ -462,7 +463,7 @@
             var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
             var postHtml = "</body></html>";
 
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementsByClassName('ql-editor')[0];
 
             var html = preHtml + '<div dir="rtl">' + element.innerHTML + '</div>' + postHtml;
 
@@ -496,7 +497,7 @@
 
 
         function DownloadAsPdf() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementsByClassName('ql-editor')[0];
             element.style.textAlign = "right";
             element.style.backgroundcolor = 'white';
             var w = 2480;
@@ -524,7 +525,7 @@
         }
 
         function PrintText() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementsByClassName('ql-editor')[0];
             element.style.textAlign = "right";
             element.style.backgroundcolor = 'white';
             html2canvas((element), {
@@ -542,7 +543,7 @@
         }
 
         function OpenWhatsApp() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementsByClassName('ql-editor')[0];
             var Url = 'https://api.whatsapp.com/send?text=' + encodeURI(element.innerText);
             window.open(Url, "_blank");
         }
