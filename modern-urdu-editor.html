@@ -231,7 +231,9 @@
                         // Set the default font and size
                         quill.format('font', 'Noto Nastaliq Urdu');
                         quill.format('size', '22px');
-                
+                        quill.format('direction', 'rtl');
+                        quill.format('align', 'right');
+                        
                         // Apply content CSS styles
                         var style = document.createElement('style');
                         style.innerHTML = `
