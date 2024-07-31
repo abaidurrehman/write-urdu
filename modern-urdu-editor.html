@@ -10,7 +10,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="google_jsapi.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -23,11 +22,9 @@
         integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
         crossorigin="anonymous" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" defer></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" defer></script>
 
@@ -40,85 +37,11 @@
     </style>
 
     <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js" defer></script>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-80884320-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-80884320-1');
-    </script>
-
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-80884320-1', 'auto');
-        ga('send', 'pageview');
-
-    </script>
-
-    <script>
-        window.twttr = (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0],
-                t = window.twttr || {};
-            if (d.getElementById(id)) return t;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://platform.twitter.com/widgets.js";
-            fjs.parentNode.insertBefore(js, fjs);
-
-            t._e = [];
-            t.ready = function (f) {
-                t._e.push(f);
-            };
-
-            return t;
-        }(document, "script", "twitter-wjs"));</script>
-
-
-    <style type="text/css">
-        .twitter-share-button {
-            vertical-align: middle;
-            padding-right: 8px;
-        }
-
-        .mce-content-body p {
-            font-size: 18px !important;
-        }
-    </style>
-    <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-M45V9FW');</script>
-    <!-- End Google Tag Manager -->
 </head>
 
 <body>
-
-
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M45V9FW" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     <div class="container-fluid">
-
         <div class="row mw-100" style="width: 100%;">
             <div class="container-fluid">
                 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -282,8 +205,9 @@
                             theme: 'snow',
                             modules: {
                                 toolbar: [
-                                    [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-                                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                    [{ 'font': ['Lato,sans-serif', 'Noto Nastaliq Urdu', 'Noto Naskh Arabic', 'Qadreeregular', 'Amiri', 'Harmattan', 'Katibeh', 'Lateef', 'Scheherazade', 'Tajawal', 'Andale Mono=andale mono,times', 'Arial=arial,helvetica,sans-serif', 'Arial Black=arial black,avant garde', 'Book Antiqua=book antiqua,palatino', 'Comic Sans MS=comic sans ms,sans-serif', 'Courier New=courier new,courier', 'Georgia=georgia,palatino', 'Helvetica=helvetica', 'Impact=impact,chicago', 'Oswald=oswald', 'Symbol=symbol', 'Tahoma=tahoma,arial,helvetica,sans-serif', 'Terminal=terminal,monaco', 'Times New Roman=times new roman,times', 'Trebuchet MS=trebuchet ms,geneva', 'Verdana=verdana,geneva', 'Webdings=webdings', 'Wingdings=wingdings,zapf dingbats'] }],
+                                    [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
                                     ['bold', 'italic', 'underline'],
                                     ['image', 'code-block']
                                 ]
@@ -291,6 +215,7 @@
                             placeholder: 'لکھنا شروع کریں',
                             direction: 'rtl'
                         });
+
                         quill.format('direction', 'rtl');
                         quill.format('align', 'right');
                     </script>
@@ -424,7 +349,8 @@
             <span class="Footer-credit">
                 <a href="https://www.onlinekidsmadrasa.com" target="_blank"
                     title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a>
-            </span> </div>
+            </span>
+        </div>
     </footer>
 
 
@@ -481,12 +407,12 @@
             var control =
                 new google.elements.transliteration.TransliterationControl(options);
 
-           var elements = document.getElementsByClassName('ql-editor');
-           // elements[0].id='urdu-editor';
+            var elements = document.getElementsByClassName('ql-editor');
+            // elements[0].id='urdu-editor';
             control.makeTransliteratable(elements);
-          //  control.makeTransliteratable(['transliterateTextarea']);
+            //  control.makeTransliteratable(['transliterateTextarea']);
 
-           // control.makeTransliteratable([area.id]);
+            // control.makeTransliteratable([area.id]);
             //   control.makeTransliteratable(['sample']);
 
         }
