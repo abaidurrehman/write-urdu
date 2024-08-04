@@ -64,6 +64,8 @@
         tinymce.init({
             selector: 'textarea#basic-example',
             height: 500,
+            directionality: "rtl",
+            tinycomments_author: 'Write Urdu',
             plugins: [
                 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -73,7 +75,16 @@
                 'bold italic backcolor | alignleft aligncenter ' +
                 'alignright alignjustify | bullist numlist outdent indent | ' +
                 'removeformat | help',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+            content_style: "@import url('https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css?family=Noto Nastaliq Urdu&display=Noto Nastaliq Urdu);body { font-family: 'Noto Nastaliq Urdu'; }",
+            font_formats: "Noto Nastaliq Urdu;Noto Naskh Arabic;Qadreeregular;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
+            content_css: 'https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css,https://fonts.googleapis.com/earlyaccess/notonaskharabic.css,/fonts/Qadreeregular.css,https://fonts.googleapis.com/css2?family=Amiri&family=Harmattan:wght@400;700&family=Katibeh&family=Lateef&family=Markazi+Text&family=Scheherazade:wght@400;700&family=Tajawal:wght@300;400&display=swap" rel="stylesheet',
+            setup: function (ed) {
+                ed.on('init', function () {
+                    $(this.getDoc()).find('head').append("<style>p{margin:0; font-size: 22px !important;font-family: 'Noto Nastaliq Urdu';}</style>");
+                    $('#spinner').hide();
+                    //  $('[data-toggle="tooltip"]').tooltip();
+                });
+            },
         });
 
     </script>
@@ -361,7 +372,8 @@
 
                 <p class="lead">
                 <div style="min-height:300px;">
-                    <textarea style="min-height:400px;" dir="rtl" placeholder="لکھنا شروع کریں" id="basic-example"></textarea>
+                    <textarea style="min-height:400px;" dir="rtl" placeholder="لکھنا شروع کریں"
+                        id="basic-example"></textarea>
                 </div>
                 </p>
 
@@ -553,8 +565,6 @@
             // 'transliterateDiv'.
             control.makeTransliteratable(['basic-example_ifr']);
 
-
-
         }
         google.setOnLoadCallback(onLoad);
 
@@ -573,7 +583,7 @@
         }
 
         function DownloadAsImage() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
             element.style.textAlign = "right";
             var w = element.offsetWidth - 10;
             var h = element.offsetHeight + 200;
@@ -597,7 +607,7 @@
             var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
             var postHtml = "</body></html>";
 
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
 
             var html = preHtml + '<div dir="rtl">' + element.innerHTML + '</div>' + postHtml;
 
@@ -631,7 +641,7 @@
 
 
         function DownloadAsPdf() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
             element.style.textAlign = "right";
             element.style.backgroundcolor = 'white';
             var w = 2480;
@@ -659,7 +669,7 @@
         }
 
         function PrintText() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
             element.style.textAlign = "right";
             element.style.backgroundcolor = 'white';
             html2canvas((element), {
@@ -677,7 +687,7 @@
         }
 
         function OpenWhatsApp() {
-            var element = document.getElementById('mce_0_ifr').contentWindow.document.getElementById('tinymce');
+            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
             var Url = 'https://api.whatsapp.com/send?text=' + encodeURI(element.innerText);
             window.open(Url, "_blank");
         }
