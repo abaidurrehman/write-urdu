@@ -3,12 +3,14 @@
 
 <head>
     <title>Online Urdu Editor | Urdu Rich Text Editor - English to Urdu typing </title>
-    <meta name="description" content="Use Online Urdu Editor to write Urdu using English alphabets with rich text formatting, Typed roman urdu will be converted to urdu script">
-    <meta name="keywords" content="English to Urdu typing, Urdu Rich Text Editor, Write Urdu, Urdu typing online, Write in Urdu, write Urdu online, Urdu keyboard, online Urdu editor, Urdu writing, Urdu writing online in facebook">
+    <meta name="description"
+        content="Use Online Urdu Editor to write Urdu using English alphabets with rich text formatting, Typed roman urdu will be converted to urdu script">
+    <meta name="keywords"
+        content="English to Urdu typing, Urdu Rich Text Editor, Write Urdu, Urdu typing online, Write in Urdu, write Urdu online, Urdu keyboard, online Urdu editor, Urdu writing, Urdu writing online in facebook">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-   
+
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <script src="google_jsapi.js"></script>
     <link rel="stylesheet" type="text/css" href="css/menu.css">
@@ -16,7 +18,8 @@
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
     <link href="https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css?display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/earlyaccess/notonaskharabic.css?display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+        integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
         crossorigin="anonymous" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -24,7 +27,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" defer></script>
 
-    <script src="https://cdn.tiny.cloud/1/ks2qgnama7hlyc4dqxkoygns9n4yibey0mezvdxxp5c9v4si/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/ks2qgnama7hlyc4dqxkoygns9n4yibey0mezvdxxp5c9v4si/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" defer></script>
     <!--<script>tinymce.init({ selector: 'textarea' });</script>-->
@@ -32,22 +36,21 @@
         function insert_contents(inst) {
             inst.setContent('لکھنا شروع کریں');
         }
+
         tinyMCE.init({
             mode: "textareas",
-            plugins: 'lists media table',
-            // toolbar: 'ltr rtl a11ycheck checklist code formatpainter pageembed permanentpen table',
-            toolbar: 'fullscreen print forecolor backcolor removeformat | undo redo | bold italic underline strikethrough fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor | ltr rtl',
-            // toolbar_location: 'bottom',
+            plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
+            toolbar: "undo redo | accordion accordionremove | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl",
+            menubar: 'file edit view insert format tools table help',
             toolbar_mode: 'floating',
             tinycomments_mode: 'embedded',
             tinycomments_author: 'Write Urdu',
             directionality: "rtl",
             content_style: "@import url('https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css?family=Noto Nastaliq Urdu&display=Noto Nastaliq Urdu);body { font-family: 'Noto Nastaliq Urdu'; }",
             font_formats: "Noto Nastaliq Urdu;Noto Naskh Arabic;Qadreeregular;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
-            "content_css": 'https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css,https://fonts.googleapis.com/earlyaccess/notonaskharabic.css,/fonts/Qadreeregular.css,https://fonts.googleapis.com/css2?family=Amiri&family=Harmattan:wght@400;700&family=Katibeh&family=Lateef&family=Markazi+Text&family=Scheherazade:wght@400;700&family=Tajawal:wght@300;400&display=swap" rel="stylesheet',
+            content_css: 'https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css,https://fonts.googleapis.com/earlyaccess/notonaskharabic.css,/fonts/Qadreeregular.css,https://fonts.googleapis.com/css2?family=Amiri&family=Harmattan:wght@400;700&family=Katibeh&family=Lateef&family=Markazi+Text&family=Scheherazade:wght@400;700&family=Tajawal:wght@300;400&display=swap" rel="stylesheet',
             setup: function (ed) {
                 ed.on('init', function () {
-
                     $(this.getDoc()).find('head').append("<style>p{margin:0; font-size: 22px !important;font-family: 'Noto Nastaliq Urdu';}</style>");
                     $('#spinner').hide();
                     //  $('[data-toggle="tooltip"]').tooltip();
@@ -57,9 +60,10 @@
         });
         tinymce.init({
         });
+
     </script>
     <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js" defer></script>
-   
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -170,7 +174,8 @@
 
     <!-- Google Tag Manager (noscript) -->
     <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M45V9FW" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M45V9FW" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe>
     </noscript>
     <!-- End Google Tag Manager (noscript) -->
     <div id="fb-root"></div>
@@ -190,31 +195,42 @@
                 <nav class="navbar navbar-expand-md bg-dark navbar-dark">
                     <a class="navbar-brand" href="/">
                         <i class="fas fa-pen" title="English to urdu typing"></i> Write Urdu</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#collapsibleNavbar">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="collapsibleNavbar">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link" href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write Urdu</a>
+                                <a class="nav-link" href="/"
+                                    title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write
+                                    Urdu</a>
                             </li>
                             <li class="nav-item bg-success">
-                                <a class="nav-link active" href="urdu-editor.html" title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu Text Editor</a>
+                                <a class="nav-link active" href="urdu-editor.html"
+                                    title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu
+                                    Text Editor</a>
                             </li>
                             <li class="nav-item">
-                                <a href="urdu-keyboard.html" class="nav-link" title="Write Urdu | Free online Urdu Keyboard">Urdu Keyboard</a>
+                                <a href="urdu-keyboard.html" class="nav-link"
+                                    title="Write Urdu | Free online Urdu Keyboard">Urdu Keyboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="urdu-alphabet.html" title="Write Urdu | Urdu alphabet">Urdu Alphabet</a>
+                                <a class="nav-link" href="urdu-alphabet.html" title="Write Urdu | Urdu alphabet">Urdu
+                                    Alphabet</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="write-urdu-features.html" title="Write Urdu | Write Urdu Features">Write Urdu Features</a>
+                                <a class="nav-link" href="write-urdu-features.html"
+                                    title="Write Urdu | Write Urdu Features">Write Urdu Features</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="urdu-editor-features.html" title="Write Urdu | Urdu Rich Text Editor features">Urdu Rich Text Editor Features</a>
+                                <a class="nav-link" href="urdu-editor-features.html"
+                                    title="Write Urdu | Urdu Rich Text Editor features">Urdu Rich Text Editor
+                                    Features</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="write-urdu-feedback.html" title="Write Urdu | feedback and suggestion">Feedback</a>
+                                <a class="nav-link" href="write-urdu-feedback.html"
+                                    title="Write Urdu | feedback and suggestion">Feedback</a>
                             </li>
                         </ul>
                     </div>
@@ -227,9 +243,10 @@
 
             <div class="col-6 col-md-3">
                 <div style="line-height:30px;">
-                    <div class="fb-like" data-href="https://www.facebook.com/WriteUrdu/" data-layout="standard" data-action="like" data-size="small"
-                        data-show-faces="true" data-share="true"></div>
-                    <a class="twitter-follow-button" style="vertical-align:bottom;" href="https://twitter.com/UrduEditor" data-size="small">
+                    <div class="fb-like" data-href="https://www.facebook.com/WriteUrdu/" data-layout="standard"
+                        data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
+                    <a class="twitter-follow-button" style="vertical-align:bottom;"
+                        href="https://twitter.com/UrduEditor" data-size="small">
                         Follow @UrduEditor
                     </a>
                 </div>
@@ -237,7 +254,8 @@
                 <div style="float:left;width:250px">
                     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                     <!-- Right panel -->
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286" data-ad-slot="3607727011" data-ad-format="auto"></ins>
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286"
+                        data-ad-slot="3607727011" data-ad-format="auto"></ins>
                     <script>
                         (adsbygoogle = window.adsbygoogle || []).push({});
                     </script>
@@ -245,15 +263,18 @@
                 <br>
                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <!-- Right panel -->
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286" data-ad-slot="3607727011" data-ad-format="auto"></ins>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286"
+                    data-ad-slot="3607727011" data-ad-format="auto"></ins>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
             </div>
 
             <div class="col-12 col-md-9">
-                <a href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">
-                    <img src="image/logo10.png" class="logo" alt="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online"
+                <a href="/"
+                    title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">
+                    <img src="image/logo10.png" class="logo"
+                        alt="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online"
                         title="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online" />
                 </a>
                 <div class="container">
@@ -275,34 +296,43 @@
                         <button class="ExportToWord btn btn-dark btn-sm" id="exportWord" onclick="DownloadAsWord()">
                             <i class="fa fa-file-export"></i> Export as Word doc
                         </button>
-                        <button class="btn btn-dark btn-sm" id="export" onclick="DownloadAsPdf()" data-toggle="tooltip" data-placement="top" title="Export below typed urdu text in png format">
+                        <button class="btn btn-dark btn-sm" id="export" onclick="DownloadAsPdf()" data-toggle="tooltip"
+                            data-placement="top" title="Export below typed urdu text in png format">
                             <i class="fas fa-file-pdf"></i> Export as pdf
                         </button>
-                        <button class="btn btn-dark btn-sm" id="export" onclick="DownloadAsImage()" data-toggle="tooltip" data-placement="top" title="Export below typed urdu text in png format">
+                        <button class="btn btn-dark btn-sm" id="export" onclick="DownloadAsImage()"
+                            data-toggle="tooltip" data-placement="top"
+                            title="Export below typed urdu text in png format">
                             <i class="fa fa-image"></i> Export as image
                         </button>
-                        <button class="btn btn-dark btn-sm" id="PrintCurrentText" onclick="PrintText()" data-toggle="tooltip" data-placement="top"
+                        <button class="btn btn-dark btn-sm" id="PrintCurrentText" onclick="PrintText()"
+                            data-toggle="tooltip" data-placement="top"
                             title="Print below typed Urdu text through printer">
                             <i class="fas fa-print"></i> Print
                         </button>
-                        <button class="btn btn-danger btn-sm" id="clear" onclick="tinyMCE.activeEditor.setContent('');" data-toggle="tooltip" data-placement="top"
-                            title="Clear all the typed Urdu text">
+                        <button class="btn btn-danger btn-sm" id="clear" onclick="tinyMCE.activeEditor.setContent('');"
+                            data-toggle="tooltip" data-placement="top" title="Clear all the typed Urdu text">
                             <i class="fas fa-window-close"></i> Clear
                         </button>
-                        <a class="btn btn-dark active btn-sm" style="padding:2px;" role="button" href="english-urdu-typing-tutorial.html" data-toggle="tooltip"
-                                data-placement="top" title="Learn how to use Write Urdu tool">
-                                <i class="fas fa-question-circle"></i></a>
-                        <a class="btn btn-success btn-lg active btn-sm" style="padding:2px;" role="button" href="/" data-toggle="tooltip" data-placement="top"
+                        <a class="btn btn-dark active btn-sm" style="padding:2px;" role="button"
+                            href="english-urdu-typing-tutorial.html" data-toggle="tooltip" data-placement="top"
+                            title="Learn how to use Write Urdu tool">
+                            <i class="fas fa-question-circle"></i></a>
+                        <a class="btn btn-success btn-lg active btn-sm" style="padding:2px;" role="button" href="/"
+                            data-toggle="tooltip" data-placement="top"
                             title="Switch to light english to Urdu typing Editor">
                             <i class="fas fa-pencil-alt"></i> Switch to basic Editor</a>
 
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-dark btn-sm" data-toggle="modal" data-target="#exampleModal">
+                        <button type="button" class="btn btn-dark btn-sm" data-toggle="modal"
+                            data-target="#exampleModal">
                             <span class="fas fa-list"></span> Sample
                         </button>
                         <div class="btn-group" role="group" aria-label="Basic example">
-                            <button class="button btn btn-dark btn-sm" style="margin:3px;" onclick="OpenWhatsApp();" data-clipboard-action="copy" data-clipboard-target="#transliterateTextarea"
-                                data-toggle="tooltip" data-placement="top" title="Send English to Urdu typed text using whatsapp">
+                            <button class="button btn btn-dark btn-sm" style="margin:3px;" onclick="OpenWhatsApp();"
+                                data-clipboard-action="copy" data-clipboard-target="#transliterateTextarea"
+                                data-toggle="tooltip" data-placement="top"
+                                title="Send English to Urdu typed text using whatsapp">
                                 <i class="fab fa-whatsapp"></i> Whatsapp it
                             </button>
                         </div>
@@ -315,21 +345,24 @@
                 </div>
 
                 <p class="lead">
-                    <div id="sample" style="min-height:300px;">
-                        <textarea style="min-height:400px;" dir="rtl" placeholder="لکھنا شروع کریں"></textarea>
-                    </div>
+                <div id="sample" style="min-height:300px;">
+                    <textarea style="min-height:400px;" dir="rtl" placeholder="لکھنا شروع کریں"></textarea>
+                </div>
                 </p>
 
                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <!-- Green Ads -->
-                <ins class="adsbygoogle" style="display:inline-block;width:700px;height:15px" data-ad-client="ca-pub-4727847909946286" data-ad-slot="6402857400"></ins>
+                <ins class="adsbygoogle" style="display:inline-block;width:700px;height:15px"
+                    data-ad-client="ca-pub-4727847909946286" data-ad-slot="6402857400"></ins>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Steps to write Urdu using English alphabets with HTML formatting in
-                            <a href="urdu-editor.html" title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu Editor</a>.</h2>
+                            <a href="urdu-editor.html"
+                                title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu
+                                Editor</a>.</h2>
                             <ul class="card-text">
                                 <li>
                                     Start typing roman Urdu(using English alphabets) words in above box
@@ -338,15 +371,21 @@
                                     Press space bar and see the word convert to Urdu menuscript automatically
                                 </li>
                                 <li>
-                                    If you don't get the correct Urdu word press backspace button two times and you will get Urdu word
-                                    <a href="write-urdu-feedback.html" title="Write Urdu | Feedback and suggestion">suggestions</a> then you can select the correct word.
+                                    If you don't get the correct Urdu word press backspace button two times and you will
+                                    get Urdu word
+                                    <a href="write-urdu-feedback.html"
+                                        title="Write Urdu | Feedback and suggestion">suggestions</a> then you can select
+                                    the correct word.
                                 </li>
                                 <li>
-                                    Copy the final text written in Urdu using Cut/Copy option from Edit menu to get the converted Urdu text.
+                                    Copy the final text written in Urdu using Cut/Copy option from Edit menu to get the
+                                    converted Urdu text.
                                 </li>
                                 <li>
                                     You can apply style, formatting from menu bar of the
-                                    <a href="urdu-editor.html" title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu Rich Text Editor</a>
+                                    <a href="urdu-editor.html"
+                                        title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu
+                                        Rich Text Editor</a>
                                 </li>
                             </ul>
                     </div>
@@ -357,13 +396,16 @@
                         <h4 class="card-title">Typical usage for Urdu Text Editor</h3>
                             <ul class="card-text">
                                 <li>
-                                    Use this Urdu rich text editor to create text for word documents. Simply right write your Urdu text in above fancy Urdu editor,
-                                    apply your desired styling on text, use Cut/Copy option from Edit menu to get the rich
+                                    Use this Urdu rich text editor to create text for word documents. Simply right write
+                                    your Urdu text in above fancy Urdu editor,
+                                    apply your desired styling on text, use Cut/Copy option from Edit menu to get the
+                                    rich
                                     Urdu text.
                                 </li>
                                 <li>
                                     Use this editor to generate HTML with
-                                    <a href="urdu-faq.html" title="Write Urdu | Frequently Asked Questions">Urdu</a> text for your website
+                                    <a href="urdu-faq.html" title="Write Urdu | Frequently Asked Questions">Urdu</a>
+                                    text for your website
                                 </li>
                                 <li>
                                     Use this Urdu editor to create formatted Urdu blog post
@@ -380,16 +422,18 @@
                         <h4 class="card-title"> How to use Urdu Rich Text Editor different features
                             <h4></h4>
                             <div class="facebook-responsive">
-                                <iframe src="https://www.facebook.com/plugins/video.php?height=282&href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F753274025325672%2F&show_text=false&width=560"
-                                    width="560" height="282" style="border:none;overflow:hidden" scrolling="no" frameborder="0"
-                                    allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                <iframe
+                                    src="https://www.facebook.com/plugins/video.php?height=282&href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F753274025325672%2F&show_text=false&width=560"
+                                    width="560" height="282" style="border:none;overflow:hidden" scrolling="no"
+                                    frameborder="0" allowfullscreen="true"
+                                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                                     allowFullScreen="true"></iframe>
                             </div>
                     </div>
                 </div>
 
-                <div class="fb-comments" data-href="http://www.write-urdu.com/" style="align-content: center;width:100%;" data-width="800"
-                    data-numposts="7"></div>
+                <div class="fb-comments" data-href="http://www.write-urdu.com/"
+                    style="align-content: center;width:100%;" data-width="800" data-numposts="7"></div>
             </div>
 
 
@@ -399,7 +443,9 @@
         <div class="Footer-credits">
             <span class="Footer-credit">
                 Created and maintained by
-                <a href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write Urdu</a>
+                <a href="/"
+                    title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write
+                    Urdu</a>
             </span>
             |
             <span class="Footer-credit">
@@ -411,27 +457,33 @@
             </span>
             |
             <span class="Footer-credit">
-                <a href="english-urdu-typing-tutorial.html" title="Write Urdu | English to Urdu typing tutorial">English to Urdu typing tutorial</a>
+                <a href="english-urdu-typing-tutorial.html" title="Write Urdu | English to Urdu typing tutorial">English
+                    to Urdu typing tutorial</a>
             </span>
             |
             <span class="Footer-credit">
-                <a href="write-urdu-privacy.html" title="Write Urdu | Free Urdu online Keyboard Terms of Service and Privacy Policy"> Privacy policy</a> |
+                <a href="write-urdu-privacy.html"
+                    title="Write Urdu | Free Urdu online Keyboard Terms of Service and Privacy Policy"> Privacy
+                    policy</a> |
                 <a href="write-urdu-sitemap.html" title="Write Urdu | Free online Urdu Keyboard Sitemap">Sitemap</a>
                 |
-                <a href="write-urdu-search.html" title="Write Urdu online using English alphabets, Search Urdu articles, Urdu information">Search Urdu</a>
+                <a href="write-urdu-search.html"
+                    title="Write Urdu online using English alphabets, Search Urdu articles, Urdu information">Search
+                    Urdu</a>
                 | Why
                 <a href="why-write-urdu.html" title=" Write Urdu | Why Write Urdu Online">Write-Urdu.com</a>
             </span>
             |
             <span class="Footer-credit">
-                <a href="https://www.onlinekidsmadrasa.com" target="_blank" title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a>
-            </span
-        </div>
+                <a href="https://www.onlinekidsmadrasa.com" target="_blank"
+                    title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a>
+            </span </div>
     </footer>
 
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -584,7 +636,7 @@
 
                     var ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
 
-                    doc.addImage(img, 'png', -1, 0, canvas.width * ratio, canvas.height * ratio, );
+                    doc.addImage(img, 'png', -1, 0, canvas.width * ratio, canvas.height * ratio,);
                     doc.text("Generated using Write-Urdu.com", width - 200, height - 10);
                     doc.save('write-urdu.pdf');
                 }
