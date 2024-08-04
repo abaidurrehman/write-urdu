@@ -37,29 +37,44 @@
             inst.setContent('لکھنا شروع کریں');
         }
 
-        tinyMCE.init({
-            mode: "textareas",
-           // plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
-            toolbar: "bold italic underline strikethrough",
-           //  menubar: 'file edit view insert format tools table help',
-            toolbar_mode: 'floating',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Write Urdu',
-            directionality: "rtl",
-            content_style: "@import url('https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css?family=Noto Nastaliq Urdu&display=Noto Nastaliq Urdu);body { font-family: 'Noto Nastaliq Urdu'; }",
-            font_formats: "Noto Nastaliq Urdu;Noto Naskh Arabic;Qadreeregular;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
-            content_css: 'https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css,https://fonts.googleapis.com/earlyaccess/notonaskharabic.css,/fonts/Qadreeregular.css,https://fonts.googleapis.com/css2?family=Amiri&family=Harmattan:wght@400;700&family=Katibeh&family=Lateef&family=Markazi+Text&family=Scheherazade:wght@400;700&family=Tajawal:wght@300;400&display=swap" rel="stylesheet',
-            setup: function (ed) {
-                ed.on('init', function () {
-                    $(this.getDoc()).find('head').append("<style>p{margin:0; font-size: 22px !important;font-family: 'Noto Nastaliq Urdu';}</style>");
-                    $('#spinner').hide();
-                    //  $('[data-toggle="tooltip"]').tooltip();
-                });
-            },
-            init_instance_callback: "insert_contents",
-        });
+        // tinyMCE.init({
+        //     mode: "textareas",
+        //    // plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
+        //     toolbar: "bold italic underline strikethrough",
+        //    //  menubar: 'file edit view insert format tools table help',
+        //     toolbar_mode: 'floating',
+        //     tinycomments_mode: 'embedded',
+        //     tinycomments_author: 'Write Urdu',
+        //     directionality: "rtl",
+        //     content_style: "@import url('https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css?family=Noto Nastaliq Urdu&display=Noto Nastaliq Urdu);body { font-family: 'Noto Nastaliq Urdu'; }",
+        //     font_formats: "Noto Nastaliq Urdu;Noto Naskh Arabic;Qadreeregular;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
+        //     content_css: 'https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css,https://fonts.googleapis.com/earlyaccess/notonaskharabic.css,/fonts/Qadreeregular.css,https://fonts.googleapis.com/css2?family=Amiri&family=Harmattan:wght@400;700&family=Katibeh&family=Lateef&family=Markazi+Text&family=Scheherazade:wght@400;700&family=Tajawal:wght@300;400&display=swap" rel="stylesheet',
+        //     setup: function (ed) {
+        //         ed.on('init', function () {
+        //             $(this.getDoc()).find('head').append("<style>p{margin:0; font-size: 22px !important;font-family: 'Noto Nastaliq Urdu';}</style>");
+        //             $('#spinner').hide();
+        //             //  $('[data-toggle="tooltip"]').tooltip();
+        //         });
+        //     },
+        //     init_instance_callback: "insert_contents",
+        // });
+        // tinymce.init({
+        // });
+
         tinymce.init({
-        });
+  selector: 'textarea#basic-example',
+  height: 500,
+  plugins: [
+    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+    'insertdatetime', 'media', 'table', 'help', 'wordcount'
+  ],
+  toolbar: 'undo redo | blocks | ' +
+  'bold italic backcolor | alignleft aligncenter ' +
+  'alignright alignjustify | bullist numlist outdent indent | ' +
+  'removeformat | help',
+  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }'
+});
 
     </script>
     <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js" defer></script>
@@ -345,7 +360,7 @@
                 </div>
 
                 <p class="lead">
-                <div id="sample" style="min-height:300px;">
+                <div  style="min-height:300px;" id="basic-example">
                     <textarea style="min-height:400px;" dir="rtl" placeholder="لکھنا شروع کریں"></textarea>
                 </div>
                 </p>
