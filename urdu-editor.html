@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 
 <head>
     <title>Online Urdu Editor | Urdu Rich Text Editor - English to Urdu typing </title>
@@ -15,22 +15,21 @@
     <script src="google_jsapi.js"></script>
     <link rel="stylesheet" type="text/css" href="css/menu.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/tools-modern.css">
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
     <link href="https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css?display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/earlyaccess/notonaskharabic.css?display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-        integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
-        crossorigin="anonymous" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" defer></script>
 
     <!-- <script src="https://cdn.tiny.cloud/1/ks2qgnama7hlyc4dqxkoygns9n4yibey0mezvdxxp5c9v4si/tinymce/5/tinymce.min.js" -->
     <script src="tinymce\tinymce.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <!--<script>tinymce.init({ selector: 'textarea' });</script>-->
     <script type="text/javascript">
         function insert_contents(inst) {
@@ -75,9 +74,13 @@
                 'bold italic backcolor | styleselect | fontfamily fontselect | alignleft aligncenter ' +
                 'alignright alignjustify | bullist numlist outdent indent | ' +
                 'removeformat | help',
-            font_formats: "Noto Nastaliq Urdu;Noto Naskh Arabic;Qadreeregular;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
+            font_formats: "Noto Nastaliq Urdu;Noto Naskh Arabic;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal; Arial=arial,helvetica,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Tahoma=tahoma,arial,sans-serif; Times New Roman=times new roman,times; Verdana=verdana,geneva",
             content_style: "@import url('https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css?family=Noto Nastaliq Urdu&display=Noto Nastaliq Urdu);body { font-family: 'Noto Nastaliq Urdu'; }",
-            content_css: 'https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css,https://fonts.googleapis.com/earlyaccess/notonaskharabic.css,/fonts/Qadreeregular.css,https://fonts.googleapis.com/css2?family=Amiri&family=Harmattan:wght@400;700&family=Katibeh&family=Lateef&family=Markazi+Text&family=Scheherazade:wght@400;700&family=Tajawal:wght@300;400&display=swap" rel="stylesheet',
+            content_css: [
+                'https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css',
+                'https://fonts.googleapis.com/earlyaccess/notonaskharabic.css',
+                'https://fonts.googleapis.com/css2?family=Amiri&family=Harmattan:wght@400;700&family=Katibeh&family=Lateef&family=Scheherazade:wght@400;700&family=Tajawal&display=swap'
+            ],
             setup: function (ed) {
                 ed.on('init', function () {
                     $(this.getDoc()).find('head').append("<style>p{margin:0; font-size: 22px !important;font-family: 'Noto Nastaliq Urdu';}</style>");
@@ -88,10 +91,6 @@
         });
 
     </script>
-    <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js" defer></script>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-80884320-1"></script>
     <script>
@@ -162,48 +161,13 @@
             text-align: center;
         }
     </style>
-    <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-M45V9FW');</script>
-    <!-- End Google Tag Manager -->
+<script src="site-header.js" defer></script>
+<link href="css/site-header.css" rel="stylesheet" type="text/css" />
+<script src="js/site-runtime.js" defer></script>
 </head>
 
-<body>
+<body class="tool-page rich-editor-page">
 
-    <!-- Load Facebook SDK for JavaScript -->
-    <div id="fb-root"></div>
-    <script>
-        window.fbAsyncInit = function () {
-            FB.init({
-                xfbml: true,
-                version: 'v9.0'
-            });
-        };
-
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-
-    <!-- Your Chat Plugin code -->
-    <div class="fb-customerchat" attribution=setup_tool page_id="173170983094537">
-    </div>
-
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M45V9FW" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <div id="fb-root"></div>
     <script>
         (function (d, s, id) {
@@ -277,23 +241,7 @@
                     </a>
                 </div>
                 <hr class="solid">
-                <div style="float:left;width:250px">
-                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                    <!-- Right panel -->
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286"
-                        data-ad-slot="3607727011" data-ad-format="auto"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                </div>
-                <br>
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <!-- Right panel -->
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286"
-                    data-ad-slot="3607727011" data-ad-format="auto"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+                <div aria-hidden="true"></div>
             </div>
 
             <div class="col-12 col-md-9">
@@ -318,31 +266,31 @@
 
                 <hr class="solid">
                 <div style="margin-top:15px;">
-                    <div style="text-align:right;margin-top:15px;width:100%;">
-                        <button class="ExportToWord btn btn-dark btn-sm" id="exportWord" onclick="DownloadAsWord()">
+                    <div class="tool-actions" style="text-align:right;margin-top:15px;width:100%;">
+                        <button type="button" class="ExportToWord btn btn-dark btn-sm" id="exportWord" onclick="DownloadAsWord()">
                             <i class="fa fa-file-export"></i> Export as Word doc
                         </button>
-                        <button class="btn btn-dark btn-sm" id="export" onclick="DownloadAsPdf()" data-toggle="tooltip"
-                            data-placement="top" title="Export below typed urdu text in png format">
+                        <button type="button" class="btn btn-dark btn-sm" id="exportPdf" onclick="DownloadAsPdf()" data-toggle="tooltip"
+                            data-placement="top" title="Export the typed Urdu text as a PDF">
                             <i class="fas fa-file-pdf"></i> Export as pdf
                         </button>
-                        <button class="btn btn-dark btn-sm" id="export" onclick="DownloadAsImage()"
+                        <button type="button" class="btn btn-dark btn-sm" id="exportImage" onclick="DownloadAsImage()"
                             data-toggle="tooltip" data-placement="top"
                             title="Export below typed urdu text in png format">
                             <i class="fa fa-image"></i> Export as image
                         </button>
-                        <button class="btn btn-dark btn-sm" id="PrintCurrentText" onclick="PrintText()"
+                        <button type="button" class="btn btn-dark btn-sm" id="PrintCurrentText" onclick="PrintText()"
                             data-toggle="tooltip" data-placement="top"
                             title="Print below typed Urdu text through printer">
                             <i class="fas fa-print"></i> Print
                         </button>
-                        <button class="btn btn-danger btn-sm" id="clear" onclick="tinyMCE.activeEditor.setContent('');"
+                        <button type="button" class="btn btn-danger btn-sm" id="clear" onclick="clearRichText();"
                             data-toggle="tooltip" data-placement="top" title="Clear all the typed Urdu text">
                             <i class="fas fa-window-close"></i> Clear
                         </button>
                         <a class="btn btn-dark active btn-sm" style="padding:2px;" role="button"
                             href="english-urdu-typing-tutorial.html" data-toggle="tooltip" data-placement="top"
-                            title="Learn how to use Write Urdu tool">
+                            title="Learn how to use Write Urdu tool" aria-label="Learn how to use Write Urdu">
                             <i class="fas fa-question-circle"></i></a>
                         <a class="btn btn-success btn-lg active btn-sm" style="padding:2px;" role="button" href="/"
                             data-toggle="tooltip" data-placement="top"
@@ -354,9 +302,8 @@
                             data-target="#exampleModal">
                             <span class="fas fa-list"></span> Sample
                         </button>
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button class="button btn btn-dark btn-sm" style="margin:3px;" onclick="OpenWhatsApp();"
-                                data-clipboard-action="copy" data-clipboard-target="#transliterateTextarea"
+                        <div class="btn-group" role="group" aria-label="Share Urdu text">
+                            <button type="button" class="button btn btn-dark btn-sm" style="margin:3px;" onclick="OpenWhatsApp();"
                                 data-toggle="tooltip" data-placement="top"
                                 title="Send English to Urdu typed text using whatsapp">
                                 <i class="fab fa-whatsapp"></i> Whatsapp it
@@ -372,18 +319,12 @@
 
                 <p class="lead">
                 <div style="min-height:300px;">
-                    <textarea style="min-height:400px;" dir="rtl" placeholder="لکھنا شروع کریں"
+                    <label class="sr-only" for="basic-example">Urdu rich text editor</label>
+                    <textarea style="min-height:400px;" dir="rtl" lang="ur" placeholder="لکھنا شروع کریں"
                         id="basic-example"></textarea>
                 </div>
                 </p>
 
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <!-- Green Ads -->
-                <ins class="adsbygoogle" style="display:inline-block;width:700px;height:15px"
-                    data-ad-client="ca-pub-4727847909946286" data-ad-slot="6402857400"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Steps to write Urdu using English alphabets with HTML formatting in
@@ -574,31 +515,42 @@
 
         function downloadURI(uri, name) {
             var link = document.createElement("a");
-
             link.download = name;
             link.href = uri;
+            link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
-            // clearDynamicLink(link); 
+            link.remove();
         }
 
-        function DownloadAsImage() {
-            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
-            element.style.textAlign = "right";
-            var w = element.offsetWidth - 10;
-            var h = element.offsetHeight + 200;
-            html2canvas((element), {
-                onrendered: function (canvas) {
-                    var ctx = canvas.getContext("2d");       // get 2D context of canvas
-                    ctx.textBaseline = "center";                // start with drawing text from top
-                    ctx.font = "12px sans-serif";            // set a font and size
-                    ctx.fillStyle = "green";                   // set a color for the text
-                    ctx.fillText("Generated using Write-Urdu.com", w - 130, h);       // draw the text at some position (x, y)
+        function getRichEditorElement() {
+            return document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
+        }
 
-                    var textImage = canvas.toDataURL();
-                    downloadURI(textImage, "write-urdu.png");
-                }
-            });
+        function clearRichText() {
+            var editor = tinymce.activeEditor;
+            if (!editor.getContent({ format: 'text' }).trim() || window.confirm('Clear all text in the editor?')) {
+                editor.setContent('');
+                WriteUrduUI.notify('Editor cleared.', 'success');
+            }
+        }
+
+        async function DownloadAsImage() {
+            var element = getRichEditorElement();
+            element.style.textAlign = "right";
+            try {
+                var canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2, useCORS: true });
+                var ctx = canvas.getContext("2d");
+                ctx.textBaseline = "middle";
+                ctx.font = "24px sans-serif";
+                ctx.fillStyle = "#177245";
+                ctx.fillText("Generated using Write-Urdu.com", 20, canvas.height - 24);
+                downloadURI(canvas.toDataURL("image/png"), "write-urdu.png");
+                WriteUrduUI.notify('PNG image exported successfully.', 'success');
+            } catch (error) {
+                console.error(error);
+                WriteUrduUI.notify('Image export failed. Please try again.', 'error');
+            }
         }
 
 
@@ -607,7 +559,7 @@
             var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
             var postHtml = "</body></html>";
 
-            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
+            var element = getRichEditorElement();
 
             var html = preHtml + '<div dir="rtl">' + element.innerHTML + '</div>' + postHtml;
 
@@ -616,7 +568,7 @@
             });
 
             var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
-            filename = 'Write-urdu.doc';
+            var filename = 'Write-urdu.doc';
             // Create download link element
             var downloadLink = document.createElement("a");
             document.body.appendChild(downloadLink);
@@ -635,60 +587,58 @@
             }
 
             document.body.removeChild(downloadLink);
+            WriteUrduUI.notify('Word document exported successfully.', 'success');
 
             // $("#transliterateTextarea").wordExport(document.getElementById('inputFileNameToSaveAs').value);
         }
 
 
-        function DownloadAsPdf() {
-            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
+        async function DownloadAsPdf() {
+            var element = getRichEditorElement();
             element.style.textAlign = "right";
-            element.style.backgroundcolor = 'white';
-            var w = 2480;
-            var h = 3508;
-            html2canvas((element), {
-                /*  dpi: 300, // Set to 300 DPI
-                  scale: 3, // Adjusts your resolution*/
-                onrendered: function (canvas) {
-                    canvas.border = 0;
-                    var img = canvas.toDataURL("image/png", 1);
-                    var doc = new jsPDF()
-                    var width = doc.internal.pageSize.width;
-                    var height = doc.internal.pageSize.height;
-
-                    var widthRatio = width / canvas.width;
-                    var heightRatio = height / canvas.height;
-
-                    var ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
-
-                    doc.addImage(img, 'png', -1, 0, canvas.width * ratio, canvas.height * ratio,);
-                    doc.text("Generated using Write-Urdu.com", width - 200, height - 10);
-                    doc.save('write-urdu.pdf');
-                }
-            });
+            element.style.backgroundColor = 'white';
+            try {
+                var canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2, useCORS: true });
+                var jsPDF = window.jspdf.jsPDF;
+                var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+                var width = doc.internal.pageSize.getWidth();
+                var height = doc.internal.pageSize.getHeight();
+                var ratio = Math.min((width - 10) / canvas.width, (height - 18) / canvas.height);
+                doc.addImage(canvas.toDataURL("image/png"), 'PNG', 5, 5, canvas.width * ratio, canvas.height * ratio);
+                doc.setFontSize(8);
+                doc.text("Generated using Write-Urdu.com", 5, height - 5);
+                doc.save('write-urdu.pdf');
+                WriteUrduUI.notify('PDF exported successfully.', 'success');
+            } catch (error) {
+                console.error(error);
+                WriteUrduUI.notify('PDF export failed. Please try again.', 'error');
+            }
         }
 
-        function PrintText() {
-            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
+        async function PrintText() {
+            var element = getRichEditorElement();
             element.style.textAlign = "right";
-            element.style.backgroundcolor = 'white';
-            html2canvas((element), {
-                onrendered: function (canvas) {
-                    var myImage = canvas.toDataURL("image/png", 1);
-                    var tWindow = window.open("");
-                    $(tWindow.document.body)
-                        .html("<img id='Image' src=" + myImage + " style='width:100%;'></img>")
-                        .ready(function () {
-                            tWindow.focus();
-                            tWindow.print();
-                        });
-                }
-            });
+            element.style.backgroundColor = 'white';
+            var printWindow = window.open("", "_blank");
+            if (!printWindow) {
+                WriteUrduUI.notify('Allow pop-ups to print your document.', 'error');
+                return;
+            }
+            try {
+                var canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2, useCORS: true });
+                printWindow.document.title = 'Write Urdu document';
+                printWindow.document.body.innerHTML = '<img alt="Urdu document" src="' + canvas.toDataURL("image/png") + '" style="width:100%;height:auto">';
+                printWindow.focus();
+                printWindow.print();
+            } catch (error) {
+                printWindow.close();
+                WriteUrduUI.notify('Print preparation failed.', 'error');
+            }
         }
 
         function OpenWhatsApp() {
-            var element = document.getElementById('basic-example_ifr').contentWindow.document.getElementById('tinymce');
-            var Url = 'https://api.whatsapp.com/send?text=' + encodeURI(element.innerText);
+            var element = getRichEditorElement();
+            var Url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(element.innerText);
             window.open(Url, "_blank");
         }
 
