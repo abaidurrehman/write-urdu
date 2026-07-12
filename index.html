@@ -389,7 +389,7 @@
 
     function DownloadAsWord() {
 
-        var preHtml = "<html lang="en" xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>Export HTML To Doc</title></head><body>";
+        var preHtml = "<html lang='en' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>Export HTML To Doc</title></head><body>";
         var postHtml = "</body></html>";
         var html = preHtml + '<div dir="rtl">' + document.getElementById("transliterateTextarea").value + '</div>' + postHtml;
 
