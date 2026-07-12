@@ -1,13 +1,15 @@
 (function () {
     'use strict';
 
+    if (!document.documentElement.lang) document.documentElement.lang = 'en';
+
     var links = [
         { href: 'index.html', match: ['/', '/index.html'], label: 'Write Urdu' },
         { href: 'urdu-editor.html', label: 'Rich Text Editor' },
         { href: 'urdu-keyboard.html', label: 'Urdu Keyboard' },
         { href: 'urdu-alphabet.html', label: 'Urdu Alphabet' },
         { href: 'write-urdu-features.html', label: 'Features' },
-        { href: 'english-urdu-typing-tutorial.html', label: 'How to type' }
+        { href: 'english-urdu-typing-tutorial.html', label: 'Tutorials' }
     ];
 
     function normalizedPath() {
@@ -36,7 +38,22 @@
         var oldNav = document.querySelector('nav.navbar, nav');
         if (!oldNav) return;
 
-        var path = normalizedPath();
+        var currentPath = normalizedPath();
+        if (!['/', '/index.html', '/urdu-editor.html', '/urdu-keyboard.html'].includes(currentPath)) {
+            document.body.classList.add('content-page');
+        }
+
+        document.querySelectorAll('a[target="_blank"]').forEach(function (link) {
+            link.rel = 'noopener noreferrer';
+        });
+        if (document.querySelector('ins.adsbygoogle') && !document.querySelector('script[src="js/ads.js"]')) {
+            var ads = document.createElement('script');
+            ads.src = 'js/ads.js';
+            ads.defer = true;
+            document.head.appendChild(ads);
+        }
+
+        var path = currentPath;
         var header = document.createElement('header');
         header.className = 'wu-site-header';
         header.setAttribute('data-write-urdu-header', '');

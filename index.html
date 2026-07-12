@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-    <title>Write Urdu | Online Urdu editor - English to Urdu typing - Urdu typing online</title>
+    <title>Write Urdu Online | Roman Urdu to Urdu Typing</title>
     <meta name="Description"
-        content="Write Urdu online using English alphabets, use this online Urdu writting software to write Urdu using Urdu html editor or Urdu Keyboard">
+        content="Type Roman Urdu and convert each word into Urdu script online. Copy, share, print or export your text without installing Urdu keyboard software.">
     <meta name="Keywords"
         content="English to Urdu typing, Write Urdu, Urdu typing online, Write in Urdu, write Urdu online, Urdu keyboard, online Urdu editor, online urdu typing, Urdu writing, Urdu writing online in facebook">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -180,7 +180,7 @@
                     <div class="col-sm" style="padding-right:0px;">
                         <h1>Write Urdu online</h1>
 
-                        <h4 class="small"><mark class="sm">Best online English to Urdu typing tool</mark></h4>
+                        <h4 class="small"><mark class="sm">Roman Urdu to Urdu typing in your browser</mark></h4>
                     </div>
                 </div>
             </div>
@@ -188,92 +188,91 @@
             <hr class="solid" />
             <div class="container">
                 <div class="row">
-                    <div class="home-actions" style="text-align:right;width:100%;"><label class="sr-only"
-                            for="inputFileNameToSaveAs">Download filename</label><input id="inputFileNameToSaveAs" style="width:100px;"
-                            value="میری فائل" /><button class="btn btn-dark btn-sm"
-                            onclick="saveTextAsFile('transliterateTextarea','inputFileNameToSaveAs')">Save Text to
-                            File</button>
-                        <button class="btn btn-dark" id="exportImage" type="button" onclick="DownloadAsImage()"
-                            data-placement="top" data-toggle="tooltip"
-                            title="Export the typed Urdu text as a PNG image">
-                            <i class="fa fa-image" aria-hidden="true"></i>
-                            <span>Export as image</span>
-                        </button><button
-                            class="btn btn-dark btn-sm" data-placement="top" data-toggle="tooltip" id="exportPdf"
-                            onclick="DownloadAsPdf()" title="Export below typed Urdu text in pdf format">Export as
-                            pdf</button><button class="ExportToWord btn btn-dark btn-sm" data-placement="top"
-                            data-toggle="tooltip" id="exportWord" onclick="DownloadAsWord()"
-                            title="Export below typed Urdu text in Word format">Export as Word doc</button><button
-                            class="btn btn-dark btn-sm" data-placement="top" data-toggle="tooltip" id="PrintCurrentText"
-                            onclick="PrintText()"
-                            title="Print below typed Urdu text through printer">Print</button><button
-                            class="button btn btn-dark btn-sm" data-clipboard-action="copy"
-                            data-clipboard-target="#transliterateTextarea" data-placement="top" data-toggle="tooltip"
-                            style="margin:3px;" title="Copy all the type Urdu text to clipboard, Works same CTRL+C">Copy
-                            to Clipboard</button> <a class="btn btn-success active btn-sm" data-placement="top"
-                            data-toggle="tooltip" href="urdu-editor.html" role="button" style="padding:2px;"
-                            title="Switch to Rich english to Urdu typing Editor with modern styles and Urdu fonts. Supported fonts are Noto Nastaliq Urdu and Noto Naskh Arabic and many more">
-                            Switch to Urdu HTML Editor</a> <a class="btn btn-dark btn-sm" data-placement="top"
-                            data-toggle="tooltip" href="write-urdu-features.html" role="button" style="padding:2px;"
-                            title="Learn how to use Write Urdu tool" aria-label="Learn how to use Write Urdu"><i
-                                class="fas fa-question-circle" aria-hidden="true"></i></a><button class="button btn btn-dark btn-sm"
-                            data-placement="top" data-toggle="tooltip" onclick="OpenWhatsApp();" style="margin:3px;"
-                            title="Send English to Urdu typed text using whatsapp">Whatsapp it</button></div>
+                    <div class="home-actions" role="toolbar" aria-label="Editor actions">
+                        <button type="button" class="btn btn-success action-primary"
+                            data-copy-target="#transliterateTextarea">
+                            <i class="fas fa-copy" aria-hidden="true"></i> Copy text
+                        </button>
+                        <details class="action-menu">
+                            <summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i>
+                                Export</summary>
+                            <div class="action-menu-panel">
+                                <label for="inputFileNameToSaveAs">Filename</label>
+                                <input id="inputFileNameToSaveAs" value="میری فائل" lang="ur" dir="rtl" />
+                                <button type="button" onclick="saveTextAsFile('transliterateTextarea','inputFileNameToSaveAs')">
+                                    <i class="far fa-file-alt" aria-hidden="true"></i> Text file
+                                </button>
+                                <button type="button" id="exportImage" onclick="DownloadAsImage()">
+                                    <i class="far fa-image" aria-hidden="true"></i> PNG image
+                                </button>
+                                <button type="button" id="exportPdf" onclick="DownloadAsPdf()">
+                                    <i class="far fa-file-pdf" aria-hidden="true"></i> PDF document
+                                </button>
+                                <button type="button" class="ExportToWord" id="exportWord" onclick="DownloadAsWord()">
+                                    <i class="far fa-file-word" aria-hidden="true"></i> Word document
+                                </button>
+                                <button type="button" id="PrintCurrentText" onclick="PrintText()">
+                                    <i class="fas fa-print" aria-hidden="true"></i> Print
+                                </button>
+                            </div>
+                        </details>
+                        <a class="btn btn-outline-editor" href="urdu-editor.html">
+                            <i class="fas fa-font" aria-hidden="true"></i> Rich editor
+                        </a>
+                        <button type="button" class="btn btn-quiet" onclick="OpenWhatsApp();">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i> Share
+                        </button>
+                        <details class="action-menu">
+                            <summary class="btn btn-quiet" aria-label="More editor options"><i class="fas fa-sliders-h"
+                                    aria-hidden="true"></i> More</summary>
+                            <div class="action-menu-panel settings-panel">
+                                <label for="demo-input">Page background</label>
+                                <input id="demo-input" type="text" value="rgb(255, 255, 255)" />
+                                <a href="write-urdu-features.html">
+                                    <i class="fas fa-question-circle" aria-hidden="true"></i> How to use Write Urdu
+                                </a>
+                            </div>
+                        </details>
+                    </div>
                 </div>
             </div>
 
-            <div class="alert alert-success alert-dismissible fade show" id="UsageAlert" role="alert">Start typing roman
-                Urdu(using English alphabets) words in below box Press space bar and see the word convert to Urdu
-                menuscript automatically (Type in URDU (Press Ctrl+g to toggle between English and URDU))</div>
-
-            <div class="spinner-grow text-success justify-content-center" id="spinner" role="status"><span
-                    class="sr-only">Loading...</span></div>
-
-            <div class="input-group">
-                <div class="input-group-prepend"><span class="input-group-text" id="">Background Color: </span></div>
-                <input class="form-control" id="demo-input" type="text" value="rgb(255, 128, 0)" /><button
-                    class="btn btn-danger btn-sm" data-placement="top" data-toggle="tooltip" id="clear"
-                    onclick="clearText()" style="padding-left:5px;" title="Clear all the typed Urdu text">Clear</button>
+            <div class="editor-chrome" aria-label="Transliteration status and editor controls">
+                <span><i class="fas fa-language" aria-hidden="true"></i> Roman Urdu → Urdu</span>
+                <span class="editor-shortcut">Ctrl+G switches language</span>
+                <div class="spinner-grow text-success" id="spinner" role="status"><span
+                        class="sr-only">Loading transliteration...</span></div>
+                <button type="button" class="btn-clear" id="clear" onclick="clearText()"
+                    title="Clear all typed Urdu text"><i class="far fa-trash-alt" aria-hidden="true"></i> Clear</button>
             </div>
 
             <div id="demo" style="border: solid 1px gray;padding:1px;"><label class="sr-only"
                     for="transliterateTextarea">Urdu writing editor</label><textarea
                     class="write-udu-main-editor" dir="rtl" id="transliterateTextarea"
                     lang="ur" placeholder="لکھنا شروع کریں" style="font-family: 'Noto Nastaliq Urdu'"></textarea></div>
-            <br />
-            <br />
-            <br />
-            &nbsp;
+            <p class="editor-hint" id="UsageAlert"><i class="fas fa-info-circle" aria-hidden="true"></i>
+                Type Roman Urdu and press Space to convert each word. Press Backspace twice to see alternatives.</p>
             <div class="card">
                 <div class="card-body">
-                    <p class="card-subtitle">Type in URDU (Press Ctrl+g to toggle between English and URDU)</p>
+                    <p class="card-subtitle">Type in Urdu — press Ctrl+G to switch between Urdu and English</p>
 
-                    <h3 class="card-title">Steps to write Urdu online using English alphabets</h3>
+                    <h3 class="card-title">How to type Urdu using English letters</h3>
 
                     <ul class="card-text">
-                        <li>Start typing roman Urdu(using English alphabets) words in above box</li>
-                        <li>Press space bar and see the word convert to Urdu menuscript automatically</li>
-                        <li>If you don&#39;t get the correct Urdu word press backspace button two times and you will get
-                            Urdu word <a href="write-urdu-feedback.html"
-                                title="Write Urdu | Feedback and suggestion">suggestions</a> then you can select the
-                            correct word.</li>
-                        <li>Copy the final text written in Urdu using Copy to Clipboard paste it wherever you like!</li>
-                        <br />
+                        <li>Enter a Roman Urdu word in the editor above—for example, type <em>mera</em>.</li>
+                        <li>Press Space to convert the word automatically into Urdu script.</li>
+                        <li>If the result is not the word you intended, press Backspace twice to open alternative
+                            <a href="write-urdu-feedback.html" title="Write Urdu feedback">suggestions</a>.</li>
+                        <li>Use <strong>Copy text</strong> when you are ready to paste your Urdu into another app.</li>
                         <li>To type &quot;میرا خیال ہے&quot; in <a href="urdu-alphabet.html"
-                                title="Write Urdu | Urdu alphabet">Urdu alphabet</a> just write &quot;mera khyal
-                            hai&quot;</li>
-                        <li>To write your name for facebook or twitter simple type your name in English and press space
-                            bar</li>
-                        <li>if you like to apply styles or formatting to your Urdu text you can use <a
+                                title="Urdu alphabet guide">Urdu script</a>, enter <em>mera khayal hai</em> and press Space after each word.</li>
+                        <li>You can type names and short messages in the same way before sharing them on social media.</li>
+                        <li>To add headings, colours, lists or other formatting, open the <a
                                 href="urdu-editor.html"
-                                title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu
-                                Rich Text Editor</a></li>
-                        <li>You don&#39;t need to download additional urdu typing software just open website.</li>
-                        <li>Some of the <a href="urdu-faq.html"
-                                title="Write Urdu | Frequently Asked Questions">Frequently Asked Questions</a> about
-                            Urdu</li>
-                        <li>Happy <a href="why-write-urdu.html" title="Write Urdu | Why Write Urdu Online">writing Urdu
-                                online</a>!!</li>
+                                title="Format Urdu in the rich-text editor">Urdu Rich Text Editor</a>.</li>
+                        <li>No Urdu keyboard software is required; the editor runs directly in your browser.</li>
+                        <li>Visit the <a href="urdu-faq.html" title="Frequently asked questions about Urdu">Urdu FAQ</a>
+                            for concise answers about the language and writing system.</li>
                     </ul>
                 </div>
             </div>
@@ -281,9 +280,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">How to use Write Urdu different features</h4>
-
-                    <h4></h4>
+                    <h4 class="card-title">Video guide to Write Urdu</h4>
 
                     <div class="facebook-responsive"><iframe
                             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
@@ -318,7 +315,7 @@
                 title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a> </span></div>
     <!-- Copyright -->
 
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">&copy; 2021 Copyright: <a
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">&copy; Write Urdu. <a
             class="text-light" href="https://Write-Urdu.com/">Write-Urdu.com</a></div>
     <!-- Copyright -->
 </footer>
@@ -341,6 +338,7 @@
         // Enable transliteration in the textbox with id
         // 'transliterateTextarea'.
         control.makeTransliteratable(['transliterateTextarea']);
+        window.writeUrduTransliterationReady = true;
 
         $('#spinner').hide();
         $('[data-toggle="tooltip"]').tooltip()
@@ -391,7 +389,7 @@
 
     function DownloadAsWord() {
 
-        var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>Export HTML To Doc</title></head><body>";
+        var preHtml = "<html lang="en" xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><title>Export HTML To Doc</title></head><body>";
         var postHtml = "</body></html>";
         var html = preHtml + '<div dir="rtl">' + document.getElementById("transliterateTextarea").value + '</div>' + postHtml;
 

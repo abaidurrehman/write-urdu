@@ -1,7 +1,11 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 
 <head>
+    <meta http-equiv="refresh" content="0; url=urdu-editor.html">
+    <meta name="robots" content="noindex">
+    <link rel="canonical" href="https://www.write-urdu.com/urdu-editor.html">
+    <script>window.location.replace('urdu-editor.html' + window.location.search + window.location.hash);</script>
     <title>Online Urdu Editor | Urdu Rich Text Editor - English to Urdu typing </title>
     <meta name="description"
         content="Use Online Urdu Editor to write Urdu using English alphabets with rich text formatting, Typed roman urdu will be converted to urdu script">
@@ -222,22 +226,18 @@
             <div class="col-6 col-md-3">
                 <hr class="solid">
                 <div style="float:left;width:250px">
-                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
                     <!-- Right panel -->
                     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286"
                         data-ad-slot="3607727011" data-ad-format="auto"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
+
                 </div>
                 <br>
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
                 <!-- Right panel -->
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286"
                     data-ad-slot="3607727011" data-ad-format="auto"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+
             </div>
 
             <div class="col-12 col-md-9">
@@ -368,13 +368,11 @@
                 </div>
                 </p>
 
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
                 <!-- Green Ads -->
                 <ins class="adsbygoogle" style="display:inline-block;width:700px;height:15px"
                     data-ad-client="ca-pub-4727847909946286" data-ad-slot="6402857400"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Steps to write Urdu using English alphabets with HTML formatting in
@@ -578,7 +576,7 @@
             link.href = uri;
             document.body.appendChild(link);
             link.click();
-            // clearDynamicLink(link); 
+            link.remove();
         }
 
         function DownloadAsImage() {
@@ -590,7 +588,7 @@
             html2canvas((element), {
                 onrendered: function (canvas) {
                     var ctx = canvas.getContext("2d");       // get 2D context of canvas
-                    ctx.textBaseline = "center";                // start with drawing text from top
+                    ctx.textBaseline = "middle";                // vertically center the watermark text
                     ctx.font = "12px sans-serif";            // set a font and size
                     ctx.fillStyle = "green";                   // set a color for the text
                     ctx.fillText("Generated using Write-Urdu.com", w - 130, h);       // draw the text at some position (x, y)
@@ -604,7 +602,7 @@
 
         function DownloadAsWord() {
 
-            var preHtml = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
+            var preHtml = "<html lang="en" xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
             var postHtml = "</body></html>";
 
             var element = document.getElementsByClassName('ql-editor')[0];
@@ -643,7 +641,7 @@
         function DownloadAsPdf() {
             var element = document.getElementsByClassName('ql-editor')[0];
             element.style.textAlign = "right";
-            element.style.backgroundcolor = 'white';
+            element.style.backgroundColor = 'white';
             var w = 2480;
             var h = 3508;
             html2canvas((element), {
@@ -671,7 +669,7 @@
         function PrintText() {
             var element = document.getElementsByClassName('ql-editor')[0];
             element.style.textAlign = "right";
-            element.style.backgroundcolor = 'white';
+            element.style.backgroundColor = 'white';
             html2canvas((element), {
                 onrendered: function (canvas) {
                     var myImage = canvas.toDataURL("image/png", 1);
@@ -688,7 +686,7 @@
 
         function OpenWhatsApp() {
             var element = document.getElementsByClassName('ql-editor')[0];
-            var Url = 'https://api.whatsapp.com/send?text=' + encodeURI(element.innerText);
+            var Url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(element.innerText);
             window.open(Url, "_blank");
         }
 

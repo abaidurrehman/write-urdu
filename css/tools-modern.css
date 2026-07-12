@@ -1,5 +1,8 @@
 :root{--tool-ink:#14231c;--tool-muted:#627069;--tool-green:#177245;--tool-line:#dfe7e2;--tool-surface:#fff;--tool-bg:#fbfaf6}
+html,body.tool-page{max-width:100%;overflow-x:clip}
 body.tool-page{min-width:0!important;margin:0!important;padding:0!important;color:var(--tool-ink);background:radial-gradient(circle at 8% 8%,rgba(23,114,69,.08),transparent 24rem),var(--tool-bg);font-family:Inter,"Segoe UI",Arial,sans-serif}
+body.tool-page *,body.tool-page *::before,body.tool-page *::after{box-sizing:border-box}
+body.tool-page .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 body.tool-page>.container-fluid{padding:0}
 body.tool-page>.container-fluid>.row:first-child{margin:0!important}
 body.tool-page>.container-fluid>.row:nth-of-type(2){display:grid;grid-template-columns:minmax(0,1fr);width:min(1120px,calc(100% - 32px));margin:0 auto;padding:48px 0 72px}
@@ -26,3 +29,52 @@ body.tool-page .spacebar{min-height:42px;border:1px solid #cfd8d2;border-radius:
 @media(max-width:767px){body.tool-page>.container-fluid>.row:nth-of-type(2){width:calc(100% - 24px);padding:34px 0 56px}body.tool-page .logo{width:54px;height:54px}body.tool-page .tool-actions{display:grid;grid-template-columns:1fr 1fr}body.tool-page .tool-actions label,body.tool-page .tool-actions input{grid-column:1/-1;width:100%!important}body.tool-page .tool-actions .btn{width:100%}body.tool-page .tox-toolbar__group{padding:0 2px!important}body.tool-page #key1{padding:10px}body.tool-page .bt{flex-basis:40px;width:40px;height:44px}.wu-menu-toggle{flex:none!important}}
 @media(max-width:430px){body.tool-page .tool-actions{grid-template-columns:1fr}body.tool-page .bt{flex-basis:38px;width:38px}}
 @media(prefers-reduced-motion:reduce){.app-notifications{transition:none}}
+
+/* Compact task-first rhythm shared by the rich editor and keyboard. */
+body.tool-page>.container-fluid>.row:nth-of-type(2){padding:20px 0 56px}
+body.tool-page .logo{width:48px;height:48px;margin:0 12px 8px 0;border-radius:12px}
+body.tool-page h1{margin:0 0 3px;font-size:clamp(1.8rem,3.5vw,2.5rem)}
+body.tool-page mark.sm{font-size:.84rem}
+body.tool-page hr.solid{margin:13px 0}
+body.tool-page .tool-actions{gap:6px;margin:8px 0!important;padding:7px;border-radius:10px}
+body.tool-page .tool-actions .btn{min-height:36px;padding:.42rem .62rem!important;font-size:.8rem}
+body.tool-page .tool-actions input{height:36px}
+body.tool-page .tool-actions .action-menu{position:relative}body.tool-page .tool-actions .action-menu summary{display:inline-flex;align-items:center;gap:6px;list-style:none;cursor:pointer}body.tool-page .tool-actions .action-menu summary::-webkit-details-marker{display:none}body.tool-page .tool-actions .action-menu[open]>summary{color:#fff;background:var(--tool-green)!important}
+body.tool-page .action-menu-panel{position:absolute;top:calc(100% + 7px);left:0;z-index:1300;display:grid;grid-template-columns:1fr 1fr;gap:5px;width:290px;padding:10px;border:1px solid var(--tool-line);border-radius:12px;background:#fff;box-shadow:0 18px 45px rgba(20,35,28,.18)}body.tool-page .action-menu-panel button,body.tool-page .action-menu-panel a{display:flex;align-items:center;gap:7px;min-height:38px;padding:7px 9px;border:0;border-radius:8px;color:var(--tool-ink);background:#f3f6f4;text-align:left;text-decoration:none}body.tool-page .action-menu-panel button:hover,body.tool-page .action-menu-panel a:hover{background:#e9f7ef}.compact-menu-panel{width:220px!important;grid-template-columns:1fr!important}
+body.tool-page .tool-actions #spinner{width:1rem;height:1rem;margin:0 0 0 auto}
+body.tool-page .tox-tinymce{min-height:56vh}
+body.tool-page #write{min-height:clamp(180px,34vh,330px)!important}
+body.tool-page #key1{margin-top:10px;padding:12px}
+body.tool-page .tool-actions+br,body.tool-page .tool-actions+br+br{display:none}
+body.tool-page #write+br,body.tool-page #write+br+br{display:none}
+@media(max-width:767px){body.tool-page>.container-fluid>.row:nth-of-type(2){padding:15px 0 48px}body.tool-page .logo{width:42px;height:42px;margin-right:9px}body.tool-page h1{font-size:1.7rem}body.tool-page .tool-actions{display:flex;flex-wrap:nowrap;overflow:visible}body.tool-page .tool-actions label{display:none}body.tool-page .tool-actions input{flex:1 1 120px;width:auto!important}body.tool-page .tool-actions .btn,body.tool-page .tool-actions summary{flex:0 1 auto;width:auto;white-space:nowrap}body.tool-page .action-menu-panel{position:fixed;top:auto;right:12px;bottom:12px;left:12px;width:auto;grid-template-columns:1fr 1fr}body.tool-page .tox-tinymce{min-height:62vh}}
+@media(max-width:767px){.rich-editor-page .tool-actions>a.btn,.rich-editor-page .tool-actions>button.btn{flex:0 0 36px;width:36px;padding:0!important;font-size:0}.rich-editor-page .tool-actions>a.btn i,.rich-editor-page .tool-actions>button.btn i{font-size:.85rem}.rich-editor-page .tool-actions #spinner{margin-left:auto}}
+@media(max-width:767px){body.keyboard-page #write{height:120px!important;min-height:120px!important}.keyboard-page .tool-actions{flex-wrap:wrap}.keyboard-page .tool-actions input{flex:1 1 100px}.keyboard-page #key1{margin-top:7px}}
+
+/* The keyboard is itself the main task: keep it visible without scrolling past a hero. */
+.keyboard-page .keyboard-actions{justify-content:flex-start}
+.keyboard-page .keyboard-actions .save-menu{order:3}
+.keyboard-page .keyboard-actions .action-menu-panel label{display:block}
+.keyboard-page .keyboard-actions .action-menu-panel input{width:100%!important}
+@media(max-width:767px){
+  body.keyboard-page>.container-fluid>.row:nth-of-type(2){padding-top:8px}
+  .keyboard-page .logo{display:none}
+  .keyboard-page h1{font-size:1.35rem;line-height:1.15}
+  .keyboard-page h4.small{display:none}
+  .keyboard-page hr.solid{margin:7px 0}
+  .keyboard-page .keyboard-actions{flex-wrap:nowrap;margin:5px 0!important;padding:5px}
+  .keyboard-page .keyboard-actions>.btn,.keyboard-page .keyboard-actions>details>summary{min-height:36px;padding:.4rem .58rem!important;font-size:.78rem}
+  .keyboard-page .keyboard-actions .action-menu-panel{display:grid;grid-template-columns:1fr;bottom:12px}
+  .keyboard-page .keyboard-actions .action-menu-panel label{margin:0}
+  body.keyboard-page #write{width:100%;height:108px!important;min-height:108px!important;padding:8px 10px}
+  .keyboard-page #key1{margin-top:6px;padding:7px}
+}
+
+/* Tool branding is already present in the persistent header. */
+body.tool-page .logo{display:none}
+body.tool-page>.container-fluid>.row:nth-of-type(2){padding-top:10px}
+body.tool-page h1{font-size:clamp(1.45rem,3vw,2rem)}
+body.tool-page h4.small{display:none}
+body.tool-page hr.solid{margin:8px 0}
+@media(max-width:767px){body.tool-page>.container-fluid>.row:nth-of-type(2){padding-top:7px}body.tool-page h1{font-size:1.35rem}}
+@media(max-width:767px){.rich-editor-page .tool-actions>a.btn,.rich-editor-page .tool-actions>button.btn{flex:0 1 auto;width:auto;padding:.4rem .52rem!important;font-size:.72rem}.rich-editor-page .tool-actions>a.btn i,.rich-editor-page .tool-actions>button.btn i{font-size:.72rem}.rich-editor-page .tool-actions summary{font-size:.72rem}.rich-editor-page .tool-actions #spinner{flex:0 0 12px;width:12px;height:12px;margin-left:auto}}

@@ -3,7 +3,7 @@
             var input = document.getElementById('write');
             if (document.selection) {
                 input.focus();
-                range = document.selection.createRange();
+                var range = document.selection.createRange();
                 range.text = item;
                 range.select();
             }
@@ -70,17 +70,19 @@
             var textToSave = document.getElementById(control).value;
             var textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
             var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
-            var fileNameToSaveAs = document.getElementById(fileNameControl).value;
+            var fileNameToSaveAs = document.getElementById(fileNameControl).value.trim() || "write-urdu";
+            if (!/\.[a-z0-9]+$/i.test(fileNameToSaveAs)) fileNameToSaveAs += ".txt";
 
             var downloadLink = document.createElement("a");
             downloadLink.download = fileNameToSaveAs;
             downloadLink.innerHTML = "Download File";
             downloadLink.href = textToSaveAsURL;
-            downloadLink.onclick = destroyClickedElement;
             downloadLink.style.display = "none";
             document.body.appendChild(downloadLink);
-
             downloadLink.click();
+            downloadLink.remove();
+            window.URL.revokeObjectURL(textToSaveAsURL);
+            if (window.WriteUrduUI) WriteUrduUI.notify('Text file saved successfully.', 'success');
         }
 
         function destroyClickedElement(event) {

@@ -1,0 +1,12 @@
+{
+  "name": "write-urdu",
+  "private": true,
+  "scripts": {
+    "test": "node tests/static.test.js",
+    "test:browser": "playwright test",
+    "test:all": "npm test && npm run test:browser"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
+  }
+}

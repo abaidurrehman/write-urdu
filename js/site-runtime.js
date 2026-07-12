@@ -28,8 +28,10 @@
 
     function showDependencyError() {
         if (document.getElementById('dependencyAlert')) return;
-        var editor = document.getElementById('transliterateTextarea') || document.getElementById('basic-example');
+        var editor = document.getElementById('transliterateTextarea') || document.getElementById('basic-example') || document.getElementById('write');
         if (!editor) return;
+        var spinner = document.getElementById('spinner');
+        if (spinner) spinner.style.display = 'none';
         var alert = document.createElement('div');
         alert.id = 'dependencyAlert';
         alert.className = 'dependency-alert';
@@ -91,11 +93,32 @@
                 copyText(button);
             });
         });
+        document.querySelectorAll('details.action-menu').forEach(function (menu) {
+            menu.addEventListener('toggle', function () {
+                if (!menu.open) return;
+                document.querySelectorAll('details.action-menu[open]').forEach(function (other) {
+                    if (other !== menu) other.open = false;
+                });
+            });
+            menu.querySelectorAll('.action-menu-panel button').forEach(function (button) {
+                button.addEventListener('click', function () { menu.open = false; });
+            });
+        });
+        document.addEventListener('click', function (event) {
+            document.querySelectorAll('details.action-menu[open]').forEach(function (menu) {
+                if (!menu.contains(event.target)) menu.open = false;
+            });
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('details.action-menu[open]').forEach(function (menu) { menu.open = false; });
+            }
+        });
         removeInjectedExportButtons();
         new MutationObserver(removeInjectedExportButtons).observe(document.body, { childList: true });
 
         window.setTimeout(function () {
-            if (!transliterationAvailable()) showDependencyError();
+            if (!window.writeUrduTransliterationReady || !transliterationAvailable()) showDependencyError();
         }, 6500);
 
         window.addEventListener('offline', function () {
