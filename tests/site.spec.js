@@ -231,6 +231,76 @@ test('primary page titles share the same visual scale', async ({ page }) => {
   expect(new Set(titleMetrics.map(metrics => metrics.weight)).size).toBe(1);
 });
 
+test('language toggle switches the shared shell to Urdu and persists', async ({ page, isMobile }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  await page.evaluate(() => localStorage.removeItem('write-urdu:locale:v1'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  if (isMobile) await page.locator('.wu-menu-toggle').click();
+  await page.getByRole('button', { name: 'Switch to Urdu' }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(page.locator('.wu-brand strong')).toHaveText('رائٹ اردو');
+  await expect(page.locator('.wu-primary-nav a').first()).toHaveText('رائٹ اردو');
+  await expect(page.locator('h1')).toHaveText('آن لائن اردو لکھیں');
+  await expect(page.getByRole('button', { name: 'متن کاپی کریں' })).toBeVisible();
+  await expect(page.locator('#UsageAlert')).toContainText('رومن اردو لکھیں');
+  await expect(page.getByRole('button', { name: 'Switch to English' })).toBeVisible();
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
+  await expect(page.locator('h1')).toHaveText('آن لائن اردو لکھیں');
+  if (isMobile) await page.locator('.wu-menu-toggle').click();
+  await page.getByRole('button', { name: 'Switch to English' }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await expect(page.locator('h1')).toHaveText('Write Urdu online');
+});
+
+test('documentation and help copy switch back to English cleanly', async ({ page, isMobile }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  await page.evaluate(() => localStorage.setItem('write-urdu:locale:v1', 'ur'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#UsageAlert')).toContainText('رومن اردو لکھیں');
+
+  await openFile(page, '/write-urdu-documentation.html');
+  await expect(page.locator('#paths-title')).toHaveText('اپنا لکھنے کا طریقہ منتخب کریں');
+  await expect(page.locator('.docs-faq summary').first()).toHaveText('سب سے پہلے کون سا ایڈیٹر استعمال کروں؟');
+  if (isMobile) await page.locator('.wu-menu-toggle').click();
+  await page.getByRole('button', { name: 'Switch to English' }).click();
+  await expect(page.locator('#paths-title')).toHaveText('Choose your writing path');
+  await expect(page.locator('.docs-faq summary').first()).toHaveText('Which editor should I use first?');
+});
+
+test('localized formatting guidance preserves screenshots and links', async ({ page, isMobile }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-editor-features.html');
+  await page.evaluate(() => localStorage.setItem('write-urdu:locale:v1', 'ur'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.content-article h2').first()).toHaveText('۱۔ متن کا رنگ تبدیل کریں');
+  const imageCount = await page.locator('.content-article img').count();
+  expect(imageCount).toBeGreaterThan(0);
+  await expect(page.locator('.content-article img').first()).toHaveAttribute('alt', 'متن کے رنگ کی پیلیٹ');
+  if (isMobile) await page.locator('.wu-menu-toggle').click();
+  await page.getByRole('button', { name: 'Switch to English' }).click();
+  await expect(page.locator('.content-article h2').first()).toHaveText('1. Change the text colour');
+  await expect(page.locator('.content-article img')).toHaveCount(imageCount);
+});
+
+test('privacy copy is available in Urdu without changing the legal structure', async ({ page, isMobile }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/write-urdu-privacy.html');
+  await page.evaluate(() => localStorage.setItem('write-urdu:locale:v1', 'ur'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.legal-copy h3').first()).toHaveText('۱۔ شرائط');
+  await expect(page.locator('.legal-copy h2')).toHaveText('رازداری کی پالیسی');
+  await expect(page.locator('.legal-copy > ul > li').first()).toContainText('قانونی اور منصفانہ');
+  if (isMobile) await page.locator('.wu-menu-toggle').click();
+  await page.getByRole('button', { name: 'Switch to English' }).click();
+  await expect(page.locator('.legal-copy h3').first()).toHaveText('1. Terms');
+});
+
 test('export rendering adds Urdu-safe margins and paginates long PDFs', async ({ page, isMobile }) => {
   test.skip(isMobile, 'One desktop check covers the shared export pipeline');
   await blockNonVisualServices(page);

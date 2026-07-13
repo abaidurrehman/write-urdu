@@ -1,17 +1,121 @@
 (function () {
     'use strict';
 
-    if (!document.documentElement.lang) document.documentElement.lang = 'en';
+    var LOCALE_KEY = 'write-urdu:locale:v1';
+    var currentLocale = readLocale();
 
     var links = [
-        { href: 'index.html', match: ['/', '/index.html'], label: 'Write Urdu' },
-        { href: 'urdu-editor.html', label: 'Rich Text Editor' },
-        { href: 'urdu-keyboard.html', label: 'Urdu Keyboard' },
-        { href: 'urdu-alphabet.html', label: 'Urdu Alphabet' },
-        { href: 'write-urdu-documentation.html', label: 'Documentation' },
-        { href: 'write-urdu-features.html', label: 'Features' },
-        { href: 'english-urdu-typing-tutorial.html', label: 'Tutorials' }
+        { href: 'index.html', match: ['/', '/index.html'], key: 'home', label: 'Write Urdu' },
+        { href: 'urdu-editor.html', key: 'editor', label: 'Rich Text Editor' },
+        { href: 'urdu-keyboard.html', key: 'keyboard', label: 'Urdu Keyboard' },
+        { href: 'urdu-alphabet.html', key: 'alphabet', label: 'Urdu Alphabet' },
+        { href: 'write-urdu-documentation.html', key: 'documentation', label: 'Documentation' },
+        { href: 'write-urdu-features.html', key: 'features', label: 'Features' },
+        { href: 'english-urdu-typing-tutorial.html', key: 'tutorials', label: 'Tutorials' }
     ];
+
+    var dictionary = {
+        en: {
+            brand: 'Write Urdu',
+            tagline: 'Write Urdu, simply',
+            nav: {
+                home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
+                alphabet: 'Urdu Alphabet', documentation: 'Documentation', features: 'Features',
+                tutorials: 'Tutorials', feedback: 'Feedback'
+            },
+            footer: {
+                home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
+                formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', quran: 'Learn Quran Online',
+                note: '© Write Urdu. Browser-based Urdu typing tools.'
+            },
+            aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
+            languageAction: 'اردو',
+            ui: {
+                'Copy text': 'Copy text', Export: 'Export', Share: 'Share', More: 'More', Clear: 'Clear',
+                'Basic editor': 'Basic editor', 'Rich editor': 'Rich editor', Save: 'Save',
+                'Save as text file': 'Save as text file', 'Text file': 'Text file', 'Word document': 'Word document',
+                'PDF document': 'PDF document', 'PNG image': 'PNG image', Print: 'Print', 'Typing help': 'Typing help',
+                'Font samples': 'Font samples', Search: 'Search', Feedback: 'Feedback', Documentation: 'Documentation',
+                Features: 'Features', Tutorials: 'Tutorials', FAQ: 'FAQ', 'Editor formatting guide': 'Editor formatting guide',
+                'Privacy and terms': 'Privacy and terms', Sitemap: 'Sitemap', 'Why Write Urdu?': 'Why Write Urdu?',
+                'Learn Quran Online': 'Learn Quran Online', 'Loading transliteration...': 'Loading transliteration...',
+                Filename: 'Filename', Restore: 'Restore', 'Recent drafts': 'Recent drafts', 'Clear history': 'Clear history',
+                'No saved drafts yet.': 'No saved drafts yet.', 'Find & replace': 'Find & replace', 'Focus mode': 'Focus mode',
+                'Insert Urdu comma': 'Insert Urdu comma', 'Enter the text you want to find.': 'Enter the text you want to find.',
+                'Replace all': 'Replace all', Discard: 'Discard', 'Import text': 'Import text', 'Clean spacing': 'Clean spacing',
+                Cancel: 'Cancel', Close: 'Close', 'Exit focus': 'Exit focus', 'Convert English numerals to Urdu numerals': 'Convert English numerals to Urdu numerals',
+                'Insert Urdu full stop': 'Insert Urdu full stop', 'Insert Urdu question mark': 'Insert Urdu question mark',
+                'Insert Urdu semicolon': 'Insert Urdu semicolon'
+            }
+        },
+        ur: {
+            brand: 'رائٹ اردو',
+            tagline: 'آسانی سے اردو لکھیں',
+            nav: {
+                home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
+                alphabet: 'اردو حروف تہجی', documentation: 'دستاویزات', features: 'خصوصیات',
+                tutorials: 'سبق', feedback: 'رائے'
+            },
+            footer: {
+                home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
+                formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', quran: 'قرآن آن لائن سیکھیں',
+                note: '© رائٹ اردو۔ براؤزر پر مبنی اردو ٹائپنگ ٹولز۔'
+            },
+            aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
+            languageAction: 'English',
+            ui: {
+                'Copy text': 'متن کاپی کریں', Export: 'برآمد کریں', Share: 'شیئر کریں', More: 'مزید', Clear: 'صاف کریں',
+                'Basic editor': 'بنیادی ایڈیٹر', 'Rich editor': 'رچ ایڈیٹر', Save: 'محفوظ کریں',
+                'Save as text file': 'بطور متن محفوظ کریں', 'Text file': 'متنی فائل', 'Word document': 'ورڈ دستاویز',
+                'PDF document': 'PDF دستاویز', 'PNG image': 'PNG تصویر', Print: 'پرنٹ', 'Typing help': 'ٹائپنگ مدد',
+                'Font samples': 'فونٹ نمونے', Search: 'تلاش', Feedback: 'رائے', Documentation: 'دستاویزات',
+                Features: 'خصوصیات', Tutorials: 'سبق', FAQ: 'سوالات', 'Editor formatting guide': 'ایڈیٹر فارمیٹنگ گائیڈ',
+                'Privacy and terms': 'رازداری اور شرائط', Sitemap: 'سائٹ میپ', 'Why Write Urdu?': 'رائٹ اردو کیوں؟',
+                'Learn Quran Online': 'قرآن آن لائن سیکھیں', 'Loading transliteration...': 'تحریر تبدیل ہو رہی ہے...',
+                Filename: 'فائل کا نام', Restore: 'بحال کریں', 'Recent drafts': 'حالیہ مسودے', 'Clear history': 'تاریخچہ صاف کریں',
+                'No saved drafts yet.': 'ابھی کوئی محفوظ مسودہ نہیں۔', 'Find & replace': 'تلاش اور تبدیلی', 'Focus mode': 'فوکس موڈ',
+                'Insert Urdu comma': 'اردو کاما داخل کریں', 'Enter the text you want to find.': 'تلاش کے لیے متن درج کریں۔',
+                'Replace all': 'سب تبدیل کریں', Discard: 'رد کریں', 'Import text': 'متن درآمد کریں', 'Clean spacing': 'فاصلہ درست کریں',
+                Cancel: 'منسوخ کریں', Close: 'بند کریں', 'Exit focus': 'فوکس سے باہر نکلیں', 'Convert English numerals to Urdu numerals': 'انگریزی اعداد کو اردو اعداد میں تبدیل کریں',
+                'Insert Urdu full stop': 'اردو فل اسٹاپ داخل کریں', 'Insert Urdu question mark': 'اردو سوالیہ نشان داخل کریں',
+                'Insert Urdu semicolon': 'اردو سیمی کولن داخل کریں'
+            }
+        }
+    };
+
+    var pageCopy = {
+        '/': { title: ['Write Urdu online', 'آن لائن اردو لکھیں'], subtitle: ['Roman Urdu to Urdu typing in your browser', 'براؤزر میں رومن اردو کو اردو میں لکھیں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
+        '/index.html': { title: ['Write Urdu online', 'آن لائن اردو لکھیں'], subtitle: ['Roman Urdu to Urdu typing in your browser', 'براؤزر میں رومن اردو کو اردو میں لکھیں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
+        '/urdu-editor.html': { title: ['Urdu Rich Text Editor', 'اردو رچ ٹیکسٹ ایڈیٹر'], subtitle: ['Type, format and export Urdu online', 'آن لائن اردو ٹائپ کریں، فارمیٹ کریں اور برآمد کریں'], documentTitle: ['Urdu Rich Text Editor | Type and Format Urdu Online', 'اردو رچ ٹیکسٹ ایڈیٹر | آن لائن اردو لکھیں'] },
+        '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Direct Urdu typing with no installation', 'بغیر انسٹالیشن براہِ راست اردو لکھیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
+        '/urdu-alphabet.html': { title: ['Urdu alphabet', 'اردو حروف تہجی'], subtitle: ['A practical guide to Urdu letters and writing direction', 'اردو حروف اور لکھنے کی سمت کا عملی رہنما'], documentTitle: ['Urdu Alphabet Guide | Letters and Writing Direction', 'اردو حروف تہجی | حروف اور لکھنے کی سمت'] },
+        '/write-urdu-documentation.html': { title: ['Write Urdu, beautifully explained.', 'رائٹ اردو، آسان انداز میں'], lede: ['A clear guide to every writing path on the site—from typing Roman Urdu and converting it into Urdu to polishing, saving and sharing a finished piece.', 'اس ویب سائٹ پر اردو لکھنے کے ہر طریقے کی واضح رہنمائی—رومن اردو کو اردو میں تبدیل کرنے سے لے کر متن کو سنوارنے، محفوظ کرنے اور شیئر کرنے تک۔'], documentTitle: ['Write Urdu Documentation | Roman Urdu, Keyboard and Rich Editor', 'رائٹ اردو دستاویزات | رومن اردو، کی بورڈ اور رچ ایڈیٹر'] },
+        '/write-urdu-features.html': { title: ['Write Urdu features and export options', 'رائٹ اردو کی خصوصیات اور برآمد کے اختیارات'], subtitle: ['Write, refine and share Urdu text with browser-based tools', 'براؤزر پر مبنی ٹولز سے اردو متن لکھیں، بہتر بنائیں اور شیئر کریں'], documentTitle: ['Write Urdu Features | Drafts, Import, Export and Share', 'رائٹ اردو خصوصیات | مسودے، درآمد، برآمد اور شیئرنگ'] },
+        '/urdu-editor-features.html': { title: ['Urdu Rich Text Editor formatting guide', 'اردو رچ ٹیکسٹ ایڈیٹر فارمیٹنگ گائیڈ'], subtitle: ['Learn how to format, export and share polished Urdu documents', 'خوب صورت اردو دستاویزات کو فارمیٹ، برآمد اور شیئر کرنے کا طریقہ سیکھیں'], documentTitle: ['Urdu Editor Formatting Guide | Fonts, Colour and Size', 'اردو ایڈیٹر فارمیٹنگ گائیڈ | فونٹس، رنگ اور سائز'] },
+        '/english-urdu-typing-tutorial.html': { title: ['Write Urdu video tutorials', 'رائٹ اردو ویڈیو اسباق'], subtitle: ['Short guides for transliteration, typing and formatting', 'تحریر کی تبدیلی، ٹائپنگ اور فارمیٹنگ کے مختصر رہنما'], documentTitle: ['Write Urdu Tutorials | Typing and Formatting Guides', 'رائٹ اردو اسباق | ٹائپنگ اور فارمیٹنگ رہنما'] },
+        '/urdu-faq.html': { title: ['Frequently Asked Questions', 'اکثر پوچھے گئے سوالات'], documentTitle: ['Urdu FAQ | Language, Script and Hindi–Urdu Questions', 'اردو سوالات | زبان، رسم الخط اور ہندی اردو'] },
+        '/why-write-urdu.html': { title: ['Why Write Urdu', 'رائٹ اردو کیوں؟'], documentTitle: ['Why Write Urdu? | Our Purpose', 'رائٹ اردو کیوں؟ | ہمارا مقصد'] },
+        '/write-urdu-feedback.html': { title: ['Feedback and suggestions', 'رائے اور تجاویز'], subtitle: ['Help us improve Write Urdu for every writer', 'ہر لکھنے والے کے لیے رائٹ اردو بہتر بنانے میں ہماری مدد کریں'], documentTitle: ['Write Urdu Feedback and Suggestions', 'رائٹ اردو رائے اور تجاویز'] },
+        '/write-urdu-privacy.html': { title: ['Terms of Service and Privacy Policy', 'استعمال کی شرائط اور رازداری کی پالیسی'], subtitle: ['Plain-language information about using this website', 'اس ویب سائٹ کے استعمال سے متعلق آسان معلومات'], documentTitle: ['Write Urdu Terms of Service and Privacy Policy', 'رائٹ اردو استعمال کی شرائط اور رازداری کی پالیسی'] },
+        '/write-urdu-search.html': { title: ['Search Write Urdu', 'رائٹ اردو تلاش کریں'], documentTitle: ['Search Write Urdu Guides and Resources', 'رائٹ اردو رہنما اور وسائل تلاش کریں'] },
+        '/write-urdu-sitemap.html': { title: ['Write Urdu Sitemap', 'رائٹ اردو سائٹ میپ'], subtitle: ['Editors, guides and information pages', 'ایڈیٹرز، رہنما اور معلوماتی صفحات'], documentTitle: ['Write Urdu Sitemap | Editors, Guides and Policies', 'رائٹ اردو سائٹ میپ | ایڈیٹرز، رہنما اور پالیسیاں'] }
+    };
+
+    function readLocale() {
+        try {
+            return window.localStorage.getItem(LOCALE_KEY) === 'ur' ? 'ur' : 'en';
+        } catch (error) {
+            return 'en';
+        }
+    }
+
+    function translation(key, fallback) {
+        var value = dictionary[currentLocale];
+        key.split('.').forEach(function (part) { value = value && value[part]; });
+        return value || fallback || key;
+    }
 
     function normalizedPath() {
         var path = window.location.pathname.replace(/\/+$/, '') || '/';
@@ -41,19 +145,19 @@
         if (!footer) return;
         footer.innerHTML =
             '<nav class="wu-footer-links" aria-label="Footer navigation">' +
-                '<a href="index.html">Write Urdu</a>' +
-                '<a href="urdu-faq.html">FAQ</a>' +
-                '<a href="write-urdu-documentation.html">Documentation</a>' +
-                '<a href="write-urdu-features.html">Features</a>' +
-                '<a href="urdu-editor-features.html">Editor formatting guide</a>' +
-                '<a href="english-urdu-typing-tutorial.html">Tutorials</a>' +
-                '<a href="write-urdu-privacy.html">Privacy and terms</a>' +
-                '<a href="write-urdu-sitemap.html">Sitemap</a>' +
-                '<a href="write-urdu-search.html">Search</a>' +
-                '<a href="why-write-urdu.html">Why Write Urdu?</a>' +
-                '<a href="https://www.onlinekidsmadrasa.com" target="_blank" rel="noopener noreferrer">Learn Quran Online</a>' +
+                '<a href="index.html" data-wu-i18n-key="footer.home">Write Urdu</a>' +
+                '<a href="urdu-faq.html" data-wu-i18n-key="footer.faq">FAQ</a>' +
+                '<a href="write-urdu-documentation.html" data-wu-i18n-key="footer.documentation">Documentation</a>' +
+                '<a href="write-urdu-features.html" data-wu-i18n-key="footer.features">Features</a>' +
+                '<a href="urdu-editor-features.html" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
+                '<a href="english-urdu-typing-tutorial.html" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
+                '<a href="write-urdu-privacy.html" data-wu-i18n-key="footer.privacy">Privacy and terms</a>' +
+                '<a href="write-urdu-sitemap.html" data-wu-i18n-key="footer.sitemap">Sitemap</a>' +
+                '<a href="write-urdu-search.html" data-wu-i18n-key="footer.search">Search</a>' +
+                '<a href="why-write-urdu.html" data-wu-i18n-key="footer.why">Why Write Urdu?</a>' +
+                '<a href="https://www.onlinekidsmadrasa.com" target="_blank" rel="noopener noreferrer" data-wu-i18n-key="footer.quran">Learn Quran Online</a>' +
             '</nav>' +
-            '<p class="wu-footer-note">&copy; Write Urdu. Browser-based Urdu typing tools.</p>';
+            '<p class="wu-footer-note" data-wu-i18n-key="footer.note">© Write Urdu. Browser-based Urdu typing tools.</p>';
     }
 
     function renderHeaderAd(header) {
@@ -80,6 +184,14 @@
         document.head.appendChild(ads);
     }
 
+    function loadContentLocale() {
+        if (document.querySelector('script[src="js/content-locale.js"]')) return;
+        var script = document.createElement('script');
+        script.src = 'js/content-locale.js';
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
     function normalizePageTitle() {
         if (document.body.classList.contains('documentation-page')) return;
 
@@ -91,6 +203,143 @@
         if (subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) {
             subtitle.classList.add('wu-page-subtitle');
         }
+    }
+
+    function textWithoutIcons(element) {
+        var clone = element.cloneNode(true);
+        clone.querySelectorAll('i,svg,img').forEach(function (icon) { icon.remove(); });
+        return clone.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    function setLabelPreservingIcon(element, label) {
+        var icons = Array.prototype.slice.call(element.children).filter(function (child) {
+            return /^(I|SVG|IMG)$/i.test(child.tagName);
+        });
+        var textNodes = Array.prototype.slice.call(element.childNodes).filter(function (node) {
+            return node.nodeType === 3;
+        });
+        var current = textWithoutIcons(element);
+        if (current === label) return;
+        if (textNodes.length) {
+            var target = textNodes.find(function (node) { return node.nodeValue.trim(); }) || textNodes[textNodes.length - 1];
+            target.nodeValue = ' ' + label;
+            textNodes.forEach(function (node) {
+                if (node !== target && node.nodeValue.trim()) node.remove();
+            });
+        } else if (element.children.length && !icons.length) {
+            // Leave complex controls (for example the mobile menu's icon and
+            // label spans) intact; their dedicated labels are handled below.
+            return;
+        } else {
+            element.appendChild(document.createTextNode(' ' + label));
+        }
+        if (!icons.length && element.textContent.trim() !== label) element.textContent = label;
+    }
+
+    function applyPageCopy() {
+        var copy = pageCopy[normalizedPath()] || pageCopy['/index.html'];
+        var title = document.querySelector('h1');
+        if (title && copy.title) title.textContent = copy.title[currentLocale === 'ur' ? 1 : 0];
+        var subtitle = title && title.nextElementSibling;
+        if (subtitle && copy.subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) {
+            subtitle.textContent = copy.subtitle[currentLocale === 'ur' ? 1 : 0];
+        }
+        var lede = document.querySelector('.docs-lede');
+        if (lede && copy.lede) lede.textContent = copy.lede[currentLocale === 'ur' ? 1 : 0];
+        if (copy.documentTitle) document.title = copy.documentTitle[currentLocale === 'ur' ? 1 : 0];
+    }
+
+    function applyControlCopy() {
+        var controls = document.querySelectorAll('button,summary,.btn');
+        controls.forEach(function (element) {
+            if (element.hasAttribute('data-wu-language-toggle')) return;
+            var ariaLabel = element.getAttribute('aria-label');
+            if (ariaLabel && dictionary.en.ui[ariaLabel]) {
+                element.setAttribute('data-wu-i18n-aria', ariaLabel);
+                element.setAttribute('aria-label', translation('ui.' + ariaLabel, ariaLabel));
+            } else {
+                var ariaKey = element.getAttribute('data-wu-i18n-aria');
+                if (ariaKey) element.setAttribute('aria-label', translation('ui.' + ariaKey, ariaKey));
+            }
+            var title = element.getAttribute('title');
+            if (title && dictionary.en.ui[title]) {
+                element.setAttribute('data-wu-i18n-title', title);
+                element.setAttribute('title', translation('ui.' + title, title));
+            } else {
+                var titleKey = element.getAttribute('data-wu-i18n-title');
+                if (titleKey) element.setAttribute('title', translation('ui.' + titleKey, titleKey));
+            }
+            var key = element.getAttribute('data-wu-i18n-control');
+            var original = textWithoutIcons(element);
+            if (!key && dictionary.en.ui[original]) {
+                key = original;
+                element.setAttribute('data-wu-i18n-control', key);
+            }
+            if (key && dictionary.en.ui[key]) setLabelPreservingIcon(element, translation('ui.' + key, key));
+        });
+    }
+
+    function applyLocale() {
+        document.documentElement.lang = currentLocale;
+        document.documentElement.dir = currentLocale === 'ur' ? 'rtl' : 'ltr';
+        document.body.classList.toggle('locale-urdu', currentLocale === 'ur');
+
+        document.querySelectorAll('[data-wu-i18n-key]').forEach(function (element) {
+            var key = element.getAttribute('data-wu-i18n-key');
+            var label = translation(key, element.textContent.trim());
+            if (element.tagName === 'NAV') element.setAttribute('aria-label', label);
+            else if (element.classList.contains('wu-footer-note')) element.textContent = label;
+            else element.textContent = label;
+        });
+        document.querySelectorAll('.wu-primary-nav a').forEach(function (link) {
+            var key = link.getAttribute('data-wu-i18n-key');
+            if (key) link.textContent = translation(key, link.textContent.trim());
+        });
+        var brand = document.querySelector('.wu-brand strong');
+        var tagline = document.querySelector('.wu-brand small');
+        if (brand) brand.textContent = translation('brand', brand.textContent);
+        if (tagline) tagline.textContent = translation('tagline', tagline.textContent);
+        var primary = document.querySelector('.wu-primary-nav');
+        if (primary) primary.setAttribute('aria-label', translation('aria.primary', 'Primary navigation'));
+        var footer = document.querySelector('.wu-footer-links');
+        if (footer) footer.setAttribute('aria-label', translation('aria.footer', 'Footer navigation'));
+        var languageButton = document.querySelector('[data-wu-language-toggle]');
+        if (languageButton) {
+            // Keep the action name in the language it switches to; this makes
+            // the control discoverable to screen readers in either locale.
+            languageButton.setAttribute('aria-label', currentLocale === 'ur' ? 'Switch to English' : 'Switch to Urdu');
+            languageButton.setAttribute('aria-pressed', String(currentLocale === 'ur'));
+            var languageLabel = languageButton.querySelector('[data-wu-language-label]');
+            if (languageLabel) languageLabel.textContent = currentLocale === 'ur' ? 'English' : 'اردو';
+        }
+        var menuLabel = document.querySelector('.wu-menu-label');
+        if (menuLabel) menuLabel.textContent = currentLocale === 'ur' ? 'مینو' : 'Menu';
+        var menuToggle = document.querySelector('.wu-menu-toggle');
+        if (menuToggle) menuToggle.setAttribute('aria-label', currentLocale === 'ur' ? 'مینو کھولیں' : 'Open menu');
+        applyPageCopy();
+        applyControlCopy();
+        if (window.WriteUrduContentLocale && typeof window.WriteUrduContentLocale.apply === 'function') {
+            window.WriteUrduContentLocale.apply(currentLocale);
+        }
+        document.dispatchEvent(new CustomEvent('write-urdu:locale-change', { detail: { locale: currentLocale } }));
+    }
+
+    function changeLocale(locale) {
+        currentLocale = locale === 'ur' ? 'ur' : 'en';
+        try { window.localStorage.setItem(LOCALE_KEY, currentLocale); } catch (error) { /* private browsing */ }
+        applyLocale();
+    }
+
+    function observeDynamicControls() {
+        if (!window.MutationObserver || !document.body) return;
+        var pending = false;
+        new MutationObserver(function (mutations) {
+            if (pending || !mutations.some(function (mutation) {
+                return Array.prototype.some.call(mutation.addedNodes, function (node) { return node.nodeType === 1; });
+            })) return;
+            pending = true;
+            window.setTimeout(function () { pending = false; applyControlCopy(); }, 0);
+        }).observe(document.body, { childList: true, subtree: true });
     }
 
     function renderHeader() {
@@ -113,7 +362,7 @@
                 '<div class="wu-header-inner">' +
                 '<a class="wu-brand" href="index.html" aria-label="Write Urdu home">' +
                     '<img class="wu-brand-mark" src="image/logo10.png" alt="" width="42" height="42">' +
-                    '<span><strong>Write Urdu</strong><small>اردو لکھیے، آسانی سے</small></span>' +
+                    '<span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply</small></span>' +
                 '</a>' +
                 '<button class="wu-menu-toggle" type="button" aria-expanded="false" aria-controls="wu-primary-nav">' +
                     '<span class="wu-menu-icon" aria-hidden="true"></span><span class="wu-menu-label">Menu</span>' +
@@ -121,9 +370,10 @@
                 '<nav class="wu-primary-nav" id="wu-primary-nav" aria-label="Primary navigation">' +
                     links.map(function (item) {
                         var active = isActive(item, path);
-                        return '<a href="' + item.href + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
+                        return '<a href="' + item.href + '" data-wu-i18n-key="nav.' + item.key + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
                     }).join('') +
-                    '<a class="wu-feedback-link" href="write-urdu-feedback.html">Feedback</a>' +
+                    '<a class="wu-feedback-link" href="write-urdu-feedback.html" data-wu-i18n-key="nav.feedback">Feedback</a>' +
+                    '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
                 '</nav>' +
             '</div>';
 
@@ -134,12 +384,15 @@
         }
         renderHeaderAd(header);
         loadAds();
+        loadContentLocale();
         normalizePageTitle();
-
         renderFooter();
+        applyLocale();
+        observeDynamicControls();
 
         var toggle = header.querySelector('.wu-menu-toggle');
         var nav = header.querySelector('.wu-primary-nav');
+        var languageToggle = header.querySelector('[data-wu-language-toggle]');
 
         function closeMenu() {
             toggle.setAttribute('aria-expanded', 'false');
@@ -150,6 +403,9 @@
             var open = toggle.getAttribute('aria-expanded') === 'true';
             toggle.setAttribute('aria-expanded', String(!open));
             nav.classList.toggle('is-open', !open);
+        });
+        languageToggle.addEventListener('click', function () {
+            changeLocale(currentLocale === 'ur' ? 'en' : 'ur');
         });
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') closeMenu();
@@ -162,6 +418,14 @@
         });
     }
 
+    window.WriteUrduLocale = {
+        get: function () { return currentLocale; },
+        set: changeLocale,
+        apply: applyLocale,
+        storageKey: LOCALE_KEY
+    };
+
+    if (!document.documentElement.lang) document.documentElement.lang = 'en';
     addStylesheet();
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', renderHeader);

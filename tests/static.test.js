@@ -88,7 +88,14 @@ assert.match(sharedHeader, /classList\.add\(['"]content-page['"]\)|function rend
 assert.match(sharedHeader, /data-ad-slot["']?[:=]["']8323789671|data-ad-slot=\\?"8323789671/, 'Shared header ad slot is missing');
 assert.match(sharedHeader, /function renderHeaderAd\(|function loadAds\(/, 'Shared header ad placement is missing');
 assert.match(sharedHeader, /function normalizePageTitle\(/, 'Shared page-title normalization is missing');
+assert.match(sharedHeader, /write-urdu:locale:v1/, 'Shared locale preference storage is missing');
+assert.match(sharedHeader, /data-wu-language-toggle/, 'Shared language toggle is missing');
+assert.match(sharedHeader, /locale-urdu|document\.documentElement\.dir/, 'Shared Urdu direction handling is missing');
+assert.match(sharedHeader, /js\/content-locale\.js|function loadContentLocale\(/, 'Long-form content localization loader is missing');
 assert.match(sharedStyles, /h1\.wu-page-title|wu-page-subtitle/, 'Shared page-title typography is missing');
+assert.match(sharedStyles, /\.wu-language-toggle|html\[dir=["']rtl["']\]/, 'Shared language-toggle styles are missing');
+const contentLocale = fs.readFileSync(path.join(root, 'js', 'content-locale.js'), 'utf8');
+assert.match(contentLocale, /localizeDocumentation|docs-faq|localizeEditorHelp/, 'Long-form Urdu content translations are missing');
 const adsScript = fs.readFileSync(path.join(root, 'js', 'ads.js'), 'utf8');
 assert.match(adsScript, /adsbygoogle\.js\?client=ca-pub-4727847909946286/, 'AdSense loader must use the configured publisher client');
 assert.match(adsScript, /crossOrigin\s*=\s*["']anonymous["']/, 'AdSense loader must use anonymous CORS');
