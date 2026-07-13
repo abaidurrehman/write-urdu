@@ -41,6 +41,8 @@ test('Urdu keyboard inserts characters and clears text', async ({ page }) => {
   await open(page, '/urdu-keyboard.html');
   await page.locator('input[value="ا"]').click();
   await expect(page.locator('#write')).toHaveValue('ا');
+  await expect(page.locator('[data-word-count]')).toHaveText('1 word');
+  await expect(page.locator('[data-character-count]')).toHaveText('1 character');
   await page.locator('#clear').click();
   await expect(page.locator('#write')).toHaveValue('');
 });
@@ -53,6 +55,66 @@ test('copy control uses the native clipboard and reports success', async ({ page
   await page.getByRole('button', { name: 'Copy text' }).click();
   await expect(page.locator('#appNotifications')).toContainText('copied to the clipboard');
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('اردو متن');
+});
+
+test('frontend writing tools save, restore, edit and share a local draft', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'One desktop check covers shared local writing tools');
+  await blockNonVisualServices(page);
+  await open(page, '/index.html');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload({ waitUntil: 'domcontentloaded' });
+
+  const editor = page.locator('#transliterateTextarea');
+  await editor.fill('میرا اردو متن 123');
+  await expect(page.locator('[data-word-count]')).toHaveText('4 words');
+  await page.getByRole('button', { name: 'Insert Urdu comma' }).click();
+  await expect(editor).toHaveValue(/،$/);
+  await page.getByRole('button', { name: '123 → ۱۲۳' }).click();
+  await expect(editor).toHaveValue(/۱۲۳،$/);
+  await expect(page.locator('[data-save-status]')).toContainText('Saved on this device', { timeout: 5000 });
+  expect(await page.evaluate(() => Boolean(localStorage.getItem('write-urdu:draft:v1:basic')))).toBe(true);
+
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-draft-recovery]')).toBeVisible();
+  await page.getByRole('button', { name: 'Restore' }).click();
+  await expect(editor).toHaveValue(/میرا اردو متن ۱۲۳،/);
+
+  await page.getByRole('button', { name: 'Find & replace' }).click();
+  await page.getByLabel('Find').fill('اردو');
+  await page.getByLabel('Replace with').fill('زبان');
+  await page.getByRole('button', { name: 'Replace all' }).click();
+  await expect(editor).toHaveValue(/میرا زبان متن/);
+
+  await page.getByRole('button', { name: 'Focus mode' }).click();
+  await expect(page.locator('body')).toHaveClass(/write-urdu-focus/);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('body')).not.toHaveClass(/write-urdu-focus/);
+
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: payload => { window.__sharedUrdu = payload; return Promise.resolve(); }
+    });
+  });
+  await page.locator('[data-write-urdu-share]').click();
+  await expect.poll(() => page.evaluate(() => window.__sharedUrdu && window.__sharedUrdu.text)).toContain('میرا زبان متن');
+});
+
+test('rich editor writing tools preserve rich content while transforming text', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'One desktop check covers the rich editor adapter');
+  await blockNonVisualServices(page);
+  await open(page, '/urdu-editor.html');
+  const body = page.frameLocator('#basic-example_ifr').locator('body');
+  await expect(body).toBeVisible();
+  await body.fill('اردو متن 123');
+  await expect(page.locator('[data-word-count]')).toHaveText('3 words');
+  await page.getByRole('button', { name: '123 → ۱۲۳' }).click();
+  await expect(body).toContainText('اردو متن ۱۲۳');
+  await page.getByRole('button', { name: 'Find & replace' }).click();
+  await page.getByLabel('Find').fill('متن');
+  await page.getByLabel('Replace with').fill('تحریر');
+  await page.getByRole('button', { name: 'Replace all' }).click();
+  await expect(body).toContainText('اردو تحریر ۱۲۳');
 });
 
 test('dependency failure presents a retry message', async ({ page, isMobile }) => {
@@ -96,6 +158,10 @@ test('mobile menu and primary tools remain inside the viewport', async ({ page, 
       expect(box.x + box.width).toBeLessThanOrEqual(viewportWidth + 1);
     }
     expect(boxes[1].y, `${route} primary tool starts too far below the fold`).toBeLessThan(360);
+    await expect(page.locator('.editor-productivity')).toBeVisible();
+    const toolsBox = await page.locator('.editor-productivity').boundingBox();
+    expect(toolsBox.x, `${route} writing tools start outside the viewport`).toBeGreaterThanOrEqual(0);
+    expect(toolsBox.x + toolsBox.width, `${route} writing tools exceed the viewport`).toBeLessThanOrEqual(viewportWidth + 1);
   }
 });
 

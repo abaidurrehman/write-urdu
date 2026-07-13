@@ -54,6 +54,15 @@ for (const file of ['index.html', 'urdu-editor.html']) {
   assert.doesNotMatch(html, /html2canvas\(element|textBaseline\s*=|fillText\(["']Generated/, `${file} still uses the clipping-prone legacy export path`);
 }
 
+const editorTools = fs.readFileSync(path.join(root, 'js', 'editor-tools.js'), 'utf8');
+assert.match(editorTools, /write-urdu:draft:v1:|function countWords\(|navigator\.share|function normaliseSpacing\(/, 'Frontend writing tools are incomplete');
+for (const file of ['index.html', 'urdu-editor.html', 'urdu-keyboard.html']) {
+  const html = read(file);
+  assert.match(html, /js\/editor-tools\.js/, `${file} does not load the shared writing tools`);
+  assert.match(html, /css\/editor-tools\.css/, `${file} does not load the shared writing-tool styles`);
+  assert.match(html, /data-write-urdu-share/, `${file} does not expose native sharing`);
+}
+
 const alphabet = read('urdu-alphabet.html');
 const table = alphabet.match(/<table>[\s\S]*?<\/table>/i)[0];
 const letters = [...table.matchAll(/<td>\s*([^<\s]+)\s*<\/td>/gi)].map(match => match[1]).filter(value => /[\u0600-\u06ff]/.test(value));
