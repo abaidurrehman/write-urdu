@@ -488,15 +488,9 @@
 
         async function DownloadAsImage() {
             var element = getRichEditorElement();
-            element.style.textAlign = "right";
             try {
-                var canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2, useCORS: true });
-                var ctx = canvas.getContext("2d");
-                ctx.textBaseline = "middle";
-                ctx.font = "24px sans-serif";
-                ctx.fillStyle = "#177245";
-                ctx.fillText("Generated using Write-Urdu.com", 20, canvas.height - 24);
-                downloadURI(canvas.toDataURL("image/png"), "write-urdu.png");
+                var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
+                WriteUrduExport.downloadData(canvas.toDataURL("image/png"), "write-urdu.png");
                 WriteUrduUI.notify('PNG image exported successfully.', 'success');
             } catch (error) {
                 console.error(error);
@@ -506,59 +500,17 @@
 
 
         function DownloadAsWord() {
-
-            var preHtml = "<html lang='en' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
-            var postHtml = "</body></html>";
-
             var element = getRichEditorElement();
-
-            var html = preHtml + '<div dir="rtl">' + element.innerHTML + '</div>' + postHtml;
-
-            var blob = new Blob(['\ufeff', html], {
-                type: 'application/msword'
-            });
-
-            var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
-            var filename = 'Write-urdu.doc';
-            // Create download link element
-            var downloadLink = document.createElement("a");
-            document.body.appendChild(downloadLink);
-
-            if (navigator.msSaveOrOpenBlob) {
-                navigator.msSaveOrOpenBlob(blob, filename);
-            } else {
-                // Create a link to the file
-                downloadLink.href = url;
-
-                // Setting the file name
-                downloadLink.download = filename;
-
-                //triggering the function
-                downloadLink.click();
-            }
-
-            document.body.removeChild(downloadLink);
+            WriteUrduExport.downloadWord(element, 'write-urdu', true);
             WriteUrduUI.notify('Word document exported successfully.', 'success');
-
-            // $("#transliterateTextarea").wordExport(document.getElementById('inputFileNameToSaveAs').value);
         }
 
 
         async function DownloadAsPdf() {
             var element = getRichEditorElement();
-            element.style.textAlign = "right";
-            element.style.backgroundColor = 'white';
             try {
-                var canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2, useCORS: true });
-                var jsPDF = window.jspdf.jsPDF;
-                var doc = new jsPDF({ unit: 'mm', format: 'a4' });
-                var width = doc.internal.pageSize.getWidth();
-                var height = doc.internal.pageSize.getHeight();
-                var ratio = Math.min((width - 10) / canvas.width, (height - 18) / canvas.height);
-                doc.addImage(canvas.toDataURL("image/png"), 'PNG', 5, 5, canvas.width * ratio, canvas.height * ratio);
-                doc.setFontSize(8);
-                doc.text("Generated using Write-Urdu.com", 5, height - 5);
-                doc.save('write-urdu.pdf');
+                var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
+                WriteUrduExport.downloadPdf(canvas, 'write-urdu');
                 WriteUrduUI.notify('PDF exported successfully.', 'success');
             } catch (error) {
                 console.error(error);
@@ -568,19 +520,14 @@
 
         async function PrintText() {
             var element = getRichEditorElement();
-            element.style.textAlign = "right";
-            element.style.backgroundColor = 'white';
             var printWindow = window.open("", "_blank");
             if (!printWindow) {
                 WriteUrduUI.notify('Allow pop-ups to print your document.', 'error');
                 return;
             }
             try {
-                var canvas = await html2canvas(element, { backgroundColor: '#ffffff', scale: 2, useCORS: true });
-                printWindow.document.title = 'Write Urdu document';
-                printWindow.document.body.innerHTML = '<img alt="Urdu document" src="' + canvas.toDataURL("image/png") + '" style="width:100%;height:auto">';
-                printWindow.focus();
-                printWindow.print();
+                var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
+                WriteUrduExport.printCanvas(printWindow, canvas);
             } catch (error) {
                 printWindow.close();
                 WriteUrduUI.notify('Print preparation failed.', 'error');
@@ -590,7 +537,8 @@
         function OpenWhatsApp() {
             var element = getRichEditorElement();
             var Url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(element.innerText);
-            window.open(Url, "_blank");
+            var shareWindow = window.open(Url, "_blank", "noopener,noreferrer");
+            if (shareWindow) shareWindow.opener = null;
         }
 
     </script>

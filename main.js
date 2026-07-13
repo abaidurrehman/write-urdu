@@ -68,9 +68,10 @@
         }
         function saveTextAsFile(control,fileNameControl) {
             var textToSave = document.getElementById(control).value;
-            var textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
+            var textToSaveAsBlob = new Blob(['\ufeff', textToSave], { type: "text/plain;charset=utf-8" });
             var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
             var fileNameToSaveAs = document.getElementById(fileNameControl).value.trim() || "write-urdu";
+            fileNameToSaveAs = window.WriteUrduExport ? WriteUrduExport.safeFilename(fileNameToSaveAs, "write-urdu") : fileNameToSaveAs.replace(/[\\/:*?"<>|]+/g, '-');
             if (!/\.[a-z0-9]+$/i.test(fileNameToSaveAs)) fileNameToSaveAs += ".txt";
 
             var downloadLink = document.createElement("a");
@@ -81,7 +82,7 @@
             document.body.appendChild(downloadLink);
             downloadLink.click();
             downloadLink.remove();
-            window.URL.revokeObjectURL(textToSaveAsURL);
+            window.setTimeout(function () { window.URL.revokeObjectURL(textToSaveAsURL); }, 1000);
             if (window.WriteUrduUI) WriteUrduUI.notify('Text file saved successfully.', 'success');
         }
 

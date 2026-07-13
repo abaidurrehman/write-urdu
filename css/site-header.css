@@ -21,6 +21,7 @@
 
 /* Shared editorial typography for guides, reference pages and legal copy. */
 :root{--wu-text:#263a30;--wu-muted:#607269;--wu-heading:#12271d;--wu-link:#126b40;--wu-line:#dce6e0;--wu-soft:#f4f8f5}
+html,body{max-width:100%;overflow-x:clip}
 body{color:var(--wu-text);font-family:Inter,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.65;text-rendering:optimizeLegibility}
 body h1,body h2,body h3,body h4,body h5,body h6{color:var(--wu-heading);font-family:Inter,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-weight:750;line-height:1.22;letter-spacing:-.025em}
 body h1{font-size:clamp(1.9rem,4vw,2.75rem)}body h2{font-size:clamp(1.45rem,2.8vw,2rem)}body h3{font-size:clamp(1.2rem,2.2vw,1.55rem)}body h4{font-size:1.16rem}
@@ -34,5 +35,10 @@ body .steps{max-width:76ch;color:var(--wu-text);font-size:1rem;line-height:1.72}
 body .card-title{color:var(--wu-heading);font-weight:750}body .card-text{color:var(--wu-text)}body mark.sm{color:var(--wu-link);background:transparent;font-weight:650}
 body table{max-width:900px;width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--wu-line);border-radius:12px;background:#fff}body th{padding:12px 14px;color:var(--wu-heading);background:var(--wu-soft);font-size:.86rem;text-align:left}body td{padding:11px 14px;border-top:1px solid var(--wu-line);color:var(--wu-text)}body td:first-child{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:1.5rem;line-height:1.8;text-align:right}
 body [lang="ur"],body [dir="rtl"]{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;line-height:2}
-body footer{font-size:.92rem}body footer,body footer span{color:rgba(255,255,255,.68)}body footer a{color:rgba(255,255,255,.9)!important}
+body footer{position:static!important;width:100%!important;box-sizing:border-box;font-size:.92rem}body footer,body footer span{color:rgba(255,255,255,.68)}body footer a{color:rgba(255,255,255,.9)!important}
+body img,body iframe,body video,body canvas,body ins.adsbygoogle{max-width:100%!important}body .container-fluid,body .container,body .row{max-width:100%}body.content-page .row{margin-right:0!important;margin-left:0!important}
+body .cse-branding-bottom,body .cse-branding-form,body .cse-branding-form form,body #cse-search-results{max-width:100%!important}body .cse-branding-form input[type="text"]{max-width:calc(100vw - 130px)}
+body.content-page .twitter-follow-button,body.content-page .fb-like{display:none!important}body.content-page .logo{display:none!important}
+body.content-page .col-12.col-md-9>hr.solid{margin-top:8px}
+body footer{padding:28px max(18px,calc((100vw - 1120px)/2)) 0!important;background:#10281c!important;text-align:left}body .wu-footer-links{display:flex;flex-wrap:wrap;gap:8px 18px;max-width:1120px;margin:0 auto}body .wu-footer-links a{font-size:.88rem;text-decoration:none}body .wu-footer-links a:hover{text-decoration:underline}body .wu-footer-note{max-width:1120px;margin:22px auto 0;padding:16px 0;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.58);font-size:.8rem}
 @media(max-width:767px){body{font-size:15px}body p,body li{font-size:.96rem}body .page-intro{font-size:1rem}body .content-article,body .legal-copy{width:100%}body table{font-size:.92rem}body th,body td{padding:9px 10px}}

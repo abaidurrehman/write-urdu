@@ -14,6 +14,7 @@
 
     function normalizedPath() {
         var path = window.location.pathname.replace(/\/+$/, '') || '/';
+        if (window.location.protocol === 'file:') path = '/' + path.split('/').pop();
         return path.toLowerCase();
     }
 
@@ -32,6 +33,25 @@
         link.href = 'css/site-header.css';
         link.setAttribute('data-write-urdu-header', '');
         document.head.appendChild(link);
+    }
+
+    function renderFooter() {
+        var footer = document.querySelector('footer');
+        if (!footer) return;
+        footer.innerHTML =
+            '<nav class="wu-footer-links" aria-label="Footer navigation">' +
+                '<a href="index.html">Write Urdu</a>' +
+                '<a href="urdu-faq.html">FAQ</a>' +
+                '<a href="write-urdu-features.html">Features</a>' +
+                '<a href="urdu-editor-features.html">Editor formatting guide</a>' +
+                '<a href="english-urdu-typing-tutorial.html">Tutorials</a>' +
+                '<a href="write-urdu-privacy.html">Privacy and terms</a>' +
+                '<a href="write-urdu-sitemap.html">Sitemap</a>' +
+                '<a href="write-urdu-search.html">Search</a>' +
+                '<a href="why-write-urdu.html">Why Write Urdu?</a>' +
+                '<a href="https://www.onlinekidsmadrasa.com" target="_blank" rel="noopener noreferrer">Learn Quran Online</a>' +
+            '</nav>' +
+            '<p class="wu-footer-note">&copy; Write Urdu. Browser-based Urdu typing tools.</p>';
     }
 
     function renderHeader() {
@@ -80,6 +100,8 @@
         if (wrapper && wrapper.children.length === 1 && wrapper.firstElementChild === header) {
             wrapper.classList.add('wu-header-wrapper');
         }
+
+        renderFooter();
 
         var toggle = header.querySelector('.wu-menu-toggle');
         var nav = header.querySelector('.wu-primary-nav');
