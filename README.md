@@ -47,4 +47,4 @@ Obsolete prototype editor files have been removed; `urdu-editor.html` is the onl
 
 The former `GTM-M45V9FW` loader is intentionally disabled because its live container injected duplicate application controls. Remove the affected Custom HTML tag in Google Tag Manager before adding the container back.
 
-Advertising slots on content pages are initialized through `js/ads.js`, which loads AdSense once and initializes each slot once. The editor workspaces do not load advertising.
+Advertising slots on content pages are initialized through `js/ads.js`, which loads the current AdSense client once and initializes each slot once. Content pages also receive a responsive header unit; the editor workspaces intentionally do not load advertising so the writing surface stays above the fold.

@@ -214,6 +214,23 @@ test('content pages retain readable typography and responsive embeds', async ({ 
   }
 });
 
+test('primary page titles share the same visual scale', async ({ page }) => {
+  await blockNonVisualServices(page);
+  const titleMetrics = [];
+  for (const route of ['/index.html', '/urdu-editor.html', '/urdu-keyboard.html', '/urdu-alphabet.html', '/write-urdu-features.html']) {
+    await openFile(page, route);
+    const title = page.locator('h1.wu-page-title');
+    await expect(title).toHaveCount(1);
+    const metrics = await title.evaluate(element => {
+      const style = getComputedStyle(element);
+      return { fontSize: style.fontSize, weight: style.fontWeight };
+    });
+    titleMetrics.push(metrics);
+  }
+  expect(new Set(titleMetrics.map(metrics => metrics.fontSize)).size).toBe(1);
+  expect(new Set(titleMetrics.map(metrics => metrics.weight)).size).toBe(1);
+});
+
 test('export rendering adds Urdu-safe margins and paginates long PDFs', async ({ page, isMobile }) => {
   test.skip(isMobile, 'One desktop check covers the shared export pipeline');
   await blockNonVisualServices(page);

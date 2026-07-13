@@ -80,6 +80,19 @@
         document.head.appendChild(ads);
     }
 
+    function normalizePageTitle() {
+        if (document.body.classList.contains('documentation-page')) return;
+
+        var title = document.querySelector('h1');
+        if (!title) return;
+        title.classList.add('wu-page-title');
+
+        var subtitle = title.nextElementSibling;
+        if (subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) {
+            subtitle.classList.add('wu-page-subtitle');
+        }
+    }
+
     function renderHeader() {
         var oldNav = document.querySelector('nav.navbar, nav');
         if (!oldNav) return;
@@ -116,11 +129,12 @@
 
         var wrapper = oldNav.parentElement;
         oldNav.replaceWith(header);
-        renderHeaderAd(header);
-        loadAds();
         if (wrapper && wrapper.children.length === 1 && wrapper.firstElementChild === header) {
             wrapper.classList.add('wu-header-wrapper');
         }
+        renderHeaderAd(header);
+        loadAds();
+        normalizePageTitle();
 
         renderFooter();
 

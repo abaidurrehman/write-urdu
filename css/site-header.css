@@ -42,6 +42,11 @@ body img,body iframe,body video,body canvas,body ins.adsbygoogle{max-width:100%!
 body .cse-branding-bottom,body .cse-branding-form,body .cse-branding-form form,body #cse-search-results{max-width:100%!important}body .cse-branding-form input[type="text"]{max-width:calc(100vw - 130px)}
 body.content-page .twitter-follow-button,body.content-page .fb-like{display:none!important}body.content-page .logo{display:none!important}
 body.content-page .col-12.col-md-9>hr.solid{margin-top:8px}
+/* Keep every page-level heading on the same visual scale. The editor pages
+   use several legacy stylesheets, so the shared class intentionally wins. */
+body h1.wu-page-title{margin:0 0 8px!important;color:var(--wu-heading)!important;font-size:clamp(1.8rem,3vw,2.5rem)!important;font-weight:780!important;line-height:1.08!important;letter-spacing:-.045em!important}
+body h4.wu-page-subtitle{margin:0!important;color:var(--wu-link)!important;background:transparent!important;font-size:1rem!important;font-weight:650!important;line-height:1.5!important}
+body p.wu-page-subtitle{max-width:74ch;margin:0 0 1.5rem!important;color:#40564a!important;font-size:1.05rem!important;line-height:1.75!important}
 body footer{padding:28px max(18px,calc((100vw - 1120px)/2)) 0!important;background:#10281c!important;text-align:left}body .wu-footer-links{display:flex;flex-wrap:wrap;gap:8px 18px;max-width:1120px;margin:0 auto}body .wu-footer-links a{font-size:.88rem;text-decoration:none}body .wu-footer-links a:hover{text-decoration:underline}body .wu-footer-note{max-width:1120px;margin:22px auto 0;padding:16px 0;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.58);font-size:.8rem}
 /* Keep the rich editor centered even when Bootstrap or legacy main.css is
    loaded in a different order. */
