@@ -41,6 +41,11 @@ body .cse-branding-bottom,body .cse-branding-form,body .cse-branding-form form,b
 body.content-page .twitter-follow-button,body.content-page .fb-like{display:none!important}body.content-page .logo{display:none!important}
 body.content-page .col-12.col-md-9>hr.solid{margin-top:8px}
 body footer{padding:28px max(18px,calc((100vw - 1120px)/2)) 0!important;background:#10281c!important;text-align:left}body .wu-footer-links{display:flex;flex-wrap:wrap;gap:8px 18px;max-width:1120px;margin:0 auto}body .wu-footer-links a{font-size:.88rem;text-decoration:none}body .wu-footer-links a:hover{text-decoration:underline}body .wu-footer-note{max-width:1120px;margin:22px auto 0;padding:16px 0;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.58);font-size:.8rem}
+/* Keep the rich editor centered even when Bootstrap or legacy main.css is
+   loaded in a different order. */
+body.rich-editor-page>.container-fluid>.row:nth-of-type(2){display:grid!important;grid-template-columns:minmax(0,1fr);width:min(1120px,calc(100% - 32px))!important;margin:0 auto!important;padding:48px 0 72px}
+body.rich-editor-page>.container-fluid>.row:nth-of-type(2)>.col-6{display:none!important}
+body.rich-editor-page>.container-fluid>.row:nth-of-type(2)>.col-12{width:100%!important;max-width:none!important;float:none!important;padding:0!important}
 /* The alphabet guide uses legacy Bootstrap column markup in its source. Keep
    that page in normal flow so the shared footer cannot overlap its content. */
 body.alphabet-page{margin:0!important;padding:0!important;background:#fff}
