@@ -9,6 +9,7 @@
      */
     var originals = new WeakMap();
     var attributeOriginals = new WeakMap();
+    var textOriginals = new WeakMap();
 
     function pathName() {
         var path = window.location.pathname.replace(/\/+$/, '') || '/';
@@ -30,6 +31,14 @@
 
     function setText(element, urdu, locale) {
         setMarkup(element, urdu.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'), locale);
+    }
+
+    function setTextPreservingChildren(element, urdu, locale) {
+        if (!element) return;
+        var textNode = Array.prototype.find.call(element.childNodes, function (node) { return node.nodeType === 3; });
+        if (!textNode) return;
+        if (!textOriginals.has(element)) textOriginals.set(element, textNode.nodeValue);
+        textNode.nodeValue = locale === 'ur' ? urdu : textOriginals.get(element);
     }
 
     function sequence(selector, values, locale) {
@@ -137,6 +146,10 @@
     }
 
     function localizeEditorHelp(locale) {
+        setAttribute('.home-actions, .tool-actions, .keyboard-actions', 'aria-label', 'ایڈیٹر کے اعمال', locale);
+        setAttribute('.editor-chrome', 'aria-label', 'تحریر تبدیلی کی حالت اور ایڈیٹر کنٹرولز', locale);
+        setAttribute('.wu-header-ad', 'aria-label', 'اشتہار', locale);
+        one('.spinner-grow .sr-only', 'تحریر تبدیل ہو رہی ہے...', locale);
         if (pathName() === '/index.html' || pathName() === '/') {
             one('#UsageAlert', '<i class="fas fa-info-circle" aria-hidden="true"></i> رومن اردو لکھیں اور ہر لفظ تبدیل کرنے کے لیے Space دبائیں۔ متبادل دیکھنے کے لیے Backspace دو بار دبائیں۔', locale);
             one('.card-subtitle', 'اردو میں لکھیں — انگریزی اور اردو کے درمیان تبدیل کرنے کے لیے Ctrl+G دبائیں', locale);
@@ -193,6 +206,20 @@
             setAttribute('.spacebar[value="Backspace"]', 'value', 'بیک اسپیس', locale);
             setAttribute('.spacebar[value=" spacebar"]', 'value', 'اسپیس بار', locale);
         }
+    }
+
+    function localizeDynamicEditorTools(locale) {
+        var panel = document.querySelector('.editor-productivity');
+        if (!panel) return;
+        setAttribute('.editor-productivity', 'aria-label', 'لکھنے کے ٹولز اور مقامی مسودے کی حالت', locale);
+        setAttribute('.editor-quick-tools', 'aria-label', 'اردو رموزِ اوقاف اور صفائی کے ٹولز', locale);
+        one('.editor-quick-label', 'شامل کریں', locale);
+        one('.editor-productivity [data-save-status]', 'مسودے اسی آلے پر محفوظ رہتے ہیں', locale);
+        one('.editor-history-heading strong', 'حالیہ مسودے', locale);
+        one('.editor-history-empty', 'ابھی کوئی محفوظ مسودہ نہیں۔', locale);
+        var labels = document.querySelectorAll('.editor-find-panel label');
+        if (labels[0]) setTextPreservingChildren(labels[0], 'تلاش', locale);
+        if (labels[1]) setTextPreservingChildren(labels[1], 'اس سے تبدیل کریں', locale);
     }
 
     function localizeGuides(locale) {
@@ -330,10 +357,26 @@
         localizeEditorHelp(locale);
         localizeGuides(locale);
         localizeReferencePages(locale);
+        localizeDynamicEditorTools(locale);
     }
 
     window.WriteUrduContentLocale = { apply: apply };
     document.addEventListener('write-urdu:locale-change', function (event) { apply(event.detail && event.detail.locale || 'en'); });
+    if (window.MutationObserver && document.body) {
+        new MutationObserver(function (mutations) {
+            var panelAdded = mutations.some(function (mutation) {
+                return Array.prototype.some.call(mutation.addedNodes, function (node) {
+                    return node.nodeType === 1 && node.classList && node.classList.contains('editor-productivity');
+                });
+            });
+            if (panelAdded) {
+                window.setTimeout(function () {
+                    var locale = window.WriteUrduLocale && typeof window.WriteUrduLocale.get === 'function' ? window.WriteUrduLocale.get() : 'en';
+                    apply(locale);
+                }, 0);
+            }
+        }).observe(document.body, { childList: true, subtree: true });
+    }
     window.setTimeout(function () {
         var locale = window.WriteUrduLocale && typeof window.WriteUrduLocale.get === 'function' ? window.WriteUrduLocale.get() : 'en';
         apply(locale);

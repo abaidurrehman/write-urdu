@@ -245,6 +245,7 @@ test('language toggle switches the shared shell to Urdu and persists', async ({ 
   await expect(page.locator('h1')).toHaveText('آن لائن اردو لکھیں');
   await expect(page.getByRole('button', { name: 'متن کاپی کریں' })).toBeVisible();
   await expect(page.locator('#UsageAlert')).toContainText('رومن اردو لکھیں');
+  await expect(page.locator('.editor-quick-label')).toHaveText('شامل کریں');
   await expect(page.getByRole('button', { name: 'Switch to English' })).toBeVisible();
 
   await page.reload({ waitUntil: 'domcontentloaded' });
