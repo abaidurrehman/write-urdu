@@ -8,6 +8,7 @@
         { href: 'urdu-editor.html', label: 'Rich Text Editor' },
         { href: 'urdu-keyboard.html', label: 'Urdu Keyboard' },
         { href: 'urdu-alphabet.html', label: 'Urdu Alphabet' },
+        { href: 'write-urdu-documentation.html', label: 'Documentation' },
         { href: 'write-urdu-features.html', label: 'Features' },
         { href: 'english-urdu-typing-tutorial.html', label: 'Tutorials' }
     ];
@@ -42,6 +43,7 @@
             '<nav class="wu-footer-links" aria-label="Footer navigation">' +
                 '<a href="index.html">Write Urdu</a>' +
                 '<a href="urdu-faq.html">FAQ</a>' +
+                '<a href="write-urdu-documentation.html">Documentation</a>' +
                 '<a href="write-urdu-features.html">Features</a>' +
                 '<a href="urdu-editor-features.html">Editor formatting guide</a>' +
                 '<a href="english-urdu-typing-tutorial.html">Tutorials</a>' +

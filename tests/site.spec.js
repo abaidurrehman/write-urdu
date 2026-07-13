@@ -176,10 +176,10 @@ test('mobile menu and primary tools remain inside the viewport', async ({ page, 
 
 test('content pages retain readable typography and responsive embeds', async ({ page }) => {
   await blockNonVisualServices(page);
-  for (const route of ['/write-urdu-features.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-privacy.html']) {
+  for (const route of ['/write-urdu-features.html', '/write-urdu-documentation.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-privacy.html']) {
     await openFile(page, route);
     await expect(page.locator('body')).toHaveClass(/content-page/);
-    await expect(page.locator('.wu-footer-links a')).toHaveCount(10);
+    await expect(page.locator('.wu-footer-links a')).toHaveCount(11);
     const metrics = await page.evaluate(() => {
       const paragraph = document.querySelector('p');
       const style = paragraph ? getComputedStyle(paragraph) : null;
@@ -204,6 +204,11 @@ test('content pages retain readable typography and responsive embeds', async ({ 
     if (route === '/urdu-alphabet.html') {
       expect(metrics.footerTop, 'Urdu alphabet footer overlaps the heading').toBeGreaterThan(metrics.headingBottom);
       expect(metrics.tableRight, 'Urdu alphabet table exceeds the viewport').toBeLessThanOrEqual(page.viewportSize().width + 1);
+    }
+    if (route === '/write-urdu-documentation.html') {
+      await expect(page.locator('.docs-hero')).toBeVisible();
+      await expect(page.locator('.docs-card')).toHaveCount(6);
+      await expect(page.locator('.docs-faq details')).toHaveCount(4);
     }
   }
 });

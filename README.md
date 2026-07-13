@@ -39,6 +39,7 @@ cmd /c "set LIVE_TRANSLITERATION=1&&npx playwright test --grep transliterat"
 - `index.html`: basic Roman-Urdu editor
 - `urdu-editor.html`: TinyMCE rich-text editor
 - `urdu-keyboard.html`: direct Urdu keyboard and transliteration editor
+- `write-urdu-documentation.html`: visual guide to the editors, shortcuts, drafts, privacy and export workflows
 
 Obsolete prototype editor files have been removed; `urdu-editor.html` is the only supported rich-text editor.
 

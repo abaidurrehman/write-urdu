@@ -73,6 +73,12 @@ const table = alphabet.match(/<table\b[^>]*>[\s\S]*?<\/table>/i)[0];
 const letters = [...table.matchAll(/<td>\s*([^<\s]+)\s*<\/td>/gi)].map(match => match[1]).filter(value => /[\u0600-\u06ff]/.test(value));
 assert.strictEqual(new Set(letters).size, letters.length, 'Urdu alphabet table contains duplicate letter rows');
 
+const documentation = read('write-urdu-documentation.html');
+assert.match(documentation, /class=["']documentation-main["']/i, 'Documentation page is missing its main content region');
+assert.match(documentation, /class=["']docs-hero["']/i, 'Documentation page is missing its hero section');
+assert.match(documentation, /class=["']docs-faq["']/i, 'Documentation page is missing its accessible FAQ');
+assert.match(documentation, /href=["'](?:index\.html|urdu-editor\.html)["']/i, 'Documentation page is missing editor entry points');
+
 const sharedStyles = fs.readFileSync(path.join(root, 'css', 'site-header.css'), 'utf8');
 assert.match(sharedStyles, /--wu-text:|\.content-article|\[lang=["']ur["']\]/, 'Shared editorial typography is missing');
 assert.match(sharedStyles, /footer\{position:static!important|\.wu-footer-links|\.cse-branding-bottom/, 'Shared responsive content safeguards are missing');
