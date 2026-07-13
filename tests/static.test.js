@@ -55,7 +55,7 @@ for (const file of ['index.html', 'urdu-editor.html']) {
 }
 
 const editorTools = fs.readFileSync(path.join(root, 'js', 'editor-tools.js'), 'utf8');
-assert.match(editorTools, /write-urdu:draft:v1:|function countWords\(|navigator\.share|function normaliseSpacing\(/, 'Frontend writing tools are incomplete');
+assert.match(editorTools, /write-urdu:draft:v1:|write-urdu:history:v1:|data-import-file|function countWords\(|navigator\.share|function normaliseSpacing\(/, 'Frontend writing tools are incomplete');
 for (const file of ['index.html', 'urdu-editor.html', 'urdu-keyboard.html']) {
   const html = read(file);
   assert.match(html, /js\/editor-tools\.js/, `${file} does not load the shared writing tools`);
@@ -64,7 +64,12 @@ for (const file of ['index.html', 'urdu-editor.html', 'urdu-keyboard.html']) {
 }
 
 const alphabet = read('urdu-alphabet.html');
-const table = alphabet.match(/<table>[\s\S]*?<\/table>/i)[0];
+assert.match(alphabet, /<body[^>]*class=["']alphabet-page["']/i, 'Urdu alphabet page is missing its isolated layout class');
+assert.match(alphabet, /<main[^>]*class=["']alphabet-main["']/i, 'Urdu alphabet page is missing its normal-flow main region');
+assert.match(alphabet, /<caption>Common standalone Urdu characters/i, 'Urdu alphabet table is missing its accessible caption');
+assert.match(alphabet, /<th[^>]*scope=["']col["']/i, 'Urdu alphabet table headers must declare their scope');
+assert.match(alphabet, /<td>\s*ghain\s*<\/td>/i, 'Urdu alphabet table contains the corrected ghain name');
+const table = alphabet.match(/<table\b[^>]*>[\s\S]*?<\/table>/i)[0];
 const letters = [...table.matchAll(/<td>\s*([^<\s]+)\s*<\/td>/gi)].map(match => match[1]).filter(value => /[\u0600-\u06ff]/.test(value));
 assert.strictEqual(new Set(letters).size, letters.length, 'Urdu alphabet table contains duplicate letter rows');
 

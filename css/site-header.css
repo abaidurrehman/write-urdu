@@ -41,4 +41,23 @@ body .cse-branding-bottom,body .cse-branding-form,body .cse-branding-form form,b
 body.content-page .twitter-follow-button,body.content-page .fb-like{display:none!important}body.content-page .logo{display:none!important}
 body.content-page .col-12.col-md-9>hr.solid{margin-top:8px}
 body footer{padding:28px max(18px,calc((100vw - 1120px)/2)) 0!important;background:#10281c!important;text-align:left}body .wu-footer-links{display:flex;flex-wrap:wrap;gap:8px 18px;max-width:1120px;margin:0 auto}body .wu-footer-links a{font-size:.88rem;text-decoration:none}body .wu-footer-links a:hover{text-decoration:underline}body .wu-footer-note{max-width:1120px;margin:22px auto 0;padding:16px 0;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.58);font-size:.8rem}
+/* The alphabet guide uses legacy Bootstrap column markup in its source. Keep
+   that page in normal flow so the shared footer cannot overlap its content. */
+body.alphabet-page{margin:0!important;padding:0!important;background:#fff}
+body.alphabet-page>.container-fluid{display:block;width:100%;max-width:none!important;margin:0;padding:0}
+body.alphabet-page .alphabet-main{display:block;float:none!important;width:100%!important;max-width:none!important;margin:0!important;padding:0 24px 64px;box-sizing:border-box}
+body.alphabet-page .alphabet-intro{width:min(1120px,100%);margin:0 auto;padding:40px 0 0}
+body.alphabet-page .alphabet-intro .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:24px;margin:0}
+body.alphabet-page .alphabet-intro .col-sm{min-width:0;padding:0!important}
+body.alphabet-page .alphabet-intro h1{margin-top:0}
+body.alphabet-page .alphabet-main>.adsbygoogle{display:block;width:min(1120px,100%);margin:20px auto 0}
+body.alphabet-page .alphabet-main>hr.solid{width:min(1120px,100%);margin:24px auto}
+body.alphabet-page .alphabet-content{width:100%;max-width:860px;margin:0 auto}
+body.alphabet-page .alphabet-content h2{margin-top:0}
+body.alphabet-page .alphabet-table{margin-top:24px}
+body.alphabet-page .alphabet-table caption{padding:0 14px 10px;color:var(--wu-muted);font-size:.88rem;text-align:left;caption-side:top}
+body.alphabet-page .alphabet-table th:first-child{width:38%}
+body.alphabet-page .alphabet-table td:first-child{text-align:center}
+body.alphabet-page footer{clear:both}
 @media(max-width:767px){body{font-size:15px}body p,body li{font-size:.96rem}body .page-intro{font-size:1rem}body .content-article,body .legal-copy{width:100%}body table{font-size:.92rem}body th,body td{padding:9px 10px}}
+@media(max-width:767px){body.alphabet-page .alphabet-main{padding:0 16px 48px}body.alphabet-page .alphabet-intro{padding-top:28px}body.alphabet-page .alphabet-intro .row{grid-template-columns:1fr;gap:14px}body.alphabet-page .alphabet-content p.lead{font-size:.98rem}body.alphabet-page .alphabet-table{margin-top:20px}body.alphabet-page .alphabet-table caption{padding-right:10px;padding-left:10px}}

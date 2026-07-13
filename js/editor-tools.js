@@ -3,6 +3,8 @@
 
     var SAVE_DELAY = 650;
     var DRAFT_PREFIX = 'write-urdu:draft:v1:';
+    var HISTORY_PREFIX = 'write-urdu:history:v1:';
+    var MAX_HISTORY_ITEMS = 5;
 
     function notify(message, type) {
         if (window.WriteUrduUI && typeof window.WriteUrduUI.notify === 'function') {
@@ -53,6 +55,10 @@
             getContent: function () { return element.value || ''; },
             hasContent: function () { return Boolean((element.value || '').trim()); },
             setContent: function (content) {
+                element.value = String(content || '');
+                dispatchInput(element);
+            },
+            setPlainText: function (content) {
                 element.value = String(content || '');
                 dispatchInput(element);
             },
@@ -123,6 +129,11 @@
                 return Boolean((editor.getContent({ format: 'text' }) || '').trim() || editor.getBody().querySelector('img,table,hr'));
             },
             setContent: function (content) { editor.setContent(String(content || '')); },
+            setPlainText: function (content) {
+                var holder = document.createElement('div');
+                holder.textContent = String(content || '');
+                editor.setContent('<p>' + holder.innerHTML.replace(/\r?\n/g, '<br>') + '</p>');
+            },
             focus: function () { editor.focus(); },
             onChange: function (callback) { editor.on('input change undo redo SetContent', callback); },
             insertText: function (text) {
@@ -180,6 +191,8 @@
                 '</p>' +
                 '<div class="editor-tool-actions">' +
                     '<button type="button" class="editor-tool-button" data-action="find" aria-expanded="false">Find &amp; replace</button>' +
+                    '<button type="button" class="editor-tool-button" data-action="history" aria-expanded="false">Recent drafts</button>' +
+                    '<button type="button" class="editor-tool-button" data-action="import">Import text</button>' +
                     '<button type="button" class="editor-tool-button" data-action="focus" aria-pressed="false">Focus mode</button>' +
                 '</div>' +
             '</div>' +
@@ -194,12 +207,17 @@
                 '<button type="button" data-action="digits" title="Convert English numerals to Urdu numerals">123 → ۱۲۳</button>' +
                 '<button type="button" data-action="cleanup">Clean spacing</button>' +
             '</div>' +
-            '<form class="editor-find-panel" data-find-panel hidden>' +
+                '<form class="editor-find-panel" data-find-panel hidden>' +
                 '<label>Find<input type="text" name="find" autocomplete="off"></label>' +
                 '<label>Replace with<input type="text" name="replacement" autocomplete="off"></label>' +
                 '<button type="submit">Replace all</button>' +
                 '<button type="button" data-action="close-find">Cancel</button>' +
-            '</form>';
+            '</form>' +
+            '<input type="file" data-import-file accept=".txt,text/plain" hidden>' +
+            '<div class="editor-history-panel" data-history-panel hidden>' +
+                '<div class="editor-history-heading"><strong>Recent drafts</strong><button type="button" data-action="clear-history">Clear history</button></div>' +
+                '<div class="editor-history-list" data-history-list></div>' +
+            '</div>';
         if (kind === 'keyboard') root.querySelector('[data-insert-group]').hidden = true;
         return root;
     }
@@ -263,6 +281,7 @@
 
         var storage = getStorage();
         var storageKey = DRAFT_PREFIX + adapter.kind;
+        var historyKey = HISTORY_PREFIX + adapter.kind;
         var recovery = panel.querySelector('[data-draft-recovery]');
         var recoveryDescription = panel.querySelector('[data-draft-description]');
         var wordCount = panel.querySelector('[data-word-count]');
@@ -270,6 +289,11 @@
         var saveStatus = panel.querySelector('[data-save-status]');
         var findButton = panel.querySelector('[data-action="find"]');
         var findPanel = panel.querySelector('[data-find-panel]');
+        var historyButton = panel.querySelector('[data-action="history"]');
+        var historyPanel = panel.querySelector('[data-history-panel]');
+        var historyList = panel.querySelector('[data-history-list]');
+        var importButton = panel.querySelector('[data-action="import"]');
+        var importFile = panel.querySelector('[data-import-file]');
         var focusButton = panel.querySelector('[data-action="focus"]');
         var pendingDraft = null;
         var saveTimer;
@@ -283,6 +307,53 @@
             } catch (error) {
                 return null;
             }
+        }
+
+        function readHistory() {
+            if (!storage) return [];
+            try {
+                var value = storage.getItem(historyKey);
+                var items = value ? JSON.parse(value) : [];
+                return Array.isArray(items) ? items.filter(function (item) {
+                    return item && typeof item.content === 'string' && item.content.trim();
+                }).slice(0, MAX_HISTORY_ITEMS) : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function saveHistory(snapshot) {
+            if (!storage || !snapshot || !snapshot.content) return;
+            var items = readHistory().filter(function (item) {
+                return item.content !== snapshot.content;
+            });
+            items.unshift(snapshot);
+            storage.setItem(historyKey, JSON.stringify(items.slice(0, MAX_HISTORY_ITEMS)));
+        }
+
+        function historyPreview(text) {
+            var value = String(text || '').replace(/\s+/g, ' ').trim();
+            return value.length > 72 ? value.slice(0, 72) + '…' : value;
+        }
+
+        function renderHistory() {
+            historyList.textContent = '';
+            var items = readHistory();
+            if (!items.length) {
+                var empty = document.createElement('span');
+                empty.className = 'editor-history-empty';
+                empty.textContent = 'No saved drafts yet.';
+                historyList.appendChild(empty);
+                return;
+            }
+            items.forEach(function (item, index) {
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'editor-history-item';
+                button.setAttribute('data-history-index', String(index));
+                button.textContent = historyPreview(item.text || item.content) + ' · ' + formatSavedTime(item.savedAt);
+                historyList.appendChild(button);
+            });
         }
 
         function updateStats() {
@@ -308,6 +379,12 @@
                         text: adapter.getText(),
                         savedAt: savedAt
                     }));
+                    saveHistory({
+                        content: adapter.getContent(),
+                        text: adapter.getText(),
+                        savedAt: savedAt
+                    });
+                    renderHistory();
                     saveStatus.textContent = 'Saved on this device at ' + new Date(savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 } else {
                     storage.removeItem(storageKey);
@@ -346,6 +423,8 @@
         updateStats();
 
         pendingDraft = readDraft();
+        renderHistory();
+        if (!storage) historyButton.disabled = true;
         if (pendingDraft && pendingDraft.content && !adapter.hasContent()) {
             recoveryDescription.textContent = 'Saved ' + formatSavedTime(pendingDraft.savedAt) + '.';
             recovery.hidden = false;
@@ -373,6 +452,54 @@
             recovery.hidden = true;
             saveStatus.textContent = 'No local draft';
             notify('Local draft discarded.', 'success');
+        });
+
+        historyButton.addEventListener('click', function () {
+            var opening = historyPanel.hidden;
+            historyPanel.hidden = !opening;
+            historyButton.setAttribute('aria-expanded', String(opening));
+            if (opening) renderHistory();
+        });
+
+        historyList.addEventListener('click', function (event) {
+            var button = event.target.closest('[data-history-index]');
+            if (!button) return;
+            var item = readHistory()[Number(button.getAttribute('data-history-index'))];
+            if (!item) return;
+            pendingDraft = null;
+            recovery.hidden = true;
+            adapter.setContent(item.content);
+            historyPanel.hidden = true;
+            historyButton.setAttribute('aria-expanded', 'false');
+            adapter.focus();
+            notify('Recent draft restored.', 'success');
+        });
+
+        panel.querySelector('[data-action="clear-history"]').addEventListener('click', function () {
+            if (storage) storage.removeItem(historyKey);
+            renderHistory();
+            notify('Recent draft history cleared.', 'success');
+        });
+
+        importButton.addEventListener('click', function () {
+            importFile.click();
+        });
+
+        importFile.addEventListener('change', function () {
+            var file = importFile.files && importFile.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function () {
+                adapter.setPlainText(String(reader.result || ''));
+                adapter.focus();
+                importFile.value = '';
+                notify('Text file imported successfully.', 'success');
+            };
+            reader.onerror = function () {
+                importFile.value = '';
+                notify('Text file could not be imported.', 'error');
+            };
+            reader.readAsText(file, 'UTF-8');
         });
 
         panel.querySelectorAll('[data-insert]').forEach(function (button) {

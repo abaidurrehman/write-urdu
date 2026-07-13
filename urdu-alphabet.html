@@ -5,7 +5,7 @@
     <title>Urdu Alphabet Guide | Letters and Writing Direction</title>
     <meta name="Description" content="Explore common Urdu letters, their names, right-to-left writing direction and the Nastaliq style used for Urdu script.">
     <meta name="Keywords" content="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online" />
-    <meta http-equiv=" content-type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -32,32 +32,11 @@
         ga('send', 'pageview');
 
     </script>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th,
-        td {
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-    </style>
 <script src="site-header.js" defer></script>
 <link href="css/site-header.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
+<body class="alphabet-page">
     <div class="container-fluid">
 
         <nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -93,16 +72,8 @@
                 </ul>
             </div>
         </nav>
-        <div class="col-md-11">
-            <div style="float:left;width:250px">
-
-                <!-- Right panel -->
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286" data-ad-slot="3607727011" data-ad-format="auto"></ins>
-
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="container">
+        <main class="alphabet-main">
+            <div class="alphabet-intro">
                 <div class="row">
                     <div class="col-sm">
                         <h1>Urdu alphabet
@@ -113,7 +84,7 @@
                         </h4>
                     </div>
 
-                    <div class="col-sm" title="Write Urdu online" dir="rtl" style="font-family: 'Noto Nastaliq Urdu';text-align:right;">
+                    <div class="col-sm" title="Write Urdu online" lang="ur" dir="rtl" style="font-family: 'Noto Nastaliq Urdu';text-align:right;">
                         اردو ہے جس کا نام ہمیں جانتے ہیں داغؔ
                         <br> سارے جہاں میں دھوم ہماری زباں کی ہے
                     </div>
@@ -125,7 +96,7 @@
 
             <hr class="solid">
 
-            <div style="margin-top:20px;text-align:left;width:100%;display:inline-table;">
+            <article class="content-article alphabet-content">
                 <h2>Introduction to the Urdu alphabet</h2>
                 <p class="lead">
                     <a href="/" title="Open the Urdu transliteration editor">Urdu is written</a> in a Perso-Arabic
@@ -139,11 +110,15 @@
                 <p class="lead">Alphabet counts vary because some references count aspirated combinations, hamza and
                     positional forms differently. The chart below presents common standalone characters used in Urdu.</p>
 
-                <table>
-                    <tr>
-                        <th>The letters of the alphabet</th>
-                        <th>Name of the letter</th>
-                    </tr>
+                <table class="alphabet-table">
+                    <caption>Common standalone Urdu characters and their names</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Urdu character</th>
+                            <th scope="col">Common name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     <tr>
                         <td> آ</td>
                         <td> alif madd </td>
@@ -290,7 +265,7 @@
 
                     <tr>
                         <td> غ</td>
-                        <td> gain</td>
+                        <td> ghain</td>
 
                     </tr>
 
@@ -372,11 +347,12 @@
                         <td> baree ye</td>
 
                     </tr>
+                    </tbody>
                 </table>
 <br><br>
-            </div>
+            </article>
 
-        </div>
+        </main>
     </div>
     <footer>
         <div class="Footer-credits">

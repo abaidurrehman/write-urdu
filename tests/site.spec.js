@@ -73,6 +73,8 @@ test('frontend writing tools save, restore, edit and share a local draft', async
   await expect(editor).toHaveValue(/۱۲۳،$/);
   await expect(page.locator('[data-save-status]')).toContainText('Saved on this device', { timeout: 5000 });
   expect(await page.evaluate(() => Boolean(localStorage.getItem('write-urdu:draft:v1:basic')))).toBe(true);
+  await page.getByRole('button', { name: 'Recent drafts' }).click();
+  await expect(page.locator('[data-history-list] [data-history-index]')).toHaveCount(1);
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-draft-recovery]')).toBeVisible();
@@ -98,6 +100,13 @@ test('frontend writing tools save, restore, edit and share a local draft', async
   });
   await page.locator('[data-write-urdu-share]').click();
   await expect.poll(() => page.evaluate(() => window.__sharedUrdu && window.__sharedUrdu.text)).toContain('میرا زبان متن');
+
+  await page.locator('[data-import-file]').setInputFiles({
+    name: 'import.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('درآمد شدہ متن', 'utf8')
+  });
+  await expect(editor).toHaveValue('درآمد شدہ متن');
 });
 
 test('rich editor writing tools preserve rich content while transforming text', async ({ page, isMobile }) => {
@@ -174,15 +183,28 @@ test('content pages retain readable typography and responsive embeds', async ({ 
     const metrics = await page.evaluate(() => {
       const paragraph = document.querySelector('p');
       const style = paragraph ? getComputedStyle(paragraph) : null;
+      const heading = document.querySelector('h1');
+      const table = document.querySelector('table');
+      const footer = document.querySelector('footer');
+      const headingBox = heading ? heading.getBoundingClientRect() : null;
+      const tableBox = table ? table.getBoundingClientRect() : null;
+      const footerBox = footer ? footer.getBoundingClientRect() : null;
       return {
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         fontSize: style ? parseFloat(style.fontSize) : 0,
-        lineHeight: style ? parseFloat(style.lineHeight) : 0
+        lineHeight: style ? parseFloat(style.lineHeight) : 0,
+        headingBottom: headingBox ? headingBox.bottom : 0,
+        tableRight: tableBox ? tableBox.right : 0,
+        footerTop: footerBox ? footerBox.top : 0
       };
     });
     expect(metrics.overflow, `${route} has horizontal overflow`).toBeLessThanOrEqual(1);
     expect(metrics.fontSize).toBeGreaterThanOrEqual(14);
     expect(metrics.lineHeight).toBeGreaterThan(metrics.fontSize * 1.45);
+    if (route === '/urdu-alphabet.html') {
+      expect(metrics.footerTop, 'Urdu alphabet footer overlaps the heading').toBeGreaterThan(metrics.headingBottom);
+      expect(metrics.tableRight, 'Urdu alphabet table exceeds the viewport').toBeLessThanOrEqual(page.viewportSize().width + 1);
+    }
   }
 });
 
