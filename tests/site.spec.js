@@ -179,6 +179,7 @@ test('content pages retain readable typography and responsive embeds', async ({ 
   for (const route of ['/write-urdu-features.html', '/write-urdu-documentation.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-privacy.html']) {
     await openFile(page, route);
     await expect(page.locator('body')).toHaveClass(/content-page/);
+    await expect(page.locator('.wu-header-ad')).toHaveCount(1);
     await expect(page.locator('.wu-footer-links a')).toHaveCount(11);
     const metrics = await page.evaluate(() => {
       const paragraph = document.querySelector('p');

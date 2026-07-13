@@ -56,6 +56,30 @@
             '<p class="wu-footer-note">&copy; Write Urdu. Browser-based Urdu typing tools.</p>';
     }
 
+    function renderHeaderAd(header) {
+        if (!document.body.classList.contains('content-page') || document.querySelector('.wu-header-ad')) return;
+
+        var adRegion = document.createElement('aside');
+        adRegion.className = 'wu-header-ad';
+        adRegion.setAttribute('aria-label', 'Advertisement');
+        adRegion.innerHTML =
+            '<ins class="adsbygoogle"' +
+                ' style="display:block"' +
+                ' data-ad-client="ca-pub-4727847909946286"' +
+                ' data-ad-slot="8323789671"' +
+                ' data-ad-format="auto"' +
+                ' data-full-width-responsive="true"></ins>';
+        header.insertAdjacentElement('afterend', adRegion);
+    }
+
+    function loadAds() {
+        if (!document.querySelector('ins.adsbygoogle') || document.querySelector('script[src="js/ads.js"]')) return;
+        var ads = document.createElement('script');
+        ads.src = 'js/ads.js';
+        ads.defer = true;
+        document.head.appendChild(ads);
+    }
+
     function renderHeader() {
         var oldNav = document.querySelector('nav.navbar, nav');
         if (!oldNav) return;
@@ -68,13 +92,6 @@
         document.querySelectorAll('a[target="_blank"]').forEach(function (link) {
             link.rel = 'noopener noreferrer';
         });
-        if (document.querySelector('ins.adsbygoogle') && !document.querySelector('script[src="js/ads.js"]')) {
-            var ads = document.createElement('script');
-            ads.src = 'js/ads.js';
-            ads.defer = true;
-            document.head.appendChild(ads);
-        }
-
         var path = currentPath;
         var header = document.createElement('header');
         header.className = 'wu-site-header';
@@ -99,6 +116,8 @@
 
         var wrapper = oldNav.parentElement;
         oldNav.replaceWith(header);
+        renderHeaderAd(header);
+        loadAds();
         if (wrapper && wrapper.children.length === 1 && wrapper.firstElementChild === header) {
             wrapper.classList.add('wu-header-wrapper');
         }

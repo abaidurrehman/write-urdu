@@ -85,6 +85,11 @@ assert.match(sharedStyles, /footer\{position:static!important|\.wu-footer-links|
 
 const sharedHeader = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 assert.match(sharedHeader, /classList\.add\(['"]content-page['"]\)|function renderFooter\(\)/, 'Shared content-page enhancement is missing');
+assert.match(sharedHeader, /data-ad-slot["']?[:=]["']8323789671|data-ad-slot=\\?"8323789671/, 'Shared header ad slot is missing');
+assert.match(sharedHeader, /function renderHeaderAd\(|function loadAds\(/, 'Shared header ad placement is missing');
+const adsScript = fs.readFileSync(path.join(root, 'js', 'ads.js'), 'utf8');
+assert.match(adsScript, /adsbygoogle\.js\?client=ca-pub-4727847909946286/, 'AdSense loader must use the configured publisher client');
+assert.match(adsScript, /crossOrigin\s*=\s*["']anonymous["']/, 'AdSense loader must use anonymous CORS');
 const linkedPages = new Set([...sharedHeader.matchAll(/(?:href:\s*'|href=")([^'"]+\.html)/g)].map(match => match[1]));
 for (const file of htmlFiles) {
   assert(linkedPages.has(file), `${file} is not connected to the shared header or footer`);

@@ -17,7 +17,8 @@
 
     var script = document.createElement('script');
     script.async = true;
-    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4727847909946286';
+    script.crossOrigin = 'anonymous';
     script.setAttribute('data-write-urdu-ads', '');
     script.onload = initializeSlots;
     document.head.appendChild(script);
