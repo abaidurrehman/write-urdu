@@ -110,9 +110,9 @@
         header.className = 'wu-site-header';
         header.setAttribute('data-write-urdu-header', '');
         header.innerHTML =
-            '<div class="wu-header-inner">' +
+                '<div class="wu-header-inner">' +
                 '<a class="wu-brand" href="index.html" aria-label="Write Urdu home">' +
-                    '<span class="wu-brand-mark" lang="ur" dir="rtl">و</span>' +
+                    '<img class="wu-brand-mark" src="image/logo10.png" alt="" width="42" height="42">' +
                     '<span><strong>Write Urdu</strong><small>اردو لکھیے، آسانی سے</small></span>' +
                 '</a>' +
                 '<button class="wu-menu-toggle" type="button" aria-expanded="false" aria-controls="wu-primary-nav">' +
