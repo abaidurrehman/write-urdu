@@ -373,8 +373,8 @@
                         return '<a href="' + item.href + '" data-wu-i18n-key="nav.' + item.key + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
                     }).join('') +
                     '<a class="wu-feedback-link" href="write-urdu-feedback.html" data-wu-i18n-key="nav.feedback">Feedback</a>' +
-                    '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
                 '</nav>' +
+                '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
             '</div>';
 
         var wrapper = oldNav.parentElement;
