@@ -276,7 +276,21 @@
         if (!adapter || !adapter.mount || document.querySelector('.editor-productivity')) return;
 
         var panel = createToolsPanel(adapter.kind);
-        adapter.mount.insertAdjacentElement('afterend', panel);
+        var toolbar = document.querySelector('.home-actions, .tool-actions, .keyboard-actions');
+        var toolActions = panel.querySelector('.editor-tool-actions');
+        var findPanel = panel.querySelector('[data-find-panel]');
+        var historyPanel = panel.querySelector('[data-history-panel]');
+        if (toolbar) {
+            // Keep productivity actions beside Copy/Export/Share at the top;
+            // the panels remain associated with the same tool root so all
+            // draft, import and find/replace handlers continue to work.
+            toolbar.appendChild(toolActions);
+            toolbar.appendChild(findPanel);
+            toolbar.appendChild(historyPanel);
+            toolbar.insertAdjacentElement('afterend', panel);
+        } else {
+            adapter.mount.insertAdjacentElement('afterend', panel);
+        }
         markPageIntroduction();
 
         var storage = getStorage();
@@ -288,9 +302,7 @@
         var characterCount = panel.querySelector('[data-character-count]');
         var saveStatus = panel.querySelector('[data-save-status]');
         var findButton = panel.querySelector('[data-action="find"]');
-        var findPanel = panel.querySelector('[data-find-panel]');
         var historyButton = panel.querySelector('[data-action="history"]');
-        var historyPanel = panel.querySelector('[data-history-panel]');
         var historyList = panel.querySelector('[data-history-list]');
         var importButton = panel.querySelector('[data-action="import"]');
         var importFile = panel.querySelector('[data-import-file]');

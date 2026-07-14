@@ -109,6 +109,29 @@ test('frontend writing tools save, restore, edit and share a local draft', async
   await expect(editor).toHaveValue('درآمد شدہ متن');
 });
 
+test('productivity actions sit above the editor and recent drafts opens as a list', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload({ waitUntil: 'domcontentloaded' });
+
+  const editor = page.locator('#transliterateTextarea');
+  const historyButton = page.locator('[data-action="history"]');
+  await expect(historyButton).toBeVisible();
+  const editorBox = await editor.boundingBox();
+  const actionBox = await historyButton.boundingBox();
+  expect(actionBox.y, 'Recent drafts should be above the editor').toBeLessThan(editorBox.y);
+
+  await historyButton.click();
+  await expect(page.locator('[data-history-panel]')).toBeVisible();
+  await expect(page.locator('[data-history-list]')).toContainText('No saved drafts yet.');
+
+  await editor.fill('میرا محفوظ متن');
+  await expect(page.locator('[data-save-status]')).toContainText('Saved on this device', { timeout: 5000 });
+  await historyButton.click();
+  await expect(page.locator('[data-history-list] [data-history-index]')).toHaveCount(1);
+});
+
 test('rich editor writing tools preserve rich content while transforming text', async ({ page, isMobile }) => {
   test.skip(isMobile, 'One desktop check covers the rich editor adapter');
   await blockNonVisualServices(page);
@@ -236,7 +259,13 @@ test('language toggle switches the shared shell to Urdu and persists', async ({ 
   await openFile(page, '/index.html');
   await page.evaluate(() => localStorage.removeItem('write-urdu:locale:v1'));
   await page.reload({ waitUntil: 'domcontentloaded' });
-  if (isMobile) await page.locator('.wu-menu-toggle').click();
+  if (isMobile) {
+    await expect(page.locator('.wu-primary-nav')).not.toHaveClass(/is-open/);
+    await expect(page.locator('[data-wu-language-toggle]')).toBeVisible();
+    await expect(page.locator('.wu-primary-nav [data-wu-language-toggle]')).toHaveCount(0);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  }
   await page.getByRole('button', { name: 'Switch to Urdu' }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
@@ -268,7 +297,6 @@ test('documentation and help copy switch back to English cleanly', async ({ page
   await openFile(page, '/write-urdu-documentation.html');
   await expect(page.locator('#paths-title')).toHaveText('اپنا لکھنے کا طریقہ منتخب کریں');
   await expect(page.locator('.docs-faq summary').first()).toHaveText('سب سے پہلے کون سا ایڈیٹر استعمال کروں؟');
-  if (isMobile) await page.locator('.wu-menu-toggle').click();
   await page.getByRole('button', { name: 'Switch to English' }).click();
   await expect(page.locator('#paths-title')).toHaveText('Choose your writing path');
   await expect(page.locator('.docs-faq summary').first()).toHaveText('Which editor should I use first?');
