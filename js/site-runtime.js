@@ -345,9 +345,6 @@
             pageCanvas.getContext('2d').drawImage(canvas, 0, offset, canvas.width, currentHeight, 0, 0, canvas.width, currentHeight);
             if (page > 0) doc.addPage();
             doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', margin, margin, imageWidth, currentHeight * scale);
-            doc.setFontSize(8);
-            doc.setTextColor(23, 114, 69);
-            doc.text('Write Urdu · Write-Urdu.com', margin, pageHeight - 5);
             offset += currentHeight;
             page += 1;
         }

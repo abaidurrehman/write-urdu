@@ -398,19 +398,32 @@
 
         function DownloadAsImage() {
             var element = document.getElementById('transliterateTextarea');
-            var w = element.offsetWidth - 10;
-            var h = element.offsetHeight - 10;
             html2canvas((element), {
                 onrendered: function (canvas) {
-                    var ctx = canvas.getContext("2d");       // get 2D context of canvas
-
-                    ctx.textBaseline = "middle";                // vertically center the watermark text
-                    ctx.font = "12px sans-serif";            // set a font and size
-                    ctx.fillStyle = "green";                   // set a color for the text
-                    ctx.fillText("Generated using Write-Urdu.com", w - 300, h - 15);       // draw the text at some position (x, y)
-
-                    var textImage = canvas.toDataURL();
-                    downloadURI(textImage, document.getElementById('inputFileNameToSaveAs').value + ".png");
+                    var ctx = canvas.getContext("2d");
+                    var markSize = 22;
+                    var baseline = canvas.height - 17;
+                    var mark = new Image();
+                    function finish() {
+                        var textImage = canvas.toDataURL();
+                        downloadURI(textImage, document.getElementById('inputFileNameToSaveAs').value + ".png");
+                    }
+                    ctx.strokeStyle = "rgba(23, 114, 69, .18)";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(12, canvas.height - 42);
+                    ctx.lineTo(canvas.width - 12, canvas.height - 42);
+                    ctx.stroke();
+                    ctx.textBaseline = "middle";
+                    ctx.font = "600 11px Arial, sans-serif";
+                    ctx.fillStyle = "#6b7d73";
+                    ctx.fillText("Write Urdu · Write-Urdu.com", 42, baseline);
+                    mark.onload = function () {
+                        ctx.drawImage(mark, 12, canvas.height - 31, markSize, markSize);
+                        finish();
+                    };
+                    mark.onerror = finish;
+                    mark.src = new URL("image/logo10.png", document.baseURI).href;
                 }
             });
         }
@@ -470,7 +483,7 @@
                     var ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
 
                     doc.addImage(img, 'png', -1, 5, canvas.width * ratio, canvas.height * ratio, );
-                    doc.text("Generated using Write-Urdu.com", width - 200, height - 10);
+                    doc.text("Write Urdu · Write-Urdu.com", width - 65, height - 10);
                     doc.save(document.getElementById('inputFileNameToSaveAs').value + '.pdf');
                 }
             });
