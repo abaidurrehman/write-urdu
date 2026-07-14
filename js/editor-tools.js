@@ -280,6 +280,7 @@
         var toolActions = panel.querySelector('.editor-tool-actions');
         var findPanel = panel.querySelector('[data-find-panel]');
         var historyPanel = panel.querySelector('[data-history-panel]');
+        var historyList = panel.querySelector('[data-history-list]');
         if (toolbar) {
             // Keep productivity actions beside Copy/Export/Share at the top;
             // the panels remain associated with the same tool root so all
@@ -301,12 +302,15 @@
         var wordCount = panel.querySelector('[data-word-count]');
         var characterCount = panel.querySelector('[data-character-count]');
         var saveStatus = panel.querySelector('[data-save-status]');
-        var findButton = panel.querySelector('[data-action="find"]');
-        var historyButton = panel.querySelector('[data-action="history"]');
-        var historyList = panel.querySelector('[data-history-list]');
-        var importButton = panel.querySelector('[data-action="import"]');
+        // The primary productivity buttons may be moved into the page toolbar
+        // above the editor. Query them from their own container so the
+        // handlers work whether the controls are docked or in the fallback
+        // panel.
+        var findButton = toolActions.querySelector('[data-action="find"]');
+        var historyButton = toolActions.querySelector('[data-action="history"]');
+        var importButton = toolActions.querySelector('[data-action="import"]');
         var importFile = panel.querySelector('[data-import-file]');
-        var focusButton = panel.querySelector('[data-action="focus"]');
+        var focusButton = toolActions.querySelector('[data-action="focus"]');
         var pendingDraft = null;
         var saveTimer;
         var dirty = false;
@@ -487,7 +491,7 @@
             notify('Recent draft restored.', 'success');
         });
 
-        panel.querySelector('[data-action="clear-history"]').addEventListener('click', function () {
+        historyPanel.querySelector('[data-action="clear-history"]').addEventListener('click', function () {
             if (storage) storage.removeItem(historyKey);
             renderHistory();
             notify('Recent draft history cleared.', 'success');
@@ -538,7 +542,7 @@
             if (opening && window.matchMedia('(min-width: 768px)').matches) findPanel.elements.find.focus();
         });
 
-        panel.querySelector('[data-action="close-find"]').addEventListener('click', function () {
+        findPanel.querySelector('[data-action="close-find"]').addEventListener('click', function () {
             findPanel.hidden = true;
             findButton.setAttribute('aria-expanded', 'false');
         });
