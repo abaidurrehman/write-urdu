@@ -280,7 +280,17 @@
         var toolActions = panel.querySelector('.editor-tool-actions');
         var findPanel = panel.querySelector('[data-find-panel]');
         var historyPanel = panel.querySelector('[data-history-panel]');
-        var historyList = panel.querySelector('[data-history-list]');
+        // Resolve the list from its own panel before that panel is moved into
+        // the top toolbar. Rebuild it defensively if custom markup or a stale
+        // cached document omitted the list element.
+        if (!toolActions || !findPanel || !historyPanel) return;
+        var historyList = historyPanel.querySelector('[data-history-list]');
+        if (!historyList) {
+            historyList = document.createElement('div');
+            historyList.className = 'editor-history-list';
+            historyList.setAttribute('data-history-list', '');
+            historyPanel.appendChild(historyList);
+        }
         if (toolbar) {
             // Promote the discoverability controls beside Copy/Export/Share;
             // their references stay local so the existing handlers continue
