@@ -216,6 +216,9 @@
                                 <button type="button" id="PrintCurrentText" onclick="PrintText()">
                                     <i class="fas fa-print" aria-hidden="true"></i> Print
                                 </button>
+                                <button type="button" id="previewExport" onclick="PreviewCurrentText()">
+                                    <i class="far fa-eye" aria-hidden="true"></i> Preview
+                                </button>
                             </div>
                         </details>
                         <a class="btn btn-outline-editor" href="urdu-editor.html">
@@ -375,9 +378,11 @@
     async function DownloadAsImage() {
         var element = document.getElementById('transliterateTextarea');
         try {
-            var canvas = await WriteUrduExport.renderCanvas(element);
-            var filename = WriteUrduExport.safeFilename(document.getElementById('inputFileNameToSaveAs').value, 'write-urdu');
-            WriteUrduExport.downloadData(canvas.toDataURL("image/png"), filename + ".png");
+            await WriteUrduExport.withBusyButton(document.getElementById('exportImage'), async function () {
+                var canvas = await WriteUrduExport.renderCanvas(element);
+                var filename = WriteUrduExport.safeFilename(document.getElementById('inputFileNameToSaveAs').value, 'write-urdu');
+                WriteUrduExport.downloadData(canvas.toDataURL("image/png"), filename + ".png");
+            });
             WriteUrduUI.notify('PNG image exported successfully.', 'success');
         } catch (error) {
             console.error(error);
@@ -385,20 +390,29 @@
         }
     }
 
-    function DownloadAsWord() {
-        WriteUrduExport.downloadWord(
-            document.getElementById('transliterateTextarea'),
-            document.getElementById('inputFileNameToSaveAs').value,
-            false
-        );
-        WriteUrduUI.notify('Word document exported successfully.', 'success');
+    async function DownloadAsWord() {
+        try {
+            await WriteUrduExport.withBusyButton(document.getElementById('exportWord'), function () {
+                WriteUrduExport.downloadWord(
+                    document.getElementById('transliterateTextarea'),
+                    document.getElementById('inputFileNameToSaveAs').value,
+                    false
+                );
+            });
+            WriteUrduUI.notify('Word document exported successfully.', 'success');
+        } catch (error) {
+            console.error(error);
+            WriteUrduUI.notify('Word export failed. Please try again.', 'error');
+        }
     }
 
     async function DownloadAsPdf() {
         var element = document.getElementById('transliterateTextarea');
         try {
-            var canvas = await WriteUrduExport.renderCanvas(element);
-            await WriteUrduExport.downloadPdf(canvas, document.getElementById('inputFileNameToSaveAs').value);
+            await WriteUrduExport.withBusyButton(document.getElementById('exportPdf'), async function () {
+                var canvas = await WriteUrduExport.renderCanvas(element);
+                await WriteUrduExport.downloadPdf(canvas, document.getElementById('inputFileNameToSaveAs').value);
+            });
             WriteUrduUI.notify('PDF exported successfully.', 'success');
         } catch (error) {
             console.error(error);
@@ -415,11 +429,26 @@
             return;
         }
         try {
-            var canvas = await WriteUrduExport.renderCanvas(element);
-            WriteUrduExport.printCanvas(printWindow, canvas);
+            await WriteUrduExport.withBusyButton(document.getElementById('PrintCurrentText'), async function () {
+                var canvas = await WriteUrduExport.renderCanvas(element);
+                WriteUrduExport.printCanvas(printWindow, canvas);
+            });
         } catch (error) {
             printWindow.close();
             WriteUrduUI.notify('Print preparation failed.', 'error');
+        }
+    }
+
+    async function PreviewCurrentText() {
+        var element = document.getElementById('transliterateTextarea');
+        try {
+            await WriteUrduExport.withBusyButton(document.getElementById('previewExport'), async function () {
+                var canvas = await WriteUrduExport.renderCanvas(element);
+                WriteUrduExport.previewCanvas(canvas, 'Urdu export preview');
+            });
+        } catch (error) {
+            console.error(error);
+            WriteUrduUI.notify('Preview could not be prepared.', 'error');
         }
     }
 

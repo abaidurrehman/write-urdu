@@ -134,6 +134,39 @@ test('productivity actions sit above the editor and recent drafts opens as a lis
   await expect(page.locator('[data-history-list] [data-history-index]')).toHaveCount(1);
 });
 
+test('onboarding, draft actions and command palette are discoverable', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  await page.evaluate(() => localStorage.clear());
+  await page.reload({ waitUntil: 'domcontentloaded' });
+
+  const onboarding = page.locator('[data-editor-onboarding]');
+  await expect(onboarding).toBeVisible();
+  await onboarding.getByRole('button', { name: 'Got it' }).click();
+  await expect(onboarding).toBeHidden();
+
+  const shortcuts = page.locator('[data-action="shortcuts"]');
+  await shortcuts.click();
+  const palette = page.locator('[data-command-palette]');
+  await expect(palette).toBeVisible();
+  await palette.locator('[data-command-search]').fill('draft');
+  await expect(palette.locator('[data-command="save"]')).toBeVisible();
+  await expect(palette.locator('[data-command="find"]')).toBeHidden();
+  await page.keyboard.press('Escape');
+  await expect(palette).toBeHidden();
+
+  const editor = page.locator('#transliterateTextarea');
+  await editor.fill('میرا مقامی مسودہ');
+  await expect(page.locator('[data-save-status]')).toContainText('Saved on this device', { timeout: 5000 });
+  await page.locator('[data-action="history"]').click();
+  await expect(page.locator('[data-history-index]')).toHaveCount(1);
+  page.once('dialog', dialog => dialog.accept('My local draft'));
+  await page.locator('[data-history-rename-index="0"]').click();
+  await expect(page.locator('[data-history-index]')).toContainText('My local draft');
+  await page.locator('[data-history-delete-index="0"]').click();
+  await expect(page.locator('[data-history-index]')).toHaveCount(0);
+});
+
 test('rich editor writing tools preserve rich content while transforming text', async ({ page, isMobile }) => {
   test.skip(isMobile, 'One desktop check covers the rich editor adapter');
   await blockNonVisualServices(page);

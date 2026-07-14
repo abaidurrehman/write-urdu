@@ -49,6 +49,15 @@ Every supported page includes the language control in the shared header. English
 
 Long-form translations are maintained in `js/content-locale.js`. It localizes the documentation hub, editor help cards, feature and formatting guides, tutorials, FAQ, alphabet guide, sitemap, search, feedback and privacy headings without replacing the editor's live input or export markup.
 
+## Editor workspace features
+
+- First-use onboarding explains the shortest path to a converted Urdu word and can be dismissed per editor.
+- Drafts are saved locally, with recent-history counts, restore, rename, individual delete and clear-history controls.
+- Export actions show a busy state, support an on-screen preview, and retry the PDF dependency when a CDN is unavailable.
+- `Ctrl/Cmd+Shift+P` opens the command palette; `Ctrl/Cmd+S` saves a local draft and `Ctrl/Cmd+F` opens find and replace.
+- The editor action bar becomes sticky and compact on mobile screens.
+- The site exposes a manifest and service worker for an installable shell. Roman Urdu transliteration still needs the Google service when no local engine is available.
+
 ## Third-party integrations
 
 The former `GTM-M45V9FW` loader is intentionally disabled because its live container injected duplicate application controls. Remove the affected Custom HTML tag in Google Tag Manager before adding the container back.

@@ -1,0 +1,16 @@
+{
+  "name": "Write Urdu",
+  "short_name": "Write Urdu",
+  "description": "Roman Urdu typing, Urdu keyboard and rich-text editing in your browser.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7faf8",
+  "theme_color": "#0a2a1b",
+  "icons": [
+    { "src": "image/logo10.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "image/logo10.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

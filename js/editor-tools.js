@@ -4,6 +4,7 @@
     var SAVE_DELAY = 650;
     var DRAFT_PREFIX = 'write-urdu:draft:v1:';
     var HISTORY_PREFIX = 'write-urdu:history:v1:';
+    var ONBOARDING_PREFIX = 'write-urdu:onboarding:v1:';
     var MAX_HISTORY_ITEMS = 5;
 
     function notify(message, type) {
@@ -194,6 +195,7 @@
                     '<button type="button" class="editor-tool-button" data-action="history" aria-expanded="false">Recent drafts</button>' +
                     '<button type="button" class="editor-tool-button" data-action="import">Import text</button>' +
                     '<button type="button" class="editor-tool-button" data-action="focus" aria-pressed="false">Focus mode</button>' +
+                    '<button type="button" class="editor-tool-button" data-action="shortcuts" aria-expanded="false">Shortcuts</button>' +
                 '</div>' +
             '</div>' +
             '<div class="editor-quick-tools" role="toolbar" aria-label="Urdu punctuation and cleanup tools">' +
@@ -215,7 +217,7 @@
             '</form>' +
             '<input type="file" data-import-file accept=".txt,text/plain" hidden>' +
             '<div class="editor-history-panel" data-history-panel hidden>' +
-                '<div class="editor-history-heading"><strong>Recent drafts</strong><button type="button" data-action="clear-history">Clear history</button></div>' +
+                '<div class="editor-history-heading"><strong>Recent drafts <span data-history-count>(0)</span></strong><button type="button" data-action="clear-history">Clear history</button></div>' +
                 '<div class="editor-history-list" data-history-list></div>' +
             '</div>';
         if (kind === 'keyboard') root.querySelector('[data-insert-group]').hidden = true;
@@ -240,6 +242,69 @@
         } catch (error) {
             return new Date(timestamp).toLocaleString();
         }
+    }
+
+    function onboardingCopy(kind) {
+        if (kind === 'keyboard') {
+            return {
+                title: 'Start typing Urdu directly',
+                body: 'Choose a character from the on-screen keyboard, or type with your physical keyboard. Your work stays in this browser.',
+                tip: 'Tip: use Copy text when you are ready to paste your Urdu elsewhere.'
+            };
+        }
+        if (kind === 'rich') {
+            return {
+                title: 'Write and format your Urdu document',
+                body: 'Type Roman Urdu and press Space to convert words, then use the editor toolbar for headings, lists, fonts and alignment.',
+                tip: 'Tip: open Shortcuts for the fastest way to find tools and save a local draft.'
+            };
+        }
+        return {
+            title: 'Write Urdu in three simple steps',
+            body: 'Type Roman Urdu—for example, mera—then press Space to convert the word into Urdu script.',
+            tip: 'Tip: press Ctrl+G to switch between Roman Urdu and Urdu input.'
+        };
+    }
+
+    function createOnboarding(kind, storage) {
+        var card = document.createElement('aside');
+        var copy = onboardingCopy(kind);
+        var dismissed = false;
+        try { dismissed = storage && storage.getItem(ONBOARDING_PREFIX + kind) === 'dismissed'; } catch (error) { /* private browsing */ }
+        card.className = 'editor-onboarding';
+        card.setAttribute('data-editor-onboarding', kind);
+        card.hidden = dismissed;
+        card.innerHTML =
+            '<div class="editor-onboarding-icon" aria-hidden="true">✎</div>' +
+            '<div class="editor-onboarding-copy">' +
+                '<strong data-onboarding-title>' + copy.title + '</strong>' +
+                '<p data-onboarding-body>' + copy.body + '</p>' +
+                '<small data-onboarding-tip>' + copy.tip + '</small>' +
+            '</div>' +
+            '<button type="button" class="editor-onboarding-dismiss" data-action="onboarding-dismiss" aria-label="Got it">Got it</button>';
+        return card;
+    }
+
+    function createCommandPalette() {
+        var palette = document.createElement('div');
+        palette.className = 'editor-command-backdrop';
+        palette.hidden = true;
+        palette.setAttribute('data-command-palette', '');
+        palette.innerHTML =
+            '<section class="editor-command-dialog" role="dialog" aria-modal="true" aria-labelledby="writeUrduCommandTitle">' +
+                '<div class="editor-command-heading"><div><span class="editor-command-kicker">Write Urdu</span><h2 id="writeUrduCommandTitle">Shortcuts and tools</h2></div>' +
+                    '<button type="button" class="editor-command-close" data-command="close" aria-label="Close">×</button></div>' +
+                '<label class="editor-command-search"><span class="sr-only">Search commands</span><input type="search" data-command-search placeholder="Search commands" autocomplete="off"></label>' +
+                '<div class="editor-command-list" role="listbox">' +
+                    '<button type="button" data-command="save"><span>Ctrl/Cmd + S</span><strong>Save draft</strong></button>' +
+                    '<button type="button" data-command="find"><span>Ctrl/Cmd + F</span><strong>Find and replace</strong></button>' +
+                    '<button type="button" data-command="history"><span>Local history</span><strong>Recent drafts</strong></button>' +
+                    '<button type="button" data-command="import"><span>Text file</span><strong>Import text</strong></button>' +
+                    '<button type="button" data-command="focus"><span>Ctrl/Cmd + Shift + F</span><strong>Focus mode</strong></button>' +
+                '</div>' +
+                '<p class="editor-command-note">Your drafts are stored only on this device.</p>' +
+            '</section>';
+        return palette;
     }
 
     function markPageIntroduction() {
@@ -275,6 +340,9 @@
     function initialiseTools(adapter) {
         if (!adapter || !adapter.mount || document.querySelector('.editor-productivity')) return;
 
+        var storage = getStorage();
+        var onboarding = createOnboarding(adapter.kind, storage);
+        if (adapter.mount.parentElement) adapter.mount.parentElement.insertBefore(onboarding, adapter.mount);
         var panel = createToolsPanel(adapter.kind);
         var toolbar = document.querySelector('.home-actions, .tool-actions, .keyboard-actions');
         var toolActions = panel.querySelector('.editor-tool-actions');
@@ -302,9 +370,9 @@
         // Keep status, quick punctuation tools and recovery below the editor;
         // only the discoverability controls are promoted into the top bar.
         adapter.mount.insertAdjacentElement('afterend', panel);
+        document.body.classList.add('has-editor-tools');
         markPageIntroduction();
 
-        var storage = getStorage();
         var storageKey = DRAFT_PREFIX + adapter.kind;
         var historyKey = HISTORY_PREFIX + adapter.kind;
         var recovery = panel.querySelector('[data-draft-recovery]');
@@ -321,6 +389,9 @@
         var importButton = toolActions.querySelector('[data-action="import"]');
         var importFile = panel.querySelector('[data-import-file]');
         var focusButton = toolActions.querySelector('[data-action="focus"]');
+        var shortcutsButton = toolActions.querySelector('[data-action="shortcuts"]');
+        var commandPalette = createCommandPalette();
+        document.body.appendChild(commandPalette);
         var pendingDraft = null;
         var saveTimer;
         var dirty = false;
@@ -365,6 +436,8 @@
         function renderHistory() {
             historyList.textContent = '';
             var items = readHistory();
+            var historyCount = historyPanel.querySelector('[data-history-count]');
+            if (historyCount) historyCount.textContent = '(' + items.length + ')';
             if (!items.length) {
                 var empty = document.createElement('span');
                 empty.className = 'editor-history-empty';
@@ -373,12 +446,28 @@
                 return;
             }
             items.forEach(function (item, index) {
-                var button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'editor-history-item';
-                button.setAttribute('data-history-index', String(index));
-                button.textContent = historyPreview(item.text || item.content) + ' · ' + formatSavedTime(item.savedAt);
-                historyList.appendChild(button);
+                var row = document.createElement('div');
+                var restore = document.createElement('button');
+                var rename = document.createElement('button');
+                var remove = document.createElement('button');
+                var title = item.title || historyPreview(item.text || item.content);
+                row.className = 'editor-history-item';
+                restore.type = 'button';
+                restore.className = 'editor-history-restore';
+                restore.setAttribute('data-history-index', String(index));
+                restore.textContent = title + ' · ' + formatSavedTime(item.savedAt);
+                rename.type = 'button';
+                rename.className = 'editor-history-action';
+                rename.setAttribute('data-history-rename-index', String(index));
+                rename.textContent = 'Rename';
+                remove.type = 'button';
+                remove.className = 'editor-history-action editor-history-delete';
+                remove.setAttribute('data-history-delete-index', String(index));
+                remove.textContent = 'Delete';
+                row.appendChild(restore);
+                row.appendChild(rename);
+                row.appendChild(remove);
+                historyList.appendChild(row);
             });
         }
 
@@ -480,6 +569,11 @@
             notify('Local draft discarded.', 'success');
         });
 
+        onboarding.querySelector('[data-action="onboarding-dismiss"]').addEventListener('click', function () {
+            onboarding.hidden = true;
+            if (storage) storage.setItem(ONBOARDING_PREFIX + adapter.kind, 'dismissed');
+        });
+
         historyButton.addEventListener('click', function () {
             var opening = historyPanel.hidden;
             historyPanel.hidden = !opening;
@@ -488,6 +582,30 @@
         });
 
         historyList.addEventListener('click', function (event) {
+            var deleteButton = event.target.closest('[data-history-delete-index]');
+            if (deleteButton) {
+                var deleteIndex = Number(deleteButton.getAttribute('data-history-delete-index'));
+                var deleteItems = readHistory();
+                if (!deleteItems[deleteIndex]) return;
+                deleteItems.splice(deleteIndex, 1);
+                if (storage) storage.setItem(historyKey, JSON.stringify(deleteItems));
+                renderHistory();
+                notify('Draft deleted from local history.', 'success');
+                return;
+            }
+            var renameButton = event.target.closest('[data-history-rename-index]');
+            if (renameButton) {
+                var renameIndex = Number(renameButton.getAttribute('data-history-rename-index'));
+                var renameItems = readHistory();
+                if (!renameItems[renameIndex] || !storage) return;
+                var proposedTitle = window.prompt('Name this draft', renameItems[renameIndex].title || historyPreview(renameItems[renameIndex].text || renameItems[renameIndex].content));
+                if (proposedTitle === null) return;
+                renameItems[renameIndex].title = String(proposedTitle).trim().slice(0, 60) || 'Untitled draft';
+                storage.setItem(historyKey, JSON.stringify(renameItems));
+                renderHistory();
+                notify('Draft name updated.', 'success');
+                return;
+            }
             var button = event.target.closest('[data-history-index]');
             if (!button) return;
             var item = readHistory()[Number(button.getAttribute('data-history-index'))];
@@ -502,6 +620,7 @@
         });
 
         historyPanel.querySelector('[data-action="clear-history"]').addEventListener('click', function () {
+            if (storage && readHistory().length && !window.confirm('Clear all recent drafts from this device?')) return;
             if (storage) storage.removeItem(historyKey);
             renderHistory();
             notify('Recent draft history cleared.', 'success');
@@ -572,8 +691,68 @@
             setFocusMode(!document.body.classList.contains('write-urdu-focus'));
         });
 
+        function closeCommandPalette() {
+            commandPalette.hidden = true;
+            if (shortcutsButton) shortcutsButton.setAttribute('aria-expanded', 'false');
+        }
+
+        function openCommandPalette() {
+            commandPalette.hidden = false;
+            if (shortcutsButton) shortcutsButton.setAttribute('aria-expanded', 'true');
+            var search = commandPalette.querySelector('[data-command-search]');
+            if (search) {
+                search.value = '';
+                commandPalette.querySelectorAll('[data-command]').forEach(function (item) { item.hidden = item.getAttribute('data-command') === 'close'; });
+                window.setTimeout(function () { search.focus(); }, 0);
+            }
+        }
+
+        if (shortcutsButton) shortcutsButton.addEventListener('click', function () {
+            if (commandPalette.hidden) openCommandPalette();
+            else closeCommandPalette();
+        });
+
+        commandPalette.addEventListener('click', function (event) {
+            if (event.target === commandPalette) {
+                closeCommandPalette();
+                return;
+            }
+            var command = event.target.closest('[data-command]');
+            if (!command) return;
+            var action = command.getAttribute('data-command');
+            if (action === 'close') closeCommandPalette();
+            if (action === 'save') { writeDraft(); notify('Draft saved on this device.', 'success'); closeCommandPalette(); }
+            if (action === 'find') { closeCommandPalette(); findButton.click(); }
+            if (action === 'history') { closeCommandPalette(); historyButton.click(); }
+            if (action === 'import') { closeCommandPalette(); importButton.click(); }
+            if (action === 'focus') { closeCommandPalette(); setFocusMode(!document.body.classList.contains('write-urdu-focus')); }
+        });
+
+        var commandSearch = commandPalette.querySelector('[data-command-search]');
+        if (commandSearch) commandSearch.addEventListener('input', function () {
+            var query = commandSearch.value.toLowerCase().trim();
+            commandPalette.querySelectorAll('.editor-command-list [data-command]').forEach(function (item) {
+                item.hidden = Boolean(query) && item.textContent.toLowerCase().indexOf(query) === -1;
+            });
+        });
+
         document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape' && document.body.classList.contains('write-urdu-focus')) setFocusMode(false);
+            var modifier = event.ctrlKey || event.metaKey;
+            var key = event.key.toLowerCase();
+            if (modifier && event.shiftKey && key === 'p') {
+                event.preventDefault();
+                if (commandPalette.hidden) openCommandPalette(); else closeCommandPalette();
+            } else if (modifier && key === 's') {
+                event.preventDefault();
+                writeDraft();
+                notify('Draft saved on this device.', 'success');
+            } else if (modifier && key === 'f' && !event.shiftKey) {
+                event.preventDefault();
+                findButton.click();
+            } else if (event.key === 'Escape') {
+                if (!commandPalette.hidden) closeCommandPalette();
+                if (document.body.classList.contains('write-urdu-focus')) setFocusMode(false);
+            }
         });
 
         document.querySelectorAll('[data-write-urdu-share]').forEach(function (button) {

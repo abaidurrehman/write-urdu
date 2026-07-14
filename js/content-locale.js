@@ -215,11 +215,24 @@
         setAttribute('.editor-quick-tools', 'aria-label', 'اردو رموزِ اوقاف اور صفائی کے ٹولز', locale);
         one('.editor-quick-label', 'شامل کریں', locale);
         one('.editor-productivity [data-save-status]', 'مسودے اسی آلے پر محفوظ رہتے ہیں', locale);
-        one('.editor-history-heading strong', 'حالیہ مسودے', locale);
+        var historyHeading = document.querySelector('.editor-history-heading strong');
+        if (historyHeading) setTextPreservingChildren(historyHeading, 'حالیہ مسودے', locale);
         one('.editor-history-empty', 'ابھی کوئی محفوظ مسودہ نہیں۔', locale);
         var labels = document.querySelectorAll('.editor-find-panel label');
         if (labels[0]) setTextPreservingChildren(labels[0], 'تلاش', locale);
         if (labels[1]) setTextPreservingChildren(labels[1], 'اس سے تبدیل کریں', locale);
+        var onboardingKind = document.querySelector('[data-editor-onboarding]');
+        if (onboardingKind) {
+            var kind = onboardingKind.getAttribute('data-editor-onboarding');
+            one('[data-onboarding-title]', kind === 'keyboard' ? 'براہِ راست اردو لکھیں' : kind === 'rich' ? 'اپنی اردو دستاویز لکھیں اور فارمیٹ کریں' : 'تین آسان مرحلوں میں اردو لکھیں', locale);
+            one('[data-onboarding-body]', kind === 'keyboard' ? 'آن اسکرین کی بورڈ سے حرف منتخب کریں یا اپنے فزیکل کی بورڈ سے براہِ راست لکھیں۔ آپ کا کام اسی براؤزر میں رہتا ہے۔' : kind === 'rich' ? 'رومن اردو لکھیں اور الفاظ تبدیل کرنے کے لیے Space دبائیں، پھر عنوانات، فہرست، فونٹ اور ترتیب کے لیے ایڈیٹر استعمال کریں۔' : 'رومن اردو لکھیں—مثلاً mera—اور لفظ کو اردو رسم الخط میں تبدیل کرنے کے لیے Space دبائیں۔', locale);
+            one('[data-onboarding-tip]', kind === 'keyboard' ? 'مشورہ: اردو متن دوسری جگہ پیسٹ کرنے کے لیے متن کاپی کریں۔' : 'مشورہ: ٹولز اور مقامی مسودہ تیزی سے استعمال کرنے کے لیے شارٹ کٹس کھولیں۔', locale);
+        }
+        setAttribute('[data-onboarding-dismiss]', 'aria-label', 'رہنے دیں', locale);
+        one('.editor-command-heading h2', 'شارٹ کٹس اور ٹولز', locale);
+        one('.editor-command-note', 'آپ کے مسودے صرف اسی آلے پر محفوظ ہوتے ہیں۔', locale);
+        setAttribute('[data-command-search]', 'placeholder', 'کمانڈز تلاش کریں', locale);
+        sequence('.editor-command-list strong', ['مسودہ محفوظ کریں', 'تلاش اور تبدیلی', 'حالیہ مسودے', 'متن درآمد کریں', 'فوکس موڈ'], locale);
     }
 
     function localizeGuides(locale) {

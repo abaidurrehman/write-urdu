@@ -220,6 +220,40 @@
         link.remove();
     }
 
+    function withBusyButton(button, task) {
+        if (!button || button.disabled) return Promise.resolve(false);
+        var original = button.innerHTML;
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.classList.add('is-exporting');
+        button.innerHTML = '<span aria-hidden="true">…</span> Working…';
+        return Promise.resolve().then(task).finally(function () {
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+            button.classList.remove('is-exporting');
+            button.innerHTML = original;
+        });
+    }
+
+    function previewCanvas(canvas, title) {
+        var existing = document.querySelector('[data-export-preview]');
+        if (existing) existing.remove();
+        var overlay = document.createElement('div');
+        overlay.className = 'wu-export-preview';
+        overlay.setAttribute('data-export-preview', '');
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', title || 'Export preview');
+        overlay.innerHTML = '<div class="wu-export-preview-card"><div class="wu-export-preview-heading"><strong>' +
+            (title || 'Export preview') + '</strong><button type="button" data-preview-close aria-label="Close">×</button></div>' +
+            '<div class="wu-export-preview-body"><img alt="Urdu export preview"></div></div>';
+        overlay.querySelector('img').src = canvas.toDataURL('image/png');
+        function close() { overlay.remove(); }
+        overlay.addEventListener('click', function (event) { if (event.target === overlay || event.target.closest('[data-preview-close]')) close(); });
+        document.body.appendChild(overlay);
+        overlay.querySelector('[data-preview-close]').focus();
+    }
+
     function downloadWord(source, filename, richText) {
         var body = richText ? source.innerHTML : String(source.value || source.textContent || '')
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, '<br>');
@@ -347,6 +381,8 @@
     window.WriteUrduExport = {
         renderCanvas: renderCanvas,
         downloadData: downloadData,
+        withBusyButton: withBusyButton,
+        previewCanvas: previewCanvas,
         downloadWord: downloadWord,
         downloadPdf: downloadPdf,
         printCanvas: printCanvas,

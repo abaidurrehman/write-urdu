@@ -49,6 +49,11 @@ assert.match(mainScript, /new Blob\(\[['"]\\ufeff['"],\s*textToSave\].*charset=u
 const runtime = fs.readFileSync(path.join(root, 'js', 'site-runtime.js'), 'utf8');
 assert.match(runtime, /padding:\s*['"]64px 58px 34px['"]|function renderCanvas\(|function downloadPdf\(/, 'Shared padded export rendering is missing');
 assert.match(runtime, /function ensurePdfDependency\(|cdn\.jsdelivr\.net\/npm\/jspdf/, 'PDF export retry loader is missing');
+assert.ok(fs.existsSync(path.join(root, 'manifest.webmanifest')), 'Installable app manifest is missing');
+assert.ok(fs.existsSync(path.join(root, 'sw.js')), 'Offline service worker is missing');
+const manifest = read('manifest.webmanifest');
+assert.match(manifest, /"start_url"\s*:\s*"\.\/index\.html"/, 'PWA manifest start URL is missing');
+assert.match(fs.readFileSync(path.join(root, 'sw.js'), 'utf8'), /CACHE_NAME|addEventListener\(['"]fetch['"]/, 'Offline shell service worker is incomplete');
 for (const file of ['index.html', 'urdu-editor.html']) {
   const html = read(file);
   assert.match(html, /WriteUrduExport\.renderCanvas/, `${file} does not use the shared export renderer`);
@@ -90,6 +95,7 @@ assert.match(sharedStyles, /footer\{position:static!important|\.wu-footer-links|
 const sharedHeader = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 assert.match(sharedHeader, /classList\.add\(['"]content-page['"]\)|function renderFooter\(\)/, 'Shared content-page enhancement is missing');
 assert.match(sharedHeader, /data-ad-slot["']?[:=]["']8323789671|data-ad-slot=\\?"8323789671/, 'Shared header ad slot is missing');
+assert.match(sharedHeader, /setupProgressiveWebApp|serviceWorker\.register/, 'Shared PWA registration is missing');
 assert.match(sharedHeader, /function renderHeaderAd\(|function loadAds\(/, 'Shared header ad placement is missing');
 assert.match(sharedHeader, /function normalizePageTitle\(/, 'Shared page-title normalization is missing');
 assert.match(sharedHeader, /write-urdu:locale:v1/, 'Shared locale preference storage is missing');

@@ -3,6 +3,7 @@
 
     var LOCALE_KEY = 'write-urdu:locale:v1';
     var currentLocale = readLocale();
+    var deferredInstallPrompt = null;
 
     var links = [
         { href: 'index.html', match: ['/', '/index.html'], key: 'home', label: 'Write Urdu' },
@@ -44,7 +45,8 @@
                 'No saved drafts yet.': 'No saved drafts yet.', 'Find & replace': 'Find & replace', 'Focus mode': 'Focus mode',
                 'Insert Urdu comma': 'Insert Urdu comma', 'Enter the text you want to find.': 'Enter the text you want to find.',
                 'Replace all': 'Replace all', Discard: 'Discard', 'Import text': 'Import text', 'Clean spacing': 'Clean spacing',
-                Cancel: 'Cancel', Close: 'Close', 'Exit focus': 'Exit focus', 'Convert English numerals to Urdu numerals': 'Convert English numerals to Urdu numerals',
+                 Cancel: 'Cancel', Close: 'Close', 'Got it': 'Got it', 'Exit focus': 'Exit focus', 'Install app': 'Install app', Rename: 'Rename', Delete: 'Delete', Preview: 'Preview', Shortcuts: 'Shortcuts', 'Keyboard shortcuts': 'Keyboard shortcuts',
+                 'Convert English numerals to Urdu numerals': 'Convert English numerals to Urdu numerals',
                 'Insert Urdu full stop': 'Insert Urdu full stop', 'Insert Urdu question mark': 'Insert Urdu question mark',
                 'Insert Urdu semicolon': 'Insert Urdu semicolon'
             }
@@ -78,7 +80,7 @@
                 'No saved drafts yet.': 'ابھی کوئی محفوظ مسودہ نہیں۔', 'Find & replace': 'تلاش اور تبدیلی', 'Focus mode': 'فوکس موڈ',
                 'Insert Urdu comma': 'اردو کاما داخل کریں', 'Enter the text you want to find.': 'تلاش کے لیے متن درج کریں۔',
                 'Replace all': 'سب تبدیل کریں', Discard: 'رد کریں', 'Import text': 'متن درآمد کریں', 'Clean spacing': 'فاصلہ درست کریں',
-                Cancel: 'منسوخ کریں', Close: 'بند کریں', 'Exit focus': 'فوکس سے باہر نکلیں', 'Convert English numerals to Urdu numerals': 'انگریزی اعداد کو اردو اعداد میں تبدیل کریں',
+                 Cancel: 'منسوخ کریں', Close: 'بند کریں', 'Got it': 'سمجھ گیا', 'Exit focus': 'فوکس سے باہر نکلیں', 'Install app': 'ایپ انسٹال کریں', Rename: 'نام بدلیں', Delete: 'حذف کریں', Preview: 'پیش نظارہ', Shortcuts: 'شارٹ کٹس', 'Keyboard shortcuts': 'کی بورڈ شارٹ کٹس', 'Convert English numerals to Urdu numerals': 'انگریزی اعداد کو اردو اعداد میں تبدیل کریں',
                 'Insert Urdu full stop': 'اردو فل اسٹاپ داخل کریں', 'Insert Urdu question mark': 'اردو سوالیہ نشان داخل کریں',
                 'Insert Urdu semicolon': 'اردو سیمی کولن داخل کریں'
             }
@@ -190,6 +192,46 @@
         script.src = 'js/content-locale.js';
         script.defer = true;
         document.head.appendChild(script);
+    }
+
+    function setupProgressiveWebApp() {
+        if (!document.querySelector('link[rel="manifest"]')) {
+            var manifest = document.createElement('link');
+            manifest.rel = 'manifest';
+            manifest.href = 'manifest.webmanifest';
+            document.head.appendChild(manifest);
+        }
+        if (!document.querySelector('meta[name="theme-color"]')) {
+            var theme = document.createElement('meta');
+            theme.name = 'theme-color';
+            theme.content = '#0a2a1b';
+            document.head.appendChild(theme);
+        }
+        if (window.location.protocol !== 'file:' && 'serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {
+                document.body.classList.add('pwa-unavailable');
+            });
+        }
+        window.addEventListener('beforeinstallprompt', function (event) {
+            event.preventDefault();
+            deferredInstallPrompt = event;
+            var button = document.querySelector('[data-wu-install]');
+            if (button) button.hidden = false;
+        });
+        window.addEventListener('appinstalled', function () {
+            deferredInstallPrompt = null;
+            var button = document.querySelector('[data-wu-install]');
+            if (button) button.hidden = true;
+        });
+        document.addEventListener('click', function (event) {
+            var button = event.target.closest('[data-wu-install]');
+            if (!button || !deferredInstallPrompt) return;
+            deferredInstallPrompt.prompt();
+            deferredInstallPrompt.userChoice.finally(function () {
+                deferredInstallPrompt = null;
+                button.hidden = true;
+            });
+        });
     }
 
     function normalizePageTitle() {
@@ -374,6 +416,7 @@
                     }).join('') +
                     '<a class="wu-feedback-link" href="write-urdu-feedback.html" data-wu-i18n-key="nav.feedback">Feedback</a>' +
                 '</nav>' +
+                '<button class="wu-install-toggle" type="button" data-wu-install hidden>Install app</button>' +
                 '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
             '</div>';
 
@@ -385,6 +428,7 @@
         renderHeaderAd(header);
         loadAds();
         loadContentLocale();
+        setupProgressiveWebApp();
         normalizePageTitle();
         renderFooter();
         applyLocale();
