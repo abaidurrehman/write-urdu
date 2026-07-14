@@ -1,0 +1,115 @@
+/* Focused layout for the FAQ page. The legacy FAQ used floated Bootstrap
+   columns, which pushed the content off-screen once the shared header loaded. */
+body.faq-page {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(circle at 8% 12%, rgba(204, 239, 219, .7), transparent 28rem),
+        linear-gradient(180deg, #f6fbf8 0, #fff 34rem);
+    color: #263a30;
+}
+
+body.faq-page .faq-main {
+    width: min(1120px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: clamp(34px, 6vw, 76px) 0 88px;
+}
+
+body.faq-page .faq-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(260px, .88fr);
+    gap: clamp(26px, 6vw, 76px);
+    align-items: center;
+    padding: clamp(28px, 5vw, 58px);
+    border: 1px solid rgba(22, 116, 72, .15);
+    border-radius: 28px;
+    background: linear-gradient(135deg, #e5f5eb 0, #f9fcfa 62%, #edf8f1 100%);
+    box-shadow: 0 22px 62px rgba(20, 71, 44, .1);
+}
+
+body.faq-page .faq-eyebrow {
+    margin: 0 0 12px;
+    color: #167448;
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .15em;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+body.faq-page .faq-hero h1,
+body.faq-page .faq-section-heading h2,
+body.faq-page .faq-next-step h2 {
+    margin: 0;
+    color: #12271d;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-weight: 800;
+    letter-spacing: -.045em;
+    line-height: 1.08;
+}
+
+body.faq-page .faq-hero h1 { font-size: clamp(2.35rem, 5.6vw, 4.8rem); }
+body.faq-page .faq-lede { max-width: 56ch; margin: 20px 0 0; color: #3e5d4d; font-size: clamp(1rem, 1.7vw, 1.15rem); line-height: 1.72; }
+body.faq-page .faq-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+body.faq-page .faq-button { display: inline-flex; align-items: center; justify-content: center; min-height: 43px; padding: 10px 16px; border: 1px solid transparent; border-radius: 11px; background: #0a2d1d; color: #fff!important; font-size: .9rem; font-weight: 750; text-decoration: none!important; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
+body.faq-page .faq-button:hover { background: #167448; box-shadow: 0 9px 20px rgba(10, 45, 29, .18); color: #fff!important; transform: translateY(-2px); }
+body.faq-page .faq-button-light { border-color: rgba(19, 43, 32, .2); background: rgba(255, 255, 255, .68); color: #123c27!important; }
+body.faq-page .faq-button-light:hover { background: #fff; color: #123c27!important; }
+body.faq-page .faq-button span { margin-left: 8px; font-size: 1.1em; }
+body.faq-page .faq-hero-script { padding: 25px 20px; border: 1px solid rgba(22, 116, 72, .16); border-radius: 20px; background: rgba(255, 255, 255, .72); box-shadow: 0 15px 32px rgba(19, 66, 42, .08); color: #0a2d1d; font-family: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif; font-size: clamp(1.45rem, 3vw, 2.2rem); line-height: 2.15; text-align: right; }
+
+body.faq-page .faq-layout { display: grid; grid-template-columns: minmax(230px, .34fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 68px); align-items: start; margin-top: clamp(44px, 7vw, 78px); }
+body.faq-page .faq-sidebar { display: grid; gap: 14px; }
+body.faq-page .faq-search-card { padding: 22px; border: 1px solid #d6e6dc; border-radius: 17px; background: rgba(255, 255, 255, .86); box-shadow: 0 12px 30px rgba(21, 64, 41, .06); }
+body.faq-page .faq-search-card h2 { margin: 0; color: #12271d; font-size: 1.2rem; letter-spacing: -.02em; }
+body.faq-page .faq-search-card p { margin: 8px 0 17px; color: #607269; font-size: .9rem; line-height: 1.6; }
+body.faq-page .faq-search-card label { display: block; margin-bottom: 7px; color: #40564a; font-size: .78rem; font-weight: 750; }
+body.faq-page .faq-search-row { display: flex; gap: 7px; }
+body.faq-page .faq-search-row input { min-width: 0; width: 100%; padding: 9px 10px; border: 1px solid #cbded1; border-radius: 8px; background: #fff; color: #263a30; font: inherit; font-size: .86rem; }
+body.faq-page .faq-search-row input:focus { border-color: #167448; outline: 3px solid rgba(22, 116, 72, .14); }
+body.faq-page .faq-search-row button { flex: none; padding: 9px 11px; border: 0; border-radius: 8px; background: #167448; color: #fff; font: 750 .82rem/1 "Segoe UI", Arial, sans-serif; cursor: pointer; }
+body.faq-page .faq-search-row button:hover { background: #0a2d1d; }
+body.faq-page .faq-sidebar-note { display: grid; gap: 5px; padding: 18px 20px; border-radius: 15px; background: #e8f6ee; color: #365846; font-size: .86rem; line-height: 1.6; }
+body.faq-page .faq-sidebar-note strong { color: #0a2d1d; font-size: .95rem; }
+
+body.faq-page .faq-section-heading { margin-bottom: 24px; }
+body.faq-page .faq-section-heading h2 { font-size: clamp(1.7rem, 3vw, 2.55rem); }
+body.faq-page .faq-section-heading > p:last-child { max-width: 64ch; margin: 10px 0 0; color: #607269; font-size: 1rem; line-height: 1.7; }
+body.faq-page .faq-list { display: grid; gap: 12px; }
+body.faq-page .faq-item { padding: 22px 24px 20px; border: 1px solid #d6e6dc; border-radius: 16px; background: rgba(255, 255, 255, .9); box-shadow: 0 10px 26px rgba(21, 64, 41, .045); }
+body.faq-page .faq-item h4 { margin: 0 0 9px; color: #12271d; font-size: 1.08rem; font-weight: 780; line-height: 1.35; }
+body.faq-page .faq-item p.steps { max-width: 72ch; margin: 0; color: #40564a; font-size: .96rem; line-height: 1.72; }
+body.faq-page .faq-item p.steps + p.steps { margin-top: 12px; }
+body.faq-page .faq-item a { color: #126b40; font-weight: 650; }
+body.faq-page .faq-item a:hover { color: #0a4b2b; }
+
+body.faq-page .faq-next-step { display: flex; align-items: center; justify-content: space-between; gap: 22px; margin-top: clamp(50px, 8vw, 94px); padding: clamp(25px, 4vw, 40px); border-radius: 21px; background: linear-gradient(120deg, #167448, #0a2d1d); box-shadow: 0 20px 44px rgba(10, 45, 29, .16); }
+body.faq-page .faq-next-step .faq-eyebrow { color: #bfe6cb; }
+body.faq-page .faq-next-step h2 { color: #fff; font-size: clamp(1.55rem, 3vw, 2.35rem); }
+body.faq-page .faq-next-step > div > p:last-child { margin: 10px 0 0; color: #cde8d6; font-size: .96rem; }
+body.faq-page .faq-next-step .faq-button-light { flex: none; border-color: rgba(255,255,255,.35); background: #fff; }
+
+html[dir="rtl"] body.faq-page .faq-hero-script { text-align: right; }
+html[dir="rtl"] body.faq-page .faq-button span { margin-right: 8px; margin-left: 0; }
+html[dir="rtl"] body.faq-page .faq-next-step { text-align: right; }
+
+@media (max-width: 760px) {
+    body.faq-page .faq-main { width: min(100% - 24px, 1120px); padding-top: 26px; }
+    body.faq-page .faq-hero { grid-template-columns: 1fr; padding: 28px 21px; border-radius: 22px; }
+    body.faq-page .faq-hero h1 { font-size: clamp(2.35rem, 13vw, 4rem); }
+    body.faq-page .faq-layout { grid-template-columns: 1fr; margin-top: 42px; }
+    body.faq-page .faq-sidebar { order: 2; }
+    body.faq-page .faq-content { order: 1; }
+    body.faq-page .faq-next-step { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 440px) {
+    body.faq-page .faq-actions { display: grid; }
+    body.faq-page .faq-button { width: 100%; }
+    body.faq-page .faq-search-row { display: grid; grid-template-columns: 1fr auto; }
+    body.faq-page .faq-item { padding: 19px 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.faq-page .faq-button { transition: none; }
+}
