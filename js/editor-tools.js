@@ -13,6 +13,17 @@
         }
     }
 
+    function uiText(key, fallback) {
+        if (window.WriteUrduLocale && typeof window.WriteUrduLocale.translateUi === 'function') {
+            return window.WriteUrduLocale.translateUi(key, fallback);
+        }
+        return fallback || key;
+    }
+
+    function notifyText(key, fallback, type) {
+        notify(uiText(key, fallback), type);
+    }
+
     function dispatchInput(element) {
         element.dispatchEvent(new Event('input', { bubbles: true }));
     }
@@ -174,7 +185,7 @@
     function createToolsPanel(kind) {
         var root = document.createElement('section');
         root.className = 'editor-productivity';
-        root.setAttribute('aria-label', 'Writing tools and local draft status');
+        root.setAttribute('aria-label', 'Writing tools, drafts and editor options');
         root.setAttribute('data-editor-kind', kind);
         root.innerHTML =
             '<div class="editor-draft-recovery" data-draft-recovery hidden>' +
@@ -188,7 +199,7 @@
                 '<p class="editor-stats" aria-live="polite">' +
                     '<span data-word-count>0 words</span><span aria-hidden="true">·</span>' +
                     '<span data-character-count>0 characters</span><span aria-hidden="true">·</span>' +
-                    '<span data-save-status>Drafts stay on this device</span>' +
+                    '<span data-save-status>Drafts are saved only on this device</span>' +
                 '</p>' +
                 '<div class="editor-tool-actions">' +
                     '<button type="button" class="editor-tool-button" data-action="find" aria-expanded="false">Find &amp; replace</button>' +
@@ -248,21 +259,21 @@
         if (kind === 'keyboard') {
             return {
                 title: 'Start typing Urdu directly',
-                body: 'Choose a character from the on-screen keyboard, or type with your physical keyboard. Your work stays in this browser.',
-                tip: 'Tip: use Copy text when you are ready to paste your Urdu elsewhere.'
+                body: 'Choose a character from the on-screen keyboard, or type with your physical keyboard. Your work is kept in this browser.',
+                tip: 'Tip: choose Copy text when you are ready to paste your Urdu elsewhere.'
             };
         }
         if (kind === 'rich') {
             return {
                 title: 'Write and format your Urdu document',
-                body: 'Type Roman Urdu and press Space to convert words, then use the editor toolbar for headings, lists, fonts and alignment.',
-                tip: 'Tip: open Shortcuts for the fastest way to find tools and save a local draft.'
+                body: 'Type a Roman Urdu word and press Space to convert it, then use the toolbar for headings, lists, fonts and alignment.',
+                tip: 'Tip: open Shortcuts to find tools quickly or save a local draft.'
             };
         }
         return {
             title: 'Write Urdu in three simple steps',
-            body: 'Type Roman Urdu—for example, mera—then press Space to convert the word into Urdu script.',
-            tip: 'Tip: press Ctrl+G to switch between Roman Urdu and Urdu input.'
+            body: 'Type a Roman Urdu word—for example, mera—then press Space to convert it into Urdu script.',
+            tip: 'Tip: press Ctrl+G whenever you want to switch between Roman Urdu and Urdu input.'
         };
     }
 
@@ -320,21 +331,21 @@
     function shareText(adapter) {
         var text = adapter.getText().trim();
         if (!text) {
-            notify('Type some Urdu text before sharing.', 'error');
+            notifyText('Type some Urdu text before sharing.', 'Type some Urdu text before sharing.', 'error');
             return;
         }
         if (typeof navigator.share === 'function') {
             navigator.share({ title: 'Write Urdu', text: text }).then(function () {
-                notify('Text shared successfully.', 'success');
+                notifyText('Text shared successfully.', 'Text shared successfully.', 'success');
             }).catch(function (error) {
                 if (error && error.name === 'AbortError') return;
-                notify('Sharing was unavailable. You can copy the text instead.', 'error');
+                notifyText('Sharing was unavailable. You can copy the text instead.', 'Sharing was unavailable. You can copy the text instead.', 'error');
             });
             return;
         }
         var shareWindow = window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank', 'noopener,noreferrer');
         if (shareWindow) shareWindow.opener = null;
-        else notify('Sharing was blocked. Copy the text and share it manually.', 'error');
+        else notifyText('Sharing was blocked. Copy the text and share it manually.', 'Sharing was blocked. Copy the text and share it manually.', 'error');
     }
 
     function initialiseTools(adapter) {
@@ -441,7 +452,7 @@
             if (!items.length) {
                 var empty = document.createElement('span');
                 empty.className = 'editor-history-empty';
-                empty.textContent = 'No saved drafts yet.';
+                empty.textContent = uiText('No saved drafts yet. Type something to create one.', 'No saved drafts yet. Type something to create one.');
                 historyList.appendChild(empty);
                 return;
             }
@@ -483,7 +494,7 @@
             window.clearTimeout(saveTimer);
             if (!dirty || pendingDraft) return;
             if (!storage) {
-                saveStatus.textContent = 'Local saving unavailable';
+                saveStatus.textContent = uiText('Local saving unavailable', 'Local saving unavailable');
                 return;
             }
             try {
@@ -500,14 +511,14 @@
                         savedAt: savedAt
                     });
                     renderHistory();
-                    saveStatus.textContent = 'Saved on this device at ' + new Date(savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    saveStatus.textContent = uiText('Saved on this device at', 'Saved on this device at') + ' ' + new Date(savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 } else {
                     storage.removeItem(storageKey);
-                    saveStatus.textContent = 'No local draft';
+                    saveStatus.textContent = uiText('No local draft', 'No local draft');
                 }
                 dirty = false;
             } catch (error) {
-                saveStatus.textContent = 'Draft could not be saved';
+                saveStatus.textContent = uiText('Draft could not be saved', 'Draft could not be saved');
             }
         }
 
@@ -517,7 +528,7 @@
                 pendingDraft = null;
                 recovery.hidden = true;
             }
-            saveStatus.textContent = storage ? 'Saving locally…' : 'Local saving unavailable';
+            saveStatus.textContent = storage ? uiText('Saving locally…', 'Saving locally…') : uiText('Local saving unavailable', 'Local saving unavailable');
             window.clearTimeout(saveTimer);
             saveTimer = window.setTimeout(writeDraft, SAVE_DELAY);
         }
@@ -543,12 +554,12 @@
         if (pendingDraft && pendingDraft.content && !adapter.hasContent()) {
             recoveryDescription.textContent = 'Saved ' + formatSavedTime(pendingDraft.savedAt) + '.';
             recovery.hidden = false;
-            saveStatus.textContent = 'Draft available to restore';
+            saveStatus.textContent = uiText('Draft available to restore', 'Draft available to restore');
         } else if (pendingDraft) {
-            saveStatus.textContent = 'Saved on this device';
+            saveStatus.textContent = uiText('Saved on this device', 'Saved on this device');
             pendingDraft = null;
         } else if (!storage) {
-            saveStatus.textContent = 'Local saving unavailable';
+            saveStatus.textContent = uiText('Local saving unavailable', 'Local saving unavailable');
         }
 
         panel.querySelector('[data-action="restore-draft"]').addEventListener('click', function () {
@@ -558,15 +569,15 @@
             recovery.hidden = true;
             adapter.setContent(content);
             adapter.focus();
-            notify('Your local draft was restored.', 'success');
+            notifyText('Your local draft has been restored.', 'Your local draft has been restored.', 'success');
         });
 
         panel.querySelector('[data-action="discard-draft"]').addEventListener('click', function () {
             if (storage) storage.removeItem(storageKey);
             pendingDraft = null;
             recovery.hidden = true;
-            saveStatus.textContent = 'No local draft';
-            notify('Local draft discarded.', 'success');
+            saveStatus.textContent = uiText('No local draft', 'No local draft');
+            notifyText('Local draft deleted.', 'Local draft deleted.', 'success');
         });
 
         onboarding.querySelector('[data-action="onboarding-dismiss"]').addEventListener('click', function () {
@@ -590,7 +601,7 @@
                 deleteItems.splice(deleteIndex, 1);
                 if (storage) storage.setItem(historyKey, JSON.stringify(deleteItems));
                 renderHistory();
-                notify('Draft deleted from local history.', 'success');
+                notifyText('Draft deleted from this device.', 'Draft deleted from this device.', 'success');
                 return;
             }
             var renameButton = event.target.closest('[data-history-rename-index]');
@@ -603,7 +614,7 @@
                 renameItems[renameIndex].title = String(proposedTitle).trim().slice(0, 60) || 'Untitled draft';
                 storage.setItem(historyKey, JSON.stringify(renameItems));
                 renderHistory();
-                notify('Draft name updated.', 'success');
+                notifyText('Draft name updated.', 'Draft name updated.', 'success');
                 return;
             }
             var button = event.target.closest('[data-history-index]');
@@ -616,14 +627,14 @@
             historyPanel.hidden = true;
             historyButton.setAttribute('aria-expanded', 'false');
             adapter.focus();
-            notify('Recent draft restored.', 'success');
+                notifyText('Recent draft restored successfully.', 'Recent draft restored successfully.', 'success');
         });
 
         historyPanel.querySelector('[data-action="clear-history"]').addEventListener('click', function () {
             if (storage && readHistory().length && !window.confirm('Clear all recent drafts from this device?')) return;
             if (storage) storage.removeItem(historyKey);
             renderHistory();
-            notify('Recent draft history cleared.', 'success');
+            notifyText('Draft history cleared from this device.', 'Draft history cleared from this device.', 'success');
         });
 
         importButton.addEventListener('click', function () {
@@ -638,11 +649,11 @@
                 adapter.setPlainText(String(reader.result || ''));
                 adapter.focus();
                 importFile.value = '';
-                notify('Text file imported successfully.', 'success');
+                notifyText('Text file imported successfully.', 'Text file imported successfully.', 'success');
             };
             reader.onerror = function () {
                 importFile.value = '';
-                notify('Text file could not be imported.', 'error');
+                notifyText('Text file could not be imported.', 'Text file could not be imported.', 'error');
             };
             reader.readAsText(file, 'UTF-8');
         });
@@ -655,13 +666,13 @@
         });
 
         panel.querySelector('[data-action="digits"]').addEventListener('click', function () {
-            if (adapter.transform(convertDigits)) notify('English numerals converted to Urdu numerals.', 'success');
-            else notify('No English numerals were found.', 'error');
+            if (adapter.transform(convertDigits)) notifyText('English numerals converted to Urdu numerals.', 'English numerals converted to Urdu numerals.', 'success');
+            else notifyText('No English numerals found.', 'No English numerals found.', 'error');
         });
 
         panel.querySelector('[data-action="cleanup"]').addEventListener('click', function () {
-            if (adapter.transform(normaliseSpacing)) notify('Spacing and Urdu punctuation were cleaned.', 'success');
-            else notify('No spacing changes were needed.', 'success');
+            if (adapter.transform(normaliseSpacing)) notifyText('Spacing and Urdu punctuation cleaned.', 'Spacing and Urdu punctuation cleaned.', 'success');
+            else notifyText('Spacing was already clean.', 'Spacing was already clean.', 'success');
         });
 
         findButton.addEventListener('click', function () {
@@ -680,11 +691,11 @@
             event.preventDefault();
             var search = findPanel.elements.find.value;
             if (!search) {
-                notify('Enter the text you want to find.', 'error');
+                notifyText('Enter text to find.', 'Enter text to find.', 'error');
                 return;
             }
             var replacements = adapter.replaceAll(search, findPanel.elements.replacement.value);
-            notify(replacements ? replacements + ' replacement' + (replacements === 1 ? '' : 's') + ' made.' : 'No matching text was found.', replacements ? 'success' : 'error');
+            notify(replacements ? replacements + ' replacement' + (replacements === 1 ? '' : 's') + ' made.' : uiText('No matching text was found.', 'No matching text was found.'), replacements ? 'success' : 'error');
         });
 
         focusButton.addEventListener('click', function () {
@@ -721,7 +732,7 @@
             if (!command) return;
             var action = command.getAttribute('data-command');
             if (action === 'close') closeCommandPalette();
-            if (action === 'save') { writeDraft(); notify('Draft saved on this device.', 'success'); closeCommandPalette(); }
+            if (action === 'save') { writeDraft(); notifyText('Draft saved locally on this device.', 'Draft saved locally on this device.', 'success'); closeCommandPalette(); }
             if (action === 'find') { closeCommandPalette(); findButton.click(); }
             if (action === 'history') { closeCommandPalette(); historyButton.click(); }
             if (action === 'import') { closeCommandPalette(); importButton.click(); }
@@ -745,7 +756,7 @@
             } else if (modifier && key === 's') {
                 event.preventDefault();
                 writeDraft();
-                notify('Draft saved on this device.', 'success');
+                notifyText('Draft saved locally on this device.', 'Draft saved locally on this device.', 'success');
             } else if (modifier && key === 'f' && !event.shiftKey) {
                 event.preventDefault();
                 findButton.click();

@@ -33,3 +33,87 @@ body.write-urdu-focus{background:#f7faf8!important}body.write-urdu-focus .wu-sit
 .home-actions,.col-12.col-md-9>.container:nth-of-type(2)>.row>div.home-actions{flex-wrap:wrap!important;overflow:visible!important}
 body.tool-page .tool-actions{flex-wrap:wrap!important;overflow:visible!important}
 @media(max-width:767px){.home-actions>.editor-tool-actions .editor-tool-button,.tool-actions>.editor-tool-actions .editor-tool-button,.keyboard-actions>.editor-tool-actions .editor-tool-button{min-height:36px;padding:.42rem .58rem;font-size:.78rem}.home-actions>.editor-find-panel,.tool-actions>.editor-find-panel,.keyboard-actions>.editor-find-panel,.home-actions>.editor-history-panel,.tool-actions>.editor-history-panel,.keyboard-actions>.editor-history-panel{flex-basis:100%}}
+
+/* Help copy should scan as guidance, not as a wall of secondary text. Keep
+   measure, contrast and rhythm consistent across the three editor pages. */
+body.has-editor-tools .editor-hint,
+body.has-editor-tools .card-text,
+body.has-editor-tools .editor-onboarding-copy p,
+body.has-editor-tools .editor-command-note {
+    max-width: 76ch;
+    font-size: .92rem;
+    line-height: 1.72;
+}
+body.has-editor-tools .editor-hint {
+    margin: 10px 2px 0;
+    color: #53675c;
+}
+body.has-editor-tools .card-subtitle {
+    max-width: 70ch;
+    color: #177245;
+    font-size: .98rem;
+    line-height: 1.55;
+}
+body.has-editor-tools .card-title {
+    max-width: 30ch;
+    margin-bottom: 14px;
+    line-height: 1.25;
+}
+body.has-editor-tools .card-text {
+    gap: 11px;
+    padding-left: 1.35rem;
+    color: #4d6257;
+}
+body.has-editor-tools .card-text li::marker {
+    color: #177245;
+    font-weight: 700;
+}
+body.has-editor-tools .card-text strong,
+body.has-editor-tools .card-text a {
+    color: #145f38;
+    font-weight: 700;
+}
+body.has-editor-tools .editor-onboarding-copy p {
+    margin: 4px 0 3px;
+    color: #40564a;
+}
+body.has-editor-tools .editor-onboarding-copy small {
+    display: block;
+    color: #61746a;
+    line-height: 1.55;
+}
+body.locale-urdu.has-editor-tools .editor-hint,
+body.locale-urdu.has-editor-tools .card-text,
+body.locale-urdu.has-editor-tools .card-subtitle,
+body.locale-urdu.has-editor-tools .card-title,
+body.locale-urdu.has-editor-tools .editor-onboarding-copy,
+body.locale-urdu.has-editor-tools .editor-command-dialog {
+    font-family: "Noto Naskh Arabic", "Noto Nastaliq Urdu", "Segoe UI", Arial, sans-serif;
+    letter-spacing: 0;
+}
+body.locale-urdu.has-editor-tools .editor-hint,
+body.locale-urdu.has-editor-tools .card-text,
+body.locale-urdu.has-editor-tools .editor-onboarding-copy p,
+body.locale-urdu.has-editor-tools .editor-onboarding-copy small {
+    line-height: 2;
+}
+body.locale-urdu.has-editor-tools .card-text {
+    padding-right: 1.35rem;
+    padding-left: 0;
+    direction: rtl;
+    text-align: right;
+}
+body.locale-urdu.has-editor-tools .card-text li::marker {
+    color: #177245;
+}
+@media (max-width: 767px) {
+    body.has-editor-tools .editor-hint,
+    body.has-editor-tools .card-text,
+    body.has-editor-tools .editor-onboarding-copy p,
+    body.has-editor-tools .editor-command-note { font-size: .88rem; }
+    body.has-editor-tools .card-text { gap: 9px; }
+    body.locale-urdu.has-editor-tools .editor-hint,
+    body.locale-urdu.has-editor-tools .card-text,
+    body.locale-urdu.has-editor-tools .editor-onboarding-copy p,
+    body.locale-urdu.has-editor-tools .editor-onboarding-copy small { line-height: 1.9; }
+}

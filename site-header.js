@@ -45,6 +45,15 @@
                 'No saved drafts yet.': 'No saved drafts yet.', 'Find & replace': 'Find & replace', 'Focus mode': 'Focus mode',
                 'Insert Urdu comma': 'Insert Urdu comma', 'Enter the text you want to find.': 'Enter the text you want to find.',
                 'Replace all': 'Replace all', Discard: 'Discard', 'Import text': 'Import text', 'Clean spacing': 'Clean spacing',
+                'Drafts are saved only on this device': 'Drafts are saved only on this device', 'No saved drafts yet. Type something to create one.': 'No saved drafts yet. Type something to create one.',
+                'Saved on this device': 'Saved on this device', 'Saved on this device at': 'Saved on this device at', 'No local draft': 'No local draft',
+                'Local saving unavailable': 'Local saving unavailable', 'Draft could not be saved': 'Draft could not be saved', 'Saving locally…': 'Saving locally…', 'Draft available to restore': 'Draft available to restore',
+                'Your local draft has been restored.': 'Your local draft has been restored.', 'Local draft deleted.': 'Local draft deleted.', 'Draft deleted from this device.': 'Draft deleted from this device.',
+                'Recent draft restored successfully.': 'Recent draft restored successfully.', 'Draft history cleared from this device.': 'Draft history cleared from this device.', 'No English numerals found.': 'No English numerals found.',
+                'Spacing and Urdu punctuation cleaned.': 'Spacing and Urdu punctuation cleaned.', 'Spacing was already clean.': 'Spacing was already clean.', 'Enter text to find.': 'Enter text to find.',
+                'Draft saved locally on this device.': 'Draft saved locally on this device.', 'Draft name updated.': 'Draft name updated.', 'Text file imported successfully.': 'Text file imported successfully.', 'Text file could not be imported.': 'Text file could not be imported.',
+                'English numerals converted to Urdu numerals.': 'English numerals converted to Urdu numerals.', 'No matching text was found.': 'No matching text was found.',
+                'Type some Urdu text before sharing.': 'Type some Urdu text before sharing.', 'Text shared successfully.': 'Text shared successfully.', 'Sharing was unavailable. You can copy the text instead.': 'Sharing was unavailable. You can copy the text instead.', 'Sharing was blocked. Copy the text and share it manually.': 'Sharing was blocked. Copy the text and share it manually.',
                  Cancel: 'Cancel', Close: 'Close', 'Got it': 'Got it', 'Exit focus': 'Exit focus', 'Install app': 'Install app', Rename: 'Rename', Delete: 'Delete', Preview: 'Preview', Shortcuts: 'Shortcuts', 'Keyboard shortcuts': 'Keyboard shortcuts',
                  'Convert English numerals to Urdu numerals': 'Convert English numerals to Urdu numerals',
                 'Insert Urdu full stop': 'Insert Urdu full stop', 'Insert Urdu question mark': 'Insert Urdu question mark',
@@ -80,6 +89,15 @@
                 'No saved drafts yet.': 'ابھی کوئی محفوظ مسودہ نہیں۔', 'Find & replace': 'تلاش اور تبدیلی', 'Focus mode': 'فوکس موڈ',
                 'Insert Urdu comma': 'اردو کاما داخل کریں', 'Enter the text you want to find.': 'تلاش کے لیے متن درج کریں۔',
                 'Replace all': 'سب تبدیل کریں', Discard: 'رد کریں', 'Import text': 'متن درآمد کریں', 'Clean spacing': 'فاصلہ درست کریں',
+                'Drafts are saved only on this device': 'مسودے صرف اسی آلے پر محفوظ ہوتے ہیں', 'No saved drafts yet. Type something to create one.': 'ابھی کوئی محفوظ مسودہ نہیں۔ کچھ لکھیں تاکہ نیا مسودہ بن جائے۔',
+                'Saved on this device': 'اسی آلے پر محفوظ ہے', 'Saved on this device at': 'اسی آلے پر محفوظ کیا گیا، وقت', 'No local draft': 'کوئی مقامی مسودہ نہیں',
+                'Local saving unavailable': 'مقامی محفوظ کاری دستیاب نہیں', 'Draft could not be saved': 'مسودہ محفوظ نہیں ہو سکا', 'Saving locally…': 'مقامی طور پر محفوظ کیا جا رہا ہے…', 'Draft available to restore': 'بحال کرنے کے لیے مسودہ موجود ہے',
+                'Your local draft has been restored.': 'آپ کا مقامی مسودہ بحال کر دیا گیا ہے۔', 'Local draft deleted.': 'مقامی مسودہ حذف کر دیا گیا ہے۔', 'Draft deleted from this device.': 'مسودہ اس آلے سے حذف کر دیا گیا ہے۔',
+                'Recent draft restored successfully.': 'حالیہ مسودہ کامیابی سے بحال کر دیا گیا ہے۔', 'Draft history cleared from this device.': 'اس آلے سے مسودوں کا تاریخچہ صاف کر دیا گیا ہے۔', 'No English numerals found.': 'انگریزی اعداد نہیں ملے۔',
+                'Spacing and Urdu punctuation cleaned.': 'فاصلہ اور اردو رموزِ اوقاف درست کر دیے گئے ہیں۔', 'Spacing was already clean.': 'فاصلہ پہلے ہی درست ہے۔', 'Enter text to find.': 'تلاش کے لیے متن درج کریں۔',
+                'Draft saved locally on this device.': 'مسودہ اسی آلے پر مقامی طور پر محفوظ کر دیا گیا ہے۔', 'Draft name updated.': 'مسودے کا نام تبدیل کر دیا گیا ہے۔', 'Text file imported successfully.': 'متنی فائل کامیابی سے درآمد ہو گئی ہے۔', 'Text file could not be imported.': 'متنی فائل درآمد نہیں ہو سکی۔',
+                'English numerals converted to Urdu numerals.': 'انگریزی اعداد اردو اعداد میں تبدیل کر دیے گئے ہیں۔', 'No matching text was found.': 'مطابق متن نہیں ملا۔',
+                'Type some Urdu text before sharing.': 'شیئر کرنے سے پہلے کچھ اردو متن لکھیں۔', 'Text shared successfully.': 'متن کامیابی سے شیئر ہو گیا ہے۔', 'Sharing was unavailable. You can copy the text instead.': 'شیئرنگ دستیاب نہیں۔ اس کے بجائے متن کاپی کریں۔', 'Sharing was blocked. Copy the text and share it manually.': 'شیئرنگ روک دی گئی۔ متن کاپی کر کے خود شیئر کریں۔',
                  Cancel: 'منسوخ کریں', Close: 'بند کریں', 'Got it': 'سمجھ گیا', 'Exit focus': 'فوکس سے باہر نکلیں', 'Install app': 'ایپ انسٹال کریں', Rename: 'نام بدلیں', Delete: 'حذف کریں', Preview: 'پیش نظارہ', Shortcuts: 'شارٹ کٹس', 'Keyboard shortcuts': 'کی بورڈ شارٹ کٹس', 'Convert English numerals to Urdu numerals': 'انگریزی اعداد کو اردو اعداد میں تبدیل کریں',
                 'Insert Urdu full stop': 'اردو فل اسٹاپ داخل کریں', 'Insert Urdu question mark': 'اردو سوالیہ نشان داخل کریں',
                 'Insert Urdu semicolon': 'اردو سیمی کولن داخل کریں'
@@ -88,10 +106,10 @@
     };
 
     var pageCopy = {
-        '/': { title: ['Write Urdu online', 'آن لائن اردو لکھیں'], subtitle: ['Roman Urdu to Urdu typing in your browser', 'براؤزر میں رومن اردو کو اردو میں لکھیں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
-        '/index.html': { title: ['Write Urdu online', 'آن لائن اردو لکھیں'], subtitle: ['Roman Urdu to Urdu typing in your browser', 'براؤزر میں رومن اردو کو اردو میں لکھیں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
-        '/urdu-editor.html': { title: ['Urdu Rich Text Editor', 'اردو رچ ٹیکسٹ ایڈیٹر'], subtitle: ['Type, format and export Urdu online', 'آن لائن اردو ٹائپ کریں، فارمیٹ کریں اور برآمد کریں'], documentTitle: ['Urdu Rich Text Editor | Type and Format Urdu Online', 'اردو رچ ٹیکسٹ ایڈیٹر | آن لائن اردو لکھیں'] },
-        '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Direct Urdu typing with no installation', 'بغیر انسٹالیشن براہِ راست اردو لکھیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
+        '/': { title: ['Write Urdu online', 'آن لائن اردو لکھیں'], subtitle: ['Type Roman Urdu and convert it to Urdu in your browser', 'رومن اردو لکھیں اور اسے براؤزر میں اردو میں تبدیل کریں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
+        '/index.html': { title: ['Write Urdu online', 'آن لائن اردو لکھیں'], subtitle: ['Type Roman Urdu and convert it to Urdu in your browser', 'رومن اردو لکھیں اور اسے براؤزر میں اردو میں تبدیل کریں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
+        '/urdu-editor.html': { title: ['Urdu Rich Text Editor', 'اردو رچ ٹیکسٹ ایڈیٹر'], subtitle: ['Write, format and export Urdu documents online', 'آن لائن اردو دستاویز لکھیں، فارمیٹ کریں اور برآمد کریں'], documentTitle: ['Urdu Rich Text Editor | Type and Format Urdu Online', 'اردو رچ ٹیکسٹ ایڈیٹر | آن لائن اردو لکھیں'] },
+        '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Type Urdu directly—no installation required', 'براہِ راست اردو لکھیں—انسٹالیشن کی ضرورت نہیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
         '/urdu-alphabet.html': { title: ['Urdu alphabet', 'اردو حروف تہجی'], subtitle: ['A practical guide to Urdu letters and writing direction', 'اردو حروف اور لکھنے کی سمت کا عملی رہنما'], documentTitle: ['Urdu Alphabet Guide | Letters and Writing Direction', 'اردو حروف تہجی | حروف اور لکھنے کی سمت'] },
         '/write-urdu-documentation.html': { title: ['Write Urdu, beautifully explained.', 'رائٹ اردو، آسان انداز میں'], lede: ['A clear guide to every writing path on the site—from typing Roman Urdu and converting it into Urdu to polishing, saving and sharing a finished piece.', 'اس ویب سائٹ پر اردو لکھنے کے ہر طریقے کی واضح رہنمائی—رومن اردو کو اردو میں تبدیل کرنے سے لے کر متن کو سنوارنے، محفوظ کرنے اور شیئر کرنے تک۔'], documentTitle: ['Write Urdu Documentation | Roman Urdu, Keyboard and Rich Editor', 'رائٹ اردو دستاویزات | رومن اردو، کی بورڈ اور رچ ایڈیٹر'] },
         '/write-urdu-features.html': { title: ['Write Urdu features and export options', 'رائٹ اردو کی خصوصیات اور برآمد کے اختیارات'], subtitle: ['Write, refine and share Urdu text with browser-based tools', 'براؤزر پر مبنی ٹولز سے اردو متن لکھیں، بہتر بنائیں اور شیئر کریں'], documentTitle: ['Write Urdu Features | Drafts, Import, Export and Share', 'رائٹ اردو خصوصیات | مسودے، درآمد، برآمد اور شیئرنگ'] },
@@ -117,6 +135,11 @@
         var value = dictionary[currentLocale];
         key.split('.').forEach(function (part) { value = value && value[part]; });
         return value || fallback || key;
+    }
+
+    function translateUi(key, fallback) {
+        var ui = dictionary[currentLocale] && dictionary[currentLocale].ui;
+        return ui && ui[key] || fallback || key;
     }
 
     function normalizedPath() {
@@ -466,6 +489,7 @@
         get: function () { return currentLocale; },
         set: changeLocale,
         apply: applyLocale,
+        translateUi: translateUi,
         storageKey: LOCALE_KEY
     };
 
