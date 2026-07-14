@@ -34,4 +34,4 @@ http.createServer((request, response) => {
     response.setHeader('Cache-Control', 'no-store');
     response.end(data);
   });
-}).listen(8765, '127.0.0.1');
+}).listen(Number(process.env.PORT || 8765), '127.0.0.1');

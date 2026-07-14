@@ -163,20 +163,55 @@
         if (richText) content.innerHTML = source.innerHTML;
         else content.textContent = source.value || source.textContent || '';
 
-        credit.textContent = 'Generated using Write-Urdu.com';
+        credit.className = 'wu-export-credit';
+        var creditMark = document.createElement('span');
+        var creditLogo = document.createElement('img');
+        var creditLabel = document.createElement('span');
+        creditMark.className = 'wu-export-credit-mark';
+        creditLogo.alt = '';
+        creditLogo.setAttribute('aria-hidden', 'true');
+        creditLogo.width = 22;
+        creditLogo.height = 22;
+        creditLabel.textContent = 'Generated with Write Urdu · Write-Urdu.com';
+        creditMark.appendChild(creditLogo);
+        creditMark.appendChild(creditLabel);
+        credit.appendChild(creditMark);
+        try {
+            creditLogo.src = new URL('image/logo10.png', document.baseURI).href;
+        } catch (error) {
+            creditLogo.src = 'image/logo10.png';
+        }
         Object.assign(credit.style, {
             position: 'static',
             width: '100%',
-            margin: '38px 0 0',
-            padding: '15px 0 0',
-            borderTop: '1px solid rgba(23, 114, 69, .25)',
-            color: '#177245',
+            margin: '28px 0 0',
+            padding: '10px 0 0',
+            borderTop: '1px solid rgba(23, 114, 69, .18)',
+            color: '#6b7d73',
             background: 'transparent',
             fontFamily: 'Arial, sans-serif',
-            fontSize: '13px',
-            lineHeight: '1.4',
+            fontSize: '10px',
+            lineHeight: '1.3',
             textAlign: 'left',
             direction: 'ltr'
+        });
+        Object.assign(creditMark.style, {
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '7px',
+            minHeight: '22px'
+        });
+        Object.assign(creditLogo.style, {
+            display: 'block',
+            width: '22px',
+            height: '22px',
+            objectFit: 'contain',
+            borderRadius: '5px',
+            opacity: '.92'
+        });
+        Object.assign(creditLabel.style, {
+            letterSpacing: '.01em',
+            whiteSpace: 'nowrap'
         });
         surface.appendChild(content);
         surface.appendChild(credit);
@@ -184,11 +219,32 @@
         return surface;
     }
 
+    function waitForExportImages(surface) {
+        var images = Array.prototype.slice.call(surface.querySelectorAll('img'));
+        return Promise.all(images.map(function (image) {
+            if (image.complete) return Promise.resolve();
+            return new Promise(function (resolve) {
+                var settled = false;
+                function finish() {
+                    if (settled) return;
+                    settled = true;
+                    image.removeEventListener('load', finish);
+                    image.removeEventListener('error', finish);
+                    resolve();
+                }
+                image.addEventListener('load', finish, { once: true });
+                image.addEventListener('error', finish, { once: true });
+                window.setTimeout(finish, 2000);
+            });
+        }));
+    }
+
     async function renderCanvas(source, options) {
         if (!source) throw new Error('Export source is unavailable.');
         if (typeof window.html2canvas !== 'function') throw new Error('Image export dependency is unavailable.');
         var surface = createExportSurface(source, options || {});
         try {
+            await waitForExportImages(surface);
             if (document.fonts && document.fonts.ready) await document.fonts.ready;
             await new Promise(function (resolve) {
                 window.requestAnimationFrame(function () { window.requestAnimationFrame(resolve); });
@@ -260,9 +316,9 @@
         var html = '<!doctype html><html lang="ur" dir="rtl"><head><meta charset="utf-8">' +
             '<title>Write Urdu document</title><style>@page{margin:24mm}body{direction:rtl;text-align:right;' +
             'font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:18pt;line-height:2.1;' +
-            'color:#16251e}footer{direction:ltr;text-align:left;margin-top:32pt;padding-top:10pt;border-top:1px solid #b9d4c4;' +
-            'font:9pt Arial,sans-serif;color:#177245}</style></head><body>' + body +
-            '<footer>Generated using Write-Urdu.com</footer></body></html>';
+            'color:#16251e}footer{direction:ltr;text-align:left;margin-top:24pt;padding-top:8pt;border-top:1px solid #d1e1d7;' +
+            'font:8pt Arial,sans-serif;color:#6b7d73}</style></head><body>' + body +
+            '<footer>Generated with Write Urdu · Write-Urdu.com</footer></body></html>';
         var blob = new Blob(['\ufeff', html], { type: 'application/msword;charset=utf-8' });
         var url = URL.createObjectURL(blob);
         downloadData(url, safeFilename(filename, 'write-urdu') + '.doc');
@@ -291,7 +347,7 @@
             doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', margin, margin, imageWidth, currentHeight * scale);
             doc.setFontSize(8);
             doc.setTextColor(23, 114, 69);
-            doc.text('Generated using Write-Urdu.com', margin, pageHeight - 5);
+            doc.text('Write Urdu · Write-Urdu.com', margin, pageHeight - 5);
             offset += currentHeight;
             page += 1;
         }

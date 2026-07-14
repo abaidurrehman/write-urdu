@@ -112,8 +112,9 @@ const adsScript = fs.readFileSync(path.join(root, 'js', 'ads.js'), 'utf8');
 assert.match(adsScript, /adsbygoogle\.js\?client=ca-pub-4727847909946286/, 'AdSense loader must use the configured publisher client');
 assert.match(adsScript, /crossOrigin\s*=\s*["']anonymous["']/, 'AdSense loader must use anonymous CORS');
 for (const file of htmlFiles) {
-  const route = file === 'index.html' ? "href: '/'" : "href: '/" + file.replace(/\.html$/i, '') + "'";
-  assert(sharedHeader.includes(route), `${file} is not connected to the shared header or footer`);
+  const slug = file === 'index.html' ? '/' : '/' + file.replace(/\.html$/i, '');
+  const route = new RegExp(`href(?::|=)\\s*["']${slug === '/' ? '\\/' : slug}["']`);
+  assert(route.test(sharedHeader), `${file} is not connected to the shared header or footer`);
 }
 for (const file of allHtmlFiles.filter(file => !htmlFiles.includes(file))) {
   assert.match(read(file), /^google-site-verification:/, `${file} is an unlinked HTML file without a documented infrastructure purpose`);

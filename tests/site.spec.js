@@ -382,6 +382,7 @@ test('export rendering adds Urdu-safe margins and paginates long PDFs', async ({
         language: content.lang,
         text: content.textContent,
         credit: credit.textContent,
+        creditLogo: credit.querySelector('img')?.getAttribute('src') || '',
         background: getComputedStyle(surface).backgroundColor,
         color: getComputedStyle(surface).color,
         fontSize: parseFloat(getComputedStyle(surface).fontSize),
@@ -445,6 +446,7 @@ test('export rendering adds Urdu-safe margins and paginates long PDFs', async ({
   expect(result.capture.language).toBe('ur');
   expect(result.capture.text).toContain('یہ پہلی سطر ہے');
   expect(result.capture.credit).toContain('Write-Urdu.com');
+  expect(result.capture.creditLogo).toContain('/image/logo10.png');
   expect(result.capture.captureHeight).toBe(result.capture.surfaceHeight);
   expect(result.richCapture.background).toBe('rgb(255, 255, 255)');
   expect(result.richCapture.color).toBe('rgb(22, 37, 30)');

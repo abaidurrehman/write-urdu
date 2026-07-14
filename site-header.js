@@ -457,7 +457,7 @@
                         var active = isActive(item, path);
                         return '<a href="' + item.href + '" data-wu-i18n-key="nav.' + item.key + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
                     }).join('') +
-                    '<a class="wu-feedback-link" href="write-urdu-feedback.html" data-wu-i18n-key="nav.feedback">Feedback</a>' +
+                    '<a class="wu-feedback-link" href="/write-urdu-feedback" data-wu-i18n-key="nav.feedback">Feedback</a>' +
                 '</nav>' +
                 '<button class="wu-install-toggle" type="button" data-wu-install hidden>Install app</button>' +
                 '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
