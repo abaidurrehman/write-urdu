@@ -55,164 +55,85 @@
     </style>
 <script src="site-header.js" defer></script>
 <link href="css/site-header.css" rel="stylesheet" type="text/css" />
+<link href="css/faq.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
-    <div class="container-fluid">
+<body class="faq-page">
+    <nav aria-label="Primary navigation">
+        <a href="/">Write Urdu</a>
+    </nav>
 
-        <nav class="navbar navbar-expand-md bg-dark navbar-dark">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-pen"></i> Write Urdu</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write Urdu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="urdu-editor.html" title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu Text Editor</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="urdu-keyboard.html" class="nav-link" title="Write Urdu | Free online Urdu Keyboard">Urdu Keyboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="write-urdu-features.html" title="Write Urdu | Write Urdu Features">Write Urdu Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="urdu-editor-features.html" title="Write Urdu | Urdu Rich Text Editor features">Urdu Rich Text Editor Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="urdu-alphabet.html" title="Write Urdu | Urdu alphabet">Urdu Alphabet</a>
-                    </li>
-                    <li class="nav-item bg-success">
-                        <a class="nav-link active" href="write-urdu-feedback.html" title="Write Urdu | feedback and suggestion">Feedback</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="col-md-11">
-            <div style="float:left;width:250px">
-
-                <!-- Right panel -->
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286" data-ad-slot="3607727011" data-ad-format="auto"></ins>
-
-            </div>
-        </div>
-        <div class="col-md-12" style="text-align: left;">
-            <a href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">
-                <img src="image/logo10.png" class="logo" alt="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online"
-                    title="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online" />
-            </a>
-            <h1>Frequently Asked Questions</h1>
+    <main class="faq-main">
+        <section class="faq-hero" aria-labelledby="faq-title">
             <div>
-
-
-                <ins class="adsbygoogle" style="display:inline-block;width:468px;height:60px" data-ad-client="ca-pub-4727847909946286" data-ad-slot="7352732619"></ins>
-
-            </div>
-            <div style="text-align:right;width:100%;">
-                <div style="float:left;line-height:30px;vertical-align:middle;" title="Write Urdu online">
-                    اردو ہے جس کا نام ہمیں جانتے ہیں داغؔ — سارے جہاں میں دھوم ہماری زباں کی ہے
+                <p class="faq-eyebrow">Help centre</p>
+                <h1 id="faq-title">Frequently Asked Questions</h1>
+                <p class="faq-lede">Clear answers about the Urdu language, its writing system and the best way to start writing online.</p>
+                <div class="faq-actions">
+                    <a class="faq-button" href="/">Open the Urdu editor <span aria-hidden="true">→</span></a>
+                    <a class="faq-button faq-button-light" href="/urdu-alphabet">Explore the alphabet</a>
                 </div>
             </div>
-            <br />
-            <br />
-            <style type="text/css">
-                @import url(//www.google.com/cse/api/branding.css);
-            </style>
-            <div class="cse-branding-bottom" style="background-color:#FFFFFF;color:#000000">
-                <div class="cse-branding-form">
-                    <form action="https://www.write-urdu.com/write-urdu-search.html" id="cse-search-box">
-                        <div>
-                            <input type="hidden" name="cx" value="partner-pub-4727847909946286:e8ay8o1zxjh" />
-                            <input type="hidden" name="cof" value="FORID:10" />
-                            <input type="hidden" name="ie" value="ISO-8859-1" />
-                            <input type="text" name="q" size="20" />
-                            <input type="submit" name="sa" value="Search" />
+            <div class="faq-hero-script" lang="ur" dir="rtl" aria-label="Urdu verse">
+                اردو ہے جس کا نام ہمیں جانتے ہیں داغؔ<br>
+                سارے جہاں میں دھوم ہماری زباں کی ہے
+            </div>
+        </section>
+
+        <div class="faq-layout">
+            <aside class="faq-sidebar" aria-label="FAQ tools">
+                <section class="faq-search-card">
+                    <h2>Find an answer</h2>
+                    <p>Search the site for typing, keyboard and editor guidance.</p>
+                    <form action="/write-urdu-search" method="get">
+                        <label for="faq-search">Search Write Urdu</label>
+                        <div class="faq-search-row">
+                            <input id="faq-search" name="q" type="search" autocomplete="off" placeholder="Search topics" />
+                            <button type="submit">Search</button>
                         </div>
                     </form>
-                    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-                    <script type="text/javascript">google.load("elements", "1", { packages: "transliteration" });</script>
-                    <script type="text/javascript" src="https://www.google.com/cse/t13n?form=cse-search-box&t13n_langs=ur"></script>
+                </section>
+                <div class="faq-sidebar-note">
+                    <strong>New to Urdu?</strong>
+                    <span>Start with Roman Urdu in the basic editor, or choose the on-screen keyboard for direct character input.</span>
                 </div>
-                <div class="cse-branding-logo">
-                    <img src="https://www.google.com/images/poweredby_transparent/poweredby_FFFFFF.gif" alt="Google" />
-                </div>
-                <div class="cse-branding-text">
-                    Write Urdu Search
-                </div>
-            </div>
+            </aside>
 
-            <br />
+            <section class="faq-content" aria-labelledby="faq-answers-title">
+                <div class="faq-section-heading">
+                    <p class="faq-eyebrow">Language and script</p>
+                    <h2 id="faq-answers-title">Answers to common questions</h2>
+                    <p>These concise explanations cover the questions we hear most often from new Urdu writers.</p>
+                </div>
+                <div class="faq-list">
+                    <article class="faq-item">
+                        <h4>Where is Urdu spoken?</h4>
+                        <p class="steps"><a href="/why-write-urdu" title="Why write Urdu online">Urdu</a> is the national language of Pakistan and is spoken widely in Pakistan and India. Urdu-speaking communities can also be found across South Asia and throughout the global diaspora.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h4>If I learn Urdu, will it help me with any other languages?</h4>
+                        <p class="steps">Everyday spoken Urdu and Hindi share much of their grammar and basic vocabulary, so learning one can make conversation in the other easier. Their standard written forms differ: Urdu normally uses a Perso-Arabic script in the Nastaliq style, while Hindi uses Devanagari. Learning the <a href="/urdu-alphabet" title="Urdu alphabet guide">Urdu alphabet</a> can also make some letter forms in Persian and Arabic more familiar, although each language has its own spelling and pronunciation.</p>
+                    </article>
+                    <article class="faq-item">
+                        <h4>Are Hindi and Urdu two different forms of the same language?</h4>
+                        <p class="steps">Standard Urdu and standard Hindi are closely related registers of Hindustani. Their conversational forms are often mutually intelligible, but formal vocabulary can differ: Urdu draws more heavily on Persian and Arabic, while Hindi draws more heavily on Sanskrit.</p>
+                        <p class="steps">Their writing systems are distinct. Hindi is written from left to right in Devanagari; <a href="/urdu-editor" title="Open the Urdu Rich Text Editor">Urdu is written</a> from right to left in a Perso-Arabic script, commonly displayed in the Nastaliq calligraphic style.</p>
+                    </article>
+                </div>
+            </section>
+        </div>
+
+        <section class="faq-next-step" aria-labelledby="faq-next-title">
             <div>
-                <h4>
-                    Where is Urdu spoken?
-                </h4>
-                <p class="steps"><a href="why-write-urdu.html" title="Why write Urdu online">Urdu</a> is the national
-                    language of Pakistan and is spoken widely in Pakistan and India. Urdu-speaking communities can also
-                    be found across South Asia and throughout the global diaspora.</p>
-                <br />
-                <h4>
-                    If I learn Urdu, will it help me with any other languages?
-                </h4>
-                <p class="steps">Everyday spoken Urdu and Hindi share much of their grammar and basic vocabulary, so
-                    learning one can make conversation in the other easier. Their standard written forms differ: Urdu
-                    normally uses a Perso-Arabic script in the Nastaliq style, while Hindi uses Devanagari. Learning the
-                    <a href="urdu-alphabet.html" title="Urdu alphabet guide">Urdu alphabet</a> can also make some letter
-                    forms in Persian and Arabic more familiar, although each language has its own spelling and pronunciation.</p>
-                <br />
-                <h4>
-                    Are Hindi and Urdu two different forms of the same language?
-                </h4>
-
-                <p class="steps">Standard Urdu and standard Hindi are closely related registers of Hindustani. Their
-                    conversational forms are often mutually intelligible, but formal vocabulary can differ: Urdu draws
-                    more heavily on Persian and Arabic, while Hindi draws more heavily on Sanskrit.</p>
-                <p class="steps">Their writing systems are distinct. Hindi is written from left to right in Devanagari;
-                    <a href="urdu-editor.html" title="Open the Urdu Rich Text Editor">Urdu is written</a> from right to
-                    left in a Perso-Arabic script, commonly displayed in the Nastaliq calligraphic style.</p>
+                <p class="faq-eyebrow">Keep learning</p>
+                <h2 id="faq-next-title">Ready to write your first Urdu sentence?</h2>
+                <p>Type naturally in Roman Urdu and let the editor convert each word as you go.</p>
             </div>
+            <a class="faq-button faq-button-light" href="/">Start writing <span aria-hidden="true">→</span></a>
+        </section>
+    </main>
 
-
-        </div>
-    </div>
-
-    <footer>
-        <div class="Footer-credits">
-            <span class="Footer-credit">
-                Created and maintained by
-                <a href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write Urdu</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="urdu-faq.html" title="Write Urdu | Frequently Asked Questions">FAQs</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="write-urdu-features.html" title="Write Urdu | Write Urdu Features">Write Urdu Features</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="english-urdu-typing-tutorial.html" title="Write Urdu | English to Urdu typing tutorial">English to Urdu typing tutorial</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="write-urdu-privacy.html" title="Write Urdu | Free Urdu online Keyboard Terms of Service and Privacy Policy"> Privacy policy</a> |
-                <a href="write-urdu-sitemap.html" title="Write Urdu | Free online Urdu Keyboard Sitemap">Sitemap</a>
-                |
-                <a href="write-urdu-search.html" title="Write Urdu online using English alphabets, Search Urdu articles, Urdu information">Search Urdu</a>
-                | Why
-                <a href="why-write-urdu.html" title=" Write Urdu | Why Write Urdu Online">Write-Urdu.com</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="https://www.onlinekidsmadrasa.com" target="_blank" title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a>
-            </span
-        </div>
-    </footer>
-
+    <footer></footer>
 </body>
 
 </html>
