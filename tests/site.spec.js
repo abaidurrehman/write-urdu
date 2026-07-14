@@ -121,6 +121,8 @@ test('productivity actions sit above the editor and recent drafts opens as a lis
   const editorBox = await editor.boundingBox();
   const actionBox = await historyButton.boundingBox();
   expect(actionBox.y, 'Recent drafts should be above the editor').toBeLessThan(editorBox.y);
+  const productivityBox = await page.locator('.editor-productivity').boundingBox();
+  expect(productivityBox.y, 'Draft status and quick tools should remain below the editor').toBeGreaterThan(editorBox.y);
 
   await historyButton.click();
   await expect(page.locator('[data-history-panel]')).toBeVisible();

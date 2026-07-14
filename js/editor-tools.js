@@ -282,16 +282,16 @@
         var historyPanel = panel.querySelector('[data-history-panel]');
         var historyList = panel.querySelector('[data-history-list]');
         if (toolbar) {
-            // Keep productivity actions beside Copy/Export/Share at the top;
-            // the panels remain associated with the same tool root so all
-            // draft, import and find/replace handlers continue to work.
+            // Promote the discoverability controls beside Copy/Export/Share;
+            // their references stay local so the existing handlers continue
+            // to work after the nodes are re-parented.
             toolbar.appendChild(toolActions);
             toolbar.appendChild(findPanel);
             toolbar.appendChild(historyPanel);
-            toolbar.insertAdjacentElement('afterend', panel);
-        } else {
-            adapter.mount.insertAdjacentElement('afterend', panel);
         }
+        // Keep status, quick punctuation tools and recovery below the editor;
+        // only the discoverability controls are promoted into the top bar.
+        adapter.mount.insertAdjacentElement('afterend', panel);
         markPageIntroduction();
 
         var storage = getStorage();
