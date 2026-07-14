@@ -43,6 +43,10 @@ cmd /c "set LIVE_TRANSLITERATION=1&&npx playwright test --grep transliterat"
 
 Obsolete prototype editor files have been removed; `urdu-editor.html` is the only supported rich-text editor.
 
+## Clean URLs
+
+Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keyboard` and `/urdu-alphabet`. The original `.html` files remain in the repository for backwards-compatible bookmarks. Apache hosts should deploy the included `.htaccess` file so each clean route is internally served by its matching HTML file; the local test server applies the same mapping.
+
 ## Language preference
 
 Every supported page includes the language control in the shared header. English is the default; choosing **اردو** switches the interface copy, page headings, common editor actions, navigation and footer to Urdu, changes the document direction to RTL, and remembers the choice in `localStorage` under `write-urdu:locale:v1`. Choosing **English** restores the LTR interface. Transliteration, keyboard input and export routines are unchanged.

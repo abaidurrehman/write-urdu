@@ -52,8 +52,10 @@ assert.match(runtime, /function ensurePdfDependency\(|cdn\.jsdelivr\.net\/npm\/j
 assert.ok(fs.existsSync(path.join(root, 'manifest.webmanifest')), 'Installable app manifest is missing');
 assert.ok(fs.existsSync(path.join(root, 'sw.js')), 'Offline service worker is missing');
 const manifest = read('manifest.webmanifest');
-assert.match(manifest, /"start_url"\s*:\s*"\.\/index\.html"/, 'PWA manifest start URL is missing');
+assert.match(manifest, /"start_url"\s*:\s*"\.\/"/, 'PWA manifest start URL is missing');
 assert.match(fs.readFileSync(path.join(root, 'sw.js'), 'utf8'), /CACHE_NAME|addEventListener\(['"]fetch['"]/, 'Offline shell service worker is incomplete');
+assert.ok(fs.existsSync(path.join(root, '.htaccess')), 'Clean-route Apache configuration is missing');
+assert.match(fs.readFileSync(path.join(root, '.htaccess'), 'utf8'), /REQUEST_FILENAME\.html|RewriteRule/, 'Clean-route rewrite is incomplete');
 for (const file of ['index.html', 'urdu-editor.html']) {
   const html = read(file);
   assert.match(html, /WriteUrduExport\.renderCanvas/, `${file} does not use the shared export renderer`);
@@ -109,9 +111,9 @@ assert.match(contentLocale, /localizeDocumentation|docs-faq|localizeEditorHelp/,
 const adsScript = fs.readFileSync(path.join(root, 'js', 'ads.js'), 'utf8');
 assert.match(adsScript, /adsbygoogle\.js\?client=ca-pub-4727847909946286/, 'AdSense loader must use the configured publisher client');
 assert.match(adsScript, /crossOrigin\s*=\s*["']anonymous["']/, 'AdSense loader must use anonymous CORS');
-const linkedPages = new Set([...sharedHeader.matchAll(/(?:href:\s*'|href=")([^'"]+\.html)/g)].map(match => match[1]));
 for (const file of htmlFiles) {
-  assert(linkedPages.has(file), `${file} is not connected to the shared header or footer`);
+  const route = file === 'index.html' ? "href: '/'" : "href: '/" + file.replace(/\.html$/i, '') + "'";
+  assert(sharedHeader.includes(route), `${file} is not connected to the shared header or footer`);
 }
 for (const file of allHtmlFiles.filter(file => !htmlFiles.includes(file))) {
   assert.match(read(file), /^google-site-verification:/, `${file} is an unlinked HTML file without a documented infrastructure purpose`);

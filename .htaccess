@@ -1,0 +1,11 @@
+Options -MultiViews
+DirectoryIndex index.html
+
+RewriteEngine On
+
+# Serve clean public routes from the existing static HTML files without a
+# redirect. Legacy .html URLs continue to work as bookmarks and search links.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]

@@ -14,6 +14,7 @@
     function pathName() {
         var path = window.location.pathname.replace(/\/+$/, '') || '/';
         if (window.location.protocol === 'file:') path = '/' + path.split('/').pop();
+        if (path !== '/' && !/\.html$/i.test(path)) path += '.html';
         return path.toLowerCase();
     }
 
@@ -371,6 +372,7 @@
         localizeGuides(locale);
         localizeReferencePages(locale);
         localizeDynamicEditorTools(locale);
+        document.dispatchEvent(new CustomEvent('write-urdu:content-applied'));
     }
 
     window.WriteUrduContentLocale = { apply: apply };

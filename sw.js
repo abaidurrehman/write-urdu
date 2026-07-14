@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v1';
+const CACHE_NAME = 'write-urdu-shell-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -46,7 +46,15 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
         }
         return response;
-      }).catch(() => caches.match('./index.html'));
+      }).catch(() => {
+        const url = new URL(event.request.url);
+        const extensionless = url.pathname !== '/' && !url.pathname.endsWith('/') && !url.pathname.includes('.');
+        if (extensionless) {
+          const fallback = new Request(url.origin + url.pathname + '.html', event.request);
+          return caches.match(fallback);
+        }
+        return caches.match('./index.html');
+      });
     })
   );
 });

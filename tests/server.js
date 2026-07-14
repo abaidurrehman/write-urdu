@@ -14,7 +14,11 @@ const types = {
 
 http.createServer((request, response) => {
   const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-  const requested = pathname === '/' ? '/index.html' : pathname;
+  let requested = pathname === '/' ? '/index.html' : pathname;
+  const extensionlessFile = path.resolve(root, '.' + requested + '.html');
+  if (requested !== '/' && !path.extname(requested) && fs.existsSync(extensionlessFile)) {
+    requested += '.html';
+  }
   const filename = path.resolve(root, '.' + requested);
   if (!filename.startsWith(root + path.sep)) {
     response.writeHead(403).end('Forbidden');

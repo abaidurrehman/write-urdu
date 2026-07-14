@@ -6,13 +6,13 @@
     var deferredInstallPrompt = null;
 
     var links = [
-        { href: 'index.html', match: ['/', '/index.html'], key: 'home', label: 'Write Urdu' },
-        { href: 'urdu-editor.html', key: 'editor', label: 'Rich Text Editor' },
-        { href: 'urdu-keyboard.html', key: 'keyboard', label: 'Urdu Keyboard' },
-        { href: 'urdu-alphabet.html', key: 'alphabet', label: 'Urdu Alphabet' },
-        { href: 'write-urdu-documentation.html', key: 'documentation', label: 'Documentation' },
-        { href: 'write-urdu-features.html', key: 'features', label: 'Features' },
-        { href: 'english-urdu-typing-tutorial.html', key: 'tutorials', label: 'Tutorials' }
+        { href: '/', match: ['/', '/index.html'], key: 'home', label: 'Write Urdu' },
+        { href: '/urdu-editor', match: ['/urdu-editor', '/urdu-editor.html'], key: 'editor', label: 'Rich Text Editor' },
+        { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard' },
+        { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet' },
+        { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation' },
+        { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features' },
+        { href: '/english-urdu-typing-tutorial', match: ['/english-urdu-typing-tutorial', '/english-urdu-typing-tutorial.html'], key: 'tutorials', label: 'Tutorials' }
     ];
 
     var dictionary = {
@@ -123,6 +123,12 @@
         '/write-urdu-sitemap.html': { title: ['Write Urdu Sitemap', 'رائٹ اردو سائٹ میپ'], subtitle: ['Editors, guides and information pages', 'ایڈیٹرز، رہنما اور معلوماتی صفحات'], documentTitle: ['Write Urdu Sitemap | Editors, Guides and Policies', 'رائٹ اردو سائٹ میپ | ایڈیٹرز، رہنما اور پالیسیاں'] }
     };
 
+    // The source files remain available with their .html names for backwards
+    // compatibility, while the public URLs use clean extensionless routes.
+    Object.keys(pageCopy).forEach(function (path) {
+        if (/\.html$/i.test(path)) pageCopy[path.replace(/\.html$/i, '')] = pageCopy[path];
+    });
+
     function readLocale() {
         try {
             return window.localStorage.getItem(LOCALE_KEY) === 'ur' ? 'ur' : 'en';
@@ -148,6 +154,19 @@
         return path.toLowerCase();
     }
 
+    function normalizeInternalLinks() {
+        document.querySelectorAll('a[href]').forEach(function (link) {
+            var href = link.getAttribute('href');
+            if (!href || /^(?:[a-z]+:|\/\/|#)/i.test(href)) return;
+            var match = href.match(/^([^?#]*?)([?#].*)?$/);
+            if (!match || !/\.html$/i.test(match[1])) return;
+            var route = match[1].replace(/\.html$/i, '');
+            link.setAttribute('href', route === 'index' ? '/' : '/' + route.replace(/^\/+/, '') + (match[2] || ''));
+        });
+    }
+
+    document.addEventListener('write-urdu:content-applied', normalizeInternalLinks);
+
     function isActive(link, path) {
         var candidates = link.match || [link.href];
         return candidates.some(function (candidate) {
@@ -170,16 +189,16 @@
         if (!footer) return;
         footer.innerHTML =
             '<nav class="wu-footer-links" aria-label="Footer navigation">' +
-                '<a href="index.html" data-wu-i18n-key="footer.home">Write Urdu</a>' +
-                '<a href="urdu-faq.html" data-wu-i18n-key="footer.faq">FAQ</a>' +
-                '<a href="write-urdu-documentation.html" data-wu-i18n-key="footer.documentation">Documentation</a>' +
-                '<a href="write-urdu-features.html" data-wu-i18n-key="footer.features">Features</a>' +
-                '<a href="urdu-editor-features.html" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
-                '<a href="english-urdu-typing-tutorial.html" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
-                '<a href="write-urdu-privacy.html" data-wu-i18n-key="footer.privacy">Privacy and terms</a>' +
-                '<a href="write-urdu-sitemap.html" data-wu-i18n-key="footer.sitemap">Sitemap</a>' +
-                '<a href="write-urdu-search.html" data-wu-i18n-key="footer.search">Search</a>' +
-                '<a href="why-write-urdu.html" data-wu-i18n-key="footer.why">Why Write Urdu?</a>' +
+                '<a href="/" data-wu-i18n-key="footer.home">Write Urdu</a>' +
+                '<a href="/urdu-faq" data-wu-i18n-key="footer.faq">FAQ</a>' +
+                '<a href="/write-urdu-documentation" data-wu-i18n-key="footer.documentation">Documentation</a>' +
+                '<a href="/write-urdu-features" data-wu-i18n-key="footer.features">Features</a>' +
+                '<a href="/urdu-editor-features" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
+                '<a href="/english-urdu-typing-tutorial" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
+                '<a href="/write-urdu-privacy" data-wu-i18n-key="footer.privacy">Privacy and terms</a>' +
+                '<a href="/write-urdu-sitemap" data-wu-i18n-key="footer.sitemap">Sitemap</a>' +
+                '<a href="/write-urdu-search" data-wu-i18n-key="footer.search">Search</a>' +
+                '<a href="/why-write-urdu" data-wu-i18n-key="footer.why">Why Write Urdu?</a>' +
                 '<a href="https://www.onlinekidsmadrasa.com" target="_blank" rel="noopener noreferrer" data-wu-i18n-key="footer.quran">Learn Quran Online</a>' +
             '</nav>' +
             '<p class="wu-footer-note" data-wu-i18n-key="footer.note">© Write Urdu. Browser-based Urdu typing tools.</p>';
@@ -386,6 +405,7 @@
         if (window.WriteUrduContentLocale && typeof window.WriteUrduContentLocale.apply === 'function') {
             window.WriteUrduContentLocale.apply(currentLocale);
         }
+        normalizeInternalLinks();
         document.dispatchEvent(new CustomEvent('write-urdu:locale-change', { detail: { locale: currentLocale } }));
     }
 
@@ -412,7 +432,7 @@
         if (!oldNav) return;
 
         var currentPath = normalizedPath();
-        if (!['/', '/index.html', '/urdu-editor.html', '/urdu-keyboard.html'].includes(currentPath)) {
+        if (!['/', '/index.html', '/urdu-editor', '/urdu-editor.html', '/urdu-keyboard', '/urdu-keyboard.html'].includes(currentPath)) {
             document.body.classList.add('content-page');
         }
 
