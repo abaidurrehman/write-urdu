@@ -234,7 +234,7 @@ test('mobile menu and primary tools remain inside the viewport', async ({ page, 
 
 test('content pages retain readable typography and responsive embeds', async ({ page }) => {
   await blockNonVisualServices(page);
-  for (const route of ['/write-urdu-features.html', '/write-urdu-documentation.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-privacy.html']) {
+  for (const route of ['/write-urdu-features.html', '/write-urdu-documentation.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-search.html', '/write-urdu-privacy.html']) {
     await openFile(page, route);
     await expect(page.locator('body')).toHaveClass(/content-page/);
     await expect(page.locator('.wu-header-ad')).toHaveCount(1);

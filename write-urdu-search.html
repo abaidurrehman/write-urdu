@@ -33,9 +33,10 @@
 
 <script src="site-header.js" defer></script>
 <link href="css/site-header.css" rel="stylesheet" type="text/css" />
+<link href="css/search.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
+<body class="search-page">
 
  <div class="container-fluid">
         <nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -101,17 +102,15 @@
                 <p class="steps">Search for guidance about Roman Urdu transliteration, the
                     <a href="urdu-keyboard.html" title="Open the online Urdu keyboard">online Urdu keyboard</a>,
                     exporting documents or formatting Urdu text.</p>
-                <style type="text/css">
-                    @import url(//www.google.com/cse/api/branding.css);
-                </style>
                 <div class="cse-branding-bottom" style="background-color:#FFFFFF;color:#000000">
                     <div class="cse-branding-form">
-                        <form action="https://www.write-urdu.com/write-urdu-search.html" id="cse-search-box">
+                        <form action="/write-urdu-search" id="cse-search-box" role="search">
+                            <label for="search-query">Search Write Urdu guides</label>
                             <div>
                                 <input type="hidden" name="cx" value="partner-pub-4727847909946286:e8ay8o1zxjh" />
                                 <input type="hidden" name="cof" value="FORID:10" />
-                                <input type="hidden" name="ie" value="ISO-8859-1" />
-                                <input type="text" name="q" size="20" />
+                                <input type="hidden" name="ie" value="UTF-8" />
+                                <input id="search-query" type="search" name="q" autocomplete="off" placeholder="For example: Urdu keyboard" />
                                 <input type="submit" name="sa" value="Search" />
                             </div>
                         </form>
@@ -177,7 +176,7 @@
             |
             <span class="Footer-credit">
                 <a href="https://www.onlinekidsmadrasa.com" target="_blank" title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a>
-            </span
+            </span>
         </div>
     </footer>
 

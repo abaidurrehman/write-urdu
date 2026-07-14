@@ -1,0 +1,152 @@
+/* Search page reset: the original page used floated Bootstrap columns and
+   fixed-width Google branding, which caused overflow after the shared header
+   was introduced. The search form/results IDs remain unchanged. */
+body.search-page {
+    min-height: 100vh;
+    margin: 0;
+    background:
+        radial-gradient(circle at 8% 12%, rgba(204, 239, 219, .7), transparent 28rem),
+        linear-gradient(180deg, #f6fbf8 0, #fff 34rem);
+    color: #263a30;
+}
+
+body.search-page > .container-fluid {
+    display: block;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+body.search-page > .container-fluid > .col-md-11 { display: none!important; }
+body.search-page > .container-fluid > .col-md-12 {
+    width: min(980px, calc(100% - 40px));
+    max-width: none!important;
+    float: none!important;
+    margin: 0 auto!important;
+    padding: clamp(34px, 6vw, 76px) 0 88px;
+    box-sizing: border-box;
+    text-align: left!important;
+}
+
+body.search-page .col-md-12 > a { display: none; }
+body.search-page .col-md-12 > h1 {
+    margin: 0;
+    color: #12271d;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-size: clamp(2.35rem, 5.6vw, 4.8rem);
+    font-weight: 800;
+    letter-spacing: -.055em;
+    line-height: 1.05;
+}
+
+body.search-page .col-md-12 > h1::after {
+    display: block;
+    max-width: 620px;
+    margin-top: 18px;
+    color: #3e5d4d;
+    content: "Find practical guidance for Roman Urdu transliteration, the Urdu keyboard, document exports and rich-text formatting.";
+    font-size: clamp(1rem, 1.7vw, 1.14rem);
+    font-weight: 450;
+    letter-spacing: 0;
+    line-height: 1.72;
+}
+
+body.search-page .col-md-12 > div[style*="text-align:right"] {
+    width: min(100%, 980px)!important;
+    margin: 32px 0 0!important;
+    padding: 19px 24px!important;
+    border: 1px solid rgba(22, 116, 72, .15);
+    border-radius: 18px;
+    background: linear-gradient(135deg, #e5f5eb, #f9fcfa);
+    box-sizing: border-box;
+    text-align: right!important;
+}
+body.search-page .col-md-12 > div[style*="text-align:right"] > div {
+    float: none!important;
+    color: #0a2d1d;
+    font-family: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+    font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+    line-height: 2;
+    text-align: right;
+}
+
+body.search-page .col-md-12 > div[style*="margin-top"] {
+    max-width: none;
+    margin: 34px 0 0!important;
+    padding: clamp(22px, 4vw, 34px);
+    border: 1px solid #d6e6dc;
+    border-radius: 19px;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 14px 34px rgba(21, 64, 41, .07);
+    box-sizing: border-box;
+}
+
+body.search-page .col-md-12 > div[style*="margin-top"] > p.steps {
+    max-width: 72ch;
+    margin: 0 0 20px;
+    color: #40564a;
+    font-size: 1rem;
+    line-height: 1.72;
+}
+body.search-page .col-md-12 a { color: #126b40; font-weight: 650; }
+body.search-page .col-md-12 a:hover { color: #0a4b2b; }
+
+body.search-page .cse-branding-bottom {
+    display: block;
+    width: 100%;
+    padding: 0!important;
+    background: transparent!important;
+    color: #263a30!important;
+}
+body.search-page .cse-branding-form { width: 100%; }
+body.search-page .cse-branding-form form { width: 100%; margin: 0; }
+body.search-page #cse-search-box > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 9px; }
+body.search-page #cse-search-box > label { display: block; margin-bottom: 8px; color: #40564a; font-size: .82rem; font-weight: 750; }
+body.search-page #cse-search-box input[type="hidden"] { display: none; }
+body.search-page #cse-search-box input[type="search"] {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #cbded1;
+    border-radius: 10px;
+    background: #fff;
+    color: #263a30;
+    font: 1rem/1.4 Inter, "Segoe UI", Arial, sans-serif;
+    box-sizing: border-box;
+}
+body.search-page #cse-search-box input[type="search"]:focus { border-color: #167448; outline: 3px solid rgba(22, 116, 72, .14); }
+body.search-page #cse-search-box input[type="submit"] {
+    min-width: 92px;
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 10px;
+    background: #167448;
+    color: #fff;
+    font: 750 .9rem/1 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+}
+body.search-page #cse-search-box input[type="submit"]:hover { background: #0a2d1d; }
+body.search-page .cse-branding-logo { display: none; }
+body.search-page .cse-branding-text { margin-top: 10px; color: #718277; font-size: .72rem; letter-spacing: .04em; }
+body.search-page #cse-search-results {
+    min-height: 88px;
+    margin-top: 25px;
+    padding: 20px;
+    border: 1px solid #d6e6dc;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .88);
+    box-sizing: border-box;
+}
+body.search-page .col-md-12 > br { display: none; }
+body.search-page .col-md-12 > div[style*="padding-top"] { display: none; }
+
+body.search-page footer { clear: both; }
+
+@media (max-width: 600px) {
+    body.search-page > .container-fluid > .col-md-12 { width: min(100% - 24px, 980px); padding-top: 28px; }
+    body.search-page .col-md-12 > h1 { font-size: clamp(2.35rem, 13vw, 4rem); }
+    body.search-page #cse-search-box > div { grid-template-columns: 1fr; }
+    body.search-page #cse-search-box input[type="submit"] { width: 100%; }
+    body.search-page .col-md-12 > div[style*="text-align:right"] { padding: 15px 17px!important; }
+}
