@@ -398,7 +398,7 @@
         var element = document.getElementById('transliterateTextarea');
         try {
             var canvas = await WriteUrduExport.renderCanvas(element);
-            WriteUrduExport.downloadPdf(canvas, document.getElementById('inputFileNameToSaveAs').value);
+            await WriteUrduExport.downloadPdf(canvas, document.getElementById('inputFileNameToSaveAs').value);
             WriteUrduUI.notify('PDF exported successfully.', 'success');
         } catch (error) {
             console.error(error);

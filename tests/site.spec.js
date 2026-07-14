@@ -391,7 +391,7 @@ test('export rendering adds Urdu-safe margins and paginates long PDFs', async ({
         };
       }
     };
-    WriteUrduExport.downloadPdf(canvas, 'My:Urdu/File');
+    await WriteUrduExport.downloadPdf(canvas, 'My:Urdu/File');
     return {
       capture: basicCapture,
       richCapture,

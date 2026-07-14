@@ -79,6 +79,48 @@
         return name || fallback || 'write-urdu';
     }
 
+    var pdfDependencyPromise = null;
+
+    function hasPdfDependency() {
+        return Boolean(window.jspdf && typeof window.jspdf.jsPDF === 'function');
+    }
+
+    function loadPdfScript(url) {
+        return new Promise(function (resolve, reject) {
+            var script = document.createElement('script');
+            script.src = url;
+            script.async = true;
+            script.onload = function () {
+                if (hasPdfDependency()) resolve(window.jspdf.jsPDF);
+                else reject(new Error('The PDF library loaded without its jsPDF API.'));
+            };
+            script.onerror = function () { reject(new Error('The PDF library could not be loaded.')); };
+            document.head.appendChild(script);
+        });
+    }
+
+    function ensurePdfDependency() {
+        if (hasPdfDependency()) return Promise.resolve(window.jspdf.jsPDF);
+        if (pdfDependencyPromise) return pdfDependencyPromise;
+
+        // The page includes the primary URL for normal loads. These lazy
+        // fallbacks handle blocked, offline or failed CDN requests when the
+        // user actually chooses PDF export.
+        var sources = [
+            'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js'
+        ];
+        function trySource(index) {
+            if (index >= sources.length) return Promise.reject(new Error('PDF export dependency is unavailable.'));
+            return loadPdfScript(sources[index]).catch(function () { return trySource(index + 1); });
+        }
+        pdfDependencyPromise = trySource(0).catch(function (error) {
+            pdfDependencyPromise = null;
+            throw error;
+        });
+        return pdfDependencyPromise;
+    }
+
     function exportBackground(source) {
         var color = window.getComputedStyle(source).backgroundColor;
         return !color || color === 'rgba(0, 0, 0, 0)' || color === 'transparent' ? '#ffffff' : color;
@@ -193,9 +235,7 @@
         window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     }
 
-    function downloadPdf(canvas, filename) {
-        if (!window.jspdf || !window.jspdf.jsPDF) throw new Error('PDF export dependency is unavailable.');
-        var jsPDF = window.jspdf.jsPDF;
+    function createPdf(canvas, filename, jsPDF) {
         var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
         var pageWidth = doc.internal.pageSize.getWidth();
         var pageHeight = doc.internal.pageSize.getHeight();
@@ -222,6 +262,15 @@
             page += 1;
         }
         doc.save(safeFilename(filename, 'write-urdu') + '.pdf');
+    }
+
+    function downloadPdf(canvas, filename) {
+        if (!hasPdfDependency()) {
+            return ensurePdfDependency().then(function (jsPDF) {
+                return createPdf(canvas, filename, jsPDF);
+            });
+        }
+        return createPdf(canvas, filename, window.jspdf.jsPDF);
     }
 
     function printCanvas(printWindow, canvas) {

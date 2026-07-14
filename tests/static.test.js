@@ -48,6 +48,7 @@ assert.match(mainScript, /new Blob\(\[['"]\\ufeff['"],\s*textToSave\].*charset=u
 
 const runtime = fs.readFileSync(path.join(root, 'js', 'site-runtime.js'), 'utf8');
 assert.match(runtime, /padding:\s*['"]64px 58px 34px['"]|function renderCanvas\(|function downloadPdf\(/, 'Shared padded export rendering is missing');
+assert.match(runtime, /function ensurePdfDependency\(|cdn\.jsdelivr\.net\/npm\/jspdf/, 'PDF export retry loader is missing');
 for (const file of ['index.html', 'urdu-editor.html']) {
   const html = read(file);
   assert.match(html, /WriteUrduExport\.renderCanvas/, `${file} does not use the shared export renderer`);

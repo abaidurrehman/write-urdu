@@ -512,7 +512,7 @@
             var element = getRichEditorElement();
             try {
                 var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
-                WriteUrduExport.downloadPdf(canvas, 'write-urdu');
+                await WriteUrduExport.downloadPdf(canvas, 'write-urdu');
                 WriteUrduUI.notify('PDF exported successfully.', 'success');
             } catch (error) {
                 console.error(error);
