@@ -35,6 +35,7 @@
                 about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere',
                 note: '© Write Urdu. Browser-based Urdu typing tools.'
             },
+            header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Your writing stays in this browser unless you choose to export or share it.' },
             aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
             languageAction: 'اردو',
             ui: {
@@ -82,6 +83,7 @@
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے',
                 note: '© رائٹ اردو۔ براؤزر پر مبنی اردو ٹائپنگ ٹولز۔'
             },
+            header: { local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', free: 'استعمال کے لیے مفت', privacy: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔' },
             aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
             languageAction: 'English',
             ui: {
@@ -213,6 +215,7 @@
                         '<div class="wu-footer-trust" aria-label="Write Urdu benefits">' +
                             '<span><span class="wu-footer-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="footer.local">Runs in your browser</span></span>' +
                             '<span><span class="wu-footer-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="footer.noAccount">No account required</span></span>' +
+                            '<span><span class="wu-footer-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.free">Free to use</span></span>' +
                         '</div>' +
                     '</div>' +
                     '<nav class="wu-footer-links wu-footer-nav" aria-label="Footer navigation">' +
@@ -509,6 +512,14 @@
                 '</nav>' +
                 '<button class="wu-install-toggle" type="button" data-wu-install hidden>Install app</button>' +
                 '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
+            '</div>' +
+            '<div class="wu-header-trustbar" role="note" aria-label="Privacy and access information">' +
+                '<div class="wu-header-trustbar-inner">' +
+                    '<span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.local">Runs in your browser</span></span>' +
+                    '<span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.noAccount">No account required</span></span>' +
+                    '<span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.free">Free to use</span></span>' +
+                    '<span class="wu-header-privacy" data-wu-i18n-key="header.privacy">Your writing stays in this browser unless you choose to export or share it.</span>' +
+                '</div>' +
             '</div>';
 
         var wrapper = oldNav.parentElement;

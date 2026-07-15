@@ -119,3 +119,15 @@ html[dir="rtl"] body footer.wu-footer .wu-footer-bottom{direction:rtl}
 @media(max-width:900px){body footer.wu-footer .wu-footer-main{grid-template-columns:1fr;gap:38px}body footer.wu-footer .wu-footer-brand-column{max-width:480px}body footer.wu-footer .wu-footer-description{max-width:48ch}}
 @media(max-width:620px){body footer.wu-footer{margin-top:40px}body footer.wu-footer .wu-footer-inner{width:calc(100% - 32px);padding:40px 0 18px}body footer.wu-footer .wu-footer-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 24px}body footer.wu-footer .wu-footer-group h2{font-size:.7rem}body footer.wu-footer .wu-footer-group a{font-size:.81rem}body footer.wu-footer .wu-footer-privacy{align-items:flex-start;margin-top:36px;font-size:.76rem}body footer.wu-footer .wu-footer-bottom{align-items:flex-start;flex-direction:column;gap:5px}}
 @media(prefers-reduced-motion:reduce){body footer.wu-footer .wu-footer-group a{transition:none}}
+
+/* A compact privacy reassurance directly below the main navigation. */
+.wu-header-trustbar{border-top:1px solid rgba(255,255,255,.07);background:rgba(4,27,17,.42)}
+.wu-header-trustbar-inner{display:flex;align-items:center;gap:18px;width:min(1180px,calc(100% - 40px));min-height:29px;margin:0 auto;color:rgba(231,244,235,.7);font-size:.71rem;line-height:1.35}
+.wu-header-trust-item{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.wu-header-trust-icon{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border:1px solid rgba(216,243,106,.56);border-radius:50%;color:#d8f36a;font-size:.65rem;font-weight:800;line-height:1}
+.wu-header-privacy{margin-left:auto;color:rgba(231,244,235,.48);font-size:.68rem;white-space:nowrap}
+html[dir="rtl"] .wu-header-trustbar{text-align:right}
+html[dir="rtl"] .wu-header-trustbar-inner{direction:rtl}
+html[dir="rtl"] .wu-header-privacy{margin-right:auto;margin-left:0}
+@media(max-width:900px){.wu-header-privacy{display:none}}
+@media(max-width:520px){.wu-header-trustbar-inner{justify-content:center;flex-wrap:wrap;gap:5px 13px;width:calc(100% - 24px);min-height:27px;padding:5px 0;font-size:.67rem}.wu-header-trust-icon{width:16px;height:16px}}
