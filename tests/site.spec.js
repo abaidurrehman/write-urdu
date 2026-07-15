@@ -345,7 +345,7 @@ test('localized formatting guidance preserves screenshots and links', async ({ p
   await expect(page.locator('.content-article h2').first()).toHaveText('۱۔ متن کا رنگ تبدیل کریں');
   const imageCount = await page.locator('.content-article img').count();
   expect(imageCount).toBeGreaterThan(0);
-  await expect(page.locator('.content-article img').first()).toHaveAttribute('alt', 'متن کے رنگ کی پیلیٹ');
+  await expect(page.locator('.content-article img').first()).toHaveAttribute('alt', 'رائٹ اردو کے موجودہ رچ ٹیکسٹ ایڈیٹر کا ٹول بار');
   if (isMobile) await page.locator('.wu-menu-toggle').click();
   await page.getByRole('button', { name: 'Switch to English' }).click();
   await expect(page.locator('.content-article h2').first()).toHaveText('1. Change the text colour');
