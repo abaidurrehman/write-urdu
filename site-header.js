@@ -211,7 +211,7 @@
     }
 
     function renderHeaderAd(header) {
-        if (!document.body.classList.contains('content-page') || document.body.classList.contains('card-studio-page') || document.querySelector('.wu-header-ad')) return;
+        if (!document.body.classList.contains('content-page') || document.body.classList.contains('card-studio-page') || document.body.classList.contains('qr-generator-page') || document.querySelector('.wu-header-ad')) return;
 
         var adRegion = document.createElement('aside');
         adRegion.className = 'wu-header-ad';

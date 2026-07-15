@@ -18,8 +18,8 @@
                 <p class="qr-subtitle">Create a static QR code privately in your browser.</p>
             </div>
             <div class="qr-top-actions">
-                <button type="button" class="qr-button" data-qr-reset>Reset</button>
-                <a class="qr-button qr-button-light" href="/">Back to Write Urdu</a>
+                <button type="button" class="qr-button" data-qr-reset data-qr-copy="reset">Reset</button>
+                <a class="qr-button qr-button-light" href="/" data-qr-copy="back">Back to Write Urdu</a>
             </div>
         </header>
 
@@ -27,33 +27,33 @@
         <div class="qr-layout">
             <section class="qr-panel" aria-label="QR code settings">
                 <div class="qr-section">
-                    <label class="qr-label" for="qrType">What would you like to encode?</label>
+                    <label class="qr-label" for="qrType" data-qr-copy="encodeQuestion">What would you like to encode?</label>
                     <select id="qrType" class="qr-control" data-qr-type aria-describedby="qrTypeHelp"></select>
                     <p id="qrTypeHelp" class="qr-help">Choose a format and fill in the fields below. The QR code is static and does not track scans.</p>
                 </div>
                 <div class="qr-section" data-qr-fields></div>
                 <div class="qr-section">
-                    <h2>Design</h2>
+                    <h2 data-qr-copy="design">Design</h2>
                     <div class="qr-control-grid">
-                        <label class="qr-label">QR colour<input class="qr-color" type="color" value="#111827" data-qr-design="foregroundColor"></label>
-                        <label class="qr-label">Background<input class="qr-color" type="color" value="#ffffff" data-qr-design="backgroundColor"></label>
+                        <label class="qr-label" data-qr-copy="qrColour">QR colour<input class="qr-color" type="color" value="#111827" data-qr-design="foregroundColor"></label>
+                        <label class="qr-label" data-qr-copy="background">Background<input class="qr-color" type="color" value="#ffffff" data-qr-design="backgroundColor"></label>
                     </div>
                     <div class="qr-control-grid">
                         <label class="qr-label" for="qrMargin">Quiet-zone margin<select id="qrMargin" class="qr-control" data-qr-design="margin"><option value="0">None</option><option value="2">Compact</option><option value="4" selected>Recommended</option><option value="6">Wide</option></select></label>
                         <label class="qr-label" for="qrCorrection">Error correction<select id="qrCorrection" class="qr-control" data-qr-design="errorCorrectionLevel"><option value="L">Low</option><option value="M">Medium</option><option value="Q" selected>Quartile</option><option value="H">High</option></select></label>
                     </div>
                     <label class="qr-label" for="qrSize">PNG output size<select id="qrSize" class="qr-control" data-qr-export="pngSize"><option value="512">512 × 512</option><option value="1024" selected>1024 × 1024</option><option value="2048">2048 × 2048</option><option value="4096">4096 × 4096</option></select></label>
-                    <p class="qr-help">A dark QR colour, light background and four-module margin are safest for scanning.</p>
+                    <p class="qr-help" data-qr-copy="designHelp">A dark QR colour, light background and four-module margin are safest for scanning.</p>
                 </div>
                 <div class="qr-section">
-                    <h2>Centre logo <span class="qr-optional">optional</span></h2>
-                    <label class="qr-upload"><span>Choose a local PNG, JPG or WebP</span><input type="file" accept="image/png,image/jpeg,image/webp" data-qr-logo></label>
+                    <h2><span data-qr-copy="centreLogo">Centre logo</span> <span class="qr-optional" data-qr-copy="optional">optional</span></h2>
+                    <label class="qr-upload"><span data-qr-copy="chooseLogo">Choose a local PNG, JPG or WebP</span><input type="file" accept="image/png,image/jpeg,image/webp" data-qr-logo></label>
                     <div class="qr-logo-options" data-qr-logo-options hidden>
                         <label class="qr-label">Logo size <output data-qr-logo-size-value>18%</output><input type="range" min="10" max="24" value="18" data-qr-logo-size></label>
                         <label class="qr-label">Plate shape<select class="qr-control" data-qr-logo-shape><option value="rounded-square">Rounded square</option><option value="circle">Circle</option></select></label>
-                        <button type="button" class="qr-link-button" data-qr-remove-logo>Remove logo</button>
+                        <button type="button" class="qr-link-button" data-qr-remove-logo data-qr-copy="removeLogo">Remove logo</button>
                     </div>
-                    <p class="qr-help">The logo is processed on this device. Adding one automatically uses high error correction.</p>
+                    <p class="qr-help" data-qr-copy="logoHelp">The logo is processed on this device. Adding one automatically uses high error correction.</p>
                 </div>
             </section>
 
@@ -65,10 +65,10 @@
                 <div class="qr-health" data-qr-health aria-live="polite"></div>
                 <div class="qr-status" data-qr-status role="status" aria-live="polite"></div>
                 <div class="qr-actions">
-                    <button type="button" class="qr-button qr-button-primary" data-qr-download-png disabled>Download PNG</button>
-                    <button type="button" class="qr-button qr-button-secondary" data-qr-download-svg disabled>Download SVG</button>
-                    <button type="button" class="qr-button qr-button-light" data-qr-copy disabled>Copy image</button>
-                    <button type="button" class="qr-button qr-button-light" data-qr-share disabled>Share</button>
+                    <button type="button" class="qr-button qr-button-primary" data-qr-download-png data-qr-copy="downloadPng" disabled>Download PNG</button>
+                    <button type="button" class="qr-button qr-button-secondary" data-qr-download-svg data-qr-copy="downloadSvg" disabled>Download SVG</button>
+                    <button type="button" class="qr-button qr-button-light" data-qr-copy-image data-qr-copy="copyImage" disabled>Copy image</button>
+                    <button type="button" class="qr-button qr-button-light" data-qr-share data-qr-copy="share" disabled>Share</button>
                 </div>
                 <details class="qr-encoded"><summary>Show encoded content</summary><pre data-qr-payload aria-label="Encoded QR content"></pre></details>
             </section>

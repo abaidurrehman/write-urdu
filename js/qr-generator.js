@@ -53,6 +53,10 @@
             ssid: 'نیٹ ورک کا نام (SSID)', security: 'سکیورٹی', password: 'پاس ورڈ', hidden: 'پوشیدہ نیٹ ورک', fullName: 'پورا نام', organization: 'ادارہ (اختیاری)', title: 'عہدہ (اختیاری)', mobile: 'موبائل فون (اختیاری)', workPhone: 'کام کا فون (اختیاری)', website: 'ویب سائٹ (اختیاری)', street: 'گلی (اختیاری)', city: 'شہر (اختیاری)', region: 'صوبہ یا علاقہ (اختیاری)', postalCode: 'ڈاک کوڈ (اختیاری)', country: 'ملک (اختیاری)', note: 'نوٹ (اختیاری)', latitude: 'عرض بلد', longitude: 'طول بلد', addHttps: 'ضرورت ہو تو https:// شامل کریں', showPassword: 'پاس ورڈ دکھائیں', hidePassword: 'پاس ورڈ چھپائیں', open: 'کوئی سکیورٹی نہیں (کھلا نیٹ ورک)', wpa: 'WPA / WPA2 / WPA3', wep: 'WEP'
         }
     };
+    var staticCopy = {
+        en: { reset: 'Reset', back: 'Back to Write Urdu', encodeQuestion: 'What would you like to encode?', design: 'Design', qrColour: 'QR colour', background: 'Background', designHelp: 'A dark QR colour, light background and four-module margin are safest for scanning.', centreLogo: 'Centre logo', optional: 'optional', chooseLogo: 'Choose a local PNG, JPG or WebP', removeLogo: 'Remove logo', logoHelp: 'The logo is processed on this device. Adding one automatically uses high error correction.', downloadPng: 'Download PNG', downloadSvg: 'Download SVG', copyImage: 'Copy image', share: 'Share' },
+        ur: { reset: 'ری سیٹ', back: 'رائٹ اردو پر واپس جائیں', encodeQuestion: 'آپ کیا شامل کرنا چاہتے ہیں؟', design: 'ڈیزائن', qrColour: 'QR رنگ', background: 'پس منظر', designHelp: 'گہرا QR رنگ، ہلکا پس منظر اور چار ماڈیول کا حاشیہ اسکین کے لیے زیادہ قابلِ اعتماد ہے۔', centreLogo: 'مرکزی لوگو', optional: 'اختیاری', chooseLogo: 'مقامی PNG، JPG یا WebP منتخب کریں', removeLogo: 'لوگو ہٹائیں', logoHelp: 'لوگو اسی آلے پر پروسیس ہوتا ہے۔ لوگو شامل کرنے پر زیادہ خرابی اصلاح خود منتخب ہوتی ہے۔', downloadPng: 'PNG ڈاؤن لوڈ کریں', downloadSvg: 'SVG ڈاؤن لوڈ کریں', copyImage: 'تصویر کاپی کریں', share: 'شیئر کریں' }
+    };
 
     function locale() { return window.WriteUrduLocale && window.WriteUrduLocale.get() === 'ur' ? 'ur' : 'en'; }
     function t(key) { return labels[locale()][key] || labels.en[key] || key; }
@@ -136,11 +140,10 @@
     function readIncoming() { try { var value = window.sessionStorage.getItem(incomingKey); if (!value) return null; window.sessionStorage.removeItem(incomingKey); return JSON.parse(value); } catch (error) { return null; } }
     function readSaved() { try { var value = window.localStorage.getItem(storageKey); return value ? JSON.parse(value) : null; } catch (error) { return null; } }
     function setFieldError(name, message) {
-        root.querySelectorAll('.qr-field-error').forEach(function (node) { node.remove(); });
         if (!message) return;
         var input = root.querySelector('[data-qr-field="' + name + '"]');
         if (!input) return;
-        var error = document.createElement('p'); error.className = 'qr-field-error'; error.textContent = message; input.parentElement.appendChild(error); input.setAttribute('aria-invalid', 'true');
+        var error = document.createElement('p'); error.className = 'qr-field-error'; error.id = 'qr-error-' + name; error.textContent = message; input.parentElement.appendChild(error); input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', error.id);
     }
     function renderHealth(validation) {
         var health = root.querySelector('[data-qr-health]');
@@ -155,6 +158,7 @@
     function loadLogoImage(dataUrl) {
         return new Promise(function (resolve, reject) { if (!dataUrl) return resolve(null); var image = new Image(); image.onload = function () { resolve(image); }; image.onerror = reject; image.src = dataUrl; });
     }
+    function isSafeLogoDataUrl(dataUrl) { return /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(String(dataUrl || '')); }
     function drawLogo(context, size) {
         if (!logoImage || !state.logo.enabled) return;
         var placement = core.calculateLogoPlacement(size, { width: logoImage.naturalWidth || logoImage.width, height: logoImage.naturalHeight || logoImage.height }, state.logo);
@@ -168,7 +172,9 @@
         var validation = core.validateQrProject(state);
         renderHealth(validation);
         root.querySelector('[data-qr-payload]').textContent = validation.payload.payload || '';
-        Object.keys(validation.payload.errors || {}).some(function (name) { setFieldError(name, validation.payload.errors[name]); return true; });
+        root.querySelectorAll('.qr-field-error').forEach(function (node) { node.remove(); });
+        root.querySelectorAll('[aria-invalid="true"]').forEach(function (node) { node.removeAttribute('aria-invalid'); node.removeAttribute('aria-describedby'); });
+        Object.keys(validation.payload.errors || {}).forEach(function (name) { setFieldError(name, validation.payload.errors[name]); });
         var buttons = root.querySelectorAll('[data-qr-download-png],[data-qr-download-svg],[data-qr-copy],[data-qr-share]');
         buttons.forEach(function (button) { button.disabled = !validation.valid; });
         if (!validation.valid) { root.querySelector('[data-qr-preview-empty]').hidden = false; canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); return; }
@@ -190,7 +196,7 @@
     async function finalCanvas() { collectFields(); var validation = core.validateQrProject(state); if (!validation.valid) throw new Error('invalid'); if (state.logo.enabled && !logoImage) logoImage = await loadLogoImage(state.logo.dataUrl); var output = document.createElement('canvas'); output.width = state.export.pngSize; output.height = state.export.pngSize; await QRCode.toCanvas(output, validation.payload.payload, qrOptions(state.export.pngSize)); drawLogo(output.getContext('2d'), state.export.pngSize); return { canvas: output, validation: validation }; }
     function baseName() { return core.safeFilename(state.name || 'write-urdu-qr-code', 'write-urdu-qr-code') + '-' + state.content.type; }
     async function downloadPng() { try { status('Preparing PNG…'); var result = await finalCanvas(); result.canvas.toBlob(function (blob) { if (!blob) return status('PNG generation failed.', true); downloadBlob(blob, baseName() + '.png'); status('PNG downloaded'); }); } catch (error) { status('PNG generation failed. Check your content and try again.', true); } }
-    async function svgString() { collectFields(); var validation = core.validateQrProject(state); if (!validation.valid) throw new Error('invalid'); var svg = await QRCode.toString(validation.payload.payload, Object.assign({ type: 'svg' }, qrOptions(state.export.pngSize))); if (state.logo.enabled && state.logo.dataUrl) { var placement = core.calculateLogoPlacement(state.export.pngSize, { width: logoImage.naturalWidth || logoImage.width, height: logoImage.naturalHeight || logoImage.height }, state.logo); var shape = state.logo.plateShape === 'circle' ? '<circle cx="' + state.export.pngSize / 2 + '" cy="' + state.export.pngSize / 2 + '" r="' + placement.boxSize / 2 + '" fill="' + state.logo.plateColor + '"/>' : '<rect x="' + placement.x + '" y="' + placement.y + '" width="' + placement.boxSize + '" height="' + placement.boxSize + '" rx="' + placement.boxSize * .14 + '" fill="' + state.logo.plateColor + '"/>'; var image = '<image href="' + state.logo.dataUrl + '" x="' + placement.imageX + '" y="' + placement.imageY + '" width="' + placement.imageWidth + '" height="' + placement.imageHeight + '" preserveAspectRatio="xMidYMid meet"/>'; svg = svg.replace('</svg>', shape + image + '</svg>'); } if (/<script|foreignObject| on[a-z]+=|(?:href|xlink:href)=["']https?:/i.test(svg)) throw new Error('unsafe-svg'); return svg; }
+    async function svgString() { collectFields(); var validation = core.validateQrProject(state); if (!validation.valid) throw new Error('invalid'); var svg = await QRCode.toString(validation.payload.payload, Object.assign({ type: 'svg' }, qrOptions(state.export.pngSize))); if (state.logo.enabled && state.logo.dataUrl) { if (!isSafeLogoDataUrl(state.logo.dataUrl)) throw new Error('unsafe-logo'); var placement = core.calculateLogoPlacement(state.export.pngSize, { width: logoImage.naturalWidth || logoImage.width, height: logoImage.naturalHeight || logoImage.height }, state.logo); var shape = state.logo.plateShape === 'circle' ? '<circle cx="' + state.export.pngSize / 2 + '" cy="' + state.export.pngSize / 2 + '" r="' + placement.boxSize / 2 + '" fill="' + state.logo.plateColor + '"/>' : '<rect x="' + placement.x + '" y="' + placement.y + '" width="' + placement.boxSize + '" height="' + placement.boxSize + '" rx="' + placement.boxSize * .14 + '" fill="' + state.logo.plateColor + '"/>'; var image = '<image href="' + state.logo.dataUrl + '" x="' + placement.imageX + '" y="' + placement.imageY + '" width="' + placement.imageWidth + '" height="' + placement.imageHeight + '" preserveAspectRatio="xMidYMid meet"/>'; svg = svg.replace('</svg>', shape + image + '</svg>'); } if (/<script|foreignObject| on[a-z]+=|(?:href|xlink:href)=["']https?:/i.test(svg)) throw new Error('unsafe-svg'); return svg; }
     async function downloadSvg() { try { status('Preparing SVG…'); var svg = await svgString(); downloadBlob(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }), baseName() + '.svg'); status('SVG downloaded'); } catch (error) { status('SVG generation failed. Check your content and try again.', true); } }
     async function copyImage() { try { var result = await finalCanvas(); var blob = await new Promise(function (resolve) { result.canvas.toBlob(resolve, 'image/png'); }); if (!navigator.clipboard || !window.ClipboardItem) throw new Error('unsupported'); await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); status('QR image copied'); } catch (error) { status('Copying an image is not supported here. Download the PNG instead.', true); } }
     async function shareImage() { try { var result = await finalCanvas(); var blob = await new Promise(function (resolve) { result.canvas.toBlob(resolve, 'image/png'); }); var file = new File([blob], baseName() + '.png', { type: 'image/png' }); if (!navigator.share || !navigator.canShare || !navigator.canShare({ files: [file] })) throw new Error('unsupported'); await navigator.share({ files: [file], title: 'QR Code' }); status('QR image shared'); } catch (error) { if (error && error.name === 'AbortError') return; status('Sharing is unavailable. Download the PNG and share it manually.', true); } }
@@ -203,6 +209,8 @@
     function applyLocale() {
         var privacy = root.querySelector('[data-qr-privacy]');
         if (privacy) privacy.textContent = locale() === 'ur' ? 'آپ کا متن اور لوگو اسی براؤزر میں رہتے ہیں اور کبھی اپ لوڈ نہیں کیے جاتے۔' : 'Your content and logo stay in this browser and are never uploaded.';
+        var copy = staticCopy[locale()];
+        root.querySelectorAll('[data-qr-copy]').forEach(function (element) { var key = element.getAttribute('data-qr-copy'); if (copy[key]) { var input = element.querySelector('input,select'); if (input) { Array.prototype.slice.call(element.childNodes).forEach(function (node) { if (node.nodeType === 3 && node.nodeValue.trim()) node.remove(); }); element.insertBefore(document.createTextNode(copy[key]), input); } else element.textContent = copy[key]; } });
         populateTypeSelect(); renderFields(); syncLogoControls();
     }
     function bind() {
@@ -214,12 +222,18 @@
         root.querySelector('[data-qr-logo-size]').addEventListener('input', function (event) { state.logo.sizeRatio = Number(event.target.value) / 100; syncLogoControls(); requestRender(); scheduleSave(); });
         root.querySelector('[data-qr-logo-shape]').addEventListener('change', function (event) { state.logo.plateShape = event.target.value; requestRender(); scheduleSave(); });
         root.querySelector('[data-qr-reset]').addEventListener('click', function () { if (window.confirm('Reset this QR code design?')) setState(core.createDefaultQrProject()); });
-        root.querySelector('[data-qr-download-png]').addEventListener('click', downloadPng); root.querySelector('[data-qr-download-svg]').addEventListener('click', downloadSvg); root.querySelector('[data-qr-copy]').addEventListener('click', copyImage); root.querySelector('[data-qr-share]').addEventListener('click', shareImage);
+        root.querySelector('[data-qr-download-png]').addEventListener('click', downloadPng); root.querySelector('[data-qr-download-svg]').addEventListener('click', downloadSvg); root.querySelector('[data-qr-copy-image]').addEventListener('click', copyImage); root.querySelector('[data-qr-share]').addEventListener('click', shareImage);
         document.addEventListener('write-urdu:locale-change', applyLocale);
         window.addEventListener('beforeunload', function () { if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl); });
     }
     var incoming = readIncoming();
-    var saved = incoming && incoming.text ? core.createDefaultQrProject(incoming.text) : core.normalizeQrProject(readSaved() || core.createDefaultQrProject());
-    if (incoming && incoming.text) saved.content.fields.text = incoming.text;
+    var saved;
+    if (incoming) {
+        saved = core.createDefaultQrProject();
+        saved.content.type = 'text';
+        saved.content.fields = { text: String(incoming.text || '') };
+    } else {
+        saved = core.normalizeQrProject(readSaved() || core.createDefaultQrProject());
+    }
     setState(saved); bind(); applyLocale(); restoreIndexedLogo(saved);
 }(window, document));

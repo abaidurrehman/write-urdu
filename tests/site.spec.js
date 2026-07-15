@@ -372,6 +372,7 @@ test('QR generator localizes its title and privacy promise', async ({ page }) =>
   await page.locator('[data-wu-language-toggle]').click();
   await expect(page.locator('h1.wu-page-title')).toHaveText('مفت QR کوڈ جنریٹر');
   await expect(page.locator('[data-qr-privacy]')).toContainText('آپ کا متن اور لوگو');
+  await expect(page.locator('[data-qr-download-png]')).toHaveText('PNG ڈاؤن لوڈ کریں');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 });
 
@@ -384,6 +385,18 @@ test('QR generator keeps local logos contained and raises correction level', asy
   await expect(page.locator('[data-qr-download-svg]')).toBeEnabled();
   const svg = await Promise.all([page.waitForEvent('download'), page.locator('[data-qr-download-svg]').click()]);
   expect(svg[0].suggestedFilename()).toMatch(/\.svg$/i);
+});
+
+test('QR generator restores a local design after refresh', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/qr-code-generator.html');
+  await page.evaluate(() => { localStorage.clear(); indexedDB.deleteDatabase('writeUrduQrGenerator'); });
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.locator('[data-qr-type]').selectOption('text');
+  await page.locator('[data-qr-field="text"]').fill('یہ ڈیزائن اسی آلے پر محفوظ ہے۔');
+  await expect(page.locator('[data-qr-status]')).toContainText('Saved on this device', { timeout: 5000 });
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-qr-field="text"]')).toHaveValue('یہ ڈیزائن اسی آلے پر محفوظ ہے۔');
 });
 
 test('purpose page presents clear editor paths and localizes its content', async ({ page, isMobile }) => {

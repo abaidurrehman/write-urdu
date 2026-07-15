@@ -154,8 +154,8 @@
         var latitude = Number(fields.latitude);
         var longitude = Number(fields.longitude);
         var errors = {};
-        if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) errors.latitude = 'Enter a latitude between −90 and 90.';
-        if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) errors.longitude = 'Enter a longitude between −180 and 180.';
+        if (!String(fields.latitude == null ? '' : fields.latitude).trim() || !Number.isFinite(latitude) || latitude < -90 || latitude > 90) errors.latitude = 'Enter a latitude between −90 and 90.';
+        if (!String(fields.longitude == null ? '' : fields.longitude).trim() || !Number.isFinite(longitude) || longitude < -180 || longitude > 180) errors.longitude = 'Enter a longitude between −180 and 180.';
         return Object.keys(errors).length ? result('', errors) : result('geo:' + latitude + ',' + longitude);
     }
 
@@ -227,6 +227,9 @@
         var design = source.design || {};
         var logo = source.logo || {};
         var exportState = source.export || {};
+        var correction = VALID_EC.indexOf(design.errorCorrectionLevel) >= 0 ? design.errorCorrectionLevel : defaults.design.errorCorrectionLevel;
+        var logoEnabled = Boolean(logo.enabled && (logo.dataUrl || logo.assetId));
+        if (logoEnabled) correction = 'H';
         return {
             version: 1, id: String(source.id || defaults.id), name: String(source.name || defaults.name).slice(0, 80),
             createdAt: source.createdAt || defaults.createdAt, updatedAt: new Date().toISOString(),
@@ -235,10 +238,10 @@
                 foregroundColor: normalizeHexColor(design.foregroundColor, defaults.design.foregroundColor),
                 backgroundColor: normalizeHexColor(design.backgroundColor, defaults.design.backgroundColor),
                 margin: VALID_MARGINS.indexOf(Number(design.margin)) >= 0 ? Number(design.margin) : defaults.design.margin,
-                errorCorrectionLevel: VALID_EC.indexOf(design.errorCorrectionLevel) >= 0 ? design.errorCorrectionLevel : defaults.design.errorCorrectionLevel
+                errorCorrectionLevel: correction
             },
             logo: {
-                enabled: Boolean(logo.enabled && (logo.dataUrl || logo.assetId)), assetId: logo.assetId || null, dataUrl: logo.dataUrl || null,
+                enabled: logoEnabled, assetId: logo.assetId || null, dataUrl: logo.dataUrl || null,
                 sizeRatio: Math.min(0.24, Math.max(0.1, Number(logo.sizeRatio) || defaults.logo.sizeRatio)),
                 plateShape: logo.plateShape === 'circle' ? 'circle' : 'rounded-square', plateColor: normalizeHexColor(logo.plateColor, '#ffffff')
             },
