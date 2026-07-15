@@ -82,14 +82,53 @@
         return JSON.parse(JSON.stringify(value));
     }
 
+    function defaultTransform(preset, objectId) {
+        var width = Math.max(1, preset.width - preset.marginX * 2);
+        if (objectId === 'attribution') {
+            return { x: preset.marginX / preset.width, y: Math.max(0, (preset.height - preset.marginY - 64) / preset.height), width: width / preset.width, height: 64 / preset.height, horizontalAnchor: 'left', verticalAnchor: 'top', rotation: 0, positionCustomized: false, widthCustomized: false };
+        }
+        return { x: preset.marginX / preset.width, y: preset.marginY / preset.height, width: width / preset.width, height: Math.max(.2, (preset.height - preset.marginY * 2 - 28) / preset.height), horizontalAnchor: 'left', verticalAnchor: 'top', rotation: 0, positionCustomized: false, widthCustomized: false };
+    }
+
+    function normaliseTransform(raw, preset, objectId) {
+        var fallback = defaultTransform(preset, objectId);
+        raw = raw && typeof raw === 'object' ? raw : {};
+        var value = Object.assign({}, fallback, raw);
+        value.x = clampNumber(value.x, 0, .98, fallback.x);
+        value.y = clampNumber(value.y, 0, .98, fallback.y);
+        value.width = clampNumber(value.width, objectId === 'attribution' ? .1 : .2, .98, fallback.width);
+        value.height = value.height == null ? null : clampNumber(value.height, .04, .98, fallback.height);
+        value.horizontalAnchor = ['left', 'center', 'right'].includes(value.horizontalAnchor) ? value.horizontalAnchor : 'left';
+        value.verticalAnchor = ['top', 'center', 'bottom'].includes(value.verticalAnchor) ? value.verticalAnchor : 'top';
+        value.rotation = 0;
+        value.positionCustomized = Boolean(value.positionCustomized);
+        value.widthCustomized = Boolean(value.widthCustomized);
+        if (value.x + value.width > 1) value.x = Math.max(0, 1 - value.width);
+        return value;
+    }
+
+    function transformToRect(transform, preset, objectId) {
+        transform = normaliseTransform(transform, preset, objectId || 'text');
+        return { x: transform.x * preset.width, y: transform.y * preset.height, width: transform.width * preset.width, height: (transform.height == null ? 0 : transform.height * preset.height) };
+    }
+
+    function rectToTransform(rect, preset, previous, objectId) {
+        previous = normaliseTransform(previous, preset, objectId || 'text');
+        var result = Object.assign({}, previous, { x: Number(rect.x) / preset.width, y: Number(rect.y) / preset.height, width: Number(rect.width) / preset.width });
+        if (rect.height != null) result.height = Number(rect.height) / preset.height;
+        result.positionCustomized = true;
+        return normaliseTransform(result, preset, objectId || 'text');
+    }
+
     function createDefaultCardProject(incomingText) {
         var template = TEMPLATES[0];
+        var preset = PRESETS[0];
         var now = new Date().toISOString();
         return {
-            version: 1, id: 'card_' + Date.now().toString(36), name: 'Untitled card', createdAt: now, updatedAt: now,
+            version: 2, id: 'card_' + Date.now().toString(36), name: 'Untitled card', createdAt: now, updatedAt: now,
             presetId: 'square', templateId: template.id,
-            text: { value: String(incomingText || '').trim() || DEFAULT_TEXT, fontFamily: template.fontFamily, fontMode: 'auto', fontSize: 64, minFontSize: 28, maxFontSize: 160, color: template.textColor, align: template.textAlign, verticalAlign: template.verticalAlign, lineHeight: template.lineHeight, shadow: 'none' },
-            attribution: { enabled: false, value: '', fontFamily: 'Noto Naskh Arabic', fontSizeRatio: .44, color: template.attributionColor },
+            text: { value: String(incomingText || '').trim() || DEFAULT_TEXT, fontFamily: template.fontFamily, fontMode: 'auto', fontSize: 64, minFontSize: 28, maxFontSize: 160, color: template.textColor, align: template.textAlign, verticalAlign: template.verticalAlign, lineHeight: template.lineHeight, shadow: 'none', transform: defaultTransform(preset, 'text') },
+            attribution: { enabled: false, value: '', fontFamily: 'Noto Naskh Arabic', fontSizeRatio: .44, color: template.attributionColor, transform: defaultTransform(preset, 'attribution') },
             background: { type: template.background.type, color: template.background.color || '#ffffff', gradientId: template.background.gradientId || null, imageAssetId: null, fit: 'cover', positionX: .5, positionY: .5, overlayColor: (template.imageOverlay && template.imageOverlay.color) || '#000000', overlayOpacity: (template.imageOverlay && template.imageOverlay.opacity) || 0, blur: 0 },
             watermark: clone(template.watermark)
         };
@@ -99,7 +138,8 @@
         var base = createDefaultCardProject('');
         raw = raw && typeof raw === 'object' ? raw : {};
         var project = Object.assign(base, raw);
-        project.version = 1;
+        var originalVersion = Number(project.version) || 1;
+        project.version = 2;
         project.presetId = findById(PRESETS, project.presetId).id;
         project.templateId = findById(TEMPLATES, project.templateId).id;
         project.text = Object.assign(base.text, raw.text || {});
@@ -114,6 +154,15 @@
         project.text.lineHeight = clampNumber(project.text.lineHeight, 1.2, 2.2, 1.7);
         project.text.align = ['left', 'center', 'right'].includes(project.text.align) ? project.text.align : 'center';
         project.text.verticalAlign = ['top', 'center', 'bottom'].includes(project.text.verticalAlign) ? project.text.verticalAlign : 'center';
+        var preset = findById(PRESETS, project.presetId);
+        project.text.transform = normaliseTransform(project.text.transform, preset, 'text');
+        project.attribution.transform = normaliseTransform(project.attribution.transform, preset, 'attribution');
+        if (originalVersion < 2) {
+            project.text.transform.positionCustomized = false;
+            project.text.transform.widthCustomized = false;
+            project.attribution.transform.positionCustomized = false;
+            project.attribution.transform.widthCustomized = false;
+        }
         project.background.type = ['solid', 'gradient', 'image'].includes(project.background.type) ? project.background.type : 'solid';
         project.background.fit = project.background.fit === 'contain' ? 'contain' : 'cover';
         project.background.positionX = clampNumber(project.background.positionX, 0, 1, .5);
@@ -131,12 +180,15 @@
     function applyTemplate(project, templateId) {
         project = normalizeCardProject(project);
         var template = findById(TEMPLATES, templateId);
+        var preset = findById(PRESETS, project.presetId);
         project.templateId = template.id;
         project.text.fontFamily = template.fontFamily;
         project.text.color = template.textColor;
         project.text.align = template.textAlign;
         project.text.verticalAlign = template.verticalAlign;
         project.text.lineHeight = template.lineHeight;
+        if (!project.text.transform.positionCustomized && !project.text.transform.widthCustomized) project.text.transform = defaultTransform(preset, 'text');
+        if (!project.attribution.transform.positionCustomized && !project.attribution.transform.widthCustomized) project.attribution.transform = defaultTransform(preset, 'attribution');
         project.background.type = template.background.type;
         project.background.color = template.background.color || project.background.color;
         project.background.gradientId = template.background.gradientId || null;
@@ -149,6 +201,14 @@
 
     function applyPreset(project, presetId) {
         project = normalizeCardProject(project);
+        var oldPreset = findById(PRESETS, project.presetId);
+        var nextPreset = findById(PRESETS, presetId);
+        ['text', 'attribution'].forEach(function (objectId) {
+            var object = project[objectId];
+            var transform = object.transform || defaultTransform(oldPreset, objectId);
+            if (!transform.positionCustomized && !transform.widthCustomized) object.transform = defaultTransform(nextPreset, objectId);
+            else object.transform = normaliseTransform({ x: transform.x * oldPreset.width / nextPreset.width, y: transform.y * oldPreset.height / nextPreset.height, width: transform.width * oldPreset.width / nextPreset.width, height: transform.height == null ? null : transform.height * oldPreset.height / nextPreset.height, positionCustomized: transform.positionCustomized, widthCustomized: transform.widthCustomized }, nextPreset, objectId);
+        });
         project.presetId = findById(PRESETS, presetId).id;
         project.updatedAt = new Date().toISOString();
         return project;
@@ -253,5 +313,5 @@
         return { valid: Boolean(project.text.value.trim()), project: project, errors: project.text.value.trim() ? [] : ['Text is empty.'] };
     }
 
-    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, DEFAULT_TEXT: DEFAULT_TEXT, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, applyTemplate: applyTemplate, applyPreset: applyPreset, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject };
+    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, DEFAULT_TEXT: DEFAULT_TEXT, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, applyTemplate: applyTemplate, applyPreset: applyPreset, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
 }));

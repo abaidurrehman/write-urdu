@@ -238,7 +238,7 @@ test('content pages retain readable typography and responsive embeds', async ({ 
     await openFile(page, route);
     await expect(page.locator('body')).toHaveClass(/content-page/);
     await expect(page.locator('.wu-header-ad')).toHaveCount(1);
-    await expect(page.locator('.wu-footer-links a')).toHaveCount(11);
+    await expect(page.locator('.wu-footer-links a')).toHaveCount(17);
     const metrics = await page.evaluate(() => {
       const paragraph = document.querySelector('p');
       const style = paragraph ? getComputedStyle(paragraph) : null;
@@ -332,6 +332,40 @@ test('Card Studio connects its text field to the transliteration control', async
   await openFile(page, '/urdu-card-studio.html');
   await expect(page.locator('[data-card-transliteration-status]')).toContainText('Roman Urdu input is ready');
   await expect.poll(() => page.evaluate(() => window.__cardTransliterationTarget)).toBe('cardText');
+});
+
+test('Card Studio supports direct Urdu selection, movement, resizing and edit commit', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Desktop pointer geometry is covered here; mobile touch behavior is verified manually.');
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioApp));
+  const layer = page.locator('[data-card-interaction-layer]');
+  await layer.click({ position: { x: 300, y: 300 } });
+  const box = await layer.boundingBox();
+  const before = await page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text'));
+  await page.mouse.move(box.x + 300, box.y + 300);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 340, box.y + 330);
+  await page.mouse.up();
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text').x)).toBeGreaterThan(before.x);
+  await page.evaluate(() => document.querySelector('[data-card-interaction-layer]').focus());
+  const xBeforeArrow = await page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text').x);
+  await page.keyboard.press('ArrowLeft');
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text').x)).toBeLessThan(xBeforeArrow);
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  const editor = page.locator('[data-card-canvas-editor]');
+  await expect(editor).toBeVisible();
+  await editor.fill('براہ راست اردو تدوین');
+  await page.getByRole('button', { name: 'Done', exact: true }).click();
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().text.value)).toBe('براہ راست اردو تدوین');
+  const leftHandle = page.locator('[data-card-resize="left"]');
+  const handleBox = await leftHandle.boundingBox();
+  const widthBefore = await page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text').width);
+  await page.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + handleBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(handleBox.x + 45, handleBox.y + handleBox.height / 2);
+  await page.mouse.up();
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text').width)).toBeLessThan(widthBefore);
 });
 
 test('QR generator accepts Urdu editor text and renders a local preview', async ({ page }) => {

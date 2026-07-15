@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/card-studio.css">
     <script src="js/card-studio-core.js" defer></script>
+    <script src="js/card-studio-interaction-core.js" defer></script>
     <script src="js/card-studio.js" defer></script>
+    <script src="js/card-studio-interaction.js" defer></script>
 </head>
 <body class="card-studio-page">
     <!-- The shared header upgrades this navigation into the site-wide header. -->
@@ -77,6 +79,22 @@
                     </div>
                 </section>
 
+                <section class="card-studio-section card-studio-layout-controls" aria-labelledby="cardLayoutHeading">
+                    <h2 id="cardLayoutHeading" data-card-i18n="layoutHeading">Layout</h2>
+                    <label class="card-studio-label" for="cardLayoutObject" data-card-i18n="selectedObjectLabel">Selected object</label>
+                    <select class="card-studio-select" id="cardLayoutObject" data-card-layout-object>
+                        <option value="text" data-card-i18n="mainText">Main text</option>
+                        <option value="attribution" data-card-i18n="authorSource">Author/source</option>
+                    </select>
+                    <div class="card-studio-field-row">
+                        <div><label class="card-studio-label" for="cardLayoutX" data-card-i18n="xPosition">X position (%)</label><input class="card-studio-input" id="cardLayoutX" data-card-layout-field="x" type="number" min="0" max="100" step="0.1"></div>
+                        <div><label class="card-studio-label" for="cardLayoutY" data-card-i18n="yPosition">Y position (%)</label><input class="card-studio-input" id="cardLayoutY" data-card-layout-field="y" type="number" min="0" max="100" step="0.1"></div>
+                    </div>
+                    <label class="card-studio-label" for="cardLayoutWidth" data-card-i18n="textBoxWidth">Text-box width (%)</label>
+                    <input class="card-studio-range" id="cardLayoutWidth" data-card-layout-field="width" type="range" min="10" max="100" step="0.1">
+                    <div class="card-studio-layout-actions"><button type="button" class="card-studio-button" data-card-layout-action="center-x" data-card-i18n="centerHorizontally">Centre horizontally</button><button type="button" class="card-studio-button" data-card-layout-action="center-y" data-card-i18n="centerVertically">Centre vertically</button><button type="button" class="card-studio-button" data-card-layout-action="reset" data-card-i18n="resetLayout">Reset layout</button></div>
+                </section>
+
                 <section class="card-studio-section">
                     <h2 data-card-i18n="backgroundHeading">Background</h2>
                     <label class="card-studio-label" for="cardBackgroundType" data-card-i18n="backgroundTypeLabel">Background type</label>
@@ -100,7 +118,30 @@
             </aside>
 
             <figure class="card-studio-preview" aria-labelledby="cardPreviewTitle">
-                <div class="card-studio-artboard-wrap"><canvas class="card-studio-canvas" id="cardCanvas" aria-hidden="true"></canvas><span class="card-studio-dimensions" data-card-dimensions></span></div>
+                <div class="card-studio-artboard-wrap" data-card-artboard>
+                    <canvas class="card-studio-canvas" id="cardCanvas" aria-hidden="true"></canvas>
+                    <div class="card-studio-interaction-layer" data-card-interaction-layer tabindex="0" role="group" aria-label="Editable card preview">
+                        <div class="card-studio-selection-box" data-card-selection-box hidden aria-hidden="true">
+                            <span class="card-studio-selection-label" data-card-selection-label></span>
+                            <button type="button" class="card-studio-resize-handle left" data-card-resize="left" aria-label="Resize text box from the left"></button>
+                            <button type="button" class="card-studio-resize-handle right" data-card-resize="right" aria-label="Resize text box from the right"></button>
+                            <button type="button" class="card-studio-font-handle" data-card-resize="font" aria-label="Adjust text size"></button>
+                        </div>
+                        <textarea class="card-studio-canvas-editor" data-card-canvas-editor hidden aria-label="Edit selected card text"></textarea>
+                        <div class="card-studio-guides" data-card-guides aria-hidden="true"></div>
+                    </div>
+                    <span class="card-studio-dimensions" data-card-dimensions></span>
+                </div>
+                <div class="card-studio-context-toolbar" data-card-context-toolbar hidden role="toolbar" aria-label="Selected text actions">
+                    <span data-card-selected-object data-card-i18n="textSelected">Text selected</span>
+                    <button type="button" class="card-studio-button" data-card-object-action="edit" data-card-i18n="edit">Edit</button>
+                    <button type="button" class="card-studio-button" data-card-object-action="align-left" data-card-i18n="left">Left</button>
+                    <button type="button" class="card-studio-button" data-card-object-action="align-center" data-card-i18n="centre">Centre</button>
+                    <button type="button" class="card-studio-button" data-card-object-action="align-right" data-card-i18n="right">Right</button>
+                    <button type="button" class="card-studio-button" data-card-object-action="reset" data-card-i18n="resetPosition">Reset position</button>
+                    <button type="button" class="card-studio-button" data-card-object-action="done" data-card-i18n="done" hidden>Done</button>
+                    <button type="button" class="card-studio-button" data-card-object-action="cancel" data-card-i18n="cancel" hidden>Cancel</button>
+                </div>
                 <figcaption id="cardPreviewTitle" class="card-studio-sr-only">Preview of your Urdu card. <span data-accessible-card-text></span></figcaption>
             </figure>
         </div>
