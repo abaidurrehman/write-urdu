@@ -40,6 +40,7 @@ cmd /c "set LIVE_TRANSLITERATION=1&&npx playwright test --grep transliterat"
 - `urdu-editor.html`: TinyMCE rich-text editor
 - `urdu-keyboard.html`: direct Urdu keyboard and transliteration editor
 - `urdu-card-studio.html`: local-first Urdu card designer with canvas PNG export
+- `qr-code-generator.html`: browser-only static QR generator with Urdu, Wi-Fi, contact, image and SVG/PNG export support
 - `write-urdu-documentation.html`: visual guide to the editors, shortcuts, drafts, privacy and export workflows
 
 Obsolete prototype editor files have been removed; `urdu-editor.html` is the only supported rich-text editor.
@@ -57,6 +58,10 @@ Long-form translations are maintained in `js/content-locale.js`. It localizes th
 ## Urdu Card Studio
 
 Both editors expose **Create Urdu Card**. The action transfers the selected plain text (or the complete editor text when nothing is selected) through `sessionStorage`; private text is never placed in a URL. Card Studio also initializes the existing Google Roman-Urdu transliteration control for text entered directly on the page, with a retry message when that dependency is unavailable. It renders four exact-size presets and nine built-in designs with the Canvas 2D API, supports local JPG/PNG/WebP backgrounds, and downloads a high-resolution PNG without a backend. Projects and image blobs are saved separately in IndexedDB when available, with a session-only fallback when local storage is unavailable.
+
+## QR Code Generator
+
+Both editors also expose **Create QR Code**. The action transfers selected or complete plain text through `sessionStorage`, never through a URL. The standalone generator builds URL, Urdu text, WhatsApp, Wi-Fi, email, phone, SMS, vCard and location payloads locally using the bundled MIT-licensed `qrcode` encoder. Colors, quiet-zone margin, error correction, local raster logos, exact-size PNG and safe SVG export are validated in the browser; no payload or logo is uploaded. The current design is saved locally when browser storage is available, while download remains usable when it is not.
 
 ## Editor workspace features
 

@@ -11,6 +11,35 @@
     var saveTimer = null;
     var incomingKey = 'writeUrdu.qrGenerator.incoming';
     var storageKey = 'writeUrdu.qrGenerator.project';
+    var dbName = 'writeUrduQrGenerator';
+
+    function openDb() {
+        return new Promise(function (resolve, reject) {
+            if (!window.indexedDB) return reject(new Error('indexeddb-unavailable'));
+            var request = window.indexedDB.open(dbName, 1);
+            request.onupgradeneeded = function () { var db = request.result; if (!db.objectStoreNames.contains('projects')) db.createObjectStore('projects', { keyPath: 'id' }); if (!db.objectStoreNames.contains('assets')) db.createObjectStore('assets', { keyPath: 'id' }); };
+            request.onsuccess = function () { resolve(request.result); };
+            request.onerror = function () { reject(request.error || new Error('indexeddb-error')); };
+        });
+    }
+    function dataUrlToBlob(dataUrl) { var parts = String(dataUrl || '').split(','); var binary = atob(parts[1] || ''); var bytes = new Uint8Array(binary.length); for (var index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index); return new Blob([bytes], { type: (parts[0].match(/data:([^;]+)/) || [])[1] || 'image/png' }); }
+    async function saveIndexedDb() {
+        var db = await openDb();
+        var project = JSON.parse(JSON.stringify(state));
+        project.logo.dataUrl = null;
+        await new Promise(function (resolve, reject) { var transaction = db.transaction(['projects', 'assets'], 'readwrite'); transaction.objectStore('projects').put(project); if (state.logo.enabled && state.logo.dataUrl) transaction.objectStore('assets').put({ id: 'current-logo', projectId: state.id, blob: dataUrlToBlob(state.logo.dataUrl) }); else transaction.objectStore('assets').delete('current-logo'); transaction.oncomplete = resolve; transaction.onerror = function () { reject(transaction.error); }; });
+        db.close();
+    }
+    async function restoreIndexedLogo(project) {
+        if (!project || !project.logo || !project.logo.enabled || project.logo.dataUrl || !window.indexedDB) return;
+        try {
+            var db = await openDb();
+            var record = await new Promise(function (resolve, reject) { var request = db.transaction('assets').objectStore('assets').get('current-logo'); request.onsuccess = function () { resolve(request.result); }; request.onerror = function () { reject(request.error); }; });
+            db.close();
+            if (!record || !record.blob) return;
+            var reader = new FileReader(); reader.onload = async function () { state.logo.dataUrl = reader.result; state.logo.enabled = true; logoImage = await loadLogoImage(reader.result); syncLogoControls(); requestRender(); }; reader.readAsDataURL(record.blob);
+        } catch (error) { /* localStorage state remains usable without the logo */ }
+    }
 
     var labels = {
         en: {
@@ -103,7 +132,7 @@
     }
     function status(message, isError) { var node = root.querySelector('[data-qr-status]'); node.textContent = message || ''; node.classList.toggle('error', Boolean(isError)); }
     function scheduleSave() { window.clearTimeout(saveTimer); saveTimer = window.setTimeout(saveProject, 650); }
-    function saveProject() { try { var copy = JSON.parse(JSON.stringify(state)); if (copy.logo) copy.logo.dataUrl = null; window.localStorage.setItem(storageKey, JSON.stringify(copy)); status('Saved on this device'); } catch (error) { status('Your current design is still available, but it could not be saved locally.'); } }
+    function saveProject() { try { var copy = JSON.parse(JSON.stringify(state)); if (copy.logo) copy.logo.dataUrl = null; window.localStorage.setItem(storageKey, JSON.stringify(copy)); saveIndexedDb().catch(function () { /* localStorage fallback is already complete */ }); status('Saved on this device'); } catch (error) { status('Your current design is still available, but it could not be saved locally.'); } }
     function readIncoming() { try { var value = window.sessionStorage.getItem(incomingKey); if (!value) return null; window.sessionStorage.removeItem(incomingKey); return JSON.parse(value); } catch (error) { return null; } }
     function readSaved() { try { var value = window.localStorage.getItem(storageKey); return value ? JSON.parse(value) : null; } catch (error) { return null; } }
     function setFieldError(name, message) {
@@ -161,7 +190,7 @@
     async function finalCanvas() { collectFields(); var validation = core.validateQrProject(state); if (!validation.valid) throw new Error('invalid'); if (state.logo.enabled && !logoImage) logoImage = await loadLogoImage(state.logo.dataUrl); var output = document.createElement('canvas'); output.width = state.export.pngSize; output.height = state.export.pngSize; await QRCode.toCanvas(output, validation.payload.payload, qrOptions(state.export.pngSize)); drawLogo(output.getContext('2d'), state.export.pngSize); return { canvas: output, validation: validation }; }
     function baseName() { return core.safeFilename(state.name || 'write-urdu-qr-code', 'write-urdu-qr-code') + '-' + state.content.type; }
     async function downloadPng() { try { status('Preparing PNG…'); var result = await finalCanvas(); result.canvas.toBlob(function (blob) { if (!blob) return status('PNG generation failed.', true); downloadBlob(blob, baseName() + '.png'); status('PNG downloaded'); }); } catch (error) { status('PNG generation failed. Check your content and try again.', true); } }
-    async function svgString() { collectFields(); var validation = core.validateQrProject(state); if (!validation.valid) throw new Error('invalid'); var svg = await QRCode.toString(validation.payload.payload, Object.assign({ type: 'svg' }, qrOptions(state.export.pngSize))); if (state.logo.enabled && state.logo.dataUrl) { var placement = core.calculateLogoPlacement(state.export.pngSize, { width: logoImage.naturalWidth || logoImage.width, height: logoImage.naturalHeight || logoImage.height }, state.logo); var shape = state.logo.plateShape === 'circle' ? '<circle cx="' + state.export.pngSize / 2 + '" cy="' + state.export.pngSize / 2 + '" r="' + placement.boxSize / 2 + '" fill="' + state.logo.plateColor + '"/>' : '<rect x="' + placement.x + '" y="' + placement.y + '" width="' + placement.boxSize + '" height="' + placement.boxSize + '" rx="' + placement.boxSize * .14 + '" fill="' + state.logo.plateColor + '"/>'; var image = '<image href="' + state.logo.dataUrl + '" x="' + placement.imageX + '" y="' + placement.imageY + '" width="' + placement.imageWidth + '" height="' + placement.imageHeight + '" preserveAspectRatio="xMidYMid meet"/>'; svg = svg.replace('</svg>', shape + image + '</svg>'); } if (/<script|foreignObject| on[a-z]+=|https?:\/\//i.test(svg)) throw new Error('unsafe-svg'); return svg; }
+    async function svgString() { collectFields(); var validation = core.validateQrProject(state); if (!validation.valid) throw new Error('invalid'); var svg = await QRCode.toString(validation.payload.payload, Object.assign({ type: 'svg' }, qrOptions(state.export.pngSize))); if (state.logo.enabled && state.logo.dataUrl) { var placement = core.calculateLogoPlacement(state.export.pngSize, { width: logoImage.naturalWidth || logoImage.width, height: logoImage.naturalHeight || logoImage.height }, state.logo); var shape = state.logo.plateShape === 'circle' ? '<circle cx="' + state.export.pngSize / 2 + '" cy="' + state.export.pngSize / 2 + '" r="' + placement.boxSize / 2 + '" fill="' + state.logo.plateColor + '"/>' : '<rect x="' + placement.x + '" y="' + placement.y + '" width="' + placement.boxSize + '" height="' + placement.boxSize + '" rx="' + placement.boxSize * .14 + '" fill="' + state.logo.plateColor + '"/>'; var image = '<image href="' + state.logo.dataUrl + '" x="' + placement.imageX + '" y="' + placement.imageY + '" width="' + placement.imageWidth + '" height="' + placement.imageHeight + '" preserveAspectRatio="xMidYMid meet"/>'; svg = svg.replace('</svg>', shape + image + '</svg>'); } if (/<script|foreignObject| on[a-z]+=|(?:href|xlink:href)=["']https?:/i.test(svg)) throw new Error('unsafe-svg'); return svg; }
     async function downloadSvg() { try { status('Preparing SVG…'); var svg = await svgString(); downloadBlob(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }), baseName() + '.svg'); status('SVG downloaded'); } catch (error) { status('SVG generation failed. Check your content and try again.', true); } }
     async function copyImage() { try { var result = await finalCanvas(); var blob = await new Promise(function (resolve) { result.canvas.toBlob(resolve, 'image/png'); }); if (!navigator.clipboard || !window.ClipboardItem) throw new Error('unsupported'); await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); status('QR image copied'); } catch (error) { status('Copying an image is not supported here. Download the PNG instead.', true); } }
     async function shareImage() { try { var result = await finalCanvas(); var blob = await new Promise(function (resolve) { result.canvas.toBlob(resolve, 'image/png'); }); var file = new File([blob], baseName() + '.png', { type: 'image/png' }); if (!navigator.share || !navigator.canShare || !navigator.canShare({ files: [file] })) throw new Error('unsupported'); await navigator.share({ files: [file], title: 'QR Code' }); status('QR image shared'); } catch (error) { if (error && error.name === 'AbortError') return; status('Sharing is unavailable. Download the PNG and share it manually.', true); } }
@@ -169,7 +198,7 @@
     function onDesignChange(event) { var key = event.target.getAttribute('data-qr-design'); state.design[key] = key === 'margin' ? Number(event.target.value) : event.target.value; if (state.logo.enabled && key === 'errorCorrectionLevel') state.design.errorCorrectionLevel = 'H'; requestRender(); scheduleSave(); }
     function onExportChange(event) { state.export.pngSize = Number(event.target.value); scheduleSave(); }
     function fileToDataUrl(file) { return new Promise(function (resolve, reject) { var reader = new FileReader(); reader.onload = function () { resolve(reader.result); }; reader.onerror = reject; reader.readAsDataURL(file); }); }
-    async function onLogo(event) { var file = event.target.files && event.target.files[0]; if (!file) return; if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) { status('Choose a PNG, JPG or WebP logo smaller than 5 MB.', true); event.target.value = ''; return; } try { if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl); logoObjectUrl = URL.createObjectURL(file); var dataUrl = await fileToDataUrl(file); logoImage = await loadLogoImage(dataUrl); state.logo.enabled = true; state.logo.dataUrl = dataUrl; state.logo.assetId = 'session-logo'; state.design.errorCorrectionLevel = 'H'; syncDesignControls(); syncLogoControls(); requestRender(); scheduleSave(); } catch (error) { status('This logo could not be opened. Choose a PNG, JPG or WebP file.', true); } }
+    async function onLogo(event) { var file = event.target.files && event.target.files[0]; if (!file) return; if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) { status('Choose a PNG, JPG or WebP logo smaller than 5 MB.', true); event.target.value = ''; return; } try { if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl); logoObjectUrl = URL.createObjectURL(file); var dataUrl = await fileToDataUrl(file); logoImage = await loadLogoImage(dataUrl); state.logo.enabled = true; state.logo.dataUrl = dataUrl; state.logo.assetId = 'current-logo'; state.design.errorCorrectionLevel = 'H'; syncDesignControls(); syncLogoControls(); requestRender(); scheduleSave(); } catch (error) { status('This logo could not be opened. Choose a PNG, JPG or WebP file.', true); } }
     function removeLogo() { state.logo.enabled = false; state.logo.dataUrl = null; state.logo.assetId = null; logoImage = null; if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl); logoObjectUrl = null; syncLogoControls(); requestRender(); scheduleSave(); }
     function applyLocale() {
         var privacy = root.querySelector('[data-qr-privacy]');
@@ -192,5 +221,5 @@
     var incoming = readIncoming();
     var saved = incoming && incoming.text ? core.createDefaultQrProject(incoming.text) : core.normalizeQrProject(readSaved() || core.createDefaultQrProject());
     if (incoming && incoming.text) saved.content.fields.text = incoming.text;
-    setState(saved); bind(); applyLocale();
+    setState(saved); bind(); applyLocale(); restoreIndexedLogo(saved);
 }(window, document));

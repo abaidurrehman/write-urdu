@@ -375,6 +375,17 @@ test('QR generator localizes its title and privacy promise', async ({ page }) =>
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 });
 
+test('QR generator keeps local logos contained and raises correction level', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/qr-code-generator.html');
+  await page.locator('[data-qr-logo]').setInputFiles(path.resolve(__dirname, '..', 'sample.png'));
+  await expect(page.locator('[data-qr-logo-options]')).toBeVisible();
+  await expect(page.locator('[data-qr-design="errorCorrectionLevel"]')).toHaveValue('H');
+  await expect(page.locator('[data-qr-download-svg]')).toBeEnabled();
+  const svg = await Promise.all([page.waitForEvent('download'), page.locator('[data-qr-download-svg]').click()]);
+  expect(svg[0].suggestedFilename()).toMatch(/\.svg$/i);
+});
+
 test('purpose page presents clear editor paths and localizes its content', async ({ page, isMobile }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/why-write-urdu.html');

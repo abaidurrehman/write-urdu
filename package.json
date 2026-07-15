@@ -7,8 +7,7 @@
     "test:all": "npm test && npm run test:browser"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
-    "browserify": "^17.0.1"
+    "@playwright/test": "^1.52.0"
   },
   "dependencies": {
     "qrcode": "^1.5.4"

@@ -30,6 +30,8 @@ for (const file of ['index.html', 'urdu-editor.html', 'urdu-keyboard.html']) {
   const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
   assert.deepStrictEqual([...new Set(duplicates)], [], `${file} contains duplicate IDs: ${duplicates.join(', ')}`);
 }
+assert.match(read('index.html'), /data-create-qr/, 'Basic editor is missing the QR generator entry action');
+assert.match(read('urdu-editor.html'), /data-create-qr/, 'Rich editor is missing the QR generator entry action');
 
 const home = read('index.html');
 assert.match(home, /makeTransliteratable\(\[['"]transliterateTextarea['"]\]\)/, 'Basic transliteration target changed');
