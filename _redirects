@@ -1,0 +1,33 @@
+# Cloudflare Pages redirect rules. Keep these before any future wildcard rule.
+# Apache deployments use .htaccess; Cloudflare Pages uses this file instead.
+/index.html / 301
+/urdu-editor.html /urdu-editor 301
+/urdu-keyboard.html /urdu-keyboard 301
+/urdu-alphabet.html /urdu-alphabet 301
+/urdu-card-studio.html /urdu-card-studio 301
+/qr-code-generator.html /qr-code-generator 301
+/write-urdu-features.html /write-urdu-features 301
+/urdu-editor-features.html /urdu-editor-features 301
+/write-urdu-documentation.html /write-urdu-documentation 301
+/english-urdu-typing-tutorial.html /english-urdu-typing-tutorial 301
+/urdu-faq.html /urdu-faq 301
+/why-write-urdu.html /why-write-urdu 301
+/write-urdu-privacy.html /write-urdu-privacy 301
+/write-urdu-sitemap.html /write-urdu-sitemap 301
+/write-urdu-search.html /write-urdu-search 301
+/write-urdu-feedback.html /write-urdu-feedback 301
+
+# Normalize common trailing-slash variants of public routes.
+/urdu-editor/ /urdu-editor 301
+/urdu-keyboard/ /urdu-keyboard 301
+/urdu-alphabet/ /urdu-alphabet 301
+/urdu-card-studio/ /urdu-card-studio 301
+/qr-code-generator/ /qr-code-generator 301
+/write-urdu-features/ /write-urdu-features 301
+/urdu-editor-features/ /urdu-editor-features 301
+/write-urdu-documentation/ /write-urdu-documentation 301
+/english-urdu-typing-tutorial/ /english-urdu-typing-tutorial 301
+/urdu-faq/ /urdu-faq 301
+/why-write-urdu/ /why-write-urdu 301
+/write-urdu-privacy/ /write-urdu-privacy 301
+/write-urdu-sitemap/ /write-urdu-sitemap 301
