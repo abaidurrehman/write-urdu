@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# GPTBot is allowed for this launch. Change this policy deliberately if the owner opts out.
+User-agent: GPTBot
+Allow: /
+
+# Google-Extended is separate from Google Search crawling.
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://www.write-urdu.com/sitemap.xml

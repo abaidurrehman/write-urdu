@@ -126,7 +126,7 @@ const documentation = read('write-urdu-documentation.html');
 assert.match(documentation, /class=["']documentation-main["']/i, 'Documentation page is missing its main content region');
 assert.match(documentation, /class=["']docs-hero["']/i, 'Documentation page is missing its hero section');
 assert.match(documentation, /class=["']docs-faq["']/i, 'Documentation page is missing its accessible FAQ');
-assert.match(documentation, /href=["'](?:index\.html|urdu-editor\.html)["']/i, 'Documentation page is missing editor entry points');
+assert.match(documentation, /href=["'](?:\/|\/urdu-editor)["']/i, 'Documentation page is missing editor entry points');
 
 const sharedStyles = fs.readFileSync(path.join(root, 'css', 'site-header.css'), 'utf8');
 assert.match(sharedStyles, /--wu-text:|\.content-article|\[lang=["']ur["']\]/, 'Shared editorial typography is missing');

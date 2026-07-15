@@ -3,8 +3,23 @@ DirectoryIndex index.html
 
 RewriteEngine On
 
-# Serve clean public routes from the existing static HTML files without a
-# redirect. Legacy .html URLs continue to work as bookmarks and search links.
+# Legacy HTML URLs are permanent redirects, not alternate indexable pages.
+# These rules run before host canonicalisation so each old URL resolves in one hop.
+RewriteRule ^index\.html$ https://www.write-urdu.com/ [R=301,L,NE]
+RewriteRule ^(urdu-editor|urdu-keyboard|urdu-alphabet|urdu-card-studio|qr-code-generator|write-urdu-features|urdu-editor-features|write-urdu-documentation|english-urdu-typing-tutorial|urdu-faq|why-write-urdu|write-urdu-privacy|write-urdu-sitemap|write-urdu-search|write-urdu-feedback)\.html$ https://www.write-urdu.com/$1 [R=301,L,NE]
+
+# Canonical URL policy: keep one HTTPS www origin and extensionless paths.
+# Configure the same rules at the CDN/host if Apache is not the edge server.
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^www\.write-urdu\.com$ [NC]
+RewriteRule ^ https://www.write-urdu.com%{REQUEST_URI} [R=301,L,NE]
+
+# Remove trailing slashes from non-directory routes.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} .+/$
+RewriteRule ^(.+)/$ https://www.write-urdu.com/$1 [R=301,L,NE]
+
+# Serve clean public routes from the existing static HTML files.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
