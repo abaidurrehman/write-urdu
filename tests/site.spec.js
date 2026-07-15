@@ -315,6 +315,25 @@ test('Card Studio downloads a PNG without leaving the browser', async ({ page })
   await expect(page.locator('[data-card-status]')).toContainText('PNG downloaded');
 });
 
+test('Card Studio connects its text field to the transliteration control', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.google = {
+      elements: { transliteration: {
+        LanguageCode: { ENGLISH: 'en', URDU: 'ur' },
+        TransliterationControl: function () {
+          this.makeTransliteratable = ids => { window.__cardTransliterationTarget = ids[0]; };
+        }
+      } },
+      load: () => {},
+      setOnLoadCallback: callback => window.setTimeout(callback, 0)
+    };
+  });
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await expect(page.locator('[data-card-transliteration-status]')).toContainText('Roman Urdu input is ready');
+  await expect.poll(() => page.evaluate(() => window.__cardTransliterationTarget)).toBe('cardText');
+});
+
 test('purpose page presents clear editor paths and localizes its content', async ({ page, isMobile }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/why-write-urdu.html');

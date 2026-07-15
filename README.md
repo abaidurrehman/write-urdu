@@ -56,7 +56,7 @@ Long-form translations are maintained in `js/content-locale.js`. It localizes th
 
 ## Urdu Card Studio
 
-Both editors expose **Create Urdu Card**. The action transfers the selected plain text (or the complete editor text when nothing is selected) through `sessionStorage`; private text is never placed in a URL. Card Studio renders four exact-size presets and six built-in designs with the Canvas 2D API, supports local JPG/PNG/WebP backgrounds, and downloads a high-resolution PNG without a backend. Projects and image blobs are saved separately in IndexedDB when available, with a session-only fallback when local storage is unavailable.
+Both editors expose **Create Urdu Card**. The action transfers the selected plain text (or the complete editor text when nothing is selected) through `sessionStorage`; private text is never placed in a URL. Card Studio also initializes the existing Google Roman-Urdu transliteration control for text entered directly on the page, with a retry message when that dependency is unavailable. It renders four exact-size presets and nine built-in designs with the Canvas 2D API, supports local JPG/PNG/WebP backgrounds, and downloads a high-resolution PNG without a backend. Projects and image blobs are saved separately in IndexedDB when available, with a session-only fallback when local storage is unavailable.
 
 ## Editor workspace features
 

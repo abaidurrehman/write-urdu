@@ -58,6 +58,8 @@ const cardStudio = read('urdu-card-studio.html');
 assert.match(cardStudio, /data-card-studio/, 'Card Studio page is missing its application root');
 assert.match(cardStudio, /id="cardCanvas"/, 'Card Studio canvas is missing');
 assert.match(cardStudio, /data-card-action="download"/, 'Card Studio download action is missing');
+assert.match(cardStudio, /google_jsapi\.js/, 'Card Studio must load the existing transliteration dependency');
+assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /makeTransliteratable\(\['cardText'\]\)|makeTransliteratable\(\["cardText"\]\)/, 'Card Studio text field is not connected to transliteration');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
 const cardCore = require(path.join(root, 'js', 'card-studio-core.js'));
 assert.strictEqual(cardCore.PRESETS.length, 4, 'Card Studio must provide four output presets');

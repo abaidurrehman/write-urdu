@@ -7,6 +7,7 @@
     <title>Urdu Card Studio | Write Urdu</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <script src="site-header.js" defer></script>
+    <script src="google_jsapi.js"></script>
     <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/card-studio.css">
     <script src="js/card-studio-core.js" defer></script>
@@ -47,6 +48,7 @@
                     <h2 data-card-i18n="textHeading">Text</h2>
                     <label class="card-studio-label" for="cardText" data-card-i18n="textLabel">Card text</label>
                     <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
+                    <div class="card-studio-transliteration" aria-live="polite"><span data-card-transliteration-status>Roman Urdu input is loading…</span><button class="card-studio-transliteration-retry" type="button" data-card-transliteration-retry hidden>Retry</button></div>
                     <p class="card-studio-help" data-card-character-help><span data-card-i18n="characters">0 characters</span></p>
                     <p class="card-studio-text-warning" data-card-text-warning hidden></p>
                     <label class="card-studio-label" for="cardAttribution" data-card-i18n="attributionLabel">Author or source (optional)</label>
