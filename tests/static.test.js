@@ -134,6 +134,7 @@ assert.match(sharedHeader, /write-urdu:locale:v1/, 'Shared locale preference sto
 assert.match(sharedHeader, /data-wu-language-toggle/, 'Shared language toggle is missing');
 assert.match(sharedHeader, /locale-urdu|document\.documentElement\.dir/, 'Shared Urdu direction handling is missing');
 assert.match(sharedHeader, /js\/content-locale\.js|function loadContentLocale\(/, 'Long-form content localization loader is missing');
+assert.match(sharedHeader, /wu-footer-main|footer\.privacyNote/, 'Shared footer structure is missing');
 assert.match(sharedStyles, /h1\.wu-page-title|wu-page-subtitle/, 'Shared page-title typography is missing');
 assert.match(sharedStyles, /\.wu-language-toggle|html\[dir=["']rtl["']\]/, 'Shared language-toggle styles are missing');
 const contentLocale = fs.readFileSync(path.join(root, 'js', 'content-locale.js'), 'utf8');

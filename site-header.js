@@ -30,6 +30,9 @@
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
                 sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
+                eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
+                local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
+                about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere',
                 note: '© Write Urdu. Browser-based Urdu typing tools.'
             },
             aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
@@ -74,6 +77,9 @@
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
                 sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
+                eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
+                local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
+                about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے',
                 note: '© رائٹ اردو۔ براؤزر پر مبنی اردو ٹائپنگ ٹولز۔'
             },
             aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
@@ -191,23 +197,59 @@
     function renderFooter() {
         var footer = document.querySelector('footer');
         if (!footer) return;
+        footer.classList.add('wu-footer');
+        footer.setAttribute('data-write-urdu-footer', '');
         footer.innerHTML =
-            '<nav class="wu-footer-links" aria-label="Footer navigation">' +
-                '<a href="/" data-wu-i18n-key="footer.home">Write Urdu</a>' +
-                '<a href="/urdu-faq" data-wu-i18n-key="footer.faq">FAQ</a>' +
-                '<a href="/write-urdu-documentation" data-wu-i18n-key="footer.documentation">Documentation</a>' +
-                '<a href="/write-urdu-features" data-wu-i18n-key="footer.features">Features</a>' +
-                '<a href="/urdu-editor-features" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
-                '<a href="/english-urdu-typing-tutorial" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
-                '<a href="/write-urdu-privacy" data-wu-i18n-key="footer.privacy">Privacy and terms</a>' +
-                '<a href="/write-urdu-sitemap" data-wu-i18n-key="footer.sitemap">Sitemap</a>' +
-                '<a href="/write-urdu-search" data-wu-i18n-key="footer.search">Search</a>' +
-                '<a href="/why-write-urdu" data-wu-i18n-key="footer.why">Why Write Urdu?</a>' +
-                '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
-                '<a href="/qr-code-generator" data-wu-i18n-key="footer.qrGenerator">QR Code Generator</a>' +
-                '<a href="https://www.onlinekidsmadrasa.com" target="_blank" rel="noopener noreferrer" data-wu-i18n-key="footer.quran">Learn Quran Online</a>' +
-            '</nav>' +
-            '<p class="wu-footer-note" data-wu-i18n-key="footer.note">© Write Urdu. Browser-based Urdu typing tools.</p>';
+            '<div class="wu-footer-glow" aria-hidden="true"></div>' +
+            '<div class="wu-footer-inner">' +
+                '<div class="wu-footer-main">' +
+                    '<div class="wu-footer-brand-column">' +
+                        '<a class="wu-footer-brand" href="/" aria-label="Write Urdu home">' +
+                            '<img src="image/logo10.png" alt="" width="44" height="44">' +
+                            '<span data-wu-i18n-key="brand">Write Urdu</span>' +
+                        '</a>' +
+                        '<p class="wu-footer-eyebrow" data-wu-i18n-key="footer.eyebrow">WRITE URDU TOOLS</p>' +
+                        '<p class="wu-footer-description" data-wu-i18n-key="footer.description">A simple, private space to type, format, and share Urdu online.</p>' +
+                        '<div class="wu-footer-trust" aria-label="Write Urdu benefits">' +
+                            '<span><span class="wu-footer-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="footer.local">Runs in your browser</span></span>' +
+                            '<span><span class="wu-footer-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="footer.noAccount">No account required</span></span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<nav class="wu-footer-links wu-footer-nav" aria-label="Footer navigation">' +
+                        '<div class="wu-footer-group">' +
+                            '<h2 data-wu-i18n-key="footer.tools">Tools</h2>' +
+                            '<a href="/" data-wu-i18n-key="footer.home">Write Urdu</a>' +
+                            '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
+                            '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
+                            '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
+                            '<a href="/qr-code-generator" data-wu-i18n-key="footer.qrGenerator">QR Code Generator</a>' +
+                        '</div>' +
+                        '<div class="wu-footer-group">' +
+                            '<h2 data-wu-i18n-key="footer.learn">Learn and explore</h2>' +
+                            '<a href="/urdu-alphabet" data-wu-i18n-key="nav.alphabet">Urdu Alphabet</a>' +
+                            '<a href="/urdu-faq" data-wu-i18n-key="footer.faq">FAQ</a>' +
+                            '<a href="/write-urdu-documentation" data-wu-i18n-key="footer.documentation">Documentation</a>' +
+                            '<a href="/write-urdu-features" data-wu-i18n-key="footer.features">Features</a>' +
+                            '<a href="/urdu-editor-features" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
+                            '<a href="/english-urdu-typing-tutorial" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
+                        '</div>' +
+                        '<div class="wu-footer-group">' +
+                            '<h2 data-wu-i18n-key="footer.about">About Write Urdu</h2>' +
+                            '<a href="/why-write-urdu" data-wu-i18n-key="footer.why">Why Write Urdu?</a>' +
+                            '<a href="/write-urdu-feedback" data-wu-i18n-key="nav.feedback">Feedback</a>' +
+                            '<a href="/write-urdu-search" data-wu-i18n-key="footer.search">Search</a>' +
+                            '<a href="/write-urdu-sitemap" data-wu-i18n-key="footer.sitemap">Sitemap</a>' +
+                            '<a href="/write-urdu-privacy" data-wu-i18n-key="footer.privacy">Privacy and terms</a>' +
+                            '<a href="https://www.onlinekidsmadrasa.com" target="_blank" rel="noopener noreferrer" data-wu-i18n-key="footer.quran">Learn Quran Online</a>' +
+                        '</div>' +
+                    '</nav>' +
+                '</div>' +
+                '<div class="wu-footer-privacy" data-wu-i18n-key="footer.privacyNote">Your writing stays in this browser unless you choose to export or share it.</div>' +
+                '<div class="wu-footer-bottom">' +
+                    '<p class="wu-footer-note" data-wu-i18n-key="footer.note">© Write Urdu. Browser-based Urdu typing tools.</p>' +
+                    '<span class="wu-footer-made" data-wu-i18n-key="footer.made">Made for Urdu writers everywhere</span>' +
+                '</div>' +
+            '</div>';
     }
 
     function renderHeaderAd(header) {
