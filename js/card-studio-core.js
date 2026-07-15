@@ -54,6 +54,21 @@
             textAlign: 'center', verticalAlign: 'bottom', fontSizeRatio: .055, lineHeight: 1.6, background: { type: 'solid', color: '#263238' },
             decoration: { border: { enabled: false }, accent: '#ffffff' }, watermark: { enabled: true, position: 'bottom-right' },
             imageOverlay: { color: '#000000', opacity: .42 }
+        },
+        {
+            id: 'sunflower-bloom', name: 'Sunflower Bloom', fontFamily: 'Noto Nastaliq Urdu', textColor: '#26382b', attributionColor: '#607052',
+            textAlign: 'center', verticalAlign: 'center', fontSizeRatio: .055, lineHeight: 1.8, background: { type: 'solid', color: '#fffdf4' },
+            decoration: { border: { enabled: true, color: 'rgba(177,126,22,.26)' }, accent: '#d7a51a', motif: 'sunflower' }, watermark: { enabled: true, position: 'bottom-left' }
+        },
+        {
+            id: 'golden-mandala', name: 'Golden Mandala', fontFamily: 'Noto Naskh Arabic', textColor: '#2d2414', attributionColor: '#695329',
+            textAlign: 'center', verticalAlign: 'center', fontSizeRatio: .052, lineHeight: 1.65, background: { type: 'solid', color: '#f5c84b' },
+            decoration: { border: { enabled: true, color: 'rgba(64,44,14,.36)' }, accent: '#3f2e14', motif: 'mandala' }, watermark: { enabled: true, position: 'bottom-right' }
+        },
+        {
+            id: 'botanical-frame', name: 'Botanical Frame', fontFamily: 'Noto Nastaliq Urdu', textColor: '#1d3b2a', attributionColor: '#55705d',
+            textAlign: 'right', verticalAlign: 'center', fontSizeRatio: .052, lineHeight: 1.8, background: { type: 'solid', color: '#f5f2e8' },
+            decoration: { border: { enabled: true, color: 'rgba(35,93,58,.30)' }, accent: '#277044', motif: 'botanical' }, watermark: { enabled: true, position: 'bottom-left' }
         }
     ];
 

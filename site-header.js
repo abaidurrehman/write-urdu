@@ -448,7 +448,7 @@
         header.setAttribute('data-write-urdu-header', '');
         header.innerHTML =
                 '<div class="wu-header-inner">' +
-                '<a class="wu-brand" href="index.html" aria-label="Write Urdu home">' +
+                '<a class="wu-brand" href="/" aria-label="Write Urdu home">' +
                     '<img class="wu-brand-mark" src="image/logo10.png" alt="" width="42" height="42">' +
                     '<span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply</small></span>' +
                 '</a>' +

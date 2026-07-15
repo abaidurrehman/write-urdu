@@ -61,7 +61,7 @@ assert.match(cardStudio, /data-card-action="download"/, 'Card Studio download ac
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
 const cardCore = require(path.join(root, 'js', 'card-studio-core.js'));
 assert.strictEqual(cardCore.PRESETS.length, 4, 'Card Studio must provide four output presets');
-assert.ok(cardCore.TEMPLATES.length >= 6, 'Card Studio must provide at least six templates');
+assert.ok(cardCore.TEMPLATES.length >= 9, 'Card Studio must provide at least nine templates');
 assert.deepStrictEqual(cardCore.calculateImagePlacement({ width: 1600, height: 800 }, { width: 1080, height: 1080 }, 'cover', .5, .5).width >= 1080, true, 'Card Studio cover placement is invalid');
 assert.strictEqual(cardCore.safeFilename('a/b:c', 'fallback'), 'a-b-c', 'Card Studio filename sanitisation is incomplete');
 assert.ok(fs.existsSync(path.join(root, '.htaccess')), 'Clean-route Apache configuration is missing');

@@ -286,6 +286,8 @@ test('Card Studio opens with editor text and renders the selected preset', async
   await expect(page.locator('#cardCanvas')).toHaveAttribute('height', '1920');
   await page.locator('[data-card-template="midnight"]').click();
   await expect(page.locator('[data-card-template="midnight"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('[data-card-template="sunflower-bloom"]').click();
+  await expect(page.locator('[data-card-template="sunflower-bloom"]')).toHaveAttribute('aria-pressed', 'true');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
