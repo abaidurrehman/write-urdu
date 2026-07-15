@@ -234,7 +234,7 @@ test('mobile menu and primary tools remain inside the viewport', async ({ page, 
 
 test('content pages retain readable typography and responsive embeds', async ({ page }) => {
   await blockNonVisualServices(page);
-  for (const route of ['/write-urdu-features.html', '/write-urdu-documentation.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-search.html', '/write-urdu-privacy.html']) {
+  for (const route of ['/write-urdu-features.html', '/write-urdu-documentation.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-search.html', '/write-urdu-privacy.html', '/why-write-urdu.html']) {
     await openFile(page, route);
     await expect(page.locator('body')).toHaveClass(/content-page/);
     await expect(page.locator('.wu-header-ad')).toHaveCount(1);
@@ -270,6 +270,22 @@ test('content pages retain readable typography and responsive embeds', async ({ 
       await expect(page.locator('.docs-faq details')).toHaveCount(4);
     }
   }
+});
+
+test('purpose page presents clear editor paths and localizes its content', async ({ page, isMobile }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/why-write-urdu.html');
+  await expect(page.locator('.why-hero h1')).toHaveText('Why write Urdu online?');
+  await expect(page.locator('.why-path-card')).toHaveCount(3);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+  await page.evaluate(() => localStorage.setItem('write-urdu:locale:v1', 'ur'));
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.why-hero h1')).toHaveText('آن لائن اردو کیوں لکھیں؟');
+  await expect(page.locator('.why-value-card h3').first()).toHaveText('اپنے مانوس الفاظ سے آغاز کریں');
+  if (isMobile) await page.locator('.wu-menu-toggle').click();
+  await page.getByRole('button', { name: 'Switch to English' }).click();
+  await expect(page.locator('.why-hero h1')).toHaveText('Why write Urdu online?');
 });
 
 test('primary page titles share the same visual scale', async ({ page }) => {

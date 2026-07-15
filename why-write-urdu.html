@@ -10,64 +10,14 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="css/menu.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
 
-    <script type="text/javascript">
-        // Load the Google Transliterate API
-        google.load("elements", "1", {
-            packages: "transliteration"
-        });
-
-        function onLoad() {
-            var options = {
-                sourceLanguage:
-                    google.elements.transliteration.LanguageCode.ENGLISH,
-                destinationLanguage:
-                    [google.elements.transliteration.LanguageCode.URDU],
-                shortcutKey: 'ctrl+g',
-                transliterationEnabled: true
-            };
-
-            // Create an instance on TransliterationControl with the required
-            // options.
-            var control =
-                new google.elements.transliteration.TransliterationControl(options);
-
-            // Enable transliteration in the textbox with id
-            // 'transliterateTextarea'.
-            control.makeTransliteratable(['transliterateTextarea']);
-        }
-        google.setOnLoadCallback(onLoad);
-
-        function clearText() {
-            document.getElementById('transliterateTextarea').value = '';
-            document.getElementById('transliterateTextarea').focus();
-        }
-
-    </script>
 <script src="site-header.js" defer></script>
 <link href="css/site-header.css" rel="stylesheet" type="text/css" />
 <link href="css/why.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="content-page why-page">
-    <div id="fb-root"></div>
-    <script>
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7&appId=1410577659240776";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-
     <div class="container-fluid">
 
         <nav class="navbar navbar-expand-md bg-dark navbar-dark">
@@ -259,18 +209,6 @@
             </span
         </div>
     </footer>
-    <script>
-        var clipboard = new Clipboard('.btn');
-
-        clipboard.on('success', function (e) {
-            console.log(e);
-        });
-
-        clipboard.on('error', function (e) {
-            console.log(e);
-        });
-    </script>
-
 </body>
 
 </html>
