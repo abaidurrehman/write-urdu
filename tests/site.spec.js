@@ -334,6 +334,47 @@ test('Card Studio connects its text field to the transliteration control', async
   await expect.poll(() => page.evaluate(() => window.__cardTransliterationTarget)).toBe('cardText');
 });
 
+test('QR generator accepts Urdu editor text and renders a local preview', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  await page.locator('#transliterateTextarea').fill('ہمیں اردو سے محبت ہے۔');
+  await page.locator('[data-create-qr]').click();
+  await page.locator('[data-qr-generator]').waitFor();
+  await expect(page.locator('[data-qr-field="text"]')).toHaveValue('ہمیں اردو سے محبت ہے۔');
+  await expect(page.locator('#qrCanvas')).toBeVisible();
+  await expect(page.locator('[data-qr-download-png]')).toBeEnabled();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('QR generator validates types and downloads PNG and SVG locally', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/qr-code-generator.html');
+  await expect(page.locator('[data-qr-type]')).toHaveValue('url');
+  await page.locator('[data-qr-field="url"]').fill('not a url');
+  await expect(page.locator('[data-qr-download-png]')).toBeDisabled();
+  await expect(page.locator('[data-qr-health]')).toContainText('complete website address');
+  await page.locator('[data-qr-field="url"]').fill('https://write-urdu.com/');
+  await expect(page.locator('[data-qr-download-png]')).toBeEnabled();
+  const png = await Promise.all([page.waitForEvent('download'), page.locator('[data-qr-download-png]').click()]);
+  expect(png[0].suggestedFilename()).toMatch(/\.png$/i);
+  const svg = await Promise.all([page.waitForEvent('download'), page.locator('[data-qr-download-svg]').click()]);
+  expect(svg[0].suggestedFilename()).toMatch(/\.svg$/i);
+  await page.locator('[data-qr-type]').selectOption('wifi');
+  await page.locator('[data-qr-field="ssid"]').fill('Urdu Wi-Fi');
+  await page.locator('[data-qr-field="password"]').fill('secret');
+  await expect(page.locator('[data-qr-payload]')).toContainText('WIFI:T:WPA');
+});
+
+test('QR generator localizes its title and privacy promise', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/qr-code-generator.html');
+  await page.locator('[data-wu-language-toggle]').click();
+  await expect(page.locator('h1.wu-page-title')).toHaveText('مفت QR کوڈ جنریٹر');
+  await expect(page.locator('[data-qr-privacy]')).toContainText('آپ کا متن اور لوگو');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+});
+
 test('purpose page presents clear editor paths and localizes its content', async ({ page, isMobile }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/why-write-urdu.html');

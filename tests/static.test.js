@@ -66,6 +66,21 @@ assert.strictEqual(cardCore.PRESETS.length, 4, 'Card Studio must provide four ou
 assert.ok(cardCore.TEMPLATES.length >= 9, 'Card Studio must provide at least nine templates');
 assert.deepStrictEqual(cardCore.calculateImagePlacement({ width: 1600, height: 800 }, { width: 1080, height: 1080 }, 'cover', .5, .5).width >= 1080, true, 'Card Studio cover placement is invalid');
 assert.strictEqual(cardCore.safeFilename('a/b:c', 'fallback'), 'a-b-c', 'Card Studio filename sanitisation is incomplete');
+const qrHtml = read('qr-code-generator.html');
+assert.match(qrHtml, /data-qr-generator/, 'QR generator page is missing its application root');
+assert.match(qrHtml, /id="qrCanvas"/, 'QR generator canvas is missing');
+assert.match(qrHtml, /js\/vendor\/qrcode\.js/, 'QR encoder must be bundled locally');
+assert.doesNotMatch(qrHtml, /qr-code-generator-api|api\.qr|quickchart\.io|cdn.*qrcode/i, 'QR generator must not use a remote QR API or CDN');
+const qrCore = require(path.join(root, 'js', 'qr-generator-core.js'));
+assert.strictEqual(qrCore.buildUrlPayload({ url: 'write-urdu.com' }).payload, 'https://write-urdu.com/', 'URL payload normalization failed');
+assert.match(qrCore.buildTextPayload({ text: 'ہمیں اردو سے محبت ہے۔' }).payload, /اردو/, 'Urdu text payload failed');
+assert.match(qrCore.buildWhatsAppPayload({ phone: '+45 12 34 56 78', message: 'سلام' }).payload, /wa\.me\/4512345678\?text=/, 'WhatsApp payload normalization failed');
+assert.match(qrCore.buildWifiPayload({ ssid: 'a;b', security: 'WPA', password: 'p:q' }).payload, /a\\;b.*p\\:q/, 'Wi-Fi payload escaping failed');
+assert.match(qrCore.buildVCardPayload({ fullName: 'A;B' }).payload, /N:;A\\;B/, 'vCard escaping failed');
+assert.strictEqual(qrCore.buildLocationPayload({ latitude: 91, longitude: 0 }).valid, false, 'Location bounds are not enforced');
+assert.strictEqual(qrCore.normalizeQrProject({ design: { foregroundColor: '#fff', margin: 9 }, logo: { sizeRatio: 1 } }).design.margin, 4, 'QR state normalization failed');
+assert.strictEqual(qrCore.calculateLogoPlacement(1000, { width: 2000, height: 1000 }, { sizeRatio: .18 }).imageWidth <= 180, true, 'QR logo contain placement failed');
+assert.strictEqual(qrCore.safeFilename('a/b:c', 'fallback'), 'a b c', 'QR filename sanitisation is incomplete');
 assert.ok(fs.existsSync(path.join(root, '.htaccess')), 'Clean-route Apache configuration is missing');
 assert.match(fs.readFileSync(path.join(root, '.htaccess'), 'utf8'), /REQUEST_FILENAME\.html|RewriteRule/, 'Clean-route rewrite is incomplete');
 for (const file of ['index.html', 'urdu-editor.html']) {
