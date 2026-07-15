@@ -10,6 +10,7 @@
         { href: '/urdu-editor', match: ['/urdu-editor', '/urdu-editor.html'], key: 'editor', label: 'Rich Text Editor' },
         { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard' },
         { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet' },
+        { href: '/urdu-card-studio', match: ['/urdu-card-studio', '/urdu-card-studio.html'], key: 'cardStudio', label: 'Card Studio' },
         { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation' },
         { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features' },
         { href: '/english-urdu-typing-tutorial', match: ['/english-urdu-typing-tutorial', '/english-urdu-typing-tutorial.html'], key: 'tutorials', label: 'Tutorials' }
@@ -21,13 +22,13 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', documentation: 'Documentation', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', documentation: 'Documentation', features: 'Features',
                 tutorials: 'Tutorials', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
-                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', quran: 'Learn Quran Online',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', quran: 'Learn Quran Online',
                 note: '© Write Urdu. Browser-based Urdu typing tools.'
             },
             aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
@@ -65,13 +66,13 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', documentation: 'دستاویزات', features: 'خصوصیات',
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', documentation: 'دستاویزات', features: 'خصوصیات',
                 tutorials: 'سبق', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', quran: 'قرآن آن لائن سیکھیں',
                 note: '© رائٹ اردو۔ براؤزر پر مبنی اردو ٹائپنگ ٹولز۔'
             },
             aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
@@ -111,6 +112,7 @@
         '/urdu-editor.html': { title: ['Urdu Rich Text Editor', 'اردو رچ ٹیکسٹ ایڈیٹر'], subtitle: ['Write, format and export Urdu documents online', 'آن لائن اردو دستاویز لکھیں، فارمیٹ کریں اور برآمد کریں'], documentTitle: ['Urdu Rich Text Editor | Type and Format Urdu Online', 'اردو رچ ٹیکسٹ ایڈیٹر | آن لائن اردو لکھیں'] },
         '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Type Urdu directly—no installation required', 'براہِ راست اردو لکھیں—انسٹالیشن کی ضرورت نہیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
         '/urdu-alphabet.html': { title: ['Urdu alphabet', 'اردو حروف تہجی'], subtitle: ['A practical guide to Urdu letters and writing direction', 'اردو حروف اور لکھنے کی سمت کا عملی رہنما'], documentTitle: ['Urdu Alphabet Guide | Letters and Writing Direction', 'اردو حروف تہجی | حروف اور لکھنے کی سمت'] },
+        '/urdu-card-studio.html': { title: ['Urdu Card Studio', 'اردو کارڈ اسٹوڈیو'], subtitle: ['Design and download polished Urdu cards in your browser', 'براؤزر میں خوب صورت اردو کارڈ بنائیں اور ڈاؤن لوڈ کریں'], documentTitle: ['Urdu Card Studio | Design Urdu Cards Online', 'اردو کارڈ اسٹوڈیو | آن لائن اردو کارڈ بنائیں'] },
         '/write-urdu-documentation.html': { title: ['Write Urdu, beautifully explained.', 'رائٹ اردو، آسان انداز میں'], lede: ['A clear guide to every writing path on the site—from typing Roman Urdu and converting it into Urdu to polishing, saving and sharing a finished piece.', 'اس ویب سائٹ پر اردو لکھنے کے ہر طریقے کی واضح رہنمائی—رومن اردو کو اردو میں تبدیل کرنے سے لے کر متن کو سنوارنے، محفوظ کرنے اور شیئر کرنے تک۔'], documentTitle: ['Write Urdu Documentation | Roman Urdu, Keyboard and Rich Editor', 'رائٹ اردو دستاویزات | رومن اردو، کی بورڈ اور رچ ایڈیٹر'] },
         '/write-urdu-features.html': { title: ['Write Urdu features and export options', 'رائٹ اردو کی خصوصیات اور برآمد کے اختیارات'], subtitle: ['Write, refine and share Urdu text with browser-based tools', 'براؤزر پر مبنی ٹولز سے اردو متن لکھیں، بہتر بنائیں اور شیئر کریں'], documentTitle: ['Write Urdu Features | Drafts, Import, Export and Share', 'رائٹ اردو خصوصیات | مسودے، درآمد، برآمد اور شیئرنگ'] },
         '/urdu-editor-features.html': { title: ['Urdu Rich Text Editor formatting guide', 'اردو رچ ٹیکسٹ ایڈیٹر فارمیٹنگ گائیڈ'], subtitle: ['Learn how to format, export and share polished Urdu documents', 'خوب صورت اردو دستاویزات کو فارمیٹ، برآمد اور شیئر کرنے کا طریقہ سیکھیں'], documentTitle: ['Urdu Editor Formatting Guide | Fonts, Colour and Size', 'اردو ایڈیٹر فارمیٹنگ گائیڈ | فونٹس، رنگ اور سائز'] },
@@ -199,13 +201,14 @@
                 '<a href="/write-urdu-sitemap" data-wu-i18n-key="footer.sitemap">Sitemap</a>' +
                 '<a href="/write-urdu-search" data-wu-i18n-key="footer.search">Search</a>' +
                 '<a href="/why-write-urdu" data-wu-i18n-key="footer.why">Why Write Urdu?</a>' +
+                '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
                 '<a href="https://www.onlinekidsmadrasa.com" target="_blank" rel="noopener noreferrer" data-wu-i18n-key="footer.quran">Learn Quran Online</a>' +
             '</nav>' +
             '<p class="wu-footer-note" data-wu-i18n-key="footer.note">© Write Urdu. Browser-based Urdu typing tools.</p>';
     }
 
     function renderHeaderAd(header) {
-        if (!document.body.classList.contains('content-page') || document.querySelector('.wu-header-ad')) return;
+        if (!document.body.classList.contains('content-page') || document.body.classList.contains('card-studio-page') || document.querySelector('.wu-header-ad')) return;
 
         var adRegion = document.createElement('aside');
         adRegion.className = 'wu-header-ad';

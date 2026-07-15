@@ -54,6 +54,16 @@ assert.ok(fs.existsSync(path.join(root, 'sw.js')), 'Offline service worker is mi
 const manifest = read('manifest.webmanifest');
 assert.match(manifest, /"start_url"\s*:\s*"\.\/"/, 'PWA manifest start URL is missing');
 assert.match(fs.readFileSync(path.join(root, 'sw.js'), 'utf8'), /CACHE_NAME|addEventListener\(['"]fetch['"]/, 'Offline shell service worker is incomplete');
+const cardStudio = read('urdu-card-studio.html');
+assert.match(cardStudio, /data-card-studio/, 'Card Studio page is missing its application root');
+assert.match(cardStudio, /id="cardCanvas"/, 'Card Studio canvas is missing');
+assert.match(cardStudio, /data-card-action="download"/, 'Card Studio download action is missing');
+assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
+const cardCore = require(path.join(root, 'js', 'card-studio-core.js'));
+assert.strictEqual(cardCore.PRESETS.length, 4, 'Card Studio must provide four output presets');
+assert.ok(cardCore.TEMPLATES.length >= 6, 'Card Studio must provide at least six templates');
+assert.deepStrictEqual(cardCore.calculateImagePlacement({ width: 1600, height: 800 }, { width: 1080, height: 1080 }, 'cover', .5, .5).width >= 1080, true, 'Card Studio cover placement is invalid');
+assert.strictEqual(cardCore.safeFilename('a/b:c', 'fallback'), 'a-b-c', 'Card Studio filename sanitisation is incomplete');
 assert.ok(fs.existsSync(path.join(root, '.htaccess')), 'Clean-route Apache configuration is missing');
 assert.match(fs.readFileSync(path.join(root, '.htaccess'), 'utf8'), /REQUEST_FILENAME\.html|RewriteRule/, 'Clean-route rewrite is incomplete');
 for (const file of ['index.html', 'urdu-editor.html']) {

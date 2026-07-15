@@ -39,6 +39,7 @@ cmd /c "set LIVE_TRANSLITERATION=1&&npx playwright test --grep transliterat"
 - `index.html`: basic Roman-Urdu editor
 - `urdu-editor.html`: TinyMCE rich-text editor
 - `urdu-keyboard.html`: direct Urdu keyboard and transliteration editor
+- `urdu-card-studio.html`: local-first Urdu card designer with canvas PNG export
 - `write-urdu-documentation.html`: visual guide to the editors, shortcuts, drafts, privacy and export workflows
 
 Obsolete prototype editor files have been removed; `urdu-editor.html` is the only supported rich-text editor.
@@ -52,6 +53,10 @@ Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keybo
 Every supported page includes the language control in the shared header. English is the default; choosing **اردو** switches the interface copy, page headings, common editor actions, navigation and footer to Urdu, changes the document direction to RTL, and remembers the choice in `localStorage` under `write-urdu:locale:v1`. Choosing **English** restores the LTR interface. Transliteration, keyboard input and export routines are unchanged.
 
 Long-form translations are maintained in `js/content-locale.js`. It localizes the documentation hub, editor help cards, feature and formatting guides, tutorials, FAQ, alphabet guide, sitemap, search, feedback and privacy headings without replacing the editor's live input or export markup.
+
+## Urdu Card Studio
+
+Both editors expose **Create Urdu Card**. The action transfers the selected plain text (or the complete editor text when nothing is selected) through `sessionStorage`; private text is never placed in a URL. Card Studio renders four exact-size presets and six built-in designs with the Canvas 2D API, supports local JPG/PNG/WebP backgrounds, and downloads a high-resolution PNG without a backend. Projects and image blobs are saved separately in IndexedDB when available, with a session-only fallback when local storage is unavailable.
 
 ## Editor workspace features
 

@@ -272,6 +272,47 @@ test('content pages retain readable typography and responsive embeds', async ({ 
   }
 });
 
+test('Card Studio opens with editor text and renders the selected preset', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  const editor = page.locator('#transliterateTextarea');
+  await editor.fill('یہ ایک خوب صورت اردو کارڈ ہے۔');
+  await page.getByRole('button', { name: 'Create Urdu Card' }).click();
+  await page.locator('[data-card-studio]').waitFor();
+  await expect(page.locator('#cardText')).toHaveValue('یہ ایک خوب صورت اردو کارڈ ہے۔');
+  await expect(page.locator('#cardCanvas')).toHaveAttribute('width', '1080');
+  await page.locator('#cardPreset').selectOption('story');
+  await expect(page.locator('#cardCanvas')).toHaveAttribute('width', '1080');
+  await expect(page.locator('#cardCanvas')).toHaveAttribute('height', '1920');
+  await page.locator('[data-card-template="midnight"]').click();
+  await expect(page.locator('[data-card-template="midnight"]')).toHaveAttribute('aria-pressed', 'true');
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('Card Studio supports local draft state and Urdu localization', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await expect(page.locator('#cardCanvas')).toBeVisible();
+  await page.locator('#cardText').fill('مقامی طور پر محفوظ کارڈ');
+  await expect(page.locator('[data-card-status]')).toContainText('Saved on this device', { timeout: 5000 });
+  await page.locator('[data-wu-language-toggle]').click();
+  await expect(page.locator('[data-card-i18n="title"]')).toHaveText('اردو کارڈ اسٹوڈیو');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+});
+
+test('Card Studio downloads a PNG without leaving the browser', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.locator('#cardText').fill('یہ تصویر میرے براؤزر میں تیار ہوئی۔');
+  const download = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Download PNG' }).first().click()
+  ]);
+  expect(download[0].suggestedFilename()).toMatch(/\.png$/i);
+  await expect(page.locator('[data-card-status]')).toContainText('PNG downloaded');
+});
+
 test('purpose page presents clear editor paths and localizes its content', async ({ page, isMobile }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/why-write-urdu.html');
