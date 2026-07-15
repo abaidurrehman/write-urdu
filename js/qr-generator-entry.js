@@ -16,7 +16,7 @@
     function openQrGenerator() {
         var text = plainTextFromEditor().trim();
         try { window.sessionStorage.setItem('writeUrdu.qrGenerator.incoming', JSON.stringify({ version: 1, type: 'text', text: text, source: 'editor', createdAt: new Date().toISOString() })); } catch (error) { /* blank generator fallback */ }
-        window.location.href = 'qr-code-generator.html';
+        window.location.href = 'qr-code-generator';
     }
     document.addEventListener('click', function (event) { var button = event.target.closest('[data-create-qr]'); if (!button) return; event.preventDefault(); openQrGenerator(); });
     window.WriteUrduQrEntry = { open: openQrGenerator };

@@ -93,6 +93,7 @@ for (const file of ['index.html', 'urdu-editor.html']) {
 
 const editorTools = fs.readFileSync(path.join(root, 'js', 'editor-tools.js'), 'utf8');
 assert.match(editorTools, /write-urdu:draft:v1:|write-urdu:history:v1:|data-import-file|function countWords\(|navigator\.share|function normaliseSpacing\(/, 'Frontend writing tools are incomplete');
+assert.match(editorTools, /function draftSignature\(|lastSavedSignature|Compact duplicate entries/, 'Draft history must deduplicate unchanged editor lifecycle events');
 assert.match(editorTools, /home-actions, \.tool-actions, \.keyboard-actions|toolbar\.appendChild\(toolActions\)/, 'Productivity actions are not promoted to the top toolbar');
 const editorToolStyles = fs.readFileSync(path.join(root, 'css', 'editor-tools.css'), 'utf8');
 assert.match(editorToolStyles, /editor-find-panel.*order:100|Productivity controls live beside/, 'Top-toolbar productivity layout is missing');

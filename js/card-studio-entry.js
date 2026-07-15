@@ -20,7 +20,7 @@
         try {
             sessionStorage.setItem('writeUrdu.cardStudio.incoming', JSON.stringify({ version: 1, text: text, source: button.getAttribute('data-editor-source') || 'editor', createdAt: new Date().toISOString() }));
         } catch (error) { /* Private browsing: Card Studio can still open blank. */ }
-        window.location.href = 'urdu-card-studio.html';
+        window.location.href = 'urdu-card-studio';
     }
     function bind() { document.querySelectorAll('[data-create-card]').forEach(function (button) { button.addEventListener('click', function () { openStudio(button); }); }); }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();

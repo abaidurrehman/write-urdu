@@ -59,6 +59,38 @@
         });
     }
 
+    // TinyMCE can emit a change event while focus leaves the iframe. Its
+    // generated HTML may also contain harmless editor-only attributes or
+    // whitespace changes. Use a stable signature for draft comparisons
+    // instead of treating every raw HTML string as new content.
+    function normaliseDraftContent(value) {
+        return String(value || '')
+            .replace(/\r\n?/g, '\n')
+            .replace(/<!--[\s\S]*?-->/g, '')
+            .replace(/\sdata-mce-[^=]+=(?:"[^"]*"|'[^']*')/gi, '')
+            .replace(/&nbsp;|\u00a0/gi, ' ')
+            .replace(/\s+/g, ' ')
+            .replace(/>\s+</g, '><')
+            .trim();
+    }
+
+    function normaliseDraftText(value) {
+        return String(value || '')
+            .replace(/\r\n?/g, '\n')
+            .replace(/\u00a0/g, ' ')
+            .replace(/[ \t]+/g, ' ')
+            .trim();
+    }
+
+    function draftSignature(snapshot) {
+        if (!snapshot) return '';
+        var text = normaliseDraftText(snapshot.text);
+        var content = normaliseDraftContent(snapshot.content);
+        // Text is included separately so equivalent rich-editor markup still
+        // deduplicates, while content preserves meaningful formatting changes.
+        return text + '\u0000' + content;
+    }
+
     function createTextAdapter(element, kind) {
         return {
             kind: kind,
@@ -406,6 +438,7 @@
         var pendingDraft = null;
         var saveTimer;
         var dirty = false;
+        var lastSavedSignature = '';
 
         function readDraft() {
             if (!storage) return null;
@@ -422,9 +455,22 @@
             try {
                 var value = storage.getItem(historyKey);
                 var items = value ? JSON.parse(value) : [];
-                return Array.isArray(items) ? items.filter(function (item) {
+                if (!Array.isArray(items)) return [];
+                var seen = Object.create(null);
+                var cleanItems = items.filter(function (item) {
                     return item && typeof item.content === 'string' && item.content.trim();
-                }).slice(0, MAX_HISTORY_ITEMS) : [];
+                }).filter(function (item) {
+                    var signature = draftSignature(item);
+                    if (!signature || seen[signature]) return false;
+                    seen[signature] = true;
+                    return true;
+                }).slice(0, MAX_HISTORY_ITEMS);
+                // Compact duplicate entries written by older versions as soon
+                // as history is read, without requiring user intervention.
+                if (cleanItems.length !== items.length) {
+                    storage.setItem(historyKey, JSON.stringify(cleanItems));
+                }
+                return cleanItems;
             } catch (error) {
                 return [];
             }
@@ -432,9 +478,11 @@
 
         function saveHistory(snapshot) {
             if (!storage || !snapshot || !snapshot.content) return;
-            var items = readHistory().filter(function (item) {
-                return item.content !== snapshot.content;
-            });
+            var signature = draftSignature(snapshot);
+            var items = readHistory();
+            var duplicate = items.find(function (item) { return draftSignature(item) === signature; });
+            if (duplicate && duplicate.title && !snapshot.title) snapshot.title = duplicate.title;
+            items = items.filter(function (item) { return draftSignature(item) !== signature; });
             items.unshift(snapshot);
             storage.setItem(historyKey, JSON.stringify(items.slice(0, MAX_HISTORY_ITEMS)));
         }
@@ -498,23 +546,38 @@
                 return;
             }
             try {
+                var snapshot = {
+                    content: adapter.getContent(),
+                    text: adapter.getText()
+                };
+                var signature = draftSignature(snapshot);
+                // Ignore editor lifecycle events (especially rich-editor blur)
+                // when the effective document has not changed since the last
+                // successful save.
+                if (signature === lastSavedSignature) {
+                    dirty = false;
+                    saveStatus.textContent = uiText('Saved on this device', 'Saved on this device');
+                    return;
+                }
                 if (adapter.hasContent()) {
                     var savedAt = Date.now();
                     storage.setItem(storageKey, JSON.stringify({
-                        content: adapter.getContent(),
-                        text: adapter.getText(),
+                        content: snapshot.content,
+                        text: snapshot.text,
                         savedAt: savedAt
                     }));
                     saveHistory({
-                        content: adapter.getContent(),
-                        text: adapter.getText(),
+                        content: snapshot.content,
+                        text: snapshot.text,
                         savedAt: savedAt
                     });
                     renderHistory();
                     saveStatus.textContent = uiText('Saved on this device at', 'Saved on this device at') + ' ' + new Date(savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    lastSavedSignature = signature;
                 } else {
                     storage.removeItem(storageKey);
                     saveStatus.textContent = uiText('No local draft', 'No local draft');
+                    lastSavedSignature = '';
                 }
                 dirty = false;
             } catch (error) {
@@ -523,6 +586,13 @@
         }
 
         function scheduleSave() {
+            var currentSignature = draftSignature({
+                content: adapter.getContent(),
+                text: adapter.getText()
+            });
+            // TinyMCE's blur/change notification is not a user edit. Do not
+            // turn it into a pending save when the document is unchanged.
+            if (!dirty && currentSignature === lastSavedSignature) return;
             dirty = true;
             if (pendingDraft) {
                 pendingDraft = null;
@@ -549,6 +619,7 @@
         updateStats();
 
         pendingDraft = readDraft();
+        lastSavedSignature = draftSignature(pendingDraft || readHistory()[0]);
         renderHistory();
         if (!storage) historyButton.disabled = true;
         if (pendingDraft && pendingDraft.content && !adapter.hasContent()) {
