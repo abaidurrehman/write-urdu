@@ -17,6 +17,12 @@
         node.href = href;
     }
     var canonical = config.canonical(page.path);
+    if (page.path !== '/' && !document.querySelector('[data-seo-breadcrumbs]')) {
+        var breadcrumb = document.createElement('nav'); breadcrumb.className = 'seo-breadcrumbs'; breadcrumb.setAttribute('data-seo-breadcrumbs', ''); breadcrumb.setAttribute('aria-label', 'Breadcrumb');
+        breadcrumb.innerHTML = '<a href="/">Write Urdu</a><span aria-hidden="true">›</span><span aria-current="page">' + page.title.replace(/\s+–.*$/, '') + '</span>';
+        var main = document.querySelector('main');
+        if (main && main.parentNode) main.parentNode.insertBefore(breadcrumb, main);
+    }
     document.title = page.title;
     setMeta('description', page.description);
     setMeta('robots', page.indexable ? 'index,follow,max-image-preview:large' : 'noindex,follow');
@@ -37,7 +43,7 @@
             { '@type': 'WebPage', '@id': canonical + '#webpage', url: canonical, name: page.title, description: page.description, inLanguage: ['en', 'ur'], isPartOf: { '@id': config.SITE_ORIGIN + '/#website' }, publisher: { '@id': config.SITE_ORIGIN + '/#publisher' } }
         ];
         if (page.schema && page.schema.indexOf('WebApplication') !== -1) {
-            graph.push({ '@type': 'WebApplication', '@id': canonical + '#application', name: page.title.replace(/\s+–.*$/, ''), url: canonical, applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', isAccessibleForFree: true, description: page.description, publisher: { '@id': config.SITE_ORIGIN + '/#publisher' } });
+            graph.push({ '@type': 'WebApplication', '@id': canonical + '#application', name: page.title.replace(/\s+–.*$/, ''), url: canonical, applicationCategory: page.id === 'urdu-card-studio' ? 'DesignApplication' : 'UtilitiesApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', isAccessibleForFree: true, description: page.description, featureList: page.id === 'qr-code-generator' ? ['Urdu text and URL QR codes', 'Wi-Fi and WhatsApp payloads', 'PNG and SVG export'] : ['Urdu text-to-image design', 'Urdu fonts and templates', 'Local background images', 'PNG export'], publisher: { '@id': config.SITE_ORIGIN + '/#publisher' } });
         }
         if (page.schema && (page.schema.indexOf('Article') !== -1 || page.schema.indexOf('FAQPage') !== -1)) {
             if (page.schema.indexOf('FAQPage') !== -1) {

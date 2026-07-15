@@ -28,6 +28,13 @@ Run both suites:
 npm run test:all
 ```
 
+Generate and validate search metadata, crawler policy and the XML sitemap:
+
+```powershell
+npm run seo:generate
+npm run seo:check
+```
+
 Google transliteration is an external service and can be tested separately when network access is available:
 
 ```powershell
@@ -47,7 +54,11 @@ Obsolete prototype editor files have been removed; `urdu-editor.html` is the onl
 
 ## Clean URLs
 
-Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keyboard` and `/urdu-alphabet`. The original `.html` files remain in the repository for backwards-compatible bookmarks. Apache hosts should deploy the included `.htaccess` file so each clean route is internally served by its matching HTML file; the local test server applies the same mapping.
+Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keyboard` and `/urdu-alphabet`. The canonical production origin is `https://www.write-urdu.com`. The original `.html` files remain in the repository for backwards-compatible bookmarks and are permanently redirected by the included `.htaccess`; configure the same map at a CDN or host that does not run Apache. The local test server serves both forms for browser tests.
+
+## Search and AI discoverability
+
+`seo.config.js` is the source of truth for page titles, descriptions, indexability, legacy routes, sitemap inclusion and update dates. `npm run seo:generate` produces the canonical-host `sitemap.xml` and crawler policy in `robots.txt`; `npm run seo:check` validates headings, metadata, canonicals, JSON-LD hooks and sitemap/registry alignment. Search Console, Bing Webmaster Tools, IndexNow and CDN crawler checks are deployment tasks documented in `docs/SEO-DEPLOYMENT-CHECKLIST.md`.
 
 ## Language preference
 

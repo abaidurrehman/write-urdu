@@ -7,6 +7,12 @@ const allHtmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html'))
 const htmlFiles = allHtmlFiles.filter(file => !file.startsWith('google'));
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
+const seoConfig = require(path.join(root, 'seo.config.js'));
+assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://www.write-urdu.com', 'SEO canonical origin changed unexpectedly');
+assert.ok(seoConfig.pages.some(page => page.path === '/urdu-card-studio' && page.indexable), 'Card Studio is missing from the SEO registry');
+assert.ok(seoConfig.pages.some(page => page.path === '/qr-code-generator' && page.indexable), 'QR Generator is missing from the SEO registry');
+assert.ok(seoConfig.pages.some(page => page.path === '/write-urdu-search' && !page.indexable), 'Search utility must remain noindex');
+
 for (const file of htmlFiles) {
   const html = read(file);
   assert.match(html, /<html[^>]*\blang=["']en["']/i, `${file} must declare its language`);
@@ -81,6 +87,11 @@ assert.match(qrHtml, /data-qr-generator/, 'QR generator page is missing its appl
 assert.match(qrHtml, /id="qrCanvas"/, 'QR generator canvas is missing');
 assert.match(qrHtml, /js\/vendor\/qrcode\.js/, 'QR encoder must be bundled locally');
 assert.doesNotMatch(qrHtml, /qr-code-generator-api|api\.qr|quickchart\.io|cdn.*qrcode/i, 'QR generator must not use a remote QR API or CDN');
+assert.match(qrHtml, /id="qr-about"|Create static QR codes in your browser/, 'QR Generator is missing its crawlable supporting explanation');
+assert.match(cardStudio, /id="card-studio-about"|Create Urdu cards and quote images online/, 'Card Studio is missing its crawlable supporting explanation');
+assert.match(home, /Choose the right Urdu tool|data-create-qr/, 'Homepage is missing crawlable tool discovery content');
+assert.match(read('write-urdu-privacy.html'), /Privacy summary|data processing summary|transliteration suggestions use the Google/i, 'Privacy page is missing feature-specific processing details');
+assert.match(read('urdu-faq.html'), /Tools, privacy and exports|Is Write Urdu free and do I need an account/i, 'FAQ is missing product questions');
 const qrCore = require(path.join(root, 'js', 'qr-generator-core.js'));
 assert.strictEqual(qrCore.buildUrlPayload({ url: 'write-urdu.com' }).payload, 'https://write-urdu.com/', 'URL payload normalization failed');
 assert.match(qrCore.buildTextPayload({ text: 'ہمیں اردو سے محبت ہے۔' }).payload, /اردو/, 'Urdu text payload failed');
