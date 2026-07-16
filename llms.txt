@@ -8,6 +8,7 @@
 - [Urdu Rich Text Editor](https://write-urdu.com/urdu-editor): Format headings, fonts, colours, lists and alignment, then export a document.
 - [Online Urdu Keyboard](https://write-urdu.com/urdu-keyboard): Type Urdu characters directly with an on-screen or physical keyboard.
 - [Urdu Card Studio](https://write-urdu.com/urdu-card-studio): Create shareable Urdu quote, poetry and announcement images locally.
+- [Urdu Template Library](https://write-urdu.com/urdu-templates): Browse 46 starter designs and open a template directly in Card Studio.
 - [Static QR Code Generator](https://write-urdu.com/qr-code-generator): Generate static QR codes for Urdu text, links, Wi-Fi, WhatsApp and contacts.
 
 ## Guides

@@ -47,6 +47,36 @@ test('Urdu keyboard inserts characters and clears text', async ({ page }) => {
   await expect(page.locator('#write')).toHaveValue('');
 });
 
+test('template library filters, favorites, and renders starter designs', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-templates.html');
+  await expect(page.locator('[data-template-grid] .template-card')).toHaveCount(46);
+  await page.locator('[data-template-search]').fill('eid');
+  await expect(page.locator('[data-template-grid] .template-card')).not.toHaveCount(0);
+  const favorite = page.locator('[data-template-favorite]').first();
+  await favorite.click();
+  await expect(favorite).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('[data-template-clear]').first().click();
+  await expect(page.locator('[data-template-grid] .template-card')).toHaveCount(46);
+});
+
+test('Card Studio consumes a validated template query without losing its editor state', async ({ page }) => {
+  await blockNonVisualServices(page);
+  const studioUrl = pathToFileURL(path.resolve(__dirname, '..', 'urdu-card-studio.html')).href + '?template=quiet-morning-verse';
+  await page.goto(studioUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState().libraryTemplateId)).toBe('urdu-template-poetry-01');
+  await expect(page.locator('#cardText')).toHaveValue('یہاں اپنا اردو متن لکھیں۔');
+});
+
+test('Card Studio identifies the selected library template from the query string', async ({ page }) => {
+  await blockNonVisualServices(page);
+  const studioUrl = pathToFileURL(path.resolve(__dirname, '..', 'urdu-card-studio.html')).href + '?template=daily-reminder';
+  await page.goto(studioUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState().libraryTemplateId)).toBe('urdu-template-social-01');
+  await expect(page.locator('[data-card-library-template]')).toBeVisible();
+  await expect(page.locator('[data-card-library-template]')).toContainText('Daily Reminder');
+});
+
 test('copy control uses the native clipboard and reports success', async ({ page, context }) => {
   await blockNonVisualServices(page);
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:8765' });

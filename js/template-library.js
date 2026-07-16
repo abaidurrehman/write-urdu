@@ -58,8 +58,8 @@
     }
     function createCard(template) {
         var card = document.createElement('article'); card.className = 'template-card'; card.dataset.templateId = template.id;
-        var preview = document.createElement('div'); preview.className = 'template-card-preview'; preview.style.backgroundColor = template.canvas.backgroundColor;
-        var image = document.createElement('img'); image.src = template.thumbnail; image.width = 1200; image.height = 630; image.loading = 'lazy'; image.decoding = 'async'; image.alt = template.name + ' Urdu design template preview'; preview.appendChild(image);
+        var preview = document.createElement('div'); preview.className = 'template-card-preview'; preview.style.backgroundColor = template.canvas.backgroundColor; preview.style.borderTop = '5px solid ' + ((template.style && template.style.accent) || '#177245');
+        var image = document.createElement('img'); image.src = template.thumbnail; image.width = 1200; image.height = 630; image.loading = 'lazy'; image.decoding = 'async'; image.alt = template.name + ' Urdu design template preview'; image.style.opacity = '.42'; preview.appendChild(image);
         var previewCopy = document.createElement('div'); previewCopy.className = 'template-card-preview-copy'; previewCopy.setAttribute('lang', 'ur'); previewCopy.setAttribute('dir', 'rtl'); previewCopy.textContent = template.nameUrdu || 'اپنا اردو متن لکھیں'; preview.appendChild(previewCopy); card.appendChild(preview);
         var body = document.createElement('div'); body.className = 'template-card-body';
         var titleRow = document.createElement('div'); titleRow.className = 'template-card-title-row';
@@ -112,6 +112,8 @@
         var favorite = event.target.closest('[data-template-favorite]'); if (favorite) { event.preventDefault(); toggleFavorite(favorite.dataset.templateFavorite); return; }
         var open = event.target.closest('[data-template-open]'); if (open) { event.preventDefault(); openTemplate(open.dataset.templateOpen); return; }
         var category = event.target.closest('[data-template-category]'); if (category) { state.category = category.dataset.templateCategory; updateCategoryButtons(); render(); return; }
+        if (event.target.closest('[data-template-clear-favorites]')) { favorites = []; writeList(FAVORITES_KEY, favorites); render(); return; }
+        if (event.target.closest('[data-template-clear-recents]')) { recents = []; writeList(RECENTS_KEY, recents); renderRecent(); return; }
         if (event.target.closest('[data-template-clear]')) { state = { query: '', category: 'all', size: 'all', sort: 'featured', favoritesOnly: false }; search.value = ''; sizeSelect.value = 'all'; sortSelect.value = 'featured'; updateCategoryButtons(); render(); }
         if (event.target.closest('[data-template-favorites]')) { state.favoritesOnly = !state.favoritesOnly; render(); }
     });

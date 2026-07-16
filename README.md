@@ -78,6 +78,10 @@ Both editors expose **Create Urdu Card**. The action transfers the selected plai
 
 Both editors also expose **Create QR Code**. The action transfers selected or complete plain text through `sessionStorage`, never through a URL. The standalone generator builds URL, Urdu text, WhatsApp, Wi-Fi, email, phone, SMS, vCard and location payloads locally using the bundled MIT-licensed `qrcode` encoder. Colors, quiet-zone margin, error correction, local raster logos, exact-size PNG and safe SVG export are validated in the browser; no payload or logo is uploaded. The current design is saved locally when browser storage is available, while download remains usable when it is not.
 
+## Urdu Template Library
+
+The `/urdu-templates` route provides 46 browser-local starter designs across poetry, social media, religious and seasonal, education, business, and personal/event categories. Search, filter by output shape, sort featured or newest designs, and keep favorites and recent choices in versioned local storage. Selecting **Edit template** opens the existing Urdu Card Studio with a cloned design configuration; the registry is validated by `npm run templates:check` and does not create thin individual template pages.
+
 ## Editor workspace features
 
 - First-use onboarding explains the shortest path to a converted Urdu word and can be dismissed per editor.
