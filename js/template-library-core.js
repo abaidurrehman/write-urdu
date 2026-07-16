@@ -39,6 +39,7 @@
         { id: 'emerald', baseTemplateId: 'emerald', backgroundColor: '#082c1d', gradientId: 'emerald-night', fontFamily: 'Noto Nastaliq Urdu', textColor: '#fffdf2', accent: '#d8f36a', align: 'center', verticalAlign: 'center', lineHeight: 1.8 },
         { id: 'paper', baseTemplateId: 'paper', backgroundColor: '#f5ead7', fontFamily: 'Noto Nastaliq Urdu', textColor: '#3d2b1f', accent: '#a66a36', align: 'right', verticalAlign: 'center', lineHeight: 1.8 },
         { id: 'photo', baseTemplateId: 'photo-quote', backgroundColor: '#263238', fontFamily: 'Noto Naskh Arabic', textColor: '#ffffff', accent: '#ffffff', align: 'center', verticalAlign: 'bottom', lineHeight: 1.6, overlayOpacity: .42 },
+        { id: 'education', baseTemplateId: 'minimal-white', backgroundColor: '#eef7ff', fontFamily: 'Noto Naskh Arabic', textColor: '#163b59', accent: '#1d5d8f', align: 'right', verticalAlign: 'center', lineHeight: 1.5 },
         { id: 'sunflower', baseTemplateId: 'sunflower-bloom', backgroundColor: '#fffdf4', fontFamily: 'Noto Nastaliq Urdu', textColor: '#26382b', accent: '#d7a51a', align: 'center', verticalAlign: 'center', lineHeight: 1.8 },
         { id: 'gold', baseTemplateId: 'golden-mandala', backgroundColor: '#f5c84b', fontFamily: 'Noto Naskh Arabic', textColor: '#2d2414', accent: '#3f2e14', align: 'center', verticalAlign: 'center', lineHeight: 1.65 },
         { id: 'botanical', baseTemplateId: 'botanical-frame', backgroundColor: '#f5f2e8', fontFamily: 'Noto Nastaliq Urdu', textColor: '#1d3b2a', accent: '#277044', align: 'right', verticalAlign: 'center', lineHeight: 1.8 }
@@ -72,7 +73,7 @@
         poetry: ['cream', 'night', 'clean', 'emerald', 'paper', 'photo', 'sunflower', 'gold', 'botanical'],
         social: ['clean', 'emerald', 'paper', 'photo', 'sunflower', 'gold', 'botanical', 'cream'],
         religious: ['emerald', 'gold', 'night', 'paper', 'sunflower', 'botanical', 'cream', 'photo'],
-        education: ['clean', 'paper', 'emerald', 'botanical', 'cream', 'night'],
+        education: ['education', 'education', 'emerald', 'botanical', 'cream', 'night'],
         business: ['clean', 'emerald', 'night', 'botanical', 'paper', 'gold'],
         events: ['sunflower', 'gold', 'botanical', 'cream', 'night', 'clean']
     };

@@ -192,6 +192,11 @@
     function drawPhotoBands(preset, minSide, accent) {
         ctx.save(); ctx.globalAlpha = .12; ctx.fillStyle = accent; ctx.translate(preset.width * .5, preset.height * .5); ctx.rotate(-.18); ctx.fillRect(-preset.width * .58, -minSide * .12, preset.width * 1.16, minSide * .035); ctx.fillRect(-preset.width * .58, minSide * .12, preset.width * 1.16, minSide * .018); ctx.restore();
     }
+    function drawEducationDetails(preset, minSide, accent) {
+        ctx.save(); ctx.globalAlpha = .18; ctx.fillStyle = accent; ctx.fillRect(preset.width - preset.marginX * .78, 0, preset.marginX * .78, preset.height); ctx.globalAlpha = .28; ctx.strokeStyle = accent; ctx.lineWidth = Math.max(2, minSide * .004);
+        for (var row = 0; row < 4; row += 1) { var y = preset.marginY * (1.35 + row * .55); ctx.beginPath(); ctx.moveTo(preset.marginX * .7, y); ctx.lineTo(preset.width - preset.marginX * 1.15, y); ctx.stroke(); }
+        ctx.globalAlpha = .72; ctx.fillStyle = accent; for (var i = 0; i < 3; i += 1) { ctx.beginPath(); ctx.arc(preset.width - preset.marginX * .38, preset.marginY * (1.2 + i * .55), minSide * .018, 0, Math.PI * 2); ctx.fill(); } ctx.restore();
+    }
     function drawMotif(motif, preset, minSide) {
         if (motif === 'sunflower') { drawPetalFlower(preset.marginX * .8, preset.marginY * .7, minSide * .14, 12, '#efc235', '#9b6819', -.2); drawPetalFlower(preset.width - preset.marginX * .72, preset.height - preset.marginY * .64, minSide * .105, 10, '#e6b629', '#9b6819', .2); drawLeaf(preset.marginX * .9, preset.marginY * 1.05, minSide * .2, .4, '#78a15b'); drawLeaf(preset.width - preset.marginX * .75, preset.height - preset.marginY * .95, minSide * .18, 3.6, '#78a15b'); }
         if (motif === 'mandala') { drawMandala(preset.width / 2, preset.height / 2, minSide * .43, '#5c4214', '#fff0a8'); drawPetalFlower(preset.marginX * .62, preset.marginY * .62, minSide * .07, 8, '#fff0a8', '#8a6418', 0); }
@@ -201,6 +206,7 @@
         if (motif === 'clean' || motif === 'cream') drawCleanFrame(preset, minSide, motif === 'cream' ? '#b77935' : '#1c8152');
         if (motif === 'emerald') drawEmeraldGlow(preset, minSide, '#d8f36a');
         if (motif === 'photo') drawPhotoBands(preset, minSide, '#ffffff');
+        if (motif === 'education') drawEducationDetails(preset, minSide, '#1d5d8f');
     }
 
     function drawTextObject(objectId, box, preset) {

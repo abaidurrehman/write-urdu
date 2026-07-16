@@ -84,8 +84,8 @@ test('Card Studio applies the library template visual style instead of only its 
   await expect.poll(() => page.evaluate(() => {
     const state = window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState();
     return state && [state.libraryTemplateId, state.templateId, state.presetId, state.background.color].join('|');
-  })).toBe('urdu-template-education-02|paper|landscape|#f5ead7');
-  await expect(page.locator('[data-card-template="paper"]')).toHaveAttribute('aria-pressed', 'true');
+  })).toBe('urdu-template-education-02|minimal-white|landscape|#eef7ff');
+  await expect(page.locator('[data-card-template="minimal-white"]')).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('copy control uses the native clipboard and reports success', async ({ page, context }) => {
