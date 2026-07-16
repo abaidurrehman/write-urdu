@@ -171,10 +171,36 @@
         for (var ring = 0; ring < 3; ring += 1) { var ringRadius = radius * (.38 + ring * .28); ctx.beginPath(); ctx.arc(0, 0, ringRadius, 0, Math.PI * 2); ctx.stroke(); for (var i = 0; i < 12; i += 1) { ctx.save(); ctx.rotate(i * Math.PI / 6); ctx.beginPath(); ctx.ellipse(0, -ringRadius, radius * .045, radius * .12, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore(); } }
         ctx.globalAlpha = .38; ctx.beginPath(); ctx.arc(0, 0, radius * .14, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     }
+    function drawPaperLines(preset, minSide, colour) {
+        ctx.save(); ctx.globalAlpha = .16; ctx.strokeStyle = colour; ctx.lineWidth = Math.max(1, minSide * .002);
+        for (var y = preset.marginY * 1.15; y < preset.height - preset.marginY * .8; y += minSide * .075) { ctx.beginPath(); ctx.moveTo(preset.marginX * .7, y); ctx.lineTo(preset.width - preset.marginX * .7, y); ctx.stroke(); }
+        ctx.globalAlpha = .3; ctx.fillStyle = colour; ctx.beginPath(); ctx.moveTo(preset.width - preset.marginX * .72, 0); ctx.lineTo(preset.width, 0); ctx.lineTo(preset.width, preset.marginY * .72); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    function drawNightSky(preset, minSide, accent) {
+        ctx.save(); ctx.globalAlpha = .68; ctx.fillStyle = accent;
+        [[.16, .2, .012], [.82, .18, .009], [.25, .75, .008], [.76, .72, .012], [.62, .3, .006], [.4, .14, .006]].forEach(function (star) { ctx.beginPath(); ctx.arc(preset.width * star[0], preset.height * star[1], minSide * star[2], 0, Math.PI * 2); ctx.fill(); });
+        ctx.globalAlpha = .18; ctx.beginPath(); ctx.arc(preset.width - preset.marginX * .85, preset.marginY * .9, minSide * .09, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = .9; ctx.fillStyle = preset.width > preset.height ? '#0f172a' : '#101d35'; ctx.beginPath(); ctx.arc(preset.width - preset.marginX * .8 + minSide * .035, preset.marginY * .87, minSide * .08, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    }
+    function drawCleanFrame(preset, minSide, accent) {
+        ctx.save(); ctx.globalAlpha = .18; ctx.fillStyle = accent; var size = minSide * .085;
+        ctx.fillRect(preset.marginX * .5, preset.marginY * .5, size, Math.max(3, minSide * .008)); ctx.fillRect(preset.marginX * .5, preset.marginY * .5, Math.max(3, minSide * .008), size);
+        ctx.fillRect(preset.width - preset.marginX * .5 - size, preset.height - preset.marginY * .5 - Math.max(3, minSide * .008), size, Math.max(3, minSide * .008)); ctx.fillRect(preset.width - preset.marginX * .5 - Math.max(3, minSide * .008), preset.height - preset.marginY * .5 - size, Math.max(3, minSide * .008), size); ctx.restore();
+    }
+    function drawEmeraldGlow(preset, minSide, accent) {
+        ctx.save(); var glow = ctx.createRadialGradient(preset.width * .1, preset.height * .1, 0, preset.width * .1, preset.height * .1, minSide * .42); glow.addColorStop(0, accent + '66'); glow.addColorStop(1, accent + '00'); ctx.fillStyle = glow; ctx.fillRect(0, 0, preset.width, preset.height); ctx.globalAlpha = .18; ctx.strokeStyle = accent; ctx.lineWidth = Math.max(2, minSide * .012); ctx.beginPath(); ctx.arc(preset.width - preset.marginX * .55, preset.height - preset.marginY * .55, minSide * .12, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    }
+    function drawPhotoBands(preset, minSide, accent) {
+        ctx.save(); ctx.globalAlpha = .12; ctx.fillStyle = accent; ctx.translate(preset.width * .5, preset.height * .5); ctx.rotate(-.18); ctx.fillRect(-preset.width * .58, -minSide * .12, preset.width * 1.16, minSide * .035); ctx.fillRect(-preset.width * .58, minSide * .12, preset.width * 1.16, minSide * .018); ctx.restore();
+    }
     function drawMotif(motif, preset, minSide) {
         if (motif === 'sunflower') { drawPetalFlower(preset.marginX * .8, preset.marginY * .7, minSide * .14, 12, '#efc235', '#9b6819', -.2); drawPetalFlower(preset.width - preset.marginX * .72, preset.height - preset.marginY * .64, minSide * .105, 10, '#e6b629', '#9b6819', .2); drawLeaf(preset.marginX * .9, preset.marginY * 1.05, minSide * .2, .4, '#78a15b'); drawLeaf(preset.width - preset.marginX * .75, preset.height - preset.marginY * .95, minSide * .18, 3.6, '#78a15b'); }
         if (motif === 'mandala') { drawMandala(preset.width / 2, preset.height / 2, minSide * .43, '#5c4214', '#fff0a8'); drawPetalFlower(preset.marginX * .62, preset.marginY * .62, minSide * .07, 8, '#fff0a8', '#8a6418', 0); }
         if (motif === 'botanical') { var leaf = '#4e8a59'; drawLeaf(preset.marginX * .55, preset.marginY * .55, minSide * .24, .2, leaf); drawLeaf(preset.marginX * .7, preset.marginY * .82, minSide * .2, .65, leaf); drawLeaf(preset.width - preset.marginX * .58, preset.height - preset.marginY * .62, minSide * .25, 3.35, leaf); drawLeaf(preset.width - preset.marginX * .78, preset.height - preset.marginY * .8, minSide * .18, 3.75, leaf); drawPetalFlower(preset.width - preset.marginX * .58, preset.marginY * .72, minSide * .055, 8, '#e0b331', '#8a6418', 0); }
+        if (motif === 'paper') drawPaperLines(preset, minSide, '#a66a36');
+        if (motif === 'night') drawNightSky(preset, minSide, '#dbeafe');
+        if (motif === 'clean' || motif === 'cream') drawCleanFrame(preset, minSide, motif === 'cream' ? '#b77935' : '#1c8152');
+        if (motif === 'emerald') drawEmeraldGlow(preset, minSide, '#d8f36a');
+        if (motif === 'photo') drawPhotoBands(preset, minSide, '#ffffff');
     }
 
     function drawTextObject(objectId, box, preset) {
@@ -204,7 +230,12 @@
         if (state.background.type === 'image' && currentAsset) { var placement = core.calculateImagePlacement(currentAsset, preset, state.background.fit, state.background.positionX, state.background.positionY); ctx.save(); if (state.background.blur) ctx.filter = 'blur(' + state.background.blur + 'px)'; ctx.drawImage(currentAsset.image, placement.x, placement.y, placement.width, placement.height); ctx.restore(); } else if (state.background.type === 'image') { ctx.fillStyle = 'rgba(30,50,40,.12)'; ctx.fillRect(0, 0, preset.width, preset.height); }
         if (state.background.type === 'image' && state.background.overlayOpacity) { ctx.fillStyle = state.background.overlayColor + Math.round(state.background.overlayOpacity * 255).toString(16).padStart(2, '0'); ctx.fillRect(0, 0, preset.width, preset.height); }
         var template = core.TEMPLATES.find(function (item) { return item.id === state.templateId; }) || core.TEMPLATES[0];
-        var minSide = Math.min(preset.width, preset.height); if (template.decoration && template.decoration.motif) drawMotif(template.decoration.motif, preset, minSide); if (template.decoration && template.decoration.border && template.decoration.border.enabled) { ctx.strokeStyle = template.decoration.border.color; ctx.lineWidth = Math.max(2, minSide * .004); ctx.strokeRect(preset.marginX * .55, preset.marginY * .55, preset.width - preset.marginX * 1.1, preset.height - preset.marginY * 1.1); }
+        var libraryTemplate = templateLibrary && state.libraryTemplateId && Array.isArray(templateLibrary.TEMPLATES) ? templateLibrary.TEMPLATES.find(function (item) { return item.id === state.libraryTemplateId; }) : null;
+        var libraryStyle = libraryTemplate && libraryTemplate.style ? libraryTemplate.style : null;
+        var minSide = Math.min(preset.width, preset.height);
+        var motif = libraryStyle && libraryStyle.id ? libraryStyle.id : template.decoration && template.decoration.motif;
+        if (motif) drawMotif(motif, preset, minSide);
+        if (template.decoration && template.decoration.border && template.decoration.border.enabled) { ctx.strokeStyle = template.decoration.border.color; ctx.lineWidth = Math.max(2, minSide * .004); ctx.strokeRect(preset.marginX * .55, preset.marginY * .55, preset.width - preset.marginX * 1.1, preset.height - preset.marginY * 1.1); }
         ctx.strokeStyle = template.decoration.accent; ctx.lineWidth = Math.max(3, minSide * .006); if (state.text.align === 'center') ctx.beginPath(), ctx.moveTo(preset.width / 2 - minSide * .09, preset.marginY * .82), ctx.lineTo(preset.width / 2 + minSide * .09, preset.marginY * .82), ctx.stroke(); else ctx.fillRect(state.text.align === 'right' ? preset.width - preset.marginX : preset.marginX, preset.marginY * .82, minSide * .12, Math.max(3, minSide * .006));
         currentLayouts = {};
         drawTextObject('text', objectRect('text'), preset);

@@ -77,6 +77,17 @@ test('Card Studio identifies the selected library template from the query string
   await expect(page.locator('[data-card-library-template]')).toContainText('Daily Reminder');
 });
 
+test('Card Studio applies the library template visual style instead of only its label', async ({ page }) => {
+  await blockNonVisualServices(page);
+  const studioUrl = pathToFileURL(path.resolve(__dirname, '..', 'urdu-card-studio.html')).href + '?template=classroom-note';
+  await page.goto(studioUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect.poll(() => page.evaluate(() => {
+    const state = window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState();
+    return state && [state.libraryTemplateId, state.templateId, state.presetId, state.background.color].join('|');
+  })).toBe('urdu-template-education-02|paper|landscape|#f5ead7');
+  await expect(page.locator('[data-card-template="paper"]')).toHaveAttribute('aria-pressed', 'true');
+});
+
 test('copy control uses the native clipboard and reports success', async ({ page, context }) => {
   await blockNonVisualServices(page);
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:8765' });

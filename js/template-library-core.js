@@ -65,7 +65,17 @@
         events: ['شادی کا دعوت نامہ', 'سالگرہ مبارک', 'شکریہ کا پیغام', 'تاریخ محفوظ کریں', 'خاندانی جشن', 'ذاتی اعلان']
     };
     var CATEGORY_COUNTS = { poetry: 12, social: 8, religious: 8, education: 6, business: 6, events: 6 };
-    var CATEGORY_STYLE_OFFSETS = { poetry: 0, social: 2, religious: 3, education: 4, business: 2, events: 6 };
+    // Keep the starter designs visually appropriate to their category. A library
+    // template is more than a label: its style is the design that Card Studio
+    // applies to the canvas after the query-string handoff.
+    var CATEGORY_STYLE_SEQUENCES = {
+        poetry: ['cream', 'night', 'clean', 'emerald', 'paper', 'photo', 'sunflower', 'gold', 'botanical'],
+        social: ['clean', 'emerald', 'paper', 'photo', 'sunflower', 'gold', 'botanical', 'cream'],
+        religious: ['emerald', 'gold', 'night', 'paper', 'sunflower', 'botanical', 'cream', 'photo'],
+        education: ['clean', 'paper', 'emerald', 'botanical', 'cream', 'night'],
+        business: ['clean', 'emerald', 'night', 'botanical', 'paper', 'gold'],
+        events: ['sunflower', 'gold', 'botanical', 'cream', 'night', 'clean']
+    };
 
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
     function slugify(value) { return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
@@ -76,7 +86,8 @@
     }
     function createTemplate(categoryId, index) {
         var category = findCategory(categoryId);
-        var style = STYLES[(index + (CATEGORY_STYLE_OFFSETS[categoryId] || 0)) % STYLES.length];
+        var sequence = CATEGORY_STYLE_SEQUENCES[categoryId] || CATEGORY_STYLE_SEQUENCES.poetry;
+        var style = STYLES.find(function (item) { return item.id === sequence[index % sequence.length]; }) || STYLES[0];
         var dimension = findDimension(index, categoryId);
         var name = NAMES[categoryId][index];
         var slug = slugify(name);
