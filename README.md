@@ -33,6 +33,10 @@ Generate and validate search metadata, crawler policy and the XML sitemap:
 ```powershell
 npm run seo:generate
 npm run seo:check
+# Optional deployment-time notification for materially changed routes
+npm run seo:indexnow -- /urdu-card-studio
+# Optional mobile Lighthouse workflow (requires Lighthouse installed locally)
+npm run lighthouse:seo
 ```
 
 Google transliteration is an external service and can be tested separately when network access is available:
@@ -58,7 +62,7 @@ Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keybo
 
 ## Search and AI discoverability
 
-`seo.config.js` is the source of truth for page titles, descriptions, indexability, legacy routes, sitemap inclusion and update dates. `npm run seo:generate` produces the canonical-host `sitemap.xml` and crawler policy in `robots.txt`; `npm run seo:check` validates headings, metadata, canonicals, JSON-LD hooks and sitemap/registry alignment. Apache uses `.htaccess`, while Cloudflare Pages uses the root `_redirects` file for legacy and trailing-slash redirects. Search Console, Bing Webmaster Tools, IndexNow and CDN crawler checks are deployment tasks documented in `docs/SEO-DEPLOYMENT-CHECKLIST.md`.
+`seo.config.js` is the source of truth for page titles, descriptions, indexability, legacy routes, sitemap inclusion and update dates. `npm run seo:generate` produces the canonical-host `sitemap.xml` and crawler policy in `robots.txt`; `npm run seo:check` validates headings, metadata, canonicals, JSON-LD hooks and sitemap/registry alignment. Apache uses `.htaccess`, while Cloudflare Pages uses the root `_redirects` file for legacy and trailing-slash redirects. Search Console, Bing Webmaster Tools, IndexNow and CDN crawler checks are deployment tasks documented in `docs/SEO-DEPLOYMENT-CHECKLIST.md` and `docs/SEO-POST-DEPLOYMENT.md`.
 
 ## Language preference
 

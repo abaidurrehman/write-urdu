@@ -155,4 +155,11 @@ html[dir="rtl"] .wu-header-privacy{margin-right:auto;margin-left:0}
 .seo-content summary { cursor: pointer; font-weight: 700; }
 .related-resources ul { display: flex; flex-wrap: wrap; gap: .6rem 1.25rem; padding-left: 1.2rem; }
 .related-resources a { color: #0f7049; font-weight: 600; }
+.guide-meta { color: var(--wu-muted, #607269); font-size: .88rem; }
+.guide-example-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0 1.5rem; }
+.guide-example-grid article { padding: 1rem; border: 1px solid rgba(22,72,52,.12); border-radius: .9rem; background: #f7fbf8; }
+.guide-example-grid article h3 { margin-top: 0; }
+.font-sample { margin: 1rem 0; padding: 1rem 1.25rem; border-left: 4px solid #16824d; border-radius: .6rem; background: #f5faf6; color: #123426; font-family: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif; font-size: clamp(1.5rem, 3vw, 2.2rem); line-height: 2; text-align: right; }
+.font-sample-naskh { font-family: "Noto Naskh Arabic", "Noto Nastaliq Urdu", serif; line-height: 1.8; }
 @media (max-width: 700px) { .seo-content { margin-top: 2rem; padding: 1.25rem; } .seo-content-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .guide-example-grid { grid-template-columns: 1fr; } }

@@ -13,6 +13,9 @@ assert.ok(seoConfig.pages.some(page => page.path === '/urdu-card-studio' && page
 assert.ok(seoConfig.pages.some(page => page.path === '/qr-code-generator' && page.indexable), 'QR Generator is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/write-urdu-search' && !page.indexable), 'Search utility must remain noindex');
 assert.ok(fs.existsSync(path.join(root, 'llms.txt')), 'AI-readable site summary is missing');
+assert.ok(fs.existsSync(path.join(root, 'docs', 'SEO-POST-DEPLOYMENT.md')), 'SEO post-deployment checklist is missing');
+assert.ok(fs.existsSync(path.join(root, 'scripts', 'submit-indexnow.js')), 'IndexNow deployment helper is missing');
+assert.ok(fs.existsSync(path.join(root, 'scripts', 'run-lighthouse.js')), 'Repeatable Lighthouse workflow is missing');
 
 for (const file of htmlFiles) {
   const html = read(file);
@@ -51,6 +54,9 @@ assert.doesNotMatch(activeEditorCode, /fonts\/Qadreeregular\.css|\.backgroundcol
 
 const keyboard = read('urdu-keyboard.html');
 assert.match(keyboard, /<script src=["']main\.js["']><\/script>/, 'Urdu keyboard does not load main.js');
+assert.match(keyboard, /Direct Urdu typing versus Roman Urdu transliteration/, 'Urdu keyboard comparison content is missing');
+assert.match(keyboard, /How to use the keyboard on mobile/, 'Urdu keyboard mobile guidance is missing');
+assert.match(keyboard, /keyboard-faq/, 'Urdu keyboard FAQ is missing');
 
 const mainScript = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
 assert.match(mainScript, /new Blob\(\[['"]\\ufeff['"],\s*textToSave\].*charset=utf-8/, 'Text export must preserve Urdu with UTF-8 and a BOM');
@@ -160,6 +166,8 @@ assert.match(sharedHeader, /locale-urdu|document\.documentElement\.dir/, 'Shared
 assert.match(sharedHeader, /js\/content-locale\.js|function loadContentLocale\(/, 'Long-form content localization loader is missing');
 assert.match(sharedHeader, /wu-header-trustbar|header\.noAccount/, 'Shared header privacy reassurance is missing');
 assert.match(sharedHeader, /header\.free|Free to use/, 'Shared free-to-use messaging is missing');
+assert.match(sharedHeader, /roman-urdu-transliteration|footer\.transliteration/, 'Transliteration guide is not linked from shared navigation/footer');
+assert.match(sharedHeader, /urdu-fonts-nastaliq-vs-naskh|footer\.fonts/, 'Font comparison guide is not linked from shared navigation/footer');
 assert.match(sharedHeader, /wu-footer-main|footer\.privacyNote/, 'Shared footer structure is missing');
 assert.match(sharedStyles, /h1\.wu-page-title|wu-page-subtitle/, 'Shared page-title typography is missing');
 assert.match(sharedStyles, /\.wu-language-toggle|html\[dir=["']rtl["']\]/, 'Shared language-toggle styles are missing');
@@ -168,6 +176,11 @@ assert.match(contentLocale, /localizeDocumentation|docs-faq|localizeEditorHelp/,
 const adsScript = fs.readFileSync(path.join(root, 'js', 'ads.js'), 'utf8');
 assert.match(adsScript, /adsbygoogle\.js\?client=ca-pub-4727847909946286/, 'AdSense loader must use the configured publisher client');
 assert.match(adsScript, /crossOrigin\s*=\s*["']anonymous["']/, 'AdSense loader must use anonymous CORS');
+assert.match(read('write-urdu-search.html'), /googlebot["']\s+content=["']noindex,follow/i, 'Search utility must explicitly noindex Googlebot');
+assert.match(read('write-urdu-feedback.html'), /googlebot["']\s+content=["']noindex,follow/i, 'Feedback utility must explicitly noindex Googlebot');
+assert.match(read('why-write-urdu.html'), /Who maintains Write Urdu|Editorial and correction policy/, 'About page is missing publisher and correction policy content');
+assert.match(read('roman-urdu-transliteration.html'), /transliteration, not translation/i, 'Transliteration guide is missing');
+assert.match(read('urdu-fonts-nastaliq-vs-naskh.html'), /Nastaliq versus Naskh/i, 'Font comparison guide is missing');
 for (const file of htmlFiles) {
   const slug = file === 'index.html' ? '/' : '/' + file.replace(/\.html$/i, '');
   const route = new RegExp(`href(?::|=)\\s*["']${slug === '/' ? '\\/' : slug}["']`);

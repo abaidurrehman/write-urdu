@@ -17,6 +17,8 @@ https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
 /write-urdu-sitemap.html /write-urdu-sitemap 301
 /write-urdu-search.html /write-urdu-search 301
 /write-urdu-feedback.html /write-urdu-feedback 301
+/roman-urdu-transliteration.html /roman-urdu-transliteration 301
+/urdu-fonts-nastaliq-vs-naskh.html /urdu-fonts-nastaliq-vs-naskh 301
 
 # Normalize common trailing-slash variants of public routes.
 /urdu-editor/ /urdu-editor 301
@@ -34,3 +36,5 @@ https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
 /write-urdu-sitemap/ /write-urdu-sitemap 301
 /write-urdu-search/ /write-urdu-search 301
 /write-urdu-feedback/ /write-urdu-feedback 301
+/roman-urdu-transliteration/ /roman-urdu-transliteration 301
+/urdu-fonts-nastaliq-vs-naskh/ /urdu-fonts-nastaliq-vs-naskh 301

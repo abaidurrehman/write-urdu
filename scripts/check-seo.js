@@ -21,15 +21,36 @@ files.forEach(file => {
   if (descriptions.has(description)) errors.push(`${file}: duplicate description with ${descriptions.get(description)}`); else descriptions.set(description, file);
   const h1 = (source.match(/<h1(?:\s|>)/gi) || []).length; if (h1 !== 1) errors.push(`${file}: expected one H1, found ${h1}`);
   if (canon !== config.canonical(page.path)) errors.push(`${file}: canonical must be ${config.canonical(page.path)}`);
+  if ((source.match(/<link[^>]+rel=["']canonical["']/gi) || []).length !== 1) errors.push(`${file}: expected exactly one canonical link`);
+  if (/\.html(?:[?#]|$)/i.test(canon) || /[?#]/.test(canon)) errors.push(`${file}: canonical must be extensionless and query-free`);
   if (page.indexable && /noindex/i.test(robots)) errors.push(`${file}: indexable page is noindex`);
-  if (!page.indexable && !/noindex/i.test(robots)) errors.push(`${file}: utility page must be noindex`);
+  if (!page.indexable && !/noindex\s*,?\s*follow/i.test(robots)) errors.push(`${file}: utility page must be noindex,follow`);
+  if (!page.indexable && !/noindex\s*,?\s*follow/i.test(meta(source, 'googlebot'))) errors.push(`${file}: utility page must include googlebot noindex,follow`);
   if (!meta(source, '', 'og:title') || !meta(source, '', 'og:description') || !meta(source, '', 'og:url')) errors.push(`${file}: missing Open Graph metadata`);
+  if (!/^en$/i.test((source.match(/<html[^>]+lang=["']([^"']+)/i) || [])[1] || '')) errors.push(`${file}: document language must be declared as en`);
+  const ids = [...source.matchAll(/\bid=["']([^"']+)["']/gi)].map(match => match[1]);
+  if (new Set(ids).size !== ids.length) errors.push(`${file}: duplicate id attribute`);
+  const imageTags = [...source.matchAll(/<img\b[^>]*>/gi)].map(match => match[0]).filter(tag => !/id=["']Image["']/i.test(tag));
+  imageTags.forEach(tag => {
+    if (!/\balt=["']/i.test(tag)) errors.push(`${file}: image is missing alt text`);
+    if (!/\bwidth=["'][^"']+["']/i.test(tag) || !/\bheight=["'][^"']+["']/i.test(tag)) errors.push(`${file}: image is missing width/height`);
+    if (/typeing/i.test(tag)) errors.push(`${file}: image alt contains the typeing misspelling`);
+  });
+  const schemaBlocks = [...source.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  schemaBlocks.forEach(match => { try { const value = JSON.parse(match[1]); if (value['@context'] !== 'https://schema.org') errors.push(`${file}: JSON-LD context is not Schema.org`); } catch (_) { errors.push(`${file}: invalid JSON-LD`); } });
 });
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 config.pages.filter(page => page.indexable).forEach(page => { if (!sitemap.includes(`<loc>${config.canonical(page.path)}</loc>`)) errors.push(`sitemap: missing ${page.path}`); });
 config.pages.filter(page => !page.indexable).forEach(page => { if (sitemap.includes(`<loc>${config.canonical(page.path)}</loc>`)) errors.push(`sitemap: utility page included ${page.path}`); });
 const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8'); ['OAI-SearchBot', 'PerplexityBot', 'GPTBot', 'Google-Extended', 'Bingbot', 'ClaudeBot', 'Claude-SearchBot'].forEach(bot => { if (!robots.includes(`User-agent: ${bot}`)) errors.push(`robots.txt: missing explicit ${bot} policy`); });
+const robotSections = robots.split(/(?=User-agent:)/i);
+const wildcardPolicy = robotSections.find(section => /^User-agent:\s*\*\s*$/im.test(section)) || '';
+if (/Disallow:\s*\//i.test(wildcardPolicy)) errors.push('robots.txt: wildcard crawler policy must not disallow the whole site');
+const gptPolicy = robotSections.find(section => /^User-agent:\s*GPTBot\s*$/im.test(section)) || '';
+if (!/(?:Allow:|Disallow:)\s*\//i.test(gptPolicy)) errors.push('robots.txt: GPTBot policy is not explicit');
+if (/Disallow:\s*\/(?:assets|js|css|fonts)\/?/i.test(robots)) errors.push('robots.txt: CSS, JavaScript or fonts are blocked');
 if (!fs.existsSync(path.join(root, 'llms.txt'))) errors.push('llms.txt: missing AI-readable site summary');
+if (!fs.existsSync(path.join(root, 'docs', 'SEO-POST-DEPLOYMENT.md'))) errors.push('docs: post-deployment SEO procedure is missing');
 const redirectsPath = path.join(root, '_redirects');
 if (!fs.existsSync(redirectsPath) || !fs.readFileSync(redirectsPath, 'utf8').includes('https://www.write-urdu.com/* https://write-urdu.com/:splat 301!')) errors.push('_redirects: missing Cloudflare www-to-apex redirect');
 if (errors.length) { console.error(errors.map(error => `SEO: ${error}`).join('\n')); process.exit(1); }

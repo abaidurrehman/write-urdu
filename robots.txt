@@ -19,11 +19,11 @@ Allow: /
 User-agent: Claude-SearchBot
 Allow: /
 
-# GPTBot is allowed for this launch. Change this policy deliberately if the owner opts out.
+# GPTBot is deliberately opted out for training; OAI-SearchBot remains allowed for search discovery.
 User-agent: GPTBot
-Allow: /
+Disallow: /
 
-# Google-Extended is separate from Google Search crawling.
+# Google-Extended is separate from Google Search crawling and remains allowed.
 User-agent: Google-Extended
 Allow: /
 

@@ -4,9 +4,9 @@ These are proposed pages and updates, not promises that content already exists. 
 
 ## Priority topics
 
-1. Roman Urdu transliteration versus translation, with tested examples and alternative spellings.
+1. Roman Urdu transliteration versus translation, with tested examples and alternative spellings — published at `/roman-urdu-transliteration` on 2026-07-16.
 2. One hundred common Roman Urdu phrases and how to review suggestions.
-3. Nastaliq and Naskh: when each Urdu font is easier to read.
+3. Nastaliq and Naskh: when each Urdu font is easier to read — published at `/urdu-fonts-nastaliq-vs-naskh` on 2026-07-16.
 4. How to type Urdu in WhatsApp, Microsoft Word and Google Docs.
 5. How to create an Urdu WhatsApp Status or poetry card in Card Studio.
 6. How static QR codes store Urdu text and why a quiet zone matters.

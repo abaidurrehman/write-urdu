@@ -32,7 +32,7 @@
                 sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
-                about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere',
+                about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
                 note: '© Write Urdu. Browser-based Urdu typing tools.'
             },
             header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Your writing stays in this browser unless you choose to export or share it.' },
@@ -80,7 +80,7 @@
                 sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
-                about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے',
+                about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
                 note: '© رائٹ اردو۔ براؤزر پر مبنی اردو ٹائپنگ ٹولز۔'
             },
             header: { local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', free: 'استعمال کے لیے مفت', privacy: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔' },
@@ -235,6 +235,8 @@
                             '<a href="/write-urdu-features" data-wu-i18n-key="footer.features">Features</a>' +
                             '<a href="/urdu-editor-features" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
                             '<a href="/english-urdu-typing-tutorial" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
+                            '<a href="/roman-urdu-transliteration" data-wu-i18n-key="footer.transliteration">Roman Urdu and transliteration</a>' +
+                            '<a href="/urdu-fonts-nastaliq-vs-naskh" data-wu-i18n-key="footer.fonts">Urdu font comparison</a>' +
                         '</div>' +
                         '<div class="wu-footer-group">' +
                             '<h2 data-wu-i18n-key="footer.about">About Write Urdu</h2>' +

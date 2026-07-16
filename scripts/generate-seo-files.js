@@ -9,7 +9,7 @@ const sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http:
   '  <url>', `    <loc>${escapeXml(config.canonical(page.path))}</loc>`, page.lastmod ? `    <lastmod>${page.lastmod}</lastmod>` : null,
   `    <changefreq>${page.changefreq}</changefreq>`, `    <priority>${page.priority.toFixed(2)}</priority>`, '  </url>'
 ].filter(Boolean).join('\n')), '</urlset>', ''].join('\n');
-const robots = ['User-agent: *', 'Allow: /', '', 'User-agent: Googlebot', 'Allow: /', '', 'User-agent: OAI-SearchBot', 'Allow: /', '', 'User-agent: PerplexityBot', 'Allow: /', '', 'User-agent: Bingbot', 'Allow: /', '', 'User-agent: ClaudeBot', 'Allow: /', '', 'User-agent: Claude-SearchBot', 'Allow: /', '', '# GPTBot is allowed for this launch; change this policy deliberately if needed.', 'User-agent: GPTBot', 'Allow: /', '', '# Google-Extended is separate from Google Search crawling.', 'User-agent: Google-Extended', 'Allow: /', '', `Sitemap: ${config.SITE_ORIGIN}/sitemap.xml`, ''].join('\n');
+const robots = ['User-agent: *', 'Allow: /', '', 'User-agent: Googlebot', 'Allow: /', '', 'User-agent: OAI-SearchBot', 'Allow: /', '', 'User-agent: PerplexityBot', 'Allow: /', '', 'User-agent: Bingbot', 'Allow: /', '', 'User-agent: ClaudeBot', 'Allow: /', '', 'User-agent: Claude-SearchBot', 'Allow: /', '', '# GPTBot is deliberately opted out for training; OAI-SearchBot remains allowed for search discovery.', 'User-agent: GPTBot', 'Disallow: /', '', '# Google-Extended is separate from Google Search crawling and remains allowed.', 'User-agent: Google-Extended', 'Allow: /', '', `Sitemap: ${config.SITE_ORIGIN}/sitemap.xml`, ''].join('\n');
 function writeGenerated(file, content) {
   try {
     if (fs.existsSync(file) && fs.readFileSync(file, 'utf8') === content) return;
