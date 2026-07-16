@@ -1,5 +1,8 @@
 .editor-productivity{position:relative;margin:9px 0 14px;border:1px solid #dce6e0;border-radius:12px;background:#fff;box-shadow:0 7px 22px rgba(20,35,28,.05);color:#40564a;font-family:Inter,"Segoe UI",Arial,sans-serif}
 .editor-productivity [hidden]{display:none!important}
+/* Find/history panels are promoted into the page toolbar at runtime, so
+   their hidden state must remain effective after they leave this container. */
+[data-find-panel][hidden],[data-history-panel][hidden]{display:none!important}
 .editor-productivity button,.editor-productivity input{font:inherit}
 .editor-draft-recovery{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #bfe4ce;border-radius:11px 11px 0 0;background:#eaf8f0;color:#164f31;font-size:.82rem}
 .editor-draft-actions{display:flex;gap:6px}.editor-draft-actions button{padding:5px 9px;border:1px solid #a6d4b8;border-radius:7px;background:#fff;color:#145f38;font-weight:700;cursor:pointer}

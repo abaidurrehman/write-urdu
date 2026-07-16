@@ -385,7 +385,9 @@
 
         var storage = getStorage();
         var onboarding = createOnboarding(adapter.kind, storage);
-        if (adapter.mount.parentElement) adapter.mount.parentElement.insertBefore(onboarding, adapter.mount);
+        // Keep the writing surface first. Guidance is useful, but it should
+        // not push the primary editor below the fold on the first visit.
+        if (adapter.mount.parentElement) adapter.mount.parentElement.appendChild(onboarding);
         var panel = createToolsPanel(adapter.kind);
         var toolbar = document.querySelector('.home-actions, .tool-actions, .keyboard-actions');
         var toolActions = panel.querySelector('.editor-tool-actions');
