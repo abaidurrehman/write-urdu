@@ -196,6 +196,19 @@
         document.head.appendChild(link);
     }
 
+    function ensureBrandFavicon() {
+        // Keep the tab icon in sync with the current logo even on legacy
+        // pages that still contain the old /favicon.ico link in their head.
+        if (document.querySelector('link[data-write-urdu-favicon]')) return;
+        var favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.type = 'image/png';
+        favicon.sizes = '192x192';
+        favicon.href = 'image/logo10.png';
+        favicon.setAttribute('data-write-urdu-favicon', '');
+        document.head.appendChild(favicon);
+    }
+
     function renderFooter() {
         var footer = document.querySelector('footer');
         if (!footer) return;
@@ -576,6 +589,7 @@
 
     if (!document.documentElement.lang) document.documentElement.lang = 'en';
     addStylesheet();
+    ensureBrandFavicon();
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', renderHeader);
     } else {
