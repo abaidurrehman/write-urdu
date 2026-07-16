@@ -6,7 +6,7 @@ RewriteEngine On
 # Legacy HTML URLs are permanent redirects, not alternate indexable pages.
 # These rules run before host canonicalisation so each old URL resolves in one hop.
 RewriteRule ^index\.html$ https://write-urdu.com/ [R=301,L,NE]
-RewriteRule ^(urdu-editor|urdu-keyboard|urdu-alphabet|urdu-card-studio|qr-code-generator|write-urdu-features|urdu-editor-features|write-urdu-documentation|english-urdu-typing-tutorial|urdu-faq|why-write-urdu|write-urdu-privacy|write-urdu-sitemap|write-urdu-search|write-urdu-feedback|roman-urdu-transliteration|urdu-fonts-nastaliq-vs-naskh)\.html$ https://write-urdu.com/$1 [R=301,L,NE]
+RewriteRule ^(urdu-editor|urdu-keyboard|urdu-alphabet|urdu-card-studio|urdu-templates|qr-code-generator|write-urdu-features|urdu-editor-features|write-urdu-documentation|english-urdu-typing-tutorial|urdu-faq|why-write-urdu|write-urdu-privacy|write-urdu-sitemap|write-urdu-search|write-urdu-feedback|roman-urdu-transliteration|urdu-fonts-nastaliq-vs-naskh)\.html$ https://write-urdu.com/$1 [R=301,L,NE]
 
 # Canonical URL policy: keep one HTTPS apex origin and extensionless paths.
 # Configure the same rules at the CDN/host if Apache is not the edge server.

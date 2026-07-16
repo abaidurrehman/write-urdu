@@ -3,6 +3,7 @@
 
     var core = window.WriteUrduCardStudio;
     if (!core) return;
+    var templateLibrary = window.WriteUrduTemplateLibrary;
     var root = document.querySelector('[data-card-studio]');
     if (!root) return;
 
@@ -88,6 +89,13 @@
     function dbGetAsset(id) { return id ? openDb().then(function (db) { return new Promise(function (resolve, reject) { var request = db.transaction('assets', 'readonly').objectStore('assets').get(id); request.onsuccess = function () { resolve(request.result || null); }; request.onerror = function () { reject(request.error); }; }); }) : Promise.resolve(null); }
 
     function readIncoming() { try { var raw = sessionStorage.getItem(incomingKey); if (!raw) return null; sessionStorage.removeItem(incomingKey); var value = JSON.parse(raw); return value && typeof value.text === 'string' ? value.text : null; } catch (error) { return null; } }
+    function readTemplateSelection() {
+        if (!templateLibrary) return null;
+        try {
+            var slug = new URLSearchParams(window.location.search || '').get('template');
+            return slug ? templateLibrary.getTemplateBySlug(slug) : null;
+        } catch (error) { return null; }
+    }
     function readLocalProject() { try { var raw = localStorage.getItem(projectKey); return raw ? core.normalizeCardProject(JSON.parse(raw)) : null; } catch (error) { return null; } }
     function saveProject() {
         state.updatedAt = new Date().toISOString();
@@ -246,11 +254,16 @@
     function initialise() {
         fillOptions();
         var incoming = readIncoming();
-        var saved = incoming ? null : readLocalProject();
-        state = core.normalizeCardProject(incoming != null ? core.createDefaultCardProject(incoming) : saved || state);
+        var selectedTemplate = readTemplateSelection();
+        var saved = incoming || selectedTemplate ? null : readLocalProject();
+        if (selectedTemplate && templateLibrary && typeof templateLibrary.applyToCardProject === 'function') {
+            state = templateLibrary.applyToCardProject(core, core.createDefaultCardProject(incoming || ''), selectedTemplate);
+        } else {
+            state = core.normalizeCardProject(incoming != null ? core.createDefaultCardProject(incoming) : saved || state);
+        }
         bindControls(); syncControls(); restoreAsset(); exposeApplication(); requestRender(); initialiseTransliteration();
         document.dispatchEvent(new CustomEvent('write-urdu:card-studio-ready'));
-        if (!incoming && !saved) {
+        if (!incoming && !saved && !selectedTemplate) {
             setStatus(t('privacy'));
             dbGetLatest().then(function (latest) {
                 if (!latest || userChanged) return;

@@ -72,6 +72,14 @@
             };
             graph.push({ '@type': 'WebApplication', '@id': canonical + '#application', name: page.title.replace(/\s+–.*$/, ''), url: canonical, applicationCategory: page.id === 'urdu-card-studio' ? 'DesignApplication' : page.id === 'urdu-editor' || page.id === 'home' ? 'WritingApplication' : 'UtilitiesApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', isAccessibleForFree: true, description: page.description, featureList: featuresByPage[page.id] || [], publisher: { '@id': publisherId } });
         }
+        if (page.schema && page.schema.indexOf('CollectionPage') !== -1) {
+            var templateLibrary = window.WriteUrduTemplateLibrary;
+            var collectionItems = templateLibrary && Array.isArray(templateLibrary.TEMPLATES) ? templateLibrary.TEMPLATES.map(function (template, index) {
+                return { '@type': 'ListItem', position: index + 1, name: template.name, url: canonical + '?template=' + encodeURIComponent(template.slug) };
+            }) : [];
+            graph.push({ '@type': 'CollectionPage', '@id': canonical + '#collection', url: canonical, name: page.title, description: page.description, isPartOf: { '@id': canonical + '#webpage' }, mainEntity: { '@id': canonical + '#template-list' }, publisher: { '@id': publisherId }, inLanguage: 'en' });
+            if (collectionItems.length) graph.push({ '@type': 'ItemList', '@id': canonical + '#template-list', name: 'Urdu template library', numberOfItems: collectionItems.length, itemListElement: collectionItems });
+        }
         if (page.schema && (page.schema.indexOf('Article') !== -1 || page.schema.indexOf('FAQPage') !== -1)) {
             if (page.schema.indexOf('FAQPage') !== -1) {
                 var entities = Array.prototype.slice.call(document.querySelectorAll('details')).map(function (detail) {

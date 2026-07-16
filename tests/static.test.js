@@ -11,11 +11,13 @@ const seoConfig = require(path.join(root, 'seo.config.js'));
 assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://write-urdu.com', 'SEO canonical origin changed unexpectedly');
 assert.ok(seoConfig.pages.some(page => page.path === '/urdu-card-studio' && page.indexable), 'Card Studio is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/qr-code-generator' && page.indexable), 'QR Generator is missing from the SEO registry');
+assert.ok(seoConfig.pages.some(page => page.path === '/urdu-templates' && page.indexable), 'Template Library is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/write-urdu-search' && !page.indexable), 'Search utility must remain noindex');
 assert.ok(fs.existsSync(path.join(root, 'llms.txt')), 'AI-readable site summary is missing');
 assert.ok(fs.existsSync(path.join(root, 'docs', 'SEO-POST-DEPLOYMENT.md')), 'SEO post-deployment checklist is missing');
 assert.ok(fs.existsSync(path.join(root, 'scripts', 'submit-indexnow.js')), 'IndexNow deployment helper is missing');
 assert.ok(fs.existsSync(path.join(root, 'scripts', 'run-lighthouse.js')), 'Repeatable Lighthouse workflow is missing');
+assert.ok(fs.existsSync(path.join(root, 'scripts', 'validate-template-library.js')), 'Template registry validation script is missing');
 
 for (const file of htmlFiles) {
   const html = read(file);
@@ -89,6 +91,14 @@ assert.deepStrictEqual(cardInteraction.clientPointToCardPoint({ x: 290, y: 300 }
 assert.deepStrictEqual(cardInteraction.resizeRect({ x: 100, y: 80, width: 300, height: 200 }, 'left', { x: 250, y: 0 }, { minWidth: 120, maxWidth: 500 }), { x: 280, y: 80, width: 120, height: 200 }, 'Card Studio resize utility changed unexpectedly');
 assert.strictEqual(cardCore.createDefaultCardProject('').version, 2, 'Card Studio project schema was not upgraded for direct editing');
 assert.ok(cardCore.normalizeCardProject({ version: 1, text: { value: 'old' } }).text.transform, 'Card Studio cannot migrate old project transforms');
+const templateLibrary = require(path.join(root, 'js', 'template-library-core.js'));
+assert.strictEqual(templateLibrary.TEMPLATES.length, 46, 'Template Library must launch with 46 starter templates');
+assert.deepStrictEqual(templateLibrary.CATEGORY_COUNTS, { poetry: 12, social: 8, religious: 8, education: 6, business: 6, events: 6 }, 'Template category counts changed unexpectedly');
+assert.deepStrictEqual(templateLibrary.validateRegistry(templateLibrary.TEMPLATES), [], 'Starter template registry failed validation');
+assert.ok(templateLibrary.getTemplateBySlug('quiet-morning-verse'), 'Template lookup by slug is not working');
+const templateProject = templateLibrary.applyToCardProject(cardCore, cardCore.createDefaultCardProject('سلام'), templateLibrary.getTemplateBySlug('quiet-morning-verse'));
+assert.strictEqual(templateProject.libraryTemplateId, 'urdu-template-poetry-01', 'Template selection was not copied into Card Studio state');
+assert.strictEqual(templateProject.text.value, 'سلام', 'Template selection changed incoming text');
 const qrHtml = read('qr-code-generator.html');
 assert.match(qrHtml, /data-qr-generator/, 'QR generator page is missing its application root');
 assert.match(qrHtml, /id="qrCanvas"/, 'QR generator canvas is missing');
@@ -96,6 +106,13 @@ assert.match(qrHtml, /js\/vendor\/qrcode\.js/, 'QR encoder must be bundled local
 assert.doesNotMatch(qrHtml, /qr-code-generator-api|api\.qr|quickchart\.io|cdn.*qrcode/i, 'QR generator must not use a remote QR API or CDN');
 assert.match(qrHtml, /id="qr-about"|Create static QR codes in your browser/, 'QR Generator is missing its crawlable supporting explanation');
 assert.match(cardStudio, /id="card-studio-about"|Create Urdu cards and quote images online/, 'Card Studio is missing its crawlable supporting explanation');
+const templateLibraryHtml = read('urdu-templates.html');
+assert.match(templateLibraryHtml, /data-template-library/, 'Template Library page is missing its application root');
+assert.match(templateLibraryHtml, /data-template-search|Search templates/, 'Template Library search is missing');
+assert.match(templateLibraryHtml, /data-template-categories/, 'Template Library categories are missing');
+assert.match(templateLibraryHtml, /data-template-favorites/, 'Template Library favorites control is missing');
+assert.match(templateLibraryHtml, /data-template-recent-section/, 'Template Library recents section is missing');
+assert.match(read(path.join('js', 'template-library.js')), /templateFavorites\.v1|templateRecents\.v1|urdu-card-studio\?template=/, 'Template Library local persistence or Card Studio handoff is missing');
 assert.match(home, /Choose the right Urdu tool|data-create-qr/, 'Homepage is missing crawlable tool discovery content');
 assert.match(read('write-urdu-privacy.html'), /Privacy summary|data processing summary|transliteration suggestions use the Google/i, 'Privacy page is missing feature-specific processing details');
 assert.match(read('urdu-faq.html'), /Tools, privacy and exports|Is Write Urdu free and do I need an account/i, 'FAQ is missing product questions');

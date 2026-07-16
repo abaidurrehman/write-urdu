@@ -11,6 +11,7 @@
         { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard' },
         { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet' },
         { href: '/urdu-card-studio', match: ['/urdu-card-studio', '/urdu-card-studio.html'], key: 'cardStudio', label: 'Card Studio' },
+        { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates' },
         { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator' },
         { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation' },
         { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features' },
@@ -23,13 +24,13 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
                 tutorials: 'Tutorials', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
-                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', templates: 'Templates', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
                 about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
@@ -71,13 +72,13 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', features: 'خصوصیات',
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', features: 'خصوصیات',
                 tutorials: 'سبق', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
@@ -238,6 +239,7 @@
                             '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
                             '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
                             '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
+                            '<a href="/urdu-templates" data-wu-i18n-key="footer.templates">Templates</a>' +
                             '<a href="/qr-code-generator" data-wu-i18n-key="footer.qrGenerator">QR Code Generator</a>' +
                         '</div>' +
                         '<div class="wu-footer-group">' +

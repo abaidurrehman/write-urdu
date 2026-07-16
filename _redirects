@@ -6,6 +6,7 @@ https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
 /urdu-keyboard.html /urdu-keyboard 301
 /urdu-alphabet.html /urdu-alphabet 301
 /urdu-card-studio.html /urdu-card-studio 301
+/urdu-templates.html /urdu-templates 301
 /qr-code-generator.html /qr-code-generator 301
 /write-urdu-features.html /write-urdu-features 301
 /urdu-editor-features.html /urdu-editor-features 301
@@ -25,6 +26,7 @@ https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
 /urdu-keyboard/ /urdu-keyboard 301
 /urdu-alphabet/ /urdu-alphabet 301
 /urdu-card-studio/ /urdu-card-studio 301
+/urdu-templates/ /urdu-templates 301
 /qr-code-generator/ /qr-code-generator 301
 /write-urdu-features/ /write-urdu-features 301
 /urdu-editor-features/ /urdu-editor-features 301

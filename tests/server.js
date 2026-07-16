@@ -9,7 +9,9 @@ const types = {
   '.ico': 'image/x-icon',
   '.jpg': 'image/jpeg',
   '.js': 'text/javascript; charset=utf-8',
-  '.png': 'image/png'
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml; charset=utf-8',
+  '.webp': 'image/webp'
 };
 
 http.createServer((request, response) => {
