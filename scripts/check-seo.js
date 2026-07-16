@@ -27,6 +27,9 @@ files.forEach(file => {
   if (!page.indexable && !/noindex\s*,?\s*follow/i.test(robots)) errors.push(`${file}: utility page must be noindex,follow`);
   if (!page.indexable && !/noindex\s*,?\s*follow/i.test(meta(source, 'googlebot'))) errors.push(`${file}: utility page must include googlebot noindex,follow`);
   if (!meta(source, '', 'og:title') || !meta(source, '', 'og:description') || !meta(source, '', 'og:url')) errors.push(`${file}: missing Open Graph metadata`);
+  const ogImage = meta(source, '', 'og:image');
+  if (!/^https:\/\//i.test(ogImage)) errors.push(`${file}: Open Graph image must be absolute`);
+  else { try { const imageUrl = new URL(ogImage); if (imageUrl.origin === config.SITE_ORIGIN && !fs.existsSync(path.join(root, imageUrl.pathname.replace(/^\//, '')))) errors.push(`${file}: Open Graph image asset is missing`); } catch (_) { errors.push(`${file}: Open Graph image URL is invalid`); } }
   if (!/^en$/i.test((source.match(/<html[^>]+lang=["']([^"']+)/i) || [])[1] || '')) errors.push(`${file}: document language must be declared as en`);
   const ids = [...source.matchAll(/\bid=["']([^"']+)["']/gi)].map(match => match[1]);
   if (new Set(ids).size !== ids.length) errors.push(`${file}: duplicate id attribute`);
