@@ -85,7 +85,9 @@ test('Card Studio applies the library template visual style instead of only its 
     const state = window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState();
     return state && [state.libraryTemplateId, state.templateId, state.presetId, state.background.color].join('|');
   })).toBe('urdu-template-education-02|minimal-white|landscape|#eef7ff');
-  await expect(page.locator('[data-card-template="minimal-white"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-card-library-design]')).toBeVisible();
+  await expect(page.locator('[data-card-library-design-name]')).toHaveText('Classroom Note');
+  await expect(page.locator('[data-card-template="minimal-white"]')).toHaveAttribute('aria-pressed', 'false');
 });
 
 test('copy control uses the native clipboard and reports success', async ({ page, context }) => {
@@ -407,6 +409,19 @@ test('Card Studio supports direct Urdu selection, movement, resizing and edit co
   await page.mouse.move(handleBox.x + 45, handleBox.y + handleBox.height / 2);
   await page.mouse.up();
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text').width)).toBeLessThan(widthBefore);
+});
+
+test('Card Studio context toolbar overlays the preview without resizing the canvas', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Desktop preview layout is covered here; mobile uses the same overlay rule.');
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioApp));
+  const before = await page.locator('#cardCanvas').boundingBox();
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
+  await expect(page.locator('[data-card-context-toolbar]')).toBeVisible();
+  const after = await page.locator('#cardCanvas').boundingBox();
+  expect(after.width).toBeCloseTo(before.width, 1);
+  expect(after.height).toBeCloseTo(before.height, 1);
 });
 
 test('QR generator accepts Urdu editor text and renders a local preview', async ({ page }) => {
