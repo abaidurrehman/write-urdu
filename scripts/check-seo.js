@@ -28,6 +28,9 @@ files.forEach(file => {
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 config.pages.filter(page => page.indexable).forEach(page => { if (!sitemap.includes(`<loc>${config.canonical(page.path)}</loc>`)) errors.push(`sitemap: missing ${page.path}`); });
 config.pages.filter(page => !page.indexable).forEach(page => { if (sitemap.includes(`<loc>${config.canonical(page.path)}</loc>`)) errors.push(`sitemap: utility page included ${page.path}`); });
-const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8'); ['OAI-SearchBot', 'PerplexityBot', 'GPTBot', 'Google-Extended'].forEach(bot => { if (!robots.includes(`User-agent: ${bot}`)) errors.push(`robots.txt: missing explicit ${bot} policy`); });
+const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8'); ['OAI-SearchBot', 'PerplexityBot', 'GPTBot', 'Google-Extended', 'Bingbot', 'ClaudeBot', 'Claude-SearchBot'].forEach(bot => { if (!robots.includes(`User-agent: ${bot}`)) errors.push(`robots.txt: missing explicit ${bot} policy`); });
+if (!fs.existsSync(path.join(root, 'llms.txt'))) errors.push('llms.txt: missing AI-readable site summary');
+const redirectsPath = path.join(root, '_redirects');
+if (!fs.existsSync(redirectsPath) || !fs.readFileSync(redirectsPath, 'utf8').includes('https://www.write-urdu.com/* https://write-urdu.com/:splat 301!')) errors.push('_redirects: missing Cloudflare www-to-apex redirect');
 if (errors.length) { console.error(errors.map(error => `SEO: ${error}`).join('\n')); process.exit(1); }
 console.log(`SEO checks passed for ${files.length} HTML pages and ${config.pages.filter(page => page.indexable).length} sitemap URLs.`);

@@ -10,6 +10,15 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: Bingbot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
 # GPTBot is allowed for this launch. Change this policy deliberately if the owner opts out.
 User-agent: GPTBot
 Allow: /
@@ -18,4 +27,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://www.write-urdu.com/sitemap.xml
+Sitemap: https://write-urdu.com/sitemap.xml

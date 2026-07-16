@@ -8,10 +8,11 @@ const htmlFiles = allHtmlFiles.filter(file => !file.startsWith('google'));
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const seoConfig = require(path.join(root, 'seo.config.js'));
-assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://www.write-urdu.com', 'SEO canonical origin changed unexpectedly');
+assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://write-urdu.com', 'SEO canonical origin changed unexpectedly');
 assert.ok(seoConfig.pages.some(page => page.path === '/urdu-card-studio' && page.indexable), 'Card Studio is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/qr-code-generator' && page.indexable), 'QR Generator is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/write-urdu-search' && !page.indexable), 'Search utility must remain noindex');
+assert.ok(fs.existsSync(path.join(root, 'llms.txt')), 'AI-readable site summary is missing');
 
 for (const file of htmlFiles) {
   const html = read(file);
@@ -104,6 +105,10 @@ assert.strictEqual(qrCore.calculateLogoPlacement(1000, { width: 2000, height: 10
 assert.strictEqual(qrCore.safeFilename('a/b:c', 'fallback'), 'a b c', 'QR filename sanitisation is incomplete');
 assert.ok(fs.existsSync(path.join(root, '.htaccess')), 'Clean-route Apache configuration is missing');
 assert.match(fs.readFileSync(path.join(root, '.htaccess'), 'utf8'), /REQUEST_FILENAME\.html|RewriteRule/, 'Clean-route rewrite is incomplete');
+assert.ok(fs.existsSync(path.join(root, '_redirects')), 'Cloudflare Pages redirect configuration is missing');
+const cloudflareRedirects = fs.readFileSync(path.join(root, '_redirects'), 'utf8');
+assert.match(cloudflareRedirects, /\/urdu-editor\.html\s+\/urdu-editor\s+301/, 'Cloudflare legacy editor redirect is missing');
+assert.match(cloudflareRedirects, /\/qr-code-generator\.html\s+\/qr-code-generator\s+301/, 'Cloudflare QR legacy redirect is missing');
 for (const file of ['index.html', 'urdu-editor.html']) {
   const html = read(file);
   assert.match(html, /WriteUrduExport\.renderCanvas/, `${file} does not use the shared export renderer`);

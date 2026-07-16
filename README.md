@@ -54,7 +54,7 @@ Obsolete prototype editor files have been removed; `urdu-editor.html` is the onl
 
 ## Clean URLs
 
-Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keyboard` and `/urdu-alphabet`. The canonical production origin is `https://www.write-urdu.com`. The original `.html` files remain in the repository for backwards-compatible bookmarks and are permanently redirected by the included `.htaccess`; configure the same map at a CDN or host that does not run Apache. The local test server serves both forms for browser tests.
+Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keyboard` and `/urdu-alphabet`. The canonical production origin is `https://write-urdu.com`. The original `.html` files remain in the repository for backwards-compatible bookmarks and are permanently redirected by the included `.htaccess` or Cloudflare Pages `_redirects`; the local test server serves both forms for browser tests.
 
 ## Search and AI discoverability
 

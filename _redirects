@@ -1,5 +1,6 @@
 # Cloudflare Pages redirect rules. Keep these before any future wildcard rule.
 # Apache deployments use .htaccess; Cloudflare Pages uses this file instead.
+https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
 /index.html / 301
 /urdu-editor.html /urdu-editor 301
 /urdu-keyboard.html /urdu-keyboard 301
@@ -31,3 +32,5 @@
 /why-write-urdu/ /why-write-urdu 301
 /write-urdu-privacy/ /write-urdu-privacy 301
 /write-urdu-sitemap/ /write-urdu-sitemap 301
+/write-urdu-search/ /write-urdu-search 301
+/write-urdu-feedback/ /write-urdu-feedback 301

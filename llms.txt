@@ -1,0 +1,23 @@
+# Write Urdu
+
+> Free, browser-based tools for typing, formatting, designing and sharing Urdu. No installation or account is required.
+
+## Tools
+
+- [Roman Urdu to Urdu Editor](https://write-urdu.com/): Type Roman Urdu with English letters and convert words into Urdu script.
+- [Urdu Rich Text Editor](https://write-urdu.com/urdu-editor): Format headings, fonts, colours, lists and alignment, then export a document.
+- [Online Urdu Keyboard](https://write-urdu.com/urdu-keyboard): Type Urdu characters directly with an on-screen or physical keyboard.
+- [Urdu Card Studio](https://write-urdu.com/urdu-card-studio): Create shareable Urdu quote, poetry and announcement images locally.
+- [Static QR Code Generator](https://write-urdu.com/qr-code-generator): Generate static QR codes for Urdu text, links, Wi-Fi, WhatsApp and contacts.
+
+## Guides
+
+- [Write Urdu FAQ](https://write-urdu.com/urdu-faq)
+- [Complete documentation](https://write-urdu.com/write-urdu-documentation)
+- [Urdu alphabet guide](https://write-urdu.com/urdu-alphabet)
+- [Roman Urdu typing tutorial](https://write-urdu.com/english-urdu-typing-tutorial)
+
+## About and privacy
+
+- [About Write Urdu](https://write-urdu.com/why-write-urdu)
+- [Privacy policy](https://write-urdu.com/write-urdu-privacy)

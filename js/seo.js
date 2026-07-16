@@ -38,8 +38,8 @@
     setMeta('', '1200', 'og:image:width'); setMeta('', '630', 'og:image:height');
     if (!document.head.querySelector('script[data-write-urdu-schema]')) {
         var graph = [
-            { '@type': 'WebSite', '@id': config.SITE_ORIGIN + '/#website', url: config.SITE_ORIGIN + '/', name: 'Write Urdu', description: 'Browser-based tools for typing, formatting, designing and sharing Urdu.', inLanguage: ['en', 'ur'], publisher: { '@id': config.SITE_ORIGIN + '/#publisher' } },
-            { '@type': 'Organization', '@id': config.SITE_ORIGIN + '/#publisher', name: 'Write Urdu', url: config.SITE_ORIGIN + '/', logo: { '@type': 'ImageObject', url: config.SITE_ORIGIN + '/image/logo10.png' } },
+            { '@type': 'WebSite', '@id': config.SITE_ORIGIN + '/#website', url: config.SITE_ORIGIN + '/', name: 'Write Urdu', description: 'Browser-based tools for typing, formatting, designing and sharing Urdu.', inLanguage: ['en', 'ur'], publisher: { '@id': config.SITE_ORIGIN + '/#publisher' }, potentialAction: { '@type': 'SearchAction', target: config.SITE_ORIGIN + '/write-urdu-search?q={search_term_string}', 'query-input': 'required name=search_term_string' } },
+            { '@type': 'Organization', '@id': config.SITE_ORIGIN + '/#publisher', name: 'Write Urdu', url: config.SITE_ORIGIN + '/', logo: { '@type': 'ImageObject', url: config.SITE_ORIGIN + '/image/logo10.png' }, sameAs: ['https://twitter.com/UrduEditor', 'https://www.facebook.com/WriteUrdu'] },
             { '@type': 'WebPage', '@id': canonical + '#webpage', url: canonical, name: page.title, description: page.description, inLanguage: ['en', 'ur'], isPartOf: { '@id': config.SITE_ORIGIN + '/#website' }, publisher: { '@id': config.SITE_ORIGIN + '/#publisher' } }
         ];
         if (page.schema && page.schema.indexOf('WebApplication') !== -1) {
@@ -53,6 +53,14 @@
                 }).filter(Boolean);
                 if (entities.length) graph.push({ '@type': 'FAQPage', '@id': canonical + '#faq', mainEntity: entities, isPartOf: { '@id': canonical + '#webpage' }, publisher: { '@id': config.SITE_ORIGIN + '/#publisher' }, inLanguage: 'en' });
             } else graph.push({ '@type': 'Article', '@id': canonical + '#article', headline: page.title, description: page.description, mainEntityOfPage: { '@id': canonical + '#webpage' }, author: { '@id': config.SITE_ORIGIN + '/#publisher' }, publisher: { '@id': config.SITE_ORIGIN + '/#publisher' }, inLanguage: 'en' });
+        }
+        if (page.id === 'write-urdu-documentation') {
+            graph.push({ '@type': 'HowTo', '@id': canonical + '#how-to', name: 'How to type Urdu online with Write Urdu', step: [
+                { '@type': 'HowToStep', name: 'Type', text: 'Enter Roman Urdu, Urdu characters or paste text into the editor.' },
+                { '@type': 'HowToStep', name: 'Convert', text: 'Use Space to commit transliterated words, or switch to direct keyboard input.' },
+                { '@type': 'HowToStep', name: 'Refine', text: 'Correct spacing, add punctuation, find and replace text, or format a rich document.' },
+                { '@type': 'HowToStep', name: 'Share', text: 'Copy, download, print or share the result when it is ready to leave the editor.' }
+            ], isPartOf: { '@id': canonical + '#webpage' } });
         }
         var schema = document.createElement('script'); schema.type = 'application/ld+json'; schema.setAttribute('data-write-urdu-schema', '');
         schema.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });

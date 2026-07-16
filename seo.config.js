@@ -3,7 +3,7 @@
     if (typeof module === 'object' && module.exports) module.exports = factory();
     else root.WriteUrduSeoConfig = factory();
 }(typeof self !== 'undefined' ? self : this, function () {
-    var SITE_ORIGIN = 'https://www.write-urdu.com';
+    var SITE_ORIGIN = 'https://write-urdu.com';
     var pages = [
         { id: 'home', path: '/', legacyPaths: ['/index.html'], indexable: true, title: 'Write Urdu Online – Roman Urdu to Urdu Typing', description: 'Type Roman Urdu with English letters and convert it into Urdu script. Copy, format, share, print, or export Urdu from your browser.', h1: 'Write Urdu online', section: 'tools', priority: 1, changefreq: 'weekly', lastmod: '2026-07-15', schema: ['WebApplication'] },
         { id: 'urdu-editor', path: '/urdu-editor', legacyPaths: ['/urdu-editor.html'], indexable: true, title: 'Urdu Rich Text Editor Online – Format and Export Urdu', description: 'Write and format Urdu with fonts, headings, colours, lists and alignment, then export your document as Word, PDF, PNG or print.', h1: 'Urdu Rich Text Editor', section: 'tools', priority: .95, changefreq: 'monthly', lastmod: '2026-07-15', schema: ['WebApplication'] },
