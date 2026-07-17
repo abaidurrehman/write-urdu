@@ -366,15 +366,20 @@ test('mobile menu and primary tools remain inside the viewport', async ({ page, 
   }
 });
 
-test('wide desktop header keeps the dense tools navigation behind a visible menu', async ({ page, isMobile }) => {
+test('wide desktop header keeps primary tools visible and secondary pages in More', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Desktop header regression');
   await blockNonVisualServices(page);
   await page.setViewportSize({ width: 1920, height: 900 });
   await openFile(page, '/urdu-editor.html');
-  const menu = page.locator('.wu-menu-toggle');
-  await expect(menu).toBeVisible();
-  await menu.click();
-  await expect(page.locator('.wu-primary-nav')).toHaveClass(/is-open/);
+  await expect(page.locator('.wu-menu-toggle')).toBeHidden();
+  await expect(page.locator('.wu-primary-nav > a[href="/urdu-card-studio"]')).toBeVisible();
+  await expect(page.locator('.wu-nav-create')).toBeVisible();
+  await page.locator('.wu-nav-create > summary').click();
+  await expect(page.locator('.wu-nav-create .wu-nav-more-menu')).toBeVisible();
+  await expect(page.locator('.wu-nav-create .wu-nav-more-menu a[href="/stylish-urdu-text-generator"]')).toBeVisible();
+  await expect(page.locator('.wu-nav-more:not(.wu-nav-create) .wu-nav-more-menu')).toBeHidden();
+  await page.locator('.wu-nav-more:not(.wu-nav-create) > summary').click();
+  await expect(page.locator('.wu-nav-more:not(.wu-nav-create) .wu-nav-more-menu')).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });

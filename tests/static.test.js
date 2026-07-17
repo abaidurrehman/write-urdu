@@ -227,6 +227,7 @@ assert.match(sharedHeader, /function ensureUrduFonts\(|fonts\.googleapis\.com\/c
 assert.match(sharedHeader, /write-urdu:locale:v1/, 'Shared locale preference storage is missing');
 assert.match(sharedHeader, /data-wu-language-toggle/, 'Shared language toggle is missing');
 assert.match(sharedHeader, /wu-nav-more|nav\.more/, 'Secondary documentation links are missing the shared More menu');
+assert.match(sharedHeader, /navIcons|wu-nav-icon|wu-nav-create/, 'Shared navigation icon and creation submenu system is missing');
 assert.match(sharedHeader, /locale-urdu|document\.documentElement\.dir/, 'Shared Urdu direction handling is missing');
 assert.match(sharedHeader, /js\/content-locale\.js|function loadContentLocale\(/, 'Long-form content localization loader is missing');
 assert.match(sharedHeader, /wu-header-trustbar|header\.noAccount/, 'Shared header privacy reassurance is missing');

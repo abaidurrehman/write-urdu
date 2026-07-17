@@ -6,23 +6,43 @@
     var deferredInstallPrompt = null;
 
     var links = [
-        { href: '/', match: ['/', '/index.html'], key: 'home', label: 'Write Urdu' },
-        { href: '/urdu-editor', match: ['/urdu-editor', '/urdu-editor.html'], key: 'editor', label: 'Rich Text Editor' },
-        { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard' },
-        { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet', secondary: true },
-        { href: '/urdu-card-studio', match: ['/urdu-card-studio', '/urdu-card-studio.html'], key: 'cardStudio', label: 'Card Studio' },
-        { href: '/stylish-urdu-text-generator', match: ['/stylish-urdu-text-generator', '/stylish-urdu-text-generator.html'], key: 'stylishText', label: 'Stylish Urdu Text' },
-        { href: '/urdu-name-art-maker', match: ['/urdu-name-art-maker', '/urdu-name-art-maker.html'], key: 'nameArt', label: 'Urdu Name Art' },
-        { href: '/urdu-whatsapp-status-maker', match: ['/urdu-whatsapp-status-maker', '/urdu-whatsapp-status-maker.html'], key: 'whatsappMaker', label: 'WhatsApp Status Maker' },
-        { href: '/urdu-instagram-post-maker', match: ['/urdu-instagram-post-maker', '/urdu-instagram-post-maker.html'], key: 'instagramMaker', label: 'Instagram Post Maker' },
-        { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates' },
-        { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator' },
-        { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation', secondary: true },
-        { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features', secondary: true },
-        { href: '/english-urdu-typing-tutorial', match: ['/english-urdu-typing-tutorial', '/english-urdu-typing-tutorial.html'], key: 'tutorials', label: 'Tutorials', secondary: true },
-        { href: '/urdu-faq', match: ['/urdu-faq', '/urdu-faq.html'], key: 'faq', label: 'FAQ', secondary: true },
-        { href: '/write-urdu-privacy', match: ['/write-urdu-privacy', '/write-urdu-privacy.html'], key: 'privacy', label: 'Privacy and terms', secondary: true }
+        { href: '/', match: ['/', '/index.html'], key: 'home', label: 'Write Urdu', icon: 'home' },
+        { href: '/urdu-editor', match: ['/urdu-editor', '/urdu-editor.html'], key: 'editor', label: 'Rich Text Editor', icon: 'edit' },
+        { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard', icon: 'keyboard' },
+        { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet', icon: 'alphabet', secondary: true },
+        { href: '/urdu-card-studio', match: ['/urdu-card-studio', '/urdu-card-studio.html'], key: 'cardStudio', label: 'Card Studio', icon: 'card' },
+        { href: '/stylish-urdu-text-generator', match: ['/stylish-urdu-text-generator', '/stylish-urdu-text-generator.html'], key: 'stylishText', label: 'Stylish Urdu Text', icon: 'sparkle', group: 'create' },
+        { href: '/urdu-name-art-maker', match: ['/urdu-name-art-maker', '/urdu-name-art-maker.html'], key: 'nameArt', label: 'Urdu Name Art', icon: 'name', group: 'create' },
+        { href: '/urdu-whatsapp-status-maker', match: ['/urdu-whatsapp-status-maker', '/urdu-whatsapp-status-maker.html'], key: 'whatsappMaker', label: 'WhatsApp Status Maker', icon: 'phone', group: 'create' },
+        { href: '/urdu-instagram-post-maker', match: ['/urdu-instagram-post-maker', '/urdu-instagram-post-maker.html'], key: 'instagramMaker', label: 'Instagram Post Maker', icon: 'image', group: 'create' },
+        { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates', icon: 'grid' },
+        { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator', icon: 'qr' },
+        { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation', icon: 'book', secondary: true },
+        { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features', icon: 'sliders', secondary: true },
+        { href: '/english-urdu-typing-tutorial', match: ['/english-urdu-typing-tutorial', '/english-urdu-typing-tutorial.html'], key: 'tutorials', label: 'Tutorials', icon: 'play', secondary: true },
+        { href: '/urdu-faq', match: ['/urdu-faq', '/urdu-faq.html'], key: 'faq', label: 'FAQ', icon: 'question', secondary: true },
+        { href: '/write-urdu-privacy', match: ['/write-urdu-privacy', '/write-urdu-privacy.html'], key: 'privacy', label: 'Privacy and terms', icon: 'shield', secondary: true }
     ];
+
+    var navIcons = {
+        home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5M9.5 21v-6h5v6"/>',
+        edit: '<path d="m4 16.5-.8 4.3 4.3-.8L19.4 8.1l-3.5-3.5L4 16.5Z"/><path d="m14.5 6.5 3.5 3.5"/>',
+        keyboard: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M6 10h.01M9 10h.01M12 10h.01M15 10h.01M18 10h.01M7 14h10"/>',
+        alphabet: '<circle cx="12" cy="12" r="9"/><path d="M8 16V8h2.8a2 2 0 0 1 0 4H8m2.8 0H12"/>',
+        card: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 15h10M7 11h6M7 8h3"/>',
+        sparkle: '<path d="m12 2 1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5L12 2Z"/><path d="m19 16 .6 2.4L22 19l-2.4.6L19 22l-.6-2.4L16 19l2.4-.6L19 16Z"/>',
+        name: '<path d="M4 19c2.3-4.8 4.8-7.2 7.5-7.2 2.6 0 3.2 2.2 5 2.2 1.1 0 2.3-.7 3.5-2"/><path d="M6 7.5c1.3-1.7 2.8-2.5 4.4-2.5 1.2 0 2.2.4 3.2 1.2"/>',
+        phone: '<path d="M7 3.5 4.8 5c-.9.6-.9 2-.4 3.2 2.2 5.1 5.7 8.6 10.8 10.8 1.2.5 2.6.5 3.2-.4l1.5-2.2-4.1-2.5-1.7 1.7c-2.2-1.1-4.1-3-5.2-5.2l1.7-1.7L7 3.5Z"/>',
+        image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.4"/><path d="m4 17 5-5 3.5 3 2.5-2.5 6 5"/>',
+        grid: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+        qr: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM17 14h3"/>',
+        book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z"/><path d="M4 5.5V21M8 7h8M8 10h8"/>',
+        sliders: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="18" r="2"/>',
+        play: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/>',
+        question: '<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.8 1.7c-1.1.8-1.6 1.2-1.6 2.5M12 16.5h.01"/>',
+        shield: '<path d="M12 3 19 6v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/>'
+    };
+    function navIcon(name) { return '<span class="wu-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">' + (navIcons[name] || navIcons.grid) + '</svg></span>'; }
 
     var dictionary = {
         en: {
@@ -31,7 +51,7 @@
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
                 alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
-                tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', more: 'More', feedback: 'Feedback'
+                tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', create: 'Create', more: 'More', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
@@ -42,7 +62,7 @@
                 about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
                 note: '© Write Urdu. Browser-based Urdu typing tools.'
             },
-            header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Your writing stays in this browser unless you choose to export or share it.' },
+            header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Private by default · export or share when ready.' },
             aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
             languageAction: 'اردو',
             ui: {
@@ -79,7 +99,7 @@
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
                 alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', features: 'خصوصیات',
-                tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', more: 'مزید', feedback: 'رائے'
+                tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', create: 'تخلیق', more: 'مزید', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
@@ -90,7 +110,7 @@
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
                 note: '© رائٹ اردو۔ براؤزر پر مبنی اردو ٹائپنگ ٹولز۔'
             },
-            header: { local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', free: 'استعمال کے لیے مفت', privacy: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔' },
+            header: { local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', free: 'استعمال کے لیے مفت', privacy: 'رازداری پہلے · تیار ہونے پر برآمد یا شیئر کریں۔' },
             aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
             languageAction: 'English',
             ui: {
@@ -537,9 +557,15 @@
         var header = document.createElement('header');
         header.className = 'wu-site-header';
         header.setAttribute('data-write-urdu-header', '');
-        var primaryLinks = links.filter(function (item) { return !item.secondary; });
+        var primaryLinks = links.filter(function (item) { return item.key !== 'home' && !item.secondary && item.group !== 'create'; });
+        var creativeLinks = links.filter(function (item) { return item.group === 'create'; });
         var secondaryLinks = links.filter(function (item) { return item.secondary; });
+        var creativeActive = creativeLinks.some(function (item) { return isActive(item, path); });
         var secondaryActive = secondaryLinks.some(function (item) { return isActive(item, path); });
+        function renderLink(item) {
+            var active = isActive(item, path);
+            return '<a href="' + item.href + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + navIcon(item.icon) + '<span data-wu-i18n-key="nav.' + item.key + '">' + item.label + '</span></a>';
+        }
         header.innerHTML =
                 '<div class="wu-header-inner">' +
                 '<a class="wu-brand" href="/" aria-label="Write Urdu home">' +
@@ -550,18 +576,16 @@
                     '<span class="wu-menu-icon" aria-hidden="true"></span><span class="wu-menu-label">Menu</span>' +
                 '</button>' +
                 '<nav class="wu-primary-nav" id="wu-primary-nav" aria-label="Primary navigation">' +
-                    primaryLinks.map(function (item) {
-                        var active = isActive(item, path);
-                        return '<a href="' + item.href + '" data-wu-i18n-key="nav.' + item.key + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
-                    }).join('') +
+                    primaryLinks.map(renderLink).join('') +
+                    '<details class="wu-nav-more wu-nav-create"' + (creativeActive ? ' open' : '') + '>' +
+                        '<summary' + (creativeActive ? ' class="is-active"' : '') + '>' + navIcon('sparkle') + '<span data-wu-i18n-key="nav.create">Create</span><span aria-hidden="true">⌄</span></summary>' +
+                        '<div class="wu-nav-more-menu">' + creativeLinks.map(renderLink).join('') + '</div>' +
+                    '</details>' +
                     '<details class="wu-nav-more"' + (secondaryActive ? ' open' : '') + '>' +
-                        '<summary' + (secondaryActive ? ' class="is-active"' : '') + '><span data-wu-i18n-key="nav.more">More</span><span aria-hidden="true">⌄</span></summary>' +
+                        '<summary' + (secondaryActive ? ' class="is-active"' : '') + '>' + navIcon('book') + '<span data-wu-i18n-key="nav.more">More</span><span aria-hidden="true">⌄</span></summary>' +
                         '<div class="wu-nav-more-menu">' +
-                            secondaryLinks.map(function (item) {
-                                var active = isActive(item, path);
-                                return '<a href="' + item.href + '" data-wu-i18n-key="nav.' + item.key + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
-                            }).join('') +
-                            '<a href="/write-urdu-feedback" data-wu-i18n-key="nav.feedback">Feedback</a>' +
+                            secondaryLinks.map(renderLink).join('') +
+                            '<a href="/write-urdu-feedback">' + navIcon('question') + '<span data-wu-i18n-key="nav.feedback">Feedback</span></a>' +
                         '</div>' +
                     '</details>' +
                 '</nav>' +
@@ -599,6 +623,11 @@
             toggle.setAttribute('aria-expanded', 'false');
             nav.classList.remove('is-open');
         }
+        function closeSecondaryMenus(target) {
+            nav.querySelectorAll('.wu-nav-more[open]').forEach(function (menu) {
+                if (!target || !menu.contains(target)) menu.removeAttribute('open');
+            });
+        }
 
         toggle.addEventListener('click', function () {
             var open = toggle.getAttribute('aria-expanded') === 'true';
@@ -613,9 +642,10 @@
         });
         document.addEventListener('click', function (event) {
             if (!header.contains(event.target)) closeMenu();
+            else closeSecondaryMenus(event.target);
         });
         window.addEventListener('resize', function () {
-            if (window.innerWidth >= 960) closeMenu();
+            if (window.innerWidth >= 1281) { closeMenu(); closeSecondaryMenus(null); }
         });
     }
 
