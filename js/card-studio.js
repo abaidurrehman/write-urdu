@@ -5,6 +5,7 @@
     if (!core) return;
     var social = window.WriteUrduSocialMaker;
     var socialConfig = social && social.getModeFromLocation ? social.getModeFromLocation(window.location) : null;
+    var nameArtMode = new URLSearchParams(window.location.search || '').get('nameArt') === '1';
     var templateLibrary = window.WriteUrduTemplateLibrary;
     var root = document.querySelector('[data-card-studio]');
     if (!root) return;
@@ -55,6 +56,11 @@
         if (socialTitle) socialTitle.textContent = socialConfig.title;
         if (socialSubtitle) socialSubtitle.textContent = socialConfig.subtitle;
         document.title = socialConfig.title + ' – Write Urdu';
+    }
+    if (nameArtMode) {
+        document.body.classList.add('name-art-embedded');
+        root.dataset.cardNameArtMode = 'true';
+        document.title = 'Urdu Name Art Studio – Write Urdu';
     }
 
     function t(key) { var value = (copy[locale] && copy[locale][key]) || copy.en[key] || key; var args = Array.prototype.slice.call(arguments, 1); return value.replace('{n}', args[0] == null ? '' : args[0]); }
@@ -440,7 +446,7 @@
         }
         bindControls(); syncControls(); restoreAsset(); exposeApplication(); requestRender(); initialiseTransliteration();
         document.dispatchEvent(new CustomEvent('write-urdu:card-studio-ready'));
-        if (!incoming && !saved && !selectedTemplate) {
+        if (!incoming && !saved && !selectedTemplate && !nameArtMode) {
             setStatus(t('privacy'));
             dbGetLatest().then(function (latest) {
                 if (!latest || userChanged) return;

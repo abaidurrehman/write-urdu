@@ -132,6 +132,19 @@ assert.strictEqual(templateProject.libraryTemplateId, 'urdu-template-poetry-01',
 assert.strictEqual(templateProject.text.value, 'سلام', 'Template selection changed incoming text');
 const standaloneTemplateProject = templateLibrary.applyToCardProject(cardCore, cardCore.createDefaultCardProject(''), templateLibrary.getTemplateBySlug('quiet-morning-verse'), { useSampleText: true });
 assert.strictEqual(standaloneTemplateProject.text.value, 'آج کا دن ایک نئی شروعات ہے۔', 'Standalone template did not provide sample Urdu text');
+const stylishPage = read('stylish-urdu-text-generator.html');
+assert.match(stylishPage, /data-stylish-generator/, 'Stylish Urdu text generator page is missing its application root');
+assert.match(stylishPage, /data-input-mode-control|Roman Urdu → Urdu/, 'Stylish Urdu generator is missing its input mode control');
+assert.match(stylishPage, /data-batch-transliteration|Convert passage to Urdu script/, 'Stylish Urdu generator is missing bulk transliteration guidance');
+assert.match(stylishPage, /Copyable text versus Urdu name art/, 'Stylish Urdu generator is missing the copyable-versus-image explanation');
+assert.match(read(path.join('js', 'stylish-urdu-core.js')), /STYLE_DEFINITIONS|normalizeText|generateStyles/, 'Stylish Urdu pure core is missing');
+const stylishCore = require(path.join(root, 'js', 'stylish-urdu-core.js'));
+assert.strictEqual(stylishCore.STYLE_DEFINITIONS.length, 80, 'Stylish Urdu style catalog must contain 80 launch styles');
+assert.strictEqual(stylishCore.generateStyles('سلام', { limit: 200 }).total, 80, 'Stylish Urdu generator should expose the complete catalog');
+const nameArtPage = read('urdu-name-art-maker.html');
+assert.match(nameArtPage, /data-name-art-frame/, 'Name Art route is missing its Card Studio workspace');
+assert.match(nameArtPage, /urdu-card-studio.html?nameArt=1|js\/name-art.js/, 'Name Art route is missing the Card Studio handoff bridge');
+assert.match(read(path.join('js', 'name-art.js')), /writeUrdu\.nameArt\.handoff\.v1|writeUrdu\.cardStudio\.incoming/, 'Name Art handoff is not local or time-limited');
 const qrHtml = read('qr-code-generator.html');
 assert.match(qrHtml, /data-qr-generator/, 'QR generator page is missing its application root');
 assert.match(qrHtml, /id="qrCanvas"/, 'QR generator canvas is missing');
@@ -213,6 +226,7 @@ assert.match(sharedHeader, /function normalizePageTitle\(/, 'Shared page-title n
 assert.match(sharedHeader, /function ensureUrduFonts\(|fonts\.googleapis\.com\/css2\?family=/, 'Shared Urdu font loading is missing');
 assert.match(sharedHeader, /write-urdu:locale:v1/, 'Shared locale preference storage is missing');
 assert.match(sharedHeader, /data-wu-language-toggle/, 'Shared language toggle is missing');
+assert.match(sharedHeader, /wu-nav-more|nav\.more/, 'Secondary documentation links are missing the shared More menu');
 assert.match(sharedHeader, /locale-urdu|document\.documentElement\.dir/, 'Shared Urdu direction handling is missing');
 assert.match(sharedHeader, /js\/content-locale\.js|function loadContentLocale\(/, 'Long-form content localization loader is missing');
 assert.match(sharedHeader, /wu-header-trustbar|header\.noAccount/, 'Shared header privacy reassurance is missing');

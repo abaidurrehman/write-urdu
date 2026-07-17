@@ -9,15 +9,19 @@
         { href: '/', match: ['/', '/index.html'], key: 'home', label: 'Write Urdu' },
         { href: '/urdu-editor', match: ['/urdu-editor', '/urdu-editor.html'], key: 'editor', label: 'Rich Text Editor' },
         { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard' },
-        { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet' },
+        { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet', secondary: true },
         { href: '/urdu-card-studio', match: ['/urdu-card-studio', '/urdu-card-studio.html'], key: 'cardStudio', label: 'Card Studio' },
+        { href: '/stylish-urdu-text-generator', match: ['/stylish-urdu-text-generator', '/stylish-urdu-text-generator.html'], key: 'stylishText', label: 'Stylish Urdu Text' },
+        { href: '/urdu-name-art-maker', match: ['/urdu-name-art-maker', '/urdu-name-art-maker.html'], key: 'nameArt', label: 'Urdu Name Art' },
         { href: '/urdu-whatsapp-status-maker', match: ['/urdu-whatsapp-status-maker', '/urdu-whatsapp-status-maker.html'], key: 'whatsappMaker', label: 'WhatsApp Status Maker' },
         { href: '/urdu-instagram-post-maker', match: ['/urdu-instagram-post-maker', '/urdu-instagram-post-maker.html'], key: 'instagramMaker', label: 'Instagram Post Maker' },
         { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates' },
         { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator' },
-        { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation' },
-        { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features' },
-        { href: '/english-urdu-typing-tutorial', match: ['/english-urdu-typing-tutorial', '/english-urdu-typing-tutorial.html'], key: 'tutorials', label: 'Tutorials' }
+        { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation', secondary: true },
+        { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features', secondary: true },
+        { href: '/english-urdu-typing-tutorial', match: ['/english-urdu-typing-tutorial', '/english-urdu-typing-tutorial.html'], key: 'tutorials', label: 'Tutorials', secondary: true },
+        { href: '/urdu-faq', match: ['/urdu-faq', '/urdu-faq.html'], key: 'faq', label: 'FAQ', secondary: true },
+        { href: '/write-urdu-privacy', match: ['/write-urdu-privacy', '/write-urdu-privacy.html'], key: 'privacy', label: 'Privacy and terms', secondary: true }
     ];
 
     var dictionary = {
@@ -26,13 +30,13 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
-                tutorials: 'Tutorials', feedback: 'Feedback'
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
+                tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', more: 'More', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
-                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', templates: 'Templates', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
                 about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
@@ -74,13 +78,13 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', features: 'خصوصیات',
-                tutorials: 'سبق', feedback: 'رائے'
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', features: 'خصوصیات',
+                tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', more: 'مزید', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
@@ -257,6 +261,8 @@
                             '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
                             '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
                             '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
+                            '<a href="/stylish-urdu-text-generator" data-wu-i18n-key="footer.stylishText">Stylish Urdu Text</a>' +
+                            '<a href="/urdu-name-art-maker" data-wu-i18n-key="footer.nameArt">Urdu Name Art</a>' +
                             '<a href="/urdu-whatsapp-status-maker" data-wu-i18n-key="nav.whatsappMaker">WhatsApp Status Maker</a>' +
                             '<a href="/urdu-instagram-post-maker" data-wu-i18n-key="nav.instagramMaker">Instagram Post Maker</a>' +
                             '<a href="/urdu-templates" data-wu-i18n-key="footer.templates">Templates</a>' +
@@ -531,6 +537,9 @@
         var header = document.createElement('header');
         header.className = 'wu-site-header';
         header.setAttribute('data-write-urdu-header', '');
+        var primaryLinks = links.filter(function (item) { return !item.secondary; });
+        var secondaryLinks = links.filter(function (item) { return item.secondary; });
+        var secondaryActive = secondaryLinks.some(function (item) { return isActive(item, path); });
         header.innerHTML =
                 '<div class="wu-header-inner">' +
                 '<a class="wu-brand" href="/" aria-label="Write Urdu home">' +
@@ -541,11 +550,20 @@
                     '<span class="wu-menu-icon" aria-hidden="true"></span><span class="wu-menu-label">Menu</span>' +
                 '</button>' +
                 '<nav class="wu-primary-nav" id="wu-primary-nav" aria-label="Primary navigation">' +
-                    links.map(function (item) {
+                    primaryLinks.map(function (item) {
                         var active = isActive(item, path);
                         return '<a href="' + item.href + '" data-wu-i18n-key="nav.' + item.key + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
                     }).join('') +
-                    '<a class="wu-feedback-link" href="/write-urdu-feedback" data-wu-i18n-key="nav.feedback">Feedback</a>' +
+                    '<details class="wu-nav-more"' + (secondaryActive ? ' open' : '') + '>' +
+                        '<summary' + (secondaryActive ? ' class="is-active"' : '') + '><span data-wu-i18n-key="nav.more">More</span><span aria-hidden="true">⌄</span></summary>' +
+                        '<div class="wu-nav-more-menu">' +
+                            secondaryLinks.map(function (item) {
+                                var active = isActive(item, path);
+                                return '<a href="' + item.href + '" data-wu-i18n-key="nav.' + item.key + '"' + (active ? ' class="is-active" aria-current="page"' : '') + '>' + item.label + '</a>';
+                            }).join('') +
+                            '<a href="/write-urdu-feedback" data-wu-i18n-key="nav.feedback">Feedback</a>' +
+                        '</div>' +
+                    '</details>' +
                 '</nav>' +
                 '<button class="wu-install-toggle" type="button" data-wu-install hidden>Install app</button>' +
                 '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +

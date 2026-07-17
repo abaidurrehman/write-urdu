@@ -68,7 +68,9 @@
                 'urdu-editor': ['Rich Urdu formatting', 'Urdu fonts and alignment', 'Word, PDF and PNG export'],
                 'urdu-keyboard': ['On-screen Urdu character input', 'Physical keyboard input', 'Copy and text-file export'],
                 'urdu-card-studio': ['Urdu card and quote-image design', 'Urdu fonts and templates', 'Local background images', 'Direct text positioning and editing', 'PNG export'],
-                'qr-code-generator': ['Urdu text and URL QR codes', 'Wi-Fi and WhatsApp payloads', 'PNG and SVG export']
+                'qr-code-generator': ['Urdu text and URL QR codes', 'Wi-Fi and WhatsApp payloads', 'PNG and SVG export'],
+                'stylish-urdu-text-generator': ['Curated Unicode Urdu styles', 'Roman Urdu and direct Urdu input', 'Local favourites and copy actions', 'Name Art handoff'],
+                'urdu-name-art-maker': ['Urdu font-based name images', 'Card Studio templates and direct editing', 'Local background images', 'PNG export']
             };
             graph.push({ '@type': 'WebApplication', '@id': canonical + '#application', name: page.title.replace(/\s+–.*$/, ''), url: canonical, applicationCategory: page.id === 'urdu-card-studio' ? 'DesignApplication' : page.id === 'urdu-editor' || page.id === 'home' ? 'WritingApplication' : 'UtilitiesApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript and a modern web browser', isAccessibleForFree: true, description: page.description, featureList: featuresByPage[page.id] || [], publisher: { '@id': publisherId } });
         }

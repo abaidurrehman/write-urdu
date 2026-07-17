@@ -1,0 +1,22 @@
+const assert = require('assert');
+const core = require('../js/stylish-urdu-core.js');
+
+const normalized = core.normalizeText('  سلام\r\n\u202Eدنیا  ');
+assert.strictEqual(normalized.value, 'سلام\nدنیا', 'normalization should remove bidi controls and preserve paragraphs');
+assert.strictEqual(core.detectScript('سلام'), 'urdu');
+assert.strictEqual(core.detectScript('Abaid سلام'), 'mixed');
+assert.strictEqual(core.detectScript('2026'), 'numeric');
+assert.deepStrictEqual(core.segmentRuns('سلام 2026 Abaid').map(run => run.kind), ['urdu', 'other', 'numeric', 'other', 'latin']);
+const long = core.normalizeText('ا'.repeat(150), 100);
+assert.strictEqual(core.graphemes(long.value).length, 100, 'normalization must be grapheme-safe');
+assert.strictEqual(long.truncated, true);
+assert.ok(core.kashida('سلام').indexOf('ـ') >= 0, 'kashida style should add only joining elongation marks');
+assert.ok(!/[\u202A-\u202E\u2066-\u2069]/.test(core.kashida('سلام')), 'kashida output must not contain bidi controls');
+assert.strictEqual(core.STYLE_DEFINITIONS.length, 80, 'style catalog must contain the launch minimum');
+const styles = core.generateStyles('Abaid سلام', { limit: 200 });
+assert.strictEqual(styles.total, 80, 'styles should be deterministic and unique for mixed text');
+assert.strictEqual(new Set(styles.items.map(item => item.output)).size, styles.items.length, 'generated outputs must not duplicate');
+assert.strictEqual(core.generateStyles('سلام', { category: 'kashida', limit: 200 }).total, 8);
+assert.strictEqual(core.generateStyles('سلام', { intensity: 'strong', limit: 200 }).items.every(item => item.intensity === 'strong'), true);
+assert.strictEqual(core.createHandoff('سلام').version, 1);
+console.log('Stylish Urdu core tests passed.');

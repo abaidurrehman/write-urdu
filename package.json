@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "node scripts/dev-server.js",
-    "test": "node tests/static.test.js",
+    "test": "node tests/static.test.js && node tests/stylish-urdu-core.test.js",
     "test:browser": "playwright test",
     "test:all": "npm test && npm run seo:check && npm run test:browser",
     "seo:generate": "node scripts/generate-seo-files.js",
