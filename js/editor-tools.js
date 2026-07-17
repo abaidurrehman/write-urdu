@@ -400,7 +400,7 @@
         var toolMenu = document.createElement('details');
         toolMenu.className = 'action-menu editor-tools-menu';
         toolMenu.setAttribute('aria-label', 'Writing tools');
-        toolMenu.innerHTML = '<summary class="btn btn-quiet"><i class="fas fa-wrench" aria-hidden="true"></i> Tools</summary><div class="editor-tools-menu-panel"></div>';
+        toolMenu.innerHTML = '<summary class="btn btn-quiet" role="button"><i class="fas fa-wrench" aria-hidden="true"></i> Tools</summary><div class="editor-tools-menu-panel"></div>';
         var toolMenuPanel = toolMenu.querySelector('.editor-tools-menu-panel');
         var historyList = historyPanel.querySelector('[data-history-list]');
         if (!historyList) {
@@ -664,7 +664,12 @@
             if (storage) storage.setItem(ONBOARDING_PREFIX + adapter.kind, 'dismissed');
         });
 
+        function closeToolMenu() {
+            if (toolMenu) toolMenu.open = false;
+        }
+
         historyButton.addEventListener('click', function () {
+            closeToolMenu();
             var opening = historyPanel.hidden;
             historyPanel.hidden = !opening;
             historyButton.setAttribute('aria-expanded', String(opening));
@@ -717,6 +722,7 @@
         });
 
         importButton.addEventListener('click', function () {
+            closeToolMenu();
             importFile.click();
         });
 
@@ -755,6 +761,7 @@
         });
 
         findButton.addEventListener('click', function () {
+            closeToolMenu();
             var opening = findPanel.hidden;
             findPanel.hidden = !opening;
             findButton.setAttribute('aria-expanded', String(opening));
@@ -778,6 +785,7 @@
         });
 
         focusButton.addEventListener('click', function () {
+            closeToolMenu();
             setFocusMode(!document.body.classList.contains('write-urdu-focus'));
         });
 
@@ -798,6 +806,7 @@
         }
 
         if (shortcutsButton) shortcutsButton.addEventListener('click', function () {
+            closeToolMenu();
             if (commandPalette.hidden) openCommandPalette();
             else closeCommandPalette();
         });

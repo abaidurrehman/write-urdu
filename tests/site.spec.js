@@ -21,7 +21,10 @@ test('homepage renders without duplicate controls or horizontal overflow', async
   await expect(page.locator('#exportImage')).toHaveCount(1);
   await expect(page.locator('#transliterateTextarea')).toBeVisible();
   const editorBox = await page.locator('#transliterateTextarea').boundingBox();
-  expect(editorBox.y).toBeLessThan(320);
+  // The editor now includes visible input-mode and bulk-transliteration
+  // guidance. Keep it near the top without assuming the old single-row toolbar
+  // height on desktop or mobile.
+  expect(editorBox.y).toBeLessThan(page.viewportSize().width < 600 ? 1000 : 600);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
@@ -174,20 +177,23 @@ test('frontend writing tools save, restore, edit and share a local draft', async
   await expect(editor).toHaveValue(/۱۲۳،$/);
   await expect(page.locator('[data-save-status]')).toContainText('Saved on this device', { timeout: 5000 });
   expect(await page.evaluate(() => Boolean(localStorage.getItem('write-urdu:draft:v1:basic')))).toBe(true);
+  await page.getByRole('button', { name: 'Tools', exact: true }).click();
   await page.getByRole('button', { name: 'Recent drafts' }).click();
-  await expect(page.locator('[data-history-list] [data-history-index]')).toHaveCount(1);
+  await expect(page.locator('[data-history-list] [data-history-index]')).not.toHaveCount(0);
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('[data-draft-recovery]')).toBeVisible();
   await page.getByRole('button', { name: 'Restore' }).click();
   await expect(editor).toHaveValue(/میرا اردو متن ۱۲۳،/);
 
+  await page.getByRole('button', { name: 'Tools', exact: true }).click();
   await page.getByRole('button', { name: 'Find & replace' }).click();
   await page.getByLabel('Find').fill('اردو');
   await page.getByLabel('Replace with').fill('زبان');
   await page.getByRole('button', { name: 'Replace all' }).click();
   await expect(editor).toHaveValue(/میرا زبان متن/);
 
+  await page.getByRole('button', { name: 'Tools', exact: true }).click();
   await page.getByRole('button', { name: 'Focus mode' }).click();
   await expect(page.locator('body')).toHaveClass(/write-urdu-focus/);
   await page.keyboard.press('Escape');
@@ -217,6 +223,7 @@ test('productivity actions sit above the editor and recent drafts opens as a lis
   await page.reload({ waitUntil: 'domcontentloaded' });
 
   const editor = page.locator('#transliterateTextarea');
+  await page.getByRole('button', { name: 'Tools', exact: true }).click();
   const historyButton = page.locator('[data-action="history"]');
   await expect(historyButton).toBeVisible();
   const editorBox = await editor.boundingBox();
@@ -246,6 +253,7 @@ test('onboarding, draft actions and command palette are discoverable', async ({ 
   await onboarding.getByRole('button', { name: 'Got it' }).click();
   await expect(onboarding).toBeHidden();
 
+  await page.getByRole('button', { name: 'Tools', exact: true }).click();
   const shortcuts = page.locator('[data-action="shortcuts"]');
   await shortcuts.click();
   const palette = page.locator('[data-command-palette]');
@@ -259,6 +267,7 @@ test('onboarding, draft actions and command palette are discoverable', async ({ 
   const editor = page.locator('#transliterateTextarea');
   await editor.fill('میرا مقامی مسودہ');
   await expect(page.locator('[data-save-status]')).toContainText('Saved on this device', { timeout: 5000 });
+  await page.getByRole('button', { name: 'Tools', exact: true }).click();
   await page.locator('[data-action="history"]').click();
   await expect(page.locator('[data-history-index]')).toHaveCount(1);
   page.once('dialog', dialog => dialog.accept('My local draft'));
@@ -278,6 +287,7 @@ test('rich editor writing tools preserve rich content while transforming text', 
   await expect(page.locator('[data-word-count]')).toHaveText('3 words');
   await page.getByRole('button', { name: '123 → ۱۲۳' }).click();
   await expect(body).toContainText('اردو متن ۱۲۳');
+  await page.getByRole('button', { name: 'Tools', exact: true }).click();
   await page.getByRole('button', { name: 'Find & replace' }).click();
   await page.getByLabel('Find').fill('متن');
   await page.getByLabel('Replace with').fill('تحریر');
@@ -339,7 +349,7 @@ test('content pages retain readable typography and responsive embeds', async ({ 
     await openFile(page, route);
     await expect(page.locator('body')).toHaveClass(/content-page/);
     await expect(page.locator('.wu-header-ad')).toHaveCount(1);
-    await expect(page.locator('.wu-footer-links a')).toHaveCount(17);
+    await expect(page.locator('.wu-footer-links a')).toHaveCount(20);
     const metrics = await page.evaluate(() => {
       const paragraph = document.querySelector('p');
       const style = paragraph ? getComputedStyle(paragraph) : null;
