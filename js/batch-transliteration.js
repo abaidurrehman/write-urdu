@@ -95,6 +95,12 @@
         });
     }
 
+    // Reuse the same conversion engine in browser-only tools that offer an
+    // explicit conversion action (for example, the QR text field). Nothing is
+    // sent until a feature calls this method.
+    window.WriteUrduBatchTransliteration = window.WriteUrduBatchTransliteration || {};
+    window.WriteUrduBatchTransliteration.transliterate = transliterate;
+
     function dispatchInput(target) {
         if (target.tagName === 'IFRAME') {
             var editorId = target.id && target.id.replace(/_ifr$/, '');

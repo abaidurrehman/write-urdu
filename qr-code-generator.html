@@ -29,7 +29,7 @@
             </div>
         </header>
 
-        <div class="qr-privacy" role="note"><span aria-hidden="true">🔒</span> <span data-qr-privacy>Your content and logo stay in this browser and are never uploaded.</span></div>
+        <div class="qr-privacy" role="note"><span aria-hidden="true">🔒</span> <span data-qr-privacy>QR generation and logo processing stay in this browser. Optional Roman Urdu conversion uses the transliteration service described in the privacy policy.</span></div>
         <div class="qr-layout">
             <section class="qr-panel" aria-label="QR code settings">
                 <div class="qr-section">
@@ -87,16 +87,17 @@
         <div class="seo-content-grid">
             <article><h3>Static means direct</h3><p>The final text or link is encoded directly into the QR code. There is no editable redirect and no scan analytics from Write Urdu.</p></article>
             <article><h3>Design for reliable scanning</h3><p>Use a dark foreground, light background and the recommended four-module quiet zone. A local centre logo automatically enables high error correction.</p></article>
-            <article><h3>Private by design</h3><p>Your content and logo stay in this browser. A linked website can still change or go offline, so check sensitive destinations before sharing.</p></article>
+            <article><h3>Private by design</h3><p>QR generation and logo processing stay in this browser. If you choose the optional Roman Urdu conversion, that text is sent to the transliteration provider described in the privacy policy.</p></article>
         </div>
         <h3>QR Generator questions</h3>
-        <details><summary>Can a QR code contain Urdu?</summary><p>Yes. Choose Text / Urdu Text and the exact Unicode text is encoded locally without transliteration or translation.</p></details>
+        <details><summary>Can a QR code contain Urdu?</summary><p>Yes. Choose Text / Urdu Text and the exact Unicode text is encoded locally. If you enter Roman Urdu first, use the explicit conversion action; it changes sounds into Urdu script and does not translate English meaning.</p></details>
         <details><summary>Do static QR codes expire?</summary><p>The generated code does not expire because of this tool. A website or service inside the code may change independently.</p></details>
         <nav class="related-resources" aria-labelledby="qr-related-title"><h3 id="qr-related-title">Related tools and guides</h3><ul><li><a href="/">Write and convert Roman Urdu</a></li><li><a href="/urdu-card-studio">Design an Urdu quote card</a></li><li><a href="/write-urdu-privacy">See how local QR processing works</a></li><li><a href="/write-urdu-documentation">Read the complete documentation</a></li></ul></nav>
     </section>
     <footer></footer>
     <script src="js/vendor/qrcode.js"></script>
     <script src="site-header.js"></script>
+    <script src="js/batch-transliteration.js"></script>
     <script src="js/qr-generator-core.js"></script>
     <script src="js/qr-generator-entry.js"></script>
     <script src="js/qr-generator.js"></script>

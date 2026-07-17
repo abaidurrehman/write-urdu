@@ -54,12 +54,13 @@
         }
     };
     var staticCopy = {
-        en: { reset: 'Reset', back: 'Back to Write Urdu', encodeQuestion: 'What would you like to encode?', design: 'Design', qrColour: 'QR colour', background: 'Background', designHelp: 'A dark QR colour, light background and four-module margin are safest for scanning.', recommendedColors: 'Use recommended colors', centreLogo: 'Centre logo', optional: 'optional', chooseLogo: 'Choose a local PNG, JPG or WebP', removeLogo: 'Remove logo', logoHelp: 'The logo is processed on this device. Adding one automatically uses high error correction.', downloadPng: 'Download PNG', downloadSvg: 'Download SVG', copyImage: 'Copy image', share: 'Share' },
-        ur: { reset: 'ری سیٹ', back: 'رائٹ اردو پر واپس جائیں', encodeQuestion: 'آپ کیا شامل کرنا چاہتے ہیں؟', design: 'ڈیزائن', qrColour: 'QR رنگ', background: 'پس منظر', designHelp: 'گہرا QR رنگ، ہلکا پس منظر اور چار ماڈیول کا حاشیہ اسکین کے لیے زیادہ قابلِ اعتماد ہے۔', recommendedColors: 'تجویز کردہ رنگ استعمال کریں', centreLogo: 'مرکزی لوگو', optional: 'اختیاری', chooseLogo: 'مقامی PNG، JPG یا WebP منتخب کریں', removeLogo: 'لوگو ہٹائیں', logoHelp: 'لوگو اسی آلے پر پروسیس ہوتا ہے۔ لوگو شامل کرنے پر زیادہ خرابی اصلاح خود منتخب ہوتی ہے۔', downloadPng: 'PNG ڈاؤن لوڈ کریں', downloadSvg: 'SVG ڈاؤن لوڈ کریں', copyImage: 'تصویر کاپی کریں', share: 'شیئر کریں' }
+        en: { reset: 'Reset', back: 'Back to Write Urdu', encodeQuestion: 'What would you like to encode?', design: 'Design', qrColour: 'QR colour', background: 'Background', designHelp: 'A dark QR colour, light background and four-module margin are safest for scanning.', recommendedColors: 'Use recommended colors', centreLogo: 'Centre logo', optional: 'optional', chooseLogo: 'Choose a local PNG, JPG or WebP', removeLogo: 'Remove logo', logoHelp: 'The logo is processed on this device. Adding one automatically uses high error correction.', convertRoman: 'Convert Roman Urdu to Urdu', convertNote: 'Optional transliteration changes sounds into Urdu script; it does not translate English meaning.', convertBusy: 'Converting…', convertDone: 'Converted to Urdu script.', convertChanged: 'The text changed while conversion was running. Try again.', convertError: 'Conversion failed. Check your connection and try again.', convertNoRoman: 'Enter Roman Urdu first, then choose convert.', privacy: 'QR generation and logo processing stay in this browser. Optional Roman Urdu conversion uses the transliteration service described in the privacy policy.', downloadPng: 'Download PNG', downloadSvg: 'Download SVG', copyImage: 'Copy image', share: 'Share' },
+        ur: { reset: 'ری سیٹ', back: 'رائٹ اردو پر واپس جائیں', encodeQuestion: 'آپ کیا شامل کرنا چاہتے ہیں؟', design: 'ڈیزائن', qrColour: 'QR رنگ', background: 'پس منظر', designHelp: 'گہرا QR رنگ، ہلکا پس منظر اور چار ماڈیول کا حاشیہ اسکین کے لیے زیادہ قابلِ اعتماد ہے۔', recommendedColors: 'تجویز کردہ رنگ استعمال کریں', centreLogo: 'مرکزی لوگو', optional: 'اختیاری', chooseLogo: 'مقامی PNG، JPG یا WebP منتخب کریں', removeLogo: 'لوگو ہٹائیں', logoHelp: 'لوگو اسی آلے پر پروسیس ہوتا ہے۔ لوگو شامل کرنے پر زیادہ خرابی اصلاح خود منتخب ہوتی ہے۔', convertRoman: 'رومن اردو کو اردو میں تبدیل کریں', convertNote: 'یہ اختیاری تحریری تبدیلی آواز کو اردو رسم الخط میں بدلتی ہے، انگریزی کا ترجمہ نہیں کرتی۔', convertBusy: 'تبدیلی جاری ہے…', convertDone: 'متن اردو رسم الخط میں تبدیل ہو گیا۔', convertChanged: 'تبدیلی کے دوران متن بدل گیا۔ دوبارہ کوشش کریں۔', convertError: 'تبدیلی ناکام رہی۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔', convertNoRoman: 'پہلے رومن اردو لکھیں، پھر تبدیلی منتخب کریں۔', privacy: 'QR بنانا اور لوگو پروسیسنگ اسی براؤزر میں رہتی ہے۔ اختیاری رومن اردو تبدیلی کے لیے رازداری پالیسی میں بیان کردہ تحریری تبدیلی کی سروس استعمال ہوتی ہے۔', downloadPng: 'PNG ڈاؤن لوڈ کریں', downloadSvg: 'SVG ڈاؤن لوڈ کریں', copyImage: 'تصویر کاپی کریں', share: 'شیئر کریں' }
     };
 
     function locale() { return window.WriteUrduLocale && window.WriteUrduLocale.get() === 'ur' ? 'ur' : 'en'; }
     function t(key) { return labels[locale()][key] || labels.en[key] || key; }
+    function c(key) { return staticCopy[locale()][key] || staticCopy.en[key] || key; }
     function esc(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]; }); }
     function field(name, label, value, type, extra) {
         type = type || 'text';
@@ -75,7 +76,7 @@
     function typeFields(type) {
         var fields = state.content.fields || {};
         if (type === 'url') return '<h2>' + t('urlLabel') + '</h2>' + field('url', t('urlLabel'), fields.url || '') + checkbox('addHttps', t('addHttps'), fields.addHttps !== false);
-        if (type === 'text') return '<h2>' + t('textLabel') + '</h2>' + textarea('text', t('textLabel'), fields.text || '') + '<div class="qr-count"><span data-qr-char-count>0 characters</span><span data-qr-byte-count>0 bytes</span></div>';
+        if (type === 'text') return '<h2>' + t('textLabel') + '</h2>' + textarea('text', t('textLabel'), fields.text || '') + '<div class="qr-count"><span data-qr-char-count>0 characters</span><span data-qr-byte-count>0 bytes</span></div><div class="qr-text-tools"><button type="button" class="qr-link-button qr-convert-button" data-qr-convert-text data-qr-copy="convertRoman">' + c('convertRoman') + '</button><p class="qr-help" data-qr-copy="convertNote">' + c('convertNote') + '</p><p class="qr-convert-status" data-qr-convert-status role="status" aria-live="polite"></p></div>';
         if (type === 'whatsapp') return '<h2>' + t('whatsapp') + '</h2>' + field('phone', t('phone'), fields.phone || '', 'tel') + textarea('message', t('message'), fields.message || '');
         if (type === 'wifi') return '<h2>' + t('wifi') + '</h2>' + field('ssid', t('ssid'), fields.ssid || '') + '<label class="qr-label">' + t('security') + '<select class="qr-control" data-qr-field="security"><option value="WPA">' + t('wpa') + '</option><option value="WEP"' + (fields.security === 'WEP' ? ' selected' : '') + '>WEP</option><option value="none"' + (fields.security === 'none' ? ' selected' : '') + '>' + t('open') + '</option></select></label>' + field('password', t('password'), fields.password || '', 'password', 'data-qr-password') + '<button type="button" class="qr-link-button" data-qr-toggle-password aria-label="' + t('showPassword') + '">' + t('showPassword') + '</button>' + checkbox('hidden', t('hidden'), fields.hidden);
         if (type === 'email') return '<h2>' + t('email') + '</h2>' + field('email', t('email'), fields.email || '', 'email') + field('subject', t('subject'), fields.subject || '') + textarea('message', t('message'), fields.message || '');
@@ -104,6 +105,8 @@
             toggle.textContent = showing ? t('showPassword') : t('hidePassword');
             toggle.setAttribute('aria-label', showing ? t('showPassword') : t('hidePassword'));
         });
+        var convert = root.querySelector('[data-qr-convert-text]');
+        if (convert) convert.addEventListener('click', convertText);
         updateTextCount();
     }
     function updateTextCount() {
@@ -119,6 +122,46 @@
         state.content.fields = fields;
     }
     function onFieldChange() { collectFields(); updateTextCount(); requestRender(); scheduleSave(); }
+    var conversionRequest = 0;
+    function setConvertStatus(message, isError) {
+        var node = root.querySelector('[data-qr-convert-status]');
+        if (node) {
+            node.textContent = message || '';
+            node.classList.toggle('error', Boolean(isError));
+        }
+    }
+    function convertText() {
+        var input = root.querySelector('[data-qr-field="text"]');
+        var button = root.querySelector('[data-qr-convert-text]');
+        if (!input || !button) return;
+        var original = input.value;
+        if (!/[A-Za-z]{3,}/.test(original)) {
+            setConvertStatus(c('convertNoRoman'), true);
+            return;
+        }
+        var service = window.WriteUrduBatchTransliteration;
+        if (!service || typeof service.transliterate !== 'function') {
+            setConvertStatus(c('convertError'), true);
+            return;
+        }
+        var request = ++conversionRequest;
+        button.disabled = true;
+        setConvertStatus(c('convertBusy'));
+        service.transliterate(original).then(function (result) {
+            if (request !== conversionRequest) return;
+            if (input.value !== original) {
+                setConvertStatus(c('convertChanged'), true);
+                return;
+            }
+            input.value = result;
+            onFieldChange();
+            setConvertStatus(c('convertDone'));
+        }).catch(function () {
+            if (request === conversionRequest) setConvertStatus(c('convertError'), true);
+        }).finally(function () {
+            if (request === conversionRequest) button.disabled = false;
+        });
+    }
     function setState(next) { state = core.normalizeQrProject(next); populateTypeSelect(); renderFields(); syncDesignControls(); syncLogoControls(); requestRender(); }
     function syncDesignControls() {
         root.querySelector('[data-qr-design="foregroundColor"]').value = state.design.foregroundColor;
@@ -212,7 +255,7 @@
     function removeLogo() { state.logo.enabled = false; state.logo.dataUrl = null; state.logo.assetId = null; logoImage = null; if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl); logoObjectUrl = null; syncLogoControls(); requestRender(); scheduleSave(); }
     function applyLocale() {
         var privacy = root.querySelector('[data-qr-privacy]');
-        if (privacy) privacy.textContent = locale() === 'ur' ? 'آپ کا متن اور لوگو اسی براؤزر میں رہتے ہیں اور کبھی اپ لوڈ نہیں کیے جاتے۔' : 'Your content and logo stay in this browser and are never uploaded.';
+        if (privacy) privacy.textContent = c('privacy');
         var copy = staticCopy[locale()];
         root.querySelectorAll('[data-qr-copy]').forEach(function (element) { var key = element.getAttribute('data-qr-copy'); if (copy[key]) { var input = element.querySelector('input,select'); if (input) { Array.prototype.slice.call(element.childNodes).forEach(function (node) { if (node.nodeType === 3 && node.nodeValue.trim()) node.remove(); }); element.insertBefore(document.createTextNode(copy[key]), input); } else element.textContent = copy[key]; } });
         populateTypeSelect(); renderFields(); syncLogoControls();

@@ -151,6 +151,8 @@ assert.match(qrHtml, /id="qrCanvas"/, 'QR generator canvas is missing');
 assert.match(qrHtml, /js\/vendor\/qrcode\.js/, 'QR encoder must be bundled locally');
 assert.match(qrHtml, /css\/site-header\.css/, 'QR generator is missing the shared header stylesheet');
 assert.match(qrHtml, /data-qr-reset-colors|recommendedColors/, 'QR generator is missing the recommended-colors recovery action');
+assert.match(read(path.join('js', 'qr-generator.js')), /data-qr-convert-text|Convert Roman Urdu to Urdu/, 'QR text field is missing its explicit Roman Urdu conversion action');
+assert.match(qrHtml, /js\/batch-transliteration\.js/, 'QR generator must reuse the shared transliteration service');
 assert.doesNotMatch(qrHtml, /qr-code-generator-api|api\.qr|quickchart\.io|cdn.*qrcode/i, 'QR generator must not use a remote QR API or CDN');
 assert.match(qrHtml, /id="qr-about"|Create static QR codes in your browser/, 'QR Generator is missing its crawlable supporting explanation');
 assert.match(cardStudio, /id="card-studio-about"|Create Urdu cards and quote images online/, 'Card Studio is missing its crawlable supporting explanation');

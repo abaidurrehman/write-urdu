@@ -746,6 +746,24 @@ test('QR generator accepts Urdu editor text and renders a local preview', async 
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
+test('QR text can explicitly convert Roman Urdu before encoding', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.fetch = async url => {
+      const value = new URL(url).searchParams.get('text');
+      return { ok: true, json: async () => ['SUCCESS', [[value, ['آج میں نے']]]] };
+    };
+  });
+  await blockNonVisualServices(page);
+  await openFile(page, '/qr-code-generator.html');
+  await page.locator('[data-qr-type]').selectOption('text');
+  await page.locator('[data-qr-field="text"]').fill('Ajj main nay');
+  await page.locator('[data-qr-convert-text]').click();
+  await expect(page.locator('[data-qr-field="text"]')).toHaveValue('آج میں نے');
+  await expect(page.locator('[data-qr-convert-status]')).toContainText('Converted');
+  await expect(page.locator('[data-qr-payload]')).toContainText('آج میں نے');
+  await expect(page.locator('[data-qr-download-png]')).toBeEnabled();
+});
+
 test('QR generator validates types and downloads PNG and SVG locally', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/qr-code-generator.html');
@@ -793,7 +811,7 @@ test('QR generator localizes its title and privacy promise', async ({ page }) =>
   await openFile(page, '/qr-code-generator.html');
   await page.locator('[data-wu-language-toggle]').click();
   await expect(page.locator('h1.wu-page-title')).toHaveText('مفت QR کوڈ جنریٹر');
-  await expect(page.locator('[data-qr-privacy]')).toContainText('آپ کا متن اور لوگو');
+  await expect(page.locator('[data-qr-privacy]')).toContainText('QR بنانا');
   await expect(page.locator('[data-qr-download-png]')).toHaveText('PNG ڈاؤن لوڈ کریں');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 });

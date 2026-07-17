@@ -9,14 +9,14 @@
             roman: 'Roman Urdu → Urdu',
             direct: 'Direct Urdu / English',
             romanNote: 'Type Roman Urdu and press Space to convert each word.',
-            directNote: 'Type or paste Urdu or English directly. Existing text is kept unchanged.'
+            directNote: 'Transliteration is off in this mode. Type or paste Urdu or English directly; existing text is kept unchanged.'
         },
         ur: {
             title: 'تحریر کا طریقہ',
             roman: 'رومن اردو → اردو',
             direct: 'براہِ راست اردو / انگریزی',
             romanNote: 'رومن اردو لکھیں اور ہر لفظ کو تبدیل کرنے کے لیے Space دبائیں۔',
-            directNote: 'اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں۔ موجودہ متن تبدیل نہیں ہوگا۔'
+            directNote: 'اس طریقے میں تحریری تبدیلی بند ہے۔ اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں؛ موجودہ متن تبدیل نہیں ہوگا۔'
         }
     };
 
