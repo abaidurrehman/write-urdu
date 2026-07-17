@@ -73,6 +73,13 @@
     ];
 
     var DEFAULT_TEXT = 'یہاں اپنا اردو متن لکھیں۔';
+    var SUPPORTED_FONTS = ['Noto Nastaliq Urdu', 'Noto Naskh Arabic', 'Amiri', 'Lateef', 'Scheherazade New', 'Tajawal'];
+
+    function normalizeFontFamily(value, fallback) {
+        var family = String(value || '').trim();
+        if (family === 'Scheherazade') family = 'Scheherazade New';
+        return SUPPORTED_FONTS.includes(family) ? family : (fallback || SUPPORTED_FONTS[0]);
+    }
 
     function findById(items, id) {
         return items.find(function (item) { return item.id === id; }) || items[0];
@@ -147,6 +154,8 @@
         project.background = Object.assign(base.background, raw.background || {});
         project.watermark = Object.assign(base.watermark, raw.watermark || {});
         project.text.value = String(project.text.value == null ? DEFAULT_TEXT : project.text.value);
+        project.text.fontFamily = normalizeFontFamily(project.text.fontFamily, base.text.fontFamily);
+        project.attribution.fontFamily = normalizeFontFamily(project.attribution.fontFamily, base.attribution.fontFamily);
         project.text.fontMode = project.text.fontMode === 'manual' ? 'manual' : 'auto';
         project.text.fontSize = clampNumber(project.text.fontSize, 12, 240, 64);
         project.text.minFontSize = clampNumber(project.text.minFontSize, 12, 120, 28);
@@ -313,5 +322,5 @@
         return { valid: Boolean(project.text.value.trim()), project: project, errors: project.text.value.trim() ? [] : ['Text is empty.'] };
     }
 
-    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, DEFAULT_TEXT: DEFAULT_TEXT, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, applyTemplate: applyTemplate, applyPreset: applyPreset, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
+    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, SUPPORTED_FONTS: SUPPORTED_FONTS, DEFAULT_TEXT: DEFAULT_TEXT, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, normalizeFontFamily: normalizeFontFamily, applyTemplate: applyTemplate, applyPreset: applyPreset, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
 }));

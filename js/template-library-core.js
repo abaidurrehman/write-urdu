@@ -6,7 +6,7 @@
     'use strict';
 
     var SUPPORTED_FONTS = [
-        'Noto Nastaliq Urdu', 'Noto Naskh Arabic', 'Amiri', 'Lateef', 'Scheherazade', 'Tajawal'
+        'Noto Nastaliq Urdu', 'Noto Naskh Arabic', 'Amiri', 'Lateef', 'Scheherazade New', 'Tajawal'
     ];
     var LICENSES = ['write-urdu-original', 'public-domain', 'user-supplied'];
     var CATEGORIES = [

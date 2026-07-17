@@ -13,6 +13,12 @@
     <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
     <script src="site-header.js" defer></script>
     <script src="google_jsapi.js"></script>
+    <!-- The canvas can only use a named font after its @font-face rule is
+         available. Keep the Urdu-friendly families scoped to Card Studio so
+         the rest of the site does not pay the font-loading cost. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/card-studio.css">
     <script src="js/card-studio-core.js" defer></script>
@@ -74,7 +80,7 @@
                     <h2 data-card-i18n="typographyHeading">Typography</h2>
                     <label class="card-studio-label" for="cardFont" data-card-i18n="fontLabel">Font</label>
                     <select class="card-studio-select" id="cardFont" data-card-field="text.fontFamily">
-                        <option>Noto Nastaliq Urdu</option><option>Noto Naskh Arabic</option><option>Amiri</option><option>Lateef</option><option>Scheherazade</option><option>Tajawal</option>
+                        <option>Noto Nastaliq Urdu</option><option>Noto Naskh Arabic</option><option>Amiri</option><option>Lateef</option><option>Scheherazade New</option><option>Tajawal</option>
                     </select>
                     <label class="card-studio-check"><input type="checkbox" data-card-font-auto checked><span data-card-i18n="autoFit">Auto-fit text to the card</span></label>
                     <label class="card-studio-label" for="cardFontSize" data-card-i18n="fontSizeLabel">Font size <span class="card-studio-range-value" data-card-font-size-value></span></label>
