@@ -43,6 +43,36 @@
     font-weight: 500;
     line-height: 1.4;
 }
+.input-mode-alert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1 1 100%;
+    gap: 10px;
+    margin-top: 3px;
+    padding: 7px 9px;
+    border: 1px solid #e5c875;
+    border-radius: 7px;
+    color: #684d08;
+    background: #fff8df;
+    font-size: .73rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+.input-mode-alert[hidden] { display: none !important; }
+.input-mode-alert-action {
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 5px 9px;
+    border: 1px solid #177245;
+    border-radius: 6px;
+    color: #fff;
+    background: #177245;
+    font: 700 .7rem/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+}
+.input-mode-alert-action:hover,
+.input-mode-alert-action:focus-visible { background: #0d5331; outline: 0; box-shadow: 0 0 0 2px rgba(23,114,69,.15); }
 .editor-chrome .input-mode-control {
     flex: 1 1 auto;
     min-width: 250px;
@@ -111,6 +141,8 @@
     .input-mode-option {
         min-height: 34px;
     }
+    .input-mode-alert { align-items: flex-start; flex-direction: column; }
+    .input-mode-alert-action { width: 100%; }
     .batch-transliteration-panel { grid-template-columns: 1fr; }
     .batch-transliteration-panel button { grid-column: 1; grid-row: auto; width: 100%; }
 }

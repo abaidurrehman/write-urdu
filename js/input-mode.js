@@ -9,14 +9,18 @@
             roman: 'Roman Urdu → Urdu',
             direct: 'Direct Urdu / English',
             romanNote: 'Type Roman Urdu and press Space to convert each word.',
-            directNote: 'Transliteration is off in this mode. Type or paste Urdu or English directly; existing text is kept unchanged.'
+            directNote: 'Transliteration is off in this mode. Type or paste Urdu or English directly; existing text is kept unchanged.',
+            directAlert: 'Roman Urdu conversion is off. Switch back to Roman Urdu → Urdu to convert as you type.',
+            switchToRoman: 'Turn conversion on'
         },
         ur: {
             title: 'تحریر کا طریقہ',
             roman: 'رومن اردو → اردو',
             direct: 'براہِ راست اردو / انگریزی',
             romanNote: 'رومن اردو لکھیں اور ہر لفظ کو تبدیل کرنے کے لیے Space دبائیں۔',
-            directNote: 'اس طریقے میں تحریری تبدیلی بند ہے۔ اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں؛ موجودہ متن تبدیل نہیں ہوگا۔'
+            directNote: 'اس طریقے میں تحریری تبدیلی بند ہے۔ اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں؛ موجودہ متن تبدیل نہیں ہوگا۔',
+            directAlert: 'رومن اردو کی تبدیلی بند ہے۔ لکھتے وقت تبدیلی کے لیے رومن اردو → اردو منتخب کریں۔',
+            switchToRoman: 'تبدیلی آن کریں'
         }
     };
 
@@ -87,6 +91,27 @@
         } catch (error) { /* The optional Google control may be unavailable or still loading. */ }
     }
 
+    function ensureModeAlert(root) {
+        var alert = root.querySelector('[data-input-mode-alert]');
+        if (alert) return alert;
+        alert = document.createElement('div');
+        alert.className = 'input-mode-alert';
+        alert.setAttribute('data-input-mode-alert', '');
+        alert.setAttribute('role', 'status');
+        alert.setAttribute('aria-live', 'polite');
+        var message = document.createElement('span');
+        message.setAttribute('data-input-mode-alert-message', '');
+        var action = document.createElement('button');
+        action.type = 'button';
+        action.className = 'input-mode-alert-action';
+        action.setAttribute('data-input-mode-alert-action', '');
+        action.addEventListener('click', function () { setMode(root, 'roman'); });
+        alert.appendChild(message);
+        alert.appendChild(action);
+        root.appendChild(alert);
+        return alert;
+    }
+
     function render(root, mode) {
         root.dataset.inputMode = mode;
         root.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
@@ -102,6 +127,12 @@
         if (roman) roman.textContent = text('roman');
         if (direct) direct.textContent = text('direct');
         if (note) note.textContent = mode === 'roman' ? text('romanNote') : text('directNote');
+        var alert = ensureModeAlert(root);
+        var alertMessage = alert.querySelector('[data-input-mode-alert-message]');
+        var alertAction = alert.querySelector('[data-input-mode-alert-action]');
+        alert.hidden = mode !== 'direct';
+        if (alertMessage) alertMessage.textContent = text('directAlert');
+        if (alertAction) alertAction.textContent = text('switchToRoman');
         targets(root).forEach(function (target) { syncTarget(target, mode); });
         setTransliteration(mode);
     }

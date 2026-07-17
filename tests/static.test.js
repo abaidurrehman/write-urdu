@@ -31,6 +31,8 @@ assert.ok(fs.existsSync(path.join(root, 'scripts', 'run-lighthouse.js')), 'Repea
 assert.ok(fs.existsSync(path.join(root, 'scripts', 'validate-template-library.js')), 'Template registry validation script is missing');
 assert.ok(fs.existsSync(path.join(root, 'js', 'input-mode.js')), 'Input mode controller is missing');
 assert.ok(fs.existsSync(path.join(root, 'css', 'input-mode.css')), 'Input mode styles are missing');
+assert.match(fs.readFileSync(path.join(root, 'js', 'input-mode.js'), 'utf8'), /data-input-mode-alert|directAlert/, 'Input mode must clearly warn when transliteration is off');
+assert.match(fs.readFileSync(path.join(root, 'css', 'input-mode.css'), 'utf8'), /input-mode-alert-action/, 'Input mode warning action styling is missing');
 assert.ok(fs.existsSync(path.join(root, 'js', 'batch-transliteration.js')), 'Whole-text transliteration controller is missing');
 
 for (const file of htmlFiles) {

@@ -61,6 +61,11 @@ test('basic editor can switch between transliteration and direct input without c
   await expect(editor).toHaveAttribute('dir', 'auto');
   await expect(editor).toHaveValue('mera khayal');
   await expect(page.locator('[data-batch-action]').first()).toBeHidden();
+  await expect(mode.locator('[data-input-mode-alert]')).toBeVisible();
+  await expect(mode.locator('[data-input-mode-alert]')).toContainText('conversion is off');
+  await mode.locator('[data-input-mode-alert-action]').click();
+  await expect(mode).toHaveAttribute('data-input-mode', 'roman');
+  await expect(mode.locator('[data-input-mode-alert]')).toBeHidden();
   await mode.locator('[data-input-mode-option="roman"]').click();
   await expect(mode).toHaveAttribute('data-input-mode', 'roman');
   await expect(editor).toHaveAttribute('dir', 'rtl');
