@@ -3,6 +3,9 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
+const featureSpec = path.join(root, 'specs', 'WU-CS-UX-001-card-studio-guided-workflow.md');
+assert.ok(fs.existsSync(featureSpec), 'Card Studio feature specification is missing');
+assert.match(fs.readFileSync(featureSpec, 'utf8'), /Feature ID:\*\*\s*`WU-CS-UX-001`/, 'Card Studio feature specification has no stable ID');
 const allHtmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html'));
 const htmlFiles = allHtmlFiles.filter(file => !file.startsWith('google'));
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -89,6 +92,7 @@ assert.match(cardStudio, /data-card-stepper|data-card-step="content"/, 'Card Stu
 assert.match(cardStudio, /data-card-ui-mode="quick"|data-card-ui-mode="advanced"/, 'Card Studio quick/advanced mode controls are missing');
 assert.match(cardStudio, /data-card-mobile-stepbar|data-card-use-case/, 'Card Studio mobile workflow or use-case choices are missing');
 assert.match(cardStudio, /js\/card-studio-ui\.js/, 'Card Studio guided UI controller is not loaded');
+assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-ui.js'), 'utf8'), /interactionMode|card-interaction-state/, 'Card Studio workflow state bridge is missing');
 assert.match(cardStudio, /data-input-mode-control|Direct Urdu \/ English/, 'Card Studio is missing the input mode switch');
 assert.match(cardStudio, /data-batch-transliteration|Convert all text/, 'Card Studio is missing the whole-text transliteration action');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /WriteUrduCardStudioApp|editingObjectId/, 'Card Studio application bridge is missing');

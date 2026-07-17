@@ -22,6 +22,10 @@
     var composing = false;
     var resizeObserver = null;
 
+    function notifyInteractionState() {
+        document.dispatchEvent(new CustomEvent('write-urdu:card-interaction-state', { detail: { selectedObjectId: selected, mode: mode, editingObjectId: mode === 'editing' ? selected : null } }));
+    }
+
     function clone(value) { return JSON.parse(JSON.stringify(value)); }
     function cardSize() { var preset = app.getPreset(); return { width: preset.width, height: preset.height }; }
     function syncLayerToCanvas() { var wrap = artboard.getBoundingClientRect(), canvasRect = app.getCanvas().getBoundingClientRect(); layer.style.left = (canvasRect.left - wrap.left) + 'px'; layer.style.top = (canvasRect.top - wrap.top) + 'px'; layer.style.width = canvasRect.width + 'px'; layer.style.height = canvasRect.height + 'px'; }
@@ -124,17 +128,17 @@
     }
     function enterEdit() {
         if (!selected || !objectVisible(selected)) return;
-        editSnapshot = snapshot(); mode = 'editing'; editor.value = app.getObjectValue(selected); editor.hidden = false; app.setInteractionState({ editingObjectId: selected }); refreshSelection(); positionEditor(); editor.focus(); editor.setSelectionRange(editor.value.length, editor.value.length); syncHistoryButtons(); announce('Editing ' + (selected === 'attribution' ? 'author/source.' : 'main text.'));
+        editSnapshot = snapshot(); mode = 'editing'; editor.value = app.getObjectValue(selected); editor.hidden = false; app.setInteractionState({ editingObjectId: selected }); refreshSelection(); positionEditor(); editor.focus(); editor.setSelectionRange(editor.value.length, editor.value.length); syncHistoryButtons(); notifyInteractionState(); announce('Editing ' + (selected === 'attribution' ? 'author/source.' : 'main text.'));
     }
     function commitEdit() {
         if (mode !== 'editing') return;
-        var before = editSnapshot; app.updateObjectText(selected, editor.value, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); if (before) pushHistory(before); app.scheduleSave(); refreshSelection(); syncHistoryButtons(); announce('Edit saved.'); editSnapshot = null;
+        var before = editSnapshot; app.updateObjectText(selected, editor.value, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); if (before) pushHistory(before); app.scheduleSave(); refreshSelection(); syncHistoryButtons(); notifyInteractionState(); announce('Edit saved.'); editSnapshot = null;
     }
     function cancelEdit() {
         if (mode !== 'editing') return;
-        if (editSnapshot) app.replaceState(editSnapshot, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); refreshSelection(); syncHistoryButtons(); announce('Edit cancelled.'); editSnapshot = null;
+        if (editSnapshot) app.replaceState(editSnapshot, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); refreshSelection(); syncHistoryButtons(); notifyInteractionState(); announce('Edit cancelled.'); editSnapshot = null;
     }
-    function select(objectId) { if (!objectId) { selected = null; mode = 'idle'; selectionBox.hidden = true; toolbar.hidden = true; return; } selected = objectId; mode = 'selected'; app.setInteractionState({ selectedObjectId: selected }); refreshSelection(); announce((selected === 'attribution' ? 'Author/source' : 'Main text') + ' selected.'); }
+    function select(objectId) { if (!objectId) { selected = null; mode = 'idle'; app.setInteractionState({ selectedObjectId: null, editingObjectId: null }); selectionBox.hidden = true; toolbar.hidden = true; notifyInteractionState(); return; } selected = objectId; mode = 'selected'; app.setInteractionState({ selectedObjectId: selected, editingObjectId: null }); refreshSelection(); notifyInteractionState(); announce((selected === 'attribution' ? 'Author/source' : 'Main text') + ' selected.'); }
     function pointerDown(event) {
         if (mode === 'editing') return;
         var resize = event.target.closest && event.target.closest('[data-card-resize]');

@@ -443,6 +443,22 @@ test('Card Studio use-case cards apply recommended defaults', async ({ page }) =
   await expect(page.locator('#cardCanvas')).toHaveAttribute('height', '1920');
 });
 
+test('Card Studio exposes explicit selection and editing state', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
+  await expect.poll(() => page.evaluate(() => {
+    const state = window.WriteUrduCardStudioUi.getState();
+    return [state.selection, state.interactionMode].join('|');
+  })).toBe('text|canvas-edit');
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioUi.getState().interactionMode)).toBe('text-edit');
+  await page.locator('[data-card-canvas-editor]').press('Escape');
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioUi.getState().interactionMode)).toBe('canvas-edit');
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select(null));
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioUi.getState().selection)).toBe('none');
+});
+
 test('Card Studio supports local draft state and Urdu localization', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-card-studio.html');

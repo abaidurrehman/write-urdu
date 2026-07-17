@@ -16,7 +16,7 @@
         announcement: { template: 'botanical-frame', preset: 'landscape' }
     };
     var labels = { content: 'Content', format: 'Format', style: 'Style', export: 'Export' };
-    var ui = { activeStep: 'content', mode: 'quick' };
+    var ui = { activeStep: 'content', mode: 'quick', selection: 'none', interactionMode: 'idle', capabilities: { isMobile: false, supportsNativeKeyboard: false } };
 
     function clone(value) {
         try { return JSON.parse(JSON.stringify(value)); } catch (error) { return value; }
@@ -44,6 +44,14 @@
             button.classList.toggle('is-active', selected);
             button.setAttribute('aria-pressed', selected ? 'true' : 'false');
         });
+    }
+
+    function syncInteractionState(event) {
+        var detail = event && event.detail ? event.detail : (app && app.getInteractionState ? app.getInteractionState() : {});
+        ui.selection = detail.selectedObjectId || 'none';
+        ui.interactionMode = detail.editingObjectId ? 'text-edit' : (ui.selection === 'none' ? 'idle' : 'canvas-edit');
+        root.dataset.cardSelection = ui.selection;
+        root.dataset.cardInteractionMode = ui.interactionMode;
     }
 
     function syncSteps() {
@@ -144,6 +152,8 @@
             });
         });
         document.addEventListener('write-urdu:locale-change', syncSteps);
+        document.addEventListener('write-urdu:card-interaction-state', syncInteractionState);
+        syncInteractionState();
         syncSteps();
         updateHistoryButtons();
     }
@@ -155,7 +165,9 @@
         interaction = window.WriteUrduCardStudioInteractionApi;
         if (!root || !app || !core) return;
         bind();
-        window.WriteUrduCardStudioUi = { getState: function () { return { activeStep: ui.activeStep, mode: ui.mode }; }, setStep: setStep, setMode: setMode };
+        ui.capabilities.isMobile = Boolean(window.matchMedia && window.matchMedia('(max-width: 900px)').matches);
+        ui.capabilities.supportsNativeKeyboard = Boolean(root.querySelector('[data-card-canvas-editor]'));
+        window.WriteUrduCardStudioUi = { getState: function () { return clone(ui); }, setStep: setStep, setMode: setMode };
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
