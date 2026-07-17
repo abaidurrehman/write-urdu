@@ -147,7 +147,7 @@
             } else if (typeof transliterationControl.enableTransliteration === 'function') transliterationControl.enableTransliteration();
         } catch (error) {}
     }
-    function onFieldChange(field) { var path = field.getAttribute('data-field'), value = field.type === 'checkbox' ? field.checked : field.value; setPath(state, path, value); if (path === 'qr.customCaption') state.qr.captionMode = core.hasMeaningfulText(value) ? 'custom' : 'automatic'; state.updatedAt = new Date().toISOString(); if (path === 'languageMode') syncTransliterationMode(); renderPreview(); scheduleSave(); }
+    function onFieldChange(field) { var path = field.getAttribute('data-field'), value = field.type === 'checkbox' ? field.checked : field.value; setPath(state, path, value); if (path === 'qr.customCaption') state.qr.captionMode = core.hasMeaningfulText(value) ? 'custom' : 'automatic'; state.updatedAt = new Date().toISOString(); if (path === 'languageMode') syncTransliterationMode(); if (path === 'qr.purpose') renderFieldValues(); renderPreview(); scheduleSave(); }
     function bind() {
         root.addEventListener('input', function (event) {
             var field = event.target.closest('[data-field]'); if (field) onFieldChange(field);

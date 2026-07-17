@@ -3,7 +3,7 @@
 **Feature ID:** `WU-IG-003`  
 **Depends on:** `WU-IG-001`, `WU-IG-002`  
 **Route:** `/urdu-invoice-generator`  
-**Status:** Implementing  
+**Status:** Complete  
 
 ## Objective
 
