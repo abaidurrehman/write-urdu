@@ -472,9 +472,11 @@ test('Card Studio canvas editing stays usable on mobile', async ({ page, isMobil
   await expect(page.locator('[data-card-i18n="canvasHelp"]')).toContainText('Select text to move or resize it');
   await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
   await expect(page.locator('[data-card-context-toolbar]')).toBeVisible();
+  await expect(page.locator('[data-card-context-toolbar]')).toHaveClass(/card-studio-header-toolbar/);
+  await expect(page.locator('[data-card-object-action="edit"]')).toHaveAttribute('title', 'Edit text');
   const canvasBox = await page.locator('#cardCanvas').boundingBox();
   const toolbarBox = await page.locator('[data-card-context-toolbar]').boundingBox();
-  expect(toolbarBox.y).toBeGreaterThanOrEqual(canvasBox.y + canvasBox.height - 1);
+  expect(toolbarBox.y + toolbarBox.height).toBeLessThanOrEqual(canvasBox.y + 1);
   await page.getByRole('button', { name: 'Edit', exact: true }).click();
   const editor = page.locator('[data-card-canvas-editor]');
   await expect(editor).toBeVisible();
@@ -486,14 +488,15 @@ test('Card Studio canvas editing stays usable on mobile', async ({ page, isMobil
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test('Card Studio context toolbar overlays the preview without resizing the canvas', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'Desktop preview layout is covered here; mobile uses the same overlay rule.');
+test('Card Studio header toolbar does not resize the canvas', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Desktop header layout is covered here; mobile uses the same header toolbar.');
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-card-studio.html');
   await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioApp));
   const before = await page.locator('#cardCanvas').boundingBox();
   await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
   await expect(page.locator('[data-card-context-toolbar]')).toBeVisible();
+  await expect(page.locator('.card-studio-top-actions [data-card-context-toolbar]')).toBeVisible();
   const after = await page.locator('#cardCanvas').boundingBox();
   expect(after.width).toBeCloseTo(before.width, 1);
   expect(after.height).toBeCloseTo(before.height, 1);

@@ -37,6 +37,8 @@
     copy.en.canvasHelp = 'Select text to move or resize it. Choose Edit, or double-click, to type directly on the card.';
     copy.ur.canvasHelp = 'متن منتخب کر کے اسے منتقل یا بڑا چھوٹا کریں۔ کارڈ پر لکھنے کے لیے ترمیم منتخب کریں یا دو بار کلک کریں۔';
     copy.ur.transliterationReady = 'رومن اردو ان پٹ تیار ہے۔ ہر لفظ کے بعد Space دبائیں، کارڈ پر ترمیم کرتے وقت بھی۔';
+    copy.en.tooltips = { edit:'Edit text', left:'Align left', centre:'Align centre', right:'Align right', resetPosition:'Reset text position', done:'Done editing', cancel:'Cancel editing' };
+    copy.ur.tooltips = { edit:'متن میں ترمیم', left:'بائیں سیدھ', centre:'درمیانی سیدھ', right:'دائیں سیدھ', resetPosition:'متن کی جگہ دوبارہ بنائیں', done:'ترمیم مکمل کریں', cancel:'ترمیم منسوخ کریں' };
 
     function t(key) { var value = (copy[locale] && copy[locale][key]) || copy.en[key] || key; var args = Array.prototype.slice.call(arguments, 1); return value.replace('{n}', args[0] == null ? '' : args[0]); }
     function notify(message, type) { if (window.WriteUrduUI && window.WriteUrduUI.notify) window.WriteUrduUI.notify(message, type); else setStatus(message, type); }
@@ -124,6 +126,8 @@
         var names = copy[locale] && copy[locale].templateNames;
         root.querySelector('[data-card-templates]').querySelectorAll('[data-card-template]').forEach(function (button) { var item = core.TEMPLATES.find(function (template) { return template.id === button.dataset.cardTemplate; }); if (item) button.textContent = names && names[item.id] || item.name; });
         var transliterationStatus = root.querySelector('[data-card-transliteration-status]'); if (transliterationStatus) transliterationStatus.textContent = t(transliterationStatusKey); var retry = root.querySelector('[data-card-transliteration-retry]'); if (retry) retry.textContent = t('retryTransliteration');
+        var tooltipCopy = copy[locale] && copy[locale].tooltips || copy.en.tooltips;
+        root.querySelectorAll('[data-card-tooltip]').forEach(function (button) { var label = tooltipCopy[button.getAttribute('data-card-tooltip')]; var labelElement = button.querySelector('[data-card-i18n]'); if (label) { button.title = label; button.setAttribute('aria-label', labelElement ? t(labelElement.getAttribute('data-card-i18n')) : label); } });
         syncLibraryTemplateBadge();
     }
 
