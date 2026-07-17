@@ -65,6 +65,46 @@
         business: ['کاروباری اعلان', 'پیشہ ورانہ اقتباس', 'نئی پیشکش', 'سروس اپ ڈیٹ', 'ٹیم پیغام', 'سادہ برانڈ کارڈ'],
         events: ['شادی کا دعوت نامہ', 'سالگرہ مبارک', 'شکریہ کا پیغام', 'تاریخ محفوظ کریں', 'خاندانی جشن', 'ذاتی اعلان']
     };
+    // A library template should open as a complete, usable design rather than
+    // another empty editor. These short, category-appropriate examples are
+    // replaced automatically when the user arrives with text from an editor.
+    var SAMPLE_TEXTS = {
+        poetry: [
+            'آج کا دن ایک نئی شروعات ہے۔', 'چاندنی رات میں لفظ مہک اٹھے۔',
+            'خاموشی بھی ایک خوب صورت زبان ہے۔', 'دل کی بات سادہ لفظوں میں کہیے۔',
+            'محبت کا رنگ وقت کے ساتھ گہرا ہوتا ہے۔', 'سکون وہیں ہے جہاں دل مطمئن ہو۔',
+            'کتاب کھولیں، ایک نئی دنیا پائیں۔', 'ہر لفظ میں ایک کہانی چھپی ہے۔',
+            'بارش آئی تو یادیں بھیگ گئیں۔', 'اپنی روایت کو محبت سے سنبھالیں۔',
+            'دل کی روشنی بانٹتے رہیے۔', 'نستعلیق میں خواب لکھیں۔'
+        ],
+        social: [
+            'آج کا دن امید سے بھرا ہے۔', 'آپ کا اختتامِ ہفتہ خوشیوں بھرا ہو۔',
+            'اپنی بات، اپنے انداز میں کہیے۔', 'سادگی میں بھی خوب صورتی ہے۔',
+            'روشنی بانٹیں، زندگی سنواریں۔', 'ہر لمحہ مسکرانے کی ایک وجہ ہے۔',
+            'بات چیت سے دل قریب آتے ہیں۔', 'مل کر ایک بہتر کل بنائیں۔'
+        ],
+        religious: [
+            'اللہ ہمارے دلوں کو سکون دے۔', 'رمضان کریم، رحمتوں کا مہینہ۔',
+            'جمعہ مبارک، دعا میں یاد رکھیے۔', 'امید کا دامن کبھی نہ چھوڑیں۔',
+            'عید کا چاند خوشیوں کا پیغام لائے۔', 'صبر میں بھی ایک روشن راستہ ہے۔',
+            'ایمان دل کو مضبوط بناتا ہے۔', 'ہر موسم اپنے ساتھ برکت لاتا ہے۔'
+        ],
+        education: [
+            'علم کا سفر جاری رکھیں۔', 'آج کا سبق، کل کی کامیابی۔',
+            'مطالعہ سوچ کو نئی وسعت دیتا ہے۔', 'ایک اچھی کتاب، ایک اچھا دوست۔',
+            'سیکھتے رہیے، آگے بڑھتے رہیے۔', 'اپنا تعلیمی مقصد واضح رکھیے۔'
+        ],
+        business: [
+            'نئی سوچ، نئی کامیابی۔', 'اعلان: ایک بہتر کل کی طرف قدم۔',
+            'اچھا کام، مضبوط اعتماد۔', 'آپ کی خدمت ہماری ترجیح ہے۔',
+            'ٹیم ورک سے بڑے خواب حقیقت بنتے ہیں۔', 'سادہ خیال، مضبوط برانڈ۔'
+        ],
+        events: [
+            'آپ کی خوشی ہماری خوشی ہے۔', 'خوشیوں بھرا دن آپ کا منتظر ہے۔',
+            'آپ کی محبت کا دل سے شکریہ۔', 'یہ تاریخ ہمارے لیے خاص ہے۔',
+            'خاندان کے ساتھ ہر لمحہ یادگار ہے۔', 'آپ کو اس خوب صورت موقع پر خوش آمدید۔'
+        ]
+    };
     var CATEGORY_COUNTS = { poetry: 12, social: 8, religious: 8, education: 6, business: 6, events: 6 };
     // Keep the starter designs visually appropriate to their category. A library
     // template is more than a label: its style is the design that Card Studio
@@ -112,6 +152,7 @@
             canvas: { width: dimension.width, height: dimension.height, backgroundColor: style.backgroundColor },
             layers: layers,
             recommendedFonts: [style.fontFamily, style.fontFamily === 'Noto Nastaliq Urdu' ? 'Noto Naskh Arabic' : 'Amiri'],
+            sampleText: SAMPLE_TEXTS[categoryId][index % SAMPLE_TEXTS[categoryId].length],
             license: 'write-urdu-original',
             createdAt: '2026-07-' + String(1 + (index % 9)).padStart(2, '0'),
             updatedAt: '2026-07-15',
@@ -160,14 +201,18 @@
     function getTemplateBySlug(slug) { return TEMPLATES.find(function (template) { return template.slug === String(slug || '').trim().toLowerCase(); }) || null; }
     function getCategoryLabel(id) { return findCategory(id).label; }
     function dimensionsLabel(template) { return template.canvas.width + ' × ' + template.canvas.height; }
-    function applyToCardProject(cardCore, project, template) {
+    function applyToCardProject(cardCore, project, template, options) {
         if (!cardCore || !template) return project;
+        options = options || {};
         var result = cardCore.applyTemplate(project, template.baseTemplateId || 'classic-nastaliq');
         var matchingPreset = cardCore.PRESETS.find(function (preset) { return preset.width === template.canvas.width && preset.height === template.canvas.height; });
         if (matchingPreset) result = cardCore.applyPreset(result, matchingPreset.id);
         var style = template.style || {};
         result.libraryTemplateId = template.id;
         result.name = template.name;
+        if (options.useSampleText && typeof template.sampleText === 'string' && template.sampleText.trim()) {
+            result.text.value = template.sampleText.trim();
+        }
         result.text.fontFamily = style.fontFamily || template.recommendedFonts[0];
         result.text.color = style.textColor || result.text.color;
         result.text.align = style.align || result.text.align;

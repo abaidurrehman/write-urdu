@@ -76,7 +76,7 @@ assert.match(cardStudio, /data-card-studio/, 'Card Studio page is missing its ap
 assert.match(cardStudio, /id="cardCanvas"/, 'Card Studio canvas is missing');
 assert.match(cardStudio, /data-card-action="download"/, 'Card Studio download action is missing');
 assert.match(cardStudio, /google_jsapi\.js/, 'Card Studio must load the existing transliteration dependency');
-assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /makeTransliteratable\(\['cardText'\]\)|makeTransliteratable\(\["cardText"\]\)/, 'Card Studio text field is not connected to transliteration');
+assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /makeTransliteratable\(\['cardText',\s*'cardCanvasEditor'\]\)/, 'Card Studio text fields are not connected to transliteration');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
 assert.match(cardStudio, /data-card-interaction-layer|data-card-canvas-editor/, 'Card Studio direct editing layer is missing');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /WriteUrduCardStudioApp|editingObjectId/, 'Card Studio application bridge is missing');
@@ -99,6 +99,8 @@ assert.ok(templateLibrary.getTemplateBySlug('quiet-morning-verse'), 'Template lo
 const templateProject = templateLibrary.applyToCardProject(cardCore, cardCore.createDefaultCardProject('سلام'), templateLibrary.getTemplateBySlug('quiet-morning-verse'));
 assert.strictEqual(templateProject.libraryTemplateId, 'urdu-template-poetry-01', 'Template selection was not copied into Card Studio state');
 assert.strictEqual(templateProject.text.value, 'سلام', 'Template selection changed incoming text');
+const standaloneTemplateProject = templateLibrary.applyToCardProject(cardCore, cardCore.createDefaultCardProject(''), templateLibrary.getTemplateBySlug('quiet-morning-verse'), { useSampleText: true });
+assert.strictEqual(standaloneTemplateProject.text.value, 'آج کا دن ایک نئی شروعات ہے۔', 'Standalone template did not provide sample Urdu text');
 const qrHtml = read('qr-code-generator.html');
 assert.match(qrHtml, /data-qr-generator/, 'QR generator page is missing its application root');
 assert.match(qrHtml, /id="qrCanvas"/, 'QR generator canvas is missing');

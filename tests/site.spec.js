@@ -60,12 +60,12 @@ test('template library filters, favorites, and renders starter designs', async (
   await expect(page.locator('[data-template-grid] .template-card')).toHaveCount(46);
 });
 
-test('Card Studio consumes a validated template query without losing its editor state', async ({ page }) => {
+test('Card Studio opens a standalone template with its sample Urdu text', async ({ page }) => {
   await blockNonVisualServices(page);
   const studioUrl = pathToFileURL(path.resolve(__dirname, '..', 'urdu-card-studio.html')).href + '?template=quiet-morning-verse';
   await page.goto(studioUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState().libraryTemplateId)).toBe('urdu-template-poetry-01');
-  await expect(page.locator('#cardText')).toHaveValue('یہاں اپنا اردو متن لکھیں۔');
+  await expect(page.locator('#cardText')).toHaveValue('آج کا دن ایک نئی شروعات ہے۔');
 });
 
 test('Card Studio identifies the selected library template from the query string', async ({ page }) => {
@@ -75,6 +75,7 @@ test('Card Studio identifies the selected library template from the query string
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState().libraryTemplateId)).toBe('urdu-template-social-01');
   await expect(page.locator('[data-card-library-template]')).toBeVisible();
   await expect(page.locator('[data-card-library-template]')).toContainText('Daily Reminder');
+  await expect(page.locator('#cardText')).toHaveValue('آج کا دن امید سے بھرا ہے۔');
 });
 
 test('Card Studio applies the library template visual style instead of only its label', async ({ page }) => {
@@ -88,6 +89,7 @@ test('Card Studio applies the library template visual style instead of only its 
   await expect(page.locator('[data-card-library-design]')).toBeVisible();
   await expect(page.locator('[data-card-library-design-name]')).toHaveText('Classroom Note');
   await expect(page.locator('[data-card-template="minimal-white"]')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#cardText')).toHaveValue('آج کا سبق، کل کی کامیابی۔');
 });
 
 test('copy control uses the native clipboard and reports success', async ({ page, context }) => {
@@ -364,7 +366,7 @@ test('Card Studio connects its text field to the transliteration control', async
       elements: { transliteration: {
         LanguageCode: { ENGLISH: 'en', URDU: 'ur' },
         TransliterationControl: function () {
-          this.makeTransliteratable = ids => { window.__cardTransliterationTarget = ids[0]; };
+          this.makeTransliteratable = ids => { window.__cardTransliterationTarget = ids[0]; window.__cardTransliterationTargets = ids; };
         }
       } },
       load: () => {},
@@ -375,6 +377,42 @@ test('Card Studio connects its text field to the transliteration control', async
   await openFile(page, '/urdu-card-studio.html');
   await expect(page.locator('[data-card-transliteration-status]')).toContainText('Roman Urdu input is ready');
   await expect.poll(() => page.evaluate(() => window.__cardTransliterationTarget)).toBe('cardText');
+  await expect.poll(() => page.evaluate(() => window.__cardTransliterationTargets)).toEqual(['cardText', 'cardCanvasEditor']);
+});
+
+test('Card Studio converts Roman Urdu while editing directly on the canvas', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.google = {
+      elements: { transliteration: {
+        LanguageCode: { ENGLISH: 'en', URDU: 'ur' },
+        TransliterationControl: function () {
+          this.makeTransliteratable = ids => ids.forEach(id => {
+            const element = document.getElementById(id);
+            if (!element) return;
+            element.addEventListener('keydown', event => {
+              if (event.key !== ' ' || element.value.trim() !== 'mera') return;
+              event.preventDefault();
+              element.value = 'میرا ';
+              element.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+          });
+        }
+      } },
+      load: () => {},
+      setOnLoadCallback: callback => window.setTimeout(callback, 0)
+    };
+  });
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioApp));
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  const editor = page.locator('[data-card-canvas-editor]');
+  await editor.fill('mera');
+  await editor.press('Space');
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().text.value)).toBe('میرا ');
+  await page.getByRole('button', { name: 'Done', exact: true }).click();
+  await expect(editor).toBeHidden();
 });
 
 test('Card Studio supports direct Urdu selection, movement, resizing and edit commit', async ({ page, isMobile }) => {
@@ -409,6 +447,38 @@ test('Card Studio supports direct Urdu selection, movement, resizing and edit co
   await page.mouse.move(handleBox.x + 45, handleBox.y + handleBox.height / 2);
   await page.mouse.up();
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getObjectRect('text').width)).toBeLessThan(widthBefore);
+});
+
+test('Card Studio lets users edit the author/source object on the canvas', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.locator('#cardAttribution').fill('Write Urdu');
+  await page.locator('input[data-card-field="attribution.enabled"]').check();
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioApp));
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('attribution'));
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  const editor = page.locator('[data-card-canvas-editor]');
+  await expect(editor).toBeVisible();
+  await editor.fill('مصنف');
+  await page.getByRole('button', { name: 'Done', exact: true }).click();
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().attribution.value)).toBe('مصنف');
+});
+
+test('Card Studio canvas editing stays usable on mobile', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'Mobile viewport coverage is run in the mobile project.');
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioApp));
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  const editor = page.locator('[data-card-canvas-editor]');
+  await expect(editor).toBeVisible();
+  await expect.poll(() => page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('[data-card-canvas-editor]')).fontSize))).toBeGreaterThanOrEqual(16);
+  await editor.fill('موبائل پر اردو ترمیم');
+  await page.getByRole('button', { name: 'Done', exact: true }).click();
+  await expect(editor).toBeHidden();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
 });
 
 test('Card Studio context toolbar overlays the preview without resizing the canvas', async ({ page, isMobile }) => {
