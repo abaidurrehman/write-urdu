@@ -469,7 +469,12 @@ test('Card Studio canvas editing stays usable on mobile', async ({ page, isMobil
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-card-studio.html');
   await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioApp));
+  await expect(page.locator('[data-card-i18n="canvasHelp"]')).toContainText('Select text to move or resize it');
   await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
+  await expect(page.locator('[data-card-context-toolbar]')).toBeVisible();
+  const canvasBox = await page.locator('#cardCanvas').boundingBox();
+  const toolbarBox = await page.locator('[data-card-context-toolbar]').boundingBox();
+  expect(toolbarBox.y).toBeGreaterThanOrEqual(canvasBox.y + canvasBox.height - 1);
   await page.getByRole('button', { name: 'Edit', exact: true }).click();
   const editor = page.locator('[data-card-canvas-editor]');
   await expect(editor).toBeVisible();
