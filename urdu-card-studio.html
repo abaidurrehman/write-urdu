@@ -33,16 +33,6 @@
                 <p class="card-studio-template-badge" data-card-library-template hidden aria-live="polite"></p>
             </div>
             <div class="card-studio-top-actions">
-                <div class="card-studio-context-toolbar card-studio-header-toolbar" data-card-context-toolbar hidden role="toolbar" aria-label="Selected text actions">
-                    <span class="card-studio-selected-object" data-card-selected-object data-card-i18n="textSelected">Text selected</span>
-                    <button type="button" class="card-studio-icon-button" data-card-object-action="edit" data-card-tooltip="edit" aria-label="Edit" title="Edit text"><span class="card-toolbar-icon" aria-hidden="true">✎</span><span class="card-toolbar-label" data-card-i18n="edit">Edit</span></button>
-                    <button type="button" class="card-studio-icon-button" data-card-object-action="align-left" data-card-tooltip="left" aria-label="Left" title="Align left"><span class="card-toolbar-icon" aria-hidden="true">←</span><span class="card-toolbar-label" data-card-i18n="left">Left</span></button>
-                    <button type="button" class="card-studio-icon-button" data-card-object-action="align-center" data-card-tooltip="centre" aria-label="Centre" title="Align centre"><span class="card-toolbar-icon" aria-hidden="true">↔</span><span class="card-toolbar-label" data-card-i18n="centre">Centre</span></button>
-                    <button type="button" class="card-studio-icon-button" data-card-object-action="align-right" data-card-tooltip="right" aria-label="Right" title="Align right"><span class="card-toolbar-icon" aria-hidden="true">→</span><span class="card-toolbar-label" data-card-i18n="right">Right</span></button>
-                    <button type="button" class="card-studio-icon-button" data-card-object-action="reset" data-card-tooltip="resetPosition" aria-label="Reset position" title="Reset text position"><span class="card-toolbar-icon" aria-hidden="true">⌖</span><span class="card-toolbar-label" data-card-i18n="resetPosition">Reset position</span></button>
-                    <button type="button" class="card-studio-icon-button card-studio-icon-button-success" data-card-object-action="done" data-card-tooltip="done" aria-label="Done" title="Done editing" hidden><span class="card-toolbar-icon" aria-hidden="true">✓</span><span class="card-toolbar-label" data-card-i18n="done">Done</span></button>
-                    <button type="button" class="card-studio-icon-button card-studio-icon-button-danger" data-card-object-action="cancel" data-card-tooltip="cancel" aria-label="Cancel" title="Cancel editing" hidden><span class="card-toolbar-icon" aria-hidden="true">×</span><span class="card-toolbar-label" data-card-i18n="cancel">Cancel</span></button>
-                </div>
                 <a class="card-studio-button" href="/urdu-templates">Browse templates</a>
                 <button class="card-studio-button" type="button" data-card-action="back" data-card-i18n="back">Back to editor</button>
                 <button class="card-studio-button" type="button" data-card-action="reset" data-card-i18n="reset">Reset</button>
@@ -142,6 +132,16 @@
             <figure class="card-studio-preview" aria-labelledby="cardPreviewTitle">
                 <div class="card-studio-artboard-wrap" data-card-artboard>
                     <canvas class="card-studio-canvas" id="cardCanvas" aria-hidden="true"></canvas>
+                    <div class="card-studio-context-toolbar card-studio-canvas-toolbar" data-card-context-toolbar hidden role="toolbar" aria-label="Selected text actions">
+                        <span class="card-studio-selected-object" data-card-selected-object data-card-i18n="textSelected">Text selected</span>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="edit" data-card-tooltip="edit" aria-label="Edit" title="Edit text"><span class="card-toolbar-icon" aria-hidden="true">✎</span><span class="card-toolbar-label" data-card-i18n="edit">Edit</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="align-left" data-card-tooltip="left" aria-label="Left" title="Align left"><span class="card-toolbar-icon" aria-hidden="true">←</span><span class="card-toolbar-label" data-card-i18n="left">Left</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="align-center" data-card-tooltip="centre" aria-label="Centre" title="Align centre"><span class="card-toolbar-icon" aria-hidden="true">↔</span><span class="card-toolbar-label" data-card-i18n="centre">Centre</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="align-right" data-card-tooltip="right" aria-label="Right" title="Align right"><span class="card-toolbar-icon" aria-hidden="true">→</span><span class="card-toolbar-label" data-card-i18n="right">Right</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="reset" data-card-tooltip="resetPosition" aria-label="Reset position" title="Reset text position"><span class="card-toolbar-icon" aria-hidden="true">⌖</span><span class="card-toolbar-label" data-card-i18n="resetPosition">Reset position</span></button>
+                        <button type="button" class="card-studio-icon-button card-studio-icon-button-success" data-card-object-action="done" data-card-tooltip="done" aria-label="Done" title="Done editing" hidden><span class="card-toolbar-icon" aria-hidden="true">✓</span><span class="card-toolbar-label" data-card-i18n="done">Done</span></button>
+                        <button type="button" class="card-studio-icon-button card-studio-icon-button-danger" data-card-object-action="cancel" data-card-tooltip="cancel" aria-label="Cancel" title="Cancel editing" hidden><span class="card-toolbar-icon" aria-hidden="true">×</span><span class="card-toolbar-label" data-card-i18n="cancel">Cancel</span></button>
+                    </div>
                     <div class="card-studio-interaction-layer" data-card-interaction-layer tabindex="0" role="group" aria-label="Editable card preview" aria-describedby="cardCanvasHelp">
                         <div class="card-studio-selection-box" data-card-selection-box hidden aria-hidden="true">
                             <span class="card-studio-selection-label" data-card-selection-label></span>
