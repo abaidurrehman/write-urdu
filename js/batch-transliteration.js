@@ -7,6 +7,7 @@
         en: {
             title: 'Two ways to write Urdu',
             guide: 'Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.',
+            directGuide: 'Direct mode keeps Urdu or English exactly as you type it. Choose Roman Urdu → Urdu for word-by-word or bulk transliteration.',
             prompt: 'Long Roman Urdu text detected. Convert this passage to Urdu script?',
             note: 'This is transliteration: it changes sounds into Urdu script, not English meaning.',
             action: 'Convert passage to Urdu script',
@@ -18,6 +19,7 @@
         ur: {
             title: 'اردو لکھنے کے دو طریقے',
             guide: 'رومن اردو لکھیں اور ہر لفظ کے بعد Space دبائیں، یا طویل متن پیسٹ کر کے اسے ایک ہی مرحلے میں اردو رسم الخط میں تبدیل کریں۔',
+            directGuide: 'براہِ راست طریقہ اردو یا انگریزی کو جوں کا توں رکھتا ہے۔ لفظ بہ لفظ یا مکمل متن کی تبدیلی کے لیے رومن اردو → اردو منتخب کریں۔',
             prompt: 'طویل رومن اردو کا متن ملا ہے۔ کیا اسے اردو رسم الخط میں تبدیل کریں؟',
             note: 'یہ ترجمہ نہیں بلکہ تحریری تبدیلی ہے: آواز کو اردو رسم الخط میں بدلا جاتا ہے۔',
             action: 'متن کو اردو رسم الخط میں تبدیل کریں',
@@ -143,6 +145,8 @@
     function configure(panel) {
         if (panel.dataset.batchBound) return;
         var target = document.querySelector(panel.getAttribute('data-batch-target') || '');
+        var modeStorage = panel.getAttribute('data-batch-input-mode');
+        var modeControl = modeStorage ? document.querySelector('[data-input-mode-control][data-input-mode-storage="' + modeStorage + '"]') : null;
         var action = panel.querySelector('[data-batch-action]');
         var title = panel.querySelector('[data-batch-title]');
         var guide = panel.querySelector('[data-batch-guide]');
@@ -150,14 +154,16 @@
         var note = panel.querySelector('[data-batch-note]');
         var status = panel.querySelector('[data-batch-status]');
         if (!target || !action) return;
+        function isRomanMode() { return !modeControl || modeControl.dataset.inputMode !== 'direct'; }
         panel.dataset.batchBound = 'true';
         function refresh() {
             if (!panel.dataset.batchBusy) {
                 var value = readValue(target);
-                var ready = isLongEnough(value) && hasRomanText(value);
+                var romanMode = isRomanMode();
+                var ready = romanMode && isLongEnough(value) && hasRomanText(value);
                 panel.hidden = false;
                 if (title) title.textContent = text('title');
-                if (guide) guide.textContent = text('guide');
+                if (guide) guide.textContent = text(romanMode ? 'guide' : 'directGuide');
                 if (prompt) {
                     prompt.hidden = !ready;
                     prompt.textContent = text('prompt');
@@ -168,6 +174,7 @@
                 if (status) status.textContent = '';
             }
         }
+        panel._batchRefresh = refresh;
         target.addEventListener('input', refresh);
         target.addEventListener('paste', function () { window.setTimeout(refresh, 0); });
         function bindFrameEvents() {
@@ -229,6 +236,7 @@
     function refreshAll() {
         var panels = document.querySelectorAll('[data-batch-transliteration]');
         panels.forEach(configure);
+        panels.forEach(function (panel) { if (typeof panel._batchRefresh === 'function') panel._batchRefresh(); });
         if (targetObserver && panels.length && Array.prototype.every.call(panels, function (panel) { return panel.dataset.batchBound === 'true'; })) {
             targetObserver.disconnect();
             targetObserver = null;
@@ -250,6 +258,7 @@
     }
 
     document.addEventListener('write-urdu:locale-change', refreshAll);
+    document.addEventListener('write-urdu:input-mode-change', refreshAll);
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
     else start();
 }());

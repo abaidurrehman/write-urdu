@@ -201,6 +201,7 @@ assert.match(read('index.html'), /data-input-mode-control|Roman Urdu → Urdu/, 
 assert.match(read('urdu-editor.html'), /data-input-mode-control|Roman Urdu → Urdu/, 'Rich editor is missing the input mode switch');
 assert.match(read('index.html'), /data-batch-transliteration|Convert all text/, 'Basic editor is missing the whole-text transliteration action');
 assert.match(read('urdu-editor.html'), /data-batch-transliteration|Convert all text/, 'Rich editor is missing the whole-text transliteration action');
+assert.match(read('index.html'), /Two ways to write Urdu|not English meaning/, 'Basic editor is missing the transliteration workflow guidance');
 assert.match(sharedStyles, /h1\.wu-page-title|wu-page-subtitle/, 'Shared page-title typography is missing');
 assert.match(sharedStyles, /\.wu-language-toggle|html\[dir=["']rtl["']\]/, 'Shared language-toggle styles are missing');
 const contentLocale = fs.readFileSync(path.join(root, 'js', 'content-locale.js'), 'utf8');
