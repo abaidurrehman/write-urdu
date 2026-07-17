@@ -56,6 +56,8 @@
                 var options = { sourceLanguage: google.elements.transliteration.LanguageCode.ENGLISH, destinationLanguage: [google.elements.transliteration.LanguageCode.URDU], shortcutKey: 'ctrl+g', transliterationEnabled: true };
                 var control = new google.elements.transliteration.TransliterationControl(options);
                 control.makeTransliteratable(['cardText', 'cardCanvasEditor']);
+                window.writeUrduTransliterationControl = control;
+                document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: control } }));
                 finished = true;
                 window.writeUrduTransliterationReady = true;
                 setTransliterationStatus('transliterationReady', false);

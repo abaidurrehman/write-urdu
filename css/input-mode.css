@@ -1,0 +1,73 @@
+/* A compact, explicit choice between transliteration and direct typing. */
+.input-mode-control {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    color: #53665c;
+    font-size: .75rem;
+}
+.input-mode-title {
+    margin-right: 2px;
+    color: #40564a;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .02em;
+}
+.input-mode-option {
+    min-height: 30px;
+    padding: 5px 9px;
+    border: 1px solid #cbdcd1;
+    border-radius: 7px;
+    color: #29483a;
+    background: #fff;
+    font: 700 .72rem/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+}
+.input-mode-option:hover,
+.input-mode-option:focus-visible {
+    border-color: #75ae89;
+    outline: 0;
+    box-shadow: 0 0 0 2px rgba(23, 114, 69, .12);
+}
+.input-mode-option.is-active,
+.input-mode-option[aria-pressed="true"] {
+    border-color: #177245;
+    color: #fff;
+    background: #177245;
+}
+.input-mode-note {
+    flex: 1 1 100%;
+    color: #718279;
+    font-size: .72rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+.editor-chrome .input-mode-control {
+    flex: 1 1 auto;
+    min-width: 250px;
+}
+.input-mode-control-rich {
+    margin: 8px 0 9px;
+    padding: 8px 10px;
+    border: 1px solid #dce7e0;
+    border-radius: 10px;
+    background: #f7faf8;
+}
+.input-mode-control-card {
+    margin-top: 7px;
+    padding: 7px 8px;
+    border: 1px solid #dce7e0;
+    border-radius: 8px;
+    background: #f7faf8;
+}
+@media (max-width: 767px) {
+    .editor-chrome .input-mode-control {
+        flex-basis: 100%;
+        min-width: 0;
+        order: 10;
+    }
+    .input-mode-option {
+        min-height: 34px;
+    }
+}

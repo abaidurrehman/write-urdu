@@ -17,7 +17,9 @@
 <link href="css/site-header.css" rel="stylesheet" type="text/css" />
 <script src="js/site-runtime.js" defer></script>
 <link href="css/editor-tools.css" rel="stylesheet" type="text/css" />
+<link href="css/input-mode.css" rel="stylesheet" type="text/css" />
 <script src="js/editor-tools.js" defer></script>
+<script src="js/input-mode.js" defer></script>
 <script src="js/card-studio-entry.js" defer></script>
 <script src="js/qr-generator-entry.js" defer></script>
 <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
@@ -258,6 +260,12 @@
             <div class="editor-chrome" aria-label="Transliteration status and editor controls">
                 <span><i class="fas fa-language" aria-hidden="true"></i> Roman Urdu → Urdu script</span>
                 <span class="editor-shortcut">Ctrl+G switches input mode</span>
+                <div class="input-mode-control" data-input-mode-control data-input-mode-storage="basic" data-input-mode-targets="#transliterateTextarea" role="group" aria-label="Input mode">
+                    <span class="input-mode-title" data-input-mode-title>Input mode</span>
+                    <button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">Roman Urdu → Urdu</button>
+                    <button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Direct Urdu / English</button>
+                    <span class="input-mode-note" data-input-mode-note>Type Roman Urdu and press Space to convert each word.</span>
+                </div>
                 <div class="spinner-grow text-success" id="spinner" role="status"><span
                         class="sr-only">Loading transliteration...</span></div>
                 <button type="button" class="btn-clear" id="clear" onclick="clearText()"
@@ -371,8 +379,10 @@
 
         // Enable transliteration in the textbox with id
         // 'transliterateTextarea'.
-        control.makeTransliteratable(['transliterateTextarea']);
-        window.writeUrduTransliterationReady = true;
+            control.makeTransliteratable(['transliterateTextarea']);
+            window.writeUrduTransliterationControl = control;
+            document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: control } }));
+            window.writeUrduTransliterationReady = true;
 
         $('#spinner').hide();
         $('[data-toggle="tooltip"]').tooltip()

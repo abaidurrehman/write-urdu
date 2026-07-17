@@ -170,7 +170,9 @@
 <link rel="stylesheet" type="text/css" href="css/tools-modern.css">
 <script src="js/site-runtime.js" defer></script>
 <link rel="stylesheet" type="text/css" href="css/editor-tools.css">
+<link rel="stylesheet" type="text/css" href="css/input-mode.css">
 <script src="js/editor-tools.js" defer></script>
+<script src="js/input-mode.js" defer></script>
 <script src="js/card-studio-entry.js" defer></script>
 <script src="js/qr-generator-entry.js" defer></script>
 </head>
@@ -319,13 +321,17 @@
                     </div>
                 </div>
 
-                <p class="lead">
+                <div class="input-mode-control input-mode-control-rich" data-input-mode-control data-input-mode-storage="rich" data-input-mode-targets="#basic-example_ifr" role="group" aria-label="Input mode">
+                    <span class="input-mode-title" data-input-mode-title>Input mode</span>
+                    <button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">Roman Urdu → Urdu</button>
+                    <button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Direct Urdu / English</button>
+                    <span class="input-mode-note" data-input-mode-note>Type Roman Urdu and press Space to convert each word.</span>
+                </div>
                 <div style="min-height:300px;">
                     <label class="sr-only" for="basic-example">Urdu rich text editor</label>
                     <textarea style="min-height:400px;" dir="rtl" lang="ur" placeholder="لکھنا شروع کریں"
                         id="basic-example"></textarea>
                 </div>
-                </p>
 
                 <div class="card">
                     <div class="card-body">
@@ -471,6 +477,8 @@
             // Enable transliteration in the editable DIV with id
             // 'transliterateDiv'.
             control.makeTransliteratable(['basic-example_ifr']);
+            window.writeUrduTransliterationControl = control;
+            document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: control } }));
             window.writeUrduTransliterationReady = true;
 
         }
