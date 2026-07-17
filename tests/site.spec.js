@@ -348,6 +348,29 @@ test('Card Studio supports local draft state and Urdu localization', async ({ pa
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 });
 
+test('Card Studio applies the selected Urdu font to canvas editing', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioApp));
+  await page.evaluate(() => {
+    window.__cardFontLoads = [];
+    if (document.fonts && document.fonts.load) {
+      const originalLoad = document.fonts.load.bind(document.fonts);
+      document.fonts.load = descriptor => {
+        window.__cardFontLoads.push(descriptor);
+        return originalLoad(descriptor).catch(() => []);
+      };
+    }
+  });
+  await page.locator('#cardFont').selectOption({ label: 'Amiri' });
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().text.fontFamily)).toBe('Amiri');
+  await expect.poll(() => page.evaluate(() => (window.__cardFontLoads || []).some(value => value.includes('Amiri')))).toBe(true);
+  expect(await page.locator('link[href*="fonts.googleapis.com/css2"]').count()).toBe(1);
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
+  await page.getByRole('button', { name: 'Edit', exact: true }).click();
+  await expect(page.locator('[data-card-canvas-editor]')).toHaveCSS('font-family', /Amiri/);
+});
+
 test('Card Studio downloads a PNG without leaving the browser', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-card-studio.html');

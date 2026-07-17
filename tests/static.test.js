@@ -76,7 +76,10 @@ assert.match(cardStudio, /data-card-studio/, 'Card Studio page is missing its ap
 assert.match(cardStudio, /id="cardCanvas"/, 'Card Studio canvas is missing');
 assert.match(cardStudio, /data-card-action="download"/, 'Card Studio download action is missing');
 assert.match(cardStudio, /google_jsapi\.js/, 'Card Studio must load the existing transliteration dependency');
+assert.match(cardStudio, /fonts\.googleapis\.com\/css2\?family=/, 'Card Studio must load its Urdu font families');
+assert.match(cardStudio, /Scheherazade\+New|Scheherazade New/, 'Card Studio must expose the hosted Scheherazade New family');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /makeTransliteratable\(\['cardText',\s*'cardCanvasEditor'\]\)/, 'Card Studio text fields are not connected to transliteration');
+assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /ensureProjectFonts\(\)/, 'Card Studio must wait for all selected project fonts before rendering');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
 assert.match(cardStudio, /data-card-interaction-layer|data-card-canvas-editor/, 'Card Studio direct editing layer is missing');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /WriteUrduCardStudioApp|editingObjectId/, 'Card Studio application bridge is missing');
@@ -179,6 +182,7 @@ assert.match(sharedHeader, /data-ad-slot["']?[:=]["']8323789671|data-ad-slot=\\?
 assert.match(sharedHeader, /setupProgressiveWebApp|serviceWorker\.register/, 'Shared PWA registration is missing');
 assert.match(sharedHeader, /function renderHeaderAd\(|function loadAds\(/, 'Shared header ad placement is missing');
 assert.match(sharedHeader, /function normalizePageTitle\(/, 'Shared page-title normalization is missing');
+assert.match(sharedHeader, /function ensureUrduFonts\(|fonts\.googleapis\.com\/css2\?family=/, 'Shared Urdu font loading is missing');
 assert.match(sharedHeader, /write-urdu:locale:v1/, 'Shared locale preference storage is missing');
 assert.match(sharedHeader, /data-wu-language-toggle/, 'Shared language toggle is missing');
 assert.match(sharedHeader, /locale-urdu|document\.documentElement\.dir/, 'Shared Urdu direction handling is missing');

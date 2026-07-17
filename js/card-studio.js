@@ -177,7 +177,31 @@
         applyLocale();
     }
 
-    function ensureFont(fontFamily, size) { if (!document.fonts || !document.fonts.load) return Promise.resolve(); return document.fonts.load(size + 'px "' + fontFamily + '"').catch(function () {}); }
+    /*
+     * Canvas does not trigger a web-font download just because ctx.font uses a
+     * family name. Ask the Font Loading API for every family used by the
+     * project before measuring or drawing.  The normalizer also keeps old
+     * projects that stored "Scheherazade" compatible with the hosted
+     * "Scheherazade New" family.
+     */
+    function ensureFont(fontFamily, size) {
+        var family = core.normalizeFontFamily ? core.normalizeFontFamily(fontFamily, 'Noto Nastaliq Urdu') : String(fontFamily || 'Noto Nastaliq Urdu');
+        var fontSize = Math.max(1, Number(size) || 16);
+        if (!document.fonts || !document.fonts.load) return Promise.resolve(family);
+        return document.fonts.load(fontSize + 'px "' + family + '"')
+            .then(function () { return document.fonts.ready ? document.fonts.ready.then(function () { return family; }) : family; })
+            .catch(function () { return family; });
+    }
+
+    function ensureProjectFonts() {
+        var requests = [ensureFont(state.text.fontFamily, state.text.fontSize)];
+        var attribution = state.attribution;
+        if (attribution && attribution.enabled && String(attribution.value || '').trim()) {
+            var attributionSize = Math.max(16, Math.round(Number(state.text.fontSize || 64) * (Number(attribution.fontSizeRatio) || .44)));
+            requests.push(ensureFont(attribution.fontFamily, attributionSize));
+        }
+        return Promise.all(requests);
+    }
     function gradientFor(id, width, height) { var gradient = core.GRADIENTS.find(function (item) { return item.id === id; }) || core.GRADIENTS[0]; var angle = (gradient.angle - 90) * Math.PI / 180; var x = Math.cos(angle) * width, y = Math.sin(angle) * height; var canvasGradient = ctx.createLinearGradient(width / 2 - x / 2, height / 2 - y / 2, width / 2 + x / 2, height / 2 + y / 2); gradient.stops.forEach(function (stop) { canvasGradient.addColorStop(stop.offset, stop.color); }); return canvasGradient; }
     function shadowFor(id) { return id === 'strong' ? { color: 'rgba(0,0,0,.55)', blur: 16, y: 5 } : id === 'soft' ? { color: 'rgba(0,0,0,.3)', blur: 10, y: 3 } : null; }
     function drawPetalFlower(x, y, radius, petals, petalColor, centreColor, rotation) {
@@ -271,12 +295,12 @@
         if (state.watermark.enabled) { ctx.save(); ctx.direction = 'ltr'; ctx.font = Math.max(16, Math.round(minSide * .018)) + 'px "Segoe UI", Arial, sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.72)'; if (state.background.type === 'solid' && !/^#(0|1|2|3)/i.test(state.background.color || '')) ctx.fillStyle = 'rgba(20,50,35,.55)'; ctx.textAlign = state.watermark.position === 'bottom-right' ? 'right' : state.watermark.position === 'bottom-center' ? 'center' : 'left'; var watermarkX = state.watermark.position === 'bottom-right' ? preset.width - preset.marginX : state.watermark.position === 'bottom-center' ? preset.width / 2 : preset.marginX; ctx.fillText('Write-Urdu.com', watermarkX, preset.height - Math.max(30, preset.marginY * .42)); ctx.restore(); }
         if (token === renderToken) { root.querySelector('[data-card-dimensions]').textContent = preset.width + ' × ' + preset.height + ' px'; root.querySelector('[data-accessible-card-text]').textContent = state.text.value; if (currentLayouts.text && currentLayouts.text.overflow && state.text.fontMode === 'manual') setStatus(t('fitWarning'), 'error'); }
     }
-    function requestRender() { if (renderQueued) return; renderQueued = true; window.requestAnimationFrame(function () { renderQueued = false; ensureFont(state.text.fontFamily, state.text.fontSize).then(drawCard); }); }
+    function requestRender() { if (renderQueued) return; renderQueued = true; window.requestAnimationFrame(function () { renderQueued = false; ensureProjectFonts().then(drawCard); }); }
 
     function filename() { return core.safeFilename(state.name, 'write-urdu-card') + '-' + new Date().toISOString().slice(0, 10) + '.png'; }
     function exportBlob() { return new Promise(function (resolve, reject) { canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error('PNG generation failed')); }, 'image/png'); }); }
     function downloadBlob(blob, name) { var url = URL.createObjectURL(blob); var link = document.createElement('a'); link.href = url; link.download = name; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000); }
-    function exportPng() { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); if (!state.text.value.trim() || state.text.value === core.DEFAULT_TEXT) { setStatus(t('emptyText'), 'error'); return Promise.reject(new Error('empty')); } setStatus(t('preparing')); return ensureFont(state.text.fontFamily, state.text.fontSize).then(drawCard).then(exportBlob).then(function (blob) { downloadBlob(blob, filename()); setStatus(t('downloaded')); return blob; }); }
+    function exportPng() { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); if (!state.text.value.trim() || state.text.value === core.DEFAULT_TEXT) { setStatus(t('emptyText'), 'error'); return Promise.reject(new Error('empty')); } setStatus(t('preparing')); return ensureProjectFonts().then(drawCard).then(exportBlob).then(function (blob) { downloadBlob(blob, filename()); setStatus(t('downloaded')); return blob; }); }
     function shareCard() { return exportPng().then(function (blob) { var name = filename(); var file = new File([blob], name, { type: 'image/png' }); if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: 'Urdu card' }).then(function () { setStatus(t('shared')); }); setStatus(t('shareFallback')); }).catch(function (error) { if (error && error.name === 'AbortError') return; if (error && error.message !== 'empty') setStatus(error.message || 'Unable to export PNG.', 'error'); }); }
 
     function bindControls() {
@@ -320,6 +344,7 @@
             syncControls: syncControls,
             scheduleSave: scheduleSave,
             ensureFont: ensureFont,
+            ensureProjectFonts: ensureProjectFonts,
             notify: notify
         };
     }

@@ -198,6 +198,19 @@
         document.head.appendChild(link);
     }
 
+    function ensureUrduFonts() {
+        // Most pages use these families through the shared editorial CSS. Add
+        // one deduplicated stylesheet so Canvas, form controls and examples do
+        // not silently fall back to a system Arabic font. Card Studio already
+        // declares the same link in its head, so it is intentionally reused.
+        if (document.querySelector('link[data-write-urdu-fonts], link[href*="fonts.googleapis.com/css2"]')) return;
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Lateef:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700&display=swap';
+        link.setAttribute('data-write-urdu-fonts', '');
+        document.head.appendChild(link);
+    }
+
     function ensureBrandFavicon() {
         // Keep the tab icon in sync with the current logo even on legacy
         // pages that still contain the old /favicon.ico link in their head.
@@ -592,6 +605,7 @@
 
     if (!document.documentElement.lang) document.documentElement.lang = 'en';
     addStylesheet();
+    ensureUrduFonts();
     ensureBrandFavicon();
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', renderHeader);
