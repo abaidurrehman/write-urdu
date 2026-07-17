@@ -123,6 +123,11 @@
                         <span data-batch-status role="status" aria-live="polite"></span>
                     </div>
                     <label class="card-studio-label" for="cardText" data-card-i18n="textLabel">Card text</label>
+                    <div class="card-studio-empty-cue" data-card-empty-cue hidden aria-live="polite">
+                        <span class="card-studio-empty-cue-icon" aria-hidden="true">↗</span>
+                        <span><strong data-card-i18n="emptyCueTitle">Start here</strong><span data-card-i18n="emptyCueBody"> Type in this field; your words appear on the card preview.</span></span>
+                        <button type="button" class="card-studio-empty-cue-dismiss" data-card-empty-cue-dismiss data-card-i18n="emptyCueDismiss">Got it</button>
+                    </div>
                     <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
                     <div class="card-studio-content-actions" role="group" aria-label="Text actions">
                         <button type="button" class="card-studio-button" data-card-content-action="sample">Use sample text</button>

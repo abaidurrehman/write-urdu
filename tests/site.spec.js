@@ -550,6 +550,22 @@ test('Card Studio supports local draft state and Urdu localization', async ({ pa
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 });
 
+test('Card Studio gives clear guidance when the canvas text is empty', async ({ page }) => {
+  await page.addInitScript(() => localStorage.removeItem('writeUrdu.cardStudio.emptyStateCue.v1'));
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await expect(page.locator('[data-card-empty-cue]')).toBeVisible();
+  await page.locator('#cardText').fill('یہ ایک اصلی اقتباس ہے۔');
+  await expect(page.locator('[data-card-empty-cue]')).toBeHidden();
+  await page.locator('#cardText').fill('');
+  await expect(page.locator('[data-card-studio]')).toHaveAttribute('data-card-empty-state', 'true');
+  await expect(page.locator('[data-card-empty-cue]')).toBeVisible();
+  await expect(page.locator('[data-card-empty-cue]')).toContainText('Start here');
+  await expect(page.locator('[data-accessible-card-text]')).toHaveText('');
+  await page.locator('[data-card-empty-cue-dismiss]').click();
+  await expect(page.locator('[data-card-empty-cue]')).toBeHidden();
+});
+
 test('Card Studio applies the selected Urdu font to canvas editing', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-card-studio.html');

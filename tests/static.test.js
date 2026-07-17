@@ -9,6 +9,9 @@ assert.ok(fs.existsSync(path.join(root, 'scripts', 'dev-server.js')), 'Local dev
 const featureSpec = path.join(root, 'specs', 'WU-CS-UX-001-card-studio-guided-workflow.md');
 assert.ok(fs.existsSync(featureSpec), 'Card Studio feature specification is missing');
 assert.match(fs.readFileSync(featureSpec, 'utf8'), /Feature ID:\*\*\s*`WU-CS-UX-001`/, 'Card Studio feature specification has no stable ID');
+const emptyStateSpec = path.join(root, 'specs', 'WU-CS-UX-002-card-studio-empty-state-guidance.md');
+assert.ok(fs.existsSync(emptyStateSpec), 'Card Studio empty-state specification is missing');
+assert.match(fs.readFileSync(emptyStateSpec, 'utf8'), /Feature ID:\*\*\s*`WU-CS-UX-002`/, 'Card Studio empty-state specification has no stable ID');
 const socialSpec = path.join(root, 'specs', 'WU-SM-001-social-status-and-instagram-makers.md');
 assert.ok(fs.existsSync(socialSpec), 'Social makers feature specification is missing');
 assert.match(fs.readFileSync(socialSpec, 'utf8'), /Feature ID:\*\*\s*`WU-SM-001`/, 'Social makers feature specification has no stable ID');
@@ -90,12 +93,15 @@ assert.match(fs.readFileSync(path.join(root, 'sw.js'), 'utf8'), /CACHE_NAME|addE
 const cardStudio = read('urdu-card-studio.html');
 assert.match(cardStudio, /data-card-studio/, 'Card Studio page is missing its application root');
 assert.match(cardStudio, /id="cardCanvas"/, 'Card Studio canvas is missing');
+assert.match(cardStudio, /data-card-empty-cue|data-card-empty-cue-dismiss/, 'Card Studio is missing empty-state guidance');
 assert.match(cardStudio, /data-card-action="download"/, 'Card Studio download action is missing');
 assert.match(cardStudio, /google_jsapi\.js/, 'Card Studio must load the existing transliteration dependency');
 assert.match(cardStudio, /fonts\.googleapis\.com\/css2\?family=/, 'Card Studio must load its Urdu font families');
 assert.match(cardStudio, /Scheherazade\+New|Scheherazade New/, 'Card Studio must expose the hosted Scheherazade New family');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /makeTransliteratable\(\['cardText',\s*'cardCanvasEditor'\]\)/, 'Card Studio text fields are not connected to transliteration');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /ensureProjectFonts\(\)/, 'Card Studio must wait for all selected project fonts before rendering');
+assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /drawEmptyPlaceholder|emptyStateCue\.v1/, 'Card Studio empty-state rendering contract is missing');
+assert.match(fs.readFileSync(path.join(root, 'css', 'card-studio.css'), 'utf8'), /card-studio-empty-cue/, 'Card Studio empty-state cue styles are missing');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
 const socialCore = require(path.join(root, 'js', 'social-maker-core.js'));
 assert.strictEqual(socialCore.getMode('whatsapp').defaultPreset, 'story', 'WhatsApp Status must default to Story');
