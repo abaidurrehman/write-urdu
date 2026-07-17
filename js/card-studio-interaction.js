@@ -66,9 +66,16 @@
         (result.guides || []).forEach(function (guide) { var line = document.createElement('span'); line.className = 'card-studio-guide ' + (guide.axis === 'x' ? 'vertical' : 'horizontal'); if (guide.axis === 'x') line.style.left = (guide.value * transform().scaleX) + 'px'; else line.style.top = (guide.value * transform().scaleY) + 'px'; line.dataset.label = guide.label || ''; guides.appendChild(line); });
     }
     function snapshot() { return clone(app.getState()); }
-    function pushHistory(before) { if (!before) return; var after = snapshot(); if (JSON.stringify(before) === JSON.stringify(after)) return; history.push({ before: before, after: after }); if (history.length > 50) history.shift(); future = []; }
-    function undo() { if (!history.length || mode === 'editing') return; var item = history.pop(); future.push(item); app.replaceState(item.before); announce('Change undone.'); refreshSelection(); }
-    function redo() { if (!future.length || mode === 'editing') return; var item = future.pop(); history.push(item); app.replaceState(item.after); announce('Change redone.'); refreshSelection(); }
+    function historyState() { return { canUndo: history.length > 0 && mode !== 'editing', canRedo: future.length > 0 && mode !== 'editing' }; }
+    function syncHistoryButtons() {
+        var state = historyState();
+        root.querySelectorAll('[data-card-ui-action="undo"]').forEach(function (button) { button.disabled = !state.canUndo; });
+        root.querySelectorAll('[data-card-ui-action="redo"]').forEach(function (button) { button.disabled = !state.canRedo; });
+    }
+    function pushHistory(before) { if (!before) return; var after = snapshot(); if (JSON.stringify(before) === JSON.stringify(after)) return; history.push({ before: before, after: after }); if (history.length > 50) history.shift(); future = []; syncHistoryButtons(); }
+    function recordHistory(before) { pushHistory(before); refreshSelection(); }
+    function undo() { if (!history.length || mode === 'editing') return; var item = history.pop(); future.push(item); app.replaceState(item.before); announce('Change undone.'); refreshSelection(); syncHistoryButtons(); }
+    function redo() { if (!future.length || mode === 'editing') return; var item = future.pop(); history.push(item); app.replaceState(item.after); announce('Change redone.'); refreshSelection(); syncHistoryButtons(); }
     function beginGesture(event, type, handle, tapToEdit) {
         if (!selected) return;
         var point = interaction.clientPointToCardPoint({ x: event.clientX, y: event.clientY }, transform());
@@ -117,15 +124,15 @@
     }
     function enterEdit() {
         if (!selected || !objectVisible(selected)) return;
-        editSnapshot = snapshot(); mode = 'editing'; editor.value = app.getObjectValue(selected); editor.hidden = false; app.setInteractionState({ editingObjectId: selected }); refreshSelection(); positionEditor(); editor.focus(); editor.setSelectionRange(editor.value.length, editor.value.length); announce('Editing ' + (selected === 'attribution' ? 'author/source.' : 'main text.'));
+        editSnapshot = snapshot(); mode = 'editing'; editor.value = app.getObjectValue(selected); editor.hidden = false; app.setInteractionState({ editingObjectId: selected }); refreshSelection(); positionEditor(); editor.focus(); editor.setSelectionRange(editor.value.length, editor.value.length); syncHistoryButtons(); announce('Editing ' + (selected === 'attribution' ? 'author/source.' : 'main text.'));
     }
     function commitEdit() {
         if (mode !== 'editing') return;
-        var before = editSnapshot; app.updateObjectText(selected, editor.value, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); if (before) pushHistory(before); app.scheduleSave(); refreshSelection(); announce('Edit saved.'); editSnapshot = null;
+        var before = editSnapshot; app.updateObjectText(selected, editor.value, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); if (before) pushHistory(before); app.scheduleSave(); refreshSelection(); syncHistoryButtons(); announce('Edit saved.'); editSnapshot = null;
     }
     function cancelEdit() {
         if (mode !== 'editing') return;
-        if (editSnapshot) app.replaceState(editSnapshot, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); refreshSelection(); announce('Edit cancelled.'); editSnapshot = null;
+        if (editSnapshot) app.replaceState(editSnapshot, { save: false }); editor.hidden = true; mode = 'selected'; app.setInteractionState({ editingObjectId: null }); refreshSelection(); syncHistoryButtons(); announce('Edit cancelled.'); editSnapshot = null;
     }
     function select(objectId) { if (!objectId) { selected = null; mode = 'idle'; selectionBox.hidden = true; toolbar.hidden = true; return; } selected = objectId; mode = 'selected'; app.setInteractionState({ selectedObjectId: selected }); refreshSelection(); announce((selected === 'attribution' ? 'Author/source' : 'Main text') + ' selected.'); }
     function pointerDown(event) {
@@ -184,7 +191,8 @@
         if (window.ResizeObserver) { resizeObserver = new ResizeObserver(function () { refreshSelection(); }); resizeObserver.observe(artboard); }
         window.addEventListener('resize', refreshSelection);
         document.addEventListener('write-urdu:locale-change', refreshSelection);
-        window.WriteUrduCardStudioInteractionApi = { commit: commitEdit, cancel: cancelEdit, refresh: refreshSelection, select: select, undo: undo, redo: redo };
+        window.WriteUrduCardStudioInteractionApi = { commit: commitEdit, cancel: cancelEdit, refresh: refreshSelection, select: select, undo: undo, redo: redo, getHistoryState: historyState, recordHistory: recordHistory };
+        syncHistoryButtons();
     }
     function start() { app = window.WriteUrduCardStudioApp; if (!app) return; bind(); refreshSelection(); }
     if (window.WriteUrduCardStudioApp) start(); else document.addEventListener('write-urdu:card-studio-ready', start, { once: true });

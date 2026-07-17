@@ -42,6 +42,13 @@
                 <p class="card-studio-template-badge" data-card-library-template hidden aria-live="polite"></p>
             </div>
             <div class="card-studio-top-actions" role="toolbar" aria-label="Card actions">
+                <div class="card-studio-action-group card-studio-history-actions" role="group" aria-label="History">
+                    <span class="card-studio-action-group-label">History</span>
+                    <div class="card-studio-action-group-buttons">
+                        <button class="card-studio-button quiet" type="button" data-card-ui-action="undo" title="Undo last change" disabled>Undo</button>
+                        <button class="card-studio-button quiet" type="button" data-card-ui-action="redo" title="Redo last change" disabled>Redo</button>
+                    </div>
+                </div>
                 <div class="card-studio-action-group" role="group" aria-label="Workspace">
                     <span class="card-studio-action-group-label">Workspace</span>
                     <div class="card-studio-action-group-buttons">
@@ -60,16 +67,42 @@
             </div>
         </header>
 
+        <div class="card-studio-guided-header">
+            <nav class="card-studio-stepper" data-card-stepper aria-label="Card creation steps">
+                <button type="button" class="card-studio-step is-active" data-card-step="content" aria-current="step"><span>1</span><strong>Content</strong><small>Write your text</small></button>
+                <button type="button" class="card-studio-step" data-card-step="format"><span>2</span><strong>Format</strong><small>Choose a use case</small></button>
+                <button type="button" class="card-studio-step" data-card-step="style"><span>3</span><strong>Style</strong><small>Refine the look</small></button>
+                <button type="button" class="card-studio-step" data-card-step="export"><span>4</span><strong>Export</strong><small>Download and share</small></button>
+            </nav>
+            <div class="card-studio-mode-switch" role="group" aria-label="Studio detail level">
+                <span class="card-studio-mode-label">New to Card Studio?</span>
+                <button type="button" class="card-studio-mode-button is-active" data-card-ui-mode="quick" aria-pressed="true">Quick mode</button>
+                <button type="button" class="card-studio-mode-button" data-card-ui-mode="advanced" aria-pressed="false">Advanced mode</button>
+            </div>
+            <span class="card-studio-ui-status" data-card-ui-status aria-live="polite"></span>
+        </div>
+
         <div class="card-studio-layout">
             <aside class="card-studio-panel" aria-label="Card controls">
-                <section class="card-studio-section">
-                    <h2 data-card-i18n="sizeHeading">Size</h2>
+                <section class="card-studio-section" data-card-step="format" data-card-step-panel>
+                    <div class="card-studio-step-intro">
+                        <span class="card-studio-eyebrow">Start with a strong direction</span>
+                        <h2>What are you making?</h2>
+                        <p>Choose a starting point and we’ll set a useful size, layout and style for you.</p>
+                    </div>
+                    <div class="card-studio-use-cases" data-card-use-cases role="group" aria-label="Choose a card use case">
+                        <button type="button" class="card-studio-use-case" data-card-use-case="quote"><strong>Quote / Poetry</strong><small>Balanced square card</small></button>
+                        <button type="button" class="card-studio-use-case" data-card-use-case="social"><strong>Social post</strong><small>Shareable square design</small></button>
+                        <button type="button" class="card-studio-use-case" data-card-use-case="story"><strong>Status / Story</strong><small>Tall mobile-first layout</small></button>
+                        <button type="button" class="card-studio-use-case" data-card-use-case="announcement"><strong>Greeting / Announcement</strong><small>Clear, readable hierarchy</small></button>
+                    </div>
+                    <h2 data-card-i18n="sizeHeading">Canvas</h2>
                     <label class="card-studio-label" for="cardPreset" data-card-i18n="presetLabel">Output preset</label>
                     <select class="card-studio-select" id="cardPreset"></select>
                 </section>
 
-                <section class="card-studio-section">
-                    <h2 data-card-i18n="templateHeading">Design</h2>
+                <section class="card-studio-section" data-card-step="format" data-card-step-panel>
+                    <h2 data-card-i18n="templateHeading">Template</h2>
                     <div class="card-studio-library-design" data-card-library-design hidden>
                         <span class="card-studio-library-swatch" data-card-library-design-swatch aria-hidden="true"></span>
                         <span><strong data-card-library-design-name></strong><small data-card-library-design-meta></small></span>
@@ -77,8 +110,8 @@
                     <div class="card-template-grid" data-card-templates role="group" aria-label="Card templates"></div>
                 </section>
 
-                <section class="card-studio-section">
-                    <h2 data-card-i18n="textHeading">Text</h2>
+                <section class="card-studio-section" data-card-step="content" data-card-step-panel>
+                    <h2 data-card-i18n="textHeading">Content</h2>
                     <div class="batch-transliteration-panel" data-batch-transliteration data-batch-input-mode="card" data-batch-target="#cardText" role="region" aria-labelledby="card-batch-transliteration-title">
                         <strong data-batch-title id="card-batch-transliteration-title">Two ways to write Urdu</strong>
                         <span data-batch-guide>Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.</span>
@@ -89,6 +122,10 @@
                     </div>
                     <label class="card-studio-label" for="cardText" data-card-i18n="textLabel">Card text</label>
                     <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
+                    <div class="card-studio-content-actions" role="group" aria-label="Text actions">
+                        <button type="button" class="card-studio-button" data-card-content-action="sample">Use sample text</button>
+                        <button type="button" class="card-studio-button quiet" data-card-content-action="clear">Clear text</button>
+                    </div>
                     <div class="card-studio-transliteration" aria-live="polite"><span data-card-transliteration-status>Roman Urdu input is loading…</span><button class="card-studio-transliteration-retry" type="button" data-card-transliteration-retry hidden>Retry</button></div>
                     <div class="input-mode-control input-mode-control-card" data-input-mode-control data-input-mode-storage="card" data-input-mode-targets="#cardText,#cardCanvasEditor" role="group" aria-label="Input mode">
                         <span class="input-mode-title" data-input-mode-title>Input mode</span>
@@ -103,8 +140,8 @@
                     <label class="card-studio-check"><input type="checkbox" data-card-field="attribution.enabled"><span data-card-i18n="showAttribution">Show author or source</span></label>
                 </section>
 
-                <section class="card-studio-section">
-                    <h2 data-card-i18n="typographyHeading">Typography</h2>
+                <section class="card-studio-section" data-card-step="style" data-card-step-panel>
+                    <h2 data-card-i18n="typographyHeading">Text style</h2>
                     <label class="card-studio-label" for="cardFont" data-card-i18n="fontLabel">Font</label>
                     <select class="card-studio-select" id="cardFont" data-card-field="text.fontFamily">
                         <option>Noto Nastaliq Urdu</option><option>Noto Naskh Arabic</option><option>Amiri</option><option>Lateef</option><option>Scheherazade New</option><option>Tajawal</option>
@@ -116,15 +153,15 @@
                         <div><label class="card-studio-label" for="cardTextAlign" data-card-i18n="alignmentLabel">Alignment</label><select class="card-studio-select" id="cardTextAlign" data-card-field="text.align"><option value="right">Right</option><option value="center">Centre</option><option value="left">Left</option></select></div>
                         <div><label class="card-studio-label" for="cardVerticalAlign" data-card-i18n="verticalLabel">Vertical</label><select class="card-studio-select" id="cardVerticalAlign" data-card-field="text.verticalAlign"><option value="top">Top</option><option value="center">Centre</option><option value="bottom">Bottom</option></select></div>
                     </div>
-                    <label class="card-studio-label" for="cardLineHeight" data-card-i18n="lineHeightLabel">Line height <span class="card-studio-range-value" data-card-line-height-value></span></label>
-                    <input class="card-studio-range" id="cardLineHeight" data-card-field="text.lineHeight" type="range" min="1.2" max="2.2" step=".05">
-                    <div class="card-studio-field-row">
+                    <div data-card-advanced="true"><label class="card-studio-label" for="cardLineHeight" data-card-i18n="lineHeightLabel">Line height <span class="card-studio-range-value" data-card-line-height-value></span></label>
+                    <input class="card-studio-range" id="cardLineHeight" data-card-field="text.lineHeight" type="range" min="1.2" max="2.2" step=".05"></div>
+                    <div class="card-studio-field-row" data-card-advanced="true">
                         <div><label class="card-studio-label" for="cardTextColor" data-card-i18n="textColorLabel">Text colour</label><input class="card-studio-input" id="cardTextColor" data-card-field="text.color" type="color"></div>
                         <div><label class="card-studio-label" for="cardShadow" data-card-i18n="shadowLabel">Shadow</label><select class="card-studio-select" id="cardShadow" data-card-field="text.shadow"><option value="none">None</option><option value="soft">Soft</option><option value="strong">Strong</option></select></div>
                     </div>
                 </section>
 
-                <section class="card-studio-section card-studio-layout-controls" aria-labelledby="cardLayoutHeading">
+                <section class="card-studio-section card-studio-layout-controls card-studio-advanced-section" data-card-step="style" data-card-step-panel data-card-advanced="true" aria-labelledby="cardLayoutHeading">
                     <h2 id="cardLayoutHeading" data-card-i18n="layoutHeading">Layout</h2>
                     <label class="card-studio-label" for="cardLayoutObject" data-card-i18n="selectedObjectLabel">Selected object</label>
                     <select class="card-studio-select" id="cardLayoutObject" data-card-layout-object>
@@ -140,24 +177,34 @@
                     <div class="card-studio-layout-actions"><button type="button" class="card-studio-button" data-card-layout-action="center-x" data-card-i18n="centerHorizontally">Centre horizontally</button><button type="button" class="card-studio-button" data-card-layout-action="center-y" data-card-i18n="centerVertically">Centre vertically</button><button type="button" class="card-studio-button" data-card-layout-action="reset" data-card-i18n="resetLayout">Reset layout</button></div>
                 </section>
 
-                <section class="card-studio-section">
+                <section class="card-studio-section" data-card-step="style" data-card-step-panel>
                     <h2 data-card-i18n="backgroundHeading">Background</h2>
                     <label class="card-studio-label" for="cardBackgroundType" data-card-i18n="backgroundTypeLabel">Background type</label>
                     <select class="card-studio-select" id="cardBackgroundType" data-card-field="background.type"><option value="solid">Solid colour</option><option value="gradient">Built-in gradient</option><option value="image">Uploaded image</option></select>
                     <div data-card-background-solid><label class="card-studio-label" for="cardBackgroundColor" data-card-i18n="backgroundColorLabel">Background colour</label><input class="card-studio-input" id="cardBackgroundColor" data-card-field="background.color" type="color"></div>
                     <div data-card-background-gradient><label class="card-studio-label" for="cardGradient" data-card-i18n="gradientLabel">Gradient</label><select class="card-studio-select" id="cardGradient" data-card-field="background.gradientId"></select></div>
                     <div class="card-studio-upload" data-card-background-image><label class="card-studio-label" for="cardImage" data-card-i18n="uploadLabel">Upload a local JPG, PNG or WebP</label><input id="cardImage" type="file" accept="image/jpeg,image/png,image/webp"><p class="card-studio-help" data-card-i18n="privacy">Your text and images stay in this browser and are not uploaded.</p><button class="card-studio-button" type="button" data-card-action="remove-image" data-card-i18n="removeImage">Remove image</button></div>
-                    <div data-card-background-image>
+                    <div data-card-background-image data-card-advanced="true">
                         <div class="card-studio-field-row"><div><label class="card-studio-label" for="cardImageFit" data-card-i18n="fitLabel">Image fit</label><select class="card-studio-select" id="cardImageFit" data-card-field="background.fit"><option value="cover">Cover</option><option value="contain">Contain</option></select></div><div><label class="card-studio-label" for="cardOverlayColor" data-card-i18n="overlayColorLabel">Overlay</label><input class="card-studio-input" id="cardOverlayColor" data-card-field="background.overlayColor" type="color"></div></div>
                         <label class="card-studio-label" for="cardOverlay" data-card-i18n="overlayLabel">Overlay strength <span class="card-studio-range-value" data-card-overlay-value></span></label><input class="card-studio-range" id="cardOverlay" data-card-field="background.overlayOpacity" type="range" min="0" max=".8" step=".01">
                         <div class="card-studio-position"><div><label class="card-studio-label" for="cardPositionX" data-card-i18n="positionXLabel">Horizontal position</label><input class="card-studio-range" id="cardPositionX" data-card-field="background.positionX" type="range" min="0" max="1" step=".01"></div><div><label class="card-studio-label" for="cardPositionY" data-card-i18n="positionYLabel">Vertical position</label><input class="card-studio-range" id="cardPositionY" data-card-field="background.positionY" type="range" min="0" max="1" step=".01"></div></div>
                     </div>
                 </section>
 
-                <section class="card-studio-section">
+                <section class="card-studio-section" data-card-step="style" data-card-step-panel>
                     <h2 data-card-i18n="brandingHeading">Branding</h2>
                     <label class="card-studio-check"><input type="checkbox" data-card-field="watermark.enabled"><span data-card-i18n="watermarkLabel">Show Write-Urdu.com watermark</span></label>
-                    <label class="card-studio-label" for="cardWatermarkPosition" data-card-i18n="watermarkPositionLabel">Watermark position</label><select class="card-studio-select" id="cardWatermarkPosition" data-card-field="watermark.position"><option value="bottom-left">Bottom left</option><option value="bottom-center">Bottom centre</option><option value="bottom-right">Bottom right</option></select>
+                    <div data-card-advanced="true"><label class="card-studio-label" for="cardWatermarkPosition" data-card-i18n="watermarkPositionLabel">Watermark position</label><select class="card-studio-select" id="cardWatermarkPosition" data-card-field="watermark.position"><option value="bottom-left">Bottom left</option><option value="bottom-center">Bottom centre</option><option value="bottom-right">Bottom right</option></select></div>
+                </section>
+                <section class="card-studio-section card-studio-export-section" data-card-step="export" data-card-step-panel>
+                    <span class="card-studio-eyebrow">Ready to share?</span>
+                    <h2>Finish your card</h2>
+                    <p class="card-studio-help">Your preview is exported at the exact dimensions shown on the canvas.</p>
+                    <div class="card-studio-export-actions" role="group" aria-label="Export card">
+                        <button class="card-studio-button primary" type="button" data-card-action="download">Download PNG</button>
+                        <button class="card-studio-button secondary" type="button" data-card-action="share">Share</button>
+                    </div>
+                    <p class="card-studio-privacy">Processed in your browser. Your text and images stay on this device.</p>
                 </section>
                 <div class="card-studio-status" data-card-status aria-live="polite"></div>
             </aside>
@@ -191,6 +238,12 @@
                 <figcaption id="cardPreviewTitle" class="card-studio-sr-only">Preview of your Urdu card. <span data-accessible-card-text></span></figcaption>
             </figure>
         </div>
+        <nav class="card-studio-mobile-stepbar" data-card-mobile-stepbar aria-label="Card creation steps">
+            <button type="button" data-card-step="content" aria-current="step"><span>1</span>Content</button>
+            <button type="button" data-card-step="format"><span>2</span>Format</button>
+            <button type="button" data-card-step="style"><span>3</span>Style</button>
+            <button type="button" data-card-step="export"><span>4</span>Export</button>
+        </nav>
     </main>
     <section class="seo-content" aria-labelledby="card-studio-about">
         <h2 id="card-studio-about">Create Urdu cards and quote images online</h2>
@@ -214,5 +267,6 @@
         <nav class="related-resources" aria-labelledby="card-related-title"><h3 id="card-related-title">Related tools and guides</h3><ul><li><a href="/">Type Roman Urdu in the basic editor</a></li><li><a href="/urdu-editor">Format a longer Urdu document</a></li><li><a href="/urdu-editor-features">Learn about Urdu fonts and alignment</a></li><li><a href="/write-urdu-privacy">Read the privacy policy</a></li></ul></nav>
     </section>
     <footer aria-label="Footer navigation"></footer>
+    <script src="js/card-studio-ui.js" defer></script>
 </body>
 </html>
