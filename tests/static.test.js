@@ -3,9 +3,15 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
+const packageJson = require(path.join(root, 'package.json'));
+assert.strictEqual(packageJson.scripts.start, 'node scripts/dev-server.js', 'Local npm start script is missing');
+assert.ok(fs.existsSync(path.join(root, 'scripts', 'dev-server.js')), 'Local development server is missing');
 const featureSpec = path.join(root, 'specs', 'WU-CS-UX-001-card-studio-guided-workflow.md');
 assert.ok(fs.existsSync(featureSpec), 'Card Studio feature specification is missing');
 assert.match(fs.readFileSync(featureSpec, 'utf8'), /Feature ID:\*\*\s*`WU-CS-UX-001`/, 'Card Studio feature specification has no stable ID');
+const socialSpec = path.join(root, 'specs', 'WU-SM-001-social-status-and-instagram-makers.md');
+assert.ok(fs.existsSync(socialSpec), 'Social makers feature specification is missing');
+assert.match(fs.readFileSync(socialSpec, 'utf8'), /Feature ID:\*\*\s*`WU-SM-001`/, 'Social makers feature specification has no stable ID');
 const allHtmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html'));
 const htmlFiles = allHtmlFiles.filter(file => !file.startsWith('google'));
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -15,6 +21,8 @@ assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://write-urdu.com', 'SEO canonic
 assert.ok(seoConfig.pages.some(page => page.path === '/urdu-card-studio' && page.indexable), 'Card Studio is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/qr-code-generator' && page.indexable), 'QR Generator is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/urdu-templates' && page.indexable), 'Template Library is missing from the SEO registry');
+assert.ok(seoConfig.pages.some(page => page.path === '/urdu-whatsapp-status-maker' && page.indexable), 'WhatsApp Status maker is missing from the SEO registry');
+assert.ok(seoConfig.pages.some(page => page.path === '/urdu-instagram-post-maker' && page.indexable), 'Instagram Post maker is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/write-urdu-search' && !page.indexable), 'Search utility must remain noindex');
 assert.ok(fs.existsSync(path.join(root, 'llms.txt')), 'AI-readable site summary is missing');
 assert.ok(fs.existsSync(path.join(root, 'docs', 'SEO-POST-DEPLOYMENT.md')), 'SEO post-deployment checklist is missing');
@@ -87,6 +95,13 @@ assert.match(cardStudio, /Scheherazade\+New|Scheherazade New/, 'Card Studio must
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /makeTransliteratable\(\['cardText',\s*'cardCanvasEditor'\]\)/, 'Card Studio text fields are not connected to transliteration');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /ensureProjectFonts\(\)/, 'Card Studio must wait for all selected project fonts before rendering');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
+const socialCore = require(path.join(root, 'js', 'social-maker-core.js'));
+assert.strictEqual(socialCore.getMode('whatsapp').defaultPreset, 'story', 'WhatsApp Status must default to Story');
+assert.strictEqual(socialCore.getMode('instagram').defaultPreset, 'square', 'Instagram Post must default to Square');
+assert.strictEqual(socialCore.getSafeArea('instagram', { id: 'portrait', width: 1080, height: 1350 }).top, 120, 'Instagram portrait safe area changed unexpectedly');
+assert.strictEqual(socialCore.evaluateSafeArea({ text: { x: 0, y: 0, width: 100, height: 100 } }, { width: 1080, height: 1920 }, { top: 100, right: 100, bottom: 100, left: 100 }).valid, false, 'Social safe-area warning failed');
+assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /socialExportFormat|socialSafeArea|image\/jpeg/, 'Card Studio social export bridge is missing');
+assert.match(fs.readFileSync(path.join(root, 'css', 'card-studio.css'), 'utf8'), /card-studio-safe-area/, 'Social safe-area overlay styles are missing');
 assert.match(cardStudio, /data-card-interaction-layer|data-card-canvas-editor/, 'Card Studio direct editing layer is missing');
 assert.match(cardStudio, /data-card-stepper|data-card-step="content"/, 'Card Studio guided workflow is missing');
 assert.match(cardStudio, /data-card-ui-mode="quick"|data-card-ui-mode="advanced"/, 'Card Studio quick/advanced mode controls are missing');
@@ -97,7 +112,7 @@ assert.match(cardStudio, /data-input-mode-control|Direct Urdu \/ English/, 'Card
 assert.match(cardStudio, /data-batch-transliteration|Convert all text/, 'Card Studio is missing the whole-text transliteration action');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /WriteUrduCardStudioApp|editingObjectId/, 'Card Studio application bridge is missing');
 const cardCore = require(path.join(root, 'js', 'card-studio-core.js'));
-assert.strictEqual(cardCore.PRESETS.length, 4, 'Card Studio must provide four output presets');
+assert.ok(cardCore.PRESETS.length >= 4, 'Card Studio must provide the required output presets');
 assert.ok(cardCore.TEMPLATES.length >= 9, 'Card Studio must provide at least nine templates');
 assert.deepStrictEqual(cardCore.calculateImagePlacement({ width: 1600, height: 800 }, { width: 1080, height: 1080 }, 'cover', .5, .5).width >= 1080, true, 'Card Studio cover placement is invalid');
 assert.strictEqual(cardCore.safeFilename('a/b:c', 'fallback'), 'a-b-c', 'Card Studio filename sanitisation is incomplete');

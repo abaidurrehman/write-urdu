@@ -9,6 +9,7 @@
         { id: 'square', name: 'Square Post', width: 1080, height: 1080, marginX: 96, marginY: 96 },
         { id: 'landscape', name: 'Landscape Post', width: 1280, height: 720, marginX: 110, marginY: 70 },
         { id: 'facebook', name: 'Wide Social Post', width: 1200, height: 630, marginX: 96, marginY: 70 },
+        { id: 'portrait', name: 'Portrait Post', width: 1080, height: 1350, marginX: 96, marginY: 120 },
         { id: 'story', name: 'Story / Status', width: 1080, height: 1920, marginX: 100, marginY: 170 }
     ];
 

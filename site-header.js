@@ -11,6 +11,8 @@
         { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard' },
         { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet' },
         { href: '/urdu-card-studio', match: ['/urdu-card-studio', '/urdu-card-studio.html'], key: 'cardStudio', label: 'Card Studio' },
+        { href: '/urdu-whatsapp-status-maker', match: ['/urdu-whatsapp-status-maker', '/urdu-whatsapp-status-maker.html'], key: 'whatsappMaker', label: 'WhatsApp Status Maker' },
+        { href: '/urdu-instagram-post-maker', match: ['/urdu-instagram-post-maker', '/urdu-instagram-post-maker.html'], key: 'instagramMaker', label: 'Instagram Post Maker' },
         { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates' },
         { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator' },
         { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation' },
@@ -24,7 +26,7 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
                 tutorials: 'Tutorials', feedback: 'Feedback'
             },
             footer: {
@@ -78,7 +80,7 @@
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
@@ -123,6 +125,8 @@
         '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Type Urdu directly—no installation required', 'براہِ راست اردو لکھیں—انسٹالیشن کی ضرورت نہیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
         '/urdu-alphabet.html': { title: ['Urdu alphabet', 'اردو حروف تہجی'], subtitle: ['A practical guide to Urdu letters and writing direction', 'اردو حروف اور لکھنے کی سمت کا عملی رہنما'], documentTitle: ['Urdu Alphabet Guide | Letters and Writing Direction', 'اردو حروف تہجی | حروف اور لکھنے کی سمت'] },
         '/urdu-card-studio.html': { title: ['Urdu Card Studio', 'اردو کارڈ اسٹوڈیو'], subtitle: ['Design and download polished Urdu cards in your browser', 'براؤزر میں خوب صورت اردو کارڈ بنائیں اور ڈاؤن لوڈ کریں'], documentTitle: ['Urdu Card Studio | Design Urdu Cards Online', 'اردو کارڈ اسٹوڈیو | آن لائن اردو کارڈ بنائیں'] },
+        '/urdu-whatsapp-status-maker.html': { title: ['Urdu WhatsApp Status Maker', 'اردو واٹس ایپ اسٹیٹس میکر'], subtitle: ['Create a status image and download it for manual upload', 'اسٹیٹس تصویر بنائیں اور خود اپ لوڈ کرنے کے لیے ڈاؤن لوڈ کریں'], documentTitle: ['Urdu WhatsApp Status Maker | Write Urdu', 'اردو واٹس ایپ اسٹیٹس میکر | رائٹ اردو'] },
+        '/urdu-instagram-post-maker.html': { title: ['Urdu Instagram Post Maker', 'اردو انسٹاگرام پوسٹ میکر'], subtitle: ['Create and download an Urdu Instagram image', 'اردو انسٹاگرام تصویر بنائیں اور ڈاؤن لوڈ کریں'], documentTitle: ['Urdu Instagram Post Maker | Write Urdu', 'اردو انسٹاگرام پوسٹ میکر | رائٹ اردو'] },
         '/urdu-templates.html': { title: ['Urdu Template Library', 'اردو ٹیمپلیٹ لائبریری'], subtitle: ['Browse ready-made designs and open one in Card Studio', 'تیار شدہ ڈیزائن دیکھیں اور کارڈ اسٹوڈیو میں کھولیں'], documentTitle: ['Urdu Templates | Quote, Poetry and Social Designs', 'اردو ٹیمپلیٹس | اقتباس، شاعری اور سوشل ڈیزائن'] },
         '/qr-code-generator.html': { title: ['Free QR Code Generator', 'مفت QR کوڈ جنریٹر'], subtitle: ['Create a static QR code privately in your browser', 'اپنے براؤزر میں نجی طور پر جامد QR کوڈ بنائیں'], documentTitle: ['Free QR Code Generator | Create QR Codes Privately', 'مفت QR کوڈ جنریٹر | نجی طور پر QR کوڈ بنائیں'] },
         '/write-urdu-documentation.html': { title: ['Write Urdu, beautifully explained.', 'رائٹ اردو، آسان انداز میں'], lede: ['A clear guide to every writing path on the site—from typing Roman Urdu and converting it into Urdu to polishing, saving and sharing a finished piece.', 'اس ویب سائٹ پر اردو لکھنے کے ہر طریقے کی واضح رہنمائی—رومن اردو کو اردو میں تبدیل کرنے سے لے کر متن کو سنوارنے، محفوظ کرنے اور شیئر کرنے تک۔'], documentTitle: ['Write Urdu Documentation | Roman Urdu, Keyboard and Rich Editor', 'رائٹ اردو دستاویزات | رومن اردو، کی بورڈ اور رچ ایڈیٹر'] },
@@ -253,6 +257,8 @@
                             '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
                             '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
                             '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
+                            '<a href="/urdu-whatsapp-status-maker" data-wu-i18n-key="nav.whatsappMaker">WhatsApp Status Maker</a>' +
+                            '<a href="/urdu-instagram-post-maker" data-wu-i18n-key="nav.instagramMaker">Instagram Post Maker</a>' +
                             '<a href="/urdu-templates" data-wu-i18n-key="footer.templates">Templates</a>' +
                             '<a href="/qr-code-generator" data-wu-i18n-key="footer.qrGenerator">QR Code Generator</a>' +
                         '</div>' +

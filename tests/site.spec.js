@@ -459,6 +459,29 @@ test('Card Studio exposes explicit selection and editing state', async ({ page }
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioUi.getState().selection)).toBe('none');
 });
 
+test('social makers reuse Card Studio with platform presets and safe-area controls', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-whatsapp-status-maker.html');
+  const whatsapp = page.frameLocator('iframe[title="Urdu WhatsApp Status design workspace"]');
+  await expect(whatsapp.locator('#cardCanvas')).toHaveAttribute('height', '1920');
+  await expect(whatsapp.locator('[data-card-social-mode]')).toHaveAttribute('data-card-social-mode', 'whatsapp');
+  await expect(whatsapp.locator('[data-social-safe-toggle]')).toBeChecked();
+  await expect(whatsapp.locator('[data-card-safe-area]')).toBeVisible();
+  await whatsapp.locator('button[data-card-step="export"]').first().click();
+  await whatsapp.locator('[data-social-export-format]').selectOption('jpeg');
+  await expect(whatsapp.locator('[data-social-jpeg-quality]')).toBeVisible();
+
+  await openFile(page, '/urdu-instagram-post-maker.html');
+  const instagram = page.frameLocator('iframe[title="Urdu Instagram post design workspace"]');
+  await expect(instagram.locator('#cardCanvas')).toHaveAttribute('width', '1080');
+  await instagram.locator('button[data-card-step="format"]').first().click();
+  await expect(instagram.locator('#cardPreset')).toHaveValue('square');
+  await instagram.locator('#cardPreset').selectOption('portrait');
+  await expect(instagram.locator('#cardCanvas')).toHaveAttribute('height', '1350');
+  await instagram.locator('button[data-card-step="export"]').first().click();
+  await expect(instagram.locator('[data-social-caption]')).toBeVisible();
+});
+
 test('Card Studio supports local draft state and Urdu localization', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-card-studio.html');

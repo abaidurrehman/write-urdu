@@ -10,6 +10,15 @@ Install the development test dependency once:
 npm install
 ```
 
+Start the local site server (including extensionless routes):
+
+```powershell
+npm start
+```
+
+Then open <http://127.0.0.1:8787>. Use `PORT=9000 npm start` if another local
+service is using port 8787.
+
 Run the static regression checks:
 
 ```powershell
@@ -51,6 +60,8 @@ cmd /c "set LIVE_TRANSLITERATION=1&&npx playwright test --grep transliterat"
 - `urdu-editor.html`: TinyMCE rich-text editor
 - `urdu-keyboard.html`: direct Urdu keyboard and transliteration editor
 - `urdu-card-studio.html`: local-first Urdu card designer with canvas PNG export
+- `urdu-whatsapp-status-maker.html`: focused 1080 × 1920 WhatsApp Status maker
+- `urdu-instagram-post-maker.html`: Instagram square, portrait and story maker
 - `qr-code-generator.html`: browser-only static QR generator with Urdu, Wi-Fi, contact, image and SVG/PNG export support
 - `write-urdu-documentation.html`: visual guide to the editors, shortcuts, drafts, privacy and export workflows
 

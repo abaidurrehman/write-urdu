@@ -3,13 +3,15 @@
 
     var core = window.WriteUrduCardStudio;
     if (!core) return;
+    var social = window.WriteUrduSocialMaker;
+    var socialConfig = social && social.getModeFromLocation ? social.getModeFromLocation(window.location) : null;
     var templateLibrary = window.WriteUrduTemplateLibrary;
     var root = document.querySelector('[data-card-studio]');
     if (!root) return;
 
     var DB_NAME = 'writeUrduCardStudio';
     var DB_VERSION = 1;
-    var projectKey = 'writeUrdu.cardStudio.project';
+    var projectKey = socialConfig && social.storageKey ? social.storageKey(socialConfig.id) : 'writeUrdu.cardStudio.project';
     var incomingKey = 'writeUrdu.cardStudio.incoming';
     var state = core.createDefaultCardProject('');
     var canvas = document.getElementById('cardCanvas');
@@ -26,6 +28,8 @@
     var transliterationStatusKey = 'transliterationLoading';
     var interactionState = { selectedObjectId: null, editingObjectId: null };
     var currentLayouts = {};
+    var socialExportFormat = 'png';
+    var socialJpegQuality = .9;
 
     var copy = {
         en: { title:'Urdu Card Studio', subtitle:'Turn your Urdu words into a polished shareable image.', templateFrom:'Template: ', templateApplied:'Library template applied', back:'Back to editor', reset:'Reset', share:'Share', download:'Download PNG', sizeHeading:'Canvas', presetLabel:'Output preset', templateHeading:'Template', textHeading:'Content', textLabel:'Card text', characters:'{n} characters', transliterationLoading:'Roman Urdu input is loading…', transliterationReady:'Roman Urdu input is ready. Press Space after each word, including when editing on the card.', transliterationUnavailable:'Roman Urdu input is unavailable. Check your connection and retry.', retryTransliteration:'Retry transliteration', attributionLabel:'Author or source (optional)', showAttribution:'Show author or source', typographyHeading:'Text style', fontLabel:'Font', autoFit:'Auto-fit text to the card', fontSizeLabel:'Font size', alignmentLabel:'Alignment', verticalLabel:'Vertical', lineHeightLabel:'Line height', textColorLabel:'Text colour', shadowLabel:'Shadow', layoutHeading:'Layout', selectedObjectLabel:'Selected object', mainText:'Main text', authorSource:'Author/source', xPosition:'X position (%)', yPosition:'Y position (%)', textBoxWidth:'Text-box width (%)', centerHorizontally:'Centre horizontally', centerVertically:'Centre vertically', resetLayout:'Reset layout', textSelected:'Text selected', edit:'Edit', left:'Left', centre:'Centre', right:'Right', resetPosition:'Reset position', done:'Done', cancel:'Cancel', backgroundHeading:'Background', backgroundTypeLabel:'Background type', backgroundColorLabel:'Background colour', gradientLabel:'Gradient', uploadLabel:'Upload a local JPG, PNG or WebP', privacy:'Your text and images stay in this browser and are not uploaded.', removeImage:'Remove image', fitLabel:'Image fit', overlayColorLabel:'Overlay colour', overlayLabel:'Overlay strength', positionXLabel:'Horizontal position', positionYLabel:'Vertical position', brandingHeading:'Branding', watermarkLabel:'Show Write-Urdu.com watermark', watermarkPositionLabel:'Watermark position', saved:'Saved on this device', saving:'Saving…', storageUnavailable:'Your card can still be created, but this browser could not save it locally.', preparing:'Preparing image…', downloaded:'PNG downloaded.', shared:'Share sheet opened.', shareFallback:'Sharing is not supported here. The PNG was downloaded instead.', resetConfirm:'Reset this card and discard its current design?', emptyText:'Add some Urdu text before exporting.', imageError:'This image could not be opened. Choose a JPG, PNG or WebP file smaller than 15 MB.', imageRemoved:'Background image removed.', fitWarning:'This text is larger than the available card area. Reduce the text or switch on auto-fit.', noImage:'Choose a local image to use this background.' },
@@ -40,9 +44,64 @@
     copy.en.tooltips = { edit:'Edit text', left:'Align left', centre:'Align centre', right:'Align right', resetPosition:'Reset text position', done:'Done editing', cancel:'Cancel editing' };
     copy.ur.tooltips = { edit:'متن میں ترمیم', left:'بائیں سیدھ', centre:'درمیانی سیدھ', right:'دائیں سیدھ', resetPosition:'متن کی جگہ دوبارہ بنائیں', done:'ترمیم مکمل کریں', cancel:'ترمیم منسوخ کریں' };
 
+    if (socialConfig) {
+        copy.en.title = socialConfig.title;
+        copy.en.subtitle = socialConfig.subtitle;
+        root.dataset.cardSocialMode = socialConfig.id;
+        root.querySelectorAll('[data-social-only]').forEach(function (element) { element.hidden = false; });
+        var socialTitle = root.querySelector('[data-social-title]');
+        var socialSubtitle = root.querySelector('[data-social-subtitle]');
+        if (socialTitle) socialTitle.textContent = socialConfig.title;
+        if (socialSubtitle) socialSubtitle.textContent = socialConfig.subtitle;
+        document.title = socialConfig.title + ' – Write Urdu';
+    }
+
     function t(key) { var value = (copy[locale] && copy[locale][key]) || copy.en[key] || key; var args = Array.prototype.slice.call(arguments, 1); return value.replace('{n}', args[0] == null ? '' : args[0]); }
     function notify(message, type) { if (window.WriteUrduUI && window.WriteUrduUI.notify) window.WriteUrduUI.notify(message, type); else setStatus(message, type); }
     function setStatus(message, type) { var target = root.querySelector('[data-card-status]'); if (target) { target.textContent = message || ''; target.className = 'card-studio-status' + (type === 'error' ? ' card-studio-error' : ''); } }
+    function socialPreset() { return getPreset(); }
+    function socialSafeArea() { return socialConfig && social.getSafeArea ? social.getSafeArea(socialConfig.id, socialPreset()) : null; }
+    function syncSocialControls() {
+        if (!socialConfig || !social) return;
+        var preset = socialPreset();
+        var area = socialSafeArea();
+        var guide = root.querySelector('[data-card-safe-area]');
+        var toggle = root.querySelector('[data-social-safe-toggle]');
+        var format = root.querySelector('[data-social-export-format]');
+        var quality = root.querySelector('[data-social-jpeg-quality]');
+        var qualityWrap = root.querySelector('[data-social-quality-wrap]');
+        var qualityValue = root.querySelector('[data-social-quality-value]');
+        var warning = root.querySelector('[data-social-safe-warning]');
+        var guideLabel = root.querySelector('[data-card-safe-area-label]');
+        if (guide && area) {
+            guide.style.setProperty('--safe-top', (area.top / preset.height * 100) + '%');
+            guide.style.setProperty('--safe-right', (area.right / preset.width * 100) + '%');
+            guide.style.setProperty('--safe-bottom', (area.bottom / preset.height * 100) + '%');
+            guide.style.setProperty('--safe-left', (area.left / preset.width * 100) + '%');
+            guide.setAttribute('data-label', socialConfig.guideLabel);
+            guide.hidden = !(toggle ? toggle.checked : true);
+            if (guideLabel) guideLabel.textContent = socialConfig.guideLabel;
+        }
+        if (format) format.value = socialExportFormat;
+        root.querySelectorAll('[data-card-action="download"]').forEach(function (button) { button.textContent = 'Download ' + (socialExportFormat === 'jpeg' ? 'JPEG' : 'PNG'); });
+        if (quality) quality.value = socialJpegQuality;
+        if (qualityWrap) qualityWrap.hidden = socialExportFormat !== 'jpeg';
+        if (qualityValue) qualityValue.textContent = Math.round(socialJpegQuality * 100) + '%';
+        if (warning && area) {
+            var objects = { text: objectRect('text') };
+            if (state.attribution.enabled && state.attribution.value.trim()) objects.attribution = objectRect('attribution');
+            var result = social.evaluateSafeArea(objects, preset, area);
+            warning.hidden = result.valid;
+            warning.textContent = result.valid ? '' : 'Some text extends outside the recommended safe area. Move or resize it before downloading.';
+        }
+    }
+    function copySocialCaption() {
+        if (!socialConfig) return;
+        var value = String(state.text.value || '').trim();
+        if (!value) { setStatus('Add text before copying a caption.', 'error'); return; }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(value).then(function () { setStatus('Caption text copied.'); }).catch(function () { setStatus('Copy was not available in this browser.', 'error'); });
+        else setStatus('Copy was not available in this browser.', 'error');
+    }
     function setTransliterationStatus(key, failed) { transliterationStatusKey = key; var status = root.querySelector('[data-card-transliteration-status]'); var retry = root.querySelector('[data-card-transliteration-retry]'); if (status) status.textContent = t(key); if (retry) { retry.hidden = !failed; retry.textContent = t('retryTransliteration'); } }
     function initialiseTransliteration() {
         var attempt = ++transliterationAttempt;
@@ -95,7 +154,7 @@
         return dbPromise;
     }
     function dbPut(storeName, value) { return openDb().then(function (db) { return new Promise(function (resolve, reject) { var tx = db.transaction(storeName, 'readwrite'); tx.objectStore(storeName).put(value); tx.oncomplete = resolve; tx.onerror = function () { reject(tx.error); }; }); }); }
-    function dbGetLatest() { return openDb().then(function (db) { return new Promise(function (resolve, reject) { var tx = db.transaction('projects', 'readonly'); var request = tx.objectStore('projects').index('updatedAt').openCursor(null, 'prev'); request.onsuccess = function () { resolve(request.result ? request.result.value : null); }; request.onerror = function () { reject(request.error); }; }); }); }
+    function dbGetLatest() { return openDb().then(function (db) { return new Promise(function (resolve, reject) { var tx = db.transaction('projects', 'readonly'); var request = tx.objectStore('projects').index('updatedAt').openCursor(null, 'prev'); request.onsuccess = function () { var cursor = request.result; if (!cursor) { resolve(null); return; } var value = cursor.value; if ((value.scope || 'card-studio') === (socialConfig ? socialConfig.id : 'card-studio')) resolve(value); else { cursor.continue(); } }; request.onerror = function () { reject(request.error); }; }); }); }
     function dbGetAsset(id) { return id ? openDb().then(function (db) { return new Promise(function (resolve, reject) { var request = db.transaction('assets', 'readonly').objectStore('assets').get(id); request.onsuccess = function () { resolve(request.result || null); }; request.onerror = function () { reject(request.error); }; }); }) : Promise.resolve(null); }
 
     function readIncoming() { try { var raw = sessionStorage.getItem(incomingKey); if (!raw) return null; sessionStorage.removeItem(incomingKey); var value = JSON.parse(raw); return value && typeof value.text === 'string' ? value.text : null; } catch (error) { return null; } }
@@ -110,6 +169,7 @@
     function saveProject() {
         state.updatedAt = new Date().toISOString();
         var serializable = JSON.parse(JSON.stringify(state));
+        serializable.scope = socialConfig ? socialConfig.id : 'card-studio';
         dbPut('projects', serializable).then(function () { setStatus(t('saved')); }).catch(function () { try { localStorage.setItem(projectKey, JSON.stringify(serializable)); setStatus(t('saved')); } catch (error) { setStatus(t('storageUnavailable'), 'error'); } });
     }
     function scheduleSave() { window.clearTimeout(saveTimer); setStatus(t('saving')); saveTimer = window.setTimeout(saveProject, 700); }
@@ -177,6 +237,7 @@
         root.querySelector('[data-card-background-solid]').hidden = state.background.type !== 'solid'; root.querySelector('[data-card-background-gradient]').hidden = state.background.type !== 'gradient'; root.querySelectorAll('[data-card-background-image]').forEach(function (element) { element.hidden = state.background.type !== 'image'; });
         var warning = root.querySelector('[data-card-text-warning]'); if (state.text.value.length > 350) { warning.hidden = false; warning.textContent = t('fitWarning'); } else warning.hidden = true;
         applyLocale();
+        syncSocialControls();
     }
 
     /*
@@ -295,26 +356,37 @@
         drawTextObject('text', objectRect('text'), preset);
         drawTextObject('attribution', objectRect('attribution'), preset);
         if (state.watermark.enabled) { ctx.save(); ctx.direction = 'ltr'; ctx.font = Math.max(16, Math.round(minSide * .018)) + 'px "Segoe UI", Arial, sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.72)'; if (state.background.type === 'solid' && !/^#(0|1|2|3)/i.test(state.background.color || '')) ctx.fillStyle = 'rgba(20,50,35,.55)'; ctx.textAlign = state.watermark.position === 'bottom-right' ? 'right' : state.watermark.position === 'bottom-center' ? 'center' : 'left'; var watermarkX = state.watermark.position === 'bottom-right' ? preset.width - preset.marginX : state.watermark.position === 'bottom-center' ? preset.width / 2 : preset.marginX; ctx.fillText('Write-Urdu.com', watermarkX, preset.height - Math.max(30, preset.marginY * .42)); ctx.restore(); }
-        if (token === renderToken) { root.querySelector('[data-card-dimensions]').textContent = preset.width + ' × ' + preset.height + ' px'; root.querySelector('[data-accessible-card-text]').textContent = state.text.value; if (currentLayouts.text && currentLayouts.text.overflow && state.text.fontMode === 'manual') setStatus(t('fitWarning'), 'error'); }
+        if (token === renderToken) { root.querySelector('[data-card-dimensions]').textContent = preset.width + ' × ' + preset.height + ' px'; root.querySelector('[data-accessible-card-text]').textContent = state.text.value; if (currentLayouts.text && currentLayouts.text.overflow && state.text.fontMode === 'manual') setStatus(t('fitWarning'), 'error'); syncSocialControls(); document.dispatchEvent(new CustomEvent('write-urdu:card-rendered', { detail: { preset: preset.id, socialMode: socialConfig && socialConfig.id } })); }
     }
     function requestRender() { if (renderQueued) return; renderQueued = true; window.requestAnimationFrame(function () { renderQueued = false; ensureProjectFonts().then(drawCard); }); }
 
-    function filename() { return core.safeFilename(state.name, 'write-urdu-card') + '-' + new Date().toISOString().slice(0, 10) + '.png'; }
-    function exportBlob() { return new Promise(function (resolve, reject) { canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error('PNG generation failed')); }, 'image/png'); }); }
+    function exportMime() { return socialConfig && socialExportFormat === 'jpeg' ? 'image/jpeg' : 'image/png'; }
+    function filename() { if (socialConfig && social.safeFilename) return social.safeFilename(state.name || socialConfig.filenamePrefix, socialExportFormat); return core.safeFilename(state.name, 'write-urdu-card') + '-' + new Date().toISOString().slice(0, 10) + '.png'; }
+    function exportBlob() { var mime = exportMime(); return new Promise(function (resolve, reject) { canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error('Image generation failed')); }, mime, mime === 'image/jpeg' ? socialJpegQuality : undefined); }); }
     function downloadBlob(blob, name) { var url = URL.createObjectURL(blob); var link = document.createElement('a'); link.href = url; link.download = name; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000); }
-    function exportPng() { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); if (!state.text.value.trim() || state.text.value === core.DEFAULT_TEXT) { setStatus(t('emptyText'), 'error'); return Promise.reject(new Error('empty')); } setStatus(t('preparing')); return ensureProjectFonts().then(drawCard).then(exportBlob).then(function (blob) { downloadBlob(blob, filename()); setStatus(t('downloaded')); return blob; }); }
-    function shareCard() { return exportPng().then(function (blob) { var name = filename(); var file = new File([blob], name, { type: 'image/png' }); if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: 'Urdu card' }).then(function () { setStatus(t('shared')); }); setStatus(t('shareFallback')); }).catch(function (error) { if (error && error.name === 'AbortError') return; if (error && error.message !== 'empty') setStatus(error.message || 'Unable to export PNG.', 'error'); }); }
+    function exportPng() { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); if (!state.text.value.trim() || state.text.value === core.DEFAULT_TEXT) { setStatus(t('emptyText'), 'error'); return Promise.reject(new Error('empty')); } setStatus(t('preparing')); return ensureProjectFonts().then(drawCard).then(exportBlob).then(function (blob) { downloadBlob(blob, filename()); setStatus(socialConfig ? ((socialExportFormat === 'jpeg' ? 'JPEG' : 'PNG') + ' downloaded.') : t('downloaded')); return blob; }); }
+    function shareCard() { return exportPng().then(function (blob) { var name = filename(); var file = new File([blob], name, { type: exportMime() }); if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: socialConfig ? socialConfig.title : 'Urdu card' }).then(function () { setStatus(t('shared')); }); setStatus(t('shareFallback')); }).catch(function (error) { if (error && error.name === 'AbortError') return; if (error && error.message !== 'empty') setStatus(error.message || 'Unable to export image.', 'error'); }); }
 
     function bindControls() {
         root.querySelectorAll('[data-card-field]').forEach(function (element) { element.addEventListener('input', function () { userChanged = true; setNested(state, element.dataset.cardField, inputValue(element)); state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }); element.addEventListener('change', function () { userChanged = true; setNested(state, element.dataset.cardField, inputValue(element)); state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }); });
         root.querySelector('[data-card-font-auto]').addEventListener('change', function (event) { userChanged = true; state.text.fontMode = event.target.checked ? 'auto' : 'manual'; document.getElementById('cardFontSize').disabled = event.target.checked; requestRender(); scheduleSave(); });
         root.querySelectorAll('[data-card-action="download"]').forEach(function (button) { button.addEventListener('click', exportPng); }); root.querySelectorAll('[data-card-action="share"]').forEach(function (button) { button.addEventListener('click', shareCard); });
         root.querySelector('[data-card-action="back"]').addEventListener('click', function () { window.location.href = '/'; });
-        root.querySelector('[data-card-action="reset"]').addEventListener('click', function () { if (window.confirm(t('resetConfirm'))) { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = core.createDefaultCardProject(''); currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; syncControls(); requestRender(); scheduleSave(); } });
+        root.querySelector('[data-card-action="reset"]').addEventListener('click', function () { if (window.confirm(t('resetConfirm'))) { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(''), socialConfig.id) : core.createDefaultCardProject(''); currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; syncControls(); requestRender(); scheduleSave(); } });
         document.getElementById('cardPreset').addEventListener('change', function (event) { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = core.applyPreset(state, event.target.value); syncControls(); requestRender(); scheduleSave(); });
         document.getElementById('cardImage').addEventListener('change', function (event) { var file = event.target.files && event.target.files[0]; if (!file) return; if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 15 * 1024 * 1024) { setStatus(t('imageError'), 'error'); event.target.value = ''; return; } userChanged = true; var url = URL.createObjectURL(file); var image = new Image(); image.onload = function () { if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = url; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight }; state.background.type = 'image'; state.background.imageAssetId = state.id + '_image'; syncControls(); requestRender(); scheduleSave(); dbPut('assets', { id: state.background.imageAssetId, projectId: state.id, blob: file, updatedAt: new Date().toISOString() }).catch(function () {}); }; image.onerror = function () { URL.revokeObjectURL(url); setStatus(t('imageError'), 'error'); }; image.src = url; });
         root.querySelector('[data-card-action="remove-image"]').addEventListener('click', function () { userChanged = true; var template = core.TEMPLATES.find(function (item) { return item.id === state.templateId; }) || core.TEMPLATES[0]; state.background.type = template.background.type; state.background.color = template.background.color || state.background.color; state.background.gradientId = template.background.gradientId || null; state.background.imageAssetId = null; currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; syncControls(); requestRender(); scheduleSave(); setStatus(t('imageRemoved')); });
         root.querySelector('[data-card-transliteration-retry]').addEventListener('click', initialiseTransliteration);
+        if (socialConfig) {
+            var socialToggle = root.querySelector('[data-social-safe-toggle]');
+            var socialFormat = root.querySelector('[data-social-export-format]');
+            var socialQuality = root.querySelector('[data-social-jpeg-quality]');
+            var socialCaption = root.querySelector('[data-social-caption]');
+            if (socialToggle) socialToggle.addEventListener('change', syncSocialControls);
+            if (socialFormat) socialFormat.addEventListener('change', function (event) { socialExportFormat = event.target.value === 'jpeg' ? 'jpeg' : 'png'; syncSocialControls(); });
+            if (socialQuality) socialQuality.addEventListener('input', function (event) { socialJpegQuality = Math.max(.6, Math.min(1, Number(event.target.value) || .9)); syncSocialControls(); });
+            if (socialCaption) socialCaption.addEventListener('click', copySocialCaption);
+        }
     }
 
     function restoreAsset() { return dbGetAsset(state.background.imageAssetId).then(function (asset) { if (!asset || !asset.blob) return; var url = URL.createObjectURL(asset.blob); var image = new Image(); image.onload = function () { currentObjectUrl = url; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight }; requestRender(); }; image.src = url; }).catch(function () {}); }
@@ -358,12 +430,12 @@
         if (selectedTemplate && templateLibrary && typeof templateLibrary.applyToCardProject === 'function') {
             state = templateLibrary.applyToCardProject(
                 core,
-                core.createDefaultCardProject(incoming || ''),
+                socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(incoming || ''), socialConfig.id, incoming) : core.createDefaultCardProject(incoming || ''),
                 selectedTemplate,
                 { useSampleText: incoming == null }
             );
         } else {
-            state = core.normalizeCardProject(incoming != null ? core.createDefaultCardProject(incoming) : saved || state);
+            state = core.normalizeCardProject(incoming != null ? (socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(incoming), socialConfig.id, incoming) : core.createDefaultCardProject(incoming)) : saved || (socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(''), socialConfig.id) : state));
         }
         bindControls(); syncControls(); restoreAsset(); exposeApplication(); requestRender(); initialiseTransliteration();
         document.dispatchEvent(new CustomEvent('write-urdu:card-studio-ready'));

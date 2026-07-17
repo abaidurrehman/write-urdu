@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/card-studio.css">
     <script src="js/input-mode.js" defer></script>
     <script src="js/batch-transliteration.js" defer></script>
+    <script src="js/social-maker-core.js" defer></script>
     <script src="js/card-studio-core.js" defer></script>
     <script src="js/template-library-core.js" defer></script>
     <script src="js/card-studio-interaction-core.js" defer></script>
@@ -39,6 +40,7 @@
             <div>
                 <h1 data-card-i18n="title">Urdu Card Studio</h1>
                 <p data-card-i18n="subtitle">Design, move, edit and export Urdu cards in your browser.</p>
+                <p class="card-studio-social-badge" data-social-only hidden><strong data-social-title></strong> <span data-social-subtitle></span></p>
                 <p class="card-studio-template-badge" data-card-library-template hidden aria-live="polite"></p>
             </div>
             <div class="card-studio-top-actions" role="toolbar" aria-label="Card actions">
@@ -205,6 +207,17 @@
                         <button class="card-studio-button secondary" type="button" data-card-action="share">Share</button>
                     </div>
                     <p class="card-studio-privacy">Processed in your browser. Your text and images stay on this device.</p>
+                    <div class="social-maker-controls" data-social-only hidden>
+                        <h3>Social export</h3>
+                        <p class="card-studio-help" data-social-guide></p>
+                        <label class="card-studio-check"><input type="checkbox" data-social-safe-toggle checked><span>Show safe-area guide</span></label>
+                        <label class="card-studio-label" for="socialExportFormat">Download format</label>
+                        <select class="card-studio-select" id="socialExportFormat" data-social-export-format><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
+                        <div data-social-quality-wrap hidden><label class="card-studio-label" for="socialJpegQuality">JPEG quality <span data-social-quality-value>90%</span></label><input class="card-studio-range" id="socialJpegQuality" data-social-jpeg-quality type="range" min=".6" max="1" step=".01" value=".9"></div>
+                        <button class="card-studio-button" type="button" data-social-caption>Copy caption text</button>
+                        <p class="card-studio-text-warning" data-social-safe-warning hidden></p>
+                        <p class="card-studio-help">Write Urdu does not post to WhatsApp or Instagram. Download the image and upload it manually from your device.</p>
+                    </div>
                 </section>
                 <div class="card-studio-status" data-card-status aria-live="polite"></div>
             </aside>
@@ -212,6 +225,7 @@
             <figure class="card-studio-preview" aria-labelledby="cardPreviewTitle">
                 <div class="card-studio-artboard-wrap" data-card-artboard>
                     <canvas class="card-studio-canvas" id="cardCanvas" aria-hidden="true"></canvas>
+                    <div class="card-studio-safe-area" data-card-safe-area data-social-only hidden aria-hidden="true"><span data-card-safe-area-label></span></div>
                     <div class="card-studio-context-toolbar card-studio-canvas-toolbar" data-card-context-toolbar hidden role="toolbar" aria-label="Selected text actions">
                         <span class="card-studio-selected-object" data-card-selected-object data-card-i18n="textSelected">Text selected</span>
                         <button type="button" class="card-studio-icon-button" data-card-object-action="edit" data-card-tooltip="edit" aria-label="Edit" title="Edit text"><span class="card-toolbar-icon" aria-hidden="true">✎</span><span class="card-toolbar-label" data-card-i18n="edit">Edit</span></button>
