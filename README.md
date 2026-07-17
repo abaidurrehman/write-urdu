@@ -16,8 +16,8 @@ Start the local site server (including extensionless routes):
 npm start
 ```
 
-Then open <http://127.0.0.1:8787>. Use `PORT=9000 npm start` if another local
-service is using port 8787.
+Then open <http://127.0.0.1:8787>. In PowerShell, use
+`$env:PORT=9000; npm start` if another local service is using port 8787.
 
 Run the static regression checks:
 

@@ -463,6 +463,8 @@ test('social makers reuse Card Studio with platform presets and safe-area contro
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-whatsapp-status-maker.html');
   const whatsapp = page.frameLocator('iframe[title="Urdu WhatsApp Status design workspace"]');
+  await expect(whatsapp.locator('body')).toHaveClass(/social-maker-embedded/);
+  await expect(whatsapp.locator('.wu-site-header')).toBeHidden();
   await expect(whatsapp.locator('#cardCanvas')).toHaveAttribute('height', '1920');
   await expect(whatsapp.locator('[data-card-social-mode]')).toHaveAttribute('data-card-social-mode', 'whatsapp');
   await expect(whatsapp.locator('[data-social-safe-toggle]')).toBeChecked();

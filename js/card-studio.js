@@ -48,6 +48,7 @@
         copy.en.title = socialConfig.title;
         copy.en.subtitle = socialConfig.subtitle;
         root.dataset.cardSocialMode = socialConfig.id;
+        document.body.classList.add('social-maker-embedded');
         root.querySelectorAll('[data-social-only]').forEach(function (element) { element.hidden = false; });
         var socialTitle = root.querySelector('[data-social-title]');
         var socialSubtitle = root.querySelector('[data-social-subtitle]');
