@@ -54,8 +54,8 @@
         }
     };
     var staticCopy = {
-        en: { reset: 'Reset', back: 'Back to Write Urdu', encodeQuestion: 'What would you like to encode?', design: 'Design', qrColour: 'QR colour', background: 'Background', designHelp: 'A dark QR colour, light background and four-module margin are safest for scanning.', centreLogo: 'Centre logo', optional: 'optional', chooseLogo: 'Choose a local PNG, JPG or WebP', removeLogo: 'Remove logo', logoHelp: 'The logo is processed on this device. Adding one automatically uses high error correction.', downloadPng: 'Download PNG', downloadSvg: 'Download SVG', copyImage: 'Copy image', share: 'Share' },
-        ur: { reset: 'ری سیٹ', back: 'رائٹ اردو پر واپس جائیں', encodeQuestion: 'آپ کیا شامل کرنا چاہتے ہیں؟', design: 'ڈیزائن', qrColour: 'QR رنگ', background: 'پس منظر', designHelp: 'گہرا QR رنگ، ہلکا پس منظر اور چار ماڈیول کا حاشیہ اسکین کے لیے زیادہ قابلِ اعتماد ہے۔', centreLogo: 'مرکزی لوگو', optional: 'اختیاری', chooseLogo: 'مقامی PNG، JPG یا WebP منتخب کریں', removeLogo: 'لوگو ہٹائیں', logoHelp: 'لوگو اسی آلے پر پروسیس ہوتا ہے۔ لوگو شامل کرنے پر زیادہ خرابی اصلاح خود منتخب ہوتی ہے۔', downloadPng: 'PNG ڈاؤن لوڈ کریں', downloadSvg: 'SVG ڈاؤن لوڈ کریں', copyImage: 'تصویر کاپی کریں', share: 'شیئر کریں' }
+        en: { reset: 'Reset', back: 'Back to Write Urdu', encodeQuestion: 'What would you like to encode?', design: 'Design', qrColour: 'QR colour', background: 'Background', designHelp: 'A dark QR colour, light background and four-module margin are safest for scanning.', recommendedColors: 'Use recommended colors', centreLogo: 'Centre logo', optional: 'optional', chooseLogo: 'Choose a local PNG, JPG or WebP', removeLogo: 'Remove logo', logoHelp: 'The logo is processed on this device. Adding one automatically uses high error correction.', downloadPng: 'Download PNG', downloadSvg: 'Download SVG', copyImage: 'Copy image', share: 'Share' },
+        ur: { reset: 'ری سیٹ', back: 'رائٹ اردو پر واپس جائیں', encodeQuestion: 'آپ کیا شامل کرنا چاہتے ہیں؟', design: 'ڈیزائن', qrColour: 'QR رنگ', background: 'پس منظر', designHelp: 'گہرا QR رنگ، ہلکا پس منظر اور چار ماڈیول کا حاشیہ اسکین کے لیے زیادہ قابلِ اعتماد ہے۔', recommendedColors: 'تجویز کردہ رنگ استعمال کریں', centreLogo: 'مرکزی لوگو', optional: 'اختیاری', chooseLogo: 'مقامی PNG، JPG یا WebP منتخب کریں', removeLogo: 'لوگو ہٹائیں', logoHelp: 'لوگو اسی آلے پر پروسیس ہوتا ہے۔ لوگو شامل کرنے پر زیادہ خرابی اصلاح خود منتخب ہوتی ہے۔', downloadPng: 'PNG ڈاؤن لوڈ کریں', downloadSvg: 'SVG ڈاؤن لوڈ کریں', copyImage: 'تصویر کاپی کریں', share: 'شیئر کریں' }
     };
 
     function locale() { return window.WriteUrduLocale && window.WriteUrduLocale.get() === 'ur' ? 'ur' : 'en'; }
@@ -175,9 +175,12 @@
         root.querySelectorAll('.qr-field-error').forEach(function (node) { node.remove(); });
         root.querySelectorAll('[aria-invalid="true"]').forEach(function (node) { node.removeAttribute('aria-invalid'); node.removeAttribute('aria-describedby'); });
         Object.keys(validation.payload.errors || {}).forEach(function (name) { setFieldError(name, validation.payload.errors[name]); });
-        var buttons = root.querySelectorAll('[data-qr-download-png],[data-qr-download-svg],[data-qr-copy],[data-qr-share]');
+        var buttons = root.querySelectorAll('[data-qr-download-png],[data-qr-download-svg],[data-qr-copy-image],[data-qr-share]');
         buttons.forEach(function (button) { button.disabled = !validation.valid; });
-        if (!validation.valid) { root.querySelector('[data-qr-preview-empty]').hidden = false; canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); return; }
+        // A valid payload should remain visible even when the design needs
+        // attention. Low contrast is a safety warning that disables export,
+        // not a reason to hide the QR preview altogether.
+        if (!validation.payload.valid) { root.querySelector('[data-qr-preview-empty]').hidden = false; canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); return; }
         root.querySelector('[data-qr-preview-empty]').hidden = true;
         try {
             if (state.logo.enabled && !logoImage) logoImage = await loadLogoImage(state.logo.dataUrl);
@@ -185,7 +188,7 @@
             await QRCode.toCanvas(canvas, validation.payload.payload, qrOptions(512));
             if (token !== renderToken) return;
             drawLogo(canvas.getContext('2d'), 512);
-            status('Preview updated');
+            status(validation.valid ? 'Preview updated' : 'Preview updated with a readability warning');
         } catch (error) {
             status(error && /code length|too long|overflow/i.test(error.message || '') ? 'This content is too long for the selected QR settings. Shorten it or remove the logo.' : 'The QR code could not be generated. Check the content and try again.', true);
             buttons.forEach(function (button) { button.disabled = true; });
@@ -203,6 +206,7 @@
     function onTypeChange(event) { collectFields(); state.content.type = event.target.value; state.content.fields = {}; renderFields(); requestRender(); scheduleSave(); }
     function onDesignChange(event) { var key = event.target.getAttribute('data-qr-design'); state.design[key] = key === 'margin' ? Number(event.target.value) : event.target.value; if (state.logo.enabled && key === 'errorCorrectionLevel') state.design.errorCorrectionLevel = 'H'; requestRender(); scheduleSave(); }
     function onExportChange(event) { state.export.pngSize = Number(event.target.value); scheduleSave(); }
+    function resetColors() { state.design.foregroundColor = '#111827'; state.design.backgroundColor = '#ffffff'; syncDesignControls(); requestRender(); scheduleSave(); status('Recommended colors restored'); }
     function fileToDataUrl(file) { return new Promise(function (resolve, reject) { var reader = new FileReader(); reader.onload = function () { resolve(reader.result); }; reader.onerror = reject; reader.readAsDataURL(file); }); }
     async function onLogo(event) { var file = event.target.files && event.target.files[0]; if (!file) return; if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 5 * 1024 * 1024) { status('Choose a PNG, JPG or WebP logo smaller than 5 MB.', true); event.target.value = ''; return; } try { if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl); logoObjectUrl = URL.createObjectURL(file); var dataUrl = await fileToDataUrl(file); logoImage = await loadLogoImage(dataUrl); state.logo.enabled = true; state.logo.dataUrl = dataUrl; state.logo.assetId = 'current-logo'; state.design.errorCorrectionLevel = 'H'; syncDesignControls(); syncLogoControls(); requestRender(); scheduleSave(); } catch (error) { status('This logo could not be opened. Choose a PNG, JPG or WebP file.', true); } }
     function removeLogo() { state.logo.enabled = false; state.logo.dataUrl = null; state.logo.assetId = null; logoImage = null; if (logoObjectUrl) URL.revokeObjectURL(logoObjectUrl); logoObjectUrl = null; syncLogoControls(); requestRender(); scheduleSave(); }
@@ -219,6 +223,7 @@
         root.querySelector('[data-qr-export]').addEventListener('change', onExportChange);
         root.querySelector('[data-qr-logo]').addEventListener('change', onLogo);
         root.querySelector('[data-qr-remove-logo]').addEventListener('click', removeLogo);
+        root.querySelector('[data-qr-reset-colors]').addEventListener('click', resetColors);
         root.querySelector('[data-qr-logo-size]').addEventListener('input', function (event) { state.logo.sizeRatio = Number(event.target.value) / 100; syncLogoControls(); requestRender(); scheduleSave(); });
         root.querySelector('[data-qr-logo-shape]').addEventListener('change', function (event) { state.logo.plateShape = event.target.value; requestRender(); scheduleSave(); });
         root.querySelector('[data-qr-reset]').addEventListener('click', function () { if (window.confirm('Reset this QR code design?')) setState(core.createDefaultQrProject()); });

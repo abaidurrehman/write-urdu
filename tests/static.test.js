@@ -149,6 +149,8 @@ const qrHtml = read('qr-code-generator.html');
 assert.match(qrHtml, /data-qr-generator/, 'QR generator page is missing its application root');
 assert.match(qrHtml, /id="qrCanvas"/, 'QR generator canvas is missing');
 assert.match(qrHtml, /js\/vendor\/qrcode\.js/, 'QR encoder must be bundled locally');
+assert.match(qrHtml, /css\/site-header\.css/, 'QR generator is missing the shared header stylesheet');
+assert.match(qrHtml, /data-qr-reset-colors|recommendedColors/, 'QR generator is missing the recommended-colors recovery action');
 assert.doesNotMatch(qrHtml, /qr-code-generator-api|api\.qr|quickchart\.io|cdn.*qrcode/i, 'QR generator must not use a remote QR API or CDN');
 assert.match(qrHtml, /id="qr-about"|Create static QR codes in your browser/, 'QR Generator is missing its crawlable supporting explanation');
 assert.match(cardStudio, /id="card-studio-about"|Create Urdu cards and quote images online/, 'Card Studio is missing its crawlable supporting explanation');

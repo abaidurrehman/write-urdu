@@ -765,6 +765,29 @@ test('QR generator validates types and downloads PNG and SVG locally', async ({ 
   await expect(page.locator('[data-qr-payload]')).toContainText('WIFI:T:WPA');
 });
 
+test('QR contact privacy warning stays non-blocking and unsafe colors can be recovered', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/qr-code-generator.html');
+  await page.locator('[data-qr-type]').selectOption('vcard');
+  await page.locator('[data-qr-field="fullName"]').fill('Abaid Rehman');
+  await expect(page.locator('[data-qr-health]')).toContainText('personal information');
+  await expect(page.locator('[data-qr-download-png]')).toBeEnabled();
+  await page.locator('[data-qr-design="foregroundColor"]').evaluate((element) => {
+    element.value = '#aaaaaa';
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  await expect(page.locator('[data-qr-download-png]')).toBeDisabled();
+  await expect(page.locator('[data-qr-preview-empty]')).toBeHidden();
+  const visiblePixels = await page.locator('#qrCanvas').evaluate((canvas) => {
+    const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+    return Array.from(pixels).some((value, index) => index % 4 === 3 && value > 0);
+  });
+  expect(visiblePixels).toBeTruthy();
+  await page.locator('[data-qr-reset-colors]').scrollIntoViewIfNeeded();
+  await page.locator('[data-qr-reset-colors]').click();
+  await expect(page.locator('[data-qr-download-png]')).toBeEnabled();
+});
+
 test('QR generator localizes its title and privacy promise', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/qr-code-generator.html');

@@ -11,6 +11,7 @@
     <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Free Urdu QR Code Generator – Text, Wi-Fi and WhatsApp"><meta name="twitter:description" content="Create static QR codes locally for Urdu text, links and more."><meta name="twitter:image" content="https://write-urdu.com/assets/social/urdu-qr-generator.svg">
     <link rel="icon" href="favicon.ico">
     <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
+    <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/qr-generator.css">
 </head>
 <body class="qr-generator-page">
@@ -49,6 +50,7 @@
                     </div>
                     <label class="qr-label" for="qrSize">PNG output size<select id="qrSize" class="qr-control" data-qr-export="pngSize"><option value="512">512 × 512</option><option value="1024" selected>1024 × 1024</option><option value="2048">2048 × 2048</option><option value="4096">4096 × 4096</option></select></label>
                     <p class="qr-help" data-qr-copy="designHelp">A dark QR colour, light background and four-module margin are safest for scanning.</p>
+                    <button type="button" class="qr-link-button" data-qr-reset-colors data-qr-copy="recommendedColors">Use recommended colors</button>
                 </div>
                 <div class="qr-section">
                     <h2><span data-qr-copy="centreLogo">Centre logo</span> <span class="qr-optional" data-qr-copy="optional">optional</span></h2>
