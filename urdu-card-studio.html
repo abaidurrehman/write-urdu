@@ -69,14 +69,16 @@
 
                 <section class="card-studio-section">
                     <h2 data-card-i18n="textHeading">Text</h2>
+                    <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#cardText" role="region" aria-labelledby="card-batch-transliteration-title">
+                        <strong data-batch-title id="card-batch-transliteration-title">Two ways to write Urdu</strong>
+                        <span data-batch-guide>Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.</span>
+                        <small data-batch-note>This is transliteration: it changes sounds into Urdu script, not English meaning.</small>
+                        <strong data-batch-prompt hidden>Long Roman Urdu text detected. Convert this passage to Urdu script?</strong>
+                        <button type="button" data-batch-action hidden>Convert passage to Urdu script</button>
+                        <span data-batch-status role="status" aria-live="polite"></span>
+                    </div>
                     <label class="card-studio-label" for="cardText" data-card-i18n="textLabel">Card text</label>
                     <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
-                    <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#cardText" hidden role="status" aria-live="polite">
-                        <strong data-batch-prompt>Long Roman Urdu or English-letter text detected. Convert the whole passage in one step?</strong>
-                        <small data-batch-note>This converts sounds into Urdu script; it does not translate English meaning.</small>
-                        <button type="button" data-batch-action>Convert all text</button>
-                        <span data-batch-status></span>
-                    </div>
                     <div class="card-studio-transliteration" aria-live="polite"><span data-card-transliteration-status>Roman Urdu input is loading…</span><button class="card-studio-transliteration-retry" type="button" data-card-transliteration-retry hidden>Retry</button></div>
                     <div class="input-mode-control input-mode-control-card" data-input-mode-control data-input-mode-storage="card" data-input-mode-targets="#cardText,#cardCanvasEditor" role="group" aria-label="Input mode">
                         <span class="input-mode-title" data-input-mode-title>Input mode</span>

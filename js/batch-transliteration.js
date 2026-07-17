@@ -5,20 +5,24 @@
     var activeRequest = 0;
     var copy = {
         en: {
-            prompt: 'Long Roman Urdu or English-letter text detected. Convert the whole passage in one step?',
-            note: 'This converts sounds into Urdu script; it does not translate English meaning.',
-            action: 'Convert all text',
+            title: 'Two ways to write Urdu',
+            guide: 'Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.',
+            prompt: 'Long Roman Urdu text detected. Convert this passage to Urdu script?',
+            note: 'This is transliteration: it changes sounds into Urdu script, not English meaning.',
+            action: 'Convert passage to Urdu script',
             busy: 'Converting the passage…',
-            done: 'The complete passage was converted to Urdu.',
+            done: 'The passage was converted to Urdu script.',
             changed: 'The text changed while conversion was running. Review it and try again.',
             error: 'The passage could not be converted. Check your connection and try again.'
         },
         ur: {
-            prompt: 'طویل رومن اردو یا انگریزی حروف والا متن ملا ہے۔ کیا پورے متن کو ایک ہی مرحلے میں تبدیل کریں؟',
-            note: 'یہ آواز کو اردو رسم الخط میں بدلتا ہے؛ انگریزی کے معنی کا ترجمہ نہیں کرتا۔',
-            action: 'پورا متن تبدیل کریں',
+            title: 'اردو لکھنے کے دو طریقے',
+            guide: 'رومن اردو لکھیں اور ہر لفظ کے بعد Space دبائیں، یا طویل متن پیسٹ کر کے اسے ایک ہی مرحلے میں اردو رسم الخط میں تبدیل کریں۔',
+            prompt: 'طویل رومن اردو کا متن ملا ہے۔ کیا اسے اردو رسم الخط میں تبدیل کریں؟',
+            note: 'یہ ترجمہ نہیں بلکہ تحریری تبدیلی ہے: آواز کو اردو رسم الخط میں بدلا جاتا ہے۔',
+            action: 'متن کو اردو رسم الخط میں تبدیل کریں',
             busy: 'متن تبدیل کیا جا رہا ہے…',
-            done: 'پورا متن اردو میں تبدیل ہو گیا۔',
+            done: 'متن اردو رسم الخط میں تبدیل ہو گیا۔',
             changed: 'تبدیلی کے دوران متن بدل گیا۔ اسے دیکھ کر دوبارہ کوشش کریں۔',
             error: 'متن تبدیل نہیں ہو سکا۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔'
         }
@@ -140,6 +144,8 @@
         if (panel.dataset.batchBound) return;
         var target = document.querySelector(panel.getAttribute('data-batch-target') || '');
         var action = panel.querySelector('[data-batch-action]');
+        var title = panel.querySelector('[data-batch-title]');
+        var guide = panel.querySelector('[data-batch-guide]');
         var prompt = panel.querySelector('[data-batch-prompt]');
         var note = panel.querySelector('[data-batch-note]');
         var status = panel.querySelector('[data-batch-status]');
@@ -148,10 +154,18 @@
         function refresh() {
             if (!panel.dataset.batchBusy) {
                 var value = readValue(target);
-                panel.hidden = !(isLongEnough(value) && hasRomanText(value));
-                if (prompt) prompt.textContent = text('prompt');
+                var ready = isLongEnough(value) && hasRomanText(value);
+                panel.hidden = false;
+                if (title) title.textContent = text('title');
+                if (guide) guide.textContent = text('guide');
+                if (prompt) {
+                    prompt.hidden = !ready;
+                    prompt.textContent = text('prompt');
+                }
                 if (note) note.textContent = text('note');
                 action.textContent = text('action');
+                action.hidden = !ready;
+                if (status) status.textContent = '';
             }
         }
         target.addEventListener('input', refresh);
@@ -176,6 +190,8 @@
             panel.dataset.batchBusy = 'true';
             panel.hidden = false;
             action.disabled = true;
+            action.hidden = false;
+            if (prompt) prompt.hidden = false;
             if (prompt) prompt.textContent = text('busy');
             if (status) status.textContent = '';
             transliterate(original, function (completed, total) {
@@ -190,12 +206,15 @@
                 writeValue(target, result);
                 dispatchInput(target);
                 if (prompt) prompt.textContent = text('done');
+                if (prompt) prompt.hidden = false;
                 if (note) note.textContent = text('note');
                 if (status) status.textContent = '';
             }).catch(function () {
                 if (request !== activeRequest) return;
                 if (status) status.textContent = text('error');
                 if (prompt) prompt.textContent = text('prompt');
+                if (prompt) prompt.hidden = false;
+                action.hidden = false;
             }).finally(function () {
                 if (request !== activeRequest) return;
                 panel.dataset.batchBusy = '';

@@ -64,10 +64,10 @@
 .batch-transliteration-panel {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 3px 10px;
+    gap: 4px 12px;
     align-items: center;
-    margin: 9px 0 0;
-    padding: 10px 12px;
+    margin: 8px 0 12px;
+    padding: 11px 13px;
     border: 1px solid #b9dfc6;
     border-radius: 10px;
     background: #effaf3;
@@ -75,14 +75,20 @@
     font-size: .78rem;
 }
 .batch-transliteration-panel[hidden] { display: none !important; }
-.batch-transliteration-panel strong,
-.batch-transliteration-panel small,
-.batch-transliteration-panel span { grid-column: 1; }
-.batch-transliteration-panel strong { color: #145f38; line-height: 1.4; }
+.batch-transliteration-panel [data-batch-title],
+.batch-transliteration-panel [data-batch-guide],
+.batch-transliteration-panel [data-batch-note],
+.batch-transliteration-panel [data-batch-prompt],
+.batch-transliteration-panel [data-batch-status] { grid-column: 1; }
+.batch-transliteration-panel [data-batch-title],
+.batch-transliteration-panel [data-batch-prompt] { color: #145f38; line-height: 1.4; }
+.batch-transliteration-panel [data-batch-title] { font-size: .84rem; }
+.batch-transliteration-panel [data-batch-guide] { color: #29483a; line-height: 1.45; }
 .batch-transliteration-panel small { color: #61746a; line-height: 1.4; }
 .batch-transliteration-panel button {
     grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-row: 1 / span 5;
+    align-self: center;
     min-height: 36px;
     padding: 7px 10px;
     border: 1px solid #177245;
@@ -95,7 +101,7 @@
 .batch-transliteration-panel button:hover,
 .batch-transliteration-panel button:focus-visible { background: #0d5331; outline: 0; }
 .batch-transliteration-panel button:disabled { cursor: wait; opacity: .65; }
-.batch-transliteration-panel span { color: #177245; font-size: .74rem; }
+.batch-transliteration-panel [data-batch-status] { color: #177245; font-size: .74rem; }
 @media (max-width: 767px) {
     .editor-chrome .input-mode-control {
         flex-basis: 100%;

@@ -328,11 +328,13 @@
                     <button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Direct Urdu / English</button>
                     <span class="input-mode-note" data-input-mode-note>Type Roman Urdu and press Space to convert each word.</span>
                 </div>
-                <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#basic-example_ifr" hidden role="status" aria-live="polite">
-                    <strong data-batch-prompt>Long Roman Urdu or English-letter text detected. Convert the whole passage in one step?</strong>
-                    <small data-batch-note>This converts sounds into Urdu script; it does not translate English meaning.</small>
-                    <button type="button" data-batch-action>Convert all text</button>
-                    <span data-batch-status></span>
+                <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#basic-example_ifr" role="region" aria-labelledby="rich-batch-transliteration-title">
+                    <strong data-batch-title id="rich-batch-transliteration-title">Two ways to write Urdu</strong>
+                    <span data-batch-guide>Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.</span>
+                    <small data-batch-note>This is transliteration: it changes sounds into Urdu script, not English meaning.</small>
+                    <strong data-batch-prompt hidden>Long Roman Urdu text detected. Convert this passage to Urdu script?</strong>
+                    <button type="button" data-batch-action hidden>Convert passage to Urdu script</button>
+                    <span data-batch-status role="status" aria-live="polite"></span>
                 </div>
                 <div style="min-height:300px;">
                     <label class="sr-only" for="basic-example">Urdu rich text editor</label>

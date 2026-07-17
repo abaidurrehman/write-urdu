@@ -273,16 +273,18 @@
                     title="Clear all typed Urdu text"><i class="far fa-trash-alt" aria-hidden="true"></i> Clear</button>
             </div>
 
+            <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#transliterateTextarea" role="region" aria-labelledby="batch-transliteration-title">
+                <strong data-batch-title id="batch-transliteration-title">Two ways to write Urdu</strong>
+                <span data-batch-guide>Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.</span>
+                <small data-batch-note>This is transliteration: it changes sounds into Urdu script, not English meaning.</small>
+                <strong data-batch-prompt hidden>Long Roman Urdu text detected. Convert this passage to Urdu script?</strong>
+                <button type="button" data-batch-action hidden>Convert passage to Urdu script</button>
+                <span data-batch-status role="status" aria-live="polite"></span>
+            </div>
             <div id="demo" style="border: solid 1px gray;padding:1px;"><label class="sr-only"
                     for="transliterateTextarea">Urdu writing editor</label><textarea
                     class="write-udu-main-editor" dir="rtl" id="transliterateTextarea"
                     lang="ur" placeholder="لکھنا شروع کریں" style="font-family: 'Noto Nastaliq Urdu'"></textarea></div>
-            <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#transliterateTextarea" hidden role="status" aria-live="polite">
-                <strong data-batch-prompt>Long Roman Urdu or English-letter text detected. Convert the whole passage in one step?</strong>
-                <small data-batch-note>This converts sounds into Urdu script; it does not translate English meaning.</small>
-                <button type="button" data-batch-action>Convert all text</button>
-                <span data-batch-status></span>
-            </div>
             <p class="editor-hint" id="UsageAlert"><i class="fas fa-info-circle" aria-hidden="true"></i>
                 Type Roman Urdu, such as <em>mera</em>, and press Space to convert each word. Press Backspace twice to choose an alternative.</p>
             <div class="card">
