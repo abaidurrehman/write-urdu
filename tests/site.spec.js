@@ -365,10 +365,18 @@ test('Card Studio applies the selected Urdu font to canvas editing', async ({ pa
   await page.locator('#cardFont').selectOption({ label: 'Amiri' });
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().text.fontFamily)).toBe('Amiri');
   await expect.poll(() => page.evaluate(() => (window.__cardFontLoads || []).some(value => value.includes('Amiri')))).toBe(true);
-  expect(await page.locator('link[href*="fonts.googleapis.com/css2"]').count()).toBe(1);
+  expect(await page.locator('link[rel="stylesheet"][href*="fonts.googleapis.com"]').count()).toBe(1);
   await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
   await page.getByRole('button', { name: 'Edit', exact: true }).click();
   await expect(page.locator('[data-card-canvas-editor]')).toHaveCSS('font-family', /Amiri/);
+});
+
+test('shared Urdu fonts load on editorial pages', async ({ page }) => {
+  await blockNonVisualServices(page);
+  for (const route of ['/index.html', '/urdu-faq.html']) {
+    await openFile(page, route);
+    await expect.poll(() => page.locator('link[data-write-urdu-fonts], link[rel="stylesheet"][href*="fonts.googleapis.com"]').count()).toBe(1);
+  }
 });
 
 test('Card Studio downloads a PNG without leaving the browser', async ({ page }) => {
