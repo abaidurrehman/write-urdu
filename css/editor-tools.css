@@ -37,6 +37,60 @@ body.write-urdu-focus{background:#f7faf8!important}body.write-urdu-focus .wu-sit
 body.tool-page .tool-actions{flex-wrap:wrap!important;overflow:visible!important}
 @media(max-width:767px){.home-actions>.editor-tool-actions .editor-tool-button,.tool-actions>.editor-tool-actions .editor-tool-button,.keyboard-actions>.editor-tool-actions .editor-tool-button{min-height:36px;padding:.42rem .58rem;font-size:.78rem}.home-actions>.editor-find-panel,.tool-actions>.editor-find-panel,.keyboard-actions>.editor-find-panel,.home-actions>.editor-history-panel,.tool-actions>.editor-history-panel,.keyboard-actions>.editor-history-panel{flex-basis:100%}}
 
+/* Rich editor actions are grouped in the source markup.  Keep each group as
+   one horizontal unit so the export menu, share action and More menu do not
+   stack into a tall column on desktop.  This is intentionally scoped to the
+   rich editor; Card Studio and the social makers have their own toolbars. */
+.rich-editor-page .tool-actions{flex-wrap:nowrap!important;}
+.rich-editor-page .tool-actions .home-actions-group{
+  display:flex;
+  align-items:center;
+  flex:0 0 auto;
+  flex-wrap:nowrap;
+  gap:5px;
+  min-width:0;
+  padding:3px;
+  border:1px solid #e0e9e3;
+  border-radius:11px;
+  background:#fff;
+}
+.rich-editor-page .tool-actions .home-actions-group-primary{border-color:#bfe2cb;background:#f0faf3;}
+.rich-editor-page .tool-actions .home-actions-group-create{border-color:#d4e5da;}
+.rich-editor-page .tool-actions .home-actions-group-export{background:#f1f5f2;}
+.rich-editor-page .tool-actions .home-actions-group .btn,
+.rich-editor-page .tool-actions .home-actions-group summary{
+  margin:0!important;
+  white-space:nowrap;
+}
+.rich-editor-page .tool-actions .home-actions-group .action-menu{position:relative;display:block;}
+.rich-editor-page .tool-actions .home-actions-group .action-menu summary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  list-style:none;
+  cursor:pointer;
+}
+.rich-editor-page .tool-actions .home-actions-group .action-menu summary::-webkit-details-marker{display:none;}
+.rich-editor-page .tool-actions #spinner{flex:0 0 auto;margin-left:auto!important;}
+.rich-editor-page .tool-actions>#clear{flex:0 0 auto;}
+
+@media(max-width:1150px) and (min-width:768px){
+  .rich-editor-page .tool-actions{flex-wrap:wrap!important;}
+  .rich-editor-page .tool-actions .home-actions-group-export{margin-left:0;}
+  .rich-editor-page .tool-actions #spinner{margin-left:auto!important;}
+}
+
+@media(max-width:767px){
+  .rich-editor-page .tool-actions{flex-wrap:wrap!important;}
+  .rich-editor-page .tool-actions .home-actions-group{flex:1 1 100%;width:100%;}
+  .rich-editor-page .tool-actions .home-actions-group-create,
+  .rich-editor-page .tool-actions .home-actions-group-export{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
+  .rich-editor-page .tool-actions .home-actions-group .btn,
+  .rich-editor-page .tool-actions .home-actions-group summary{width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  .rich-editor-page .tool-actions .home-actions-group-export .action-menu{min-width:0;}
+}
+
 /* Help copy should scan as guidance, not as a wall of secondary text. Keep
    measure, contrast and rhythm consistent across the three editor pages. */
 body.has-editor-tools .editor-hint,

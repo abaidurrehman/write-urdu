@@ -106,6 +106,28 @@ test('rich editor offers whole-text transliteration inside its editable frame', 
   await expect(body).toContainText('میرا خیال ہے کہ یہ پورا متن اردو ہے۔');
 });
 
+test('rich editor action groups stay compact and aligned on desktop', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Desktop toolbar layout regression');
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-editor.html');
+  const toolbar = page.locator('.rich-editor-page .tool-actions');
+  await expect(toolbar).toBeVisible();
+  const metrics = await toolbar.evaluate(element => {
+    const groups = Array.from(element.querySelectorAll('.home-actions-group'));
+    const boxes = groups.map(group => group.getBoundingClientRect());
+    return {
+      height: element.getBoundingClientRect().height,
+      groupHeights: boxes.map(box => box.height),
+      groupTops: boxes.map(box => box.top),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  });
+  expect(metrics.height, 'The rich editor action bar should not grow into a vertical stack').toBeLessThan(80);
+  expect(Math.max(...metrics.groupHeights) - Math.min(...metrics.groupHeights)).toBeLessThan(8);
+  expect(Math.max(...metrics.groupTops) - Math.min(...metrics.groupTops)).toBeLessThan(8);
+  expect(metrics.overflow).toBeLessThanOrEqual(1);
+});
+
 test('template library filters, favorites, and renders starter designs', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-templates.html');
@@ -344,6 +366,19 @@ test('mobile menu and primary tools remain inside the viewport', async ({ page, 
   }
 });
 
+test('wide desktop header keeps the dense tools navigation behind a visible menu', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'Desktop header regression');
+  await blockNonVisualServices(page);
+  await page.setViewportSize({ width: 1920, height: 900 });
+  await openFile(page, '/urdu-editor.html');
+  const menu = page.locator('.wu-menu-toggle');
+  await expect(menu).toBeVisible();
+  await menu.click();
+  await expect(page.locator('.wu-primary-nav')).toHaveClass(/is-open/);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
 test('content pages retain readable typography and responsive embeds', async ({ page }) => {
   await blockNonVisualServices(page);
   for (const route of ['/write-urdu-features.html', '/write-urdu-documentation.html', '/urdu-alphabet.html', '/urdu-faq.html', '/write-urdu-search.html', '/write-urdu-privacy.html', '/why-write-urdu.html']) {
@@ -456,6 +491,16 @@ test('Card Studio exposes explicit selection and editing state', async ({ page }
   await page.locator('[data-card-canvas-editor]').press('Escape');
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioUi.getState().interactionMode)).toBe('canvas-edit');
   await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select(null));
+  await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioUi.getState().selection)).toBe('none');
+});
+
+test('Card Studio clears the contextual toolbar when preview space is clicked', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.evaluate(() => window.WriteUrduCardStudioInteractionApi.select('text'));
+  await expect(page.locator('[data-card-context-toolbar]')).toBeVisible();
+  await page.locator('.card-studio-preview').click({ position: { x: 8, y: 8 } });
+  await expect(page.locator('[data-card-context-toolbar]')).toBeHidden();
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioUi.getState().selection)).toBe('none');
 });
 

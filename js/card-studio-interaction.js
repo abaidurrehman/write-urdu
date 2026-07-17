@@ -10,6 +10,7 @@
     var editor = root.querySelector('[data-card-canvas-editor]');
     var guides = root.querySelector('[data-card-guides]');
     var toolbar = root.querySelector('[data-card-context-toolbar]');
+    var preview = root.querySelector('.card-studio-preview');
     var selectedLabel = root.querySelector('[data-card-selected-object]');
     var selectionLabel = root.querySelector('[data-card-selection-label]');
     var selected = null;
@@ -181,6 +182,11 @@
     function onEditorInput() { if (composing) return; app.updateObjectText(selected, editor.value, { save: false }); positionEditor(); refreshSelection(); }
     function onEditorKeydown(event) { if (event.isComposing || composing) return; if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { event.preventDefault(); commitEdit(); } else if (event.key === 'Escape') { event.preventDefault(); cancelEdit(); } }
     function onOutside(event) { if (mode !== 'editing') return; if (event.target === editor || (toolbar && toolbar.contains(event.target))) return; if (layer.contains(event.target)) { commitEdit(); return; } commitEdit(); }
+    function onPreviewBackgroundPointerDown(event) {
+        if (event.target.closest && event.target.closest('[data-card-interaction-layer], [data-card-context-toolbar], [data-card-dimensions]')) return;
+        if (mode === 'editing') commitEdit();
+        else select(null);
+    }
     function bind() {
         layer.addEventListener('pointerdown', pointerDown); layer.addEventListener('pointermove', pointerMove); layer.addEventListener('pointerup', pointerUp); layer.addEventListener('pointercancel', function () { finishGesture(true); }); layer.addEventListener('keydown', keydown);
         editor.addEventListener('input', onEditorInput); editor.addEventListener('keydown', onEditorKeydown); editor.addEventListener('compositionstart', function () { composing = true; }); editor.addEventListener('compositionend', function () { composing = false; onEditorInput(); });
@@ -189,6 +195,7 @@
         if (sidebarAttribution) sidebarAttribution.addEventListener('input', function () { if (mode === 'editing' && selected === 'attribution' && document.activeElement !== editor) editor.value = sidebarAttribution.value; });
         var attributionToggle = root.querySelector('[data-card-field="attribution.enabled"]'); if (attributionToggle) attributionToggle.addEventListener('change', function () { if (!attributionToggle.checked && selected === 'attribution') select(null); else refreshSelection(); });
         root.querySelectorAll('[data-card-object-action]').forEach(function (button) { button.addEventListener('click', toolbarAction); }); document.addEventListener('pointerdown', onOutside);
+        if (preview) preview.addEventListener('pointerdown', onPreviewBackgroundPointerDown);
         root.querySelector('[data-card-layout-object]').addEventListener('change', function (event) { select(event.target.value); });
         root.querySelectorAll('[data-card-layout-field]').forEach(function (field) { field.addEventListener('change', layoutFieldInput); });
         root.querySelectorAll('[data-card-layout-action]').forEach(function (button) { button.addEventListener('click', layoutAction); });

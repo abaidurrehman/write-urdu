@@ -1,11 +1,11 @@
 :root{--wu-header-ink:#eff8f2;--wu-header-muted:#a9c3b3;--wu-header-green:#1b7047;--wu-header-accent:#d8f36a}
 .wu-header-wrapper{width:100%!important;max-width:none!important;padding:0!important;margin:0!important}
 .wu-site-header{position:relative;z-index:1000;width:100%;color:var(--wu-header-ink);background:rgba(10,42,27,.98);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 10px 34px rgba(8,31,21,.16);font-family:Inter,"Segoe UI",Arial,sans-serif}
-.wu-header-inner{display:flex;align-items:center;width:min(1180px,calc(100% - 40px));min-height:76px;margin:0 auto;gap:30px}
+.wu-header-inner{display:flex;align-items:center;width:min(1600px,calc(100% - 40px));min-height:76px;margin:0 auto;gap:30px}
 .wu-brand{display:inline-flex;align-items:center;flex:none;gap:11px;color:#fff!important;text-decoration:none!important}.wu-brand:hover{color:#fff!important;text-decoration:none!important}
 .wu-brand-mark{display:block;width:42px;height:42px;flex:none;padding:3px;border:1px solid rgba(255,255,255,.28);border-radius:13px;background:#fff;box-shadow:0 5px 14px rgba(0,0,0,.14);object-fit:contain}
 .wu-brand>span:last-child{display:grid;line-height:1.05}.wu-brand strong{font-size:1.05rem;letter-spacing:-.025em}.wu-brand small{margin-top:6px;color:var(--wu-header-muted);font:400 .7rem/1.2 "Noto Nastaliq Urdu","Segoe UI",sans-serif}
-.wu-primary-nav{display:flex;align-items:center;justify-content:flex-end;flex:1;gap:3px}.wu-primary-nav a{position:relative;padding:10px 11px;border-radius:9px;color:rgba(239,248,242,.72)!important;font-size:.82rem;font-weight:600;line-height:1;text-decoration:none!important;white-space:nowrap;transition:background-color .16s ease,color .16s ease}.wu-primary-nav a:hover{background:rgba(255,255,255,.08);color:#fff!important}.wu-primary-nav a.is-active{background:#fff;color:#123c27!important;box-shadow:0 7px 20px rgba(0,0,0,.12)}.wu-primary-nav .wu-feedback-link{margin-left:7px;border:1px solid rgba(216,243,106,.46);color:var(--wu-header-accent)!important}.wu-primary-nav .wu-feedback-link:hover{border-color:var(--wu-header-accent);background:rgba(216,243,106,.1)}
+.wu-primary-nav{display:flex;align-items:center;justify-content:flex-end;min-width:0;flex:1;gap:3px}.wu-primary-nav a{position:relative;padding:10px 11px;border-radius:9px;color:rgba(239,248,242,.72)!important;font-size:.82rem;font-weight:600;line-height:1;text-decoration:none!important;white-space:nowrap;transition:background-color .16s ease,color .16s ease}.wu-primary-nav a:hover{background:rgba(255,255,255,.08);color:#fff!important}.wu-primary-nav a.is-active{background:#fff;color:#123c27!important;box-shadow:0 7px 20px rgba(0,0,0,.12)}.wu-primary-nav .wu-feedback-link{margin-left:7px;border:1px solid rgba(216,243,106,.46);color:var(--wu-header-accent)!important}.wu-primary-nav .wu-feedback-link:hover{border-color:var(--wu-header-accent);background:rgba(216,243,106,.1)}
 .wu-language-toggle{display:inline-flex;align-items:center;justify-content:center;flex:none;gap:6px;margin-left:4px;padding:9px 11px;border:1px solid rgba(216,243,106,.46);border-radius:9px;color:var(--wu-header-accent);background:transparent;font:650 .79rem/1 "Segoe UI",sans-serif;cursor:pointer;white-space:nowrap;transition:background-color .16s ease,color .16s ease,border-color .16s ease}.wu-language-toggle>span:first-child{font-size:.9rem;line-height:1}.wu-language-toggle:hover,.wu-language-toggle:focus-visible{border-color:var(--wu-header-accent);color:#10281c;background:var(--wu-header-accent);outline:none}.wu-language-toggle:focus-visible{box-shadow:0 0 0 3px rgba(216,243,106,.28)}
 .wu-install-toggle{display:inline-flex;align-items:center;justify-content:center;flex:none;margin-left:4px;padding:9px 10px;border:1px solid rgba(216,243,106,.46);border-radius:9px;color:var(--wu-header-accent);background:transparent;font:650 .76rem/1 "Segoe UI",sans-serif;cursor:pointer;white-space:nowrap}.wu-install-toggle[hidden]{display:none!important}.wu-install-toggle:hover,.wu-install-toggle:focus-visible{border-color:var(--wu-header-accent);color:#10281c;background:var(--wu-header-accent);outline:none}
 .wu-header-ad{width:min(1120px,calc(100% - 32px));margin:12px auto 0;overflow:visible;text-align:center}.wu-header-ad .adsbygoogle{display:block!important;width:100%;max-width:1120px!important;margin:0 auto}.wu-header-ad::before{display:block;margin-bottom:4px;color:#718277;font-size:.62rem;letter-spacing:.08em;line-height:1;text-transform:uppercase;content:"Advertisement"}
@@ -35,7 +35,7 @@ html[dir="rtl"] .wu-primary-nav .wu-feedback-link,html[dir="rtl"] .wu-language-t
 /* The full tools navigation can outgrow a laptop-width header. Collapse it
    before the language control is pushed off-screen, keeping the utility
    controls reachable without horizontal scrolling. */
-@media(min-width:901px) and (max-width:1280px){
+@media(min-width:901px) and (max-width:1920px){
   .wu-header-inner{position:relative}
   .wu-menu-toggle{display:inline-flex}
   .wu-primary-nav{position:absolute;top:calc(100% + 8px);right:0;left:0;display:none;align-items:stretch;padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:#0d3523;box-shadow:0 20px 50px rgba(4,22,13,.3)}
@@ -133,7 +133,7 @@ html[dir="rtl"] body footer.wu-footer .wu-footer-bottom{direction:rtl}
 
 /* A compact privacy reassurance directly below the main navigation. */
 .wu-header-trustbar{border-top:1px solid rgba(255,255,255,.07);background:rgba(4,27,17,.42)}
-.wu-header-trustbar-inner{display:flex;align-items:center;gap:18px;width:min(1180px,calc(100% - 40px));min-height:29px;margin:0 auto;color:rgba(231,244,235,.7);font-size:.71rem;line-height:1.35}
+.wu-header-trustbar-inner{display:flex;align-items:center;gap:18px;width:min(1600px,calc(100% - 40px));min-height:29px;margin:0 auto;color:rgba(231,244,235,.7);font-size:.71rem;line-height:1.35}
 .wu-header-trust-item{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
 .wu-header-trust-icon{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border:1px solid rgba(216,243,106,.56);border-radius:50%;color:#d8f36a;font-size:.65rem;font-weight:800;line-height:1}
 .wu-header-privacy{margin-left:auto;color:rgba(231,244,235,.48);font-size:.68rem;white-space:nowrap}

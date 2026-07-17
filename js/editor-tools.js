@@ -669,7 +669,10 @@
         }
 
         historyButton.addEventListener('click', function () {
-            closeToolMenu();
+            // Keep the Tools menu open while the history panel is visible so
+            // the same control remains available to close it again. The
+            // document-level outside-click handler still dismisses the menu
+            // when the user moves on to another part of the page.
             var opening = historyPanel.hidden;
             historyPanel.hidden = !opening;
             historyButton.setAttribute('aria-expanded', String(opening));
