@@ -131,13 +131,14 @@
     }
 
     function bind(root) {
-        if (root.dataset.inputModeBound) return;
-        root.dataset.inputModeBound = 'true';
-        root.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
-            button.addEventListener('click', function () { setMode(root, button.getAttribute('data-input-mode-option')); });
-        });
-        render(root, readMode(root));
-        bindShortcut(root);
+        if (!root.dataset.inputModeBound) {
+            root.dataset.inputModeBound = 'true';
+            root.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
+                button.addEventListener('click', function () { setMode(root, button.getAttribute('data-input-mode-option')); });
+            });
+            bindShortcut(root);
+        }
+        render(root, root.dataset.inputMode || readMode(root));
     }
 
     function bindAll() { document.querySelectorAll('[data-input-mode-control]').forEach(bind); }

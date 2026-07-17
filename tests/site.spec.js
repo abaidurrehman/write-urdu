@@ -47,6 +47,24 @@ test('Urdu keyboard inserts characters and clears text', async ({ page }) => {
   await expect(page.locator('#write')).toHaveValue('');
 });
 
+test('basic editor can switch between transliteration and direct input without changing text', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  const editor = page.locator('#transliterateTextarea');
+  const mode = page.locator('[data-input-mode-control]').first();
+  await editor.fill('mera khayal');
+  await mode.locator('[data-input-mode-option="direct"]').click();
+  await expect(mode).toHaveAttribute('data-input-mode', 'direct');
+  await expect(editor).toHaveAttribute('dir', 'auto');
+  await expect(editor).toHaveValue('mera khayal');
+  await mode.locator('[data-input-mode-option="roman"]').click();
+  await expect(mode).toHaveAttribute('data-input-mode', 'roman');
+  await expect(editor).toHaveAttribute('dir', 'rtl');
+  await editor.press('Control+g');
+  await expect(mode).toHaveAttribute('data-input-mode', 'direct');
+  await expect(editor).toHaveValue('mera khayal');
+});
+
 test('template library filters, favorites, and renders starter designs', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-templates.html');
