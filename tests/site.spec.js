@@ -1079,3 +1079,45 @@ test('editor workspaces remain horizontally centered', async ({ page, isMobile }
     expect(Math.abs(box.x - expectedX), `${route} workspace is not centered`).toBeLessThanOrEqual(2);
   }
 });
+
+test('invoice generator keeps a structured live A4 preview', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-invoice-generator.html');
+  await expect(page.locator('[data-invoice-generator]')).toBeVisible();
+  await expect(page.locator('[data-invoice-preview]')).toBeVisible();
+  await page.locator('[data-field="seller.name"]').fill('Write Urdu');
+  await page.locator('[data-field="buyer.name"]').fill('Bright Future Academy');
+  await page.locator('[data-item-field="description"]').fill('Urdu document service');
+  await page.locator('[data-item-field="unitPrice"]').fill('1250');
+  await expect(page.locator('[data-invoice-preview]')).toContainText('Bright Future Academy');
+  await expect(page.locator('[data-invoice-preview]')).toContainText('PKR 1,250.00');
+  await expect(page.locator('[data-invoice-preview]')).toHaveAttribute('data-density', 'comfortable');
+  await expect(page.locator('.invoice-footer-credit')).toContainText('Created with Write-Urdu Invoice Generator');
+  await page.locator('[data-field="languageMode"]').selectOption('urdu');
+  await expect(page.locator('[data-invoice-preview]')).toHaveAttribute('dir', 'rtl');
+  await page.locator('details.invoice-panel').filter({ hasText: 'Optional sections' }).locator('summary').click();
+  await page.locator('[data-section="qr"]').check();
+  await expect(page.locator('[data-invoice-qr-fields]')).toBeVisible();
+  await expect(page.locator('.invoice-qr-box')).toContainText('ہماری رابطہ معلومات محفوظ کرنے کے لیے اسکین کریں');
+  await page.locator('details.invoice-panel').filter({ hasText: 'Notes, terms & payment details' }).locator('summary').click();
+  await page.locator('[data-field="notes"]').fill('صرف نوٹس');
+  await expect(page.locator('.invoice-notes h3')).toContainText('نوٹس');
+  await page.locator('[data-field="preferences.showGeneratorCredit"]').uncheck();
+  await expect(page.locator('.invoice-footer-credit')).toHaveCount(0);
+  for (let i = 0; i < 5; i += 1) await page.locator('[data-invoice-add-item]').click();
+  await expect(page.locator('[data-invoice-add-item]')).toBeDisabled();
+});
+
+test('invoice generator confirms before zero-total export', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-invoice-generator.html');
+  await page.locator('[data-field="seller.name"]').fill('Write Urdu');
+  await page.locator('[data-field="buyer.name"]').fill('Client');
+  await page.locator('[data-item-field="description"]').fill('Free consultation');
+  await page.locator('[data-item-field="unitPrice"]').fill('0');
+  await page.locator('[data-invoice-png]').click();
+  await expect(page.locator('[data-invoice-zero-dialog]')).toBeVisible();
+  await expect(page.locator('[data-invoice-zero-dialog]')).toContainText('zero total');
+  await page.locator('[data-invoice-zero-cancel]').click();
+  await expect(page.locator('[data-invoice-zero-dialog]')).not.toBeVisible();
+});

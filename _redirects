@@ -6,6 +6,8 @@ https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
 /urdu-keyboard.html /urdu-keyboard 301
 /urdu-alphabet.html /urdu-alphabet 301
 /urdu-card-studio.html /urdu-card-studio 301
+/urdu-invoice-generator.html /urdu-invoice-generator 301
+/invoice-generator /urdu-invoice-generator 301
 /stylish-urdu-text-generator.html /stylish-urdu-text-generator 301
 /urdu-stylish-name-generator /stylish-urdu-text-generator 301
 /urdu-name-art-maker.html /urdu-name-art-maker 301
@@ -31,6 +33,7 @@ https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
 /urdu-keyboard/ /urdu-keyboard 301
 /urdu-alphabet/ /urdu-alphabet 301
 /urdu-card-studio/ /urdu-card-studio 301
+/urdu-invoice-generator/ /urdu-invoice-generator 301
 /stylish-urdu-text-generator/ /stylish-urdu-text-generator 301
 /urdu-name-art-maker/ /urdu-name-art-maker 301
 /urdu-whatsapp-status-maker/ /urdu-whatsapp-status-maker 301

@@ -11,6 +11,7 @@
         { href: '/urdu-keyboard', match: ['/urdu-keyboard', '/urdu-keyboard.html'], key: 'keyboard', label: 'Urdu Keyboard', icon: 'keyboard' },
         { href: '/urdu-alphabet', match: ['/urdu-alphabet', '/urdu-alphabet.html'], key: 'alphabet', label: 'Urdu Alphabet', icon: 'alphabet', secondary: true },
         { href: '/urdu-card-studio', match: ['/urdu-card-studio', '/urdu-card-studio.html'], key: 'cardStudio', label: 'Card Studio', icon: 'card' },
+        { href: '/urdu-invoice-generator', match: ['/urdu-invoice-generator', '/urdu-invoice-generator.html'], key: 'invoiceGenerator', label: 'Invoice Generator', icon: 'invoice' },
         { href: '/stylish-urdu-text-generator', match: ['/stylish-urdu-text-generator', '/stylish-urdu-text-generator.html'], key: 'stylishText', label: 'Stylish Urdu Text', icon: 'sparkle', group: 'create' },
         { href: '/urdu-name-art-maker', match: ['/urdu-name-art-maker', '/urdu-name-art-maker.html'], key: 'nameArt', label: 'Urdu Name Art', icon: 'name', group: 'create' },
         { href: '/urdu-whatsapp-status-maker', match: ['/urdu-whatsapp-status-maker', '/urdu-whatsapp-status-maker.html'], key: 'whatsappMaker', label: 'WhatsApp Status Maker', icon: 'phone', group: 'create' },
@@ -36,6 +37,7 @@
         image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.4"/><path d="m4 17 5-5 3.5 3 2.5-2.5 6 5"/>',
         grid: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
         qr: '<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM17 14h3"/>',
+        invoice: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
         book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z"/><path d="M4 5.5V21M8 7h8M8 10h8"/>',
         sliders: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="18" r="2"/>',
         play: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/>',
@@ -50,13 +52,13 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', features: 'Features',
                 tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', create: 'Create', more: 'More', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
-                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
                 about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
@@ -98,13 +100,13 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', features: 'خصوصیات',
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', features: 'خصوصیات',
                 tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', create: 'تخلیق', more: 'مزید', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
@@ -281,6 +283,7 @@
                             '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
                             '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
                             '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
+                            '<a href="/urdu-invoice-generator" data-wu-i18n-key="footer.invoiceGenerator">Invoice Generator</a>' +
                             '<a href="/stylish-urdu-text-generator" data-wu-i18n-key="footer.stylishText">Stylish Urdu Text</a>' +
                             '<a href="/urdu-name-art-maker" data-wu-i18n-key="footer.nameArt">Urdu Name Art</a>' +
                             '<a href="/urdu-whatsapp-status-maker" data-wu-i18n-key="nav.whatsappMaker">WhatsApp Status Maker</a>' +

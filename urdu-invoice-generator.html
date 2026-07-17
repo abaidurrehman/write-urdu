@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Free Urdu Invoice Generator — English & Bilingual PDF | Write Urdu</title>
+    <meta name="description" content="Create professional Urdu, English or bilingual invoices with automatic totals, Roman Urdu typing, QR codes and local PDF or PNG export. No account required.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://write-urdu.com/urdu-invoice-generator">
+    <meta property="og:type" content="website"><meta property="og:site_name" content="Write Urdu"><meta property="og:title" content="Free Urdu Invoice Generator — English &amp; Bilingual PDF | Write Urdu"><meta property="og:description" content="Create professional Urdu, English or bilingual invoices with automatic totals, Roman Urdu typing, QR codes and local PDF or PNG export."><meta property="og:url" content="https://write-urdu.com/urdu-invoice-generator"><meta property="og:image" content="https://write-urdu.com/assets/social/write-urdu-home.svg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Write Urdu invoice generator preview">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/site-header.css">
+    <link rel="stylesheet" href="css/invoice-generator.css">
+    <link rel="stylesheet" href="css/invoice-generator-preview.css">
+    <link rel="stylesheet" href="css/invoice-generator-tweaks.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Noto+Naskh+Arabic:wght@400;500;600;700&amp;family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;family=Tajawal:wght@400;500;700&amp;display=swap">
+    <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
+    <script src="site-header.js" defer></script>
+    <script src="google_jsapi.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="js/vendor/qrcode.js" defer></script>
+    <script src="js/invoice-generator-core.js" defer></script>
+    <script src="js/invoice-generator.js" defer></script>
+</head>
+<body class="invoice-generator-page">
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark" aria-label="Primary navigation"><a class="navbar-brand" href="/">Write Urdu</a></nav>
+    <main class="invoice-shell" data-invoice-generator>
+        <header class="invoice-intro">
+            <div>
+                <p class="invoice-eyebrow">WRITE URDU TOOL</p>
+                <h1>Urdu &amp; English Invoice Generator</h1>
+                <p class="invoice-lede">Create a professional one-page invoice in Urdu, English or both. Add only the sections you need and download it as PDF or PNG.</p>
+            </div>
+            <aside class="invoice-privacy"><strong>Your invoice stays private</strong><span>Everything is processed in this browser. No account or upload is required.</span></aside>
+        </header>
+        <div class="invoice-actionbar" role="toolbar" aria-label="Invoice actions">
+            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-new>New invoice</button>
+            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-reset>Reset</button>
+            <span class="invoice-fit-status" data-invoice-fit-status role="status">Ready to edit</span>
+            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-print>Print invoice</button>
+            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-pdf>Download PDF</button>
+            <button type="button" class="invoice-button invoice-button-primary" data-invoice-png>Download PNG</button>
+        </div>
+        <dialog class="invoice-zero-dialog" data-invoice-zero-dialog aria-labelledby="invoice-zero-dialog-title" aria-describedby="invoice-zero-dialog-copy">
+            <form method="dialog">
+                <h2 id="invoice-zero-dialog-title">This invoice has a zero total</h2>
+                <p id="invoice-zero-dialog-copy">The invoice may be incomplete because all item amounts are zero.</p>
+                <div class="invoice-dialog-actions"><button type="submit" value="cancel" class="invoice-button invoice-button-secondary" data-invoice-zero-cancel>Cancel</button><button type="submit" value="confirm" class="invoice-button invoice-button-primary" data-invoice-zero-confirm>Download anyway</button></div>
+            </form>
+        </dialog>
+        <div class="invoice-workspace">
+            <section class="invoice-editor" aria-label="Invoice details">
+                <div class="invoice-restore" data-invoice-restore hidden><strong>Local invoice draft found.</strong><span data-invoice-restore-copy></span><button type="button" class="invoice-button invoice-button-small" data-invoice-restore-action>Restore</button><button type="button" class="invoice-link-button" data-invoice-discard>Start fresh</button></div>
+                <details class="invoice-panel" open><summary>Language &amp; invoice details</summary><div class="invoice-panel-body">
+                    <div class="invoice-field-grid two"><label>Language mode<select data-field="languageMode"><option value="english">English</option><option value="urdu">اردو</option><option value="bilingual">Bilingual / دو لسانی</option></select></label><label>Currency<select data-field="currency"><option>PKR</option><option>USD</option><option>GBP</option><option>EUR</option><option>AED</option><option>SAR</option></select></label></div>
+                    <div class="invoice-field-grid two"><label>Invoice number<input data-field="invoiceNumber" dir="ltr" placeholder="INV-2026-0001"></label><label>Invoice date<input data-field="issueDate" type="date" dir="ltr"></label></div>
+                    <div class="invoice-field-grid two"><label>Due date (optional)<input data-field="dueDate" type="date" dir="ltr"></label><label>Payment status<select data-field="status"><option>Unpaid</option><option>Partially paid</option><option>Paid</option></select></label></div>
+                </div></details>
+                <details class="invoice-panel" open><summary>Business details</summary><div class="invoice-panel-body"><label>Business name<input data-field="seller.name" id="invoiceSellerName" placeholder="Your business name"></label><div class="invoice-field-grid two"><label>Tagline<input data-field="seller.tagline" id="invoiceSellerTagline" placeholder="A short description"></label><label>Phone<input data-field="seller.phone" dir="ltr" placeholder="+92 300 1234567"></label></div><label>Address<textarea data-field="seller.address" id="invoiceSellerAddress" rows="2" placeholder="Business address"></textarea></label><div class="invoice-field-grid two"><label>Email<input data-field="seller.email" dir="ltr" type="email" placeholder="hello@example.com"></label><label>Website<input data-field="seller.website" dir="ltr" placeholder="example.com"></label></div><div class="invoice-field-grid two"><label>Reference label<input data-field="seller.referenceLabel" placeholder="Tax / registration label"></label><label>Reference value<input data-field="seller.referenceValue" dir="ltr" placeholder="Optional reference"></label><label>Second reference label<input data-field="seller.referenceLabel2" placeholder="Optional second label"></label><label>Second reference value<input data-field="seller.referenceValue2" dir="ltr" placeholder="Optional second value"></label></div></div></details>
+                <details class="invoice-panel" open><summary>Client details</summary><div class="invoice-panel-body"><label>Client name<input data-field="buyer.name" id="invoiceBuyerName" placeholder="Client or organisation"></label><label>Address<textarea data-field="buyer.address" id="invoiceBuyerAddress" rows="2" placeholder="Client address"></textarea></label><div class="invoice-field-grid two"><label>Phone<input data-field="buyer.phone" dir="ltr" placeholder="Phone"></label><label>Email<input data-field="buyer.email" dir="ltr" type="email" placeholder="Email"></label><label>Reference label<input data-field="buyer.referenceLabel" placeholder="Optional reference"></label><label>Reference value<input data-field="buyer.referenceValue" dir="ltr" placeholder="Optional reference value"></label></div></div></details>
+                <details class="invoice-panel" open><summary>Line items <span class="invoice-panel-note">up to 6</span></summary><div class="invoice-panel-body"><div data-invoice-items></div><button type="button" class="invoice-button invoice-button-secondary" data-invoice-add-item>Add line item</button><p class="invoice-help">The one-page invoice supports a maximum of six items.</p></div></details>
+                <details class="invoice-panel"><summary>Totals &amp; payment</summary><div class="invoice-panel-body"><div class="invoice-field-grid two"><label>Discount<select data-field="discount.mode"><option value="disabled">No discount</option><option value="percentage">Percentage</option><option value="flat">Flat amount</option></select></label><label>Discount value<input data-field="discount.value" inputmode="decimal" placeholder="0"></label></div><div class="invoice-field-grid two"><label>Tax<select data-field="tax.mode"><option value="disabled">No tax</option><option value="percentage">Percentage</option><option value="flat">Flat amount</option></select></label><label>Tax value<input data-field="tax.value" inputmode="decimal" placeholder="0"></label></div><div class="invoice-field-grid two"><label>Additional charge<input data-field="additionalCharge" inputmode="decimal" placeholder="0"></label><label>Amount paid<input data-field="amountPaid" inputmode="decimal" placeholder="0"></label></div></div></details>
+                <details class="invoice-panel"><summary>Notes, terms &amp; payment details</summary><div class="invoice-panel-body"><label>Notes<textarea data-field="notes" id="invoiceNotes" rows="3" placeholder="Thank you for your business."></textarea></label><label>Terms and conditions<textarea data-field="terms" id="invoiceTerms" rows="3" placeholder="Payment terms or delivery notes"></textarea></label><div class="invoice-subheading">Payment details (optional)</div><div class="invoice-field-grid two"><label>Bank name<input data-field="paymentDetails.bankName" id="invoiceBankName"></label><label>Account title<input data-field="paymentDetails.accountTitle" id="invoiceAccountTitle"></label><label>Account number<input data-field="paymentDetails.accountNumber" dir="ltr"></label><label>IBAN<input data-field="paymentDetails.iban" dir="ltr"></label></div><label>Payment instructions<textarea data-field="paymentDetails.instructions" rows="2"></textarea></label></div></details>
+                <details class="invoice-panel"><summary>Optional sections</summary><div class="invoice-panel-body"><label class="invoice-check"><input type="checkbox" data-section="qr"> Include a QR code</label><div class="invoice-conditional" data-invoice-qr-fields hidden><label>QR content<input data-field="qr.customContent" placeholder="Website, payment reference or note"></label><label>Caption mode<select data-field="qr.captionMode"><option value="automatic">Automatic purpose caption</option><option value="custom">Custom caption</option></select></label><label>Custom caption (optional)<input data-field="qr.customCaption" placeholder="Scan for more details"></label><p class="invoice-help">Automatic captions explain what the QR code does without exposing the payload.</p></div><label class="invoice-check"><input type="checkbox" data-section="authorization"> Show authorization</label><div class="invoice-conditional" data-invoice-auth-fields hidden><div class="invoice-field-grid two"><label>Authorised person<input data-field="authorization.name" id="invoiceAuthName"></label><label>Role / title<input data-field="authorization.role" id="invoiceAuthRole"></label></div></div><label>Footer message<textarea data-field="footerMessage" id="invoiceFooter" rows="2" placeholder="Thank you for your trust and business!"></textarea></label><label class="invoice-check"><input type="checkbox" data-field="preferences.showGeneratorCredit"> Show Write-Urdu credit</label></div></details>
+                <div class="invoice-sample-row"><button type="button" class="invoice-link-button" data-invoice-sample>Load sample invoice</button><span>Use a sample to explore the layout; it stays on this device.</span></div>
+            </section>
+            <section class="invoice-preview-workspace" aria-label="Invoice preview"><div class="invoice-preview-toolbar"><strong>Live A4 preview</strong><span data-invoice-preview-label>Minimal Professional · 210 × 297 mm</span></div><div class="invoice-preview-frame"><article class="invoice-page" data-invoice-preview aria-label="Invoice preview"></article></div><p class="invoice-preview-hint">Preview is scaled on screen. Exports use the full A4 page.</p></section>
+        </div>
+        <section class="invoice-about seo-content" aria-labelledby="invoice-about-title"><h2 id="invoice-about-title">Create a professional invoice in Urdu or English</h2><p>The Write Urdu Invoice Generator is a browser-based tool for freelancers, teachers, consultants and small businesses. Add seller and client details, line items, live totals, payment information and an optional local QR code, then print or download the finished one-page invoice.</p><div class="invoice-about-grid"><article><h3>Structured and flexible</h3><p>Only meaningful optional sections appear, so a simple invoice stays compact while bilingual labels remain easy to read.</p></article><article><h3>Built for Urdu</h3><p>Choose Urdu or bilingual labels and use Roman Urdu typing in supported free-text fields. Numbers, dates and account details retain their natural left-to-right order.</p></article><article><h3>Private by default</h3><p>Invoice data, calculations and images stay in this browser. There is no account, cloud invoice library or automatic social posting.</p></article></div></section>
+    </main>
+    <footer><div class="Footer-credits">Write Urdu invoice generator</div></footer>
+</body>
+</html>

@@ -1,0 +1,1 @@
+.invoice-card-with-qr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}.invoice-card-with-qr .invoice-qr-box{align-self:center}
