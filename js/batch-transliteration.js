@@ -10,6 +10,7 @@
             action: 'Convert all text',
             busy: 'Converting the passage…',
             done: 'The complete passage was converted to Urdu.',
+            changed: 'The text changed while conversion was running. Review it and try again.',
             error: 'The passage could not be converted. Check your connection and try again.'
         },
         ur: {
@@ -18,6 +19,7 @@
             action: 'پورا متن تبدیل کریں',
             busy: 'متن تبدیل کیا جا رہا ہے…',
             done: 'پورا متن اردو میں تبدیل ہو گیا۔',
+            changed: 'تبدیلی کے دوران متن بدل گیا۔ اسے دیکھ کر دوبارہ کوشش کریں۔',
             error: 'متن تبدیل نہیں ہو سکا۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔'
         }
     };
@@ -180,6 +182,11 @@
                 if (prompt) prompt.textContent = text('busy') + ' ' + completed + '/' + total;
             }).then(function (result) {
                 if (request !== activeRequest) return;
+                if (readValue(target) !== original) {
+                    if (prompt) prompt.textContent = text('changed');
+                    if (status) status.textContent = text('changed');
+                    return;
+                }
                 writeValue(target, result);
                 dispatchInput(target);
                 if (prompt) prompt.textContent = text('done');
@@ -199,9 +206,31 @@
         refresh();
     }
 
-    function refreshAll() { document.querySelectorAll('[data-batch-transliteration]').forEach(configure); }
+    var targetObserver = null;
+    function refreshAll() {
+        var panels = document.querySelectorAll('[data-batch-transliteration]');
+        panels.forEach(configure);
+        if (targetObserver && panels.length && Array.prototype.every.call(panels, function (panel) { return panel.dataset.batchBound === 'true'; })) {
+            targetObserver.disconnect();
+            targetObserver = null;
+        }
+    }
+
+    function start() {
+        refreshAll();
+        if (window.MutationObserver && document.body) {
+            targetObserver = new MutationObserver(refreshAll);
+            targetObserver.observe(document.body, { childList: true, subtree: true });
+            window.setTimeout(function () {
+                if (targetObserver) {
+                    targetObserver.disconnect();
+                    targetObserver = null;
+                }
+            }, 10000);
+        }
+    }
 
     document.addEventListener('write-urdu:locale-change', refreshAll);
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refreshAll);
-    else refreshAll();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+    else start();
 }());
