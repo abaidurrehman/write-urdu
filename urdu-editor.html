@@ -280,12 +280,17 @@
                 <hr class="solid">
                 <div style="margin-top:15px;">
                     <div class="tool-actions" style="text-align:right;margin-top:15px;width:100%;">
+                        <div class="home-actions-group home-actions-group-primary" role="group" aria-label="Writing mode">
                         <a class="btn btn-success btn-sm" role="button" href="/" title="Switch to the basic editor">
                             <i class="fas fa-pencil-alt" aria-hidden="true"></i> Basic editor</a>
+                        </div>
+                        <div class="home-actions-group home-actions-group-create" role="group" aria-label="Create with your document">
                         <button type="button" class="btn btn-outline-editor btn-sm" data-create-card data-editor-source="rich-editor">
                             <i class="far fa-image" aria-hidden="true"></i> Create Urdu Card</button>
                         <button type="button" class="btn btn-outline-editor btn-sm" data-create-qr data-editor-source="rich-editor">
                             <i class="fas fa-qrcode" aria-hidden="true"></i> Create QR Code</button>
+                        </div>
+                        <div class="home-actions-group home-actions-group-export" role="group" aria-label="Export and share">
                         <details class="action-menu rich-action-menu">
                             <summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> Export</summary>
                             <div class="action-menu-panel">
@@ -314,6 +319,7 @@
                                     <i class="fas fa-list" aria-hidden="true"></i> Font samples</button>
                             </div>
                         </details>
+                        </div>
                         <div class="spinner-grow text-success" role="status" id="spinner">
                             <span class="sr-only">Loading transliteration...</span>
                         </div>

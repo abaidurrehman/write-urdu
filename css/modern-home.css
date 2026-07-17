@@ -50,3 +50,96 @@ hr.solid{margin:9px 0}
   .home-actions .btn-outline-editor{font-size:.72rem}
   .home-actions .btn-outline-editor i{font-size:.78rem}
 }
+
+/* Action hierarchy: keep common actions together, then creation and utility
+   actions in their own visual groups. This makes the toolbar scannable while
+   preserving the existing buttons and their handlers. */
+.home-actions,
+.tool-actions,
+.keyboard-actions {
+  display:flex!important;
+  align-items:center;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  padding:7px!important;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(247,250,248,.92);
+  box-shadow:0 6px 18px rgba(20,35,28,.05);
+}
+.home-actions-group {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  min-width:0;
+  padding:3px;
+  border:1px solid #e0e9e3;
+  border-radius:11px;
+  background:#fff;
+}
+.home-actions-group-primary { border-color:#bfe2cb; background:#f0faf3; }
+.home-actions-group-create { border-color:#d4e5da; }
+.home-actions-group-secondary,
+.home-actions-group-export { background:#f1f5f2; }
+.home-actions-group .btn,
+.home-actions-group summary { margin:0!important; }
+.home-actions-group .btn-outline-editor { border-color:transparent!important; }
+.home-actions-group .btn-outline-editor:hover,
+.home-actions-group .btn-outline-editor:focus-visible { border-color:#bdd7c8!important; }
+.tool-actions .home-actions-group { flex:0 0 auto; }
+.tool-actions > .editor-tool-actions {
+  display:flex!important;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  order:40;
+  margin-left:auto;
+  padding:3px;
+  border:1px solid #e0e9e3;
+  border-radius:11px;
+  background:#fff;
+}
+.home-actions > .editor-tool-actions {
+  display:flex!important;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:5px;
+  order:40;
+  margin-left:auto;
+  padding:3px;
+  border:1px solid #e0e9e3;
+  border-radius:11px;
+  background:#fff;
+}
+.home-actions > .editor-find-panel,
+.home-actions > .editor-history-panel,
+.tool-actions > .editor-find-panel,
+.tool-actions > .editor-history-panel { flex-basis:100%; }
+.tool-actions > #spinner { margin-left:0!important; }
+
+@media(max-width:767px){
+  .home-actions,
+  .tool-actions,
+  .keyboard-actions { align-items:stretch; gap:6px!important; padding:6px!important; }
+  .home-actions-group { flex:1 1 100%; width:100%; }
+  .home-actions-group-primary,
+  .home-actions-group-secondary { flex-basis:calc(50% - 3px); width:calc(50% - 3px); }
+  .home-actions-group-create,
+  .home-actions-group-export { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .home-actions-group .btn,
+  .home-actions-group summary { width:100%; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+  .home-actions-group-primary .btn,
+  .home-actions-group-secondary .btn { width:auto; flex:1 1 0; }
+  .home-actions > .editor-tool-actions,
+  .tool-actions > .editor-tool-actions { order:60; width:100%; margin-left:0; display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .home-actions > .editor-tool-actions .editor-tool-button,
+  .tool-actions > .editor-tool-actions .editor-tool-button { width:100%; min-width:0; }
+  .tool-actions > #spinner { margin-inline:auto!important; }
+}
+@media(max-width:480px){
+  .home-actions-group-primary,
+  .home-actions-group-secondary { flex-basis:100%; width:100%; }
+  .home-actions-group-create,
+  .home-actions-group-export { grid-template-columns:1fr; }
+}

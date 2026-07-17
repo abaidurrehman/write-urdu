@@ -41,12 +41,22 @@
                 <p data-card-i18n="subtitle">Design, move, edit and export Urdu cards in your browser.</p>
                 <p class="card-studio-template-badge" data-card-library-template hidden aria-live="polite"></p>
             </div>
-            <div class="card-studio-top-actions">
-                <a class="card-studio-button" href="/urdu-templates">Browse templates</a>
-                <button class="card-studio-button" type="button" data-card-action="back" data-card-i18n="back">Back to editor</button>
-                <button class="card-studio-button" type="button" data-card-action="reset" data-card-i18n="reset">Reset</button>
-                <button class="card-studio-button secondary" type="button" data-card-action="share" data-card-i18n="share">Share</button>
-                <button class="card-studio-button primary" type="button" data-card-action="download" data-card-i18n="download">Download PNG</button>
+            <div class="card-studio-top-actions" role="toolbar" aria-label="Card actions">
+                <div class="card-studio-action-group" role="group" aria-label="Workspace">
+                    <span class="card-studio-action-group-label">Workspace</span>
+                    <div class="card-studio-action-group-buttons">
+                        <a class="card-studio-button" href="/urdu-templates">Browse templates</a>
+                        <button class="card-studio-button" type="button" data-card-action="back" data-card-i18n="back">Back to editor</button>
+                    </div>
+                </div>
+                <div class="card-studio-action-group card-studio-action-group-export" role="group" aria-label="Export and share">
+                    <span class="card-studio-action-group-label">Export</span>
+                    <div class="card-studio-action-group-buttons">
+                        <button class="card-studio-button quiet" type="button" data-card-action="reset" data-card-i18n="reset">Reset</button>
+                        <button class="card-studio-button secondary" type="button" data-card-action="share" data-card-i18n="share">Share</button>
+                        <button class="card-studio-button primary" type="button" data-card-action="download" data-card-i18n="download">Download PNG</button>
+                    </div>
+                </div>
             </div>
         </header>
 

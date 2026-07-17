@@ -36,3 +36,28 @@ body.card-studio-page{margin:0;background:#eef4f0;color:var(--card-ink);font-fam
 @media(max-width:900px){.card-studio-canvas-toolbar{top:-54px}.card-studio-canvas-toolbar .card-studio-icon-button{width:40px;min-width:40px;height:40px}.card-studio-canvas-help{max-width:52rem;margin-inline:auto}.card-studio-icon-button[data-card-tooltip]::after{display:none}}
 @media(max-width:520px){.card-studio-context-toolbar.card-studio-canvas-toolbar{width:calc(100% - 8px);max-width:none;overflow-x:auto;justify-content:flex-start}.card-studio-canvas-toolbar>span.card-studio-selected-object{max-width:96px}.card-studio-canvas-toolbar .card-studio-icon-button{flex:0 0 40px}}
 @media(min-width:901px){.card-studio-top-actions{gap:6px;flex-wrap:nowrap}.card-studio-top-actions>.card-studio-button{min-height:38px;padding:9px 11px;font-size:.8rem}}
+
+/* The header is a command bar, not a loose row of unrelated buttons. Keep
+   navigation and export actions visually grouped so the next step is obvious
+   without taking space from the canvas below. */
+.card-studio-top-actions{align-items:stretch;gap:10px}
+.card-studio-action-group{display:flex;flex-direction:column;gap:4px;padding:5px;border:1px solid var(--card-line);border-radius:12px;background:rgba(255,255,255,.76)}
+.card-studio-action-group-export{border-color:#c5dfcf;background:#f4faf6}
+.card-studio-action-group-label{padding:0 4px;color:var(--card-muted);font-size:.64rem;font-weight:800;letter-spacing:.08em;line-height:1;text-transform:uppercase}
+.card-studio-action-group-buttons{display:flex;align-items:center;gap:5px}
+.card-studio-action-group .card-studio-button{min-height:38px;padding:9px 12px;border-radius:8px;font-size:.8rem}
+.card-studio-action-group .card-studio-button.quiet{border-color:transparent;background:transparent;color:var(--card-muted)}
+.card-studio-action-group .card-studio-button.quiet:hover,.card-studio-action-group .card-studio-button.quiet:focus-visible{border-color:var(--card-line);background:#fff;color:var(--card-ink)}
+.card-studio-action-group .card-studio-button.primary{box-shadow:0 5px 14px rgba(20,122,73,.18)}
+@media(max-width:900px){
+  .card-studio-top-actions{width:100%;align-items:stretch;gap:8px}
+  .card-studio-action-group{flex:1 1 0;min-width:0}
+  .card-studio-action-group-buttons{flex-wrap:wrap}
+  .card-studio-action-group .card-studio-button{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
+@media(max-width:520px){
+  .card-studio-top-actions{display:grid;grid-template-columns:1fr 1fr}
+  .card-studio-action-group{width:100%}
+  .card-studio-action-group-export{grid-column:1/-1}
+  .card-studio-action-group-export .card-studio-button.primary{flex-basis:100%}
+}
