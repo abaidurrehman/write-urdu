@@ -397,6 +397,11 @@
         // the top toolbar. Rebuild it defensively if custom markup or a stale
         // cached document omitted the list element.
         if (!toolActions || !findPanel || !historyPanel) return;
+        var toolMenu = document.createElement('details');
+        toolMenu.className = 'action-menu editor-tools-menu';
+        toolMenu.setAttribute('aria-label', 'Writing tools');
+        toolMenu.innerHTML = '<summary class="btn btn-quiet"><i class="fas fa-wrench" aria-hidden="true"></i> Tools</summary><div class="editor-tools-menu-panel"></div>';
+        var toolMenuPanel = toolMenu.querySelector('.editor-tools-menu-panel');
         var historyList = historyPanel.querySelector('[data-history-list]');
         if (!historyList) {
             historyList = document.createElement('div');
@@ -405,10 +410,11 @@
             historyPanel.appendChild(historyList);
         }
         if (toolbar) {
-            // Promote the discoverability controls beside Copy/Export/Share;
+            // Keep the discoverability controls together in one compact menu;
             // their references stay local so the existing handlers continue
             // to work after the nodes are re-parented.
-            toolbar.appendChild(toolActions);
+            toolMenuPanel.appendChild(toolActions);
+            toolbar.appendChild(toolMenu);
             toolbar.appendChild(findPanel);
             toolbar.appendChild(historyPanel);
         }
