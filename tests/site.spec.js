@@ -145,6 +145,7 @@ test('Card Studio applies the library template visual style instead of only its 
     const state = window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState();
     return state && [state.libraryTemplateId, state.templateId, state.presetId, state.background.color].join('|');
   })).toBe('urdu-template-education-02|minimal-white|landscape|#eef7ff');
+  await page.locator('.card-studio-step[data-card-step="format"]').click();
   await expect(page.locator('[data-card-library-design]')).toBeVisible();
   await expect(page.locator('[data-card-library-design-name]')).toHaveText('Classroom Note');
   await expect(page.locator('[data-card-template="minimal-white"]')).toHaveAttribute('aria-pressed', 'false');
@@ -391,6 +392,7 @@ test('Card Studio opens with editor text and renders the selected preset', async
   await page.getByRole('button', { name: 'Create Urdu Card' }).click();
   await page.locator('[data-card-studio]').waitFor();
   await expect(page.locator('#cardText')).toHaveValue('یہ ایک خوب صورت اردو کارڈ ہے۔');
+  await page.locator('.card-studio-step[data-card-step="format"]').click();
   await expect(page.locator('#cardCanvas')).toHaveAttribute('width', '1080');
   await page.locator('#cardPreset').selectOption('story');
   await expect(page.locator('#cardCanvas')).toHaveAttribute('width', '1080');
@@ -401,6 +403,44 @@ test('Card Studio opens with editor text and renders the selected preset', async
   await expect(page.locator('[data-card-template="sunflower-bloom"]')).toHaveAttribute('aria-pressed', 'true');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('Card Studio guided steps keep the preview visible and progressive', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  const canvas = page.locator('#cardCanvas');
+  await expect(canvas).toBeVisible();
+  await expect(page.locator('[data-card-step-panel][data-card-step="content"]')).toBeVisible();
+  await expect(page.locator('[data-card-step-panel][data-card-step="format"]').first()).toBeHidden();
+
+  await page.locator('.card-studio-step[data-card-step="format"]').click();
+  await expect(page.locator('[data-card-step-panel][data-card-step="format"]')).toHaveCount(2);
+  await expect(page.locator('#cardPreset')).toBeVisible();
+  await expect(page.locator('#cardText')).toBeHidden();
+  await expect(canvas).toBeVisible();
+
+  await page.locator('.card-studio-step[data-card-step="style"]').click();
+  await expect(page.locator('#cardFont')).toBeVisible();
+  await expect(page.locator('.card-studio-layout-controls')).toBeHidden();
+  await page.locator('[data-card-ui-mode="advanced"]').click();
+  await expect(page.locator('.card-studio-layout-controls')).toBeVisible();
+
+  await page.locator('.card-studio-step[data-card-step="export"]').click();
+  await expect(page.locator('.card-studio-export-section')).toBeVisible();
+  await expect(canvas).toBeVisible();
+});
+
+test('Card Studio use-case cards apply recommended defaults', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-card-studio.html');
+  await page.locator('.card-studio-step[data-card-step="format"]').click();
+  await page.locator('[data-card-use-case="story"]').click();
+  await expect.poll(() => page.evaluate(() => {
+    const state = window.WriteUrduCardStudioApp.getState();
+    return [state.useCase, state.presetId, state.templateId].join('|');
+  })).toBe('story|story|midnight');
+  await expect(page.locator('[data-card-use-case="story"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#cardCanvas')).toHaveAttribute('height', '1920');
 });
 
 test('Card Studio supports local draft state and Urdu localization', async ({ page }) => {
@@ -428,6 +468,7 @@ test('Card Studio applies the selected Urdu font to canvas editing', async ({ pa
       };
     }
   });
+  await page.locator('.card-studio-step[data-card-step="style"]').click();
   await page.locator('#cardFont').selectOption({ label: 'Amiri' });
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().text.fontFamily)).toBe('Amiri');
   await expect.poll(() => page.evaluate(() => (window.__cardFontLoads || []).some(value => value.includes('Amiri')))).toBe(true);

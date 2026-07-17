@@ -85,6 +85,10 @@ assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /ensureProjectFonts\(\)/, 'Card Studio must wait for all selected project fonts before rendering');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
 assert.match(cardStudio, /data-card-interaction-layer|data-card-canvas-editor/, 'Card Studio direct editing layer is missing');
+assert.match(cardStudio, /data-card-stepper|data-card-step="content"/, 'Card Studio guided workflow is missing');
+assert.match(cardStudio, /data-card-ui-mode="quick"|data-card-ui-mode="advanced"/, 'Card Studio quick/advanced mode controls are missing');
+assert.match(cardStudio, /data-card-mobile-stepbar|data-card-use-case/, 'Card Studio mobile workflow or use-case choices are missing');
+assert.match(cardStudio, /js\/card-studio-ui\.js/, 'Card Studio guided UI controller is not loaded');
 assert.match(cardStudio, /data-input-mode-control|Direct Urdu \/ English/, 'Card Studio is missing the input mode switch');
 assert.match(cardStudio, /data-batch-transliteration|Convert all text/, 'Card Studio is missing the whole-text transliteration action');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /WriteUrduCardStudioApp|editingObjectId/, 'Card Studio application bridge is missing');

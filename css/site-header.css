@@ -32,6 +32,17 @@ html[dir="rtl"] .wu-primary-nav .wu-feedback-link,html[dir="rtl"] .wu-language-t
 @media(max-width:1120px){.wu-menu-toggle{display:inline-flex}.wu-primary-nav{position:absolute;top:calc(100% + 8px);right:0;left:0;display:none;align-items:stretch;padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:#0d3523;box-shadow:0 20px 50px rgba(4,22,13,.3)}.wu-primary-nav.is-open{display:grid;grid-template-columns:1fr 1fr}.wu-primary-nav a{padding:13px}.wu-primary-nav .wu-feedback-link,.wu-primary-nav .wu-language-toggle{margin:3px 0 0;grid-column:1/-1;text-align:center}.wu-primary-nav .wu-language-toggle{width:100%}}
 @media(max-width:520px){.wu-header-inner{min-height:56px}.wu-brand-mark{width:32px;height:32px}}
 @media(max-width:520px){.wu-header-ad{width:calc(100% - 24px);margin-top:9px}.wu-header-ad::before{font-size:.58rem}}
+/* The full tools navigation can outgrow a laptop-width header. Collapse it
+   before the language control is pushed off-screen, keeping the utility
+   controls reachable without horizontal scrolling. */
+@media(min-width:901px) and (max-width:1280px){
+  .wu-header-inner{position:relative}
+  .wu-menu-toggle{display:inline-flex}
+  .wu-primary-nav{position:absolute;top:calc(100% + 8px);right:0;left:0;display:none;align-items:stretch;padding:10px;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:#0d3523;box-shadow:0 20px 50px rgba(4,22,13,.3)}
+  .wu-primary-nav.is-open{display:grid;grid-template-columns:repeat(3,1fr)}
+  .wu-primary-nav a{padding:13px}
+  .wu-primary-nav .wu-feedback-link{margin:3px 0 0;grid-column:1/-1;text-align:center}
+}
 
 /* Shared editorial typography for guides, reference pages and legal copy. */
 :root{--wu-text:#263a30;--wu-muted:#607269;--wu-heading:#12271d;--wu-link:#126b40;--wu-line:#dce6e0;--wu-soft:#f4f8f5}

@@ -69,6 +69,14 @@
     function setStep(step) {
         if (steps.indexOf(step) === -1) return;
         commitEditing();
+        if (step !== 'content' && app && app.getState && !String(app.getState().text.value || '').trim()) {
+            ui.activeStep = 'content';
+            syncSteps();
+            announce('Add card text before moving to the next step.');
+            var text = root.querySelector('#cardText');
+            if (text) text.focus();
+            return;
+        }
         ui.activeStep = step;
         syncSteps();
         announce(labels[step] + ' step');
