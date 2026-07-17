@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/input-mode.css">
     <link rel="stylesheet" href="css/card-studio.css">
     <script src="js/input-mode.js" defer></script>
+    <script src="js/batch-transliteration.js" defer></script>
     <script src="js/card-studio-core.js" defer></script>
     <script src="js/template-library-core.js" defer></script>
     <script src="js/card-studio-interaction-core.js" defer></script>
@@ -70,6 +71,12 @@
                     <h2 data-card-i18n="textHeading">Text</h2>
                     <label class="card-studio-label" for="cardText" data-card-i18n="textLabel">Card text</label>
                     <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
+                    <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#cardText" hidden role="status" aria-live="polite">
+                        <strong data-batch-prompt>Long Roman Urdu or English-letter text detected. Convert the whole passage in one step?</strong>
+                        <small data-batch-note>This converts sounds into Urdu script; it does not translate English meaning.</small>
+                        <button type="button" data-batch-action>Convert all text</button>
+                        <span data-batch-status></span>
+                    </div>
                     <div class="card-studio-transliteration" aria-live="polite"><span data-card-transliteration-status>Roman Urdu input is loading…</span><button class="card-studio-transliteration-retry" type="button" data-card-transliteration-retry hidden>Retry</button></div>
                     <div class="input-mode-control input-mode-control-card" data-input-mode-control data-input-mode-storage="card" data-input-mode-targets="#cardText,#cardCanvasEditor" role="group" aria-label="Input mode">
                         <span class="input-mode-title" data-input-mode-title>Input mode</span>

@@ -20,6 +20,7 @@
 <link href="css/input-mode.css" rel="stylesheet" type="text/css" />
 <script src="js/editor-tools.js" defer></script>
 <script src="js/input-mode.js" defer></script>
+<script src="js/batch-transliteration.js" defer></script>
 <script src="js/card-studio-entry.js" defer></script>
 <script src="js/qr-generator-entry.js" defer></script>
 <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
@@ -276,6 +277,12 @@
                     for="transliterateTextarea">Urdu writing editor</label><textarea
                     class="write-udu-main-editor" dir="rtl" id="transliterateTextarea"
                     lang="ur" placeholder="لکھنا شروع کریں" style="font-family: 'Noto Nastaliq Urdu'"></textarea></div>
+            <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#transliterateTextarea" hidden role="status" aria-live="polite">
+                <strong data-batch-prompt>Long Roman Urdu or English-letter text detected. Convert the whole passage in one step?</strong>
+                <small data-batch-note>This converts sounds into Urdu script; it does not translate English meaning.</small>
+                <button type="button" data-batch-action>Convert all text</button>
+                <span data-batch-status></span>
+            </div>
             <p class="editor-hint" id="UsageAlert"><i class="fas fa-info-circle" aria-hidden="true"></i>
                 Type Roman Urdu, such as <em>mera</em>, and press Space to convert each word. Press Backspace twice to choose an alternative.</p>
             <div class="card">
@@ -287,6 +294,7 @@
                     <ul class="card-text">
                         <li>Type a Roman Urdu word in the editor above, such as <em>mera</em>.</li>
                         <li>Press Space to convert it automatically into Urdu script.</li>
+                        <li>Paste a longer Roman Urdu passage, then choose <strong>Convert all text</strong> to transliterate it in one step.</li>
                         <li>If the result is not what you intended, press Backspace twice and choose a
                             <strong>suggestion</strong>.</li>
                         <li>Select <strong>Copy text</strong> when you are ready to paste your Urdu into another app.</li>

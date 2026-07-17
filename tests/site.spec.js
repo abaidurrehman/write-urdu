@@ -65,6 +65,43 @@ test('basic editor can switch between transliteration and direct input without c
   await expect(editor).toHaveValue('mera khayal');
 });
 
+test('basic editor offers one-click transliteration for a long pasted passage', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.fetch = async url => {
+      const value = new URL(url).searchParams.get('text');
+      return { ok: true, json: async () => ['SUCCESS', [[value, ['میرا خیال ہے کہ یہ پورا متن اردو ہے۔']]]] };
+    };
+  });
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  const editor = page.locator('#transliterateTextarea');
+  const panel = page.locator('[data-batch-transliteration]').first();
+  await editor.fill('mera khayal hai yeh lamba matn hai jo aik poora paigham hai');
+  await expect(panel).toBeVisible();
+  await panel.locator('[data-batch-action]').click();
+  await expect.poll(() => editor.inputValue()).toBe('میرا خیال ہے کہ یہ پورا متن اردو ہے۔');
+  await expect(panel.locator('[data-batch-prompt]')).toContainText('converted');
+});
+
+test('rich editor offers whole-text transliteration inside its editable frame', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'One desktop check covers the rich editor batch adapter');
+  await page.addInitScript(() => {
+    window.fetch = async url => {
+      const value = new URL(url).searchParams.get('text');
+      return { ok: true, json: async () => ['SUCCESS', [[value, ['میرا خیال ہے کہ یہ پورا متن اردو ہے۔']]]] };
+    };
+  });
+  await blockNonVisualServices(page);
+  await openFile(page, '/urdu-editor.html');
+  const body = page.frameLocator('#basic-example_ifr').locator('body');
+  const panel = page.locator('[data-batch-transliteration]').first();
+  await expect(body).toBeVisible();
+  await body.fill('mera khayal hai yeh lamba matn hai jo aik poora paigham hai');
+  await expect(panel).toBeVisible();
+  await panel.locator('[data-batch-action]').click();
+  await expect(body).toContainText('میرا خیال ہے کہ یہ پورا متن اردو ہے۔');
+});
+
 test('template library filters, favorites, and renders starter designs', async ({ page }) => {
   await blockNonVisualServices(page);
   await openFile(page, '/urdu-templates.html');

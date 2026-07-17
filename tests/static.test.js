@@ -20,6 +20,7 @@ assert.ok(fs.existsSync(path.join(root, 'scripts', 'run-lighthouse.js')), 'Repea
 assert.ok(fs.existsSync(path.join(root, 'scripts', 'validate-template-library.js')), 'Template registry validation script is missing');
 assert.ok(fs.existsSync(path.join(root, 'js', 'input-mode.js')), 'Input mode controller is missing');
 assert.ok(fs.existsSync(path.join(root, 'css', 'input-mode.css')), 'Input mode styles are missing');
+assert.ok(fs.existsSync(path.join(root, 'js', 'batch-transliteration.js')), 'Whole-text transliteration controller is missing');
 
 for (const file of htmlFiles) {
   const html = read(file);
@@ -85,6 +86,7 @@ assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio-core.js'), 'utf8'), /wrapRtlText|findBestFontSize|calculateImagePlacement/, 'Card Studio rendering utilities are missing');
 assert.match(cardStudio, /data-card-interaction-layer|data-card-canvas-editor/, 'Card Studio direct editing layer is missing');
 assert.match(cardStudio, /data-input-mode-control|Direct Urdu \/ English/, 'Card Studio is missing the input mode switch');
+assert.match(cardStudio, /data-batch-transliteration|Convert all text/, 'Card Studio is missing the whole-text transliteration action');
 assert.match(fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8'), /WriteUrduCardStudioApp|editingObjectId/, 'Card Studio application bridge is missing');
 const cardCore = require(path.join(root, 'js', 'card-studio-core.js'));
 assert.strictEqual(cardCore.PRESETS.length, 4, 'Card Studio must provide four output presets');
@@ -197,6 +199,8 @@ assert.match(sharedHeader, /urdu-fonts-nastaliq-vs-naskh|footer\.fonts/, 'Font c
 assert.match(sharedHeader, /wu-footer-main|footer\.privacyNote/, 'Shared footer structure is missing');
 assert.match(read('index.html'), /data-input-mode-control|Roman Urdu → Urdu/, 'Basic editor is missing the input mode switch');
 assert.match(read('urdu-editor.html'), /data-input-mode-control|Roman Urdu → Urdu/, 'Rich editor is missing the input mode switch');
+assert.match(read('index.html'), /data-batch-transliteration|Convert all text/, 'Basic editor is missing the whole-text transliteration action');
+assert.match(read('urdu-editor.html'), /data-batch-transliteration|Convert all text/, 'Rich editor is missing the whole-text transliteration action');
 assert.match(sharedStyles, /h1\.wu-page-title|wu-page-subtitle/, 'Shared page-title typography is missing');
 assert.match(sharedStyles, /\.wu-language-toggle|html\[dir=["']rtl["']\]/, 'Shared language-toggle styles are missing');
 const contentLocale = fs.readFileSync(path.join(root, 'js', 'content-locale.js'), 'utf8');

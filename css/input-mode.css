@@ -61,6 +61,41 @@
     border-radius: 8px;
     background: #f7faf8;
 }
+.batch-transliteration-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3px 10px;
+    align-items: center;
+    margin: 9px 0 0;
+    padding: 10px 12px;
+    border: 1px solid #b9dfc6;
+    border-radius: 10px;
+    background: #effaf3;
+    color: #29483a;
+    font-size: .78rem;
+}
+.batch-transliteration-panel[hidden] { display: none !important; }
+.batch-transliteration-panel strong,
+.batch-transliteration-panel small,
+.batch-transliteration-panel span { grid-column: 1; }
+.batch-transliteration-panel strong { color: #145f38; line-height: 1.4; }
+.batch-transliteration-panel small { color: #61746a; line-height: 1.4; }
+.batch-transliteration-panel button {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 1px solid #177245;
+    border-radius: 8px;
+    color: #fff;
+    background: #177245;
+    font: 700 .76rem/1.2 "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+}
+.batch-transliteration-panel button:hover,
+.batch-transliteration-panel button:focus-visible { background: #0d5331; outline: 0; }
+.batch-transliteration-panel button:disabled { cursor: wait; opacity: .65; }
+.batch-transliteration-panel span { color: #177245; font-size: .74rem; }
 @media (max-width: 767px) {
     .editor-chrome .input-mode-control {
         flex-basis: 100%;
@@ -70,4 +105,6 @@
     .input-mode-option {
         min-height: 34px;
     }
+    .batch-transliteration-panel { grid-template-columns: 1fr; }
+    .batch-transliteration-panel button { grid-column: 1; grid-row: auto; width: 100%; }
 }
