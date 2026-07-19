@@ -12,6 +12,7 @@ product feedback can refer to the same contract.
 | `WU-IG-001` | Urdu / English Invoice Generator | `/urdu-invoice-generator` | Implemented |
 | `WU-IG-002` | Invoice visual polish and adaptive layout | `/urdu-invoice-generator` | Implemented |
 | `WU-IG-003` | Invoice refinement v1.2 | `/urdu-invoice-generator` | Implemented |
+| `WU-PLAT-001` | Unified product journey and acquisition-first homepage | `/` and related tools | Implemented — P0 |
 
 New specifications should use the `WU-<AREA>-<NUMBER>` format and include the
 route, scope, state contract, acceptance criteria, implementation map, and

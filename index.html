@@ -189,10 +189,15 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm" style="padding-right:0px;">
-                        <h1>Write Urdu online</h1>
-                        <p class="page-intro answer-summary">Write Urdu is a free browser-based tool that converts Roman Urdu into Urdu script without installation or an account.</p>
+                        <h1>Type Roman Urdu and convert it to Urdu script</h1>
+                        <p class="page-intro answer-summary">Type Roman Urdu and convert it instantly into Urdu script in your browser, without an account.</p>
 
                         <div class="home-hero-meta" aria-label="Editor highlights"><span>Roman Urdu → Urdu</span><span>Direct Urdu / English</span></div>
+                        <div class="home-hero-actions" aria-label="Get started">
+                            <a class="home-hero-cta home-hero-cta-primary" href="#transliterateTextarea" data-start-typing data-wu-i18n-key="home.startTyping">Start typing</a>
+                            <a class="home-hero-cta home-hero-cta-secondary" href="#home-tools-title" data-wu-i18n-key="home.exploreTools">Explore more tools</a>
+                            <a class="home-hero-cta home-hero-cta-tertiary" href="#home-how-it-works" data-wu-i18n-key="home.learnHow">Learn how it works</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -236,6 +241,12 @@
                         <div class="home-actions-group home-actions-group-create" role="group" aria-label="Create with your text">
                         <a class="btn btn-outline-editor" href="urdu-editor.html">
                             <i class="fas fa-font" aria-hidden="true"></i> Rich editor
+                        </a>
+                        <a class="btn btn-outline-editor" href="urdu-templates.html">
+                            <i class="fas fa-th-large" aria-hidden="true"></i> Templates
+                        </a>
+                        <a class="btn btn-outline-editor" href="urdu-invoice-generator.html">
+                            <i class="fas fa-file-invoice" aria-hidden="true"></i> Invoice
                         </a>
                         <button type="button" class="btn btn-outline-editor" data-create-card data-editor-source="basic-editor">
                             <i class="far fa-image" aria-hidden="true"></i> Create Urdu Card
@@ -333,6 +344,37 @@
             </div>
 
             <section class="seo-content homepage-seo" aria-labelledby="home-tools-title">
+                <section class="home-new-tools" id="home-new-tools" aria-labelledby="home-new-tools-title">
+                    <p class="home-section-eyebrow">New tools for Urdu typing and writing</p>
+                    <h2 id="home-new-tools-title">New tools you can try right away</h2>
+                    <p>These new pages are designed for the searches people already use, including Urdu typing online, online Urdu typing, English to Urdu typing and Urdu keyboard online.</p>
+                    <div class="tool-promo-grid" role="list">
+                        <article class="tool-promo-card" role="listitem">
+                            <h3><a href="urdu-keyboard.html">Urdu Keyboard</a></h3>
+                            <p>Type Urdu directly in the browser with an on-screen keyboard and share-ready text.</p>
+                            <a class="tool-promo-link" href="urdu-keyboard.html">Try the Urdu keyboard</a>
+                        </article>
+                        <article class="tool-promo-card" role="listitem">
+                            <h3><a href="roman-urdu-transliteration.html">Roman Urdu guide</a></h3>
+                            <p>Learn how Roman Urdu becomes Urdu script and how to review suggestions more confidently.</p>
+                            <a class="tool-promo-link" href="roman-urdu-transliteration.html">Read the Roman Urdu guide</a>
+                        </article>
+                        <article class="tool-promo-card" role="listitem">
+                            <h3><a href="urdu-editor.html">Rich Text Editor</a></h3>
+                            <p>Format Urdu documents, add headings and export polished text for school, work or social use.</p>
+                            <a class="tool-promo-link" href="urdu-editor.html">Open the rich editor</a>
+                        </article>
+                    </div>
+                </section>
+                <section class="home-how-it-works" id="home-how-it-works" aria-labelledby="home-how-it-works-title">
+                    <p class="home-section-eyebrow" data-wu-i18n-key="home.howEyebrow">A simple path to Urdu script</p>
+                    <h2 id="home-how-it-works-title" data-wu-i18n-key="home.howTitle">How it works</h2>
+                    <ol class="home-how-it-works-list">
+                        <li><strong data-wu-i18n-key="home.stepOneTitle">Type Roman Urdu.</strong><span data-wu-i18n-key="home.stepOneCopy">Use familiar English letters in the editor above.</span></li>
+                        <li><strong data-wu-i18n-key="home.stepTwoTitle">Press Space.</strong><span data-wu-i18n-key="home.stepTwoCopy">Each completed word is converted into Urdu script and suggestions remain available.</span></li>
+                        <li><strong data-wu-i18n-key="home.stepThreeTitle">Use your Urdu anywhere.</strong><span data-wu-i18n-key="home.stepThreeCopy">Copy, export, format, design a card, or continue into another tool.</span></li>
+                    </ol>
+                </section>
                 <h2 id="home-tools-title">Choose the right Urdu tool</h2>
                 <p>Write Urdu is a free browser-based Urdu writing platform for typing Roman Urdu into Urdu script, writing directly with an Urdu keyboard, formatting documents, creating cards and generating static QR codes.</p>
                 <div class="seo-content-grid">
@@ -419,6 +461,17 @@
         $('#demo').css('background-color', "White");
         $('#transliterateTextarea').css('background-color', "White");
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var startTyping = document.querySelector('[data-start-typing]');
+        var editor = document.getElementById('transliterateTextarea');
+        if (!startTyping || !editor) return;
+        startTyping.addEventListener('click', function (event) {
+            event.preventDefault();
+            editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            window.setTimeout(function () { editor.focus({ preventScroll: true }); }, 180);
+        });
+    });
 
 
     function downloadURI(uri, name) {

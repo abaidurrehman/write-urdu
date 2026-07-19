@@ -27,6 +27,9 @@ assert.match(fs.readFileSync(invoiceRefinementSpec, 'utf8'), /Feature ID:\*\*\s*
 const allHtmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html'));
 const htmlFiles = allHtmlFiles.filter(file => !file.startsWith('google'));
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+const unifiedJourneySpec = path.join(root, 'specs', 'WU-PLAT-001-unified-product-journey.md');
+assert.ok(fs.existsSync(unifiedJourneySpec), 'Unified product journey specification is missing');
+assert.match(fs.readFileSync(unifiedJourneySpec, 'utf8'), /Feature ID:[^\n]*WU-PLAT-001/, 'Unified product journey specification has no stable ID');
 
 const seoConfig = require(path.join(root, 'seo.config.js'));
 assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://write-urdu.com', 'SEO canonical origin changed unexpectedly');
@@ -121,6 +124,16 @@ assert.match(read('index.html'), /data-create-qr/, 'Basic editor is missing the 
 assert.match(read('urdu-editor.html'), /data-create-qr/, 'Rich editor is missing the QR generator entry action');
 
 const home = read('index.html');
+assert.match(home, /<h1>Type Roman Urdu and convert it to Urdu script<\/h1>/, 'Homepage must lead with the Roman Urdu conversion intent');
+assert.match(home, /data-start-typing/, 'Homepage is missing the Start typing action');
+assert.match(home, /href="#home-tools-title"[^>]*>Explore more tools/, 'Homepage is missing the Explore more tools action');
+assert.match(home, /href="#home-how-it-works"[^>]*>Learn how it works/, 'Homepage is missing the How it works action');
+assert.match(home, /id="home-how-it-works"/, 'Homepage is missing the visible How it works section');
+assert.match(home, /id="home-new-tools"/, 'Homepage is missing the new tools promo section');
+assert.match(home, /href="urdu-keyboard\.html"[^>]*>Urdu Keyboard/i, 'Homepage is missing the Urdu Keyboard promo card');
+assert.match(home, /href="roman-urdu-transliteration\.html"[^>]*>Roman Urdu guide/i, 'Homepage is missing the Roman Urdu guide promo card');
+assert.match(home, /href="urdu-templates\.html"/, 'Homepage is missing the Templates handoff link');
+assert.match(home, /href="urdu-invoice-generator\.html"/, 'Homepage is missing the Invoice handoff link');
 assert.match(home, /makeTransliteratable\(\[['"]transliterateTextarea['"]\]\)/, 'Basic transliteration target changed');
 assert.doesNotMatch(home, /clearDynamicLink|textBaseline\s*=\s*["']center|\.backgroundcolor|encodeURI\(/, 'Homepage contains a repaired legacy export defect');
 
@@ -131,9 +144,15 @@ assert.doesNotMatch(activeEditorCode, /fonts\/Qadreeregular\.css|\.backgroundcol
 
 const keyboard = read('urdu-keyboard.html');
 assert.match(keyboard, /<script src=["']main\.js["']><\/script>/, 'Urdu keyboard does not load main.js');
+assert.match(keyboard, /id="tool-promo-grid"/, 'Urdu keyboard page is missing the new-tool promotion grid');
+assert.match(keyboard, /href="roman-urdu-transliteration\.html"/, 'Urdu keyboard page is missing the Roman Urdu guide promo link');
 assert.match(keyboard, /Direct Urdu typing versus Roman Urdu transliteration/, 'Urdu keyboard comparison content is missing');
 assert.match(keyboard, /How to use the keyboard on mobile/, 'Urdu keyboard mobile guidance is missing');
 assert.match(keyboard, /keyboard-faq/, 'Urdu keyboard FAQ is missing');
+
+const transliteration = read('roman-urdu-transliteration.html');
+assert.match(transliteration, /id="tool-promo-grid"/, 'Roman Urdu guide page is missing the new-tool promotion grid');
+assert.match(transliteration, /href="urdu-keyboard\.html"/, 'Roman Urdu guide page is missing the Urdu keyboard promo link');
 
 const mainScript = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
 assert.match(mainScript, /new Blob\(\[['"]\\ufeff['"],\s*textToSave\].*charset=utf-8/, 'Text export must preserve Urdu with UTF-8 and a BOM');

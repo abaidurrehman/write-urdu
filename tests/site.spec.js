@@ -20,6 +20,8 @@ test('homepage renders without duplicate controls or horizontal overflow', async
   await expect(page.locator('.wu-site-header')).toBeVisible();
   await expect(page.locator('#exportImage')).toHaveCount(1);
   await expect(page.locator('#transliterateTextarea')).toBeVisible();
+  await expect(page.locator('h1')).toHaveText('Type Roman Urdu and convert it to Urdu script');
+  await expect(page.getByRole('link', { name: 'Start typing' })).toBeVisible();
   const editorBox = await page.locator('#transliterateTextarea').boundingBox();
   // The editor now includes visible input-mode and bulk-transliteration
   // guidance. Keep it near the top without assuming the old single-row toolbar
@@ -27,6 +29,13 @@ test('homepage renders without duplicate controls or horizontal overflow', async
   expect(editorBox.y).toBeLessThan(page.viewportSize().width < 600 ? 1000 : 600);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('homepage Start typing action focuses the existing conversion editor', async ({ page }) => {
+  await blockNonVisualServices(page);
+  await openFile(page, '/index.html');
+  await page.getByRole('link', { name: 'Start typing' }).click();
+  await expect(page.locator('#transliterateTextarea')).toBeFocused();
 });
 
 test('basic Google transliteration remains connected', async ({ page }) => {
@@ -910,7 +919,7 @@ test('language toggle switches the shared shell to Urdu and persists', async ({ 
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('.wu-brand strong')).toHaveText('رائٹ اردو');
   await expect(page.locator('.wu-primary-nav a').first()).toHaveText('رائٹ اردو');
-  await expect(page.locator('h1')).toHaveText('آن لائن اردو لکھیں');
+  await expect(page.locator('h1')).toHaveText('رومن اردو لکھیں اور اسے اردو رسم الخط میں تبدیل کریں');
   await expect(page.getByRole('button', { name: 'متن کاپی کریں' })).toBeVisible();
   await expect(page.locator('#UsageAlert')).toContainText('رومن اردو لکھیں');
   await expect(page.locator('.editor-quick-label')).toHaveText('شامل کریں');
@@ -918,12 +927,12 @@ test('language toggle switches the shared shell to Urdu and persists', async ({ 
 
   await page.reload({ waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
-  await expect(page.locator('h1')).toHaveText('آن لائن اردو لکھیں');
+  await expect(page.locator('h1')).toHaveText('رومن اردو لکھیں اور اسے اردو رسم الخط میں تبدیل کریں');
   if (isMobile) await page.locator('.wu-menu-toggle').click();
   await page.getByRole('button', { name: 'Switch to English' }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
-  await expect(page.locator('h1')).toHaveText('Write Urdu online');
+  await expect(page.locator('h1')).toHaveText('Type Roman Urdu and convert it to Urdu script');
 });
 
 test('documentation and help copy switch back to English cleanly', async ({ page, isMobile }) => {
