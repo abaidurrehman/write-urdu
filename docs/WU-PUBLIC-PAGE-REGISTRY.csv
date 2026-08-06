@@ -1,7 +1,7 @@
 source_file,canonical_route,area,primary_intent,indexability,sitemap,status,design_migration,priority,notes
 index.html,/,Write,urdu typing and urdu writing,index,yes,keep,migrated,P0,Protected transliteration owner and broad acquisition page
-urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,migrated,P0,Shared product shell applied without changing TinyMCE or export bindings
-urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,migrated,P0,Shared product shell applied without changing keyboard input bindings
+urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,migrated,P0,V2 workspace applied without changing TinyMCE or export bindings
+urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,migrated,P0,V2 workspace applied without changing keyboard input bindings
 urdu-card-studio.html,/urdu-card-studio,Create,Urdu card design,index,yes,keep,pending,P1,Strategic creation workflow
 urdu-templates.html,/urdu-templates,Create,Urdu design templates,index,yes,keep,pending,P1,Entry point into Card Studio
 stylish-urdu-text-generator.html,/stylish-urdu-text-generator,Create,stylish Urdu text,index,yes,keep,pending,P1,Validate distinct intent and output
@@ -12,8 +12,8 @@ qr-code-generator.html,/qr-code-generator,Create,static Urdu QR codes,index,yes,
 urdu-invoice-generator.html,/urdu-invoice-generator,Business,Urdu English invoice generator,index,yes,keep,pending,P1,Distinct business workflow
 roman-urdu-transliteration.html,/roman-urdu-transliteration,Learn,Roman Urdu transliteration guide,index,yes,keep,pending,P1,Must support not compete with homepage
 english-urdu-typing-tutorial.html,/english-urdu-typing-tutorial,Learn,English letters to Urdu tutorial,index,yes,review-overlap,pending,P1,Check overlap with homepage and transliteration guide
-urdu-faq.html,/urdu-faq,Learn,Urdu writing and product FAQ,index,yes,keep,pending,P1,Authority and user support
-write-urdu-documentation.html,/write-urdu-documentation,Learn,WriteUrdu product documentation,index,yes,keep,pending,P1,Canonical product help hub
+urdu-faq.html,/urdu-faq,Learn,Urdu writing and product FAQ,index,yes,keep,migrated,P1,V2 help-centre layout with accessible disclosure items and legacy dependencies removed
+write-urdu-documentation.html,/write-urdu-documentation,Learn,WriteUrdu product documentation,index,yes,keep,migrated,P1,V2 documentation hub with shared reading system and task navigation
 urdu-fonts-nastaliq-vs-naskh.html,/urdu-fonts-nastaliq-vs-naskh,Learn,Urdu font comparison,index,yes,keep,pending,P2,Supporting topical authority
 urdu-alphabet.html,/urdu-alphabet,Learn,Urdu alphabet,index,yes,keep,pending,P1,Existing search asset
 write-urdu-features.html,/write-urdu-features,Learn,WriteUrdu platform features,index,yes,merge-review,pending,P2,Potential overlap with documentation and About

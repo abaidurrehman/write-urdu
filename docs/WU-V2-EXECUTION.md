@@ -65,7 +65,7 @@ No long standalone research phase. No speculative 100-page design package before
 ### V2-S1 — Writing workspace foundation
 
 **PR:** #5  
-**Status:** In progress
+**Status:** Merged
 
 - Compact task-page hero
 - Editor-first page order
@@ -77,22 +77,27 @@ No long standalone research phase. No speculative 100-page design package before
 - Smaller mobile footer footprint
 - Rich Editor and Urdu Keyboard first migrations
 
-### V2-S2 — Shared application shell
+### V2-S2 — Shared application shell and help centre
 
-- Final task-first navigation taxonomy
-- Shared footer taxonomy
-- Workspace header and status pattern
-- Shared overflow/action menu pattern
-- Related tools and learning modules
-- Design-system compliance checks
+**Status:** In progress
 
-### V2-S3 — Help and authority pages
+- Task-first application navigation
+- Structured Create and Learn menus
+- Dedicated Invoice business route
+- Concise privacy/access trust bar
+- Four-column shared footer taxonomy
+- Global shell upgrade runtime and compliance contract
+- Shared help/authority reading system
+- Documentation migration
+- FAQ migration and accessible disclosure structure
+- Removal of obsolete FAQ framework and analytics dependencies
 
-- Documentation
-- FAQ
+### V2-S3 — Authority content migration
+
 - Roman Urdu guide
 - Urdu alphabet
 - Font comparison
+- Typing tutorial review and consolidation decision
 
 These pages must support the product and existing keyword ownership rather than compete with the homepage.
 
@@ -142,4 +147,4 @@ The following cannot change without explicit regression evidence and approval:
 
 ## Current decision
 
-PR #5 is the first real WriteUrdu v2 product slice. It should be judged by whether the Rich Editor and Urdu Keyboard feel like focused writing applications—not by whether the legacy page has received more decoration.
+V2-S2 finalizes the common product frame and migrates the two highest-value support pages in the same implementation slice. The shell should make the product easier to navigate without exposing every utility at once, while Documentation and FAQ should feel like a focused help centre rather than separate microsites.

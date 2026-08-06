@@ -1,5 +1,17 @@
 (function () {
     'use strict';
+
+    function loadV2Shell() {
+        if (typeof document === 'undefined' || document.querySelector('script[src="js/v2-shell.js"]')) return;
+        var shell = document.createElement('script');
+        shell.src = 'js/v2-shell.js';
+        shell.async = false;
+        shell.setAttribute('data-write-urdu-v2-shell', '');
+        document.head.appendChild(shell);
+    }
+
+    loadV2Shell();
+
     var config = window.WriteUrduSeoConfig;
     if (!config) return;
     var path = (window.location.pathname || '/').replace(/\\+/g, '/').replace(/\/$/, '') || '/';

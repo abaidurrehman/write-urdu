@@ -19,6 +19,7 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Confirmed repository-only artifact cleanup
 - [x] Explicit design-freedom and SEO-protection guardrails
 - [x] WriteUrdu v2 delivery principles and protected contracts
+- [x] V2-S1 — Rich Editor and Urdu Keyboard workspace foundation merged in PR #5
 
 ## Phase 2A — Governance and route safety
 
@@ -38,13 +39,12 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [ ] Review ownership verification files before deletion
 - [x] Confirm Phase 2A checks pass and merge to `main`
 
-## Phase 2B / V2-S1 — Writing workspace foundation
+## V2-S1 — Writing workspace foundation
 
 - [x] Create `css/product-shell.css`
 - [x] Create `css/v2-workspace.css`
 - [x] Load both layers through the existing shared `css/main.css` entry point
 - [x] Define shared typography, spacing, surface, control, focus and workspace primitives
-- [x] Define shared footer positioning and mobile shell behavior
 - [x] Replace decorative task-page hero cards with compact workspace headers
 - [x] Put the writing surface before secondary education and promotion
 - [x] Reduce visible action density on Rich Editor and Urdu Keyboard
@@ -53,15 +53,33 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Remove duplicate onboarding from migrated writing pages
 - [x] Reduce instructional-card and mobile-footer density
 - [x] Extend design-system contract tests to the v2 workspace layer
-- [ ] Refine shared header and navigation taxonomy
-- [ ] Finalize shared footer taxonomy
+
+## V2-S2 — Shared application shell and help centre
+
+- [x] Create global `js/v2-shell.js` shell upgrade runtime
+- [x] Create `css/v2-shell.css`
+- [x] Define task-first navigation: Write, Rich Editor, Urdu Keyboard, Create, Invoice and Learn
+- [x] Move the complete creation catalogue into a structured dropdown
+- [x] Create a focused Learn menu for Documentation, FAQ and authority guides
+- [x] Reduce the header trust bar to one concise privacy/access message
+- [x] Finalize a shorter four-column footer taxonomy: Write, Create, Learn and About
+- [x] Create shared `css/v2-content.css` reading system
+- [x] Migrate Documentation to the shared help-page system
+- [x] Add sticky in-page task navigation to Documentation
+- [x] Migrate FAQ to the shared help-page system
+- [x] Convert all core FAQ answers into accessible disclosure items
+- [x] Remove obsolete Universal Analytics, Bootstrap, Font Awesome and inline legacy FAQ accordion code
+- [x] Add V2-S2 shell/content regression contract
+- [ ] Pass Cloudflare preview review on desktop and 320px mobile
+- [ ] Confirm GitHub Actions, SEO and governance suites are green
+- [ ] Merge V2-S2 to `main`
 
 ### Page migration order
 
-- [x] Rich Editor — v2 workspace-first layout applied; final preview gate pending
-- [x] Urdu Keyboard — v2 workspace-first layout applied; final preview gate pending
-- [ ] Documentation
-- [ ] FAQ
+- [x] Rich Editor — v2 workspace-first layout
+- [x] Urdu Keyboard — v2 workspace-first layout
+- [x] Documentation — v2 help hub
+- [x] FAQ — v2 help centre
 - [ ] Card Studio
 - [ ] Templates
 - [ ] Invoice Generator
@@ -126,4 +144,4 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Current next action
 
-Review the v2 workspace-first Rich Editor and Urdu Keyboard previews. Once the editor is visually dominant, controls remain functional and CI is green, merge PR #5 and begin V2-S2 with the shared application shell and Documentation/FAQ migration.
+Review the V2-S2 Cloudflare preview on the homepage, Rich Editor, Documentation and FAQ. Verify the new navigation and footer at desktop and mobile widths, then merge once the automated suites are green.

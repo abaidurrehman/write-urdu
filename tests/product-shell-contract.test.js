@@ -9,6 +9,13 @@ const main = fs.readFileSync(path.join(root, 'css', 'main.css'), 'utf8');
 const editor = fs.readFileSync(path.join(root, 'urdu-editor.html'), 'utf8');
 const keyboard = fs.readFileSync(path.join(root, 'urdu-keyboard.html'), 'utf8');
 
+function assertApprovedWeights(source, label) {
+    const weights = Array.from(source.matchAll(/font-weight\s*:\s*(\d+)\b/g), (match) => Number(match[1]));
+    weights.forEach((weight) => {
+        assert.ok([400, 500, 600, 700].includes(weight), `${label} uses disallowed font weight ${weight}`);
+    });
+}
+
 assert.match(main, /@import\s+url\(["']\.\/product-shell\.css["']\)/, 'main.css must load the shared product shell');
 assert.match(main, /@import\s+url\(["']\.\/v2-workspace\.css["']\)/, 'main.css must load the WriteUrdu v2 workspace layer');
 assert.match(shell, /\.rich-editor-page/, 'product shell must target the Rich Editor contract');
@@ -22,7 +29,7 @@ assert.match(editor, /<body class="tool-page rich-editor-page">/, 'Rich Editor b
 assert.match(keyboard, /<body class="tool-page keyboard-page">/, 'Urdu Keyboard body contract changed');
 assert.match(editor, /id="basic-example"/, 'Rich Editor textarea binding changed');
 assert.match(keyboard, /id="write"/, 'Urdu Keyboard textarea binding changed');
-assert.doesNotMatch(shell, /font-weight\s*:\s*(?:[1-3]00|5[1-9]0|6[1-9]0|[89]00|[1-9][0-9]{2,})\b/, 'product shell uses a disallowed font weight');
-assert.doesNotMatch(v2Workspace, /font-weight\s*:\s*(?:[1-3]00|5[1-9]0|6[1-9]0|[89]00|[1-9][0-9]{2,})\b/, 'v2 workspace uses a disallowed font weight');
+assertApprovedWeights(shell, 'product shell');
+assertApprovedWeights(v2Workspace, 'v2 workspace');
 
 console.log('Shared product shell and WriteUrdu v2 workspace contract checks passed.');
