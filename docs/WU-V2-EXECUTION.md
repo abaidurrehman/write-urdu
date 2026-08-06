@@ -79,7 +79,9 @@ No long standalone research phase. No speculative 100-page design package before
 
 ### V2-S2 — Shared application shell and help centre
 
-**Status:** In progress
+**PR:** #6  
+**Status:** Merged  
+**Merge commit:** `a95b9ccdb1285e1b97d5080aac1762a1b96132a2`
 
 - Task-first application navigation
 - Structured Create and Learn menus
@@ -94,12 +96,24 @@ No long standalone research phase. No speculative 100-page design package before
 
 ### V2-S3 — Authority content migration
 
-- Roman Urdu guide
-- Urdu alphabet
-- Font comparison
-- Typing tutorial review and consolidation decision
+**Status:** In progress
 
-These pages must support the product and existing keyword ownership rather than compete with the homepage.
+First implementation batch:
+
+- Roman Urdu transliteration guide migration
+- Urdu Alphabet migration
+- Shared authority-page design system
+- Explicit routes back into the writing tools
+- Removal of legacy Alphabet framework and analytics dependencies
+- Restored CI coverage for agent branches, explicit PR lifecycle events and manual recovery
+
+Remaining S3 work:
+
+- Nastaliq versus Naskh font comparison
+- Typing tutorial overlap review
+- Keep, narrow, merge or redirect decision based on route and Search Console evidence
+
+These pages must support the product and existing keyword ownership rather than compete with the homepage. The homepage remains the broad owner of `urdu typing` and `urdu writing` intent.
 
 ### V2-S4 — Creation workflows
 
@@ -147,4 +161,4 @@ The following cannot change without explicit regression evidence and approval:
 
 ## Current decision
 
-V2-S2 finalizes the common product frame and migrates the two highest-value support pages in the same implementation slice. The shell should make the product easier to navigate without exposing every utility at once, while Documentation and FAQ should feel like a focused help centre rather than separate microsites.
+V2-S3 begins with Roman Urdu and Urdu Alphabet in one implementation PR. Both pages move onto one authority-page system, remain on their existing canonical routes and direct users into the writing product. The font comparison and typing-tutorial consolidation decision follow after this first batch is validated.
