@@ -1,0 +1,60 @@
+@import url("./design-tokens.css");
+
+/* WriteUrdu shared product shell. Keep tool-specific behavior and workspace
+   layout in the existing tool stylesheets; this file owns visual language. */
+:root {
+  --wu-shell-width: 1180px;
+  --wu-shell-gutter: clamp(16px, 3vw, 32px);
+  --wu-shell-bg: #f7faf8;
+  --wu-shell-surface: #ffffff;
+  --wu-shell-surface-soft: #f0f6f2;
+  --wu-shell-ink: #14231c;
+  --wu-shell-muted: #617168;
+  --wu-shell-line: #dce7e0;
+  --wu-shell-brand: #176f45;
+  --wu-shell-brand-strong: #0f5534;
+  --wu-shell-focus: rgba(23, 111, 69, .22);
+  --wu-shell-shadow: 0 18px 50px rgba(20, 35, 28, .09);
+}
+html { background: var(--wu-shell-bg); scroll-behavior: smooth; }
+body { min-height: 100vh; margin: 0; color: var(--wu-shell-ink); background: radial-gradient(circle at 8% 0, rgba(23,111,69,.07), transparent 26rem), linear-gradient(180deg,#fff 0,var(--wu-shell-bg) 34rem,#fff 100%); font-family: Inter,"Segoe UI",Arial,sans-serif; font-size:16px; line-height:1.6; text-rendering:optimizeLegibility; }
+*,*::before,*::after{box-sizing:border-box} img,svg,video,canvas,iframe{max-width:100%}
+a{color:var(--wu-shell-brand);text-underline-offset:.18em}a:hover{color:var(--wu-shell-brand-strong)}
+h1,h2,h3,h4,h5,h6{color:var(--wu-shell-ink);font-family:Inter,"Segoe UI",Arial,sans-serif;font-weight:700;line-height:1.18;letter-spacing:-.025em}h1{font-size:clamp(2rem,4vw,3rem)}h2{font-size:clamp(1.45rem,2.8vw,2rem)}h3{font-size:clamp(1.12rem,2vw,1.4rem)}p,li{color:var(--wu-shell-muted)}
+body>.container-fluid,body>.container{width:100%;max-width:none;padding-right:0;padding-left:0}body>.container-fluid>.row,body>.container>.row{max-width:var(--wu-shell-width);margin-right:auto;margin-left:auto;padding-right:var(--wu-shell-gutter);padding-left:var(--wu-shell-gutter)}
+body>.container-fluid>.row>.col-6.col-md-3:first-child{display:none}body>.container-fluid>.row>.col-12.col-md-9,body>.container-fluid>.row>.col-md-9,body>.container-fluid>.row>.col-md-12{width:100%;max-width:100%!important;flex:0 0 100%;float:none;margin-top:0;padding:clamp(24px,4vw,48px) 0 64px}
+.logo{width:52px;height:52px;margin:0 14px 10px 0;border-radius:14px;object-fit:contain;box-shadow:0 8px 24px rgba(23,111,69,.14)}hr.solid{margin:20px 0;border:0;border-top:1px solid var(--wu-shell-line)}
+button,input,select,textarea,.btn{font:inherit}button,.btn{min-height:42px;border-radius:10px!important;font-weight:600!important}input,select,textarea{border-color:var(--wu-shell-line)!important;border-radius:10px}button:focus-visible,.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--wu-shell-focus)!important;outline-offset:2px}.btn-success{background:var(--wu-shell-brand)!important}.btn-success:hover{background:var(--wu-shell-brand-strong)!important}
+.tox.tox-tinymce,#demo,.keyboard-container,.card,.w3-card,.w3-card-2,.w3-card-4{overflow:hidden;border:1px solid var(--wu-shell-line)!important;border-radius:16px!important;background:var(--wu-shell-surface);box-shadow:var(--wu-shell-shadow)!important}.tox .tox-editor-header{box-shadow:none!important}.tox .tox-toolbar-overlord,.tox .tox-toolbar__primary,.tox .tox-menubar{background:var(--wu-shell-surface-soft)!important}.card{margin-top:24px}.card-body{padding:clamp(22px,4vw,36px)}.card-title{font-weight:700}footer{position:static!important;width:100%;margin-top:auto}
+
+/* First migrated tools: preserve markup and behavior while directing hierarchy. */
+.rich-editor-page .col-12.col-md-9>a:first-child,.keyboard-page .col-12.col-md-9>a:first-child{display:none}
+.rich-editor-page .col-12.col-md-9>.container:first-of-type,.keyboard-page .col-12.col-md-9>.container:first-of-type{position:relative;margin:0 0 24px;padding:clamp(24px,4vw,42px);border:1px solid var(--wu-shell-line);border-radius:20px;background:linear-gradient(135deg,#fff 0%,#f2f8f4 100%);box-shadow:0 16px 46px rgba(20,35,28,.07)}
+.rich-editor-page .col-12.col-md-9>.container:first-of-type::before,.keyboard-page .col-12.col-md-9>.container:first-of-type::before{display:inline-flex;margin-bottom:12px;padding:5px 10px;border:1px solid rgba(23,111,69,.18);border-radius:999px;color:var(--wu-shell-brand-strong);background:rgba(23,111,69,.07);font-size:.76rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;content:"WriteUrdu workspace"}
+.rich-editor-page h1,.keyboard-page h1{margin:0 0 12px}.rich-editor-page .page-intro,.keyboard-page .page-intro{max-width:760px;margin:0;color:var(--wu-shell-muted);font-size:clamp(1rem,1.5vw,1.12rem);line-height:1.7}.rich-editor-page h4.small,.keyboard-page h4.small{margin:14px 0 0}.rich-editor-page mark.sm,.keyboard-page mark.sm{padding:0;color:var(--wu-shell-brand-strong);background:transparent;font-size:.9rem;font-weight:600}
+.rich-editor-page .tool-actions,.keyboard-page .tool-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 18px!important;padding:14px;border:1px solid var(--wu-shell-line);border-radius:14px;background:rgba(255,255,255,.88);box-shadow:0 8px 24px rgba(20,35,28,.05);text-align:left!important}.rich-editor-page .home-actions-group,.keyboard-page .home-actions-group{display:inline-flex;flex-wrap:wrap;gap:8px}.rich-editor-page .home-actions-group-export,.keyboard-page .home-actions-group-export{margin-left:auto}.rich-editor-page #clear,.keyboard-page #clear{margin-left:0}
+.rich-editor-page .input-mode-control,.keyboard-page .input-mode-control,.rich-editor-page .batch-transliteration-panel,.keyboard-page .batch-transliteration-panel{margin:14px 0;border-radius:14px}.rich-editor-page .tox.tox-tinymce,.keyboard-page #write,.keyboard-page #key1{margin-top:16px}.keyboard-page #write{min-height:220px;padding:20px;font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:1.35rem;line-height:2}.keyboard-page #key1{padding:18px;border:1px solid var(--wu-shell-line);border-radius:16px;background:var(--wu-shell-surface);box-shadow:var(--wu-shell-shadow)}.keyboard-page #key1>div{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:8px}.keyboard-page #key1 input{min-width:42px;min-height:42px;border:1px solid var(--wu-shell-line);border-radius:9px;background:#fff;color:var(--wu-shell-ink);font-weight:600}.keyboard-page #key1 input:hover{border-color:rgba(23,111,69,.45);background:var(--wu-shell-surface-soft)}
+.rich-editor-page .card+br,.keyboard-page .card+br{display:none}.rich-editor-page .card,.keyboard-page .card{margin-top:20px}.rich-editor-page .card-title,.keyboard-page .card-title{margin-bottom:12px;font-size:1.15rem}.rich-editor-page .card-text,.keyboard-page .card-text{margin-bottom:0;padding-left:1.25rem}.rich-editor-page .card-text li+li,.keyboard-page .card-text li+li{margin-top:8px}.rich-editor-page .fb-comments,.keyboard-page .fb-comments{display:none!important}
+
+/* Homepage density correction: one clear journey, not a wall of equal actions. */
+body:has(#transliterateTextarea) .wu-primary-nav>a[href="/urdu-card-studio"],
+body:has(#transliterateTextarea) .wu-primary-nav>a[href="/urdu-invoice-generator"],
+body:has(#transliterateTextarea) .wu-primary-nav>a[href="/urdu-templates"],
+body:has(#transliterateTextarea) .wu-primary-nav>a[href="/qr-code-generator"]{display:none}
+body:has(#transliterateTextarea) .logo{display:none}
+body:has(#transliterateTextarea) .home-hero-meta{display:none}
+body:has(#transliterateTextarea) .home-hero-actions{margin-top:16px}
+body:has(#transliterateTextarea) .home-hero-cta-tertiary{display:none}
+body:has(#transliterateTextarea) hr.solid{margin:24px 0 16px}
+body:has(#transliterateTextarea) .home-actions{gap:8px!important;margin-bottom:14px}
+body:has(#transliterateTextarea) .home-actions a[href="/urdu-templates"],
+body:has(#transliterateTextarea) .home-actions a[href="/urdu-invoice-generator"],
+body:has(#transliterateTextarea) .home-actions [data-create-card],
+body:has(#transliterateTextarea) .home-actions [data-create-qr],
+body:has(#transliterateTextarea) .home-actions [data-write-urdu-share]{display:none!important}
+body:has(#transliterateTextarea) .editor-chrome{margin-top:8px}
+body:has(#transliterateTextarea) .batch-transliteration-panel{margin-top:8px;padding:12px 16px}
+body:has(#transliterateTextarea) #transliterateTextarea{min-height:clamp(420px,62vh,680px)}
+
+@media(max-width:767px){body>.container-fluid>.row,body>.container>.row{padding-right:14px;padding-left:14px}body>.container-fluid>.row>.col-12.col-md-9,body>.container-fluid>.row>.col-md-9,body>.container-fluid>.row>.col-md-12{padding-top:22px}h1{font-size:clamp(1.75rem,8vw,2.35rem)}button,.btn{min-height:44px}.tox.tox-tinymce{min-height:520px}.rich-editor-page .col-12.col-md-9>.container:first-of-type,.keyboard-page .col-12.col-md-9>.container:first-of-type{padding:22px 18px;border-radius:16px}.rich-editor-page .tool-actions,.keyboard-page .tool-actions{align-items:stretch}.rich-editor-page .home-actions-group,.keyboard-page .home-actions-group,.rich-editor-page .home-actions-group-export,.keyboard-page .home-actions-group-export{width:100%;margin-left:0}.rich-editor-page .tool-actions .btn,.rich-editor-page .tool-actions details,.keyboard-page .tool-actions .btn,.keyboard-page .tool-actions details{flex:1 1 auto}.keyboard-page #key1{padding:12px 8px}.keyboard-page #key1 input{min-width:38px;min-height:40px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}

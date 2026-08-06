@@ -1,11 +1,13 @@
 # WU-I001 — Product Unification Implementation Tracker
 
-**Status:** Active  
+**Status:** Active — WriteUrdu v2 delivery  
 **Last updated:** 2026-08-06
 
 ## Outcome
 
 Make every WriteUrdu page feel like one professionally directed product while protecting transliteration and strengthening existing search demand.
+
+WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product slices first, minimum durable documentation, and an 80/20 implementation-to-specification ratio.
 
 ## Completed
 
@@ -16,6 +18,7 @@ Make every WriteUrdu page feel like one professionally directed product while pr
 - [x] Product audit and target information architecture
 - [x] Confirmed repository-only artifact cleanup
 - [x] Explicit design-freedom and SEO-protection guardrails
+- [x] WriteUrdu v2 delivery principles and protected contracts
 
 ## Phase 2A — Governance and route safety
 
@@ -31,25 +34,32 @@ Make every WriteUrdu page feel like one professionally directed product while pr
 - [x] Check human-readable sitemap equivalence and report warnings
 - [x] Remove `.vs/` and retain ignore rule
 - [x] Remove confirmed root-level review screenshots
+- [x] Convert existing legacy-link debt into migration warnings while keeping broken routes blocking
 - [ ] Review ownership verification files before deletion
-- [ ] Resolve any governance failures reported by CI
-- [ ] Confirm Phase 2A checks pass on `main`
+- [x] Confirm Phase 2A checks pass and merge to `main`
 
-## Phase 2B — Shared product shell
+## Phase 2B / V2-S1 — Writing workspace foundation
 
-- [ ] Create `css/product-shell.css`
-- [ ] Define shared header and navigation contract
-- [ ] Define shared footer taxonomy
-- [ ] Define breadcrumb pattern
-- [ ] Define page hero and section heading patterns
-- [ ] Define buttons, cards, fields, notices and badges
-- [ ] Define related-tools and related-learning modules
-- [ ] Add design-system compliance checks
+- [x] Create `css/product-shell.css`
+- [x] Create `css/v2-workspace.css`
+- [x] Load both layers through the existing shared `css/main.css` entry point
+- [x] Define shared typography, spacing, surface, control, focus and workspace primitives
+- [x] Define shared footer positioning and mobile shell behavior
+- [x] Replace decorative task-page hero cards with compact workspace headers
+- [x] Put the writing surface before secondary education and promotion
+- [x] Reduce visible action density on Rich Editor and Urdu Keyboard
+- [x] Make transliteration guidance secondary without removing dynamic conversion actions
+- [x] Move productivity controls below the writing surface
+- [x] Remove duplicate onboarding from migrated writing pages
+- [x] Reduce instructional-card and mobile-footer density
+- [x] Extend design-system contract tests to the v2 workspace layer
+- [ ] Refine shared header and navigation taxonomy
+- [ ] Finalize shared footer taxonomy
 
 ### Page migration order
 
-- [ ] Rich Editor
-- [ ] Urdu Keyboard
+- [x] Rich Editor — v2 workspace-first layout applied; final preview gate pending
+- [x] Urdu Keyboard — v2 workspace-first layout applied; final preview gate pending
 - [ ] Documentation
 - [ ] FAQ
 - [ ] Card Studio
@@ -104,8 +114,8 @@ Make every WriteUrdu page feel like one professionally directed product while pr
 
 - [ ] Uses shared header and footer
 - [ ] Uses approved typography weights
-- [ ] Has one primary task and CTA
-- [ ] Has related tools and learning links
+- [ ] Places the primary task before marketing or long guidance
+- [ ] Has one visible primary workflow
 - [ ] Passes desktop and 320px mobile review
 - [ ] Has visible keyboard focus
 - [ ] Has correct title, description, H1 and canonical
@@ -116,4 +126,4 @@ Make every WriteUrdu page feel like one professionally directed product while pr
 
 ## Current next action
 
-Run the new Phase 2A governance suite in CI, resolve any current-route findings, merge it, and then begin **Phase 2B — Shared product shell** with the Rich Editor and Urdu Keyboard.
+Review the v2 workspace-first Rich Editor and Urdu Keyboard previews. Once the editor is visually dominant, controls remain functional and CI is green, merge PR #5 and begin V2-S2 with the shared application shell and Documentation/FAQ migration.
