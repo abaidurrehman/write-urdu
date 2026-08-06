@@ -19,7 +19,7 @@ urdu-alphabet.html,/urdu-alphabet,Learn,Urdu alphabet,index,yes,keep,pending,P1,
 write-urdu-features.html,/write-urdu-features,Learn,WriteUrdu platform features,index,yes,merge-review,pending,P2,Potential overlap with documentation and About
 urdu-editor-features.html,/urdu-editor-features,Learn,rich editor features,index,yes,merge-review,pending,P2,Potential overlap with editor and documentation
 why-write-urdu.html,/why-write-urdu,About,why use WriteUrdu,index,yes,keep-reframe,pending,P1,Become clear About and trust page
-write-urdu-feedback.html,/write-urdu-feedback,About,feedback and contact,index,no,keep,pending,P2,Decide sitemap omission explicitly
+write-urdu-feedback.html,/write-urdu-feedback,About,feedback and contact,noindex,no,keep,pending,P2,Utility contact page intentionally excluded from sitemap
 write-urdu-privacy.html,/write-urdu-privacy,About,privacy policy,index,yes,keep,pending,P1,Legal and provider disclosure
 write-urdu-search.html,/write-urdu-search,Utility,internal site search,noindex,no,review,pending,P2,Recommended noindex follow unless curated
 write-urdu-sitemap.html,/write-urdu-sitemap,Utility,human-readable sitemap,index,yes,keep-if-generated,pending,P2,Must share route registry source

@@ -14,22 +14,26 @@ Make every WriteUrdu page feel like one professionally directed product while pr
 - [x] Repository-wide public page inventory
 - [x] Initial page lifecycle and canonical registry
 - [x] Product audit and target information architecture
+- [x] Confirmed repository-only artifact cleanup
+- [x] Explicit design-freedom and SEO-protection guardrails
 
 ## Phase 2A — Governance and route safety
 
-- [ ] Add machine-readable route registry used by checks
-- [ ] Verify canonical tag on every indexable page
-- [ ] Verify `noindex,follow` on internal search page
-- [ ] Reconcile registry with `sitemap.xml`
-- [ ] Reconcile registry with `_redirects`
-- [ ] Detect `.html`, `www` and trailing-slash internal links
-- [ ] Detect broken internal links
-- [ ] Detect orphan public pages
-- [ ] Detect duplicate titles, descriptions and H1 ownership
-- [ ] Generate human-readable sitemap from registry or test equivalence
-- [ ] Remove `.vs/` and add ignore rule
-- [ ] Move or remove root-level review screenshots after reference check
-- [ ] Review verification files before deletion
+- [x] Add machine-readable route registry used by checks
+- [x] Verify canonical tag on every registered page
+- [x] Verify `noindex,follow` on utility pages
+- [x] Reconcile registry with `sitemap.xml`
+- [x] Reconcile registry with `_redirects`
+- [x] Detect `.html`, `www` and trailing-slash internal links
+- [x] Detect broken internal links
+- [x] Detect orphan public pages
+- [x] Detect duplicate titles and descriptions through the SEO suite
+- [x] Check human-readable sitemap equivalence and report warnings
+- [x] Remove `.vs/` and retain ignore rule
+- [x] Remove confirmed root-level review screenshots
+- [ ] Review ownership verification files before deletion
+- [ ] Resolve any governance failures reported by CI
+- [ ] Confirm Phase 2A checks pass on `main`
 
 ## Phase 2B — Shared product shell
 
@@ -68,7 +72,7 @@ Make every WriteUrdu page feel like one professionally directed product while pr
 
 ## Phase 2C — Content and canonical consolidation
 
-- [ ] Decide ownership of broad `urdu typing` and `urdu writing` intent
+- [ ] Keep broad `urdu typing` and `urdu writing` ownership on the homepage unless evidence supports a deliberate change
 - [ ] Review `write-urdu-features` against documentation and About
 - [ ] Review `urdu-editor-features` against editor and documentation
 - [ ] Review typing tutorial against transliteration guide and homepage
@@ -112,4 +116,4 @@ Make every WriteUrdu page feel like one professionally directed product while pr
 
 ## Current next action
 
-Implement **Phase 2A — Governance and route safety** before migrating additional pages. This creates executable guardrails for the larger UX migration.
+Run the new Phase 2A governance suite in CI, resolve any current-route findings, merge it, and then begin **Phase 2B — Shared product shell** with the Rich Editor and Urdu Keyboard.

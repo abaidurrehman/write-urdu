@@ -31,3 +31,6 @@ jobs:
 
       - name: Validate SEO files
         run: npm run seo:check
+
+      - name: Validate routes and product governance
+        run: npm run governance:check
