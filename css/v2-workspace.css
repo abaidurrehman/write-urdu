@@ -1,0 +1,214 @@
+/* WriteUrdu v2 — first product slice.
+   This layer deliberately changes presentation only. Functional IDs, editor
+   bindings, transliteration, export and keyboard handlers remain untouched. */
+
+.rich-editor-page .col-12.col-md-9,
+.keyboard-page .col-12.col-md-9 {
+  display: flex;
+  flex-direction: column;
+}
+
+.rich-editor-page .col-12.col-md-9 > .container:first-of-type,
+.keyboard-page .col-12.col-md-9 > .container:first-of-type {
+  order: 1;
+  margin: 0;
+  padding: 18px 2px 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.rich-editor-page .col-12.col-md-9 > .container:first-of-type::before,
+.keyboard-page .col-12.col-md-9 > .container:first-of-type::before { display: none; }
+.rich-editor-page h1,
+.keyboard-page h1 { margin: 0 0 6px; font-size: clamp(1.65rem, 3vw, 2.25rem); letter-spacing: -.035em; }
+.rich-editor-page .page-intro,
+.keyboard-page .page-intro { max-width: 680px; font-size: .98rem; line-height: 1.55; }
+.rich-editor-page h4.small,
+.keyboard-page h4.small,
+.rich-editor-page .col-12.col-md-9 > hr.solid,
+.keyboard-page .col-12.col-md-9 > hr.solid { display: none; }
+
+.rich-editor-page .col-12.col-md-9 > div[style*="margin-top:15px"] {
+  order: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+}
+.rich-editor-page .tool-actions,
+.keyboard-page .tool-actions {
+  order: 2;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+  padding: 8px;
+  border: 1px solid var(--wu-shell-line);
+  border-radius: 14px 14px 0 0;
+  background: #fff;
+  box-shadow: none;
+}
+.rich-editor-page .home-actions-group-create { display: none !important; }
+.rich-editor-page .home-actions-group-primary { order: 3; margin-left: auto; }
+.rich-editor-page .home-actions-group-primary .btn {
+  border-color: transparent !important;
+  color: var(--wu-shell-muted) !important;
+  background: transparent !important;
+}
+.rich-editor-page .home-actions-group-export { order: 1; margin-left: 0 !important; }
+.rich-editor-page .tool-actions .btn,
+.rich-editor-page .tool-actions summary,
+.keyboard-page .tool-actions .btn,
+.keyboard-page .tool-actions summary { min-height: 38px; padding: .48rem .72rem !important; font-size: .82rem; }
+.rich-editor-page #clear {
+  order: 4;
+  min-width: 40px;
+  min-height: 38px;
+  margin: 0 0 0 2px !important;
+  padding: .45rem .62rem !important;
+  font-size: .78rem;
+}
+.rich-editor-page #spinner { order: 5; width: 22px; height: 22px; margin: 0; }
+
+.rich-editor-page .input-mode-control,
+.keyboard-page .input-mode-control {
+  order: 3;
+  margin: -1px 0 0;
+  padding: 8px 12px;
+  border-radius: 0;
+  background: #f7faf8;
+}
+.rich-editor-page .input-mode-title,
+.keyboard-page .input-mode-title { font-size: .72rem; }
+.rich-editor-page .input-mode-note,
+.keyboard-page .input-mode-note { flex-basis: auto; margin-left: auto; font-size: .75rem; }
+
+/* Editor is the page. */
+.rich-editor-page .col-12.col-md-9 > div[style*="min-height:300px"] { order: 4; margin-top: -1px; }
+.rich-editor-page .tox.tox-tinymce {
+  margin-top: 0;
+  border-radius: 0 0 16px 16px !important;
+  box-shadow: 0 18px 52px rgba(20, 35, 28, .11) !important;
+}
+.rich-editor-page .tox .tox-editor-header { border-bottom: 1px solid var(--wu-shell-line) !important; }
+.rich-editor-page .tox-statusbar { border-top-color: var(--wu-shell-line) !important; }
+
+.rich-editor-page .batch-transliteration-panel,
+.keyboard-page .batch-transliteration-panel {
+  order: 5;
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  box-shadow: none;
+}
+.rich-editor-page .batch-transliteration-panel [data-batch-guide],
+.rich-editor-page .batch-transliteration-panel [data-batch-note],
+.keyboard-page .batch-transliteration-panel [data-batch-guide],
+.keyboard-page .batch-transliteration-panel [data-batch-note] { display: none; }
+.rich-editor-page .batch-transliteration-panel [data-batch-title],
+.keyboard-page .batch-transliteration-panel [data-batch-title] { color: var(--wu-shell-muted); font-size: .78rem; font-weight: 500; }
+.rich-editor-page .batch-transliteration-panel [data-batch-prompt]:not([hidden]),
+.keyboard-page .batch-transliteration-panel [data-batch-prompt]:not([hidden]) { color: var(--wu-shell-ink); font-size: .8rem; }
+
+.rich-editor-page .editor-productivity,
+.keyboard-page .editor-productivity { order: 6; margin-top: 10px; border-radius: 12px; box-shadow: none; }
+.rich-editor-page .editor-onboarding,
+.keyboard-page .editor-onboarding { display: none !important; }
+
+.rich-editor-page .card,
+.keyboard-page .card { order: 7; margin-top: 14px; border-radius: 14px !important; box-shadow: none !important; }
+.rich-editor-page .card-body,
+.keyboard-page .card-body { padding: 18px 20px; }
+.rich-editor-page .card-title,
+.keyboard-page .card-title { margin-bottom: 10px; font-size: 1.02rem; }
+.rich-editor-page .card-text,
+.keyboard-page .card-text {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 24px;
+  font-size: .88rem;
+  line-height: 1.55;
+}
+.rich-editor-page .card:has(.facebook-responsive),
+.rich-editor-page .card + br,
+.keyboard-page .card + br { display: none; }
+
+.keyboard-page .keyboard-actions { order: 2; }
+.keyboard-page #write { order: 3; margin: 0; border-radius: 14px 14px 0 0; box-shadow: none; }
+.keyboard-page #key1 { order: 4; margin-top: -1px; border-radius: 0 0 16px 16px; }
+
+.tool-page .wu-site-footer { margin-top: 40px; }
+.tool-page .wu-footer-inner { padding-top: 30px; }
+.tool-page .wu-footer-links { gap: 24px; }
+.tool-page .wu-footer-group a { line-height: 1.55; }
+
+@media (max-width: 767px) {
+  .rich-editor-page .col-12.col-md-9,
+  .keyboard-page .col-12.col-md-9 { padding-top: 8px !important; }
+  .rich-editor-page .col-12.col-md-9 > .container:first-of-type,
+  .keyboard-page .col-12.col-md-9 > .container:first-of-type { padding: 12px 2px 14px; }
+  .rich-editor-page h1,
+  .keyboard-page h1 { font-size: 1.55rem; }
+  .rich-editor-page .page-intro,
+  .keyboard-page .page-intro { font-size: .9rem; }
+  .rich-editor-page .col-12.col-md-9 > div[style*="margin-top:15px"] { display: block; }
+  .rich-editor-page .tool-actions,
+  .keyboard-page .tool-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 7px;
+  }
+  .rich-editor-page .home-actions-group,
+  .rich-editor-page .home-actions-group-export,
+  .rich-editor-page .home-actions-group-primary { display: contents; width: auto; }
+  .rich-editor-page .tool-actions .btn,
+  .rich-editor-page .tool-actions details,
+  .keyboard-page .tool-actions .btn,
+  .keyboard-page .tool-actions details { min-width: 0; width: 100%; flex: none; }
+  .rich-editor-page .tool-actions summary,
+  .keyboard-page .tool-actions summary { justify-content: center; }
+  .rich-editor-page #clear {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+    width: 38px;
+    min-width: 38px;
+    overflow: hidden;
+    color: transparent !important;
+  }
+  .rich-editor-page #clear i { color: #a33232; }
+  .rich-editor-page .input-mode-control,
+  .keyboard-page .input-mode-control {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 8px;
+  }
+  .rich-editor-page .input-mode-title,
+  .keyboard-page .input-mode-title,
+  .rich-editor-page .input-mode-note,
+  .keyboard-page .input-mode-note { grid-column: 1 / -1; margin: 0; }
+  .rich-editor-page .batch-transliteration-panel,
+  .keyboard-page .batch-transliteration-panel { padding: 7px 3px; }
+  .rich-editor-page .card-text,
+  .keyboard-page .card-text { grid-template-columns: 1fr; font-size: .84rem; }
+  .tool-page .wu-footer-links { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 20px 16px; }
+  .tool-page .wu-footer-group:last-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 420px) {
+  .rich-editor-page .tool-actions,
+  .keyboard-page .tool-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tool-page .wu-footer-links { grid-template-columns: 1fr !important; }
+  .tool-page .wu-footer-group:last-child { grid-column: auto; }
+}
