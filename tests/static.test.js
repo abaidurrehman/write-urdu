@@ -151,8 +151,9 @@ assert.match(keyboard, /How to use the keyboard on mobile/, 'Urdu keyboard mobil
 assert.match(keyboard, /keyboard-faq/, 'Urdu keyboard FAQ is missing');
 
 const transliteration = read('roman-urdu-transliteration.html');
-assert.match(transliteration, /id="tool-promo-grid"/, 'Roman Urdu guide page is missing the new-tool promotion grid');
-assert.match(transliteration, /href="urdu-keyboard\.html"/, 'Roman Urdu guide page is missing the Urdu keyboard promo link');
+assert.match(transliteration, /class="content-page guide-page v2-content-page authority-page roman-urdu-page"/, 'Roman Urdu guide is missing the v2 authority layout');
+assert.match(transliteration, /href="\/urdu-keyboard"/, 'Roman Urdu guide page is missing the canonical Urdu keyboard link');
+assert.doesNotMatch(transliteration, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Roman Urdu guide must use extensionless internal links');
 
 const mainScript = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
 assert.match(mainScript, /new Blob\(\[['"]\\ufeff['"],\s*textToSave\].*charset=utf-8/, 'Text export must preserve Urdu with UTF-8 and a BOM');
@@ -285,13 +286,13 @@ for (const file of ['index.html', 'urdu-editor.html', 'urdu-keyboard.html']) {
 }
 
 const alphabet = read('urdu-alphabet.html');
-assert.match(alphabet, /<body[^>]*class=["']alphabet-page["']/i, 'Urdu alphabet page is missing its isolated layout class');
-assert.match(alphabet, /<main[^>]*class=["']alphabet-main["']/i, 'Urdu alphabet page is missing its normal-flow main region');
+assert.match(alphabet, /<body[^>]*class=["'][^"']*\balphabet-page\b[^"']*["']/i, 'Urdu alphabet page is missing its page contract');
+assert.match(alphabet, /<main[^>]*class=["'][^"']*\bauthority-main\b[^"']*["']/i, 'Urdu alphabet page is missing its v2 authority main region');
 assert.match(alphabet, /<caption>Common standalone Urdu characters/i, 'Urdu alphabet table is missing its accessible caption');
 assert.match(alphabet, /<th[^>]*scope=["']col["']/i, 'Urdu alphabet table headers must declare their scope');
-assert.match(alphabet, /<td>\s*ghain\s*<\/td>/i, 'Urdu alphabet table contains the corrected ghain name');
+assert.match(alphabet, /<td[^>]*>\s*ghain\s*<\/td>/i, 'Urdu alphabet table contains the corrected ghain name');
 const table = alphabet.match(/<table\b[^>]*>[\s\S]*?<\/table>/i)[0];
-const letters = [...table.matchAll(/<td>\s*([^<\s]+)\s*<\/td>/gi)].map(match => match[1]).filter(value => /[\u0600-\u06ff]/.test(value));
+const letters = [...table.matchAll(/<td(?:\s[^>]*)?>\s*([^<\s]+)\s*<\/td>/gi)].map(match => match[1]).filter(value => /[\u0600-\u06ff]/.test(value));
 assert.strictEqual(new Set(letters).size, letters.length, 'Urdu alphabet table contains duplicate letter rows');
 
 const documentation = read('write-urdu-documentation.html');

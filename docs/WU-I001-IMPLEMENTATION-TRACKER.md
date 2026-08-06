@@ -20,6 +20,7 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Explicit design-freedom and SEO-protection guardrails
 - [x] WriteUrdu v2 delivery principles and protected contracts
 - [x] V2-S1 — Rich Editor and Urdu Keyboard workspace foundation merged in PR #5
+- [x] V2-S2 — Shared application shell, Documentation and FAQ merged in PR #6
 
 ## Phase 2A — Governance and route safety
 
@@ -70,9 +71,35 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Convert all core FAQ answers into accessible disclosure items
 - [x] Remove obsolete Universal Analytics, Bootstrap, Font Awesome and inline legacy FAQ accordion code
 - [x] Add V2-S2 shell/content regression contract
-- [ ] Pass Cloudflare preview review on desktop and 320px mobile
-- [ ] Confirm GitHub Actions, SEO and governance suites are green
-- [ ] Merge V2-S2 to `main`
+- [x] Cloudflare preview deployed successfully for the exact PR head
+- [x] Merge V2-S2 to `main` in PR #6
+- [x] Record that GitHub Actions did not trigger for PR #6 and move CI recovery into V2-S3
+
+## V2-S3 — Authority content migration
+
+### First implementation batch
+
+- [x] Create `css/v2-authority.css`
+- [x] Migrate Roman Urdu transliteration guide to the shared authority system
+- [x] Keep the Roman Urdu guide supportive of the homepage's broad typing intent
+- [x] Add clear routes from the guide into Roman typing, direct keyboard input and rich editing
+- [x] Migrate Urdu Alphabet to the shared authority system
+- [x] Preserve the complete standalone letter chart
+- [x] Remove Alphabet Bootstrap, jQuery, W3CSS, Font Awesome and obsolete Universal Analytics
+- [x] Convert Alphabet internal links to extensionless canonical routes
+- [x] Add V2-S3 authority regression contract
+- [x] Expand quality workflow triggers to agent branches and explicit PR lifecycle events
+- [x] Add manual workflow-dispatch recovery
+- [ ] Validate GitHub Actions on the new branch and PR
+- [ ] Validate Cloudflare preview on desktop and 320px mobile
+- [ ] Merge the first V2-S3 batch
+
+### Remaining V2-S3 work
+
+- [ ] Migrate Urdu font comparison
+- [ ] Review typing tutorial against homepage, Documentation and Roman Urdu guide
+- [ ] Use route and Search Console evidence to decide keep, narrow, merge or redirect
+- [ ] Preserve one-hop redirects for any consolidation
 
 ### Page migration order
 
@@ -80,6 +107,10 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Urdu Keyboard — v2 workspace-first layout
 - [x] Documentation — v2 help hub
 - [x] FAQ — v2 help centre
+- [x] Roman Urdu guide — v2 authority guide
+- [x] Urdu Alphabet — v2 authority guide
+- [ ] Urdu font comparison
+- [ ] English-to-Urdu tutorial
 - [ ] Card Studio
 - [ ] Templates
 - [ ] Invoice Generator
@@ -88,10 +119,6 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [ ] WhatsApp Status Maker
 - [ ] Instagram Post Maker
 - [ ] QR Generator
-- [ ] Roman Urdu guide
-- [ ] English-to-Urdu tutorial
-- [ ] Urdu Alphabet
-- [ ] Urdu font comparison
 - [ ] About / Why WriteUrdu
 - [ ] Privacy
 - [ ] Feedback
@@ -144,4 +171,4 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Current next action
 
-Review the V2-S2 Cloudflare preview on the homepage, Rich Editor, Documentation and FAQ. Verify the new navigation and footer at desktop and mobile widths, then merge once the automated suites are green.
+Open the first V2-S3 PR, verify that the expanded quality workflow now triggers, review Roman Urdu and Urdu Alphabet on the Cloudflare preview at desktop and 320px, then merge before starting the font comparison and tutorial consolidation decision.
