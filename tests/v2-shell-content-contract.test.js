@@ -13,6 +13,13 @@ const contentCss = read('css/v2-content.css');
 const documentation = read('write-urdu-documentation.html');
 const faq = read('urdu-faq.html');
 
+function assertApprovedWeights(source, label) {
+    const weights = Array.from(source.matchAll(/font-weight\s*:\s*(\d+)\b/g), (match) => Number(match[1]));
+    weights.forEach((weight) => {
+        assert.ok([400, 500, 600, 700].includes(weight), `${label} uses disallowed font weight ${weight}`);
+    });
+}
+
 new vm.Script(seoRuntime, { filename: 'js/seo.js' });
 new vm.Script(shellRuntime, { filename: 'js/v2-shell.js' });
 
@@ -42,11 +49,10 @@ assert.doesNotMatch(faq, /UA-80884320-1|google-analytics\.com\/analytics\.js/, '
 assert.doesNotMatch(faq, /maxcdn\.bootstrapcdn\.com|font-awesome|cdnjs\.cloudflare\.com\/ajax\/libs\/font-awesome/i, 'FAQ must not retain obsolete framework dependencies');
 assert.doesNotMatch(faq, /<meta name="Keywords"/i, 'FAQ must not retain legacy keyword meta tags');
 
-const disallowedWeight = /font-weight\s*:\s*(?:[1-3]00|5[1-9]0|6[1-9]0|[89]00|[1-9][0-9]{2,})\b/;
-assert.doesNotMatch(shellCss, disallowedWeight, 'v2 shell uses a disallowed font weight');
-assert.doesNotMatch(contentCss, disallowedWeight, 'v2 content system uses a disallowed font weight');
+assertApprovedWeights(shellCss, 'v2 shell');
+assertApprovedWeights(contentCss, 'v2 content system');
 assert.match(shellCss, /prefers-reduced-motion/, 'v2 shell must respect reduced-motion preferences');
 assert.match(contentCss, /prefers-reduced-motion/, 'v2 content system must respect reduced-motion preferences');
-assert.match(contentCss, /:focus|summary/, 'v2 content system must retain interactive disclosure treatment');
+assert.match(contentCss, /summary/, 'v2 content system must retain interactive disclosure treatment');
 
 console.log('WriteUrdu v2 S2 shell and content contract checks passed.');
