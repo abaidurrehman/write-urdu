@@ -1,7 +1,7 @@
 source_file,canonical_route,area,primary_intent,indexability,sitemap,status,design_migration,priority,notes
 index.html,/,Write,urdu typing and urdu writing,index,yes,keep,migrated,P0,Protected transliteration owner and broad acquisition page
-urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,pending,P0,Highest-priority page migration
-urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,pending,P0,Highest-priority page migration
+urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,migrated,P0,Shared product shell applied without changing TinyMCE or export bindings
+urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,migrated,P0,Shared product shell applied without changing keyboard input bindings
 urdu-card-studio.html,/urdu-card-studio,Create,Urdu card design,index,yes,keep,pending,P1,Strategic creation workflow
 urdu-templates.html,/urdu-templates,Create,Urdu design templates,index,yes,keep,pending,P1,Entry point into Card Studio
 stylish-urdu-text-generator.html,/stylish-urdu-text-generator,Create,stylish Urdu text,index,yes,keep,pending,P1,Validate distinct intent and output
