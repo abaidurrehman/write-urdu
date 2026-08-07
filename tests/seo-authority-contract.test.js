@@ -13,6 +13,7 @@ assert.match(home.searchTitle || '', /English Letters/i, 'homepage search title 
 assert.match(home.searchDescription || '', /Roman Urdu/i, 'homepage search description must describe Roman Urdu input');
 assert.match(home.searchDescription || '', /Urdu script/i, 'homepage search description must describe Urdu-script output');
 assert.match(home.searchDescription || '', /no account/i, 'homepage search description must preserve the accurate no-account benefit');
+assert.ok(home.searchDescription.length <= 165, 'homepage search description should stay concise enough for a useful mobile snippet');
 assert.strictEqual(home.h1, 'Type Roman Urdu and convert it to Urdu script', 'homepage H1 ownership contract changed');
 
 const publisher = config.PUBLISHER;
@@ -22,9 +23,17 @@ assert.strictEqual(publisher.contactEmail, 'admin@write-urdu.com', 'public corre
 assert.strictEqual(publisher.contactPath, '/write-urdu-feedback', 'public correction route changed unexpectedly');
 assert.strictEqual(publisher.aboutPath, '/why-write-urdu', 'About authority route changed unexpectedly');
 assert.strictEqual(publisher.privacyPath, '/write-urdu-privacy', 'Privacy authority route changed unexpectedly');
-assert.match(publisher.publishingPrinciplesPath, /why-write-urdu#editorial-and-correction-policy/, 'publishing principles must resolve to the public correction policy');
+assert.strictEqual(publisher.publishingPrinciplesPath, '/why-write-urdu', 'publishing principles must resolve to a real public page');
 assert.ok(Array.isArray(publisher.alternateName) && publisher.alternateName.includes('WriteUrdu'), 'stable alternate brand name is missing');
 assert.strictEqual(Object.prototype.hasOwnProperty.call(publisher, 'sameAs'), false, 'unverified sameAs profiles must not be added');
+
+const aboutConfig = config.pages.find(page => page.id === 'why-write-urdu');
+const privacyConfig = config.pages.find(page => page.id === 'write-urdu-privacy');
+assert.deepStrictEqual(aboutConfig.schema, [], 'About must use AboutPage semantics rather than pretending to be an Article');
+assert.deepStrictEqual(privacyConfig.schema, [], 'Privacy policy must remain a WebPage rather than pretending to be an Article');
+const romanConfig = config.pages.find(page => page.id === 'roman-urdu-transliteration');
+assert.strictEqual(romanConfig.datePublished, '2026-07-16', 'Roman Urdu publication date must match the visible published date');
+assert.strictEqual(romanConfig.lastmod, '2026-08-07', 'Roman Urdu revision date must remain distinct from its publication date');
 
 const seo = read('js/seo.js');
 assert.match(seo, /page\.searchTitle \|\| page\.title/, 'runtime SEO must use the search-facing title when present');
@@ -38,7 +47,10 @@ assert.match(seo, /webpageNode\.dateModified = page\.lastmod/, 'page revision da
 assert.match(seo, /mainEntityOfPage:\s*\{ '@id': webpageId \}/, 'primary content entities must connect back to the canonical WebPage');
 assert.match(seo, /webpageNode\.mainEntity = \{ '@id': applicationId \}/, 'tool pages must connect WebPage to WebApplication');
 assert.match(seo, /hasSchema\('Article'\) \? 'article' : 'website'/, 'Open Graph type must distinguish maintained articles from website pages');
-assert.match(seo, /article:modified_time/, 'article modified-time metadata is missing');
+assert.match(seo, /hasSchema\('Article'\) && page\.lastmod/, 'article modified-time metadata must be restricted to genuine Article pages');
+assert.match(seo, /if \(page\.datePublished\) article\.datePublished = page\.datePublished;/, 'Article publication date must only come from explicit publication evidence');
+assert.doesNotMatch(seo, /article\.datePublished = page\.datePublished \|\| page\.lastmod/, 'Article publication date must never be synthesized from lastmod');
+assert.doesNotMatch(seo, /image:\s*config\.SITE_ORIGIN \+ \(publisher\.logoPath/, 'Article image must not reuse the publisher logo as editorial imagery');
 
 const llms = read('llms.txt');
 assert.match(llms, /^# Write Urdu\n\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
