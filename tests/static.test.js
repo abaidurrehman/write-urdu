@@ -95,7 +95,7 @@ assert.strictEqual(migratedInvoice.preferences.showGeneratorCredit, true, 'Legac
 assert.strictEqual(migratedInvoice.qr.captionMode, 'automatic', 'Technical QR caption should remain automatic during migration');
 assert.strictEqual(invoiceCore.requiresZeroTotalConfirmation(Object.assign({}, invoice, { amountPaid: '0', items: [{ id: 'zero', description: 'Free service', quantity: '1', unitPrice: '0' }] })), true, 'Zero-total invoice should require confirmation');
 assert.strictEqual(invoiceCore.requiresZeroTotalConfirmation(invoice), false, 'Positive invoice should not require zero-total confirmation');
-assert.strictEqual(invoiceCore.safeFilename('INV/1', 'A:B', 'pdf'), 'Invoice filename sanitisation is incomplete');
+assert.strictEqual(invoiceCore.safeFilename('INV/1', 'A:B', 'pdf'), 'Invoice-INV-1-A-B.pdf', 'Invoice filename sanitisation is incomplete');
 
 for (const file of htmlFiles) {
   const html = read(file);
