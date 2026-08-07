@@ -95,7 +95,7 @@ assert.strictEqual(migratedInvoice.preferences.showGeneratorCredit, true, 'Legac
 assert.strictEqual(migratedInvoice.qr.captionMode, 'automatic', 'Technical QR caption should remain automatic during migration');
 assert.strictEqual(invoiceCore.requiresZeroTotalConfirmation(Object.assign({}, invoice, { amountPaid: '0', items: [{ id: 'zero', description: 'Free service', quantity: '1', unitPrice: '0' }] })), true, 'Zero-total invoice should require confirmation');
 assert.strictEqual(invoiceCore.requiresZeroTotalConfirmation(invoice), false, 'Positive invoice should not require zero-total confirmation');
-assert.strictEqual(invoiceCore.safeFilename('INV/1', 'A:B', 'pdf'), 'Invoice-INV-1-A-B.pdf', 'Invoice filename sanitisation is incomplete');
+assert.strictEqual(invoiceCore.safeFilename('INV/1', 'A:B', 'pdf'), 'Invoice filename sanitisation is incomplete');
 
 for (const file of htmlFiles) {
   const html = read(file);
@@ -124,16 +124,21 @@ assert.match(read('index.html'), /data-create-qr/, 'Basic editor is missing the 
 assert.match(read('urdu-editor.html'), /data-create-qr/, 'Rich editor is missing the QR generator entry action');
 
 const home = read('index.html');
+assert.match(home, /<title>Urdu Typing Online — Write Urdu Using English Letters \| WriteUrdu<\/title>/, 'Homepage source title must lead with the existing Urdu typing opportunity');
 assert.match(home, /<h1>Type Roman Urdu and convert it to Urdu script<\/h1>/, 'Homepage must lead with the Roman Urdu conversion intent');
 assert.match(home, /data-start-typing/, 'Homepage is missing the Start typing action');
 assert.match(home, /href="#home-tools-title"[^>]*>Explore more tools/, 'Homepage is missing the Explore more tools action');
 assert.match(home, /href="#home-how-it-works"[^>]*>Learn how it works/, 'Homepage is missing the How it works action');
 assert.match(home, /id="home-how-it-works"/, 'Homepage is missing the visible How it works section');
 assert.match(home, /id="home-new-tools"/, 'Homepage is missing the new tools promo section');
-assert.match(home, /href="urdu-keyboard\.html"[^>]*>Urdu Keyboard/i, 'Homepage is missing the Urdu Keyboard promo card');
-assert.match(home, /href="roman-urdu-transliteration\.html"[^>]*>Roman Urdu guide/i, 'Homepage is missing the Roman Urdu guide promo card');
-assert.match(home, /href="urdu-templates\.html"/, 'Homepage is missing the Templates handoff link');
-assert.match(home, /href="urdu-invoice-generator\.html"/, 'Homepage is missing the Invoice handoff link');
+assert.match(home, /href="\/urdu-keyboard"[^>]*>Urdu Keyboard/i, 'Homepage is missing the canonical Urdu Keyboard promo card');
+assert.match(home, /href="\/roman-urdu-transliteration"[^>]*>Roman Urdu guide/i, 'Homepage is missing the canonical Roman Urdu guide promo card');
+assert.match(home, /href="\/urdu-templates"/, 'Homepage is missing the canonical Templates handoff link');
+assert.match(home, /href="\/urdu-invoice-generator"/, 'Homepage is missing the canonical Invoice handoff link');
+assert.doesNotMatch(home, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Homepage must use extensionless internal links');
+assert.doesNotMatch(home, /These new pages are designed for the searches people already use/i, 'Homepage must not expose internal SEO rationale');
+assert.doesNotMatch(home, /<meta\s+name=["']Keywords["']/i, 'Homepage must not retain the obsolete keywords meta tag');
+assert.doesNotMatch(home, /UA-80884320-1|google-analytics\.com\/analytics\.js|googletagmanager\.com\/gtag\/js\?id=UA-/i, 'Homepage must not retain obsolete Universal Analytics code');
 assert.match(home, /makeTransliteratable\(\[['"]transliterateTextarea['"]\]\)/, 'Basic transliteration target changed');
 assert.doesNotMatch(home, /clearDynamicLink|textBaseline\s*=\s*["']center|\.backgroundcolor|encodeURI\(/, 'Homepage contains a repaired legacy export defect');
 
