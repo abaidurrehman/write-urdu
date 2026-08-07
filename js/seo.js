@@ -152,12 +152,7 @@
             alternateName: publisher.alternateName || ['WriteUrdu', 'Write-Urdu.com'],
             description: 'Browser-based tools for typing, formatting, designing and sharing Urdu.',
             inLanguage: ['en', 'ur'],
-            publisher: { '@id': publisherId },
-            potentialAction: {
-                '@type': 'SearchAction',
-                target: config.SITE_ORIGIN + '/write-urdu-search?q={search_term_string}',
-                'query-input': 'required name=search_term_string'
-            }
+            publisher: { '@id': publisherId }
         };
 
         var webpageNode = {
