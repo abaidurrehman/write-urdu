@@ -13,10 +13,12 @@ const workflow = read('.github/workflows/quality.yml');
 assert.match(authorityCss, /body\.v2-content-page\.authority-page/, 'authority system must extend the shared v2 content contract');
 assert.match(authorityCss, /prefers-reduced-motion/, 'authority pages must respect reduced-motion preferences');
 assert.match(authorityCss, /:focus-visible/, 'authority pages must preserve visible keyboard focus');
-assert.doesNotMatch(
-  authorityCss,
-  /font-weight\s*:\s*(?:[1-3]00|5[1-9]0|6[1-9]0|[89]00|[1-9][0-9]{2,})\b/,
-  'authority system uses a disallowed font weight'
+const authorityWeights = [...authorityCss.matchAll(/font-weight\s*:\s*(\d{3})\b/g)].map(match => Number(match[1]));
+const disallowedAuthorityWeights = [...new Set(authorityWeights.filter(weight => ![400, 500, 600, 700].includes(weight)))];
+assert.deepStrictEqual(
+  disallowedAuthorityWeights,
+  [],
+  `authority system uses disallowed font weights: ${disallowedAuthorityWeights.join(', ')}`
 );
 
 assert.match(roman, /class="content-page guide-page v2-content-page authority-page roman-urdu-page"/, 'Roman Urdu guide must use the v2 authority page contract');
