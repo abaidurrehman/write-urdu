@@ -8,13 +8,16 @@ const config = require(path.join(root, 'seo.config.js'));
 
 const home = config.pages.find(page => page.id === 'home');
 assert.ok(home, 'homepage SEO registry entry is missing');
-assert.match(home.searchTitle || '', /^Urdu Typing Online\b/i, 'search-facing homepage title must lead with the existing Urdu typing opportunity');
-assert.match(home.searchTitle || '', /English Letters/i, 'homepage search title must explain the real Roman Urdu input method');
-assert.match(home.searchDescription || '', /Roman Urdu/i, 'homepage search description must describe Roman Urdu input');
-assert.match(home.searchDescription || '', /Urdu script/i, 'homepage search description must describe Urdu-script output');
-assert.match(home.searchDescription || '', /no account/i, 'homepage search description must preserve the accurate no-account benefit');
-assert.ok(home.searchDescription.length <= 165, 'homepage search description should stay concise enough for a useful mobile snippet');
+assert.match(home.title || '', /^Urdu Typing Online\b/i, 'homepage title must lead with the existing Urdu typing opportunity');
+assert.match(home.title || '', /English Letters/i, 'homepage title must explain the real Roman Urdu input method');
+assert.match(home.description || '', /Roman Urdu/i, 'homepage description must describe Roman Urdu input');
+assert.match(home.description || '', /Urdu script/i, 'homepage description must describe Urdu-script output');
+assert.match(home.description || '', /no account/i, 'homepage description must preserve the accurate no-account benefit');
+assert.ok(home.description.length <= 165, 'homepage description should stay concise enough for a useful mobile snippet');
 assert.strictEqual(home.h1, 'Type Roman Urdu and convert it to Urdu script', 'homepage H1 ownership contract changed');
+const homeHtml = read('index.html');
+assert.match(homeHtml, new RegExp(`<title>${home.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/title>`), 'static homepage title must match the SEO registry');
+assert.match(homeHtml, new RegExp(`<meta name="description" content="${home.description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">`), 'static homepage description must match the SEO registry');
 
 const publisher = config.PUBLISHER;
 assert.strictEqual(publisher.type, 'Organization', 'publisher must remain an Organization while no public individual byline is used');
@@ -36,8 +39,8 @@ assert.strictEqual(romanConfig.datePublished, '2026-07-16', 'Roman Urdu publicat
 assert.strictEqual(romanConfig.lastmod, '2026-08-07', 'Roman Urdu revision date must remain distinct from its publication date');
 
 const seo = read('js/seo.js');
-assert.match(seo, /page\.searchTitle \|\| page\.title/, 'runtime SEO must use the search-facing title when present');
-assert.match(seo, /page\.searchDescription \|\| page\.description/, 'runtime SEO must use the search-facing description when present');
+assert.match(seo, /page\.searchTitle \|\| page\.title/, 'runtime SEO must support a search-facing title override when explicitly needed');
+assert.match(seo, /page\.searchDescription \|\| page\.description/, 'runtime SEO must support a search-facing description override when explicitly needed');
 assert.match(seo, /alternateName:\s*publisher\.alternateName/, 'WebSite must expose factual alternate brand names');
 assert.match(seo, /contactPoint\s*=\s*\{/, 'Organization must expose a public contact point');
 assert.match(seo, /publishingPrinciples/, 'Organization and articles must expose the public publishing principles');
@@ -51,6 +54,7 @@ assert.match(seo, /hasSchema\('Article'\) && page\.lastmod/, 'article modified-t
 assert.match(seo, /if \(page\.datePublished\) article\.datePublished = page\.datePublished;/, 'Article publication date must only come from explicit publication evidence');
 assert.doesNotMatch(seo, /article\.datePublished = page\.datePublished \|\| page\.lastmod/, 'Article publication date must never be synthesized from lastmod');
 assert.doesNotMatch(seo, /image:\s*config\.SITE_ORIGIN \+ \(publisher\.logoPath/, 'Article image must not reuse the publisher logo as editorial imagery');
+assert.doesNotMatch(seo, /SearchAction|query-input|search_term_string/, 'retired sitelinks search action markup should not remain in the entity graph');
 
 const llms = read('llms.txt');
 assert.match(llms, /^# Write Urdu\n\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
