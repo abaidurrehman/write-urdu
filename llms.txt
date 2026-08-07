@@ -28,7 +28,7 @@ Important facts:
 - [Complete Write Urdu documentation](https://write-urdu.com/write-urdu-documentation): Editor modes, transliteration, direct input, formatting, drafts, exports and related creation tools.
 - [Write Urdu FAQ](https://write-urdu.com/urdu-faq): Product, privacy, export, transliteration and Urdu-script questions.
 - [Urdu fonts: Nastaliq vs Naskh](https://write-urdu.com/urdu-fonts-nastaliq-vs-naskh): Practical comparison of Urdu font styles for documents, interfaces and designs.
-- [Roman Urdu typing tutorial](https://write-urdu.com/english-urdu-typing-tutorial): Step-by-step typing and suggestion guidance. This page is being reviewed for overlap with the newer transliteration guide.
+- [Roman Urdu typing tutorial](https://write-urdu.com/english-urdu-typing-tutorial): Step-by-step typing, suggestion and formatting guidance.
 
 ## Create and export
 
@@ -42,6 +42,7 @@ Important facts:
 - [About Write Urdu](https://write-urdu.com/why-write-urdu): Product purpose, who the project helps, known limitations, maintenance approach and editorial/correction policy.
 - [Privacy policy](https://write-urdu.com/write-urdu-privacy): Local storage, uploaded images, transliteration, analytics, ads, QR content and feedback handling.
 - [Feedback and corrections](https://write-urdu.com/write-urdu-feedback): Public channel for transliteration issues, outdated guidance, accessibility problems and browser bugs.
+- [Security contact](https://write-urdu.com/.well-known/security.txt): Standard security-reporting contact and canonical policy file.
 - [Human-readable sitemap](https://write-urdu.com/write-urdu-sitemap): Index of public editors, tools, guides and policy pages.
 
 ## Optional
