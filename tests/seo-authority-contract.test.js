@@ -50,9 +50,10 @@ assert.match(llms, /## Trust, policies and corrections/, 'llms.txt trust resourc
 assert.match(llms, /https:\/\/write-urdu\.com\/why-write-urdu/, 'llms.txt must link to About');
 assert.match(llms, /https:\/\/write-urdu\.com\/write-urdu-privacy/, 'llms.txt must link to Privacy');
 assert.match(llms, /https:\/\/write-urdu\.com\/write-urdu-feedback/, 'llms.txt must link to the public correction channel');
+assert.match(llms, /https:\/\/write-urdu\.com\/\.well-known\/security\.txt/, 'llms.txt must link to the standard security contact file');
 assert.match(llms, /## Optional/, 'llms.txt should keep secondary resources skippable');
 assert.doesNotMatch(llms, /https:\/\/write-urdu\.com\/[\w-]+\.html/, 'llms.txt must use canonical extensionless routes');
-assert.doesNotMatch(llms, /guarantee|guaranteed ranking|guaranteed citation/i, 'llms.txt must not promise search or citation outcomes');
+assert.doesNotMatch(llms, /being reviewed|internal|dogfood|guarantee|guaranteed ranking|guaranteed citation/i, 'llms.txt must remain public-facing and avoid internal or outcome-guarantee language');
 
 const robots = read('robots.txt');
 assert.match(robots, /User-agent:\s*OAI-SearchBot[\s\S]*?Allow:\s*\//i, 'OAI-SearchBot must remain allowed for search discovery');
@@ -72,6 +73,14 @@ const about = read('why-write-urdu.html');
 assert.match(about, /Who maintains Write Urdu/, 'About page must identify the project maintainer model');
 assert.match(about, /Editorial and correction policy/, 'About page must expose a visible correction policy');
 assert.match(about, /admin@write-urdu\.com/, 'About page must expose the public correction email');
+
+const security = read('.well-known/security.txt');
+assert.match(security, /^Contact: mailto:admin@write-urdu\.com$/m, 'security.txt must use the public security contact');
+assert.match(security, /^Canonical: https:\/\/write-urdu\.com\/\.well-known\/security\.txt$/m, 'security.txt canonical URL is missing');
+assert.match(security, /^Expires: 2027-08-07T00:00:00Z$/m, 'security.txt must carry a future expiry date');
+
+const ads = read('ads.txt');
+assert.match(ads, /^google\.com, pub-4727847909946286, DIRECT, f08c47fec0942fa0\s*$/i, 'ads.txt must declare the configured Google publisher relationship');
 
 const spec = read('docs/WU-SEO-AUTHORITY-001.md');
 assert.match(spec, /7,162 impressions/, 'authority spec must preserve the Urdu typing Search Console baseline');
