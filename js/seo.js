@@ -113,8 +113,8 @@
     setMeta('twitter:description', resolvedDescription);
     setMeta('', '1200', 'og:image:width');
     setMeta('', '630', 'og:image:height');
-    if (page.lastmod) setMeta('', page.lastmod, 'article:modified_time');
-    if (page.datePublished) setMeta('', page.datePublished, 'article:published_time');
+    if (hasSchema('Article') && page.lastmod) setMeta('', page.lastmod, 'article:modified_time');
+    if (hasSchema('Article') && page.datePublished) setMeta('', page.datePublished, 'article:published_time');
 
     if (!document.head.querySelector('script[data-write-urdu-schema]')) {
         var publisherNode = {
@@ -242,10 +242,9 @@
                 author: { '@id': publisherId },
                 publisher: { '@id': publisherId },
                 publishingPrinciples: publisher.publishingPrinciplesPath ? config.SITE_ORIGIN + publisher.publishingPrinciplesPath : undefined,
-                inLanguage: 'en',
-                image: config.SITE_ORIGIN + (publisher.logoPath || '/image/logo10.png')
+                inLanguage: 'en'
             };
-            if (page.datePublished || page.lastmod) article.datePublished = page.datePublished || page.lastmod;
+            if (page.datePublished) article.datePublished = page.datePublished;
             if (page.dateModified || page.lastmod) article.dateModified = page.dateModified || page.lastmod;
             graph.push(article);
             webpageNode.mainEntity = { '@id': canonical + '#article' };
