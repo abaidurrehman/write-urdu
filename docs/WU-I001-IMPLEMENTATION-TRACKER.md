@@ -1,7 +1,7 @@
 # WU-I001 — Product Unification Implementation Tracker
 
 **Status:** Active — WriteUrdu v2 delivery  
-**Last updated:** 2026-08-06
+**Last updated:** 2026-08-07
 
 ## Outcome
 
@@ -21,6 +21,7 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] WriteUrdu v2 delivery principles and protected contracts
 - [x] V2-S1 — Rich Editor and Urdu Keyboard workspace foundation merged in PR #5
 - [x] V2-S2 — Shared application shell, Documentation and FAQ merged in PR #6
+- [x] V2-S3 first batch — Roman Urdu guide and Urdu Alphabet merged in PR #7 (`44bcd330bd1a23892b83934a40a4acce5c1207b1`)
 
 ## Phase 2A — Governance and route safety
 
@@ -90,9 +91,9 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Add V2-S3 authority regression contract
 - [x] Expand quality workflow triggers to agent branches and explicit PR lifecycle events
 - [x] Add manual workflow-dispatch recovery
-- [ ] Validate GitHub Actions on the new branch and PR
-- [ ] Validate Cloudflare preview on desktop and 320px mobile
-- [ ] Merge the first V2-S3 batch
+- [x] Confirm connector-authored GitHub events still do not start Actions; retain normal push/PR/manual triggers for non-connector execution
+- [x] Cloudflare preview deployed successfully for the exact PR head
+- [x] Merge the first V2-S3 batch in PR #7
 
 ### Remaining V2-S3 work
 
@@ -125,16 +126,36 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [ ] Search
 - [ ] Human sitemap
 
+## SEO-A1 — Existing-demand authority and citation hardening
+
+**Spec:** `docs/WU-SEO-AUTHORITY-001.md`
+
+- [x] Record Search Console baseline for `urdu typing`: 7,162 impressions, position 7.21, CTR 1.79%
+- [x] Record Search Console baseline for `urdu writing`: 3,705 impressions, position 6.48, CTR 1.30%
+- [x] Keep `/` as the broad query owner
+- [x] Add a task-led search-facing homepage title beginning with `Urdu Typing Online`
+- [x] Add a factual search-facing description covering Roman Urdu, Urdu script, direct writing and no-account use
+- [x] Expand Organization identity with public description, alternate brand spellings, contact channel and publishing principles
+- [x] Strengthen WebSite, WebPage, AboutPage, WebApplication, Article and Breadcrumb relationships through stable `@id` values
+- [x] Add factual article/page revision dates and publishing-principles relationships
+- [x] Expand `llms.txt` with product facts, maintained guides, trust resources and an Optional section
+- [x] Refresh sitemap dates for materially changed v2/authority pages
+- [x] Expand post-deployment checks for Rich Results Test, Schema.org validation, crawler/WAF consistency and citation observation
+- [x] Add an automated SEO authority contract
+- [ ] Validate the SEO authority PR on Cloudflare preview
+- [ ] Merge the SEO authority PR
+- [ ] Request recrawl for `/`, `/urdu-editor`, `/urdu-keyboard`, `/write-urdu-documentation`, `/urdu-faq`, `/roman-urdu-transliteration` and `/urdu-alphabet`
+
 ## Phase 2C — Content and canonical consolidation
 
-- [ ] Keep broad `urdu typing` and `urdu writing` ownership on the homepage unless evidence supports a deliberate change
+- [x] Keep broad `urdu typing` and `urdu writing` ownership on the homepage unless evidence supports a deliberate change
 - [ ] Review `write-urdu-features` against documentation and About
 - [ ] Review `urdu-editor-features` against editor and documentation
 - [ ] Review typing tutorial against transliteration guide and homepage
 - [ ] Decide keep, merge or redirect for overlapping pages
 - [ ] Implement one-hop redirects
 - [ ] Update sitemap, internal links and structured data
-- [ ] Record Search Console baseline before URL changes
+- [x] Record Search Console baseline before URL changes
 
 ## Phase 2D — Asset and code cleanup
 
@@ -148,11 +169,11 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Phase 2E — Existing-demand SEO growth
 
-- [ ] Track `urdu typing` position, impressions and CTR
-- [ ] Track `urdu writing` position, impressions and CTR
+- [x] Track baseline `urdu typing` position, impressions and CTR
+- [x] Track baseline `urdu writing` position, impressions and CTR
 - [ ] Improve supporting internal links to homepage
 - [ ] Refine examples and FAQs without keyword stuffing
-- [ ] Validate title and description CTR changes
+- [ ] Validate title and description CTR changes after recrawl
 - [ ] Observe an 8–12 week measurement window
 
 ## Release gates for every migrated page
@@ -171,4 +192,4 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Current next action
 
-Open the first V2-S3 PR, verify that the expanded quality workflow now triggers, review Roman Urdu and Urdu Alphabet on the Cloudflare preview at desktop and 320px, then merge before starting the font comparison and tutorial consolidation decision.
+Open and validate the SEO-A1 authority/trust PR before continuing secondary V2-S3 page migration. After merge and recrawl requests, continue with the Urdu font comparison and the typing-tutorial consolidation decision.

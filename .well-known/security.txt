@@ -1,0 +1,4 @@
+Contact: mailto:admin@write-urdu.com
+Canonical: https://write-urdu.com/.well-known/security.txt
+Preferred-Languages: en, ur
+Expires: 2027-08-07T00:00:00Z

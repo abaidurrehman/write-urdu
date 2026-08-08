@@ -1,10 +1,12 @@
-date,country,device,search_engine,query,visibility,approximate_position,landing_page,notes
-,,,,roman urdu to urdu typing online,,,,
-,,,,urdu rich text editor online,,,,
-,,,,online urdu keyboard,,,,
-,,,,urdu card maker online,,,,
-,,,,urdu quote image maker,,,,
-,,,,urdu poetry card maker,,,,
-,,,,urdu qr code generator online,,,,
-,,,,roman urdu transliteration,,,,
-,,,,type urdu on whatsapp,,,,
+date,country,device,search_engine,query,clicks,impressions,ctr,average_position,landing_page,source,notes
+2026-08-06,,,Google,urdu typing,,7162,1.79%,7.21,/,Search Console export,Priority existing-demand opportunity; homepage remains canonical owner
+2026-08-06,,,Google,urdu writing,,3705,1.30%,6.48,/,Search Console export,Priority existing-demand opportunity; watch mobile CTR and ranking URL
+,,,,roman urdu to urdu typing online,,,,,,,
+,,,,urdu rich text editor online,,,,,,,
+,,,,online urdu keyboard,,,,,,,
+,,,,urdu card maker online,,,,,,,
+,,,,urdu quote image maker,,,,,,,
+,,,,urdu poetry card maker,,,,,,,
+,,,,urdu qr code generator online,,,,,,,
+,,,,roman urdu transliteration,,,,,,,
+,,,,type urdu on whatsapp,,,,,,,
