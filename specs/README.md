@@ -8,6 +8,7 @@ is the feature-spec registry; it should not be used as the roadmap.
 
 | ID | Feature | Route | Status |
 | --- | --- | --- | --- |
+| `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Ready for evidence baseline; commercial prioritization P0 |
 | `WU-CS-UX-001` | Urdu Card Studio guided workflow | `/urdu-card-studio` | Implemented; v2 migration queued |
 | `WU-SM-001` | WhatsApp Status and Instagram Makers | `/urdu-whatsapp-status-maker`, `/urdu-instagram-post-maker` | Implemented; v2 migration queued |
 | `WU-SUA-001` | Stylish Urdu Text and Name Art Studio | `/stylish-urdu-text-generator`, `/urdu-name-art-maker` | Implementing; acceptance closure P0 |
@@ -20,5 +21,5 @@ is the feature-spec registry; it should not be used as the roadmap.
 New specifications should use the `WU-<AREA>-<NUMBER>` format and include the
 route, scope, state/data contract, acceptance criteria, implementation map, and
 verification commands. A new spec is not automatically a priority: it enters
-`specs/BACKLOG.md` only after its user value, route ownership and dependencies
-are clear.
+`specs/BACKLOG.md` only after its user value, route ownership, commercial
+rationale and dependencies are clear.
