@@ -1,13 +1,15 @@
 # WU-I001 — Product Unification Implementation Tracker
 
 **Status:** Active — WriteUrdu v2 delivery  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-09
 
 ## Outcome
 
 Make every WriteUrdu page feel like one professionally directed product while protecting transliteration and strengthening existing search demand.
 
 WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product slices first, minimum durable documentation, and an 80/20 implementation-to-specification ratio.
+
+**Priority and build order are owned by `specs/BACKLOG.md`.** This tracker records execution state and migration completion.
 
 ## Completed
 
@@ -22,6 +24,7 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] V2-S1 — Rich Editor and Urdu Keyboard workspace foundation merged in PR #5
 - [x] V2-S2 — Shared application shell, Documentation and FAQ merged in PR #6
 - [x] V2-S3 first batch — Roman Urdu guide and Urdu Alphabet merged in PR #7 (`44bcd330bd1a23892b83934a40a4acce5c1207b1`)
+- [x] SEO-A1 — Existing-demand authority/trust hardening merged in PR #9 (`f9bce99ddd501bf294ca2f58766e69c307e59527`)
 
 ## Phase 2A — Governance and route safety
 
@@ -64,7 +67,7 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Move the complete creation catalogue into a structured dropdown
 - [x] Create a focused Learn menu for Documentation, FAQ and authority guides
 - [x] Reduce the header trust bar to one concise privacy/access message
-- [x] Finalize a shorter four-column footer taxonomy: Write, Create, Learn and About
+- [x] Finalize a shorter four-column shared footer taxonomy: Write, Create, Learn and About
 - [x] Create shared `css/v2-content.css` reading system
 - [x] Migrate Documentation to the shared help-page system
 - [x] Add sticky in-page task navigation to Documentation
@@ -91,7 +94,7 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Add V2-S3 authority regression contract
 - [x] Expand quality workflow triggers to agent branches and explicit PR lifecycle events
 - [x] Add manual workflow-dispatch recovery
-- [x] Confirm connector-authored GitHub events still do not start Actions; retain normal push/PR/manual triggers for non-connector execution
+- [x] Restore successful GitHub Actions execution and full quality coverage
 - [x] Cloudflare preview deployed successfully for the exact PR head
 - [x] Merge the first V2-S3 batch in PR #7
 
@@ -133,18 +136,23 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Record Search Console baseline for `urdu typing`: 7,162 impressions, position 7.21, CTR 1.79%
 - [x] Record Search Console baseline for `urdu writing`: 3,705 impressions, position 6.48, CTR 1.30%
 - [x] Keep `/` as the broad query owner
-- [x] Add a task-led search-facing homepage title beginning with `Urdu Typing Online`
-- [x] Add a factual search-facing description covering Roman Urdu, Urdu script, direct writing and no-account use
+- [x] Add a task-led homepage title beginning with `Urdu Typing Online`
+- [x] Add a factual homepage description covering Roman Urdu, Urdu script, direct writing and no-account use
+- [x] Make the improved title/description part of static homepage HTML rather than JS-only metadata
 - [x] Expand Organization identity with public description, alternate brand spellings, contact channel and publishing principles
 - [x] Strengthen WebSite, WebPage, AboutPage, WebApplication, Article and Breadcrumb relationships through stable `@id` values
 - [x] Add factual article/page revision dates and publishing-principles relationships
 - [x] Expand `llms.txt` with product facts, maintained guides, trust resources and an Optional section
+- [x] Add `/.well-known/security.txt` and verify the existing `ads.txt` publisher declaration
 - [x] Refresh sitemap dates for materially changed v2/authority pages
 - [x] Expand post-deployment checks for Rich Results Test, Schema.org validation, crawler/WAF consistency and citation observation
 - [x] Add an automated SEO authority contract
-- [ ] Validate the SEO authority PR on Cloudflare preview
-- [ ] Merge the SEO authority PR
-- [ ] Request recrawl for `/`, `/urdu-editor`, `/urdu-keyboard`, `/write-urdu-documentation`, `/urdu-faq`, `/roman-urdu-transliteration` and `/urdu-alphabet`
+- [x] Validate the exact SEO authority PR head on Cloudflare preview
+- [x] Pass transliteration, v2, static, SEO and governance quality checks
+- [x] Merge the SEO authority PR as PR #9
+- [ ] Request recrawl for `/`, `/urdu-editor`, `/urdu-keyboard`, `/write-urdu-documentation`, `/urdu-faq`, `/roman-urdu-transliteration`, `/urdu-alphabet` and `/why-write-urdu`
+- [ ] Validate production JSON-LD with Rich Results Test and Schema.org Validator
+- [ ] Begin weekly query tracking after recrawl
 
 ## Phase 2C — Content and canonical consolidation
 
@@ -192,4 +200,4 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Current next action
 
-Open and validate the SEO-A1 authority/trust PR before continuing secondary V2-S3 page migration. After merge and recrawl requests, continue with the Urdu font comparison and the typing-tutorial consolidation decision.
+Follow `specs/BACKLOG.md`. The next implementation PR is V2-S3 completion: migrate the Urdu font comparison and make the typing-tutorial overlap decision. In parallel, complete the SEO-A1 production recrawl/schema verification checklist. Product acceptance closure for `WU-SUA-001` is the other P0 lane before creating new tool surface area.
