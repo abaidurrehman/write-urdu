@@ -6,20 +6,55 @@
 
 This file owns **priority and sequence**. Individual feature specs own detailed behaviour and acceptance criteria. `docs/WU-I001-IMPLEMENTATION-TRACKER.md` records migration execution; SEO/content documents provide supporting evidence and checklists.
 
+## Commercial objective
+
+WriteUrdu is an organic-search-led, Google AdSense-funded product. The roadmap should maximize **durable useful organic traffic and monetizable pageviews** while protecting transliteration, search quality, user trust, mobile usability and Core Web Vitals.
+
+The governing commercial model is documented in `specs/WU-GROWTH-001-search-adsense-growth-system.md`:
+
+`AdSense revenue ≈ monetizable pageviews × page RPM / 1000`
+
+Search Console tells us where traffic can grow. AdSense tells us which traffic/page groups create commercial value. Product work should be ranked from both datasets rather than from aesthetic migration order alone.
+
 ## Priority rules
 
 1. Protect the production transliteration workflow and existing search equity.
-2. Prefer working product improvements over documentation-only work.
-3. Finish and verify partially implemented product specs before creating more surface area.
-4. Each implementation slice must include tests and a Cloudflare preview.
-5. Do not create thin keyword pages or new tools without a clear user job and route ownership.
-6. New feature specs use `WU-<AREA>-<NUMBER>` and must define route, scope, state/data contract, acceptance criteria, implementation map and verification commands.
+2. Protect and expand proven organic traffic before inventing new surface area.
+3. Use Search Console + AdSense evidence to order P0/P1 work whenever data is available.
+4. Prefer useful product improvements that increase successful sessions, repeat use or natural second-page navigation over documentation-only work.
+5. Finish and verify partially implemented product specs before creating unsupported new tools, unless measured search/revenue opportunity clearly outranks them.
+6. Keep active writing surfaces ad-light; never trade task usability, CLS or accidental-click risk for additional inventory.
+7. Each implementation slice must include tests and a Cloudflare preview.
+8. Do not create thin keyword pages or new tools without a clear user job, route ownership and commercial rationale.
+9. New feature specs use `WU-<AREA>-<NUMBER>` and must define route, scope, state/data contract, acceptance criteria, implementation map and verification commands.
 
 ---
 
 ## NOW — P0
 
-### P0.1 — Close SEO-A1 production follow-up
+### P0.1 — Build the Search Console + AdSense commercial baseline
+
+**Type:** Commercial strategy / growth control plane  
+**Spec:** `specs/WU-GROWTH-001-search-adsense-growth-system.md`  
+**Current evidence:** only two Search Console query rows are recorded in-repo, so the roadmap is not yet commercially evidence-complete.
+
+Required first review:
+
+- [ ] Analyze full Search Console Queries export.
+- [ ] Analyze Pages export.
+- [ ] Analyze Countries and Devices.
+- [ ] Analyze date trend / comparison period.
+- [ ] Map important query clusters to ranking URLs.
+- [ ] Review a comparable AdSense aggregate export: earnings, page RPM, pageviews/ad impressions, country, device, placement/page group where available.
+- [ ] Produce top traffic-defence opportunities, near-win queries, CTR opportunities, cannibalization risks and commercially promising new clusters.
+- [ ] Estimate directional incremental revenue for the strongest opportunities using observed/proxy RPM.
+- [ ] Reorder P0/P1 below using measured commercial opportunity.
+
+**Commercial rationale:** this determines which work can actually grow AdSense revenue rather than assuming every v2 page deserves equal effort.
+
+**Strategic gate:** until this review is complete, avoid major speculative feature expansion. Low-risk completion work may continue in parallel.
+
+### P0.2 — Close SEO-A1 production follow-up
 
 **Type:** Growth / operational verification  
 **Source:** `docs/WU-SEO-AUTHORITY-001.md`, `docs/SEO-POST-DEPLOYMENT.md`  
@@ -32,9 +67,9 @@ This file owns **priority and sequence**. Individual feature specs own detailed 
 - [ ] Confirm `/llms.txt`, `/robots.txt`, `/sitemap.xml` and `/.well-known/security.txt` are publicly reachable without Cloudflare challenges.
 - [ ] Start weekly tracking for `urdu typing` and `urdu writing` from the recorded Search Console baseline.
 
-**Why P0:** This closes the growth work we just shipped and gives us evidence before further SEO changes.
+**Commercial rationale:** protects the two proven high-impression query opportunities and validates that the SEO changes can be crawled and measured.
 
-### P0.2 — V2-S3 completion: authority pages + overlap decision
+### P0.3 — V2-S3 completion: authority pages + overlap decision
 
 **Type:** Product/UX + SEO safety  
 **Source:** `docs/WU-V2-EXECUTION.md`, `docs/WU-I001-IMPLEMENTATION-TRACKER.md`
@@ -44,9 +79,9 @@ This file owns **priority and sequence**. Individual feature specs own detailed 
 - [ ] Decide: keep, narrow, merge or redirect the tutorial using route/Search Console evidence.
 - [ ] If consolidation is justified, preserve a one-hop redirect and update sitemap, structured data and internal links in the same PR.
 
-**Next implementation PR:** this is the next normal v2 delivery slice.
+**Commercial rationale:** consolidation can protect search equity and concentrate pageviews, but this item may move up/down after the full GSC review.
 
-### P0.3 — Close `WU-SUA-001` as real product work
+### P0.4 — Close `WU-SUA-001` as real product work
 
 **Type:** Product completion  
 **Spec:** `specs/WU-SUA-001-stylish-urdu-text-name-art.md`  
@@ -63,13 +98,29 @@ Before treating Stylish Urdu Text and Name Art as finished, audit the implementa
 - [ ] Add any missing browser/integration coverage.
 - [ ] Change spec status to Implemented only after the acceptance checklist is actually green.
 
-**Why P0:** This is unfinished product functionality already promised by an active spec, so it should be closed before inventing more tools.
+**Commercial rationale:** incomplete product quality can reduce repeat use/session depth; priority should be confirmed against GSC/AdSense opportunity before substantial extra polish.
 
 ---
 
 ## NEXT — P1
 
-### P1.1 — V2-S4A: Card Studio + Templates
+**Important:** the order below is provisional until P0.1 completes. Re-rank using measured organic click upside, RPM, useful page depth, effort and risk.
+
+### P1.1 — Defend and expand proven search demand
+
+This is a permanent growth lane rather than a one-off page.
+
+- [ ] Strengthen pages/queries with high impressions and weak CTR.
+- [ ] Prioritize positions 4–10 with material impressions.
+- [ ] Evaluate strong relevance at positions 11–20.
+- [ ] Resolve query cannibalization.
+- [ ] Address device-specific CTR or UX gaps.
+- [ ] Improve natural supporting links into high-value landing pages.
+- [ ] Protect high-RPM/high-traffic page groups from risky redesigns.
+
+**Commercial rationale:** direct path from proven impressions to incremental AdSense-funded visits.
+
+### P1.2 — V2-S4A: Card Studio + Templates
 
 **Type:** Product UX migration  
 **Specs:** `WU-CS-UX-001`, `WU-CS-UX-002`
@@ -78,16 +129,22 @@ Before treating Stylish Urdu Text and Name Art as finished, audit the implementa
 - [ ] Make the canvas/workspace dominant and move educational/promo content below it.
 - [ ] Migrate Template Library into the same creation workflow and strengthen handoff into Card Studio.
 - [ ] Preserve template IDs, local state, transliteration and export behaviour.
+- [ ] Validate ad placement around the workspace against `WU-GROWTH-001` guardrails.
 
-### P1.2 — V2-S4B: Stylish Urdu Text + Name Art
+**Commercial rationale:** potential to create longer useful sessions and natural second-page/tool handoffs; confirm acquisition and RPM evidence before large investment.
+
+### P1.3 — V2-S4B: Stylish Urdu Text + Name Art
 
 **Type:** Product UX migration after `WU-SUA-001` acceptance closure
 
 - [ ] Apply v2 creation shell to both routes.
 - [ ] Make Copy/Favourite/Open in Name Art actions clear and contextual.
 - [ ] Keep Unicode-style versus rendered-image distinction explicit.
+- [ ] Preserve ad-light active creation surfaces.
 
-### P1.3 — V2-S4C: Social makers + QR Generator
+**Commercial rationale:** session-depth/repeat-use candidate; promote only if GSC/AdSense or engagement evidence supports it.
+
+### P1.4 — V2-S4C: Social makers + QR Generator
 
 **Type:** Product UX migration  
 **Spec:** `WU-SM-001` plus existing QR implementation contracts
@@ -96,7 +153,9 @@ Before treating Stylish Urdu Text and Name Art as finished, audit the implementa
 - [ ] Migrate QR Generator.
 - [ ] Preserve local processing, safe-area logic, QR payload validation and export contracts.
 
-### P1.4 — V2-S5: Invoice Generator
+**Commercial rationale:** query clusters such as Urdu WhatsApp/status/QR may be acquisition opportunities, but ranking depends on actual Search Console evidence.
+
+### P1.5 — V2-S5: Invoice Generator
 
 **Type:** Business workflow migration  
 **Specs:** `WU-IG-001`, `WU-IG-002`, `WU-IG-003`
@@ -105,7 +164,9 @@ Before treating Stylish Urdu Text and Name Art as finished, audit the implementa
 - [ ] Preserve totals, schema migration, language modes, adaptive density, QR and export behaviour.
 - [ ] Review whether the WriteUrdu invoice remains strategically useful versus the dedicated InvoiceCraftly product; do not remove or redirect without traffic/product evidence.
 
-### P1.5 — Content/canonical consolidation
+**Commercial rationale:** retain if it contributes organic traffic, useful page depth or cross-product value; otherwise it should not outrank proven Urdu search opportunities.
+
+### P1.6 — Content/canonical consolidation
 
 **Type:** SEO safety / information architecture
 
@@ -113,6 +174,8 @@ Before treating Stylish Urdu Text and Name Art as finished, audit the implementa
 - [ ] Review `urdu-editor-features` against Rich Editor and Documentation.
 - [ ] Finish the typing-tutorial decision if not completed in V2-S3.
 - [ ] Remove genuine duplication only with one-hop redirect, canonical, sitemap and internal-link updates.
+
+**Commercial rationale:** concentrate search signals and avoid wasting impressions across overlapping pages.
 
 ---
 
@@ -124,7 +187,7 @@ Before treating Stylish Urdu Text and Name Art as finished, audit the implementa
 - [ ] Migrate About, Privacy, Feedback, Search and human sitemap to the final shared shell where needed.
 - [ ] Validate every registered canonical, sitemap entry and redirect.
 - [ ] Publish v2 release notes.
-- [ ] Capture post-release Search Console baseline.
+- [ ] Capture post-release Search Console and AdSense baselines.
 
 ### P2.2 — Asset/code/performance cleanup
 
@@ -135,7 +198,10 @@ Before treating Stylish Urdu Text and Name Art as finished, audit the implementa
 - [ ] Identify obsolete CSS and JavaScript.
 - [ ] Remove only confirmed unused assets/dependencies.
 - [ ] Audit homepage legacy Bootstrap/jQuery/social dependencies after v2 migration, with transliteration protected.
+- [ ] Measure whether ad/script loading contributes to LCP/CLS/INP regressions on high-traffic pages.
 - [ ] Confirm Cloudflare production artifact contains only required product files.
+
+**Commercial rationale:** faster pages can protect rankings, mobile usage and ad viewability; prioritize by traffic impact.
 
 ### P2.3 — Existing-demand SEO growth iteration
 
@@ -144,13 +210,14 @@ Do not change the homepage title repeatedly while the current experiment is unme
 - [ ] Improve descriptive supporting links into `/` where natural.
 - [ ] Refine examples/FAQ based on actual queries, not keyword density.
 - [ ] Compare CTR, average position and ranking URL after recrawl.
+- [ ] Compare corresponding organic pageviews and AdSense revenue/RPM trend.
 - [ ] Evaluate after an 8–12 week window unless a material regression appears sooner.
 
 ### P2.4 — Answer-ready content backlog
 
 **Source:** `docs/SEO-CONTENT-BACKLOG.md`
 
-Candidates, only after the core product migrations above:
+Candidates are **not automatically approved**. Promote only when Search Console evidence or adjacent query research shows a meaningful acquisition opportunity and the page can stand on its own as useful content.
 
 - [ ] 100 common Roman Urdu phrases with reviewed Urdu examples.
 - [ ] How to type Urdu in WhatsApp, Microsoft Word and Google Docs.
@@ -167,6 +234,9 @@ Candidates, only after the core product migrations above:
 These require evidence or a separate approved spec before implementation:
 
 - Separate doorway pages for `urdu typing` / `urdu writing` keyword variants.
+- New content/tool families without Search Console, query-research or strong product evidence.
+- Changes whose only purpose is to increase ad impressions rather than user value.
+- Additional ads inside the active writing/editor control region.
 - Changing the transliteration provider or its initialization contract.
 - Accounts, cloud documents or server-side storage for the core writing workflow.
 - AI translation/calligraphy features.
@@ -175,10 +245,11 @@ These require evidence or a separate approved spec before implementation:
 
 ---
 
-## Implemented feature specs
+## Feature-spec status
 
-The detailed feature registry remains in `specs/README.md`. At backlog level:
+The detailed registry remains in `specs/README.md`. At backlog level:
 
+- `WU-GROWTH-001` — **ready for evidence baseline; controls commercial prioritization.**
 - `WU-CS-UX-001` — implemented; v2 migration pending.
 - `WU-CS-UX-002` — implemented; v2 migration pending.
 - `WU-SM-001` — implemented; v2 migration pending.
@@ -186,10 +257,11 @@ The detailed feature registry remains in `specs/README.md`. At backlog level:
 - `WU-IG-002` — implemented; v2 migration pending.
 - `WU-IG-003` — implemented; v2 migration pending.
 - `WU-PLAT-001` — implemented.
-- `WU-SUA-001` — **implementing; acceptance closure is P0.**
+- `WU-SUA-001` — implementing; acceptance closure P0.
 
 ## Queue rule
 
-When a PR merges, update this file in the next implementation branch or the same merge if the next priority is already known. There should always be exactly one clear **next implementation PR**.
+When a PR merges, update this file in the next implementation branch or the same merge if the next priority is already known. There should always be exactly one clear evidence-backed **next implementation PR**.
 
-**Current next implementation PR:** V2-S3 completion — Urdu font comparison migration + typing-tutorial overlap decision. In parallel, complete the non-code SEO-A1 production verification checklist.
+**Current next strategic action:** complete `WU-GROWTH-001` by reviewing the full Search Console and comparable AdSense datasets.  
+**Current low-risk implementation action while data is gathered:** finish V2-S3 authority migration/consolidation without creating new speculative routes.
