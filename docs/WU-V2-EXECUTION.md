@@ -6,9 +6,11 @@
 
 ## Purpose
 
-Turn WriteUrdu into a modern Urdu writing product while preserving the search traffic, routes and transliteration behavior that already serve hundreds of daily users.
+Turn WriteUrdu into a modern Urdu writing product while preserving the search traffic, routes and transliteration behavior that already serve existing users.
 
 WriteUrdu v2 is not a documentation-only redesign. It is delivered as small production slices. Every design decision must result in code, tests and a Cloudflare preview within the same workstream.
+
+**Priority and build order now live in `specs/BACKLOG.md`.** This document defines the v2 architecture and delivery model.
 
 ## Delivery rule
 
@@ -96,24 +98,41 @@ No long standalone research phase. No speculative 100-page design package before
 
 ### V2-S3 — Authority content migration
 
-**Status:** In progress
+**Status:** In progress  
+**First batch:** Merged in PR #7
 
-First implementation batch:
+Completed:
 
 - Roman Urdu transliteration guide migration
 - Urdu Alphabet migration
 - Shared authority-page design system
 - Explicit routes back into the writing tools
 - Removal of legacy Alphabet framework and analytics dependencies
-- Restored CI coverage for agent branches, explicit PR lifecycle events and manual recovery
+- Restored CI coverage and successful quality runs
 
-Remaining S3 work:
+Remaining:
 
 - Nastaliq versus Naskh font comparison
 - Typing tutorial overlap review
 - Keep, narrow, merge or redirect decision based on route and Search Console evidence
 
 These pages must support the product and existing keyword ownership rather than compete with the homepage. The homepage remains the broad owner of `urdu typing` and `urdu writing` intent.
+
+### SEO-A1 — Existing-demand authority and citation hardening
+
+**PR:** #9  
+**Status:** Merged  
+**Merge commit:** `f9bce99ddd501bf294ca2f58766e69c307e59527`
+
+- Static homepage title/description optimized around existing Search Console demand
+- Stronger Organization/WebSite/WebPage/WebApplication/Article graph
+- Expanded `llms.txt`
+- Security and publisher trust signals
+- Extensionless homepage internal links
+- Search Console query baseline and post-deploy validation plan
+- Green transliteration, v2, static, SEO and governance checks
+
+Production recrawl and structured-data verification remain operational follow-up items in `specs/BACKLOG.md`.
 
 ### V2-S4 — Creation workflows
 
@@ -123,6 +142,8 @@ These pages must support the product and existing keyword ownership rather than 
 - Name Art
 - Social makers
 - QR Generator
+
+This slice should be broken into smaller implementation PRs as defined in `specs/BACKLOG.md` rather than shipped as one large migration.
 
 ### V2-S5 — Business workflow
 
@@ -161,4 +182,4 @@ The following cannot change without explicit regression evidence and approval:
 
 ## Current decision
 
-V2-S3 begins with Roman Urdu and Urdu Alphabet in one implementation PR. Both pages move onto one authority-page system, remain on their existing canonical routes and direct users into the writing product. The font comparison and typing-tutorial consolidation decision follow after this first batch is validated.
+The next v2 implementation PR is **V2-S3 completion**: migrate the Urdu font comparison and make the typing-tutorial overlap decision with Search Console/canonical evidence. In parallel, close the production verification tasks from SEO-A1 and audit `WU-SUA-001` against its unfinished acceptance checklist before adding new tool surface area.
