@@ -1,12 +1,18 @@
 # Write Urdu new tool marketing and SEO launch
 
 **Feature ID:** `WU-SEO-001`  
-**Version:** 1.0  
-**Status:** Planned  
+**Version:** 1.1  
+**Status:** Superseded  
 **Primary route:** `/`  
 **Related routes:** `/urdu-editor`, `/urdu-keyboard`, `/roman-urdu-transliteration`, `/urdu-whatsapp-status-maker`, `/urdu-instagram-post-maker`
 
-## Objective
+## Governance note — 2026-08-11
+
+This spec is retained for historical context but no longer owns an implementation lane. Its core requirements—homepage/tool discoverability, product promotion, internal linking, SEO metadata and query-aligned landing experiences—were subsequently absorbed by `WU-PLAT-001`, the SEO-A1 authority/trust release, and the canonical growth system in `WU-GROWTH-001` / `specs/BACKLOG.md`.
+
+Do not schedule this file independently. Any remaining useful requirement should be promoted through the canonical backlog using current Search Console/product evidence.
+
+## Original objective
 
 Increase discoverability and adoption of newly developed Urdu tools by creating dedicated SEO-friendly landing experiences, surfacing them prominently across the site, and aligning content with the search queries already showing demand.
 
@@ -20,7 +26,7 @@ The work should turn the new tools into visible, clickable products rather than 
 - The marketing experience stays static and browser-based; no backend service or account system is introduced.
 - Existing tool functionality remains the source of truth; the spec only adds discoverability, promotion, and SEO structure.
 
-## Scope
+## Original scope
 
 ### P0
 
@@ -49,7 +55,7 @@ The work should turn the new tools into visible, clickable products rather than 
 - Tool cards should be descriptive and action-oriented rather than generic labels.
 - Content should be written for both search engines and real users, with clear benefit-led language.
 
-## Acceptance criteria
+## Historical acceptance criteria
 
 - The new tools are discoverable from the homepage without requiring the user to search deeply.
 - Each primary tool page includes a clear SEO title, meta description, H1, and supporting sections.
@@ -58,7 +64,7 @@ The work should turn the new tools into visible, clickable products rather than 
 - Existing tool behavior and routes remain intact.
 - Basic SEO checks continue to pass after the update.
 
-## Implementation map
+## Historical implementation map
 
 - `index.html` — homepage promotion section and new-tool highlights.
 - `urdu-keyboard.html` — SEO copy, tool intro, CTA, FAQ, and related links.
@@ -68,11 +74,3 @@ The work should turn the new tools into visible, clickable products rather than 
 - `site-header.js` or related runtime scripts — shared promo content hooks if needed.
 - `tests/static.test.js` — verify that key tool pages include required SEO and CTA structure.
 - `tests/site.spec.js` — verify homepage tool promotion and internal link presence.
-
-## Verification
-
-```text
-npm test
-npm run seo:check
-npm run test:browser
-```
