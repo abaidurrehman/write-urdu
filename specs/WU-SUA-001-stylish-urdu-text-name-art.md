@@ -2,9 +2,13 @@
 
 **Product:** Write Urdu
 **Feature ID:** `WU-SUA-001`
-**Status:** Implementing
+**Status:** Implemented core — acceptance pending
 **Canonical routes:** `/stylish-urdu-text-generator`, `/urdu-name-art-maker`
 **Delivery:** Browser-first; no account, backend, paid API or AI dependency
+
+## Governance note — 2026-08-11
+
+Repository review confirms that the feature should no longer be treated as an open-ended implementation project. Both canonical routes and the core Stylish Text architecture exist, including the deterministic 80-style catalogue, categories/intensity filters, Urdu-safe normalization/grapheme handling, conservative Kashida logic, local storage contracts and Name Art handoff. The remaining P0 work is acceptance closure against this checklist; do not redesign or expand scope before that closure.
 
 ## Purpose
 
@@ -95,23 +99,23 @@ split graphemes, combining marks, punctuation or non-joining characters.
 
 ## Acceptance checklist
 
-- [ ] Spec and feature ID are tracked in `specs/README.md`.
-- [ ] Both canonical routes work without a backend.
-- [ ] Release 1 has 80+ unique tested styles and local favourites/collections.
+- [x] Spec and feature ID are tracked in `specs/README.md`.
+- [x] Both canonical routes exist without a backend.
+- [ ] Release 1 has 80 unique tested styles and local favourites/collections verified end-to-end.
 - [ ] Release 2 has 24+ original templates and imports Release 1 text locally.
 - [ ] Urdu shaping, mixed direction text, grapheme safety and safe Kashida pass tests.
 - [ ] Existing Card Studio and editor behaviour do not regress.
 - [ ] PNG/transparent PNG export uses exact dimensions and waits for fonts/assets.
-- [ ] Accessibility, responsive layout, privacy messaging and SEO content exist.
+- [ ] Accessibility, responsive layout, privacy messaging and SEO content are verified.
 - [ ] Static, unit, integration/browser and production checks pass.
 
 ## Implementation map
 
-Planned modules are `js/stylish-urdu-core.js`, `js/stylish-urdu-text.js`,
-`css/stylish-urdu.css`, `stylish-urdu-text-generator.html`, and the Name Art
-route/adapter that reuses `urdu-card-studio.html` and its shared Card Studio
-modules. Add pure tests under `tests/` for normalization, script detection,
-graphemes, generation, Kashida, storage and handoff.
+Core modules are `js/stylish-urdu-core.js`, `js/stylish-urdu-text.js`,
+`css/stylish-urdu.css`, `stylish-urdu-text-generator.html`, plus the Name Art
+route/adapter that reuses Card Studio/shared modules. Pure tests under `tests/`
+should cover normalization, script detection, graphemes, generation, Kashida,
+storage and handoff.
 
 ## Deferred
 
