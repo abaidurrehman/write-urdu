@@ -26,6 +26,8 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] V2-S3 first batch — Roman Urdu guide and Urdu Alphabet merged in PR #7 (`44bcd330bd1a23892b83934a40a4acce5c1207b1`)
 - [x] SEO-A1 — Existing-demand authority/trust hardening merged in PR #9 (`f9bce99ddd501bf294ca2f58766e69c307e59527`)
 - [x] GROWTH-A1 — Page-type AdSense architecture and measurement contract merged in PR #13 (`4c96615409a9463b4e85b40c749f7f1bb6e7eb32`)
+- [x] P0.5 — Contextual writing-to-creation journeys merged in PR #18 (`7b98f8bad00aa596290f40bb884ff0e8d4848a12`)
+- [x] V2-S4 first batch — Card Studio + Templates creation hierarchy completed in PR #20
 
 ## Phase 2A — Governance and route safety
 
@@ -123,8 +125,8 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Urdu Alphabet — v2 authority guide
 - [x] Urdu font comparison — v2 authority guide
 - [x] English-to-Urdu tutorial — narrowed v2 product tutorial
-- [ ] Card Studio
-- [ ] Templates
+- [x] Card Studio — v2 creation workspace
+- [x] Templates — v2 creation catalogue
 - [ ] Invoice Generator
 - [ ] Stylish Urdu Text
 - [ ] Name Art
@@ -136,6 +138,28 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [ ] Feedback
 - [ ] Search
 - [ ] Human sitemap
+
+## V2-S4 — Creation workspace migration
+
+### Card Studio + Templates — PR #20
+
+- [x] Create shared `css/v2-creation.css` presentation layer for creation pages.
+- [x] Keep Card Studio renderer, project schema, image handling, handoffs and export contracts unchanged.
+- [x] Keep the existing Content → Format → Style → Export workflow and make the artboard the dominant desktop surface.
+- [x] Keep the Card Studio control rail available on desktop while preserving preview-first mobile behavior.
+- [x] Move Card Studio education/SEO content visually below the active workspace.
+- [x] Migrate Templates into the same creation hierarchy without changing search, filters, favorites or recents.
+- [x] Strengthen template handoff language to `Edit in Card Studio` and add a direct blank-card entry point.
+- [x] Preserve the `?template=<slug>` handoff and local template storage keys.
+- [x] Add static plus desktop/mobile browser acceptance and keep SUA/journey suites in the focused CI gate.
+- [x] Keep Create-route AdSense boundaries unchanged.
+
+### Next creation batch
+
+- [ ] Migrate Stylish Urdu Text to the shared v2 creation hierarchy.
+- [ ] Migrate Urdu Name Art to the shared v2 creation hierarchy.
+- [ ] Preserve the complete `WU-SUA-001` acceptance contract during visual migration.
+- [ ] Then migrate WhatsApp Status Maker, Instagram Post Maker and QR Generator.
 
 ## SEO-A1 — Existing-demand authority and citation hardening
 
@@ -208,4 +232,4 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Current next action
 
-Follow `specs/BACKLOG.md`. With V2-S3 closed, the next product-quality implementation lane is `WU-SUA-001` acceptance closure. The next SEO/growth implementation lane is authority distribution through contextual internal journeys. Complete the full Search Console + AdSense Authority Opportunity Map as soon as the detailed exports are available.
+Follow `specs/BACKLOG.md`. After the Card Studio + Templates v2 creation batch, continue P1.4 with Stylish Urdu Text + Name Art while preserving the completed `WU-SUA-001` behavioral contract. In parallel, continue P0.2 production SEO verification and complete the Search Console + AdSense Authority Opportunity Map when detailed exports are available.
