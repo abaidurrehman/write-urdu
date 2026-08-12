@@ -5,9 +5,12 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const seoConfig = require(path.join(root, 'seo.config.js'));
+const socialCore = require(path.join(root, 'js', 'social-maker-core.js'));
+const qrCore = require(path.join(root, 'js', 'qr-generator-core.js'));
 
 const css = read('css/v2-creation.css');
 const focusedCss = read('css/v2-creation-tools.css');
+const publishCss = read('css/v2-publish-tools.css');
 const cardUi = read('js/card-studio-ui.js');
 const templateUi = read('js/template-library.js');
 const stylishUi = read('js/stylish-urdu-text.js');
@@ -16,6 +19,9 @@ const cardPage = read('urdu-card-studio.html');
 const templatePage = read('urdu-templates.html');
 const stylishPage = read('stylish-urdu-text-generator.html');
 const nameArtPage = read('urdu-name-art-maker.html');
+const whatsappPage = read('urdu-whatsapp-status-maker.html');
+const instagramPage = read('urdu-instagram-post-maker.html');
+const qrPage = read('qr-code-generator.html');
 const sw = read('sw.js');
 
 assert.match(css, /\.wu-v2-shell\.card-studio-page/, 'Card Studio is missing the v2 creation workspace layer');
@@ -33,6 +39,13 @@ assert.match(focusedCss, /\.stylish-panel\{[\s\S]*position:sticky/, 'Stylish Tex
 assert.match(focusedCss, /\.name-art-shortcuts\{[\s\S]*position:sticky/, 'Name Art shortcut rail should remain available beside the canvas');
 assert.match(focusedCss, /\.name-art-frame\{[\s\S]*height:calc\(100vh - 132px\)/, 'Name Art live workspace should dominate the desktop viewport');
 assert.match(focusedCss, /@media\(max-width:900px\)/, 'Focused creation layer needs a mobile stacking breakpoint');
+
+assert.match(publishCss, /\.wu-v2-shell\.social-maker-page/, 'Social makers are missing the v2 publish layer');
+assert.match(publishCss, /\.wu-v2-shell\.qr-generator-page/, 'QR Generator is missing the v2 publish layer');
+assert.match(publishCss, /\.qr-layout\{[\s\S]*grid-template-columns:minmax\(300px,330px\) minmax\(0,1fr\)/, 'QR preview must remain dominant on desktop');
+assert.match(publishCss, /\.qr-panel\{[\s\S]*position:sticky/, 'QR controls should remain available while previewing');
+assert.match(publishCss, /\.social-maker-workspace\{[\s\S]*min-height:72vh/, 'Social maker workspace should dominate the route');
+assert.match(publishCss, /@media\(max-width:900px\)/, 'Publish-tool layer needs a mobile stacking breakpoint');
 
 assert.match(cardUi, /css\/v2-creation\.css/, 'Card Studio does not load the shared v2 creation layer');
 assert.match(cardUi, /root\.dataset\.v2CreationWorkspace = 'card-studio'/, 'Card Studio migration marker is missing');
@@ -90,7 +103,47 @@ assert.match(nameArtPage, /data-name-art-templates/, 'Name Art template control 
 assert.match(nameArtPage, /data-name-art-transparent/, 'Name Art transparent export action changed');
 assert.ok(nameArtPage.includes(`href="${seoConfig.canonical('/urdu-name-art-maker')}"`), 'Name Art canonical URL changed');
 
+for (const [page, route, marker, socialMode] of [
+  [whatsappPage, '/urdu-whatsapp-status-maker', 'social-whatsapp', 'whatsapp'],
+  [instagramPage, '/urdu-instagram-post-maker', 'social-instagram', 'instagram']
+]) {
+  assert.match(page, new RegExp(`data-v2-creation-workspace="${marker}"`), `${marker} migration marker is missing`);
+  assert.match(page, /css\/v2-creation\.css/, `${marker} does not load the shared creation layer`);
+  assert.match(page, /css\/v2-publish-tools\.css/, `${marker} does not load the publish layer`);
+  assert.match(page, new RegExp(`urdu-card-studio\.html\\?social=${socialMode}`), `${marker} must continue to reuse Card Studio`);
+  assert.match(page, /data-wu-ad-boundary="post-workspace"/, `${marker} must keep monetization after the active workspace`);
+  assert.match(page, /<footer[^>]*aria-label="Footer navigation"/, `${marker} needs the shared v2 footer target`);
+  assert.ok(page.includes(`href="${seoConfig.canonical(route)}"`), `${marker} canonical URL changed`);
+  assert.doesNotMatch(page, /<ins[^>]+adsbygoogle/i, `${marker} must not place a manual ad in the active creation route`);
+}
+
+assert.strictEqual(socialCore.getMode('whatsapp').defaultPreset, 'story', 'WhatsApp default preset changed');
+assert.strictEqual(socialCore.getMode('instagram').defaultPreset, 'square', 'Instagram default preset changed');
+assert.deepStrictEqual(socialCore.getSafeArea('whatsapp', { id: 'story', width: 1080, height: 1920 }), { top: 230, right: 100, bottom: 290, left: 100 }, 'WhatsApp safe area changed');
+assert.deepStrictEqual(socialCore.getSafeArea('instagram', { id: 'portrait', width: 1080, height: 1350 }), { top: 120, right: 90, bottom: 150, left: 90 }, 'Instagram portrait safe area changed');
+assert.notStrictEqual(socialCore.storageKey('whatsapp'), socialCore.storageKey('instagram'), 'Social maker drafts must stay scoped separately');
+
+assert.match(qrPage, /data-v2-creation-workspace="qr-generator"/, 'QR migration marker is missing');
+assert.match(qrPage, /css\/v2-creation\.css/, 'QR Generator does not load the shared creation layer');
+assert.match(qrPage, /css\/v2-publish-tools\.css/, 'QR Generator does not load the publish layer');
+assert.match(qrPage, /data-qr-generator/, 'QR application root changed');
+assert.match(qrPage, /data-qr-download-png/, 'QR PNG download action changed');
+assert.match(qrPage, /data-qr-download-svg/, 'QR SVG download action changed');
+assert.match(qrPage, /data-qr-logo/, 'QR local logo control changed');
+assert.match(qrPage, /data-wu-ad-boundary="post-workspace"/, 'QR monetization boundary must stay after the active workspace');
+assert.ok(qrPage.includes(`href="${seoConfig.canonical('/qr-code-generator')}"`), 'QR canonical URL changed');
+assert.doesNotMatch(qrPage, /<ins[^>]+adsbygoogle/i, 'QR active workspace must not contain a manual ad');
+
+assert.strictEqual(qrCore.buildTextPayload({ text: 'سلام دنیا' }).valid, true, 'Urdu QR payload validation regressed');
+assert.strictEqual(qrCore.buildTextPayload({ text: '   ' }).valid, false, 'Blank QR text must remain invalid');
+assert.strictEqual(qrCore.buildUrlPayload({ url: 'not a url' }).valid, false, 'Invalid URL must remain rejected');
+assert.strictEqual(qrCore.normalizeQrProject({ design: { margin: 99 } }).design.margin, 4, 'QR quiet-zone normalization changed');
+assert.strictEqual(qrCore.normalizeQrProject({ logo: { enabled: true, dataUrl: 'data:image/png;base64,AA==' }, design: { errorCorrectionLevel: 'L' } }).design.errorCorrectionLevel, 'H', 'QR logo must continue forcing high error correction');
+
 assert.match(sw, /css\/v2-creation\.css/, 'The v2 creation layer should be available in the PWA shell');
 assert.match(sw, /css\/v2-creation-tools\.css/, 'The focused v2 creation layer should be available in the PWA shell');
+assert.match(sw, /css\/v2-publish-tools\.css/, 'The publish-tool v2 layer should be available in the PWA shell');
+assert.match(sw, /urdu-whatsapp-status-maker\.html/, 'WhatsApp maker should be available in the PWA shell');
+assert.match(sw, /urdu-instagram-post-maker\.html/, 'Instagram maker should be available in the PWA shell');
 
-console.log('V2 creation migration contract passed for Card Studio, Templates, Stylish Text and Name Art.');
+console.log('V2 creation migration contract passed for Card Studio, Templates, Stylish Text, Name Art, social makers and QR Generator.');
