@@ -54,8 +54,8 @@ assert.match(formattingGuide.title, /Formatting Guide/i, 'Formatting guide must 
 
 assert.match(runtimeSeo, /home: \['English to Urdu typing'/, 'Homepage entity topics must include the prime typing phrase');
 assert.match(runtimeSeo, /function applyResolvedSearchMetadata\(\)/, 'Runtime SEO must centralize resolved search metadata');
-assert.match(runtimeSeo, /DOMContentLoaded[\s\S]*reapplyAfterShell/, 'Runtime SEO must restore registry metadata after shared-shell initialization');
-assert.match(runtimeSeo, /setTimeout\(applyResolvedSearchMetadata, 0\)/, 'Registry metadata must be re-applied after earlier DOMContentLoaded handlers');
+assert.match(runtimeSeo, /write-urdu:locale-change[\s\S]*restoreSearchMetadataAfterLocale/, 'Runtime SEO must restore registry metadata from the shared-shell locale lifecycle');
+assert.match(runtimeSeo, /locale !== ['"]ur['"][\s\S]*applyResolvedSearchMetadata\(\)/, 'English shell applications must restore acquisition metadata without overriding Urdu localization');
 
 assert.match(llms, /homepage is the main English to Urdu typing/i, 'llms.txt must name the homepage as the English-to-Urdu typing owner');
 assert.match(llms, /English to Urdu typing \/ Urdu typing online/, 'llms.txt start-writing section must expose the prime acquisition job');

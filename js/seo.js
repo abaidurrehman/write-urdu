@@ -271,16 +271,14 @@
         document.head.appendChild(schema);
     }
 
-    // The shared shell localizes its initial document title on DOMContentLoaded.
-    // Explicit SEO-registry search metadata is the canonical initial-load
-    // search contract, so re-apply it after earlier DOMContentLoaded handlers
-    // finish. Later user-triggered locale changes remain free to localize the UI.
-    function reapplyAfterShell() {
-        window.setTimeout(applyResolvedSearchMetadata, 0);
+    // The shared shell may load after DOMContentLoaded and re-apply page copy.
+    // Its locale-change event fires after that copy has been applied, so use the
+    // semantic lifecycle signal instead of a timing guess. English keeps the
+    // SEO-registry search metadata; an explicitly selected Urdu locale may keep
+    // its localized UI/document title.
+    function restoreSearchMetadataAfterLocale(event) {
+        var locale = event && event.detail && event.detail.locale;
+        if (locale !== 'ur') applyResolvedSearchMetadata();
     }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', reapplyAfterShell, { once: true });
-    } else {
-        reapplyAfterShell();
-    }
+    document.addEventListener('write-urdu:locale-change', restoreSearchMetadataAfterLocale);
 }());
