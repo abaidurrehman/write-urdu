@@ -76,13 +76,22 @@ assert.match(robots, /User-agent:\s*OAI-SearchBot[\s\S]*?Allow:\s*\//i, 'OAI-Sea
 assert.match(robots, /User-agent:\s*GPTBot[\s\S]*?Disallow:\s*\//i, 'GPTBot training policy must remain explicitly blocked');
 
 const sitemap = read('sitemap.xml');
-for (const route of ['/', '/urdu-editor', '/urdu-keyboard', '/urdu-alphabet', '/write-urdu-documentation', '/urdu-faq', '/roman-urdu-transliteration']) {
+const revisionDates = {
+  '/': '2026-08-12',
+  '/urdu-editor': '2026-08-07',
+  '/urdu-keyboard': '2026-08-07',
+  '/urdu-alphabet': '2026-08-07',
+  '/write-urdu-documentation': '2026-08-07',
+  '/urdu-faq': '2026-08-07',
+  '/roman-urdu-transliteration': '2026-08-07'
+};
+for (const [route, revisionDate] of Object.entries(revisionDates)) {
   const page = config.pages.find(candidate => candidate.path === route);
-  assert.ok(page && page.lastmod === '2026-08-07', `${route} must carry the current material revision date in config`);
+  assert.ok(page && page.lastmod === revisionDate, `${route} must carry its current material revision date in config`);
   const escaped = route === '/' ? 'https://www.write-urdu.com/' : `https://www.write-urdu.com${route}`;
   const block = sitemap.match(new RegExp(`<url>[\\s\\S]*?<loc>${escaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/loc>[\\s\\S]*?<\\/url>`));
   assert.ok(block, `sitemap is missing ${route}`);
-  assert.match(block[0], /<lastmod>2026-08-07<\/lastmod>/, `${route} sitemap lastmod is stale`);
+  assert.match(block[0], new RegExp(`<lastmod>${revisionDate}<\\/lastmod>`), `${route} sitemap lastmod is stale`);
 }
 
 const about = read('why-write-urdu.html');

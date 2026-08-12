@@ -1,5 +1,5 @@
 source_file,canonical_route,area,primary_intent,indexability,sitemap,status,design_migration,priority,notes
-index.html,/,Write,urdu typing and urdu writing,index,yes,keep,migrated,P0,Protected transliteration owner and broad acquisition page
+index.html,/,Write,English to Urdu typing / Urdu typing / Urdu writing,index,yes,keep,migrated,P0,Protected transliteration owner for English-letter Roman Urdu to Urdu script and broad typing acquisition
 urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,migrated,P0,V2 workspace applied without changing TinyMCE or export bindings
 urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,migrated,P0,V2 workspace applied without changing keyboard input bindings
 urdu-card-studio.html,/urdu-card-studio,Create,Urdu text poetry and posts on photos,index,yes,keep,migrated,P1,Primary creation acquisition owner after P1.5
