@@ -1,7 +1,7 @@
 # WU-I001 — Product Unification Implementation Tracker
 
 **Status:** Active — WriteUrdu v2 delivery  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-12
 
 ## Outcome
 
@@ -25,6 +25,7 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] V2-S2 — Shared application shell, Documentation and FAQ merged in PR #6
 - [x] V2-S3 first batch — Roman Urdu guide and Urdu Alphabet merged in PR #7 (`44bcd330bd1a23892b83934a40a4acce5c1207b1`)
 - [x] SEO-A1 — Existing-demand authority/trust hardening merged in PR #9 (`f9bce99ddd501bf294ca2f58766e69c307e59527`)
+- [x] GROWTH-A1 — Page-type AdSense architecture and measurement contract merged in PR #13 (`4c96615409a9463b4e85b40c749f7f1bb6e7eb32`)
 
 ## Phase 2A — Governance and route safety
 
@@ -98,12 +99,19 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Cloudflare preview deployed successfully for the exact PR head
 - [x] Merge the first V2-S3 batch in PR #7
 
-### Remaining V2-S3 work
+### V2-S3 completion batch
 
-- [ ] Migrate Urdu font comparison
-- [ ] Review typing tutorial against homepage, Documentation and Roman Urdu guide
-- [ ] Use route and Search Console evidence to decide keep, narrow, merge or redirect
-- [ ] Preserve one-hop redirects for any consolidation
+- [x] Migrate Urdu font comparison to the shared v2 authority system
+- [x] Add direct font-guide handoffs into Rich Editor, Card Studio and Name Art
+- [x] Review the typing tutorial against homepage, Documentation and Roman Urdu guide
+- [x] Keep `/english-urdu-typing-tutorial` but narrow it to WriteUrdu video/product walkthrough intent
+- [x] Remove tutorial Bootstrap, jQuery, Font Awesome, obsolete Universal Analytics, social SDK/chat widgets, editor/export JavaScript and manual ad units
+- [x] Keep only the two useful video iframes plus source-visible written steps
+- [x] Review `write-urdu-features`: keep the URL as the focused drafts/import/export/share operations reference
+- [x] Review `urdu-editor-features`: keep the URL as the focused rich-editor formatting reference
+- [x] Record that no redirect is currently justified for those established URLs without contrary Search Console evidence
+- [x] Update the page registry, metadata owner and sitemap freshness for migrated pages
+- [x] Extend V2-S3 tests to protect the font and tutorial contracts
 
 ### Page migration order
 
@@ -113,8 +121,8 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] FAQ — v2 help centre
 - [x] Roman Urdu guide — v2 authority guide
 - [x] Urdu Alphabet — v2 authority guide
-- [ ] Urdu font comparison
-- [ ] English-to-Urdu tutorial
+- [x] Urdu font comparison — v2 authority guide
+- [x] English-to-Urdu tutorial — narrowed v2 product tutorial
 - [ ] Card Studio
 - [ ] Templates
 - [ ] Invoice Generator
@@ -150,19 +158,19 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Validate the exact SEO authority PR head on Cloudflare preview
 - [x] Pass transliteration, v2, static, SEO and governance quality checks
 - [x] Merge the SEO authority PR as PR #9
-- [ ] Request recrawl for `/`, `/urdu-editor`, `/urdu-keyboard`, `/write-urdu-documentation`, `/urdu-faq`, `/roman-urdu-transliteration`, `/urdu-alphabet` and `/why-write-urdu`
+- [ ] Request recrawl for `/`, `/urdu-editor`, `/urdu-keyboard`, `/write-urdu-documentation`, `/urdu-faq`, `/roman-urdu-transliteration`, `/urdu-alphabet`, `/urdu-fonts-nastaliq-vs-naskh`, `/english-urdu-typing-tutorial` and `/why-write-urdu`
 - [ ] Validate production JSON-LD with Rich Results Test and Schema.org Validator
 - [ ] Begin weekly query tracking after recrawl
 
 ## Phase 2C — Content and canonical consolidation
 
 - [x] Keep broad `urdu typing` and `urdu writing` ownership on the homepage unless evidence supports a deliberate change
-- [ ] Review `write-urdu-features` against documentation and About
-- [ ] Review `urdu-editor-features` against editor and documentation
-- [ ] Review typing tutorial against transliteration guide and homepage
-- [ ] Decide keep, merge or redirect for overlapping pages
-- [ ] Implement one-hop redirects
-- [ ] Update sitemap, internal links and structured data
+- [x] Review `write-urdu-features` against Documentation and About — keep/narrow to operational features
+- [x] Review `urdu-editor-features` against editor and Documentation — keep/narrow to formatting reference
+- [x] Review typing tutorial against transliteration guide and homepage — keep/narrow to product walkthroughs
+- [x] Decide keep, merge or redirect for the current overlap set
+- [x] No redirect required in this slice; preserve established URLs pending contrary query evidence
+- [x] Update registry/metadata/sitemap for the pages materially changed in V2-S3
 - [x] Record Search Console baseline before URL changes
 
 ## Phase 2D — Asset and code cleanup
@@ -200,4 +208,4 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Current next action
 
-Follow `specs/BACKLOG.md`. The next implementation PR is V2-S3 completion: migrate the Urdu font comparison and make the typing-tutorial overlap decision. In parallel, complete the SEO-A1 production recrawl/schema verification checklist. Product acceptance closure for `WU-SUA-001` is the other P0 lane before creating new tool surface area.
+Follow `specs/BACKLOG.md`. With V2-S3 closed, the next product-quality implementation lane is `WU-SUA-001` acceptance closure. The next SEO/growth implementation lane is authority distribution through contextual internal journeys. Complete the full Search Console + AdSense Authority Opportunity Map as soon as the detailed exports are available.

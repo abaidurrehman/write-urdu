@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Product & Spec Backlog
 
 **Status:** Active  
-**Last updated:** 2026-08-11  
+**Last updated:** 2026-08-12  
 **Purpose:** One source of truth for priority, sequence and product state.
 
 This file owns **priority and sequence**. Individual feature specs own detailed behaviour and acceptance criteria. `specs/README.md` is the feature registry. `docs/WU-I001-IMPLEMENTATION-TRACKER.md` records v2 migration execution. Supporting SEO/audit documents provide evidence but do not own roadmap priority.
@@ -24,19 +24,11 @@ WriteUrdu remains an organic-search-led, Google AdSense-funded product.
 
 `AdSense revenue ≈ monetizable pageviews × page RPM / 1000`
 
-The best growth work therefore increases one or more of:
-
-- qualified organic entrances,
-- CTR on existing impressions,
-- repeat usage,
-- useful second-page navigation,
-- page depth into creation/tools,
-- performance and ad viewability without harming the task,
-- durable query ownership around Urdu writing jobs.
+The best growth work therefore increases qualified organic entrances, CTR on existing impressions, repeat usage, useful second-page navigation, page depth into tools, and ad viewability without harming the task or Core Web Vitals.
 
 Search Console and AdSense are the control plane for prioritization, but **missing perfect data must not freeze low-risk authority-compounding work**.
 
-The active detailed execution plan is `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-08-11.md`. It supports this backlog; it does not replace it.
+The detailed commercial execution plan is `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-08-11.md`. The runtime/account monetization contract is `docs/WU-ADSENSE-OPERATING-CONTRACT.md`.
 
 ## Priority rules
 
@@ -49,7 +41,7 @@ The active detailed execution plan is `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-0
 7. Finish partially implemented feature contracts before inventing competing versions of the same job.
 8. Keep active writing/creation surfaces ad-light; monetize around the task, not inside it.
 9. Normalize and measure current ad placement before increasing site-wide ad load.
-10. Consolidate duplicate roadmap/spec documents instead of creating new competing sources of truth.
+10. Preserve mature-domain URLs unless evidence supports consolidation.
 11. Every implementation slice needs tests and a Cloudflare preview.
 
 ---
@@ -62,39 +54,41 @@ The active detailed execution plan is `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-0
 **Spec:** `specs/WU-GROWTH-001-search-adsense-growth-system.md`  
 **Execution plan:** `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-08-11.md`
 
-Complete the evidence baseline, but use it to **rank authority-harvesting work**, not as a stop-ship gate for all development.
-
 ### P0.1A — Growth Slice A: page-type AdSense architecture + measurement baseline
 
-Repository inspection found a universal shared ad immediately after the header on most content pages while some legacy pages still contain their own manual units. Normalize this before adding inventory.
+**Runtime status:** implemented and merged in PR #13 (`4c96615409a9463b4e85b40c749f7f1bb6e7eb32`).
 
-- [ ] Classify public routes into Write / Learn / Create / Trust monetization groups.
-- [ ] Replace the universal content-page post-header ad rule with page-type-aware placement hooks.
-- [ ] Protect editor/canvas/action regions from in-page ad insertion.
-- [ ] Remove duplicate legacy manual units as pages migrate, beginning with the typing tutorial during its V2-S3 decision.
-- [ ] Preserve the existing AdSense client and single-loader behaviour.
-- [ ] Define URL-channel and custom-channel naming for strategic routes/placements.
-- [ ] Capture a pre-change AdSense baseline by top pages, page RPM, country, platform/device, ad format and placement method where available.
-- [ ] Add regression coverage for prohibited ad adjacency around primary editor/export/template actions where feasible.
+- [x] Classify public routes into Write / Learn / Create / Trust monetization groups.
+- [x] Replace one-size-fits-all serving with page-type-aware placement behavior.
+- [x] Keep core Write pages ad-free unless an explicit post-workspace boundary exists.
+- [x] Protect active tool/editor regions from guessed placement.
+- [x] Preserve the existing AdSense client, shared slot and single-loader behavior.
+- [x] Define stable internal placement names and document future custom-channel names.
+- [x] Add a regression contract covering route classification and monetization invariants.
+- [x] Remove the typing tutorial's legacy manual ad stack as part of V2-S3 source cleanup.
+- [ ] Create the documented custom/URL channels in the AdSense account and then add only real IDs where useful.
+- [ ] Configure the documented Auto-ads page exclusions/excluded areas in AdSense.
+- [ ] Capture a comparable AdSense baseline by top pages, page RPM, country, platform/device and format/placement where available.
 
-**Why this is first:** current placement inconsistency makes RPM harder to interpret and can create unnecessary UX/page-experience risk. Cleaning it improves both measurement quality and monetization safety.
+**Decision rule:** do not increase site-wide ad density until the account-side baseline/exclusions exist and the normalized placement has been observed.
 
 ### P0.1B — Authority Opportunity Map
 
-- [ ] Analyze full Search Console Queries export.
-- [ ] Analyze Pages export.
+The repository and File Library currently contain only two detailed Search Console baselines (`urdu typing`, `urdu writing`) and no comparable AdSense earnings/RPM export. Do not fabricate the missing map.
+
+When the exports are available:
+
+- [ ] Analyze full Search Console Queries and Pages exports.
 - [ ] Analyze Countries, Devices and trend/comparison data.
 - [ ] Map important query clusters to ranking URLs.
-- [ ] Identify positions 4–10 with material impressions.
-- [ ] Identify positions 11–20 where relevance is already strong.
-- [ ] Identify high-impression / weak-CTR pages.
+- [ ] Identify positions 4–10, positions 11–20 and high-impression/weak-CTR opportunities.
 - [ ] Identify cannibalization and duplicate-intent routes.
-- [ ] Review comparable AdSense aggregate data: earnings, page RPM, pageviews/ad impressions, country, device, top page/page group and ad format where available.
+- [ ] Review comparable AdSense aggregate data: earnings, page RPM, pageviews/ad impressions, country, device, top page/page group and ad format.
 - [ ] Join query → route → page type → observed/proxy RPM.
-- [ ] Produce an **Authority Opportunity Map** with buckets: defend, near-win, CTR opportunity, expand, consolidate, observe, reject.
+- [ ] Produce buckets: defend, near-win, CTR opportunity, expand, consolidate, observe, reject.
 - [ ] Re-rank P0/P1 using organic upside × monetization potential × product usefulness × implementation risk.
 
-**Decision rule:** lack of AdSense granularity does not block obvious SEO safety, status reconciliation, internal linking, useful tool completion or v2 consistency work.
+Missing commercial exports do not block safe SEO/UX cleanup, intent ownership, internal linking or feature acceptance work.
 
 ## P0.2 — Close SEO-A1 production follow-up
 
@@ -103,31 +97,29 @@ Repository inspection found a universal shared ad immediately after the header o
 
 - [ ] Smoke-test homepage transliteration in production.
 - [ ] Validate homepage and authority JSON-LD with Google Rich Results Test and Schema.org Validator.
-- [ ] Request recrawl for `/`, `/urdu-editor`, `/urdu-keyboard`, `/write-urdu-documentation`, `/urdu-faq`, `/roman-urdu-transliteration`, `/urdu-alphabet` and `/why-write-urdu`.
+- [ ] Request recrawl for `/`, `/urdu-editor`, `/urdu-keyboard`, `/write-urdu-documentation`, `/urdu-faq`, `/roman-urdu-transliteration`, `/urdu-alphabet`, `/urdu-fonts-nastaliq-vs-naskh`, `/english-urdu-typing-tutorial` and `/why-write-urdu`.
 - [ ] Confirm `/llms.txt`, `/robots.txt`, `/sitemap.xml` and `/.well-known/security.txt` are publicly reachable.
 - [ ] Start weekly tracking for `urdu typing` and `urdu writing` from the recorded baseline.
 
-**Why P0:** this verifies that the authority improvements already shipped are crawlable and measurable.
+## P0.3 — V2-S3 authority migration and overlap decisions
 
-## P0.3 — Finish V2-S3 authority migration and overlap decisions
+**Status:** implementation complete on the V2-S3 completion branch; merge after quality gates.
 
-**Type:** Product/UX + SEO safety
-
-- [ ] Migrate `/urdu-fonts-nastaliq-vs-naskh` to the shared v2 authority system.
-- [ ] Review `/english-urdu-typing-tutorial` against `/`, Documentation and the Roman Urdu guide.
-- [ ] Decide keep, narrow, merge or redirect using route/query evidence.
-- [ ] Review `write-urdu-features` and `urdu-editor-features` for the same duplication problem.
-- [ ] For consolidation, preserve one-hop redirects and update sitemap, structured data and internal links in the same PR.
-- [ ] Apply the new Learn-page monetization placement rules during migration rather than preserving legacy duplicate ad units.
-
-**Why P0:** old-domain authority is harmed more by scattered overlapping intent than by a shortage of pages. This work also removes legacy monetization inconsistency from high-content surfaces.
+- [x] Migrate `/urdu-fonts-nastaliq-vs-naskh` to the shared v2 authority system.
+- [x] Keep `/english-urdu-typing-tutorial` and narrow it to video/product walkthrough intent.
+- [x] Keep broad Roman Urdu language mechanics on `/roman-urdu-transliteration` and broad typing intent on `/`.
+- [x] Remove tutorial legacy frameworks, obsolete analytics/social SDKs, unused editor/export code and manual ad stack.
+- [x] Keep `write-urdu-features` as the drafts/import/export/share operations reference.
+- [x] Keep `urdu-editor-features` as the formatting reference.
+- [x] Preserve all established canonical URLs; no redirect is justified by current evidence.
+- [x] Update route registry, metadata ownership, sitemap freshness and authority tests.
 
 ## P0.4 — Close `WU-SUA-001` acceptance, do not re-build it
 
 **Type:** Product completion  
 **Spec:** `WU-SUA-001`
 
-Repository inspection shows substantial implementation already exists: both routes, an 80-style deterministic catalogue, Urdu-safe normalization/grapheme handling, conservative Kashida logic, local storage contracts and Name Art handoff code are present. The remaining task is **acceptance closure**, not another redesign.
+Repository inspection shows substantial implementation already exists. The remaining task is **acceptance closure**, not another redesign.
 
 - [ ] Verify the 80-style catalogue is unique and behaves correctly across category/intensity filters.
 - [ ] Verify favourites, collections and recent-input persistence/recovery.
@@ -158,11 +150,9 @@ Create deliberate, contextually useful paths between established writing demand 
 
 ## P1.1 — Defend and expand proven search demand
 
-Permanent growth lane:
-
 - [ ] Improve CTR on high-impression queries without destabilizing proven ranking URLs.
 - [ ] Prioritize positions 4–10 first, then strong-relevance 11–20 queries.
-- [ ] Resolve cannibalization.
+- [ ] Resolve cannibalization from measured query/page evidence.
 - [ ] Address device-specific CTR/UX gaps.
 - [ ] Strengthen examples, FAQs and supporting links from actual query language.
 - [ ] Protect high-traffic/high-RPM pages from unnecessary redesign churn.
@@ -170,8 +160,6 @@ Permanent growth lane:
 Initial route owners to score first: homepage, Urdu Keyboard, Roman Urdu guide, Urdu Alphabet and Urdu font guide.
 
 ## P1.2 — Build topic clusters around real Urdu-writing jobs
-
-Promote candidates only when they can be strong standalone resources or tools.
 
 Priority candidate clusters:
 
@@ -182,26 +170,24 @@ Priority candidate clusters:
 - Urdu status/card/name creation.
 - Urdu punctuation, numerals and RTL writing direction.
 
-Each cluster must have one clear query owner and useful internal paths into the product.
-
-**First new-content rule:** choose one evidence-backed cluster and build 1–3 strong pages; do not launch a bulk blog/content program.
+Each cluster must have one clear query owner and useful internal paths into the product. Choose one evidence-backed cluster and build 1–3 strong pages; do not launch a bulk blog/content program.
 
 ## P1.3 — Page-type AdSense experiments
 
-Run controlled experiments only after P0.1A normalizes placement.
+Run controlled experiments only after the P0.1A account-side baseline and exclusions are configured.
 
 Initial queue:
 
-1. Learn pages — shared post-header unit vs first unit after answer/first useful section.
-2. Learn pages — control vs desktop side rail.
-3. Long Learn pages — control vs Multiplex at true content end.
-4. Learn pages — control vs mobile bottom anchor.
-5. Homepage — no in-task ad; test one responsive unit after the primary workspace/support boundary.
+1. Learn pages — current `guide_after_answer` baseline versus a controlled alternative.
+2. Learn pages — control versus desktop side rail where reading layout supports it.
+3. Long Learn pages — control versus Multiplex at true content end.
+4. Learn pages — control versus mobile bottom anchor.
+5. Homepage — only consider one post-workspace unit after an explicit safe boundary exists.
 
 **Hold initially:** vignettes and Ad intents.  
-**Do not build around:** Related search for Auto ads; Google discontinued the format on 2026-08-06.
+**Do not build around:** Related search for Auto ads; the format is discontinued.
 
-Evaluate revenue together with task/navigation behaviour and Core Web Vitals; do not auto-apply experiment winners until reviewed.
+Evaluate revenue together with task/navigation behavior and Core Web Vitals; do not auto-apply experiment winners until reviewed.
 
 ## P1.4 — V2 creation-workspace migration
 
@@ -212,7 +198,7 @@ Evaluate revenue together with task/navigation behaviour and Core Web Vitals; do
 
 ### Stylish Urdu Text + Name Art
 - [ ] Apply the v2 creation shell **after** `WU-SUA-001` acceptance closure.
-- [ ] Preserve copy/favourite/handoff/export behaviour.
+- [ ] Preserve copy/favourite/handoff/export behavior.
 
 ### Social makers + QR
 - [ ] Migrate WhatsApp Status Maker and Instagram Post Maker.
@@ -223,26 +209,16 @@ For all Create routes, ads stay outside the active workspace/result/action regio
 
 ## P1.5 — Decide which creation tools deserve search investment
 
-Do not give every tool equal SEO effort. Score each by:
+Score each by existing impressions/clicks, realistic search demand, usefulness/differentiation, repeat-use/session-depth potential, contextual handoffs, maintenance cost and observed/proxy RPM.
 
-- existing impressions/clicks,
-- realistic search demand,
-- usefulness and differentiation,
-- repeat-use/session-depth potential,
-- ability to support contextual internal journeys,
-- maintenance cost,
-- observed/proxy RPM and page-type monetization fit.
-
-Winners get stronger landing content, examples, schema where valid, and supporting content. Losers remain useful tools without forced SEO expansion.
+Winners get stronger landing content, examples, valid schema and supporting content. Losers remain useful tools without forced SEO expansion.
 
 ## P1.6 — Evaluate Urdu typing practice/test as a distinct product candidate
-
-Current qualitative SERP research shows typing-practice/test products targeting a different job from transliteration/editor use.
 
 - [ ] Check Search Console for typing practice/test/WPM/exam-related impressions.
 - [ ] Do external query research before writing a spec.
 - [ ] If justified, create a distinct typing-practice feature contract rather than adding test mechanics to the core editor.
-- [ ] Keep in HOLD if demand is weak or product fit is unclear.
+- [ ] Keep in HOLD if demand or product fit is weak.
 
 ## P1.7 — Invoice strategy decision
 
@@ -277,7 +253,7 @@ Current qualitative SERP research shows typing-practice/test products targeting 
 
 ## P2.3 — Answer-ready content backlog
 
-Candidates from `docs/SEO-CONTENT-BACKLOG.md` remain evidence-gated:
+Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 
 - [ ] Common Roman Urdu phrases with reviewed Urdu examples.
 - [ ] Urdu in WhatsApp, Microsoft Word and Google Docs.
@@ -297,7 +273,7 @@ Candidates from `docs/SEO-CONTENT-BACKLOG.md` remain evidence-gated:
 - Site-wide maximum Auto ads load without page-type rules and experiments.
 - Vignette ads as a default core-editor transition.
 - Ad intents on core writing pages before page-level economics and UX are understood.
-- Related search for Auto ads; the format has been discontinued.
+- Related search for Auto ads.
 - Changing the transliteration provider or initialization contract without a compelling reason.
 - Accounts/cloud documents/server-side storage for the core writing workflow without demonstrated user demand.
 - AI translation/calligraphy features as a novelty project.
@@ -310,7 +286,7 @@ Candidates from `docs/SEO-CONTENT-BACKLOG.md` remain evidence-gated:
 
 | ID | Groomed state | Roadmap treatment |
 | --- | --- | --- |
-| `WU-GROWTH-001` | Active | P0 commercial control plane; Growth Slice A + Authority Map now executing |
+| `WU-GROWTH-001` | Active | P0 commercial control plane; runtime AdSense normalization shipped, Authority Map awaits detailed exports |
 | `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
 | `WU-CS-UX-001` | Implemented core | v2 migration P1 |
 | `WU-CS-UX-002` | Implemented core | v2 migration P1 |
@@ -319,7 +295,7 @@ Candidates from `docs/SEO-CONTENT-BACKLOG.md` remain evidence-gated:
 | `WU-IG-001` | Implemented | Strategic evidence review before v2 migration |
 | `WU-IG-002` | Implemented | Same invoice decision |
 | `WU-IG-003` | Implemented | Same invoice decision |
-| `WU-SEO-001` | Superseded | Requirements absorbed by `WU-PLAT-001`, SEO-A1 and the canonical growth backlog; no standalone implementation lane |
+| `WU-SEO-001` | Superseded | Requirements absorbed by `WU-PLAT-001`, SEO-A1 and `WU-GROWTH-001` |
 
 ## Grooming rules going forward
 
@@ -331,7 +307,7 @@ Candidates from `docs/SEO-CONTENT-BACKLOG.md` remain evidence-gated:
 
 ## Current queue
 
-**Next implementation PR:** `GROWTH-A1` — page-type AdSense architecture + measurement baseline.  
-**Parallel SEO/product PR:** finish V2-S3 authority migration + overlap decisions, applying the new Learn-page monetization rules instead of preserving legacy ad stacks.  
-**Parallel product-quality lane:** close `WU-SUA-001` acceptance gaps without redesigning the feature.  
-**Next strategic analysis:** complete the Search Console + AdSense Authority Opportunity Map and use it to select the first existing-route SEO wins and first evidence-backed content cluster.
+**Current branch/PR lane:** close V2-S3 authority migration and intent ownership.  
+**Next product-quality implementation:** close `WU-SUA-001` acceptance gaps without redesigning the feature.  
+**Next SEO/growth implementation:** contextual authority distribution/internal journeys across existing high-signal routes.  
+**Next strategic analysis:** complete the Search Console + AdSense Authority Opportunity Map as soon as detailed exports are available.

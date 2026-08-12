@@ -10,14 +10,14 @@ urdu-whatsapp-status-maker.html,/urdu-whatsapp-status-maker,Create,Urdu WhatsApp
 urdu-instagram-post-maker.html,/urdu-instagram-post-maker,Create,Urdu Instagram post,index,yes,keep-provisional,pending,P2,Validate unique landing intent
 qr-code-generator.html,/qr-code-generator,Create,static Urdu QR codes,index,yes,keep,pending,P2,Supporting browser-local tool
 urdu-invoice-generator.html,/urdu-invoice-generator,Business,Urdu English invoice generator,index,yes,keep,pending,P1,Distinct business workflow
-roman-urdu-transliteration.html,/roman-urdu-transliteration,Learn,Roman Urdu transliteration guide,index,yes,keep,migrated,P1,V2 authority guide that supports homepage typing intent and routes users into writing tools
-english-urdu-typing-tutorial.html,/english-urdu-typing-tutorial,Learn,English letters to Urdu tutorial,index,yes,review-overlap,pending,P1,Check overlap with homepage and transliteration guide
+roman-urdu-transliteration.html,/roman-urdu-transliteration,Learn,Roman Urdu transliteration guide,index,yes,keep,migrated,P1,V2 authority guide owns language mechanics and supports homepage typing intent
+english-urdu-typing-tutorial.html,/english-urdu-typing-tutorial,Learn,WriteUrdu video and step-by-step product tutorial,index,yes,keep-narrowed,migrated,P1,Retained for distinct walkthrough intent; broad Roman Urdu language mechanics belong to the transliteration guide
 urdu-faq.html,/urdu-faq,Learn,Urdu writing and product FAQ,index,yes,keep,migrated,P1,V2 help-centre layout with accessible disclosure items and legacy dependencies removed
 write-urdu-documentation.html,/write-urdu-documentation,Learn,WriteUrdu product documentation,index,yes,keep,migrated,P1,V2 documentation hub with shared reading system and task navigation
-urdu-fonts-nastaliq-vs-naskh.html,/urdu-fonts-nastaliq-vs-naskh,Learn,Urdu font comparison,index,yes,keep,pending,P2,Supporting topical authority
+urdu-fonts-nastaliq-vs-naskh.html,/urdu-fonts-nastaliq-vs-naskh,Learn,Urdu font comparison,index,yes,keep,migrated,P2,V2 authority guide for Nastaliq versus Naskh choice and product handoff
 urdu-alphabet.html,/urdu-alphabet,Learn,Urdu alphabet,index,yes,keep,migrated,P1,V2 authority guide with complete standalone chart and legacy framework dependencies removed
-write-urdu-features.html,/write-urdu-features,Learn,WriteUrdu platform features,index,yes,merge-review,pending,P2,Potential overlap with documentation and About
-urdu-editor-features.html,/urdu-editor-features,Learn,rich editor features,index,yes,merge-review,pending,P2,Potential overlap with editor and documentation
+write-urdu-features.html,/write-urdu-features,Learn,WriteUrdu drafts import export and sharing operations,index,yes,keep-narrowed,pending,P2,Distinct operational reference; preserve URL and keep broad product overview ownership with Documentation
+urdu-editor-features.html,/urdu-editor-features,Learn,rich editor formatting reference,index,yes,keep-narrowed,pending,P2,Distinct formatting reference; preserve URL and keep editor product intent with the Rich Editor route
 why-write-urdu.html,/why-write-urdu,About,why use WriteUrdu,index,yes,keep-reframe,pending,P1,Become clear About and trust page
 write-urdu-feedback.html,/write-urdu-feedback,About,feedback and contact,noindex,no,keep,pending,P2,Utility contact page intentionally excluded from sitemap
 write-urdu-privacy.html,/write-urdu-privacy,About,privacy policy,index,yes,keep,pending,P1,Legal and provider disclosure

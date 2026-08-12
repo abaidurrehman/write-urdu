@@ -8,6 +8,8 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const authorityCss = read('css/v2-authority.css');
 const roman = read('roman-urdu-transliteration.html');
 const alphabet = read('urdu-alphabet.html');
+const fonts = read('urdu-fonts-nastaliq-vs-naskh.html');
+const tutorial = read('english-urdu-typing-tutorial.html');
 const workflow = read('.github/workflows/quality.yml');
 
 assert.match(authorityCss, /body\.v2-content-page\.authority-page/, 'authority system must extend the shared v2 content contract');
@@ -42,6 +44,26 @@ assert.doesNotMatch(alphabet, /UA-80884320-1|google-analytics\.com\/analytics\.j
 assert.doesNotMatch(alphabet, /bootstrap|jquery|w3schools|font-awesome|cdnjs\.cloudflare\.com\/ajax\/libs\/font-awesome/i, 'Urdu Alphabet must not retain obsolete framework dependencies');
 assert.doesNotMatch(alphabet, /<meta name="Keywords"/i, 'Urdu Alphabet must not retain the legacy keywords meta tag');
 assert.doesNotMatch(alphabet, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Urdu Alphabet must use extensionless internal links');
+
+assert.match(fonts, /class="content-page guide-page v2-content-page authority-page font-guide-page"/, 'Urdu font guide must use the v2 authority page contract');
+assert.match(fonts, /css\/v2-content\.css/, 'Urdu font guide must load the shared v2 content system');
+assert.match(fonts, /css\/v2-authority\.css/, 'Urdu font guide must load the v2 authority system');
+assert.match(fonts, /https:\/\/write-urdu\.com\/urdu-fonts-nastaliq-vs-naskh/, 'Urdu font guide canonical changed unexpectedly');
+assert.match(fonts, /id="font-guide-title"/, 'Urdu font guide H1 contract changed');
+assert.match(fonts, /Nastaliq: traditional Urdu character/, 'Urdu font guide must retain practical Nastaliq guidance');
+assert.match(fonts, /Naskh: compact and predictable/, 'Urdu font guide must retain practical Naskh guidance');
+assert.match(fonts, /data-wu-ad-boundary="after-answer"/, 'Learn-page ad placement needs an explicit useful-content boundary');
+assert.doesNotMatch(fonts, /bootstrap|jquery|UA-80884320-1|google-analytics\.com\/analytics\.js/i, 'Urdu font guide must not introduce legacy dependencies');
+assert.doesNotMatch(fonts, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Urdu font guide must use extensionless internal links');
+
+assert.match(tutorial, /class="content-page guide-page v2-content-page authority-page tutorial-page"/, 'Typing tutorial must use the v2 authority page contract');
+assert.match(tutorial, /<title>Write Urdu Video Tutorial – Roman Urdu Typing & Rich Editor<\/title>/, 'Tutorial must own a product-walkthrough intent rather than broad Urdu typing');
+assert.match(tutorial, /<h1 id="tutorial-title">Write Urdu video tutorials<\/h1>/, 'Tutorial H1 must preserve the product-tutorial job');
+assert.match(tutorial, /\/roman-urdu-transliteration/, 'Tutorial must distinguish itself from the Roman Urdu language guide');
+assert.ok((tutorial.match(/facebook\.com\/plugins\/video\.php/g) || []).length === 2, 'Tutorial must retain exactly the two useful video embeds');
+assert.match(tutorial, /data-wu-ad-boundary="after-answer"/, 'Tutorial must expose the Learn-page ad boundary after useful content');
+assert.doesNotMatch(tutorial, /<meta name="Keywords"|UA-80884320-1|google-analytics\.com\/analytics\.js|bootstrap|jquery|clipboard\.js|jspdf|html2canvas|fb-customerchat|adsbygoogle/i, 'Tutorial must not retain legacy SEO, analytics, framework, editor or manual-ad baggage');
+assert.doesNotMatch(tutorial, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Tutorial must use extensionless internal links');
 
 assert.match(workflow, /- 'agent\/\*\*'/, 'quality workflow must run for agent branches');
 assert.match(workflow, /workflow_dispatch:/, 'quality workflow must support manual recovery runs');
