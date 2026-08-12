@@ -256,7 +256,7 @@ assert.match(home, /Choose the right Urdu tool|data-create-qr/, 'Homepage is mis
 assert.match(read('write-urdu-privacy.html'), /Privacy summary|data processing summary|transliteration suggestions use the Google/i, 'Privacy page is missing feature-specific processing details');
 assert.match(read('urdu-faq.html'), /Tools, privacy and exports|Is Write Urdu free and do I need an account/i, 'FAQ is missing product questions');
 const qrCore = require(path.join(root, 'js', 'qr-generator-core.js'));
-assert.strictEqual(qrCore.buildUrlPayload({ url: 'write-urdu.com' }).payload, 'https://www.write-urdu.com/', 'URL payload normalization failed');
+assert.strictEqual(qrCore.buildUrlPayload({ url: 'write-urdu.com' }).payload, 'https://write-urdu.com/', 'URL payload normalization failed');
 assert.match(qrCore.buildTextPayload({ text: 'ہمیں اردو سے محبت ہے۔' }).payload, /اردو/, 'Urdu text payload failed');
 assert.match(qrCore.buildWhatsAppPayload({ phone: '+45 12 34 56 78', message: 'سلام' }).payload, /wa\.me\/4512345678\?text=/, 'WhatsApp payload normalization failed');
 assert.match(qrCore.buildWifiPayload({ ssid: 'a;b', security: 'WPA', password: 'p:q' }).payload, /a\\;b.*p\\:q/, 'Wi-Fi payload escaping failed');
