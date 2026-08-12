@@ -8,6 +8,7 @@
     "test:all": "npm test && npm run seo:check && npm run governance:check && npm run test:browser",
     "seo:generate": "node scripts/generate-seo-files.js",
     "seo:check": "node scripts/check-seo.js",
+    "seo:live": "node scripts/check-live-canonical.js",
     "governance:check": "node scripts/check-product-governance.js",
     "seo:indexnow": "node scripts/submit-indexnow.js",
     "lighthouse:seo": "node scripts/run-lighthouse.js",

@@ -1,0 +1,10 @@
+# Keep Cloudflare-owned Pages aliases out of search as defense in depth.
+# Preview deployments already receive X-Robots-Tag: noindex from Cloudflare,
+# but the production <project>.pages.dev alias should also never compete with
+# https://write-urdu.com. The preferred production control remains the
+# account-level Bulk Redirect documented in docs/CLOUDFLARE-CANONICAL-HOST.md.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

@@ -1,6 +1,7 @@
-# Cloudflare Pages redirect rules. Keep these before any future wildcard rule.
-# Apache deployments use .htaccess; Cloudflare Pages uses this file instead.
-https://www.write-urdu.com/* https://write-urdu.com/:splat 301!
+# Cloudflare Pages path redirects only.
+# Host/protocol canonicalization belongs at the Cloudflare zone edge because
+# Pages _redirects does not support domain-level redirect sources.
+# See docs/CLOUDFLARE-CANONICAL-HOST.md for the required www/pages.dev rules.
 /index.html / 301
 /urdu-editor.html /urdu-editor 301
 /urdu-keyboard.html /urdu-keyboard 301
