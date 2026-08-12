@@ -10,10 +10,11 @@ Important facts:
 - Roman Urdu conversion is transliteration, not translation. Writers should review ambiguous names, spellings and important text before sharing it.
 - The Urdu Keyboard supports direct Urdu-character input when exact spelling or punctuation matters.
 - The Rich Text Editor is intended for formatted Urdu documents, headings, lists, fonts, alignment and export.
+- Urdu Card Studio is the primary image-creation surface for putting Urdu text, poetry, quotes and announcements on a background or photo and exporting the finished design.
 - Local drafts and several creation workflows use browser storage or browser-side processing. Roman Urdu suggestions may use the transliteration provider described in the privacy policy.
 - Write Urdu does not require an account for the core editors.
 - Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel.
-- Last reviewed: 2026-08-07.
+- Last reviewed: 2026-08-12.
 
 ## Start writing
 
@@ -28,11 +29,12 @@ Important facts:
 - [Complete Write Urdu documentation](https://www.write-urdu.com/write-urdu-documentation): Editor modes, transliteration, direct input, formatting, drafts, exports and related creation tools.
 - [Write Urdu FAQ](https://www.write-urdu.com/urdu-faq): Product, privacy, export, transliteration and Urdu-script questions.
 - [Urdu fonts: Nastaliq vs Naskh](https://www.write-urdu.com/urdu-fonts-nastaliq-vs-naskh): Practical comparison of Urdu font styles for documents, interfaces and designs.
+- [How to write Urdu on a photo](https://www.write-urdu.com/how-to-write-urdu-on-photo): Practical steps for adding Urdu text, poetry or quotes to a local photo, choosing readable Urdu fonts and exporting the image in Card Studio.
 - [Roman Urdu typing tutorial](https://www.write-urdu.com/english-urdu-typing-tutorial): Step-by-step typing, suggestion and formatting guidance.
 
 ## Create and export
 
-- [Urdu Card Studio](https://www.write-urdu.com/urdu-card-studio): Create Urdu quote, poetry and announcement images with Urdu fonts, templates and local backgrounds.
+- [Urdu Card Studio](https://www.write-urdu.com/urdu-card-studio): Write Urdu text or poetry on a photo, create quote/post/announcement images with Urdu fonts and templates, and export the finished PNG.
 - [Urdu Template Library](https://www.write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.
 - [Urdu and English Invoice Generator](https://www.write-urdu.com/urdu-invoice-generator): Create Urdu, English or bilingual invoices with automatic totals and local export.
 - [Static QR Code Generator](https://www.write-urdu.com/qr-code-generator): Create static QR codes for Urdu text, links, Wi-Fi, WhatsApp and contacts.
