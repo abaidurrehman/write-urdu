@@ -69,11 +69,11 @@ Obsolete prototype editor files have been removed; `urdu-editor.html` is the onl
 
 ## Clean URLs
 
-Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keyboard` and `/urdu-alphabet`. The canonical production origin is `https://write-urdu.com`. The original `.html` files remain in the repository for backwards-compatible bookmarks and are permanently redirected by the included `.htaccess` or Cloudflare Pages `_redirects`; the local test server serves both forms for browser tests.
+Public navigation uses extensionless routes such as `/urdu-editor`, `/urdu-keyboard` and `/urdu-alphabet`. The canonical production origin is `https://www.write-urdu.com`. The original `.html` files remain in the repository for backwards-compatible bookmarks and are permanently redirected by the included `.htaccess` or Cloudflare Pages `_redirects`; the local test server serves both forms for browser tests.
 
 ## Search and AI discoverability
 
-`seo.config.js` is the source of truth for page titles, descriptions, indexability, legacy routes, sitemap inclusion and update dates. `npm run seo:generate` produces the canonical-host `sitemap.xml` and crawler policy in `robots.txt`; `npm run seo:check` validates headings, metadata, canonicals, JSON-LD hooks and sitemap/registry alignment. Apache uses `.htaccess`, while Cloudflare Pages uses the root `_redirects` file for legacy and trailing-slash redirects. Search Console, Bing Webmaster Tools, IndexNow and CDN crawler checks are deployment tasks documented in `docs/SEO-DEPLOYMENT-CHECKLIST.md` and `docs/SEO-POST-DEPLOYMENT.md`.
+`seo.config.js` is the source of truth for page titles, descriptions, indexability, legacy routes, sitemap inclusion and update dates. `npm run seo:generate` produces the canonical-host `sitemap.xml` and crawler policy in `robots.txt`; `npm run seo:check` validates headings, metadata, canonicals, JSON-LD hooks and sitemap/registry alignment. Apache uses `.htaccess`, while Cloudflare Pages uses the root `_redirects` file for legacy and trailing-slash redirects; hostname/protocol canonicalization is enforced at the Cloudflare zone edge. Search Console, Bing Webmaster Tools, IndexNow and CDN crawler checks are deployment tasks documented in `docs/SEO-DEPLOYMENT-CHECKLIST.md` and `docs/SEO-POST-DEPLOYMENT.md`.
 
 ## Language preference
 
