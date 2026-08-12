@@ -22,6 +22,24 @@
     var favoritesToggle = root.querySelector('[data-template-favorites]');
     var clearButton = root.querySelector('[data-template-clear]');
 
+    function ensureV2CreationStyles() {
+        if (document.querySelector('link[href$="css/v2-creation.css"]')) return;
+        var stylesheet = document.createElement('link');
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = 'css/v2-creation.css';
+        stylesheet.setAttribute('data-write-urdu-v2-creation', '');
+        document.head.appendChild(stylesheet);
+    }
+    function enhanceCreationJourney() {
+        root.dataset.v2CreationWorkspace = 'templates';
+        var heroCopy = root.querySelector('.template-library-hero > div:first-child');
+        if (!heroCopy || heroCopy.querySelector('[data-template-hero-actions]')) return;
+        var actions = document.createElement('div');
+        actions.className = 'template-hero-actions';
+        actions.setAttribute('data-template-hero-actions', '');
+        actions.innerHTML = '<a class="template-hero-action primary" href="/urdu-card-studio" data-wu-journey="templates-to-blank-card">Start a blank card</a><a class="template-hero-action" href="/" data-wu-journey="templates-to-writing">Write Urdu first</a>';
+        heroCopy.appendChild(actions);
+    }
     function readList(key) {
         try {
             var value = JSON.parse(localStorage.getItem(key) || '[]');
@@ -67,7 +85,7 @@
         var favorite = document.createElement('button'); favorite.type = 'button'; favorite.className = 'template-favorite'; favorite.dataset.templateFavorite = template.id; favorite.setAttribute('aria-pressed', String(isFavorite(template.id))); favorite.setAttribute('aria-label', (isFavorite(template.id) ? 'Remove ' : 'Add ') + template.name + ' ' + (isFavorite(template.id) ? 'from favorites' : 'to favorites')); favorite.textContent = isFavorite(template.id) ? '★' : '☆'; titleRow.appendChild(favorite); body.appendChild(titleRow);
         var category = document.createElement('p'); category.className = 'template-card-category'; category.textContent = library.getCategoryLabel(template.category); body.appendChild(category);
         var description = document.createElement('p'); description.className = 'template-card-description'; description.textContent = template.description; body.appendChild(description);
-        var footer = document.createElement('div'); footer.className = 'template-card-footer'; var size = document.createElement('span'); size.className = 'template-card-size'; size.textContent = library.dimensionsLabel(template); footer.appendChild(size); var open = document.createElement('button'); open.type = 'button'; open.className = 'template-open'; open.dataset.templateOpen = template.slug; open.textContent = 'Edit template'; footer.appendChild(open); body.appendChild(footer); card.appendChild(body);
+        var footer = document.createElement('div'); footer.className = 'template-card-footer'; var size = document.createElement('span'); size.className = 'template-card-size'; size.textContent = library.dimensionsLabel(template); footer.appendChild(size); var open = document.createElement('button'); open.type = 'button'; open.className = 'template-open'; open.dataset.templateOpen = template.slug; open.textContent = 'Edit in Card Studio'; footer.appendChild(open); body.appendChild(footer); card.appendChild(body);
         return card;
     }
     function renderRecent() {
@@ -120,6 +138,8 @@
     search.addEventListener('input', function () { state.query = search.value; render(); });
     sizeSelect.addEventListener('change', function () { state.size = sizeSelect.value; render(); });
     sortSelect.addEventListener('change', function () { state.sort = sortSelect.value; render(); });
+    ensureV2CreationStyles();
+    enhanceCreationJourney();
     renderCategories();
     window.setTimeout(render, 80);
     document.dispatchEvent(new CustomEvent('write-urdu:templates-rendered', { detail: { count: library.TEMPLATES.length } }));

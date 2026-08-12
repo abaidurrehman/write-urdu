@@ -18,6 +18,15 @@
     var labels = { content: 'Content', format: 'Format', style: 'Style', export: 'Export' };
     var ui = { activeStep: 'content', mode: 'quick', selection: 'none', interactionMode: 'idle', capabilities: { isMobile: false, supportsNativeKeyboard: false } };
 
+    function ensureV2CreationStyles() {
+        if (document.querySelector('link[href$="css/v2-creation.css"]')) return;
+        var stylesheet = document.createElement('link');
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = 'css/v2-creation.css';
+        stylesheet.setAttribute('data-write-urdu-v2-creation', '');
+        document.head.appendChild(stylesheet);
+    }
+
     function clone(value) {
         try { return JSON.parse(JSON.stringify(value)); } catch (error) { return value; }
     }
@@ -159,11 +168,13 @@
     }
 
     function start() {
+        ensureV2CreationStyles();
         root = document.querySelector('[data-card-studio]');
         app = window.WriteUrduCardStudioApp;
         core = window.WriteUrduCardStudio;
         interaction = window.WriteUrduCardStudioInteractionApi;
         if (!root || !app || !core) return;
+        root.dataset.v2CreationWorkspace = 'card-studio';
         bind();
         ui.capabilities.isMobile = Boolean(window.matchMedia && window.matchMedia('(max-width: 900px)').matches);
         ui.capabilities.supportsNativeKeyboard = Boolean(root.querySelector('[data-card-canvas-editor]'));
