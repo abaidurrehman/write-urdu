@@ -4,7 +4,6 @@ const config = require('../seo.config.js');
 
 const root = path.resolve(__dirname, '..');
 const errors = [];
-const warnings = [];
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const canonicalOrigin = new URL(config.SITE_ORIGIN).origin;
 const canonicalHost = new URL(config.SITE_ORIGIN).hostname;
@@ -142,12 +141,11 @@ registry.forEach(page => {
 const humanSitemap = read('write-urdu-sitemap.html');
 registry.filter(page => page.sitemap === 'yes' && page.canonical_route !== '/').forEach(page => {
   const escaped = page.canonical_route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  if (!new RegExp(`href=["']${escaped}["']`, 'i').test(humanSitemap)) warnings.push(`human sitemap: missing ${page.canonical_route}`);
+  if (!new RegExp(`href=["']${escaped}["']`, 'i').test(humanSitemap)) errors.push(`human sitemap: missing canonical link to ${page.canonical_route}`);
 });
-if (legacyLinkCounts.html) warnings.push(`legacy internal-link backlog: ${legacyLinkCounts.html} .html links`);
-if (legacyLinkCounts.alternateHost) warnings.push(`legacy internal-link backlog: ${legacyLinkCounts.alternateHost} ${alternateHost} links`);
-if (legacyLinkCounts.slash) warnings.push(`legacy internal-link backlog: ${legacyLinkCounts.slash} trailing-slash links`);
+if (legacyLinkCounts.html) errors.push(`noncanonical internal-link backlog: ${legacyLinkCounts.html} .html links`);
+if (legacyLinkCounts.alternateHost) errors.push(`noncanonical internal-link backlog: ${legacyLinkCounts.alternateHost} ${alternateHost} links`);
+if (legacyLinkCounts.slash) errors.push(`noncanonical internal-link backlog: ${legacyLinkCounts.slash} trailing-slash links`);
 
-if (warnings.length) console.warn(warnings.map(item => `GOVERNANCE WARNING: ${item}`).join('\n'));
 if (errors.length) { console.error(errors.map(item => `GOVERNANCE: ${item}`).join('\n')); process.exit(1); }
 console.log(`Product governance checks passed for ${registry.length} registered public pages, ${sitemapRoutes.size} sitemap routes, and ${redirectRules.length} redirect rules.`);
