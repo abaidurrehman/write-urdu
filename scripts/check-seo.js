@@ -19,8 +19,8 @@ config.pages.forEach(page => {
   registryByFile[(page.path === '/' ? 'index' : page.path.slice(1)) + '.html'] = page;
 });
 
-if (config.SITE_ORIGIN !== 'https://write-urdu.com') {
-  errors.push(`seo.config.js: SITE_ORIGIN must remain https://write-urdu.com, found ${config.SITE_ORIGIN}`);
+if (config.SITE_ORIGIN !== 'https://www.write-urdu.com') {
+  errors.push(`seo.config.js: SITE_ORIGIN must remain https://www.write-urdu.com, found ${config.SITE_ORIGIN}`);
 }
 
 const titles = new Map();
@@ -70,7 +70,7 @@ files.forEach(file => {
   else {
     try {
       const imageUrl = new URL(ogImage);
-      if (imageUrl.hostname === 'www.write-urdu.com') errors.push(`${file}: Open Graph image must not use the legacy www host`);
+      if (imageUrl.hostname === 'write-urdu.com') errors.push(`${file}: Open Graph image must not use the alternate apex host`);
       if (imageUrl.origin === config.SITE_ORIGIN && !fs.existsSync(path.join(root, imageUrl.pathname.replace(/^\//, '')))) {
         errors.push(`${file}: Open Graph image asset is missing`);
       }
@@ -132,7 +132,7 @@ const gptPolicy = robotSections.find(section => /^User-agent:\s*GPTBot\s*$/im.te
 if (!/(?:Allow:|Disallow:)\s*\//i.test(gptPolicy)) errors.push('robots.txt: GPTBot policy is not explicit');
 if (/Disallow:\s*\/(?:assets|js|css|fonts)\/?/i.test(robots)) errors.push('robots.txt: CSS, JavaScript or fonts are blocked');
 const sitemapDirective = (robots.match(/^Sitemap:\s*(\S+)/im) || [])[1] || '';
-if (sitemapDirective !== `${config.SITE_ORIGIN}/sitemap.xml`) errors.push('robots.txt: Sitemap directive must use the canonical apex host');
+if (sitemapDirective !== `${config.SITE_ORIGIN}/sitemap.xml`) errors.push('robots.txt: Sitemap directive must use the canonical www host');
 
 if (!fs.existsSync(path.join(root, 'llms.txt'))) errors.push('llms.txt: missing AI-readable site summary');
 if (!fs.existsSync(path.join(root, 'docs', 'SEO-POST-DEPLOYMENT.md'))) errors.push('docs: post-deployment SEO procedure is missing');

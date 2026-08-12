@@ -9,7 +9,7 @@ RewriteRule ^index\.html$ https://www.write-urdu.com/ [R=301,L,NE]
 RewriteRule ^(urdu-editor|urdu-keyboard|urdu-alphabet|urdu-card-studio|stylish-urdu-text-generator|urdu-name-art-maker|urdu-whatsapp-status-maker|urdu-instagram-post-maker|urdu-templates|qr-code-generator|write-urdu-features|urdu-editor-features|write-urdu-documentation|english-urdu-typing-tutorial|urdu-faq|why-write-urdu|write-urdu-privacy|write-urdu-sitemap|write-urdu-search|write-urdu-feedback|roman-urdu-transliteration|urdu-fonts-nastaliq-vs-naskh)\.html$ https://www.write-urdu.com/$1 [R=301,L,NE]
 RewriteRule ^urdu-stylish-name-generator$ https://www.write-urdu.com/stylish-urdu-text-generator [R=301,L,NE]
 
-# Canonical URL policy: keep one HTTPS apex origin and extensionless paths.
+# Canonical URL policy: keep one HTTPS www origin and extensionless paths.
 # Configure the same rules at the CDN/host if Apache is not the edge server.
 RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} !^www\.write-urdu\.com$ [NC]

@@ -1,7 +1,7 @@
 const config = require('../seo.config.js');
 
 const canonicalOrigin = (process.env.CANONICAL_ORIGIN || config.SITE_ORIGIN).replace(/\/$/, '');
-const alternateOrigin = (process.env.ALTERNATE_ORIGIN || 'https://www.write-urdu.com').replace(/\/$/, '');
+const alternateOrigin = (process.env.ALTERNATE_ORIGIN || 'https://write-urdu.com').replace(/\/$/, '');
 const pagesDevOrigin = (process.env.PAGES_DEV_ORIGIN || '').replace(/\/$/, '');
 const timeoutMs = Number(process.env.CANONICAL_AUDIT_TIMEOUT_MS || 10000);
 const samplePaths = (process.env.CANONICAL_AUDIT_PATHS || '/,/urdu-editor,/urdu-keyboard,/roman-urdu-transliteration,/write-urdu-documentation')
@@ -101,18 +101,18 @@ async function main() {
     const queryPath = `${pathname}${pathname.includes('?') ? '&' : '?'}canonical_audit=1`;
     const alternateUrl = new URL(queryPath, `${alternateOrigin}/`).href;
     const canonicalUrl = new URL(queryPath, `${canonicalOrigin}/`).href;
-    await expectRedirect(alternateUrl, canonicalUrl, 'www -> apex');
+    await expectRedirect(alternateUrl, canonicalUrl, 'apex -> www');
   }
 
   await expectRedirect(
     'http://write-urdu.com/?canonical_audit=1',
     `${canonicalOrigin}/?canonical_audit=1`,
-    'HTTP apex -> HTTPS apex'
+    'HTTP apex -> HTTPS www'
   );
   await expectRedirect(
     'http://www.write-urdu.com/?canonical_audit=1',
     `${canonicalOrigin}/?canonical_audit=1`,
-    'HTTP www -> HTTPS apex'
+    'HTTP www -> HTTPS www'
   );
   await expectRedirect(
     `${canonicalOrigin}/index.html`,
