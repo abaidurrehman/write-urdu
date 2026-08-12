@@ -4,7 +4,8 @@
 **Feature ID:** `WU-SM-001`  
 **Status:** Implemented  
 **Route:** `/urdu-whatsapp-status-maker`, `/urdu-instagram-post-maker`  
-**Architecture:** Existing Urdu Card Studio Design Engine
+**Architecture:** Existing Urdu Card Studio Design Engine  
+**V2 migration:** completed in PR #26 (2026-08-12)
 
 ## Purpose
 
@@ -36,6 +37,8 @@ behavior.
 - Social drafts use versioned local storage keys and an IndexedDB scope separate
   from regular Card Studio projects.
 - PNG and JPEG exports use the selected dimensions; JPEG quality is adjustable.
+- The v2 route shell keeps the embedded Studio as the dominant task surface and
+  moves supporting guidance below the active workspace.
 
 ## Privacy and non-goals
 
@@ -55,6 +58,9 @@ direct posting, cloud project, or server API is introduced.
 - [x] Instagram caption text can be copied locally.
 - [x] The routes clearly explain manual upload and no account connection.
 - [x] Existing Card Studio rendering and direct editing remain the source of truth.
+- [x] Both public routes use the shared v2 header/footer shell.
+- [x] Supporting guidance begins only after the post-workspace monetization boundary.
+- [x] Desktop/mobile browser acceptance verifies social mode, default presets, safe areas and overflow safety.
 
 ## Implementation map
 
@@ -64,7 +70,8 @@ direct posting, cloud project, or server API is introduced.
 - `urdu-instagram-post-maker.html` — Instagram Post landing/workspace route.
 - `js/card-studio.js` — social-mode initialization, safe-area overlay, local
   caption copying, scoped drafts, and PNG/JPEG export.
-- `css/social-maker.css` — route shell and responsive guidance layout.
+- `css/social-maker.css` — base route shell and responsive guidance layout.
+- `css/v2-publish-tools.css` — v2 social/QR workspace hierarchy.
 - `css/card-studio.css` — safe-area and social export controls.
 - `js/card-studio-core.js` — shared portrait preset (1080 × 1350).
 
