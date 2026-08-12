@@ -32,7 +32,9 @@ The P1.5 review found active mobile products centered on Urdu text/poetry on pho
 ## Implementation
 
 - Keep `/urdu-card-studio` and all existing renderer/export/storage contracts unchanged.
-- Give Card Studio a search-facing title and description centered on Urdu text/poetry on photos while retaining the established source product title.
+- Give Card Studio a search-facing title and description centered on Urdu text/poetry on photos.
+- Expose that acquisition title/description directly in the initial static HTML, Open Graph and Twitter metadata; JavaScript must not be required to discover the preferred search title.
+- Keep `seo.config.js` as the metadata source of truth and enforce checked-in HTML synchronization through `scripts/sync-static-search-metadata.js`.
 - Refresh Card Studio sitemap freshness/priority for the acquisition investment.
 - Publish one substantive guide, `/how-to-write-urdu-on-photo`, covering:
   - Roman Urdu/direct Urdu input;
@@ -62,6 +64,7 @@ Acquisition content must never move ahead of the Card Studio task on the product
 
 - [x] `/urdu-card-studio` remains canonical product owner.
 - [x] Search-facing Card Studio metadata includes Urdu text/photo and poetry/post intent.
+- [x] Preferred acquisition title/description are present in initial HTML, Open Graph and Twitter metadata.
 - [x] One distinct informational guide exists and canonicalizes to `/how-to-write-urdu-on-photo`.
 - [x] Guide keeps one H1, valid Article schema through the shared SEO system and extensionless links.
 - [x] Guide explains transliteration accurately as sound-to-script, not translation.
@@ -69,4 +72,5 @@ Acquisition content must never move ahead of the Card Studio task on the product
 - [x] Guide includes phone readability guidance without pushing content ahead of the Card Studio workspace.
 - [x] Sitemap and redirects include the new canonical route.
 - [x] `llms.txt` identifies Card Studio as the primary Urdu image-creation surface.
+- [x] Initial metadata synchronization is protected by `npm run seo:check` and the production SEO audit.
 - [ ] Re-score with route/query/device Search Console evidence after 8–12 comparable weeks.

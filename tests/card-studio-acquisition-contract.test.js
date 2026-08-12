@@ -24,6 +24,12 @@ assert.match(card.searchDescription || '', /photo/i, 'Card Studio acquisition de
 assert.match(card.searchDescription || '', /Nastaliq|Naskh/i, 'Card Studio acquisition description should surface Urdu font differentiation');
 assert.strictEqual(card.lastmod, '2026-08-12', 'Card Studio acquisition freshness date is missing');
 
+const escapedCardTitle = (card.searchTitle || '').replace(/&/g, '&amp;');
+assert.ok(cardPage.includes(`<title>${escapedCardTitle}</title>`), 'Initial Card Studio HTML must expose the acquisition title without waiting for JavaScript');
+assert.ok(cardPage.includes(`<meta name="description" content="${card.searchDescription}">`), 'Initial Card Studio HTML must expose the acquisition description without waiting for JavaScript');
+assert.ok(cardPage.includes(`<meta property="og:title" content="${escapedCardTitle}"`), 'Initial Card Studio Open Graph title must match acquisition ownership');
+assert.ok(cardPage.includes(`<meta name="twitter:title" content="${escapedCardTitle}"`), 'Initial Card Studio Twitter title must match acquisition ownership');
+
 assert.ok(guide && guide.indexable, 'Urdu-on-photo guide must be registered and indexable');
 assert.strictEqual(guide.schema.includes('Article'), true, 'Urdu-on-photo guide must use Article schema');
 assert.match(guidePage, /<h1[^>]*>How to write Urdu text or poetry on a photo online<\/h1>/i, 'Guide H1 changed away from informational intent');
