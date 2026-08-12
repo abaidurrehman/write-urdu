@@ -55,7 +55,7 @@
     var sectionLabels = { tools: 'Tools', guides: 'Guides', about: 'About', utility: 'Tools' };
     var breadcrumbLabel = page.breadcrumbLabel || page.h1 || page.title.replace(/\s+–.*$/, '');
     var pageTopics = {
-        home: ['Urdu typing online', 'Urdu writing online', 'Roman Urdu transliteration'],
+        home: ['English to Urdu typing', 'Urdu typing online', 'Urdu writing online', 'Roman Urdu transliteration'],
         'urdu-editor': ['Urdu rich text editing', 'Urdu document formatting'],
         'urdu-keyboard': ['Urdu keyboard', 'Direct Urdu typing'],
         'roman-urdu-transliteration': ['Roman Urdu', 'Urdu transliteration'],
@@ -94,23 +94,27 @@
         if (main && main.parentNode) main.parentNode.insertBefore(breadcrumb, main);
     }
 
-    document.title = resolvedTitle;
-    setMeta('description', resolvedDescription);
+    function applyResolvedSearchMetadata() {
+        document.title = resolvedTitle;
+        setMeta('description', resolvedDescription);
+        setLink('canonical', canonical);
+        setMeta('', resolvedTitle, 'og:title');
+        setMeta('', resolvedDescription, 'og:description');
+        setMeta('', canonical, 'og:url');
+        setMeta('twitter:title', resolvedTitle);
+        setMeta('twitter:description', resolvedDescription);
+    }
+
+    applyResolvedSearchMetadata();
     setMeta('robots', page.indexable ? 'index,follow,max-image-preview:large' : 'noindex,follow');
     setMeta('googlebot', page.indexable ? 'index,follow,max-image-preview:large' : 'noindex,follow');
     setMeta('application-name', 'Write Urdu');
     setMeta('author', publisher.name || 'Write Urdu');
-    setLink('canonical', canonical);
     setMeta('', hasSchema('Article') ? 'article' : 'website', 'og:type');
     setMeta('', 'Write Urdu', 'og:site_name');
-    setMeta('', resolvedTitle, 'og:title');
-    setMeta('', resolvedDescription, 'og:description');
-    setMeta('', canonical, 'og:url');
     setMeta('', 'en_US', 'og:locale');
     setMeta('', 'ur_PK', 'og:locale:alternate');
     setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', resolvedTitle);
-    setMeta('twitter:description', resolvedDescription);
     setMeta('', '1200', 'og:image:width');
     setMeta('', '630', 'og:image:height');
     if (hasSchema('Article') && page.lastmod) setMeta('', page.lastmod, 'article:modified_time');
@@ -184,7 +188,7 @@
 
         if (hasSchema('WebApplication')) {
             var featuresByPage = {
-                home: ['Roman Urdu transliteration', 'Urdu suggestions', 'Direct Urdu writing', 'Copy and local draft support', 'Text export'],
+                home: ['Roman Urdu transliteration with English letters', 'Urdu suggestions', 'Direct Urdu writing', 'Copy and local draft support', 'Text export'],
                 'urdu-editor': ['Rich Urdu formatting', 'Urdu fonts and alignment', 'Word, PDF and PNG export'],
                 'urdu-keyboard': ['On-screen Urdu character input', 'Physical keyboard input', 'Copy and text-file export'],
                 'urdu-card-studio': ['Urdu card and quote-image design', 'Urdu fonts and templates', 'Local background images', 'Direct text positioning and editing', 'PNG export'],
@@ -265,5 +269,18 @@
         schema.setAttribute('data-write-urdu-schema', '');
         schema.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
         document.head.appendChild(schema);
+    }
+
+    // The shared shell localizes its initial document title on DOMContentLoaded.
+    // Explicit SEO-registry search metadata is the canonical initial-load
+    // search contract, so re-apply it after earlier DOMContentLoaded handlers
+    // finish. Later user-triggered locale changes remain free to localize the UI.
+    function reapplyAfterShell() {
+        window.setTimeout(applyResolvedSearchMetadata, 0);
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', reapplyAfterShell, { once: true });
+    } else {
+        reapplyAfterShell();
     }
 }());
