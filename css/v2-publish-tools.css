@@ -1,0 +1,313 @@
+/* WriteUrdu v2 publish-tool layer.
+   Social makers and QR Generator share the creation-system hierarchy while
+   rendering, validation, storage and export remain owned by existing modules. */
+
+:root{
+  --wu-publish-width:1320px;
+  --wu-publish-ink:#14231c;
+  --wu-publish-muted:#627168;
+  --wu-publish-line:#dce7e0;
+  --wu-publish-surface:#fff;
+  --wu-publish-soft:#f3f8f5;
+  --wu-publish-brand:#176f45;
+  --wu-publish-brand-strong:#0f5534;
+  --wu-publish-shadow:0 18px 50px rgba(20,35,28,.08);
+}
+
+.wu-v2-shell.social-maker-page,
+.wu-v2-shell.qr-generator-page{
+  color:var(--wu-publish-ink);
+  background:
+    radial-gradient(circle at 8% 0,rgba(23,111,69,.07),transparent 28rem),
+    linear-gradient(180deg,#f9fcfa 0,#f2f7f4 30rem,#fff 100%);
+}
+
+.wu-v2-shell.social-maker-page h1,
+.wu-v2-shell.social-maker-page h2,
+.wu-v2-shell.qr-generator-page h1,
+.wu-v2-shell.qr-generator-page h2,
+.wu-v2-shell.qr-generator-page h3{
+  color:var(--wu-publish-ink);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  font-weight:700;
+}
+
+/* Social publishing routes: compact context, then the real Card Studio task. */
+.wu-v2-shell.social-maker-page .social-maker-main{
+  width:min(var(--wu-publish-width),calc(100% - 36px));
+  padding:24px 0 64px;
+}
+
+.wu-v2-shell.social-maker-page .social-maker-hero{
+  grid-template-columns:minmax(0,1fr) minmax(260px,320px);
+  align-items:center;
+  gap:24px;
+  margin:0 0 14px;
+  padding:20px 22px;
+  border:1px solid var(--wu-publish-line);
+  border-radius:18px;
+  background:rgba(255,255,255,.86);
+  box-shadow:0 12px 34px rgba(20,35,28,.05);
+  backdrop-filter:blur(12px);
+}
+
+.wu-v2-shell.social-maker-page .social-maker-hero>div::before{
+  display:inline-flex;
+  margin:0 0 8px;
+  padding:5px 9px;
+  border:1px solid rgba(23,111,69,.17);
+  border-radius:999px;
+  color:var(--wu-publish-brand-strong);
+  background:rgba(23,111,69,.065);
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  content:"Create · Social image";
+}
+
+.wu-v2-shell.social-maker-page .social-maker-hero h1{
+  margin:0;
+  font-size:clamp(1.7rem,2.7vw,2.45rem);
+  letter-spacing:-.035em;
+}
+
+.wu-v2-shell.social-maker-page .social-maker-hero p{
+  max-width:780px;
+  margin:8px 0 0;
+  color:var(--wu-publish-muted);
+  font-size:.96rem;
+  line-height:1.6;
+}
+
+.wu-v2-shell.social-maker-page .social-maker-note{
+  padding:12px 14px;
+  border-color:#cce0d3;
+  border-radius:12px;
+  background:#f4faf6;
+  color:#315c47;
+  font-size:.8rem;
+}
+
+.wu-v2-shell.social-maker-page .social-maker-note strong{
+  color:var(--wu-publish-brand-strong);
+}
+
+.wu-v2-shell.social-maker-page .social-maker-workspace{
+  min-height:72vh;
+  border-color:var(--wu-publish-line);
+  border-radius:18px;
+  box-shadow:var(--wu-publish-shadow);
+}
+
+.wu-v2-shell.social-maker-page .social-maker-frame{
+  min-height:720px;
+  height:min(960px,84vh);
+  background:#f3f8f5;
+}
+
+.wu-v2-shell.social-maker-page .social-maker-guidance{
+  gap:12px;
+  margin-top:42px;
+  padding-top:28px;
+  border-top:1px solid var(--wu-publish-line);
+}
+
+.wu-v2-shell.social-maker-page .social-maker-guidance::before{
+  grid-column:1/-1;
+  color:var(--wu-publish-brand-strong);
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  content:"After you finish the design";
+}
+
+.wu-v2-shell.social-maker-page .social-maker-guidance article{
+  border-color:var(--wu-publish-line);
+  background:rgba(255,255,255,.76);
+  box-shadow:none;
+}
+
+.wu-v2-shell.social-maker-page .social-maker-related{
+  margin-top:16px;
+  border-radius:14px;
+  background:#0d3020;
+}
+
+/* QR publishing route: controls remain available; generated result dominates. */
+.wu-v2-shell.qr-generator-page .qr-shell{
+  width:min(var(--wu-publish-width),calc(100% - 36px));
+  padding:24px 0 56px;
+}
+
+.wu-v2-shell.qr-generator-page .qr-topbar{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:22px;
+  margin:0 0 12px;
+  padding:18px 20px;
+  border:1px solid var(--wu-publish-line);
+  border-radius:18px;
+  background:rgba(255,255,255,.86);
+  box-shadow:0 12px 34px rgba(20,35,28,.05);
+  backdrop-filter:blur(12px);
+}
+
+.wu-v2-shell.qr-generator-page .qr-eyebrow{
+  margin:0 0 5px;
+  color:var(--wu-publish-brand-strong);
+  font-size:.7rem;
+  letter-spacing:.08em;
+}
+
+.wu-v2-shell.qr-generator-page .qr-eyebrow::after{
+  content:" · Create";
+}
+
+.wu-v2-shell.qr-generator-page .qr-topbar h1{
+  font-size:clamp(1.7rem,2.7vw,2.35rem);
+  letter-spacing:-.035em;
+}
+
+.wu-v2-shell.qr-generator-page .qr-subtitle{
+  max-width:760px;
+  color:var(--wu-publish-muted);
+  font-size:.95rem;
+}
+
+.wu-v2-shell.qr-generator-page .qr-top-actions{
+  justify-content:flex-end;
+}
+
+.wu-v2-shell.qr-generator-page .qr-privacy{
+  margin:0 0 14px;
+  padding:9px 12px;
+  border-color:#cce0d3;
+  border-radius:10px;
+  background:rgba(239,248,243,.88);
+  font-size:.78rem;
+}
+
+.wu-v2-shell.qr-generator-page .qr-layout{
+  grid-template-columns:minmax(300px,330px) minmax(0,1fr);
+  gap:18px;
+}
+
+.wu-v2-shell.qr-generator-page .qr-panel{
+  position:sticky;
+  top:108px;
+  max-height:calc(100vh - 126px);
+  padding:15px;
+  border-color:var(--wu-publish-line);
+  border-radius:16px;
+  box-shadow:0 10px 28px rgba(20,35,28,.055);
+}
+
+.wu-v2-shell.qr-generator-page .qr-preview-column{
+  min-width:0;
+}
+
+.wu-v2-shell.qr-generator-page .qr-preview{
+  min-height:min(74vh,820px);
+  padding:clamp(22px,3vw,40px);
+  border-color:#d5e1da;
+  border-radius:18px;
+  box-shadow:var(--wu-publish-shadow);
+}
+
+.wu-v2-shell.qr-generator-page .qr-artboard{
+  width:min(100%,680px);
+}
+
+.wu-v2-shell.qr-generator-page .qr-artboard canvas{
+  width:min(100%,680px);
+  box-shadow:0 22px 58px rgba(11,36,23,.2);
+}
+
+.wu-v2-shell.qr-generator-page .qr-actions{
+  gap:7px;
+  margin-top:8px;
+  padding:8px;
+  border:1px solid var(--wu-publish-line);
+  border-radius:12px;
+  background:rgba(255,255,255,.86);
+}
+
+.wu-v2-shell.qr-generator-page .qr-actions .qr-button{
+  flex:1 1 auto;
+}
+
+.wu-v2-shell.qr-generator-page .qr-button-primary{
+  border-color:var(--wu-publish-brand);
+  background:var(--wu-publish-brand);
+}
+
+.wu-v2-shell.qr-generator-page .qr-button-primary:hover,
+.wu-v2-shell.qr-generator-page .qr-button-primary:focus-visible{
+  border-color:var(--wu-publish-brand-strong);
+  background:var(--wu-publish-brand-strong);
+}
+
+.wu-v2-shell.qr-generator-page .seo-content{
+  width:min(1120px,calc(100% - 36px));
+  margin:20px auto 0;
+  padding-top:42px;
+  border-top:1px solid var(--wu-publish-line);
+}
+
+.wu-v2-shell.qr-generator-page .seo-content-grid article{
+  border-color:var(--wu-publish-line);
+  background:rgba(255,255,255,.78);
+  box-shadow:none;
+}
+
+@media(max-width:1040px){
+  .wu-v2-shell.social-maker-page .social-maker-hero{grid-template-columns:1fr}
+  .wu-v2-shell.qr-generator-page .qr-topbar{grid-template-columns:1fr}
+  .wu-v2-shell.qr-generator-page .qr-top-actions{justify-content:flex-start}
+  .wu-v2-shell.qr-generator-page .qr-panel{top:102px}
+}
+
+@media(max-width:900px){
+  .wu-v2-shell.social-maker-page .social-maker-main,
+  .wu-v2-shell.qr-generator-page .qr-shell{
+    width:min(100% - 20px,720px);
+    padding-top:16px;
+  }
+
+  .wu-v2-shell.social-maker-page .social-maker-hero,
+  .wu-v2-shell.qr-generator-page .qr-topbar{
+    padding:16px;
+  }
+
+  .wu-v2-shell.social-maker-page .social-maker-workspace{min-height:0}
+  .wu-v2-shell.social-maker-page .social-maker-frame{height:1120px;min-height:760px}
+
+  .wu-v2-shell.qr-generator-page .qr-layout{display:flex;flex-direction:column}
+  .wu-v2-shell.qr-generator-page .qr-preview-column{order:-1;width:100%}
+  .wu-v2-shell.qr-generator-page .qr-panel{position:static;width:100%;max-height:none;overflow:visible}
+  .wu-v2-shell.qr-generator-page .qr-preview{min-height:0;padding:14px}
+  .wu-v2-shell.qr-generator-page .seo-content{width:min(100% - 22px,720px);padding-top:32px}
+}
+
+@media(max-width:720px){
+  .wu-v2-shell.social-maker-page .social-maker-guidance{grid-template-columns:1fr;margin-top:32px}
+  .wu-v2-shell.social-maker-page .social-maker-related{padding:18px}
+}
+
+@media(max-width:520px){
+  .wu-v2-shell.social-maker-page .social-maker-main,
+  .wu-v2-shell.qr-generator-page .qr-shell{width:calc(100% - 20px)}
+  .wu-v2-shell.social-maker-page .social-maker-hero h1,
+  .wu-v2-shell.qr-generator-page .qr-topbar h1{font-size:1.65rem}
+  .wu-v2-shell.qr-generator-page .qr-top-actions{display:grid;grid-template-columns:1fr}
+  .wu-v2-shell.qr-generator-page .qr-top-actions>*{width:100%;justify-content:center;text-align:center}
+  .wu-v2-shell.qr-generator-page .qr-actions{grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .wu-v2-shell.social-maker-page *,
+  .wu-v2-shell.qr-generator-page *{transition:none!important}
+}
