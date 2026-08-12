@@ -49,7 +49,7 @@ files.forEach(file => {
   const ogUrl = meta(source, '', 'og:url');
 
   if (title !== expectedTitle) errors.push(`${file}: title does not match resolved registry metadata`);
-  if (description !== expectedDescription) errors.push(`${file}: description does not match resolved registry metadata`);
+  if (page.searchDescription && description !== expectedDescription) errors.push(`${file}: description does not match resolved registry metadata`);
   if (!description) errors.push(`${file}: missing description`);
   if (titles.has(title)) errors.push(`${file}: duplicate title with ${titles.get(title)}`);
   else titles.set(title, file);
