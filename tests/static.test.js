@@ -150,7 +150,7 @@ assert.doesNotMatch(activeEditorCode, /fonts\/Qadreeregular\.css|\.backgroundcol
 const keyboard = read('urdu-keyboard.html');
 assert.match(keyboard, /<script src=["']main\.js["']><\/script>/, 'Urdu keyboard does not load main.js');
 assert.match(keyboard, /id="tool-promo-grid"/, 'Urdu keyboard page is missing the new-tool promotion grid');
-assert.match(keyboard, /href="roman-urdu-transliteration\.html"/, 'Urdu keyboard page is missing the Roman Urdu guide promo link');
+assert.match(keyboard, /href="\/roman-urdu-transliteration"/, 'Urdu keyboard page is missing the canonical Roman Urdu guide promo link');
 assert.match(keyboard, /Direct Urdu typing versus Roman Urdu transliteration/, 'Urdu keyboard comparison content is missing');
 assert.match(keyboard, /How to use the keyboard on mobile/, 'Urdu keyboard mobile guidance is missing');
 assert.match(keyboard, /keyboard-faq/, 'Urdu keyboard FAQ is missing');
