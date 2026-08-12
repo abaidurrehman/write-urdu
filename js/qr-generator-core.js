@@ -40,7 +40,7 @@
 
     function normalizeUrl(value, addHttps) {
         var input = String(value == null ? '' : value).trim();
-        if (!input) return { valid: false, value: '', error: 'Enter a complete website address, such as https://write-urdu.com.' };
+        if (!input) return { valid: false, value: '', error: 'Enter a complete website address, such as https://www.write-urdu.com.' };
         if (addHttps !== false && !/^[a-z][a-z\d+.-]*:/i.test(input)) input = 'https://' + input;
         try {
             var parsed = new URL(input);
@@ -48,7 +48,7 @@
             if (!parsed.hostname || /[\u0000-\u001f\u007f\s]/.test(input)) throw new Error('hostname');
             return { valid: true, value: parsed.toString().replace(/\/$/, parsed.pathname || parsed.search || parsed.hash ? '/' : '') };
         } catch (error) {
-            return { valid: false, value: '', error: 'Enter a complete website address, such as https://write-urdu.com.' };
+            return { valid: false, value: '', error: 'Enter a complete website address, such as https://www.write-urdu.com.' };
         }
     }
 
@@ -202,7 +202,7 @@
 
     function defaultFields(type, incoming) {
         if (type === 'text') return { text: incoming || '' };
-        if (type === 'url') return { url: 'https://write-urdu.com/', addHttps: true };
+        if (type === 'url') return { url: 'https://www.write-urdu.com/', addHttps: true };
         return {};
     }
 

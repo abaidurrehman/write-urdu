@@ -1,166 +1,191 @@
 # Cloudflare canonical host contract
 
-**Canonical production origin:** `https://write-urdu.com`
+**Canonical production origin:** `https://www.write-urdu.com`
 
-This is an infrastructure contract, not a content preference. Every public production URL must converge on the HTTPS apex host while preserving its path and query string. Static HTML, `og:url`, JSON-LD, the sitemap and internal navigation should all point directly at that same URL family.
+This is an SEO and infrastructure contract. Every public production URL must converge on the HTTPS `www` host while preserving its path and query string. Static HTML canonicals, `og:url`, JSON-LD, sitemap URLs, crawler-discovery files and deliberate absolute internal URLs must use the same origin.
 
-## Why this exists
+## Decision record
 
-The repository previously attempted to redirect `https://www.write-urdu.com/*` inside the Cloudflare Pages `_redirects` file. Cloudflare Pages only supports path sources in `_redirects`; domain-level redirect sources are not supported and can be ignored. That left `www.write-urdu.com` capable of serving the same Pages content as the apex host even though page-level canonical tags pointed at the apex.
+The canonical host is `www` because this is the historically established search URL family for the mature Write Urdu domain, not because `www` is inherently better than an apex domain.
 
-The correct architecture is:
+Evidence used for the decision:
 
-1. **Cloudflare zone edge:** normalize protocol and hostname.
-2. **Cloudflare Pages `_redirects`:** normalize legacy paths such as `.html` and trailing slashes.
-3. **HTML and discovery files:** self-canonicalize to the apex extensionless URL.
-4. **Cloudflare Pages aliases:** redirect the production `*.pages.dev` hostname to the custom domain; keep `X-Robots-Tag: noindex` as defense in depth.
+- the supplied Google Search Console baseline for **16 July–4 August 2026** showed the homepage receiving about **3,894 clicks on `www` vs 1,176 on the apex**;
+- across the exported page set, `www` carried about **4,478 clicks vs 1,376 on the apex**;
+- the July SEO implementation specification explicitly selected `https://www.write-urdu.com` because the site's search presence strongly used `www`;
+- current search discovery still surfaces many established `www` URLs.
 
-Do not reintroduce a hostname source into `_redirects`. `npm run seo:check` intentionally rejects it.
+Changing a mature site from `www` to apex would therefore be a genuine site-wide host migration with no product benefit. The safer remediation is to keep the historically stronger host and consolidate the duplicate apex URLs into it.
+
+**Do not flip this decision merely for URL aesthetics.** Revisit it only if fresh Search Console and backlink evidence clearly supports a deliberate migration and that migration is planned as such.
+
+## Root cause of the split
+
+The site has been reachable on both `www.write-urdu.com` and `write-urdu.com`. The repository also previously attempted a hostname redirect inside Cloudflare Pages `_redirects`.
+
+Cloudflare Pages `_redirects` supports path redirects, not domain-level source redirects. Host/protocol normalization therefore belongs in Cloudflare's zone-level Redirect Rules/Bulk Redirects, while `_redirects` remains responsible for legacy `.html` and trailing-slash normalization.
+
+The correct layers are:
+
+1. **Cloudflare zone edge:** apex → `www` and HTTP → HTTPS.
+2. **Cloudflare Pages `_redirects`:** `.html`, legacy alias and trailing-slash normalization.
+3. **HTML + discovery files:** self-canonical `www` URLs.
+4. **Pages alias control:** production `<project>.pages.dev` → `www` custom domain, with `noindex` as defense in depth.
 
 ## Required Cloudflare production configuration
 
-### 1. Keep the apex domain attached to Pages
+### 1. Keep `www` as a Pages custom domain
 
-In **Workers & Pages → Write Urdu project → Custom domains**, `write-urdu.com` must remain the production custom domain.
+In **Workers & Pages → Write Urdu project → Custom domains**, confirm `www.write-urdu.com` is attached and healthy. Because it already serves production traffic, do not remove it while making this change.
 
-The `www` hostname must not be treated as an independent content origin. It exists only to receive a permanent redirect.
+The apex may remain attached to the Pages project for DNS/TLS continuity; the zone redirect below must prevent it from serving a `200` copy to visitors or crawlers.
 
-### 2. Create the www → apex Bulk Redirect
+### 2. Create one apex → www Single Redirect
 
-In **Cloudflare Dashboard → Bulk Redirects**, create a list entry with:
+In **Cloudflare Dashboard → Rules → Redirect Rules → Single Redirects**, create a rule such as:
 
-| Setting | Value |
-| --- | --- |
-| Source URL | `www.write-urdu.com` |
-| Target URL | `https://write-urdu.com` |
-| Status | `301` |
-| Preserve query string | enabled |
-| Subpath matching | enabled |
-| Preserve path suffix | enabled |
-| Include subdomains | enabled |
+**When incoming requests match**
 
-Create and enable a Bulk Redirect rule using that list.
+```text
+(http.host eq "write-urdu.com")
+```
 
-This must produce mappings such as:
+**Then**
 
-- `https://www.write-urdu.com/` → `https://write-urdu.com/`
-- `https://www.write-urdu.com/urdu-editor` → `https://write-urdu.com/urdu-editor`
-- `https://www.write-urdu.com/urdu-editor?ref=x` → `https://write-urdu.com/urdu-editor?ref=x`
+- Type: Dynamic
+- Target expression:
 
-Use a permanent `301` or `308`, never `302`/`307`, for this canonical-host rule.
+```text
+concat("https://www.write-urdu.com", http.request.uri.path)
+```
 
-### 3. Make www redirect-only at DNS
+- Status code: `301`
+- Preserve query string: **Enabled**
 
-Cloudflare's Pages guidance for a `www` → apex redirect uses a proxied placeholder DNS record:
+This expression handles both HTTP and HTTPS requests for the apex and preserves the exact path. With query preservation enabled it should produce, in one hop:
 
-| Type | Name | IPv4 address | Proxy status |
-| --- | --- | --- | --- |
-| `A` | `www` | `192.0.2.1` | Proxied |
+```text
+https://write-urdu.com/                       → https://www.write-urdu.com/
+https://write-urdu.com/urdu-editor            → https://www.write-urdu.com/urdu-editor
+https://write-urdu.com/urdu-editor?ref=x      → https://www.write-urdu.com/urdu-editor?ref=x
+http://write-urdu.com/urdu-editor             → https://www.write-urdu.com/urdu-editor
+```
 
-If `www` currently points directly at the Pages project, first create and enable the Bulk Redirect rule, then replace the `www` Pages DNS record with the redirect-only proxied record. If `www` remains listed as a Pages custom domain after the DNS change, remove that alternate custom-domain attachment after confirming the redirect is active. **Do not remove the apex Pages custom domain.**
+Use `301` (or `308` if deliberately standardized on 308), never a temporary 302/307, for canonical-host consolidation.
 
-The placeholder address is never intended to receive origin traffic; the Cloudflare redirect executes at the edge first.
+### 3. Keep HTTP → HTTPS for the canonical www host
 
-### 4. Keep HTTP → HTTPS enabled
+Keep **SSL/TLS → Edge Certificates → Always Use HTTPS** enabled, or an equivalent permanent redirect, so:
 
-The apex and alternate host must never serve indexable HTTP content. Keep **SSL/TLS → Edge Certificates → Always Use HTTPS** enabled, or maintain an equivalent permanent zone-level redirect.
+```text
+http://www.write-urdu.com/path → https://www.write-urdu.com/path
+```
 
-The preferred result is one hop:
+The apex Single Redirect already sends both HTTP and HTTPS apex traffic directly to HTTPS `www`, avoiding an apex redirect chain.
 
-- `http://write-urdu.com/path` → `https://write-urdu.com/path`
-- `http://www.write-urdu.com/path` → `https://write-urdu.com/path`
+### 4. Do not put hostname redirects in Pages `_redirects`
 
-Avoid chains such as HTTP → HTTPS www → HTTPS apex for normal canonical routes.
+The root `_redirects` file must contain path-only rules such as:
+
+```text
+/urdu-editor.html /urdu-editor 301
+/urdu-editor/ /urdu-editor 301
+```
+
+Do not add either of these patterns:
+
+```text
+https://write-urdu.com/* ...
+https://www.write-urdu.com/* ...
+```
+
+`npm run seo:check` intentionally rejects hostname-level `_redirects` sources.
 
 ### 5. Redirect the production Pages alias
 
-Find the project's production hostname in **Workers & Pages**, for example `<project>.pages.dev`. Add another Bulk Redirect entry:
+Find the production Pages hostname, for example `<project>.pages.dev`, and create a Cloudflare Bulk Redirect:
 
 | Setting | Value |
 | --- | --- |
 | Source URL | `<project>.pages.dev` |
-| Target URL | `https://write-urdu.com` |
+| Target URL | `https://www.write-urdu.com` |
 | Status | `301` |
 | Preserve query string | enabled |
 | Subpath matching | enabled |
 | Preserve path suffix | enabled |
 | Include subdomains | enabled |
 
-Cloudflare preview deployments already receive `X-Robots-Tag: noindex` by default. The repository also ships `_headers` rules that apply `noindex` to Pages-owned aliases as defense in depth. The production `pages.dev` alias should still redirect because a redirect is the stronger consolidation signal and avoids a second publicly usable production origin.
+Cloudflare preview deployments receive `X-Robots-Tag: noindex` by default. The repository also ships `_headers` coverage for Pages aliases as defense in depth. The production `pages.dev` hostname should still redirect because a permanent redirect is the stronger consolidation behavior and avoids another usable production origin.
 
 ## URL policy
 
 | Variant | Required behavior |
 | --- | --- |
-| `https://write-urdu.com/page` | `200`, self-canonical |
-| `https://www.write-urdu.com/page` | permanent redirect to apex same path/query |
-| `http://write-urdu.com/page` | permanent redirect to HTTPS apex |
-| `http://www.write-urdu.com/page` | permanent redirect to HTTPS apex |
-| `https://write-urdu.com/page.html` | permanent redirect to `/page` |
-| `https://write-urdu.com/page/` | permanent redirect to `/page` |
-| `<project>.pages.dev/page` | permanent redirect to apex same path/query |
-| preview `*.pages.dev` deployment | `noindex` at minimum; preferably access-restricted when practical |
-| tracking/query URL on apex | may return `200`, but HTML canonical remains query-free |
+| `https://www.write-urdu.com/page` | `200`, self-canonical |
+| `https://write-urdu.com/page` | `301/308` to `https://www.write-urdu.com/page` |
+| `http://write-urdu.com/page` | `301/308` directly to HTTPS `www` |
+| `http://www.write-urdu.com/page` | `301/308` to HTTPS `www` |
+| `https://www.write-urdu.com/page.html` | `301/308` to `/page` |
+| `https://www.write-urdu.com/page/` | `301/308` to `/page` |
+| `<project>.pages.dev/page` | `301/308` to canonical `www` same path/query |
+| preview `*.pages.dev` | `noindex` at minimum |
+| tracking/query URL on canonical host | may return `200`; HTML canonical remains query-free |
 
-Do not use `robots.txt`, `noindex`, the Search Console removal tool or JavaScript redirects to replace the permanent host redirect. They solve different problems and can interfere with signal consolidation.
+Do not use `robots.txt`, `noindex`, Search Console removals or JavaScript redirects as substitutes for the permanent apex → `www` redirect. Google needs to crawl the old/alternate URLs and see the redirect in order to consolidate signals.
 
 ## Repository controls
 
-The canonical host is centralized in `seo.config.js` as `SITE_ORIGIN = 'https://write-urdu.com'`.
+The source of truth is:
 
-`npm run seo:check` verifies:
+```js
+SITE_ORIGIN = 'https://www.write-urdu.com'
+```
 
-- the canonical origin cannot drift from the apex HTTPS origin;
-- every HTML page has one matching self-canonical;
-- every `og:url` matches its canonical;
-- sitemap URLs use the canonical host and clean paths;
-- the robots sitemap declaration uses the canonical host;
-- Pages `_redirects` contains path-only permanent legacy redirects;
-- hostname redirect rules are not placed in `_redirects`;
-- the Pages alias `noindex` defense exists in `_headers`.
+`npm run seo:check` verifies the static SEO contract, including canonicals, `og:url`, sitemap host, robots sitemap declaration, legacy path redirects and Pages alias protection.
 
-`npm run seo:live` verifies the actual deployed behavior. Set `PAGES_DEV_ORIGIN` to the real production Pages alias to include that host:
+`npm run seo:live` verifies deployed behavior. Set the production Pages alias when known:
 
 ```bash
 PAGES_DEV_ORIGIN=https://<project>.pages.dev npm run seo:live
 ```
 
-The live audit checks representative canonical pages, HTTPS/HTTP host normalization, query preservation, `.html` redirects and trailing-slash redirects.
+The live audit checks representative canonical pages, apex → `www`, HTTP normalization, query preservation, `.html` redirects and trailing-slash redirects.
 
-## Post-fix Google Search Console procedure
+## Search Console recovery procedure
 
-After the zone-level redirect is live:
+After the Cloudflare edge rule is live:
 
-1. Keep or add a **Domain property** for `write-urdu.com` so both apex and `www` history can be inspected together.
-2. Submit only `https://write-urdu.com/sitemap.xml`.
-3. Inspect representative apex URLs: `/`, `/urdu-editor`, `/urdu-keyboard`, `/roman-urdu-transliteration`, `/write-urdu-documentation` and `/why-write-urdu`.
-4. Confirm Google's selected canonical is the apex URL.
-5. Request indexing for the important apex URLs after the redirect deployment.
-6. Monitor Page Indexing / canonical reports for old `www`, `.html` and trailing-slash variants moving into redirect/alternate states.
-7. Do not delete old URLs from Search Console and do not block them in `robots.txt`; Google needs to crawl the permanent redirects in order to process the move.
+1. Keep a **Domain property** for `write-urdu.com` so both host families remain visible in one property.
+2. Submit only `https://www.write-urdu.com/sitemap.xml`.
+3. Inspect `https://www.write-urdu.com/`, `/urdu-editor`, `/urdu-keyboard`, `/roman-urdu-transliteration`, `/write-urdu-documentation` and `/why-write-urdu`.
+4. Confirm the user-declared and Google-selected canonical both resolve to the `www` URL.
+5. Request recrawling of the highest-value canonical `www` pages after deployment.
+6. Monitor Page Indexing for apex, `.html` and trailing-slash variants moving to redirect/alternate states.
+7. Do not block apex URLs in `robots.txt` and do not use temporary removals merely to accelerate canonicalization.
+8. Track clicks/impressions by page and host weekly until the apex share approaches zero and the `www` pages retain/recover their aggregate visibility.
 
-Search engines may keep old alternate URLs visible for a while after a correct migration. That is not a reason to reverse the redirect. Keep the canonical origin stable and let the signals converge.
+Do not interpret old apex URLs remaining in reports for a while as a failed migration. Search engines need recrawls to process permanent redirects and canonical changes.
 
 ## Release verification matrix
 
-Run these after every routing or domain change:
+Run after every domain/routing change:
 
 ```bash
-curl -I 'https://write-urdu.com/'
 curl -I 'https://www.write-urdu.com/'
-curl -I 'https://www.write-urdu.com/urdu-editor?canonical_audit=1'
+curl -I 'https://write-urdu.com/'
+curl -I 'https://write-urdu.com/urdu-editor?canonical_audit=1'
 curl -I 'http://write-urdu.com/urdu-editor'
 curl -I 'http://www.write-urdu.com/urdu-editor'
-curl -I 'https://write-urdu.com/urdu-editor.html'
-curl -I 'https://write-urdu.com/urdu-editor/'
+curl -I 'https://www.write-urdu.com/urdu-editor.html'
+curl -I 'https://www.write-urdu.com/urdu-editor/'
 curl -I 'https://<project>.pages.dev/urdu-editor'
 ```
 
-Then run:
+Then:
 
 ```bash
 npm run seo:check
 PAGES_DEV_ORIGIN=https://<project>.pages.dev npm run seo:live
 ```
 
-A release is not complete if `www` or the production Pages alias still serves a `200` copy of an indexable page.
+A release is not complete if the apex or production Pages alias still serves a `200` copy of an indexable page.

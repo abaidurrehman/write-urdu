@@ -3,7 +3,7 @@
     if (typeof module === 'object' && module.exports) module.exports = factory();
     else root.WriteUrduSeoConfig = factory();
 }(typeof self !== 'undefined' ? self : this, function () {
-    var SITE_ORIGIN = 'https://write-urdu.com';
+    var SITE_ORIGIN = 'https://www.write-urdu.com';
     var PUBLISHER = {
         type: 'Organization',
         name: 'Write Urdu',

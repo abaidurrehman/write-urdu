@@ -6,6 +6,9 @@ const root = path.resolve(__dirname, '..');
 const errors = [];
 const warnings = [];
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+const canonicalOrigin = new URL(config.SITE_ORIGIN).origin;
+const canonicalHost = new URL(config.SITE_ORIGIN).hostname;
+const alternateHost = canonicalHost.startsWith('www.') ? canonicalHost.slice(4) : `www.${canonicalHost}`;
 
 function parseCsv(source) {
   const rows = [];
@@ -59,7 +62,19 @@ registry.forEach(page => {
 });
 config.pages.forEach(page => { if (!registryByRoute.has(page.path)) errors.push(`seo.config.js: ${page.path} is missing from public page registry`); });
 
-const sitemapRoutes = new Set([...read('sitemap.xml').matchAll(/<loc>https:\/\/write-urdu\.com([^<]*)<\/loc>/gi)].map(match => normalizeRoute(match[1] || '/')));
+const sitemapRoutes = new Set([...read('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/gi)].map(match => {
+  try {
+    const url = new URL(match[1].trim());
+    if (url.origin !== canonicalOrigin) {
+      errors.push(`sitemap: non-canonical origin ${url.origin}`);
+      return '';
+    }
+    return normalizeRoute(url.pathname);
+  } catch (_) {
+    errors.push(`sitemap: invalid URL ${match[1].trim()}`);
+    return '';
+  }
+}).filter(Boolean));
 const redirectRules = read('_redirects').split(/\r?\n/).map(line => line.trim()).filter(line => line && !line.startsWith('#'));
 const redirectSources = new Map();
 redirectRules.forEach(line => {
@@ -89,7 +104,7 @@ registry.forEach(page => {
 
 const incoming = new Map(registry.map(page => [page.canonical_route, new Set()]));
 const knownRoutes = new Set(registry.map(page => page.canonical_route));
-const legacyLinkCounts = { html: 0, www: 0, slash: 0 };
+const legacyLinkCounts = { html: 0, alternateHost: 0, slash: 0 };
 
 registry.forEach(page => {
   const source = read(page.source_file);
@@ -103,8 +118,8 @@ registry.forEach(page => {
     let url;
     try { url = new URL(href, config.SITE_ORIGIN); }
     catch (_) { errors.push(`${page.source_file}: invalid link ${href}`); return; }
-    if (/^https?:\/\//i.test(href) && !['write-urdu.com', 'www.write-urdu.com'].includes(url.hostname)) return;
-    if (url.hostname === 'www.write-urdu.com') legacyLinkCounts.www += 1;
+    if (/^https?:\/\//i.test(href) && ![canonicalHost, alternateHost].includes(url.hostname)) return;
+    if (url.hostname === alternateHost) legacyLinkCounts.alternateHost += 1;
     const pathname = url.pathname;
     if (/\.html$/i.test(pathname)) legacyLinkCounts.html += 1;
     if (pathname !== '/' && pathname.endsWith('/')) legacyLinkCounts.slash += 1;
@@ -130,7 +145,7 @@ registry.filter(page => page.sitemap === 'yes' && page.canonical_route !== '/').
   if (!new RegExp(`href=["']${escaped}["']`, 'i').test(humanSitemap)) warnings.push(`human sitemap: missing ${page.canonical_route}`);
 });
 if (legacyLinkCounts.html) warnings.push(`legacy internal-link backlog: ${legacyLinkCounts.html} .html links`);
-if (legacyLinkCounts.www) warnings.push(`legacy internal-link backlog: ${legacyLinkCounts.www} www-host links`);
+if (legacyLinkCounts.alternateHost) warnings.push(`legacy internal-link backlog: ${legacyLinkCounts.alternateHost} ${alternateHost} links`);
 if (legacyLinkCounts.slash) warnings.push(`legacy internal-link backlog: ${legacyLinkCounts.slash} trailing-slash links`);
 
 if (warnings.length) console.warn(warnings.map(item => `GOVERNANCE WARNING: ${item}`).join('\n'));
