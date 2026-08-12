@@ -6,7 +6,7 @@ Canonical site: https://www.write-urdu.com/
 
 Important facts:
 
-- The homepage is the main place to type Roman Urdu with English letters and convert it into Urdu script.
+- The homepage is the main English to Urdu typing and Urdu typing online surface: type Roman Urdu with English letters and convert it into Urdu script.
 - Roman Urdu conversion is transliteration, not translation. Writers should review ambiguous names, spellings and important text before sharing it.
 - The Urdu Keyboard supports direct Urdu-character input when exact spelling or punctuation matters.
 - The Rich Text Editor is intended for formatted Urdu documents, headings, lists, fonts, alignment and export.
@@ -18,7 +18,7 @@ Important facts:
 
 ## Start writing
 
-- [Urdu typing online](https://www.write-urdu.com/): Type Roman Urdu with English letters, convert words into Urdu script, write directly in Urdu or English, copy text and continue into other writing tools.
+- [English to Urdu typing / Urdu typing online](https://www.write-urdu.com/): Type Roman Urdu with English letters, press Space to convert words into Urdu script, review suggestions, copy text and continue into other writing tools. This is transliteration, not English-language translation.
 - [Urdu Rich Text Editor](https://www.write-urdu.com/urdu-editor): Format Urdu with headings, fonts, colours, lists and alignment, then export a document.
 - [Online Urdu Keyboard](https://www.write-urdu.com/urdu-keyboard): Type Urdu characters directly with an on-screen or physical keyboard.
 
