@@ -1,0 +1,95 @@
+name: Canonical docs cleanup
+
+on:
+  push:
+    branches:
+      - agent/canonical-docs-final-cleanup
+    paths:
+      - '.github/workflows/canonical-docs-cleanup.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/canonical-docs-final-cleanup
+          fetch-depth: 0
+
+      - name: Align active canonical-host documentation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              '_headers': [
+                  ('https://write-urdu.com. The preferred production control', 'https://www.write-urdu.com. The preferred production control'),
+              ],
+              'README.md': [
+                  ('The canonical production origin is `https://write-urdu.com`.', 'The canonical production origin is `https://www.write-urdu.com`.'),
+                  ('Apache uses `.htaccess`, while Cloudflare Pages uses the root `_redirects` file for legacy and trailing-slash redirects.', 'Apache uses `.htaccess`, while Cloudflare Pages uses the root `_redirects` file for legacy and trailing-slash redirects; hostname/protocol canonicalization is enforced at the Cloudflare zone edge.'),
+              ],
+              'docs/SEO-PERFORMANCE-CHECKLIST.md': [
+                  ('Confirm the canonical host is `https://write-urdu.com` and that HTTP, the alternate host, `.html` routes, and trailing-slash variants redirect directly to it.', 'Confirm the canonical host is `https://www.write-urdu.com` and that HTTP, the apex alternate host, `.html` routes, and trailing-slash variants redirect directly to it.'),
+                  ('Submit `https://write-urdu.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.', 'Submit `https://www.write-urdu.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.'),
+                  ('from HTTP and the non-canonical host to `https://write-urdu.com`.', 'from HTTP and the non-canonical apex host to `https://www.write-urdu.com`.'),
+              ],
+              'docs/WU-SEO-AUTHORITY-001.md': [
+                  ('`https://write-urdu.com/#website` — `WebSite`', '`https://www.write-urdu.com/#website` — `WebSite`'),
+                  ('`https://write-urdu.com/#publisher` — `Organization`', '`https://www.write-urdu.com/#publisher` — `Organization`'),
+              ],
+              'docs/WU-I001-PRODUCT-AUDIT.md': [
+                  ('**Last reviewed:** 2026-08-06', '**Last reviewed:** 2026-08-12'),
+                  ('- Cloudflare `_redirects` already normalizes the `www` host to `https://write-urdu.com`.', '- Cloudflare Pages `_redirects` normalizes legacy path variants; hostname canonicalization is handled separately at the Cloudflare zone edge.'),
+                  ('- Preferred origin: `https://write-urdu.com`', '- Preferred origin: `https://www.write-urdu.com`'),
+              ],
+          }
+
+          for name, pairs in replacements.items():
+              p = Path(name)
+              text = p.read_text()
+              original = text
+              for old, new in pairs:
+                  if old not in text:
+                      raise SystemExit(f'Expected text not found in {name}: {old}')
+                  text = text.replace(old, new, 1)
+              if text == original:
+                  raise SystemExit(f'No changes made to {name}')
+              p.write_text(text)
+              print(f'Updated {name}')
+          PY
+
+      - name: Verify active guidance no longer selects apex canonical
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const checks = [
+            ['_headers', /compete with https:\/\/write-urdu\.com/],
+            ['README.md', /canonical production origin is `https:\/\/write-urdu\.com`/],
+            ['docs/SEO-PERFORMANCE-CHECKLIST.md', /canonical host is `https:\/\/write-urdu\.com`|Submit `https:\/\/write-urdu\.com\/sitemap\.xml`|non-canonical host to `https:\/\/write-urdu\.com`/],
+            ['docs/WU-SEO-AUTHORITY-001.md', /https:\/\/write-urdu\.com\/#(?:website|publisher)/],
+            ['docs/WU-I001-PRODUCT-AUDIT.md', /Preferred origin: `https:\/\/write-urdu\.com`|normalizes the `www` host to `https:\/\/write-urdu\.com`/]
+          ];
+          const errors = [];
+          for (const [file, pattern] of checks) {
+            if (pattern.test(fs.readFileSync(file, 'utf8'))) errors.push(file);
+          }
+          if (errors.length) {
+            console.error(`Stale apex canonical guidance remains in: ${errors.join(', ')}`);
+            process.exit(1);
+          }
+          console.log('Active canonical-host maintenance guidance is aligned to www.');
+          NODE
+
+      - name: Commit cleanup and remove one-time workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/canonical-docs-cleanup.yml
+          git add _headers README.md docs/SEO-PERFORMANCE-CHECKLIST.md docs/WU-SEO-AUTHORITY-001.md docs/WU-I001-PRODUCT-AUDIT.md .github/workflows/canonical-docs-cleanup.yml
+          git commit -m "docs: align active guidance with www canonical host"
+          git push origin HEAD:agent/canonical-docs-final-cleanup
