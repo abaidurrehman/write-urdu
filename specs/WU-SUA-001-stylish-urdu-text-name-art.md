@@ -2,13 +2,15 @@
 
 **Product:** Write Urdu
 **Feature ID:** `WU-SUA-001`
-**Status:** Implemented core — acceptance pending
+**Status:** Implemented
 **Canonical routes:** `/stylish-urdu-text-generator`, `/urdu-name-art-maker`
 **Delivery:** Browser-first; no account, backend, paid API or AI dependency
 
-## Governance note — 2026-08-11
+## Governance note — 2026-08-12
 
-Repository review confirms that the feature should no longer be treated as an open-ended implementation project. Both canonical routes and the core Stylish Text architecture exist, including the deterministic 80-style catalogue, categories/intensity filters, Urdu-safe normalization/grapheme handling, conservative Kashida logic, local storage contracts and Name Art handoff. The remaining P0 work is acceptance closure against this checklist; do not redesign or expand scope before that closure.
+Acceptance closure is complete. The existing feature was audited rather than redesigned, and the audit found a small set of real gaps that are now covered by implementation and regression tests: the Popular filter no longer leaks the full catalogue, result cards include the required Share action, Name Art has its promised 24-template/12-pack layer on top of the existing Card Studio renderer, and the transparent-name export contract is implemented at 1600×900 with font waiting and exact-dimension verification.
+
+The feature remains a browser-local product. Later v2 creation-shell migration is visual/product-shell work and does not reopen this feature contract.
 
 ## Purpose
 
@@ -101,21 +103,34 @@ split graphemes, combining marks, punctuation or non-joining characters.
 
 - [x] Spec and feature ID are tracked in `specs/README.md`.
 - [x] Both canonical routes exist without a backend.
-- [ ] Release 1 has 80 unique tested styles and local favourites/collections verified end-to-end.
-- [ ] Release 2 has 24+ original templates and imports Release 1 text locally.
-- [ ] Urdu shaping, mixed direction text, grapheme safety and safe Kashida pass tests.
-- [ ] Existing Card Studio and editor behaviour do not regress.
-- [ ] PNG/transparent PNG export uses exact dimensions and waits for fonts/assets.
-- [ ] Accessibility, responsive layout, privacy messaging and SEO content are verified.
-- [ ] Static, unit, integration/browser and production checks pass.
+- [x] Release 1 has 80 unique tested styles and local favourites/collections/recents verified end-to-end.
+- [x] Release 2 has 24 original templates across 12 packs and imports Release 1 text locally through an expiring one-time handoff.
+- [x] Urdu shaping, mixed direction text, grapheme safety and safe Kashida pass tests.
+- [x] Existing Card Studio and editor behaviour remain on the shared renderer/contracts; no second canvas engine was introduced.
+- [x] PNG/transparent PNG export uses exact dimensions and waits for fonts/assets; transparent-name export verifies a 1600×900 alpha canvas.
+- [x] Accessibility, responsive layout, privacy messaging and SEO content are covered by source and browser acceptance checks.
+- [x] Static, unit, integration/browser and repository quality checks pass, including targeted desktop/mobile `WU-SUA-001` Playwright acceptance in CI.
+
+## Acceptance evidence — 2026-08-12
+
+- Stylish core tests verify 80 unique IDs/outputs, pure Urdu and mixed-script generation, category/intensity combinations, grapheme preservation and conservative Kashida behavior.
+- The Popular category regression is locked to featured results instead of the full 80-style catalogue.
+- Browser acceptance verifies favourites, collections, recent input recovery and result sharing.
+- Browser acceptance verifies Stylish Text → Name Art handoff without putting user text in the URL and confirms the handoff is removed after import.
+- Name Art exposes 24 templates across 12 packs while installing those definitions into the existing Card Studio core at runtime.
+- Name Art output presets include 1080×1080, 1080×1350, 1280×720, 1200×630, 1080×1920 and transparent 1600×900.
+- Transparent export waits for project fonts, verifies exact canvas dimensions, exports PNG locally and restores the original design state.
+- The focused acceptance browser suite runs on desktop and mobile Chromium in the repository quality workflow.
 
 ## Implementation map
 
 Core modules are `js/stylish-urdu-core.js`, `js/stylish-urdu-text.js`,
-`css/stylish-urdu.css`, `stylish-urdu-text-generator.html`, plus the Name Art
-route/adapter that reuses Card Studio/shared modules. Pure tests under `tests/`
-should cover normalization, script detection, graphemes, generation, Kashida,
-storage and handoff.
+`css/stylish-urdu.css`, `stylish-urdu-text-generator.html`, `js/name-art-core.js`,
+`js/name-art.js`, `css/name-art.css` and `urdu-name-art-maker.html`. Name Art remains
+an adapter over Card Studio/shared modules rather than a separate renderer.
+
+Acceptance coverage lives in `tests/stylish-urdu-core.test.js`,
+`tests/sua-acceptance-contract.test.js` and `tests/sua.spec.js`.
 
 ## Deferred
 
