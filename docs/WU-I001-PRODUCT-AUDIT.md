@@ -2,7 +2,7 @@
 
 **Status:** Active source of truth  
 **Audit baseline:** `main` at `d72d37f62e57ea15f5f88f818cc594e48b56a234`  
-**Last reviewed:** 2026-08-06  
+**Last reviewed:** 2026-08-12  
 **Primary goals:** protect transliteration, improve `urdu typing` and `urdu writing` traffic, and make every public page feel like one professionally directed product.
 
 ## 1. Executive verdict
@@ -141,7 +141,7 @@ Approved font weights remain `400`, `500`, `600` and `700` only.
 
 ### 6.1 Existing strengths
 
-- Cloudflare `_redirects` already normalizes the `www` host to `https://write-urdu.com`.
+- Cloudflare Pages `_redirects` normalizes legacy path variants; hostname canonicalization is handled separately at the Cloudflare zone edge.
 - `.html` URLs redirect to extensionless routes.
 - trailing-slash variants redirect to non-trailing routes.
 - the XML sitemap uses extensionless canonical URLs.
@@ -158,7 +158,7 @@ Approved font weights remain `400`, `500`, `600` and `700` only.
 
 ### 6.3 Canonical route policy
 
-- Preferred origin: `https://write-urdu.com`
+- Preferred origin: `https://www.write-urdu.com`
 - Preferred route style: extensionless, no trailing slash except `/`
 - Source `.html` files remain implementation details for Cloudflare Pages.
 - All internal links must use canonical extensionless routes.

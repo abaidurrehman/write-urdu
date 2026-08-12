@@ -48,8 +48,8 @@ These phrases must describe the real product rather than appear as a keyword lis
 
 Use one stable graph rooted at canonical identifiers:
 
-- `https://write-urdu.com/#website` — `WebSite`
-- `https://write-urdu.com/#publisher` — `Organization`
+- `https://www.write-urdu.com/#website` — `WebSite`
+- `https://www.write-urdu.com/#publisher` — `Organization`
 - `{canonical}#webpage` — page-level `WebPage` or `AboutPage`
 - `{canonical}#application` — `WebApplication` for tools
 - `{canonical}#article` — `Article` for maintained guides
