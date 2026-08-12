@@ -16,8 +16,10 @@ assert.match(home.description || '', /no account/i, 'homepage description must p
 assert.ok(home.description.length <= 165, 'homepage description should stay concise enough for a useful mobile snippet');
 assert.strictEqual(home.h1, 'Type Roman Urdu and convert it to Urdu script', 'homepage H1 ownership contract changed');
 const homeHtml = read('index.html');
-assert.match(homeHtml, new RegExp(`<title>${home.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/title>`), 'static homepage title must match the SEO registry');
-assert.match(homeHtml, new RegExp(`<meta name="description" content="${home.description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">`), 'static homepage description must match the SEO registry');
+const resolvedHomeTitle = home.searchTitle || home.title;
+const resolvedHomeDescription = home.searchDescription || home.description;
+assert.match(homeHtml, new RegExp(`<title>${resolvedHomeTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/title>`), 'static homepage title must match the resolved SEO registry title');
+assert.match(homeHtml, new RegExp(`<meta name="description" content="${resolvedHomeDescription.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">`), 'static homepage description must match the resolved SEO registry description');
 
 const publisher = config.PUBLISHER;
 assert.strictEqual(publisher.type, 'Organization', 'publisher must remain an Organization while no public individual byline is used');
