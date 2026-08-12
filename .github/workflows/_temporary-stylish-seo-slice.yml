@@ -1,0 +1,324 @@
+name: Temporary Stylish Urdu SEO slice
+
+on:
+  push:
+    branches:
+      - agent/p1-5-stylish-urdu-seo-acquisition
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/p1-5-stylish-urdu-seo-acquisition
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Apply acquisition changes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'Missing replacement target in {path}: {old[:100]}')
+              p.write_text(text.replace(old, new, 1))
+
+          # 1) SEO registry: make Stylish Text an explicit acquisition route and add one informational guide.
+          seo = Path('seo.config.js')
+          text = seo.read_text()
+          old = "{ id: 'stylish-urdu-text-generator', path: '/stylish-urdu-text-generator', legacyPaths: ['/stylish-urdu-text-generator.html', '/urdu-stylish-name-generator'], indexable: true, title: 'Stylish Urdu Text Generator – Urdu Name Styles Copy and Paste', description: 'Create stylish Urdu names and short phrases with copyable Unicode decorations, then open a real font-based name image in the browser.', h1: 'Stylish Urdu Text and Name Generator', section: 'tools', priority: .88, changefreq: 'monthly', lastmod: '2026-07-17', schema: ['WebApplication', 'FAQPage'] }"
+          new = "{ id: 'stylish-urdu-text-generator', path: '/stylish-urdu-text-generator', legacyPaths: ['/stylish-urdu-text-generator.html', '/urdu-stylish-name-generator'], indexable: true, title: 'Stylish Urdu Text Generator – Urdu Name Styles Copy and Paste', searchTitle: 'Stylish Urdu Text Generator – Copy & Paste Urdu Name Styles | WriteUrdu', description: 'Create stylish Urdu names and short phrases with copyable Unicode decorations, then open a real font-based name image in the browser.', searchDescription: 'Generate 80 copyable stylish Urdu text and name styles. Filter Unicode decorations, copy a result, and use Name Art when exact Nastaliq or Naskh rendering matters.', h1: 'Stylish Urdu Text and Name Generator', section: 'tools', priority: .88, changefreq: 'monthly', lastmod: '2026-08-12', schema: ['WebApplication', 'FAQPage'] }"
+          if old not in text:
+              raise SystemExit('Missing Stylish SEO config entry')
+          text = text.replace(old, new, 1)
+          anchor = "        { id: 'how-to-write-urdu-on-photo', path: '/how-to-write-urdu-on-photo', indexable: true, title: 'How to Write Urdu Text or Poetry on a Photo Online', description: 'Learn how to write Urdu text, poetry or quotes on a photo online, choose readable Urdu fonts, use a local background and export the finished image.', h1: 'How to write Urdu text or poetry on a photo online', section: 'guides', priority: .78, changefreq: 'yearly', datePublished: '2026-08-12', lastmod: '2026-08-12', schema: ['Article'] }"
+          guide = ",\n        { id: 'how-to-make-stylish-urdu-text', path: '/how-to-make-stylish-urdu-text', indexable: true, title: 'How to Make Stylish Urdu Text or Names for WhatsApp & Instagram', description: 'Learn how copyable Urdu text styles work, where Unicode decorations may vary, and when to use a rendered Nastaliq or Naskh name image instead.', h1: 'How to make stylish Urdu text or names for WhatsApp and Instagram', section: 'guides', priority: .76, changefreq: 'yearly', datePublished: '2026-08-12', lastmod: '2026-08-12', schema: ['Article'] }"
+          if anchor not in text:
+              raise SystemExit('Missing photo-guide SEO config anchor')
+          text = text.replace(anchor, anchor + guide, 1)
+          seo.write_text(text)
+
+          # 2) Stylish page: preserve the workspace, replace only post-results acquisition/supporting content.
+          stylish = Path('stylish-urdu-text-generator.html')
+          html = stylish.read_text()
+          start = html.index('        <section class="stylish-seo">')
+          end = html.index('    </main>', start)
+          support = '''        <div class="stylish-workspace-end" data-wu-ad-boundary="post-workspace" aria-hidden="true"></div>
+        <section class="stylish-seo" aria-label="About stylish Urdu text">
+            <section>
+                <h2>Copyable stylish Urdu text, not a fake font promise</h2>
+                <p>The generator keeps your Urdu letters as text and adds curated Unicode decorations around or between them. That means many results can be copied and pasted, but the app or phone where you paste the result still chooses the actual Urdu font. If you need the exact visual appearance of Nastaliq or Naskh, use <a href="/urdu-name-art-maker">Urdu Name Art Studio</a> and export an image instead.</p>
+                <h2>What can you make?</h2>
+                <ul>
+                    <li><strong>Stylish Urdu names:</strong> decorate a short personal or profile name and copy the result.</li>
+                    <li><strong>Short Urdu captions:</strong> add a light, royal, heart, Islamic, gaming or social decoration to a brief phrase.</li>
+                    <li><strong>WhatsApp display text:</strong> try a copyable result in a status line, profile field or message, then simplify it if the destination rejects a symbol.</li>
+                    <li><strong>Instagram bio or display text:</strong> copy a short result and check how the destination app renders the Urdu letters and surrounding symbols.</li>
+                    <li><strong>Gaming/profile names:</strong> use the lighter decorative styles first because games and profile systems can impose their own character rules.</li>
+                    <li><strong>Image-ready name art:</strong> send the chosen wording into Name Art when exact typography matters more than copy/paste.</li>
+                </ul>
+                <p><a href="/how-to-make-stylish-urdu-text">Read the practical guide to stylish Urdu text for WhatsApp and Instagram →</a></p>
+            </section>
+            <section>
+                <h2>How it works</h2>
+                <ol><li>Type Urdu directly, or choose Roman Urdu and press Space for word-by-word transliteration.</li><li>Paste a longer Roman Urdu passage and use the bulk conversion action when needed.</li><li>Choose a category and intensity, then copy, favourite, share or open a result in Name Art.</li></ol>
+                <h2>Compatibility questions</h2>
+                <details open><summary>Are these real Urdu fonts?</summary><p>The copyable results are Unicode text plus decorative characters. Your destination app controls the font used to draw the Urdu letters. For an exact Nastaliq/Naskh look, create a rendered image in Name Art.</p></details>
+                <details><summary>Why does a style look different on another phone or app?</summary><p>Fonts, emoji sets and support for decorative Unicode characters differ between operating systems and apps. A symbol can look different, fall back to another glyph or be rejected by a destination field.</p></details>
+                <details><summary>Is this a translator?</summary><p>No. Roman Urdu input is transliteration: it changes sounds into Urdu script. It does not translate English meaning. Direct mode keeps English and Urdu exactly as entered.</p></details>
+                <details><summary>Will every style work in WhatsApp, Instagram or a game?</summary><p>No universal compatibility guarantee is possible. Copy the result into the destination and check it there. If the app rejects decorative characters, choose a simpler style or use an exported Name Art image where images are supported.</p></details>
+                <details><summary>Are favourites uploaded?</summary><p>No. Text, favourites and recent inputs are stored only in this browser. The optional Roman Urdu suggestion service is described in the <a href="/write-urdu-privacy">privacy policy</a>.</p></details>
+                <nav class="stylish-related" aria-label="Related tools"><h2>Related tools</h2><p><a href="/urdu-name-art-maker">Create an exact Urdu name image</a> · <a href="/urdu-card-studio">Design an Urdu card</a> · <a href="/urdu-templates">Browse templates</a></p></nav>
+            </section>
+        </section>
+'''
+          stylish.write_text(html[:start] + support + html[end:])
+
+          # 3) One substantial informational guide, distinct from generator intent.
+          guide_html = '''<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How to Make Stylish Urdu Text or Names for WhatsApp & Instagram</title>
+    <meta name="description" content="Learn how copyable Urdu text styles work, where Unicode decorations may vary, and when to use a rendered Nastaliq or Naskh name image instead.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://www.write-urdu.com/how-to-make-stylish-urdu-text">
+    <meta property="og:type" content="article"><meta property="og:site_name" content="Write Urdu"><meta property="og:title" content="How to Make Stylish Urdu Text or Names for WhatsApp & Instagram"><meta property="og:description" content="A practical guide to copyable Urdu decorations, compatibility limits and exact-font Urdu name images."><meta property="og:url" content="https://www.write-urdu.com/how-to-make-stylish-urdu-text"><meta property="og:image" content="https://www.write-urdu.com/image/logo10.png"><meta property="og:image:alt" content="Stylish Urdu text guide">
+    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="How to Make Stylish Urdu Text or Names for WhatsApp & Instagram"><meta name="twitter:description" content="Understand copyable Urdu styles, compatibility limits and when to use a rendered Urdu name image."><meta name="twitter:image" content="https://www.write-urdu.com/image/logo10.png">
+    <link rel="icon" href="image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="css/site-header.css"><link rel="stylesheet" href="css/v2-content.css"><link rel="stylesheet" href="css/v2-authority.css">
+    <script src="site-header.js" defer></script><script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
+</head>
+<body class="content-page guide-page v2-content-page authority-page stylish-urdu-guide-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+    <main class="authority-main">
+        <header class="authority-hero" aria-labelledby="stylish-guide-title">
+            <div><p class="authority-eyebrow">Stylish Urdu text guide</p><h1 id="stylish-guide-title">How to make stylish Urdu text or names for WhatsApp and Instagram</h1><p class="authority-lede">Use the Stylish Urdu Text Generator when you want a short Urdu name, caption or profile phrase that remains copyable text. The tool adds Unicode decoration; it does not replace the Urdu letters with a guaranteed font. When exact Nastaliq or Naskh appearance matters, render the wording as an image in Urdu Name Art Studio.</p><p class="authority-meta"><time datetime="2026-08-12">Published and reviewed 12 August 2026</time></p><div class="authority-actions"><a class="authority-button" href="/stylish-urdu-text-generator">Generate stylish Urdu text</a><a class="authority-button is-secondary" href="/urdu-name-art-maker">Create Urdu Name Art</a></div></div>
+            <aside class="authority-preview" aria-label="Stylish Urdu text example"><span class="authority-preview-label">Copyable text vs rendered image</span><p class="authority-preview-urdu" lang="ur" dir="rtl">★ خوب صورت نام ★</p><p class="authority-preview-note">Decorative symbols can be copied with the Urdu text, but the receiving app decides the font and whether every symbol is accepted.</p></aside>
+        </header>
+        <nav class="v2-page-nav" aria-label="Stylish Urdu guide sections"><a href="#steps">Steps</a><a href="#copyable">Copyable vs image</a><a href="#uses">Where to use it</a><a href="#compatibility">Compatibility</a><a href="#roman">Roman Urdu</a><a href="#questions">Questions</a></nav>
+        <section class="authority-section" id="steps" data-wu-ad-boundary="after-answer"><div class="authority-section-heading"><h2>Make stylish Urdu text in four steps</h2><p>Keep the wording short, generate several styles, then test the copied result in the destination where you actually plan to use it.</p></div><ol class="authority-checklist"><li><strong>Enter the wording.</strong> Type Urdu directly or use Roman Urdu transliteration and review the resulting script.</li><li><strong>Generate and filter styles.</strong> Browse Popular, Minimal, Royal, Hearts, Islamic, Gaming, Social, Kashida and other categories.</li><li><strong>Copy a simple result first.</strong> Paste it into the actual profile, bio, status or message field and check the Urdu letters and decorative symbols.</li><li><strong>Switch to Name Art for exact typography.</strong> If the destination needs a specific Nastaliq/Naskh appearance rather than editable text, render the wording as an image.</li></ol></section>
+        <section class="authority-section" id="copyable"><div class="authority-section-heading"><h2>Copyable Urdu decoration versus a real Urdu font image</h2><p>The distinction matters because the two outputs solve different jobs.</p></div><div class="authority-compare"><article><h3>Copyable stylish text</h3><p>The Urdu remains text. Decorative Unicode characters are added around or between the wording. You can copy it, but the receiving app controls the font and may reject some characters.</p></article><article><h3>Rendered Urdu Name Art</h3><p>The chosen Nastaliq/Naskh-style font is drawn into an image in the browser. The appearance is stable inside the exported image, but the result is no longer editable text in the destination app.</p></article></div></section>
+        <section class="authority-section" id="uses"><div class="authority-section-heading"><h2>Practical uses for stylish Urdu names and short text</h2><p>Use the generator for short identity or display text rather than long Urdu paragraphs.</p></div><div class="authority-card-grid"><article class="authority-card"><h3>WhatsApp</h3><p>Try a short name, status line or message decoration. Check the pasted result before relying on an elaborate style.</p></article><article class="authority-card"><h3>Instagram</h3><p>Use a concise display phrase, bio fragment or caption decoration, then verify it in the actual field because rendering can differ by device.</p></article><article class="authority-card"><h3>Gaming and profiles</h3><p>Start with lighter decoration. Games and profile systems often apply their own character restrictions and length limits.</p></article><article class="authority-card"><h3>Greetings and headings</h3><p>Decorate a short Eid greeting, poetry heading or personal phrase. Use Card Studio if it should become a designed image rather than pasted text.</p></article></div></section>
+        <section class="authority-section" id="compatibility"><div class="authority-section-heading"><h2>Why compatibility can vary</h2><p>There is no single “stylish Urdu font” embedded inside copyable text. The destination environment does part of the rendering.</p></div><ol class="authority-checklist"><li>Different devices can use different fonts for the same Urdu Unicode letters.</li><li>Decorative symbols may have different glyph shapes or spacing on another operating system.</li><li>Some apps or games reject characters they do not allow in a profile/name field.</li><li>Complex decoration can reduce readability around joined Urdu letters, so simpler styles are often safer.</li><li>If exact appearance is the requirement, export a Name Art image instead of promising universal copy/paste rendering.</li></ol></section>
+        <section class="authority-section" id="roman"><div class="authority-section-heading"><h2>Roman Urdu can help you enter the text, but it is not translation</h2><p>WriteUrdu can transliterate Roman Urdu sounds into Urdu script before you style them. Review names and ambiguous spellings before copying or exporting the final result.</p></div><div class="authority-callout"><h3>Example workflow</h3><p>Type the Roman Urdu wording, press Space to convert each word, correct the Urdu script if necessary, then generate styles. The style step should happen after the wording itself is correct.</p></div></section>
+        <section class="authority-section" id="questions"><div class="authority-section-heading"><h2>Questions about stylish Urdu text</h2></div><div class="authority-copy"><h3>Can I copy and paste the generated Urdu styles?</h3><p>Many results are designed to remain copyable Unicode text. Always paste into the target app to confirm its character and rendering support.</p><h3>Does the generator change the Urdu font?</h3><p>Not in a way that can be guaranteed after copy/paste. The receiving app chooses the font. Name Art is the appropriate workflow when you need exact rendered typography.</p><h3>Can I use a stylish result on a phone?</h3><p>Yes. The generator is designed as a phone-friendly type → scan → copy workflow. Test the pasted result in the destination app on the device you plan to use.</p><h3>Where is my text stored?</h3><p>The style, favourite and recent-input state is kept in the browser. Roman Urdu suggestions are a separate network-assisted feature described in the privacy policy.</p></div></section>
+        <section class="authority-section"><div class="authority-section-heading"><h2>Choose the right output</h2><p>Stay with copyable text when editability matters; move to a rendered image when exact typography matters.</p></div><div class="authority-related-grid"><article class="authority-related-card"><h3>Stylish Urdu Text</h3><p>Generate and copy decorative Urdu text styles.</p><a href="/stylish-urdu-text-generator">Open the generator →</a></article><article class="authority-related-card"><h3>Urdu Name Art</h3><p>Render the wording with an exact Urdu font and export PNG.</p><a href="/urdu-name-art-maker">Create Name Art →</a></article><article class="authority-related-card"><h3>Urdu Card Studio</h3><p>Turn a phrase into a designed quote, poetry or social image.</p><a href="/urdu-card-studio">Open Card Studio →</a></article></div></section>
+        <section class="authority-cta"><h2>Make the Urdu text stylish</h2><p>Start with the wording, choose a copyable style, and switch to Name Art only when an exact font-rendered image is the better output.</p><a class="authority-button" href="/stylish-urdu-text-generator">Open Stylish Urdu Text Generator</a></section>
+    </main><footer></footer>
+</body>
+</html>
+'''
+          Path('how-to-make-stylish-urdu-text.html').write_text(guide_html)
+
+          # 4) Register guide in shared page copy so shell cannot replace its H1/title with homepage copy.
+          replace_once('site-header.js',
+              "        '/how-to-write-urdu-on-photo': { title: ['How to write Urdu text or poetry on a photo online', 'تصویر پر اردو متن یا شاعری آن لائن کیسے لکھیں'] },",
+              "        '/how-to-write-urdu-on-photo': { title: ['How to write Urdu text or poetry on a photo online', 'تصویر پر اردو متن یا شاعری آن لائن کیسے لکھیں'] },\n        '/how-to-make-stylish-urdu-text': { title: ['How to make stylish Urdu text or names for WhatsApp and Instagram', 'واٹس ایپ اور انسٹاگرام کے لیے اسٹائلش اردو متن یا نام کیسے بنائیں'] },")
+
+          # 5) Give the guide a real Learn-menu discovery path without adding a new top-level nav item.
+          replace_once('js/v2-shell.js',
+              "            '/urdu-alphabet', '/english-urdu-typing-tutorial',\n            '/urdu-fonts-nastaliq-vs-naskh'",
+              "            '/urdu-alphabet', '/english-urdu-typing-tutorial',\n            '/urdu-fonts-nastaliq-vs-naskh', '/how-to-make-stylish-urdu-text'")
+          replace_once('js/v2-shell.js',
+              "            link('/urdu-fonts-nastaliq-vs-naskh', customLabel('Urdu fonts', 'اردو فونٹس'))",
+              "            link('/urdu-fonts-nastaliq-vs-naskh', customLabel('Urdu fonts', 'اردو فونٹس')),\n            link('/how-to-make-stylish-urdu-text', customLabel('Stylish Urdu text guide', 'اسٹائلش اردو رہنما'))")
+
+          # 6) Structured-topic hints.
+          replace_once('js/seo.js',
+              "        'write-urdu-documentation': ['Urdu typing', 'Urdu writing', 'Write Urdu documentation']",
+              "        'write-urdu-documentation': ['Urdu typing', 'Urdu writing', 'Write Urdu documentation'],\n        'stylish-urdu-text-generator': ['Stylish Urdu text', 'Urdu name styles', 'Unicode text decoration'],\n        'how-to-make-stylish-urdu-text': ['Stylish Urdu text', 'Urdu names', 'Unicode compatibility']")
+
+          # 7) Ad posture: informational guide is Learn; generator remains Create with an explicit post-workspace boundary.
+          replace_once('js/ads.js',
+              "            '/write-urdu-features', '/urdu-editor-features', '/how-to-write-urdu-on-photo'",
+              "            '/write-urdu-features', '/urdu-editor-features', '/how-to-write-urdu-on-photo',\n            '/how-to-make-stylish-urdu-text'")
+
+          # 8) Sitemap freshness + new guide.
+          sitemap = Path('sitemap.xml')
+          sm = sitemap.read_text()
+          sm = sm.replace('''    <loc>https://www.write-urdu.com/stylish-urdu-text-generator</loc>\n    <lastmod>2026-07-17</lastmod>''', '''    <loc>https://www.write-urdu.com/stylish-urdu-text-generator</loc>\n    <lastmod>2026-08-12</lastmod>''', 1)
+          addition = '''  <url>\n    <loc>https://www.write-urdu.com/how-to-make-stylish-urdu-text</loc>\n    <lastmod>2026-08-12</lastmod>\n    <changefreq>yearly</changefreq>\n    <priority>0.76</priority>\n  </url>\n'''
+          if '</urlset>' not in sm:
+              raise SystemExit('Missing sitemap close')
+          sitemap.write_text(sm.replace('</urlset>', addition + '</urlset>', 1))
+
+          # 9) LLM discovery/authority map.
+          replace_once('llms.txt',
+              '- Urdu Card Studio is the primary image-creation surface for putting Urdu text, poetry, quotes and announcements on a background or photo and exporting the finished design.',
+              '- Urdu Card Studio is the primary image-creation surface for putting Urdu text, poetry, quotes and announcements on a background or photo and exporting the finished design.\n- Stylish Urdu Text Generator is the primary copy/paste surface for decorated Urdu names and short phrases; exact Nastaliq/Naskh image appearance belongs to Urdu Name Art.')
+          replace_once('llms.txt',
+              '- [How to write Urdu on a photo](https://www.write-urdu.com/how-to-write-urdu-on-photo): Practical steps for adding Urdu text, poetry or quotes to a local photo, choosing readable Urdu fonts and exporting the image in Card Studio.',
+              '- [How to write Urdu on a photo](https://www.write-urdu.com/how-to-write-urdu-on-photo): Practical steps for adding Urdu text, poetry or quotes to a local photo, choosing readable Urdu fonts and exporting the image in Card Studio.\n- [How to make stylish Urdu text](https://www.write-urdu.com/how-to-make-stylish-urdu-text): Explains copyable Unicode decoration, compatibility limits, WhatsApp/Instagram use cases and when an exact rendered Urdu name image is the better output.')
+          replace_once('llms.txt',
+              '- [Urdu Template Library](https://www.write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.',
+              '- [Urdu Template Library](https://www.write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.\n- [Stylish Urdu Text Generator](https://www.write-urdu.com/stylish-urdu-text-generator): Generate 80 curated copyable Urdu name/text styles with category filters and a handoff to image-based Name Art.')
+          replace_once('llms.txt',
+              '- [Stylish Urdu Text Generator](https://www.write-urdu.com/stylish-urdu-text-generator): Copyable Unicode Urdu styles and a handoff into name-art creation.\n', '')
+
+          # 10) Static acquisition contract.
+          contract = '''const assert = require('assert');
+const fs = require('fs');
+const config = require('../seo.config.js');
+const ads = require('../js/ads.js');
+
+const stylish = fs.readFileSync('stylish-urdu-text-generator.html', 'utf8');
+const guide = fs.readFileSync('how-to-make-stylish-urdu-text.html', 'utf8');
+const llms = fs.readFileSync('llms.txt', 'utf8');
+const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
+const shell = fs.readFileSync('js/v2-shell.js', 'utf8');
+
+const page = config.byPath['/stylish-urdu-text-generator'];
+assert(page, 'Stylish route must remain registered');
+assert.strictEqual(page.searchTitle, 'Stylish Urdu Text Generator – Copy & Paste Urdu Name Styles | WriteUrdu');
+assert.match(page.searchDescription, /80 copyable stylish Urdu text and name styles/i);
+assert.strictEqual(page.lastmod, '2026-08-12');
+assert.strictEqual(page.h1, 'Stylish Urdu Text and Name Generator');
+assert.deepStrictEqual(page.schema, ['WebApplication', 'FAQPage']);
+assert.match(stylish, /data-wu-ad-boundary="post-workspace"/);
+assert.ok(stylish.indexOf('data-stylish-results') < stylish.indexOf('class="stylish-seo"'), 'Results must stay before acquisition content');
+assert.match(stylish, /Copyable stylish Urdu text, not a fake font promise/);
+assert.match(stylish, /destination app controls the font/i);
+assert.match(stylish, /how-to-make-stylish-urdu-text/);
+assert.match(stylish, /exact Nastaliq\/Naskh look/i);
+assert.strictEqual(ads.resolvePageType('/stylish-urdu-text-generator'), 'create');
+
+const guidePage = config.byPath['/how-to-make-stylish-urdu-text'];
+assert(guidePage, 'Supporting Stylish Urdu guide must be registered');
+assert.strictEqual(guidePage.section, 'guides');
+assert.deepStrictEqual(guidePage.schema, ['Article']);
+assert.match(guide, /copyable Urdu text styles work/i);
+assert.match(guide, /There is no single “stylish Urdu font” embedded inside copyable text/i);
+assert.match(guide, /href="\/stylish-urdu-text-generator"/);
+assert.match(guide, /href="\/urdu-name-art-maker"/);
+assert.strictEqual(ads.resolvePageType('/how-to-make-stylish-urdu-text'), 'learn');
+assert.match(shell, /how-to-make-stylish-urdu-text/);
+assert.match(llms, /How to make stylish Urdu text/);
+assert.match(sitemap, /https:\/\/www\.write-urdu\.com\/how-to-make-stylish-urdu-text/);
+assert.doesNotMatch(sitemap, /\/stylish-urdu-name\/|\/urdu-name-style\//, 'Do not create programmatic exact-match name pages');
+
+console.log('Stylish Urdu SEO acquisition contract passed.');
+'''
+          Path('tests/stylish-urdu-acquisition-contract.test.js').write_text(contract)
+
+          # 11) Browser acceptance: final shell metadata + runtime schema for tool and guide.
+          browser = Path('tests/seo-acquisition.spec.js')
+          b = browser.read_text().rstrip() + '''\n\n
+test('Stylish Urdu Text keeps acquisition metadata, results-first flow and application schema', async ({ page }) => {
+  await open(page, '/stylish-urdu-text-generator');
+  await expect(page.locator('h1')).toHaveText('Stylish Urdu Text and Name Generator');
+  await expect.poll(() => page.title()).toBe('Stylish Urdu Text Generator – Copy & Paste Urdu Name Styles | WriteUrdu');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://www.write-urdu.com/stylish-urdu-text-generator');
+  await expect(page.locator('[data-stylish-results] .stylish-card')).toHaveCount(24);
+  const order = await page.evaluate(() => ({ results: document.querySelector('[data-stylish-results]').getBoundingClientRect().top, supporting: document.querySelector('.stylish-seo').getBoundingClientRect().top }));
+  expect(order.results).toBeLessThan(order.supporting);
+  const types = await schemaTypes(page);
+  expect(types).toContain('WebApplication');
+  expect(types).toContain('FAQPage');
+});
+
+test('Stylish Urdu guide exposes Article schema and routes users back to the generator', async ({ page }) => {
+  await open(page, '/how-to-make-stylish-urdu-text');
+  await expect(page.locator('h1')).toHaveText('How to make stylish Urdu text or names for WhatsApp and Instagram');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://www.write-urdu.com/how-to-make-stylish-urdu-text');
+  await expect(page.getByRole('link', { name: 'Generate stylish Urdu text' })).toHaveAttribute('href', '/stylish-urdu-text-generator');
+  const types = await schemaTypes(page);
+  expect(types).toContain('Article');
+  expect(types).toContain('BreadcrumbList');
+});\n'''
+          browser.write_text(b)
+
+          # 12) Include static acquisition contract in standard test gate.
+          package = Path('package.json')
+          pkg = package.read_text()
+          needle = 'node tests/english-urdu-typing-acquisition-contract.test.js'
+          if needle not in pkg:
+              raise SystemExit('Missing package test anchor')
+          package.write_text(pkg.replace(needle, needle + ' && node tests/stylish-urdu-acquisition-contract.test.js', 1))
+
+          # 13) Feature spec / decision record.
+          spec = '''# WU-SEO-STYLISH-001 — Stylish Urdu Text SEO Acquisition
+
+**Status:** Implemented candidate — pending CI/merge  
+**Date:** 2026-08-12  
+**Owner route:** `/stylish-urdu-text-generator`
+
+## Objective
+
+Turn the existing Stylish Urdu Text product into WriteUrdu's second primary creation-search acquisition destination without changing its 80-style generation engine or creating programmatic exact-match name pages.
+
+## Query ownership
+
+The generator owns:
+
+- stylish Urdu text generator
+- Urdu stylish text generator
+- Urdu name style copy paste
+- stylish Urdu name
+- Urdu text style copy paste
+
+`/urdu-name-art-maker` owns exact rendered name-image intent. The new `/how-to-make-stylish-urdu-text` page owns informational how-to/compatibility intent and must not compete as another generator page.
+
+## Product/search contract
+
+- Keep `Stylish Urdu Text and Name Generator` as the product H1.
+- Search title may lead with `Stylish Urdu Text Generator` and copy/paste name-style intent.
+- Explain that copyable results are Unicode decoration, while the receiving app chooses the Urdu font.
+- Do not guarantee rendering or character acceptance across every phone, app or game.
+- Make Name Art the explicit answer for exact Nastaliq/Naskh image appearance.
+- Keep results before supporting SEO content on desktop and mobile.
+- Keep AdSense outside the active input/filter/result task region.
+- Preserve local favourites, recents, collections, sharing and Name Art handoff.
+
+## Supporting content
+
+Create exactly one guide in this slice:
+
+`/how-to-make-stylish-urdu-text` — how copyable styles work, WhatsApp/Instagram/profile use, compatibility limits, Roman Urdu entry and when to choose Name Art.
+
+Do not create name-by-name pages, platform clones or exact-match doorway routes without Search Console evidence.
+
+## Acceptance
+
+- initial HTML and final rendered search title/description agree with `seo.config.js`;
+- canonical remains `https://www.write-urdu.com/stylish-urdu-text-generator`;
+- generator retains WebApplication + FAQPage schema;
+- guide exposes Article + Breadcrumb schema;
+- mobile/desktop browser suite keeps 24 initial result cards and results before supporting content;
+- guide is Learn-classified for ads, generator remains Create-classified;
+- sitemap and llms.txt include the guide and clarified ownership.
+'''
+          Path('specs/WU-SEO-STYLISH-001-stylish-urdu-acquisition.md').write_text(spec)
+          PY
+
+      - name: Synchronize explicit acquisition head metadata
+        run: npm run seo:sync-heads
+
+      - name: Run local gates before commit
+        run: |
+          npm test
+          npm run seo:check
+          npm run governance:check
+
+      - name: Commit acquisition slice
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stylish-urdu-text-generator.html how-to-make-stylish-urdu-text.html seo.config.js site-header.js js/v2-shell.js js/seo.js js/ads.js sitemap.xml llms.txt tests/stylish-urdu-acquisition-contract.test.js tests/seo-acquisition.spec.js package.json specs/WU-SEO-STYLISH-001-stylish-urdu-acquisition.md
+          git commit -m "SEO: upgrade Stylish Urdu Text acquisition"
+          git push origin HEAD:agent/p1-5-stylish-urdu-seo-acquisition
