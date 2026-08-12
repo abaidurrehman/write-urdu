@@ -171,3 +171,96 @@ test('Urdu Name Art uses a compact rail beside the live Card Studio workspace', 
   }), { timeout: 10000 }).toBe(templateId);
   await expect(page.locator('[data-name-art-transparent]')).toBeVisible();
 });
+
+test('Social makers use the v2 shell while preserving Card Studio social-mode state', async ({ page, isMobile }) => {
+  await blockNonVisualServices(page);
+  const cases = [
+    { route: '/urdu-whatsapp-status-maker.html', marker: 'social-whatsapp', mode: 'whatsapp', preset: 'story' },
+    { route: '/urdu-instagram-post-maker.html', marker: 'social-instagram', mode: 'instagram', preset: 'square' }
+  ];
+
+  for (const item of cases) {
+    await open(page, item.route);
+    await expect(page.locator('body')).toHaveClass(/wu-v2-shell/);
+    await expect(page.locator('[data-v2-creation-workspace]')).toHaveAttribute('data-v2-creation-workspace', item.marker);
+    await expect(page.locator('link[href$="css/v2-publish-tools.css"]')).toHaveCount(1);
+    await expect(page.locator('.wu-footer')).toBeVisible();
+    await expect(page.locator('.social-maker-workspace')).toBeVisible();
+    await expect(page.locator('[data-wu-ad-boundary="post-workspace"]')).toBeVisible();
+
+    await expect.poll(() => page.locator('.social-maker-frame').evaluate(frame => {
+      const app = frame.contentWindow && frame.contentWindow.WriteUrduCardStudioApp;
+      const state = app && app.getState && app.getState();
+      return state && `${state.socialMode}|${state.presetId}`;
+    }), { timeout: 20000 }).toBe(`${item.mode}|${item.preset}`);
+
+    const metrics = await page.evaluate(() => {
+      const workspace = document.querySelector('.social-maker-workspace').getBoundingClientRect();
+      const guidance = document.querySelector('.social-maker-guidance').getBoundingClientRect();
+      return {
+        workspaceTop: workspace.top,
+        workspaceHeight: workspace.height,
+        guidanceTop: guidance.top,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+      };
+    });
+    expect(metrics.overflow).toBeLessThanOrEqual(1);
+    expect(metrics.workspaceTop).toBeLessThan(metrics.guidanceTop);
+    if (!isMobile) expect(metrics.workspaceHeight).toBeGreaterThan(500);
+
+    if (item.mode === 'whatsapp') {
+      const safe = await page.locator('.social-maker-frame').evaluate(frame => frame.contentWindow.WriteUrduSocialMaker.getSafeArea('whatsapp', { id: 'story', width: 1080, height: 1920 }));
+      expect(safe).toEqual({ top: 230, right: 100, bottom: 290, left: 100 });
+    } else {
+      const safe = await page.locator('.social-maker-frame').evaluate(frame => frame.contentWindow.WriteUrduSocialMaker.getSafeArea('instagram', { id: 'portrait', width: 1080, height: 1350 }));
+      expect(safe).toEqual({ top: 120, right: 90, bottom: 150, left: 90 });
+    }
+  }
+});
+
+test('QR Generator uses a preview-first v2 hierarchy and keeps payload validation intact', async ({ page, isMobile }) => {
+  await blockNonVisualServices(page);
+  await open(page, '/qr-code-generator.html');
+
+  await expect(page.locator('body')).toHaveClass(/wu-v2-shell/);
+  await expect(page.locator('[data-qr-generator]')).toHaveAttribute('data-v2-creation-workspace', 'qr-generator');
+  await expect(page.locator('link[href$="css/v2-publish-tools.css"]')).toHaveCount(1);
+  await expect(page.locator('.qr-preview')).toBeVisible();
+  await expect(page.locator('.qr-panel')).toBeVisible();
+  await expect(page.locator('[data-wu-ad-boundary="post-workspace"]')).toBeVisible();
+
+  const metrics = await page.evaluate(() => {
+    const preview = document.querySelector('.qr-preview').getBoundingClientRect();
+    const panel = document.querySelector('.qr-panel').getBoundingClientRect();
+    const supporting = document.querySelector('.seo-content').getBoundingClientRect();
+    return {
+      previewTop: preview.top,
+      previewWidth: preview.width,
+      panelTop: panel.top,
+      panelWidth: panel.width,
+      supportingTop: supporting.top,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  });
+  expect(metrics.overflow).toBeLessThanOrEqual(1);
+  expect(metrics.previewTop).toBeLessThan(metrics.supportingTop);
+  if (isMobile) {
+    expect(metrics.previewTop).toBeLessThan(metrics.panelTop);
+  } else {
+    expect(metrics.previewWidth).toBeGreaterThan(metrics.panelWidth * 1.5);
+    expect(Math.abs(metrics.previewTop - metrics.panelTop)).toBeLessThan(90);
+  }
+
+  await page.locator('[data-qr-type]').selectOption('url');
+  const urlField = page.locator('[data-qr-field="url"]');
+  await urlField.fill('not a url');
+  await expect(page.locator('[data-qr-download-png]')).toBeDisabled();
+  await expect(page.locator('.qr-field-error')).toBeVisible();
+
+  await page.locator('[data-qr-type]').selectOption('text');
+  const textField = page.locator('[data-qr-field="text"]');
+  await textField.fill('سلام دنیا');
+  await expect(page.locator('[data-qr-download-png]')).toBeEnabled();
+  await expect(page.locator('[data-qr-download-svg]')).toBeEnabled();
+  await expect(page.locator('[data-qr-payload]')).toContainText('سلام دنیا');
+});
