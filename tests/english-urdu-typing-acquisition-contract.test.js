@@ -33,6 +33,10 @@ assert.match(home.searchDescription || '', /not English translation/i, 'Homepage
 assert.ok((home.searchDescription || '').length <= 165, 'Homepage search description should remain concise');
 assert.strictEqual(home.lastmod, '2026-08-12', 'Homepage acquisition revision date must be current');
 
+assert.ok(homeHtml.includes(`<title>${home.searchTitle}</title>`), 'Initial homepage HTML must expose the acquisition title without waiting for JavaScript');
+assert.ok(homeHtml.includes(`<meta name="description" content="${home.searchDescription}">`), 'Initial homepage HTML must expose the acquisition description without waiting for JavaScript');
+assert.ok(homeHtml.includes(`<meta property="og:title" content="${home.searchTitle}"`), 'Initial homepage Open Graph title must match acquisition ownership');
+assert.ok(homeHtml.includes(`<meta name="twitter:title" content="${home.searchTitle}"`), 'Initial homepage Twitter title must match acquisition ownership');
 assert.match(homeHtml, /<h1>Type Roman Urdu and convert it to Urdu script<\/h1>/, 'Static homepage task heading changed');
 assert.match(homeHtml, /How to type Urdu with English letters/i, 'Homepage must visibly explain the English-letter workflow');
 assert.match(homeHtml, /Type Roman Urdu[\s\S]*Press Space[\s\S]*Urdu script/i, 'Homepage must expose the real conversion workflow');
