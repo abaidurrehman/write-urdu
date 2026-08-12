@@ -110,6 +110,24 @@ If a reliable privacy-appropriate source exists, add:
 
 These are supporting metrics, not prerequisites for the first GSC/AdSense model.
 
+### 3.4 July 2026 AdSense regression — confirmed instrumentation/placement break
+
+A daily AdSense export reviewed on 12 August 2026 shows a sharp discontinuity beginning **12 July 2026**: AdSense pageviews and ad impressions fell by roughly 90% compared with the first eleven days of July, while impressions per reported AdSense pageview remained broadly stable. This series must not be interpreted as a 90% site-traffic collapse without an independent traffic source.
+
+Git history explains the discontinuity:
+
+- commit `c2b176bf8eca69742d54092c4bce7bac7cbf428e` (`major fixes`, 11 July 2026) removed the prior AdSense/page-level setup from the core writing surfaces and explicitly disabled advertising on editor workspaces;
+- commit `702f56108af3cc3c1797ff910c47448970cd73fe` (`Add google ads`, 13 July 2026) introduced the shared content-page ad, but `/`, `/urdu-editor` and `/urdu-keyboard` were intentionally excluded from the `content-page` group and therefore did not regain advertising;
+- PR #15, merged 12 August 2026 as `2971a7e7c10a77ebac56128a0fa9c93c82305e95`, restores **one shared responsive unit after the active workspace** on all three core Write routes and adds a regression contract for this failure mode.
+
+Permanent measurement rules from this incident:
+
+1. **AdSense pageviews are not site sessions.** Never diagnose organic traffic loss from AdSense pageviews alone after ad-code, consent, placement or route-classification changes.
+2. When AdSense volume changes abruptly, compare the same dates against Search Console clicks/impressions and a site/request analytics source before assigning an SEO cause.
+3. Track code/deployment events beside daily revenue and traffic trends so discontinuities can be attributed quickly.
+4. Core writing routes must retain a tested monetization contract: no ad inside the active workspace, but the approved post-workspace placement must not disappear silently.
+5. Treat **12 July–11 August 2026** AdSense pageview volume as structurally non-comparable with the earlier series until the restored core-route serving has had time to produce a new baseline.
+
 ## 4. Opportunity model
 
 Every roadmap candidate should be classified into one of four commercial jobs.
@@ -211,6 +229,7 @@ The page-type implementation contract is defined in `docs/WU-SEO-ADSENSE-AUTHORI
 - Avoid layout shift during ad loading.
 - Prefer placements after task completion, supporting guidance, or natural section boundaries.
 - Do not default to a universal post-header ad on core writing routes.
+- Keep one tested post-workspace monetization path on `/`, `/urdu-editor` and `/urdu-keyboard`; removing that path requires an explicit commercial decision and comparable baseline.
 
 ### Guide/content surfaces
 
@@ -267,6 +286,7 @@ The first commercial review must produce:
 8. A conservative revenue-impact estimate for the top search opportunities.
 9. Top-pages / Page URL breakdown for strategic routes where available.
 10. Ad-format and placement-method comparison for manual vs automatic inventory.
+11. A reconciled daily trend view that annotates monetization-code/deployment events and separates true traffic changes from ad-serving/instrumentation changes.
 
 ## 10. Backlog gate
 
@@ -287,11 +307,13 @@ Items without an evidence-backed commercial rationale should normally remain P2/
 `WU-GROWTH-001` reaches Implemented when:
 
 - [ ] Full Search Console exports have been reviewed beyond the two current baseline queries.
-- [ ] A comparable AdSense aggregate baseline has been reviewed.
+- [x] A multi-year daily AdSense pageview/impression/RPM export has been reviewed and the July 2026 serving discontinuity has been reconciled to Git history.
+- [ ] A comparable current AdSense aggregate baseline has been reviewed after core Write-route monetization restoration.
 - [ ] Query/page/country/device opportunities are documented.
 - [ ] At least the top 10 roadmap candidates have a commercial rationale and confidence level.
 - [ ] The canonical `specs/BACKLOG.md` has been reordered from evidence.
-- [ ] Page types have explicit monetization rules and legacy duplicate placements are normalized.
+- [x] Page types have explicit monetization rules and legacy duplicate placements are normalized.
+- [x] Core Write routes have a regression-tested post-workspace monetization path after the July 2026 incident.
 - [ ] Ad placement guardrails are documented and checked on major v2 surfaces.
 - [ ] URL/custom-channel measurement conventions are documented for strategic pages/placements.
 - [ ] Weekly/monthly measurement cadence is defined.
@@ -301,14 +323,13 @@ Items without an evidence-backed commercial rationale should normally remain P2/
 
 ### Growth Slice A — Page-type AdSense architecture + measurement baseline
 
-Normalize current placements before increasing ad load:
+Runtime normalization is shipped. PR #15 additionally repaired the July 2026 core-route monetization regression. Remaining work is account-side configuration and a clean post-restoration baseline:
 
-- classify routes as Write / Learn / Create / Trust for monetization purposes;
-- remove duplicate legacy units as pages migrate;
-- replace universal content-page post-header placement with page-type-aware hooks;
-- protect editor/canvas/action regions from in-page automatic placements;
-- preserve the existing AdSense client and single-loader contract;
-- establish URL/custom-channel naming and capture pre-change reports.
+- create only real AdSense URL/custom channels described by the operating contract;
+- configure the documented Auto-ads exclusions/excluded areas;
+- verify serving on `/`, `/urdu-editor` and `/urdu-keyboard` without ads entering the active workspace;
+- capture a new comparable daily/page-level baseline after restoration;
+- compare the restored AdSense series against Search Console and site/request analytics before diagnosing traffic movement.
 
 ### Growth Slice B — Authority Opportunity Map
 
