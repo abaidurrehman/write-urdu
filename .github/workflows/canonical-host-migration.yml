@@ -1,0 +1,49 @@
+name: Canonical host migration
+
+on:
+  push:
+    branches:
+      - agent/restore-www-canonical
+    paths:
+      - '.github/workflows/canonical-host-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/restore-www-canonical
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Migrate public canonical host
+        run: node scripts/migrate-canonical-host-to-www.js
+
+      - name: Regenerate sitemap and robots
+        run: npm run seo:generate
+
+      - name: Commit generated migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' seo.config.js sitemap.xml robots.txt llms.txt .well-known/security.txt js/qr-generator-core.js .htaccess
+          if git diff --cached --quiet; then
+            echo "No migration changes to commit"
+            exit 0
+          fi
+          git commit -m "seo: restore historical www canonical host"
+          git push origin HEAD:agent/restore-www-canonical
