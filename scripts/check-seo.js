@@ -6,6 +6,12 @@ const root = path.resolve(__dirname, '..');
 const html = file => fs.readFileSync(path.join(root, file), 'utf8');
 const files = fs.readdirSync(root).filter(file => file.endsWith('.html') && !file.startsWith('google'));
 const errors = [];
+const decodeHtml = value => String(value || '')
+  .replace(/&amp;/gi, '&')
+  .replace(/&quot;/gi, '"')
+  .replace(/&#39;|&apos;/gi, "'")
+  .replace(/&lt;/gi, '<')
+  .replace(/&gt;/gi, '>');
 const meta = (source, name, property) => {
   const re = property
     ? new RegExp(`<meta[^>]+property=["']${property}["'][^>]+content=["']([^"']*)`, 'i')
@@ -33,17 +39,20 @@ files.forEach(file => {
   }
 
   const source = html(file);
-  const title = (source.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] || '';
-  const description = meta(source, 'description');
+  const title = decodeHtml((source.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] || '').trim();
+  const description = decodeHtml(meta(source, 'description'));
   const robots = meta(source, 'robots');
   const canon = canonical(source);
   const expectedCanonical = config.canonical(page.path);
+  const expectedTitle = page.searchTitle || page.title;
+  const expectedDescription = page.searchDescription || page.description;
   const ogUrl = meta(source, '', 'og:url');
 
-  if (title.trim() !== page.title) errors.push(`${file}: title does not match registry`);
+  if (title !== expectedTitle) errors.push(`${file}: title does not match resolved registry metadata`);
+  if (description !== expectedDescription) errors.push(`${file}: description does not match resolved registry metadata`);
   if (!description) errors.push(`${file}: missing description`);
-  if (titles.has(title.trim())) errors.push(`${file}: duplicate title with ${titles.get(title.trim())}`);
-  else titles.set(title.trim(), file);
+  if (titles.has(title)) errors.push(`${file}: duplicate title with ${titles.get(title)}`);
+  else titles.set(title, file);
   if (descriptions.has(description)) errors.push(`${file}: duplicate description with ${descriptions.get(description)}`);
   else descriptions.set(description, file);
 
