@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "node scripts/dev-server.js",
-    "test": "node tests/transliteration-contract.test.js && node tests/product-shell-contract.test.js && node tests/v2-shell-content-contract.test.js && node tests/v2-authority-contract.test.js && node tests/seo-authority-contract.test.js && node tests/ads-policy-contract.test.js && node tests/static.test.js && node tests/stylish-urdu-core.test.js",
+    "test": "node tests/transliteration-contract.test.js && node tests/product-shell-contract.test.js && node tests/v2-shell-content-contract.test.js && node tests/v2-authority-contract.test.js && node tests/seo-authority-contract.test.js && node tests/ads-policy-contract.test.js && node tests/static.test.js && node tests/stylish-urdu-core.test.js && node tests/sua-acceptance-contract.test.js",
     "test:browser": "playwright test",
     "test:all": "npm test && npm run seo:check && npm run governance:check && npm run test:browser",
     "seo:generate": "node scripts/generate-seo-files.js",
