@@ -2,6 +2,18 @@
     'use strict';
     var core = window.WriteUrduStylishText, root = document.querySelector('[data-stylish-generator]');
     if (!core || !root) return;
+    function ensureCreationStyles() {
+        root.dataset.v2CreationWorkspace = 'stylish-text';
+        ['css/v2-creation.css', 'css/v2-creation-tools.css'].forEach(function (href) {
+            if (document.querySelector('link[href$="' + href + '"]')) return;
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            link.setAttribute('data-write-urdu-v2-creation', '');
+            document.head.appendChild(link);
+        });
+    }
+    ensureCreationStyles();
     var textarea = document.getElementById('stylishText'), grid = root.querySelector('[data-stylish-results]'), count = root.querySelector('[data-stylish-count]'), status = root.querySelector('[data-stylish-status]');
     var query = root.querySelector('[data-stylish-query]'), category = root.querySelector('[data-stylish-category]'), intensity = root.querySelector('[data-stylish-intensity]');
     var offset = 0, timer = 0;

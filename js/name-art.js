@@ -5,6 +5,19 @@
     var nameArt = window.WriteUrduNameArt;
     if (!root || !frame || !nameArt) return;
 
+    function ensureCreationStyles() {
+        root.dataset.v2CreationWorkspace = 'name-art';
+        ['css/v2-creation.css', 'css/v2-creation-tools.css'].forEach(function (href) {
+            if (document.querySelector('link[href$="' + href + '"]')) return;
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            link.setAttribute('data-write-urdu-v2-creation', '');
+            document.head.appendChild(link);
+        });
+    }
+    ensureCreationStyles();
+
     var handoffKey = 'writeUrdu.nameArt.handoff.v1';
     var cardIncomingKey = 'writeUrdu.cardStudio.incoming';
     var status = root.querySelector('[data-name-art-status]');
