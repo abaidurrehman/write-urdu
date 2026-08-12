@@ -1,120 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<url>
-  <loc>https://write-urdu.com/</loc>
-  <lastmod>2026-08-07</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-editor</loc>
-  <lastmod>2026-08-07</lastmod>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-keyboard</loc>
-  <lastmod>2026-08-07</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-alphabet</loc>
-  <lastmod>2026-08-07</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-card-studio</loc>
-  <lastmod>2026-07-15</lastmod>
-  <priority>0.90</priority>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.write-urdu.com/</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://write-urdu.com/stylish-urdu-text-generator</loc>
+    <loc>https://www.write-urdu.com/urdu-editor</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-keyboard</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-card-studio</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-invoice-generator</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.86</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/stylish-urdu-text-generator</loc>
     <lastmod>2026-07-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
   <url>
-    <loc>https://write-urdu.com/urdu-name-art-maker</loc>
+    <loc>https://www.write-urdu.com/urdu-name-art-maker</loc>
     <lastmod>2026-07-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
-<url>
-  <loc>https://write-urdu.com/urdu-whatsapp-status-maker</loc>
-  <lastmod>2026-07-17</lastmod>
-  <priority>0.86</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-invoice-generator</loc>
-  <lastmod>2026-07-17</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.86</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-instagram-post-maker</loc>
-  <lastmod>2026-07-17</lastmod>
-  <priority>0.86</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-templates</loc>
-  <lastmod>2026-07-16</lastmod>
-  <priority>0.88</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/qr-code-generator</loc>
-  <lastmod>2026-07-15</lastmod>
-  <priority>0.90</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/write-urdu-features</loc>
-  <lastmod>2026-07-15</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-editor-features</loc>
-  <lastmod>2026-07-15</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/write-urdu-documentation</loc>
-  <lastmod>2026-08-07</lastmod>
-  <priority>0.85</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-faq</loc>
-  <lastmod>2026-08-07</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/why-write-urdu</loc>
-  <lastmod>2026-07-15</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/english-urdu-typing-tutorial</loc>
-  <lastmod>2026-08-12</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/write-urdu-privacy</loc>
-  <lastmod>2026-07-15</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/write-urdu-sitemap</loc>
-  <lastmod>2026-07-15</lastmod>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/roman-urdu-transliteration</loc>
-  <lastmod>2026-08-07</lastmod>
-  <priority>0.72</priority>
-</url>
-<url>
-  <loc>https://write-urdu.com/urdu-fonts-nastaliq-vs-naskh</loc>
-  <lastmod>2026-08-12</lastmod>
-  <priority>0.72</priority>
-</url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-whatsapp-status-maker</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.86</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-instagram-post-maker</loc>
+    <lastmod>2026-07-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.86</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-templates</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/qr-code-generator</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-alphabet</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/write-urdu-features</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-editor-features</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/write-urdu-documentation</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/english-urdu-typing-tutorial</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-faq</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/why-write-urdu</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/write-urdu-privacy</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/write-urdu-sitemap</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/roman-urdu-transliteration</loc>
+    <lastmod>2026-08-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://www.write-urdu.com/urdu-fonts-nastaliq-vs-naskh</loc>
+    <lastmod>2026-08-12</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.72</priority>
+  </url>
 </urlset>
