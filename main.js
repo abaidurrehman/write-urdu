@@ -110,3 +110,13 @@
             script.defer = true;
             document.head.appendChild(script);
         }());
+
+        (function loadWritingJourneys() {
+            var path = String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+            if (path === '/index') path = '/';
+            if (path !== '/urdu-keyboard' || document.querySelector('script[src="js/card-studio-entry.js"]')) return;
+            var script = document.createElement('script');
+            script.src = 'js/card-studio-entry.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        }());
