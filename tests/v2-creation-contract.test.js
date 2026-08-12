@@ -4,6 +4,7 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+const seoConfig = require(path.join(root, 'seo.config.js'));
 
 const css = read('css/v2-creation.css');
 const cardUi = read('js/card-studio-ui.js');
@@ -44,7 +45,7 @@ assert.match(templatePage, /data-template-library/, 'Template Library applicatio
 assert.match(templatePage, /data-template-grid/, 'Template result grid changed');
 assert.match(templatePage, /data-template-search/, 'Template search changed');
 assert.match(templatePage, /data-template-categories/, 'Template category filters changed');
-assert.match(templatePage, /https:\/\/write-urdu\.com\/urdu-templates/, 'Template canonical URL changed');
+assert.ok(templatePage.includes(`href="${seoConfig.canonical('/urdu-templates')}"`), 'Template canonical URL changed');
 
 assert.match(sw, /css\/v2-creation\.css/, 'The v2 creation layer should be available in the PWA shell');
 
