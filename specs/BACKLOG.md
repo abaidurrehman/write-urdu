@@ -136,18 +136,18 @@ The feature was audited rather than redesigned. Acceptance found and closed real
 ## P0.5 — Authority distribution through internal product journeys
 
 **Type:** Growth + product navigation  
-**Status:** next implementation lane.
+**Status:** completed in PR #18.
 
 Create deliberate, contextually useful paths between established writing demand and deeper tools.
 
-- [ ] Homepage/basic writing → Rich Editor / Keyboard when formatting or direct input is needed.
-- [ ] Writing surfaces → Card Studio / Stylish Text / Name Art when visual output is the next job.
-- [ ] Roman Urdu guide → actual Roman Urdu typing action.
-- [ ] Urdu Alphabet / font guide / FAQ → relevant writing tools, not generic homepage-only links.
-- [ ] Creation tools → templates and adjacent creation tools.
-- [ ] Add lightweight measurement for high-value handoffs where existing analytics supports it.
+- [x] Homepage/basic writing → Rich Editor / Keyboard when formatting or direct input is needed; existing source-visible paths remain under contract.
+- [x] Core writing surfaces → Card Studio / Stylish Text / Name Art with a compact below-task panel and local current/selected-text handoff.
+- [x] Roman Urdu guide → actual Roman Urdu typing action.
+- [x] Urdu Alphabet / font guide / FAQ → relevant writing tools, not generic homepage-only links.
+- [x] Creation tools → templates and adjacent creation tools, with source-visible links covered by regression tests.
+- [x] Add lightweight privacy-safe measurement hooks: stable `data-wu-journey` IDs plus a local `write-urdu:journey` event containing source, destination and text-presence only. No network analytics sink is added until one is explicitly approved.
 
-**Guardrail:** internal links must answer the user’s next likely task, not exist only to circulate pageviews.
+**Guardrail:** internal links must answer the user’s next likely task, not exist only to circulate pageviews. User text remains in short-lived `sessionStorage`, never the journey event or URL.
 
 ---
 
@@ -312,7 +312,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 
 ## Current queue
 
-**Current branch/PR lane:** close `WU-SUA-001` acceptance and merge PR #17 after final quality gates.  
-**Next implementation:** P0.5 contextual authority distribution/internal product journeys across existing high-signal routes.  
+**Current branch/PR lane:** merge PR #18 after final quality gates; this closes the remaining P0 product-navigation slice.  
+**Next product implementation:** P1.4 creation-workspace v2 migration, beginning with Card Studio + Templates while preserving their renderer/export contracts.  
 **Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
-**Next strategic analysis:** complete the Search Console + AdSense Authority Opportunity Map as soon as detailed exports are available.
+**Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.
