@@ -66,8 +66,6 @@
     function mapLatin(value, map) { return Array.from(String(value || '')).map(function (character) { return map[character] || map[character.toLowerCase()] || character; }).join(''); }
     function wordSeparator(value, separator) { return String(value || '').split(/(\s+)/).map(function (part) { return /^\s+$/.test(part) ? part : part ? separator + part + separator : part; }).join(''); }
 
-    // Only insert a kashida between characters that can safely connect in the
-    // common Urdu joining model. Never touch punctuation or combining marks.
     var JOIN_FORWARD = 'بتثجحخسشصضطظعغفقكکگلممنهھی';
     var JOIN_BACK = 'ءآأؤإئابتثجحخدذرزسشصضطظعغفقكکگلممنهویے';
     function kashida(value, amount) {
@@ -120,9 +118,6 @@
     }
 
     function styleSupports(style, script) {
-        // Latin-only maps safely leave Arabic-script runs untouched; keeping
-        // those variants visible gives Urdu users the same full catalog while
-        // mixed-script users still benefit from the map on their Latin runs.
         return true;
     }
     function generateStyles(input, options) {
@@ -130,7 +125,8 @@
         var normalized = normalizeText(input), text = normalized.value, script = detectScript(text), category = options.category || 'all', intensity = options.intensity || 'all', query = String(options.query || '').toLowerCase();
         var offset = Math.max(0, Number(options.offset) || 0), limit = Math.max(1, Number(options.limit) || 24), seen = {}, all = [];
         styles.filter(function (style) {
-            if (category !== 'all' && category !== 'popular' && style.category !== category && !(category === 'popular' && style.featured)) return false;
+            if (category === 'popular' && !style.featured) return false;
+            if (category !== 'all' && category !== 'popular' && style.category !== category) return false;
             if (intensity !== 'all' && style.intensity !== intensity) return false;
             if (query && (style.name + ' ' + style.category + ' ' + style.compatibility).toLowerCase().indexOf(query) < 0) return false;
             return styleSupports(style, script);
