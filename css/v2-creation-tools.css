@@ -1,0 +1,387 @@
+/* WriteUrdu v2 creation hierarchy for focused creative tools.
+   This layer sits on top of v2-creation.css and changes presentation only.
+   Tool state, storage, handoff, rendering and export stay in existing modules. */
+
+.wu-v2-shell.stylish-page,
+.wu-v2-shell.name-art-page{
+  color:var(--wu-create-ink);
+  background:
+    radial-gradient(circle at 8% 0,rgba(23,111,69,.07),transparent 28rem),
+    linear-gradient(180deg,#f9fcfa 0,#f2f7f4 30rem,#fff 100%);
+}
+.wu-v2-shell.stylish-page h1,
+.wu-v2-shell.stylish-page h2,
+.wu-v2-shell.stylish-page h3,
+.wu-v2-shell.name-art-page h1,
+.wu-v2-shell.name-art-page h2,
+.wu-v2-shell.name-art-page h3{
+  color:var(--wu-create-ink);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+  font-weight:700;
+}
+.wu-v2-shell.stylish-page .stylish-hero>div:first-child::before,
+.wu-v2-shell.name-art-page .name-art-hero>div:first-child::before{
+  display:inline-flex;
+  margin:0 0 9px;
+  padding:5px 9px;
+  border:1px solid rgba(23,111,69,.17);
+  border-radius:999px;
+  color:var(--wu-create-brand-strong);
+  background:rgba(23,111,69,.065);
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+.wu-v2-shell.stylish-page .stylish-hero>div:first-child::before{content:"Create · Stylish Urdu Text"}
+.wu-v2-shell.name-art-page .name-art-hero>div:first-child::before{content:"Create · Urdu Name Art"}
+
+/* Stylish Text: keep text controls available while results own the visual focus. */
+.wu-v2-shell.stylish-page .stylish-main{
+  display:grid;
+  grid-template-columns:minmax(290px,330px) minmax(0,1fr);
+  grid-template-rows:auto auto auto auto;
+  gap:16px 18px;
+  width:min(var(--wu-create-width),calc(100% - 36px));
+  max-width:none;
+  padding:24px 0 70px;
+}
+.wu-v2-shell.stylish-page .stylish-hero{
+  grid-column:1/-1;
+  grid-row:1;
+  align-items:center;
+  margin:0;
+  padding:20px 22px;
+  border:1px solid var(--wu-create-line);
+  border-radius:18px;
+  background:rgba(255,255,255,.86);
+  box-shadow:0 12px 34px rgba(20,35,28,.05);
+}
+.wu-v2-shell.stylish-page .stylish-hero h1{
+  margin:0;
+  font-size:clamp(1.85rem,3.2vw,2.65rem);
+  letter-spacing:-.04em;
+}
+.wu-v2-shell.stylish-page .stylish-hero p{
+  max-width:760px;
+  margin:7px 0 0;
+  color:var(--wu-create-muted);
+  font-size:1rem;
+}
+.wu-v2-shell.stylish-page .stylish-free-note{
+  flex:none;
+  padding:9px 12px;
+  border-radius:999px;
+  font-size:.8rem;
+}
+.wu-v2-shell.stylish-page .stylish-panel{
+  grid-column:1;
+  grid-row:2/4;
+  position:sticky;
+  top:108px;
+  align-self:start;
+  max-height:calc(100vh - 126px);
+  overflow:auto;
+  padding:16px;
+  border-color:var(--wu-create-line);
+  border-radius:16px;
+  box-shadow:0 10px 28px rgba(20,35,28,.055);
+}
+.wu-v2-shell.stylish-page .stylish-panel h2{
+  margin:0 0 12px;
+  font-size:1.08rem;
+}
+.wu-v2-shell.stylish-page .stylish-input-row{
+  display:block;
+}
+.wu-v2-shell.stylish-page .stylish-textarea{
+  min-height:150px;
+  border-color:#c9d9d0;
+  background:#fff;
+}
+.wu-v2-shell.stylish-page .stylish-controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:12px;
+}
+.wu-v2-shell.stylish-page .stylish-controls .primary{
+  grid-column:1/-1;
+}
+.wu-v2-shell.stylish-page .stylish-button,
+.wu-v2-shell.stylish-page .stylish-chip,
+.wu-v2-shell.stylish-page .stylish-select{
+  border-radius:9px;
+}
+.wu-v2-shell.stylish-page .stylish-button.primary{
+  border-color:var(--wu-create-brand);
+  background:var(--wu-create-brand);
+}
+.wu-v2-shell.stylish-page .stylish-button.primary:hover,
+.wu-v2-shell.stylish-page .stylish-button.primary:focus-visible{
+  border-color:var(--wu-create-brand-strong);
+  background:var(--wu-create-brand-strong);
+}
+.wu-v2-shell.stylish-page .stylish-mode,
+.wu-v2-shell.stylish-page .stylish-batch{
+  margin-top:13px;
+}
+.wu-v2-shell.stylish-page .stylish-filterbar{
+  grid-column:2;
+  grid-row:2;
+  position:sticky;
+  top:108px;
+  z-index:20;
+  align-self:start;
+  margin:0;
+  padding:10px 12px;
+  border:1px solid var(--wu-create-line);
+  border-radius:13px;
+  background:rgba(255,255,255,.94);
+  box-shadow:0 10px 26px rgba(20,35,28,.055);
+  backdrop-filter:blur(12px);
+}
+.wu-v2-shell.stylish-page .stylish-main>section[aria-labelledby="stylish-results-title"]{
+  grid-column:2;
+  grid-row:3;
+  min-width:0;
+  padding:18px 20px 22px;
+  border:1px solid var(--wu-create-line);
+  border-radius:16px;
+  background:rgba(255,255,255,.76);
+  box-shadow:var(--wu-create-shadow);
+}
+.wu-v2-shell.stylish-page .stylish-results-heading{
+  align-items:flex-end;
+  margin-bottom:12px;
+}
+.wu-v2-shell.stylish-page .stylish-results-heading h2{
+  margin:0 0 3px;
+  font-size:1.35rem;
+}
+.wu-v2-shell.stylish-page .stylish-results-heading>p{
+  margin:0;
+  color:var(--wu-create-muted);
+  font-size:.82rem;
+}
+.wu-v2-shell.stylish-page .stylish-results{
+  gap:12px;
+}
+.wu-v2-shell.stylish-page .stylish-card{
+  border-color:var(--wu-create-line);
+  border-radius:13px;
+  box-shadow:0 5px 15px rgba(20,35,28,.035);
+}
+.wu-v2-shell.stylish-page .stylish-card-preview{
+  min-height:118px;
+  background:#f8fbf9;
+}
+.wu-v2-shell.stylish-page .stylish-card-actions button.primary{
+  background:var(--wu-create-brand);
+}
+.wu-v2-shell.stylish-page .stylish-seo{
+  grid-column:1/-1;
+  grid-row:4;
+  gap:16px;
+  margin:30px 0 0;
+  padding-top:34px;
+  border-top:1px solid var(--wu-create-line);
+}
+.wu-v2-shell.stylish-page .stylish-seo section{
+  border-color:var(--wu-create-line);
+  background:rgba(255,255,255,.72);
+  box-shadow:none;
+}
+
+/* Name Art: shortcuts become a compact rail beside the live Card Studio canvas. */
+.wu-v2-shell.name-art-page .name-art-main{
+  display:grid;
+  grid-template-columns:minmax(290px,330px) minmax(0,1fr);
+  grid-template-rows:auto auto auto auto;
+  gap:16px 18px;
+  width:min(var(--wu-create-width),calc(100% - 36px));
+  max-width:none;
+  padding:24px 0 70px;
+}
+.wu-v2-shell.name-art-page .name-art-hero{
+  grid-column:1/-1;
+  grid-row:1;
+  align-items:center;
+  margin:0;
+  padding:20px 22px;
+  border:1px solid var(--wu-create-line);
+  border-radius:18px;
+  background:rgba(255,255,255,.86);
+  box-shadow:0 12px 34px rgba(20,35,28,.05);
+}
+.wu-v2-shell.name-art-page .name-art-hero h1{
+  margin:0;
+  font-size:clamp(1.85rem,3.2vw,2.65rem);
+  letter-spacing:-.04em;
+}
+.wu-v2-shell.name-art-page .name-art-hero p{
+  max-width:760px;
+  margin:7px 0 0;
+  color:var(--wu-create-muted);
+  font-size:1rem;
+}
+.wu-v2-shell.name-art-page .name-art-note{
+  flex:none;
+  max-width:300px;
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:.82rem;
+}
+.wu-v2-shell.name-art-page .name-art-shortcuts{
+  grid-column:1;
+  grid-row:2;
+  position:sticky;
+  top:108px;
+  align-self:start;
+  max-height:calc(100vh - 126px);
+  overflow:auto;
+  margin:0;
+  padding:15px;
+  border-color:var(--wu-create-line);
+  border-radius:16px;
+  box-shadow:0 10px 28px rgba(20,35,28,.055);
+}
+.wu-v2-shell.name-art-page .name-art-shortcut-heading{
+  display:block;
+}
+.wu-v2-shell.name-art-page .name-art-shortcut-heading h2{
+  margin:.1rem 0 .3rem;
+  font-size:1.08rem;
+}
+.wu-v2-shell.name-art-page .name-art-shortcut-heading p{
+  font-size:.82rem;
+  line-height:1.5;
+}
+.wu-v2-shell.name-art-page .name-art-local-note{
+  max-width:none!important;
+  margin-top:10px!important;
+  padding:8px 10px;
+  font-size:.76rem!important;
+}
+.wu-v2-shell.name-art-page .name-art-control-grid{
+  grid-template-columns:1fr;
+  gap:9px;
+  margin-top:12px;
+}
+.wu-v2-shell.name-art-page .name-art-export-actions{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:7px;
+}
+.wu-v2-shell.name-art-page .name-art-template-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:12px;
+}
+.wu-v2-shell.name-art-page .name-art-template{
+  min-height:66px;
+  padding:8px 9px;
+  border-radius:9px;
+}
+.wu-v2-shell.name-art-page .name-art-template strong{
+  font-size:.78rem;
+}
+.wu-v2-shell.name-art-page .name-art-template small{
+  font-size:.68rem;
+  line-height:1.35;
+}
+.wu-v2-shell.name-art-page .name-art-workspace{
+  grid-column:2;
+  grid-row:2;
+  min-width:0;
+  margin:0;
+  padding:8px;
+  border-color:var(--wu-create-line);
+  border-radius:18px;
+  background:#f7faf8;
+  box-shadow:var(--wu-create-shadow);
+}
+.wu-v2-shell.name-art-page .name-art-frame{
+  height:calc(100vh - 132px);
+  min-height:720px;
+  border-radius:12px;
+  background:#edf5f0;
+}
+.wu-v2-shell.name-art-page .name-art-guidance{
+  grid-column:1/-1;
+  grid-row:3;
+  gap:12px;
+  margin:28px 0 0;
+  padding-top:34px;
+  border-top:1px solid var(--wu-create-line);
+}
+.wu-v2-shell.name-art-page .name-art-guidance article,
+.wu-v2-shell.name-art-page .name-art-faq{
+  border-color:var(--wu-create-line);
+  background:rgba(255,255,255,.72);
+  box-shadow:none;
+}
+.wu-v2-shell.name-art-page .name-art-faq{
+  grid-column:1/-1;
+  grid-row:4;
+  margin:0;
+}
+
+@media(max-width:1080px){
+  .wu-v2-shell.stylish-page .stylish-main,
+  .wu-v2-shell.name-art-page .name-art-main{
+    grid-template-columns:minmax(270px,310px) minmax(0,1fr);
+  }
+  .wu-v2-shell.stylish-page .stylish-results{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .wu-v2-shell.stylish-page .stylish-main,
+  .wu-v2-shell.name-art-page .name-art-main{
+    display:block;
+    width:min(100% - 22px,720px);
+    padding-top:16px;
+  }
+  .wu-v2-shell.stylish-page .stylish-hero,
+  .wu-v2-shell.name-art-page .name-art-hero{
+    display:block;
+    padding:18px;
+  }
+  .wu-v2-shell.stylish-page .stylish-free-note,
+  .wu-v2-shell.name-art-page .name-art-note{
+    display:inline-block;
+    max-width:none;
+    margin-top:10px;
+  }
+  .wu-v2-shell.stylish-page .stylish-panel,
+  .wu-v2-shell.stylish-page .stylish-filterbar,
+  .wu-v2-shell.name-art-page .name-art-shortcuts{
+    position:static;
+    max-height:none;
+    overflow:visible;
+  }
+  .wu-v2-shell.stylish-page .stylish-panel{margin-top:14px}
+  .wu-v2-shell.stylish-page .stylish-filterbar{margin:14px 0}
+  .wu-v2-shell.stylish-page .stylish-main>section[aria-labelledby="stylish-results-title"]{padding:16px}
+  .wu-v2-shell.stylish-page .stylish-seo{margin-top:32px}
+  .wu-v2-shell.name-art-page .name-art-shortcuts{margin-top:14px}
+  .wu-v2-shell.name-art-page .name-art-workspace{margin-top:14px}
+  .wu-v2-shell.name-art-page .name-art-frame{height:78vh;min-height:620px}
+  .wu-v2-shell.name-art-page .name-art-guidance{margin-top:28px}
+}
+@media(max-width:560px){
+  .wu-v2-shell.stylish-page .stylish-main,
+  .wu-v2-shell.name-art-page .name-art-main{width:calc(100% - 20px)}
+  .wu-v2-shell.stylish-page .stylish-controls{grid-template-columns:1fr}
+  .wu-v2-shell.stylish-page .stylish-controls .primary{grid-column:auto}
+  .wu-v2-shell.stylish-page .stylish-results{grid-template-columns:1fr}
+  .wu-v2-shell.stylish-page .stylish-results-heading{display:block}
+  .wu-v2-shell.name-art-page .name-art-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wu-v2-shell.name-art-page .name-art-frame{min-height:560px}
+}
+@media(max-width:390px){
+  .wu-v2-shell.name-art-page .name-art-template-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .wu-v2-shell.stylish-page *,
+  .wu-v2-shell.name-art-page *{transition:none!important}
+}
