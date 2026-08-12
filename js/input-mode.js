@@ -174,6 +174,16 @@
 
     function bindAll() { document.querySelectorAll('[data-input-mode-control]').forEach(bind); }
 
+    function loadWriteMonetization() {
+        var path = String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+        if (path === '/index') path = '/';
+        if (['/', '/urdu-editor'].indexOf(path) < 0 || document.querySelector('script[src="js/write-monetization.js"]')) return;
+        var script = document.createElement('script');
+        script.src = 'js/write-monetization.js';
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
     window.WriteUrduInputMode = {
         get: function (root) { return root ? root.dataset.inputMode || readMode(root) : null; },
         set: function (mode, root) {
@@ -183,6 +193,7 @@
         refresh: bindAll
     };
 
+    loadWriteMonetization();
     document.addEventListener('write-urdu:transliteration-ready', function (event) {
         currentControl = event.detail && event.detail.control || window.writeUrduTransliterationControl || null;
         bindAll();
