@@ -24,7 +24,7 @@
         learn: [
             '/roman-urdu-transliteration', '/urdu-alphabet', '/urdu-fonts-nastaliq-vs-naskh',
             '/english-urdu-typing-tutorial', '/urdu-faq', '/write-urdu-documentation',
-            '/write-urdu-features', '/urdu-editor-features'
+            '/write-urdu-features', '/urdu-editor-features', '/how-to-write-urdu-on-photo'
         ],
         create: [
             '/urdu-card-studio', '/urdu-templates', '/stylish-urdu-text-generator',
