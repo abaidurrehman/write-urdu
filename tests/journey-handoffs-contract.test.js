@@ -37,4 +37,42 @@ assert.match(css, /\.wu-next-journey/, 'Contextual journey UI styles are missing
 assert.match(css, /@media\(max-width:480px\)/, 'Journey UI needs a mobile layout contract');
 assert.match(sw, /css\/journey-handoffs\.css/, 'Journey styling must be part of the PWA shell');
 
+function page(name) { return fs.readFileSync(path.join(root, name), 'utf8'); }
+function mustLink(source, href, message) { assert.match(source, new RegExp('href=["\\\']' + href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '["\\\']'), message); }
+
+const homepage = page('index.html');
+mustLink(homepage, '/urdu-editor', 'Homepage must link to the Rich Editor');
+mustLink(homepage, '/urdu-keyboard', 'Homepage must link to the Urdu Keyboard');
+mustLink(homepage, '/urdu-card-studio', 'Homepage must expose Card Studio as a destination');
+
+const romanGuide = page('roman-urdu-transliteration.html');
+mustLink(romanGuide, '/', 'Roman Urdu guide must hand users into actual typing');
+
+const alphabet = page('urdu-alphabet.html');
+mustLink(alphabet, '/urdu-keyboard', 'Alphabet guide must link to direct Urdu typing');
+mustLink(alphabet, '/urdu-editor', 'Alphabet guide must link to the Rich Editor');
+
+const fontGuide = page('urdu-fonts-nastaliq-vs-naskh.html');
+mustLink(fontGuide, '/urdu-editor', 'Font guide must link to the Rich Editor');
+mustLink(fontGuide, '/urdu-card-studio', 'Font guide must link to Card Studio');
+mustLink(fontGuide, '/urdu-name-art-maker', 'Font guide must link to Name Art');
+
+const faq = page('urdu-faq.html');
+mustLink(faq, '/', 'FAQ must link back to the writing action');
+mustLink(faq, '/roman-urdu-transliteration', 'FAQ must link to the Roman Urdu guide');
+mustLink(faq, '/urdu-alphabet', 'FAQ must link to the Alphabet guide');
+
+const stylishPage = page('stylish-urdu-text-generator.html');
+mustLink(stylishPage, '/urdu-name-art-maker', 'Stylish Text must link to Name Art');
+mustLink(stylishPage, '/urdu-card-studio', 'Stylish Text must link to Card Studio');
+mustLink(stylishPage, '/urdu-templates', 'Stylish Text must link to templates');
+
+const nameArtPage = page('urdu-name-art-maker.html');
+mustLink(nameArtPage, '/stylish-urdu-text-generator', 'Name Art must link back to Stylish Text');
+mustLink(nameArtPage, '/urdu-card-studio', 'Name Art must link to Card Studio');
+mustLink(nameArtPage, '/urdu-templates', 'Name Art must link to templates');
+
+const cardStudio = page('urdu-card-studio.html');
+mustLink(cardStudio, '/urdu-templates', 'Card Studio must keep its template handoff');
+
 console.log('Contextual writing journey contract passed.');
