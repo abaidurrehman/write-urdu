@@ -5,11 +5,23 @@
     var textarea = document.getElementById('stylishText'), grid = root.querySelector('[data-stylish-results]'), count = root.querySelector('[data-stylish-count]'), status = root.querySelector('[data-stylish-status]');
     var query = root.querySelector('[data-stylish-query]'), category = root.querySelector('[data-stylish-category]'), intensity = root.querySelector('[data-stylish-intensity]');
     var offset = 0, timer = 0;
+    var INCOMING_KEY = 'writeUrdu.stylishText.incoming.v1';
     var state = { favorites: readList(core.STORAGE_KEYS.favorites), recents: readList(core.STORAGE_KEYS.recents), collections: readObject(core.STORAGE_KEYS.collections) };
     function readList(key) { try { var value = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value : []; } catch (error) { return []; } }
     function readObject(key) { try { var value = JSON.parse(localStorage.getItem(key) || '{}'); return value && typeof value === 'object' && !Array.isArray(value) ? value : {}; } catch (error) { return {}; } }
     function save(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (error) { return false; } }
     function setStatus(message) { if (status) status.textContent = message || ''; }
+    function readIncoming() {
+        var incoming = null;
+        try {
+            incoming = JSON.parse(sessionStorage.getItem(INCOMING_KEY) || 'null');
+            sessionStorage.removeItem(INCOMING_KEY);
+        } catch (error) { incoming = null; }
+        var created = incoming && Date.parse(incoming.createdAt || '');
+        if (!incoming || incoming.version !== 1 || typeof incoming.text !== 'string' || !incoming.text.trim()) return null;
+        if (!created || Date.now() - created > 30 * 60 * 1000) return null;
+        return core.normalizeText(incoming.text).value;
+    }
     function copy(value) { if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(value); var input = document.createElement('textarea'); input.value = value; input.style.position = 'fixed'; input.style.opacity = '0'; document.body.appendChild(input); input.select(); try { document.execCommand('copy'); } catch (error) {} input.remove(); return Promise.resolve(); }
     function shareOutput(item) {
         if (navigator.share) {
@@ -60,5 +72,9 @@
     root.querySelector('[data-stylish-more]').addEventListener('click', function () { render(false); });
     root.querySelector('[data-stylish-share]').addEventListener('click', function () { var value = core.normalizeText(textarea.value).value; if (!value) return setStatus('Add text before sharing.'); if (navigator.share) navigator.share({ title: 'Stylish Urdu text', text: value }).catch(function () {}); else copy(value).then(function () { setStatus('Text copied for sharing.'); }); });
     function initTransliteration() { if (!window.google || !google.load || !google.setOnLoadCallback) return; try { google.load('elements', '1', { packages: 'transliteration' }); google.setOnLoadCallback(function () { try { var control = new google.elements.transliteration.TransliterationControl({ sourceLanguage: google.elements.transliteration.LanguageCode.ENGLISH, destinationLanguage: [google.elements.transliteration.LanguageCode.URDU], shortcutKey: 'ctrl+g', transliterationEnabled: true }); control.makeTransliteratable(['stylishText']); window.writeUrduTransliterationControl = control; document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: control } })); } catch (error) {} }); } catch (error) {} }
-    initTransliteration(); render(true);
+    var incomingText = readIncoming();
+    if (incomingText) textarea.value = incomingText;
+    initTransliteration();
+    render(true);
+    if (incomingText) { saveRecentInput(); setStatus('Your editor text is ready to style.'); }
 }());
