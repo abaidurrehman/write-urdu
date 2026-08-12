@@ -2,10 +2,11 @@
 
 **Product:** Write Urdu  
 **Feature/strategy ID:** `WU-GROWTH-001`  
-**Status:** Ready for evidence baseline  
+**Status:** Active — authority/revenue execution  
 **Commercial model:** Google AdSense-funded, organic-search-led  
 **Primary acquisition source:** Google Search and other organic discovery  
-**Architecture constraint:** Preserve the static-first, no-account writing product and transliteration contract.
+**Architecture constraint:** Preserve the static-first, no-account writing product and transliteration contract.  
+**Current execution plan:** `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-08-11.md`
 
 ## 1. Commercial decision
 
@@ -18,6 +19,8 @@ The governing commercial equation is:
 `AdSense revenue ≈ monetizable pageviews × page RPM / 1000`
 
 Search Console explains where qualified organic visits can be gained. AdSense explains which traffic/page groups actually create revenue. Neither dataset should drive the roadmap alone.
+
+WriteUrdu is a mature domain, so incomplete analytics data is not a reason to freeze low-risk authority-compounding work. Safe monetization normalization, internal-link improvements, existing-route SEO cleanup and feature acceptance closure may continue while the full opportunity map is assembled.
 
 ## 2. North-star and guardrails
 
@@ -187,7 +190,7 @@ Each candidate should record:
 
 Until the first full baseline is completed:
 
-- continue only low-risk completion work already in flight;
+- continue low-risk authority, monetization-normalization and completion work already justified by repository evidence;
 - do not create major new tools solely because they are interesting;
 - do not publish the SEO content backlog in bulk;
 - do not repeatedly rewrite the homepage title while the current experiment is unmeasured;
@@ -199,22 +202,32 @@ A visually unfinished low-traffic tool may rank below a high-impression guide or
 
 ## 7. Ad placement strategy
 
+The page-type implementation contract is defined in `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-08-11.md`.
+
 ### Writing/editor surfaces
 
 - Keep the active writing area and immediate controls ad-light.
 - Do not insert ads between a label/instruction and its writing control.
 - Avoid layout shift during ad loading.
 - Prefer placements after task completion, supporting guidance, or natural section boundaries.
+- Do not default to a universal post-header ad on core writing routes.
 
 ### Guide/content surfaces
 
 - These can support more conventional in-content inventory, but reading quality and Core Web Vitals remain release gates.
 - Long-form content should be useful enough to justify its length independently of advertising.
+- Show the page answer/lede before the first monetization unit.
+- Test side rails, anchors or end-of-content formats rather than enabling them site-wide without evidence.
 
 ### Creation/business tools
 
 - Treat the workspace as primary.
 - Monetize around supporting sections or natural transitions rather than inside dense control clusters.
+- Keep ads distinct from templates, result cards, export/share buttons and other selectable product UI.
+
+### Trust/utility pages
+
+- Privacy, feedback, search and sitemap pages do not need to maximize RPM.
 
 ## 8. Search Console analysis outputs
 
@@ -252,6 +265,8 @@ The first commercial review must produce:
 6. High-RPM but low-traffic surfaces that may justify acquisition investment.
 7. Ad placements causing UX, CLS or task-flow concerns.
 8. A conservative revenue-impact estimate for the top search opportunities.
+9. Top-pages / Page URL breakdown for strategic routes where available.
+10. Ad-format and placement-method comparison for manual vs automatic inventory.
 
 ## 10. Backlog gate
 
@@ -276,12 +291,35 @@ Items without an evidence-backed commercial rationale should normally remain P2/
 - [ ] Query/page/country/device opportunities are documented.
 - [ ] At least the top 10 roadmap candidates have a commercial rationale and confidence level.
 - [ ] The canonical `specs/BACKLOG.md` has been reordered from evidence.
+- [ ] Page types have explicit monetization rules and legacy duplicate placements are normalized.
 - [ ] Ad placement guardrails are documented and checked on major v2 surfaces.
+- [ ] URL/custom-channel measurement conventions are documented for strategic pages/placements.
 - [ ] Weekly/monthly measurement cadence is defined.
 - [ ] No raw sensitive advertising/user data is committed publicly.
 
-## 12. Immediate next data request
+## 12. Immediate execution sequence
 
-For the first analysis, obtain Search Console exports for Queries, Pages, Countries, Devices and Dates for a useful recent period, plus a comparable AdSense aggregate report with earnings/page RPM/pageviews by the dimensions available.
+### Growth Slice A — Page-type AdSense architecture + measurement baseline
 
-The resulting analysis—not aesthetic migration order—will set the next growth roadmap.
+Normalize current placements before increasing ad load:
+
+- classify routes as Write / Learn / Create / Trust for monetization purposes;
+- remove duplicate legacy units as pages migrate;
+- replace universal content-page post-header placement with page-type-aware hooks;
+- protect editor/canvas/action regions from in-page automatic placements;
+- preserve the existing AdSense client and single-loader contract;
+- establish URL/custom-channel naming and capture pre-change reports.
+
+### Growth Slice B — Authority Opportunity Map
+
+Obtain Search Console exports for Queries, Pages, Countries, Devices and Dates for a useful recent period, plus a comparable AdSense aggregate report with earnings/page RPM/pageviews by the dimensions available. Join query → route → page type → RPM/proxy RPM and rank defend / near-win / CTR / expansion / consolidation work.
+
+### Growth Slice C — Existing-route SEO wins
+
+Implement the highest-confidence changes on existing query owners before creating a new content family.
+
+### Growth Slice D — First evidence-backed how-to cluster
+
+Choose one strong adjacent cluster (for example WhatsApp, Word, Google Docs or punctuation/numerals) and publish only genuinely useful pages with reviewed examples and live product handoffs.
+
+The detailed page ownership, AdSense format policy, experiment queue and release gates are maintained in `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-2026-08-11.md`.
