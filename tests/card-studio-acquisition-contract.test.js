@@ -28,7 +28,7 @@ assert.ok(guide && guide.indexable, 'Urdu-on-photo guide must be registered and 
 assert.strictEqual(guide.schema.includes('Article'), true, 'Urdu-on-photo guide must use Article schema');
 assert.match(guidePage, /<h1[^>]*>How to write Urdu text or poetry on a photo online<\/h1>/i, 'Guide H1 changed away from informational intent');
 assert.match(guidePage, /href="\/urdu-card-studio"/, 'Guide must hand off directly to Card Studio');
-assert.match(guidePage, /Roman Urdu[\s\S]*transliteration:[\s\S]*not translate English meaning/i, 'Guide must keep transliteration wording accurate');
+assert.match(guidePage, /Transliteration changes sounds into Urdu script; it does not translate English meaning/i, 'Guide must keep transliteration wording accurate');
 assert.match(guidePage, /local JPG, PNG or WebP/i, 'Guide must explain local photo/background input');
 assert.match(guidePage, /phone|mobile/i, 'Guide must include mobile readability guidance');
 assert.match(guidePage, /1080 × 1080/, 'Guide must expose the square output contract');
