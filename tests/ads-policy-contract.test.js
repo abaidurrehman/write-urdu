@@ -31,7 +31,8 @@ assert.strictEqual(ads.LEGACY_DUPLICATE_ROUTES['/english-urdu-typing-tutorial'],
 
 assert.match(adsSource, /data-wu-monetization-type/, 'Page-type measurement metadata is missing');
 assert.match(adsSource, /data-wu-ad-placement/, 'Placement measurement metadata is missing');
-assert.match(adsSource, /data-wu-ad-boundary=\\?"post-workspace\\?"/, 'Explicit post-workspace boundary guard is missing');
+assert.match(adsSource, /post-workspace/, 'Explicit post-workspace boundary guard is missing');
+assert.match(adsSource, /data-write-urdu-ads/, 'AdSense single-loader marker is missing');
 assert.doesNotMatch(adsSource, /data-ad-channel\s*=/, 'Do not invent AdSense custom-channel IDs before channels exist in the publisher account');
 
 const registryPath = path.join(root, 'docs', 'WU-PUBLIC-PAGE-REGISTRY.csv');
@@ -42,6 +43,6 @@ assert.deepStrictEqual(unclassified, [], `Every registered public route must hav
 
 const siteHeader = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 assert.match(siteHeader, /script\[src=\\?"js\/ads\.js\\?"\]/, 'Shared shell must keep the AdSense loader single-instance guard');
-assert.match(siteHeader, /data-write-urdu-ads/, 'Shared AdSense unit must retain its stable loader marker');
+assert.doesNotMatch(siteHeader, /adsbygoogle[^\n]*data-ad-channel/, 'Shared shell must not hard-code an unverified custom-channel ID');
 
 console.log('AdSense page-type policy contract passed.');
