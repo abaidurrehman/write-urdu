@@ -56,7 +56,7 @@ The detailed commercial execution plan is `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-20
 
 ### P0.1A — Growth Slice A: page-type AdSense architecture + measurement baseline
 
-**Runtime status:** implemented and merged in PR #13 (`4c96615409a9463b4e85b40c749f7f1bb6e7eb32`).
+**Runtime status:** implemented and merged in PR #13 (`4c96615409a9463b4e85b40c749f7f1bb6e7eb32`), with the core Write-route monetization regression repaired in PR #15 (`2971a7e7c10a77ebac56128a0fa9c93c82305e95`).
 
 - [x] Classify public routes into Write / Learn / Create / Trust monetization groups.
 - [x] Replace one-size-fits-all serving with page-type-aware placement behavior.
@@ -66,15 +66,16 @@ The detailed commercial execution plan is `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-20
 - [x] Define stable internal placement names and document future custom-channel names.
 - [x] Add a regression contract covering route classification and monetization invariants.
 - [x] Remove the typing tutorial's legacy manual ad stack as part of V2-S3 source cleanup.
+- [x] Restore one safe post-workspace unit to `/`, `/urdu-editor` and `/urdu-keyboard` after the July 11 cleanup regression.
 - [ ] Create the documented custom/URL channels in the AdSense account and then add only real IDs where useful.
 - [ ] Configure the documented Auto-ads page exclusions/excluded areas in AdSense.
-- [ ] Capture a comparable AdSense baseline by top pages, page RPM, country, platform/device and format/placement where available.
+- [ ] Capture a comparable post-restoration AdSense baseline by top pages, page RPM, country, platform/device and format/placement where available.
 
-**Decision rule:** do not increase site-wide ad density until the account-side baseline/exclusions exist and the normalized placement has been observed.
+**Decision rule:** do not increase site-wide ad density until the account-side baseline/exclusions exist and the normalized placement has been observed. Do not interpret the July 12 discontinuity in AdSense pageviews as a traffic collapse without reconciling it against Search Console/site traffic evidence.
 
 ### P0.1B — Authority Opportunity Map
 
-The repository and File Library currently contain only two detailed Search Console baselines (`urdu typing`, `urdu writing`) and no comparable AdSense earnings/RPM export. Do not fabricate the missing map.
+The repository and File Library currently contain only two detailed Search Console baselines (`urdu typing`, `urdu writing`) and no comparable URL-level AdSense earnings/RPM export. Do not fabricate the missing map.
 
 When the exports are available:
 
@@ -103,7 +104,7 @@ Missing commercial exports do not block safe SEO/UX cleanup, intent ownership, i
 
 ## P0.3 — V2-S3 authority migration and overlap decisions
 
-**Status:** implementation complete on the V2-S3 completion branch; merge after quality gates.
+**Status:** completed and merged in PR #14 (`dcea81d318a3c714767d91e2dfd30577074a0aa4`).
 
 - [x] Migrate `/urdu-fonts-nastaliq-vs-naskh` to the shared v2 authority system.
 - [x] Keep `/english-urdu-typing-tutorial` and narrow it to video/product walkthrough intent.
@@ -114,24 +115,28 @@ Missing commercial exports do not block safe SEO/UX cleanup, intent ownership, i
 - [x] Preserve all established canonical URLs; no redirect is justified by current evidence.
 - [x] Update route registry, metadata ownership, sitemap freshness and authority tests.
 
-## P0.4 — Close `WU-SUA-001` acceptance, do not re-build it
+## P0.4 — `WU-SUA-001` acceptance closure
 
 **Type:** Product completion  
-**Spec:** `WU-SUA-001`
+**Spec:** `WU-SUA-001`  
+**Status:** completed in PR #17 acceptance slice; feature state is Implemented.
 
-Repository inspection shows substantial implementation already exists. The remaining task is **acceptance closure**, not another redesign.
+The feature was audited rather than redesigned. Acceptance found and closed real gaps while retaining the existing architecture.
 
-- [ ] Verify the 80-style catalogue is unique and behaves correctly across category/intensity filters.
-- [ ] Verify favourites, collections and recent-input persistence/recovery.
-- [ ] Verify Name Art template/preset coverage against the spec.
-- [ ] Verify exact-size PNG/transparent PNG waits for fonts/assets.
-- [ ] Verify accessibility, mobile layout, privacy copy and recoverable failures.
-- [ ] Add only missing browser/integration coverage.
-- [ ] Change feature status to Implemented when the checklist is green.
+- [x] Verify the 80-style catalogue is unique and behaves correctly across category/intensity filters; fix the Popular filter regression.
+- [x] Verify favourites, collections and recent-input persistence/recovery and add the missing per-result Share action.
+- [x] Verify Name Art template/preset coverage: 24 original templates across 12 packs and six exact output contracts.
+- [x] Verify exact-size PNG/transparent PNG waits for fonts/assets; transparent-name output is 1600×900 and reuses the Card Studio renderer.
+- [x] Verify accessibility, mobile layout, privacy copy and recoverable failures.
+- [x] Add focused static/unit plus desktop/mobile browser acceptance coverage.
+- [x] Change feature status to Implemented when the checklist is green.
+
+**Guardrail:** later v2 shell migration for Stylish Text and Name Art is presentation/product-shell work; it does not reopen `WU-SUA-001` unless behaviour regresses.
 
 ## P0.5 — Authority distribution through internal product journeys
 
-**Type:** Growth + product navigation
+**Type:** Growth + product navigation  
+**Status:** next implementation lane.
 
 Create deliberate, contextually useful paths between established writing demand and deeper tools.
 
@@ -182,7 +187,7 @@ Initial queue:
 2. Learn pages — control versus desktop side rail where reading layout supports it.
 3. Long Learn pages — control versus Multiplex at true content end.
 4. Learn pages — control versus mobile bottom anchor.
-5. Homepage — only consider one post-workspace unit after an explicit safe boundary exists.
+5. Homepage — current safe post-workspace unit is the restored baseline; test alternatives only after post-restoration economics are measured.
 
 **Hold initially:** vignettes and Ad intents.  
 **Do not build around:** Related search for Auto ads; the format is discontinued.
@@ -197,8 +202,8 @@ Evaluate revenue together with task/navigation behavior and Core Web Vitals; do 
 - [ ] Migrate Templates into the same creation journey and strengthen handoff into Card Studio.
 
 ### Stylish Urdu Text + Name Art
-- [ ] Apply the v2 creation shell **after** `WU-SUA-001` acceptance closure.
-- [ ] Preserve copy/favourite/handoff/export behavior.
+- [ ] Apply the v2 creation shell now that `WU-SUA-001` acceptance is closed.
+- [ ] Preserve copy/favourite/collection/share/handoff/template/preset/export behavior and the focused acceptance suite.
 
 ### Social makers + QR
 - [ ] Migrate WhatsApp Status Maker and Instagram Post Maker.
@@ -286,12 +291,12 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 
 | ID | Groomed state | Roadmap treatment |
 | --- | --- | --- |
-| `WU-GROWTH-001` | Active | P0 commercial control plane; runtime AdSense normalization shipped, Authority Map awaits detailed exports |
+| `WU-GROWTH-001` | Active | P0 commercial control plane; runtime AdSense normalization/restoration shipped, Authority Map awaits detailed exports |
 | `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
 | `WU-CS-UX-001` | Implemented core | v2 migration P1 |
 | `WU-CS-UX-002` | Implemented core | v2 migration P1 |
 | `WU-SM-001` | Implemented core | v2 migration P1 |
-| `WU-SUA-001` | Implemented core / acceptance pending | P0 acceptance closure, then v2 migration |
+| `WU-SUA-001` | Implemented | Acceptance closed; v2 creation-shell migration is later presentation work |
 | `WU-IG-001` | Implemented | Strategic evidence review before v2 migration |
 | `WU-IG-002` | Implemented | Same invoice decision |
 | `WU-IG-003` | Implemented | Same invoice decision |
@@ -307,7 +312,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 
 ## Current queue
 
-**Current branch/PR lane:** close V2-S3 authority migration and intent ownership.  
-**Next product-quality implementation:** close `WU-SUA-001` acceptance gaps without redesigning the feature.  
-**Next SEO/growth implementation:** contextual authority distribution/internal journeys across existing high-signal routes.  
+**Current branch/PR lane:** close `WU-SUA-001` acceptance and merge PR #17 after final quality gates.  
+**Next implementation:** P0.5 contextual authority distribution/internal product journeys across existing high-signal routes.  
+**Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
 **Next strategic analysis:** complete the Search Console + AdSense Authority Opportunity Map as soon as detailed exports are available.
