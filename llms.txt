@@ -11,6 +11,7 @@ Important facts:
 - The Urdu Keyboard supports direct Urdu-character input when exact spelling or punctuation matters.
 - The Rich Text Editor is intended for formatted Urdu documents, headings, lists, fonts, alignment and export.
 - Urdu Card Studio is the primary image-creation surface for putting Urdu text, poetry, quotes and announcements on a background or photo and exporting the finished design.
+- Stylish Urdu Text Generator is the primary copy/paste surface for decorated Urdu names and short phrases; exact Nastaliq/Naskh image appearance belongs to Urdu Name Art.
 - Local drafts and several creation workflows use browser storage or browser-side processing. Roman Urdu suggestions may use the transliteration provider described in the privacy policy.
 - Write Urdu does not require an account for the core editors.
 - Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel.
@@ -35,6 +36,7 @@ Important facts:
 ## Create and export
 
 - [Urdu Card Studio](https://www.write-urdu.com/urdu-card-studio): Write Urdu text or poetry on a photo, create quote/post/announcement images with Urdu fonts and templates, and export the finished PNG.
+- [Stylish Urdu Text Generator](https://www.write-urdu.com/stylish-urdu-text-generator): Generate curated copyable Urdu name/text styles, filter by category and intensity, and hand wording into image-based Name Art when exact typography matters.
 - [Urdu Template Library](https://www.write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.
 - [Urdu and English Invoice Generator](https://www.write-urdu.com/urdu-invoice-generator): Create Urdu, English or bilingual invoices with automatic totals and local export.
 - [Static QR Code Generator](https://www.write-urdu.com/qr-code-generator): Create static QR codes for Urdu text, links, Wi-Fi, WhatsApp and contacts.
@@ -49,7 +51,6 @@ Important facts:
 
 ## Optional
 
-- [Stylish Urdu Text Generator](https://www.write-urdu.com/stylish-urdu-text-generator): Copyable Unicode Urdu styles and a handoff into name-art creation.
 - [Urdu Name Art Maker](https://www.write-urdu.com/urdu-name-art-maker): Create Urdu name images with font-based designs.
 - [Urdu WhatsApp Status Maker](https://www.write-urdu.com/urdu-whatsapp-status-maker): Create downloadable Urdu status images.
 - [Urdu Instagram Post Maker](https://www.write-urdu.com/urdu-instagram-post-maker): Create Urdu social images in common Instagram dimensions.
