@@ -6,6 +6,9 @@ const root = path.resolve(__dirname, '..');
 const adsPath = path.join(root, 'js', 'ads.js');
 const adsSource = fs.readFileSync(adsPath, 'utf8');
 const ads = require(adsPath);
+const writeMonetization = fs.readFileSync(path.join(root, 'js', 'write-monetization.js'), 'utf8');
+const mainSource = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
+const inputModeSource = fs.readFileSync(path.join(root, 'js', 'input-mode.js'), 'utf8');
 
 assert.strictEqual(ads.ADSENSE_CLIENT, 'ca-pub-4727847909946286', 'AdSense publisher client changed unexpectedly');
 assert.strictEqual(ads.SHARED_SLOT, '8323789671', 'Shared responsive ad slot changed unexpectedly');
@@ -34,6 +37,21 @@ assert.match(adsSource, /data-wu-ad-placement/, 'Placement measurement metadata 
 assert.match(adsSource, /post-workspace/, 'Explicit post-workspace boundary guard is missing');
 assert.match(adsSource, /data-write-urdu-ads/, 'AdSense single-loader marker is missing');
 assert.doesNotMatch(adsSource, /data-ad-channel\s*=/, 'Do not invent AdSense custom-channel IDs before channels exist in the publisher account');
+
+// Regression contract for the 2026-07-11 monetization incident: the major
+// cleanup removed advertising from the three highest-value writing surfaces.
+// Keep exactly one safe restoration path after the workspace instead of
+// bringing back legacy sidebar/page-level ad initialization.
+assert.match(writeMonetization, /CORE_ROUTES\s*=\s*\['\/', '\/urdu-editor', '\/urdu-keyboard'\]/, 'All three core Write routes must participate in monetization restoration');
+assert.match(writeMonetization, /data-wu-ad-boundary["']?,?\s*['"]post-workspace|setAttribute\('data-wu-ad-boundary', 'post-workspace'\)/, 'Core Write ads must remain behind an explicit post-workspace boundary');
+assert.match(writeMonetization, /id\('UsageAlert'\)|getElementById\('UsageAlert'\)/, 'Homepage ad boundary must remain after the active writing workspace');
+assert.match(writeMonetization, /getElementById\('basic-example'\)/, 'Rich Editor ad boundary must remain after the editor mount');
+assert.match(writeMonetization, /getElementById\('key1'\)/, 'Urdu Keyboard ad boundary must remain after the on-screen keyboard');
+assert.match(writeMonetization, /data-ad-slot=\\?"['"]?\s*\+?\s*SHARED_SLOT|data-ad-slot/, 'Core Write restoration must use the shared responsive AdSense unit');
+assert.match(writeMonetization, /js\/ads\.js/, 'Core Write restoration must delegate initialization to the central AdSense policy runtime');
+assert.doesNotMatch(writeMonetization, /enable_page_level_ads|3607727011|6402857400|7272007417/, 'Do not restore legacy page-level, sidebar, green or link-ad stacks');
+assert.match(mainSource, /js\/write-monetization\.js/, 'Homepage/keyboard runtime must load the core Write monetization module');
+assert.match(inputModeSource, /js\/write-monetization\.js/, 'Rich editor runtime must load the core Write monetization module');
 
 const registryPath = path.join(root, 'docs', 'WU-PUBLIC-PAGE-REGISTRY.csv');
 const registryLines = fs.readFileSync(registryPath, 'utf8').trim().split(/\r?\n/).slice(1);
