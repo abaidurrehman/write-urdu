@@ -1,6 +1,6 @@
 # WU-SEO-ETU-001 — English to Urdu Typing Acquisition
 
-**Status:** Implemented with this slice once the acceptance contract is green  
+**Status:** Implemented  
 **Primary route:** `/`  
 **Area:** Search acquisition / mature-domain authority  
 **Priority:** P1.1 / P1.2
@@ -60,11 +60,13 @@ A new route is justified only if future query/page evidence shows a genuinely di
 - State clearly that this is transliteration, not English-language translation.
 - Do not add another ad inside the active writing surface.
 
-## Rendered metadata contract
+## Initial HTML and rendered metadata contract
 
-`seo.config.js` is the source of truth for canonical search metadata. The shared UI shell may localize interface/document copy, but on the initial page load it must not leave a generic shell title in place of an explicit `searchTitle` / `searchDescription` from the SEO registry.
+`seo.config.js` is the source of truth for canonical search metadata. Explicit `searchTitle` / `searchDescription` values must be present in the **initial static HTML** `<title>`, description, Open Graph and Twitter metadata; search crawlers must not need JavaScript just to discover the preferred acquisition title.
 
-This also protects other search-investment routes such as Card Studio that use explicit search-facing metadata.
+The shared UI shell may localize interface/document copy, but on the initial page load it must not leave a generic shell title in place of the SEO registry. `scripts/sync-static-search-metadata.js` keeps the checked-in HTML synchronized and `npm run seo:check` fails if it drifts.
+
+This contract also protects other search-investment routes such as Card Studio.
 
 ## Internal authority distribution
 
@@ -77,15 +79,16 @@ The homepage remains a **Write** page under the AdSense operating contract. Its 
 ## Acceptance criteria
 
 - [x] `/` remains the only broad English-to-Urdu typing product owner.
-- [x] Homepage search-facing title begins with `English to Urdu Typing Online` and still contains `Urdu Typing Online`.
+- [x] Homepage search-facing title begins with `English to Urdu Typing Online` and still contains `Urdu Typing Online` relevance.
 - [x] Search description mentions Roman Urdu, English letters, Urdu script and transliteration-not-translation semantics.
+- [x] Preferred acquisition title/description are present in the initial HTML, Open Graph and Twitter metadata.
 - [x] Homepage H1 and canonical remain unchanged.
 - [x] Homepage material revision date is refreshed for this acquisition change.
 - [x] Rich Editor, Urdu Keyboard, tutorial and transliteration guide keep distinct registry titles/intents.
 - [x] Rendered SEO metadata is re-applied after the shared shell's initial title localization.
 - [x] `llms.txt` names the homepage as the English-to-Urdu typing owner.
 - [x] No exact-match doorway route is added.
-- [x] Regression tests protect ownership, wording and metadata precedence.
+- [x] Regression tests protect ownership, wording, initial HTML metadata and runtime metadata precedence.
 
 ## Verification
 
@@ -94,6 +97,8 @@ npm test
 npm run seo:check
 npm run governance:check
 npm run test:browser
+npm run seo:production
+npm run seo:live
 ```
 
 After deployment, inspect and request recrawl for `/` and the supporting routes that historically appeared for the query, then monitor Search Console query-to-page ownership before making another title or route change.
