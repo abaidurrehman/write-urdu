@@ -45,3 +45,6 @@ jobs:
 
       - name: Validate routes and product governance
         run: npm run governance:check
+
+      - name: Run WU-SUA-001 browser acceptance
+        run: npx playwright test tests/sua.spec.js
