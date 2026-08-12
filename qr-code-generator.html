@@ -13,10 +13,12 @@
     <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
     <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/qr-generator.css">
+    <link rel="stylesheet" href="css/v2-creation.css">
+    <link rel="stylesheet" href="css/v2-publish-tools.css">
 </head>
 <body class="qr-generator-page">
     <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
-    <main class="qr-shell" data-qr-generator>
+    <main class="qr-shell" data-qr-generator data-v2-creation-workspace="qr-generator">
         <header class="qr-topbar">
             <div>
                 <p class="qr-eyebrow">Write Urdu tools</p>
@@ -81,7 +83,7 @@
             </section>
         </div>
     </main>
-    <section class="seo-content" aria-labelledby="qr-about">
+    <section class="seo-content" data-wu-ad-boundary="post-workspace" aria-labelledby="qr-about">
         <h2 id="qr-about">Create static QR codes in your browser</h2>
         <p>The Write Urdu QR Code Generator creates static QR codes for Urdu text, website links, Wi-Fi, WhatsApp, email, phone, SMS, contacts and locations. Generation and logo processing happen in the browser, and the finished code can be downloaded as PNG or SVG.</p>
         <div class="seo-content-grid">
