@@ -11,6 +11,7 @@
     'use strict';
 
     var ADSENSE_CLIENT = 'ca-pub-4727847909946286';
+    var ADSENSE_SCRIPT = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4727847909946286';
     var SHARED_SLOT = '8323789671';
 
     // GROWTH-A1: every public product route has one monetization posture.
@@ -188,7 +189,7 @@
 
         var script = document.createElement('script');
         script.async = true;
-        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE_CLIENT;
+        script.src = ADSENSE_SCRIPT;
         script.crossOrigin = 'anonymous';
         script.setAttribute('data-write-urdu-ads', '');
         script.onload = initializeSlots;
@@ -243,6 +244,7 @@
 
     return {
         ADSENSE_CLIENT: ADSENSE_CLIENT,
+        ADSENSE_SCRIPT: ADSENSE_SCRIPT,
         SHARED_SLOT: SHARED_SLOT,
         PAGE_TYPES: PAGE_TYPES,
         LEGACY_DUPLICATE_ROUTES: LEGACY_DUPLICATE_ROUTES,
