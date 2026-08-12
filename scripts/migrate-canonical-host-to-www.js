@@ -53,4 +53,13 @@ if (rewrite('scripts/check-live-canonical.js', before => before
   .replace("'HTTP www -> HTTPS apex'", "'HTTP www -> HTTPS www'")
 )) changed += 1;
 
-console.log(`Canonical-host migration updated ${changed} public/runtime files.`);
+const testsDir = path.join(root, 'tests');
+for (const name of fs.readdirSync(testsDir).filter(name => name.endsWith('.js'))) {
+  const relative = path.join('tests', name);
+  if (rewrite(relative, before => before
+    .split(oldOrigin).join(newOrigin)
+    .split('https:\\/\\/write-urdu\\.com').join('https:\\/\\/www\\.write-urdu\\.com')
+  )) changed += 1;
+}
+
+console.log(`Canonical-host migration updated ${changed} public/runtime/test files.`);
