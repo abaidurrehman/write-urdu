@@ -100,3 +100,13 @@
             };
             fileReader.readAsText(fileToLoad, "UTF-8");
         }
+
+        (function loadWriteMonetization() {
+            var path = String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+            if (path === '/index') path = '/';
+            if (['/', '/urdu-keyboard'].indexOf(path) < 0 || document.querySelector('script[src="js/write-monetization.js"]')) return;
+            var script = document.createElement('script');
+            script.src = 'js/write-monetization.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        }());
