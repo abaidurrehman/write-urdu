@@ -197,9 +197,11 @@ Evaluate revenue together with task/navigation behavior and Core Web Vitals; do 
 ## P1.4 — V2 creation-workspace migration
 
 ### Card Studio + Templates
-- [ ] Move Card Studio onto the v2 application hierarchy without changing renderer/export contracts.
-- [ ] Make the workspace dominant and education/promo secondary.
-- [ ] Migrate Templates into the same creation journey and strengthen handoff into Card Studio.
+**Status:** completed in PR #20.
+
+- [x] Move Card Studio onto the v2 application hierarchy without changing renderer/export contracts.
+- [x] Make the workspace dominant and education/promo secondary.
+- [x] Migrate Templates into the same creation journey and strengthen handoff into Card Studio.
 
 ### Stylish Urdu Text + Name Art
 - [ ] Apply the v2 creation shell now that `WU-SUA-001` acceptance is closed.
@@ -293,10 +295,10 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 | --- | --- | --- |
 | `WU-GROWTH-001` | Active | P0 commercial control plane; runtime AdSense normalization/restoration shipped, Authority Map awaits detailed exports |
 | `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
-| `WU-CS-UX-001` | Implemented core | v2 migration P1 |
-| `WU-CS-UX-002` | Implemented core | v2 migration P1 |
+| `WU-CS-UX-001` | Implemented | Card Studio behavior complete; v2 creation hierarchy migrated in PR #20 |
+| `WU-CS-UX-002` | Implemented | Card Studio empty-state behavior retained through v2 migration |
 | `WU-SM-001` | Implemented core | v2 migration P1 |
-| `WU-SUA-001` | Implemented | Acceptance closed; v2 creation-shell migration is later presentation work |
+| `WU-SUA-001` | Implemented | Acceptance closed; Stylish Text + Name Art v2 presentation migration is next |
 | `WU-IG-001` | Implemented | Strategic evidence review before v2 migration |
 | `WU-IG-002` | Implemented | Same invoice decision |
 | `WU-IG-003` | Implemented | Same invoice decision |
@@ -312,7 +314,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 
 ## Current queue
 
-**Current branch/PR lane:** merge PR #18 after final quality gates; this closes the remaining P0 product-navigation slice.  
-**Next product implementation:** P1.4 creation-workspace v2 migration, beginning with Card Studio + Templates while preserving their renderer/export contracts.  
+**Completed product implementation:** P1.4 Card Studio + Templates v2 creation migration in PR #20.  
+**Next product implementation:** continue P1.4 with Stylish Urdu Text + Name Art while preserving the complete `WU-SUA-001` acceptance contract.  
 **Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
 **Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.
