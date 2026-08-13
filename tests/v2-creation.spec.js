@@ -125,7 +125,7 @@ test('Stylish Urdu Text uses a results-first v2 creation hierarchy', async ({ pa
   await expect(firstCard.getByRole('button', { name: 'Name Art' })).toBeVisible();
 });
 
-test('Urdu Name Art uses a compact rail beside the live Card Studio workspace', async ({ page, isMobile }) => {
+test('Urdu Name Art uses a compact rail beside its direct live canvas', async ({ page, isMobile }) => {
   await blockNonVisualServices(page);
   await open(page, '/urdu-name-art-maker.html');
 
@@ -137,6 +137,8 @@ test('Urdu Name Art uses a compact rail beside the live Card Studio workspace', 
   await expect(page.locator('[data-name-art-templates] [data-name-art-template]')).toHaveCount(24);
   await expect(page.locator('[data-name-art-preset] option')).toHaveCount(6);
   await expect(page.locator('[data-name-art-status]')).toContainText('ready', { timeout: 20000 });
+  await expect(page.locator('.name-art-workspace iframe')).toHaveCount(0);
+  await expect(page.locator('.name-art-workspace #cardCanvas')).toBeVisible();
 
   const metrics = await page.evaluate(() => {
     const shortcuts = document.querySelector('.name-art-shortcuts').getBoundingClientRect();
@@ -165,7 +167,7 @@ test('Urdu Name Art uses a compact rail beside the live Card Studio workspace', 
   expect(templateId).toBeTruthy();
   await template.click();
   await expect.poll(() => page.evaluate(() => {
-    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getFrameApp();
+    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
     const state = app && app.getState && app.getState();
     return state && state.templateId;
   }), { timeout: 10000 }).toBe(templateId);
