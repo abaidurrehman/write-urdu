@@ -5,6 +5,7 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const seo = require(path.join(root, 'seo.config.js'));
 const social = require(path.join(root, 'js', 'social-maker-core.js'));
+const cardCore = require(path.join(root, 'js', 'card-studio-core.js'));
 const qr = require(path.join(root, 'js', 'qr-generator-core.js'));
 
 const creationCss = read('css/v2-creation.css');
@@ -32,6 +33,10 @@ assert.match(directCss, /\.social-maker-workspace-direct/, 'Direct social worksp
 assert.match(directCss, /\.social-maker-engine-support\{display:none!important\}/, 'Shared-engine support must remain internal');
 
 assert.match(cardUi, /root\.dataset\.v2CreationWorkspace = 'card-studio'/, 'Card Studio marker missing');
+assert.match(cardUi, /\/urdu-card-studio\?role=facebook/, 'Card Studio must expose the Facebook role entry on its existing owner route');
+assert.match(cardUi, /cardRoleMode = 'facebook'/, 'Facebook role marker missing');
+assert.match(cardUi, /enforceFacebookRole/, 'Facebook 1200 × 630 role enforcement missing');
+assert.match(cardUi, /social\.applyDefaults\(core,[\s\S]*'facebook'/, 'Facebook role must map into the shared social/Card Studio state');
 assert.doesNotMatch(cardUi, /toBlob|drawImage|fillText|canvas\.width/, 'Card Studio presentation layer must not become another renderer');
 assert.match(stylishUi, /button\('Share'/, 'Stylish Share changed');
 assert.match(stylishUi, /button\('Name Art'/, 'Stylish to Name Art handoff changed');
@@ -42,6 +47,8 @@ assert.doesNotMatch(nameArtUi, /frame\.contentWindow|frame\.contentDocument|data
 
 assert.match(cardPage, /data-card-studio/, 'Card Studio root changed');
 assert.match(cardPage, /data-card-action="download"/, 'Card Studio download changed');
+assert.ok(cardPage.includes(`href="${seo.canonical('/urdu-card-studio')}"`), 'Card Studio canonical changed while adding Facebook role mode');
+assert.strictEqual(seo.pages.some(page => page.path === '/facebook-post-maker' || page.path === '/urdu-facebook-post-maker'), false, 'Facebook role must not create a competing indexable doorway route');
 assert.match(templatePage, /data-template-library/, 'Template Library root changed');
 assert.match(templatePage, /data-template-grid/, 'Template result grid changed');
 assert.ok(templatePage.includes(`href="${seo.canonical('/urdu-templates')}"`), 'Template canonical changed');
@@ -81,12 +88,19 @@ assert.doesNotMatch(instagramUi, /contentWindow|contentDocument|drawImage|fillTe
 
 assert.strictEqual(social.getMode('whatsapp').defaultPreset, 'story');
 assert.strictEqual(social.getMode('instagram').defaultPreset, 'square');
+assert.strictEqual(social.getMode('facebook').defaultPreset, 'facebook');
 assert.strictEqual(social.getModeFromLocation({ pathname:'/urdu-whatsapp-status-maker.html', search:'' }).id, 'whatsapp');
 assert.strictEqual(social.getModeFromLocation({ pathname:'/urdu-instagram-post-maker.html', search:'' }).id, 'instagram');
+assert.strictEqual(social.getModeFromLocation({ pathname:'/urdu-card-studio.html', search:'?role=facebook' }).id, 'facebook');
 assert.deepStrictEqual(social.getSafeArea('whatsapp', { id:'story', width:1080, height:1920 }), { top:230, right:100, bottom:290, left:100 });
 assert.deepStrictEqual(social.getSafeArea('instagram', { id:'square', width:1080, height:1080 }), { top:90, right:90, bottom:90, left:90 });
 assert.deepStrictEqual(social.getSafeArea('instagram', { id:'portrait', width:1080, height:1350 }), { top:120, right:90, bottom:150, left:90 });
 assert.deepStrictEqual(social.getSafeArea('instagram', { id:'story', width:1080, height:1920 }), { top:230, right:100, bottom:290, left:100 });
+assert.deepStrictEqual(social.getSafeArea('facebook', { id:'facebook', width:1200, height:630 }), { top:70, right:96, bottom:70, left:96 });
+const facebookProject = social.applyDefaults(cardCore, cardCore.createDefaultCardProject('فیس بک پوسٹ'), 'facebook', 'فیس بک پوسٹ');
+assert.strictEqual(facebookProject.presetId, 'facebook', 'Facebook role must use the existing 1200 × 630 preset');
+assert.strictEqual(facebookProject.socialMode, 'facebook', 'Facebook role must stay scoped in shared social state');
+assert.strictEqual(facebookProject.name, 'urdu-facebook-post', 'Facebook export filename prefix changed');
 
 assert.match(qrPage, /data-qr-download-png/, 'QR PNG download changed');
 assert.match(qrPage, /data-qr-download-svg/, 'QR SVG download changed');
@@ -95,4 +109,4 @@ assert.strictEqual(qr.buildUrlPayload({ url:'not a url' }).valid, false);
 assert.match(sw, /urdu-whatsapp-status-maker\.html/, 'WhatsApp missing from PWA shell');
 assert.match(sw, /urdu-instagram-post-maker\.html/, 'Instagram missing from PWA shell');
 
-console.log('V2 creation contract passed for direct Name Art, WhatsApp Status and Instagram workspaces.');
+console.log('V2 creation contract passed for direct Name Art, WhatsApp Status, Instagram and Facebook role mode.');
