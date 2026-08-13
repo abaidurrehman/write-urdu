@@ -29,6 +29,9 @@ test('Facebook role exports a direct 1200x630 JPEG', async ({ page, isMobile }) 
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().text.value)).toBe(postText);
   expect(page.url()).not.toContain(encodeURIComponent(postText));
 
+  await expect(page.locator('[data-social-export-format]')).toBeHidden();
+  await page.locator('.card-studio-stepper [data-card-step="export"]').click();
+  await expect(page.locator('[data-social-export-format]')).toBeVisible();
   await page.locator('[data-social-export-format]').selectOption('jpeg');
   await page.locator('[data-social-jpeg-quality]').fill('0.86');
   await expect(page.locator('[data-social-quality-value]')).toHaveText('86%');
