@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v12';
+const CACHE_NAME = 'write-urdu-shell-v13';
 const APP_SHELL = [
   './',
   './index.html',
@@ -23,6 +23,7 @@ const APP_SHELL = [
   './css/template-library.css',
   './css/stylish-urdu.css',
   './css/name-art.css',
+  './css/name-art-task-first.css',
   './css/social-maker.css',
   './css/journey-handoffs.css',
   './css/v2-creation.css',
