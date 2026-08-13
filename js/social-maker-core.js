@@ -40,10 +40,26 @@
         return value && MODES[value] ? MODES[value] : null;
     }
 
+    function normalizeRoute(pathname) {
+        var value = String(pathname || '/').split('?')[0].split('#')[0];
+        if (value.length > 1) value = value.replace(/\/+$/, '');
+        value = value.replace(/\.html$/i, '');
+        return value || '/';
+    }
+
     function getModeFromLocation(location) {
         try {
-            var params = new URLSearchParams((location || (typeof window !== 'undefined' ? window.location : {})).search || '');
-            return getMode(params.get('social'));
+            var current = location || (typeof window !== 'undefined' ? window.location : {});
+            var params = new URLSearchParams(current.search || '');
+            var explicit = getMode(params.get('social'));
+            if (explicit) return explicit;
+            var route = normalizeRoute(current.pathname || '');
+            var keys = Object.keys(MODES);
+            for (var index = 0; index < keys.length; index += 1) {
+                var config = MODES[keys[index]];
+                if (normalizeRoute(config.route) === route) return config;
+            }
+            return null;
         } catch (error) {
             return null;
         }
@@ -98,5 +114,5 @@
         return base + '-' + new Date().toISOString().slice(0, 10) + '.' + (extension === 'jpeg' ? 'jpg' : 'png');
     }
 
-    return { MODES: MODES, getMode: getMode, getModeFromLocation: getModeFromLocation, storageKey: storageKey, recentKey: recentKey, getSafeArea: getSafeArea, applyDefaults: applyDefaults, isInsideSafeArea: isInsideSafeArea, evaluateSafeArea: evaluateSafeArea, safeFilename: safeFilename };
+    return { MODES: MODES, getMode: getMode, normalizeRoute: normalizeRoute, getModeFromLocation: getModeFromLocation, storageKey: storageKey, recentKey: recentKey, getSafeArea: getSafeArea, applyDefaults: applyDefaults, isInsideSafeArea: isInsideSafeArea, evaluateSafeArea: evaluateSafeArea, safeFilename: safeFilename };
 }));
