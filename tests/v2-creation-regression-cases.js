@@ -58,10 +58,13 @@ test('Stylish Urdu filtering and result actions remain intact', async ({ page })
   await expect(first.getByRole('button', { name:'Name Art' })).toBeVisible();
 });
 
-test('Instagram legacy mode keeps its portrait safe-area contract', async ({ page }) => {
+test('Instagram direct mode keeps its adaptive safe-area contract', async ({ page }) => {
   await block(page); await open(page, '/urdu-instagram-post-maker.html');
-  const safe = await page.locator('.social-maker-frame').evaluate(frame => frame.contentWindow.WriteUrduSocialMaker.getSafeArea('instagram', { id:'portrait', width:1080, height:1350 }));
-  expect(safe).toEqual({ top:120, right:90, bottom:150, left:90 });
+  await expect(page.locator('.social-maker-workspace iframe')).toHaveCount(0);
+  await expect(page.locator('#cardCanvas')).toBeVisible();
+  expect(await page.evaluate(() => window.WriteUrduSocialMaker.getSafeArea('instagram', { id:'square', width:1080, height:1080 }))).toEqual({ top:90, right:90, bottom:90, left:90 });
+  expect(await page.evaluate(() => window.WriteUrduSocialMaker.getSafeArea('instagram', { id:'portrait', width:1080, height:1350 }))).toEqual({ top:120, right:90, bottom:150, left:90 });
+  expect(await page.evaluate(() => window.WriteUrduSocialMaker.getSafeArea('instagram', { id:'story', width:1080, height:1920 }))).toEqual({ top:230, right:100, bottom:290, left:100 });
 });
 
 test('QR Generator still rejects invalid URLs and accepts Urdu text', async ({ page }) => {
