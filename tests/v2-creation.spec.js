@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 require('./v2-creation-regression-cases.js');
+require('./instagram-role-journey.js');
 
 const block = page => Promise.all([
   page.route(/google_jsapi\.js/, route => route.continue()),
