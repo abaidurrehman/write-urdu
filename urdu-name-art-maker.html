@@ -8,23 +8,47 @@
     <meta property="og:type" content="website"><meta property="og:site_name" content="Write Urdu"><meta property="og:title" content="Urdu Name Art Maker – Urdu Name Image &amp; DP Maker | WriteUrdu"><meta property="og:description" content="Create Urdu name art, name images and DP/profile designs with Urdu-safe fonts, 24 original templates, local backgrounds and PNG or transparent PNG export."><meta property="og:url" content="https://www.write-urdu.com/urdu-name-art-maker"><meta property="og:image" content="https://www.write-urdu.com/image/logo10.png"><meta property="og:image:alt" content="Urdu Name Art Studio">
     <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Urdu Name Art Maker – Urdu Name Image &amp; DP Maker | WriteUrdu"><meta name="twitter:description" content="Create Urdu name art, name images and DP/profile designs with Urdu-safe fonts, 24 original templates, local backgrounds and PNG or transparent PNG export."><meta name="twitter:image" content="https://www.write-urdu.com/image/logo10.png"><link rel="icon" href="image/logo10.png" type="image/png">
     <link rel="stylesheet" href="css/site-header.css"><link rel="stylesheet" href="css/card-studio.css"><link rel="stylesheet" href="css/name-art.css">
-    <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script><script src="site-header.js" defer></script><script src="js/name-art-core.js" defer></script><script src="js/name-art.js" defer></script>
+    <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script><script src="site-header.js" defer></script><script src="js/batch-transliteration.js" defer></script><script src="js/name-art-core.js" defer></script><script src="js/name-art.js" defer></script>
 </head>
 <body class="name-art-page">
     <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
     <main class="name-art-main" data-name-art>
-        <header class="name-art-hero"><div><h1>Urdu Name Art Studio</h1><p>Create your own Urdu name image with Nastaliq or Naskh fonts, 24 original templates, colour, local backgrounds and direct on-canvas editing. Make a profile/DP image, a social name design or a transparent Urdu name layer, then download the finished PNG from your browser.</p></div><aside class="name-art-note"><strong>Text style or image?</strong><br>Copied Unicode styles can vary between apps. Name Art renders the selected Urdu font into the image so the exported design keeps its appearance.</aside></header>
-        <section class="name-art-shortcuts" aria-labelledby="name-art-shortcuts-title">
-            <div class="name-art-shortcut-heading"><div><p class="name-art-eyebrow">Name Art shortcuts</p><h2 id="name-art-shortcuts-title">Choose a look and output size</h2><p>Start with one of 24 original templates across 12 packs, then refine the Urdu font, position, colour and background inside the full Card Studio workspace below.</p></div><p class="name-art-local-note"><strong>Private by default.</strong> Templates, text, local backgrounds and exported images stay in this browser unless you choose to share them.</p></div>
-            <div class="name-art-control-grid">
-                <label class="name-art-field" for="nameArtPack"><span>Template pack</span><select id="nameArtPack" data-name-art-pack><option value="all">All 24 templates</option></select></label>
-                <label class="name-art-field" for="nameArtPreset"><span>Output size</span><select id="nameArtPreset" data-name-art-preset></select></label>
+        <header class="name-art-hero"><div><h1>Urdu Name Art Studio</h1><p>Type your name first, choose what you are making, then refine the result with real Urdu fonts and original templates. Create a profile/DP image, social name design or transparent Urdu name layer and download the finished PNG from your browser.</p></div><aside class="name-art-note"><strong>Text style or image?</strong><br>Copied Unicode styles can vary between apps. Name Art renders the selected Urdu font into the image so the exported design keeps its appearance.</aside></header>
+
+        <div class="name-art-rail" data-name-art-rail>
+            <section class="name-art-shortcuts" aria-labelledby="name-art-shortcuts-title">
+                <div class="name-art-shortcut-heading"><div><p class="name-art-eyebrow">Start with your name</p><h2 id="name-art-shortcuts-title">Type it, then choose the result</h2><p>Use Urdu directly, or type Roman Urdu and convert the sounds into Urdu script before you design.</p></div></div>
+
+                <label class="name-art-field name-art-name-field" for="nameArtText"><span>Your name or short text</span><textarea id="nameArtText" data-name-art-text dir="auto" lang="ur" rows="2" maxlength="180" placeholder="مثلاً عائشہ — or type Ayesha"></textarea></label>
+                <div class="name-art-text-actions" role="group" aria-label="Name text actions">
+                    <button type="button" class="secondary" data-name-art-convert>Convert Roman Urdu</button>
+                    <span class="name-art-convert-note">Transliteration changes sounds into Urdu script; it does not translate English meaning.</span>
+                </div>
+
+                <fieldset class="name-art-purpose" data-name-art-purpose-group>
+                    <legend>What are you making?</legend>
+                    <div class="name-art-purpose-grid">
+                        <button type="button" class="is-selected" data-name-art-purpose="square" aria-pressed="true"><strong>DP / Profile</strong><small>1080 × 1080</small></button>
+                        <button type="button" data-name-art-purpose="name-transparent" aria-pressed="false"><strong>Transparent name</strong><small>PNG layer</small></button>
+                        <button type="button" data-name-art-purpose="story" aria-pressed="false"><strong>Story / Status</strong><small>1080 × 1920</small></button>
+                        <button type="button" data-name-art-purpose="facebook" aria-pressed="false"><strong>Wide social</strong><small>1200 × 630</small></button>
+                    </div>
+                </fieldset>
+
+                <label class="name-art-field" for="nameArtPreset"><span>Exact output size</span><select id="nameArtPreset" data-name-art-preset></select></label>
                 <div class="name-art-export-actions" role="group" aria-label="Name Art export actions"><button type="button" data-name-art-download>Download PNG</button><button type="button" class="secondary" data-name-art-transparent>Download transparent PNG</button></div>
-            </div>
-            <div class="name-art-template-grid" data-name-art-templates role="list" aria-label="Name Art templates"></div>
-            <p class="name-art-status" data-name-art-status role="status" aria-live="polite">Loading the design workspace…</p>
-        </section>
-        <section class="name-art-workspace" aria-labelledby="name-art-workspace-title"><h2 id="name-art-workspace-title" class="stylish-sr-only">Urdu Name Art design workspace</h2><iframe class="name-art-frame" data-name-art-frame title="Urdu Name Art Studio design workspace"></iframe></section>
+                <p class="name-art-local-note"><strong>Private by default.</strong> Templates, text, local backgrounds and exported images stay in this browser unless you choose to share them.</p>
+                <p class="name-art-status" data-name-art-status role="status" aria-live="polite">Loading the design workspace…</p>
+            </section>
+
+            <section class="name-art-style-picker" aria-labelledby="name-art-style-title">
+                <div class="name-art-style-heading"><p class="name-art-eyebrow">Choose a style</p><h2 id="name-art-style-title">24 original starting designs</h2><p>Pick a visual direction after your name is visible. You can refine the font, colour, position and background in the live workspace.</p></div>
+                <label class="name-art-field" for="nameArtPack"><span>Style pack</span><select id="nameArtPack" data-name-art-pack><option value="all">All 24 templates</option></select></label>
+                <div class="name-art-template-grid" data-name-art-templates role="list" aria-label="Name Art templates"></div>
+            </section>
+        </div>
+
+        <section class="name-art-workspace" aria-labelledby="name-art-workspace-title"><h2 id="name-art-workspace-title" class="stylish-sr-only">Live Urdu Name Art preview and design workspace</h2><iframe class="name-art-frame" data-name-art-frame title="Urdu Name Art Studio design workspace"></iframe></section>
         <section class="name-art-guidance" data-wu-ad-boundary="post-workspace" aria-label="What you can create with Urdu Name Art">
             <article><h2>Urdu name image or DP</h2><p>Use the 1080 × 1080 profile-square preset for an Urdu name DP/profile image, then choose a readable Urdu font and keep the name clear at phone size.</p></article>
             <article><h2>24 original templates in 12 packs</h2><p>Start from Minimal, Royal, Islamic, Gaming, Love, Floral, Neon, Traditional, Modern, Pakistan, Wedding or Social Profile designs. Each pack has two original starting templates.</p></article>
@@ -38,7 +62,7 @@
             <details><summary>Can I make an Urdu name DP or profile picture?</summary><p>Yes. Start with the Profile square preset at 1080 × 1080, choose a Social Profile or another template pack, and check the finished name at normal phone size before sharing it.</p></details>
             <details><summary>Does this generate a new Urdu name for me?</summary><p>No. This is a name-design tool, not a random-name generator. You provide the Urdu name or wording you want to design, then choose the font, template, background and output size.</p></details>
             <details><summary>Does this use the Stylish Urdu Text result?</summary><p>When you arrive from the Stylish Urdu Text Generator, your selected text is handed off through short-lived session storage, never through the URL. The handoff expires after 30 minutes and is removed after import.</p></details>
-            <details><summary>Can I use it on a phone?</summary><p>Yes. The workspace reuses Card Studio’s responsive controls and native text editing layer. Keep the complete canvas visible while moving text, and check the downloaded image at normal phone size.</p></details>
+            <details><summary>Can I use it on a phone?</summary><p>Yes. Type your name before choosing styles; on smaller screens the live design workspace appears before the full style list so you can see value sooner.</p></details>
             <details><summary>Are uploaded images private?</summary><p>Background images are decoded and rendered locally. They are not sent to Write Urdu or a third-party image service as part of the design workflow. See the <a href="/write-urdu-privacy">privacy policy</a> for separate transliteration network details.</p></details>
             <details><summary>Why use transparent PNG?</summary><p>Transparent PNG removes the card background and watermark so the rendered Urdu name can be placed over another design while keeping the selected Urdu font appearance.</p></details>
             <p class="name-art-related"><a href="/stylish-urdu-text-generator">Generate copyable stylish Urdu text</a> · <a href="/urdu-card-studio">Write Urdu on a photo</a> · <a href="/urdu-templates">Browse Urdu templates</a></p>
