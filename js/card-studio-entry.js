@@ -1,7 +1,12 @@
 (function () {
     'use strict';
 
+    var HANDOFF_TTL = 30 * 60 * 1000;
+    var RICH_DRAFT_KEY = 'write-urdu:draft:v1:rich';
+    var RICH_HISTORY_KEY = 'write-urdu:history:v1:rich';
+    var MAX_RICH_HISTORY = 5;
     var DESTINATIONS = {
+        rich: { route: '/urdu-editor', file: 'urdu-editor.html', key: 'writeUrdu.richEditor.incoming.v1' },
         card: { route: '/urdu-card-studio', file: 'urdu-card-studio.html', key: 'writeUrdu.cardStudio.incoming' },
         stylish: { route: '/stylish-urdu-text-generator', file: 'stylish-urdu-text-generator.html', key: 'writeUrdu.stylishText.incoming.v1' },
         nameArt: { route: '/urdu-name-art-maker', file: 'urdu-name-art-maker.html', key: 'writeUrdu.nameArt.handoff.v1' }
@@ -62,6 +67,22 @@
         } catch (error) { /* Private browsing: destination can still open blank. */ }
     }
 
+    function readOneTimeHandoff(destination) {
+        var config = DESTINATIONS[destination];
+        if (!config) return null;
+        var incoming = null;
+        try {
+            incoming = JSON.parse(sessionStorage.getItem(config.key) || 'null');
+            sessionStorage.removeItem(config.key);
+        } catch (error) {
+            incoming = null;
+        }
+        var created = incoming && Date.parse(incoming.createdAt || '');
+        if (!incoming || incoming.version !== 1 || typeof incoming.text !== 'string' || !incoming.text.trim()) return null;
+        if (!created || Date.now() - created > HANDOFF_TTL) return null;
+        return incoming;
+    }
+
     function destinationUrl(destination) {
         var config = DESTINATIONS[destination];
         if (!config) return '/';
@@ -74,6 +95,82 @@
         storeHandoff(destination, text, source);
         dispatchJourney(destination, text, source);
         window.location.href = destinationUrl(destination);
+    }
+
+    function snapshotSignature(snapshot) {
+        if (!snapshot) return '';
+        return String(snapshot.text || '').replace(/\s+/g, ' ').trim() + '\u0000' + String(snapshot.content || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function readRichHistory() {
+        try {
+            var items = JSON.parse(localStorage.getItem(RICH_HISTORY_KEY) || '[]');
+            return Array.isArray(items) ? items : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function preserveRichSnapshot(snapshot) {
+        if (!snapshot || !String(snapshot.text || snapshot.content || '').trim()) return;
+        try {
+            var signature = snapshotSignature(snapshot);
+            var items = readRichHistory().filter(function (item) { return snapshotSignature(item) !== signature; });
+            items.unshift({
+                content: String(snapshot.content || ''),
+                text: String(snapshot.text || ''),
+                savedAt: Number(snapshot.savedAt) || Date.now(),
+                title: snapshot.title || undefined
+            });
+            localStorage.setItem(RICH_HISTORY_KEY, JSON.stringify(items.slice(0, MAX_RICH_HISTORY)));
+        } catch (error) { /* Local storage can be unavailable. */ }
+    }
+
+    function plainTextToHtml(text) {
+        var holder = document.createElement('div');
+        holder.textContent = String(text || '');
+        return '<p>' + holder.innerHTML.replace(/\r?\n/g, '<br>') + '</p>';
+    }
+
+    function stageRichDraft(incoming, html) {
+        try {
+            var existing = JSON.parse(localStorage.getItem(RICH_DRAFT_KEY) || 'null');
+            if (existing && snapshotSignature(existing) !== snapshotSignature({ text: incoming.text, content: html })) preserveRichSnapshot(existing);
+            localStorage.setItem(RICH_DRAFT_KEY, JSON.stringify({
+                content: html,
+                text: incoming.text.trim(),
+                savedAt: Date.now()
+            }));
+        } catch (error) { /* The handoff still works when local storage is unavailable. */ }
+    }
+
+    function waitForRichEditor(incoming, html, attempt) {
+        attempt = attempt || 0;
+        var editor = window.tinymce && window.tinymce.get && window.tinymce.get('basic-example');
+        if (editor && editor.initialized) {
+            var currentText = String(editor.getContent({ format: 'text' }) || '').trim();
+            if (currentText && currentText !== incoming.text.trim()) {
+                preserveRichSnapshot({ content: editor.getContent() || '', text: currentText, savedAt: Date.now() });
+            }
+            editor.setContent(html);
+            document.body.setAttribute('data-rich-handoff-imported', 'true');
+            if (window.WriteUrduUI && typeof window.WriteUrduUI.notify === 'function') {
+                window.WriteUrduUI.notify('Your Urdu text is ready to format.', 'success');
+            }
+            editor.focus();
+            return;
+        }
+        if (attempt >= 120) return;
+        window.setTimeout(function () { waitForRichEditor(incoming, html, attempt + 1); }, 50);
+    }
+
+    function consumeRichHandoff() {
+        if (normalizePath() !== '/urdu-editor') return;
+        var incoming = readOneTimeHandoff('rich');
+        if (!incoming) return;
+        var html = plainTextToHtml(incoming.text);
+        stageRichDraft(incoming, html);
+        waitForRichEditor(incoming, html, 0);
     }
 
     function ensureStylesheet() {
@@ -98,6 +195,9 @@
         if (!mount || !mount.parentNode) return;
         ensureStylesheet();
 
+        var richAction = path === '/urdu-editor' ? '' :
+            '<button type="button" class="wu-next-journey-action is-primary" data-continue-rich data-editor-source="' + sourceName() + '" data-wu-journey="write-to-rich"><strong>Continue in Rich Editor</strong><small>Format an assignment or document, then export Word or PDF.</small></button>';
+        var cardClass = path === '/urdu-editor' ? ' is-primary' : '';
         var section = document.createElement('section');
         section.className = 'wu-next-journey';
         section.setAttribute('data-wu-journey-panel', '');
@@ -107,7 +207,8 @@
             '<h2 id="wu-next-journey-title">Use the Urdu you just wrote</h2>' +
             '<p class="wu-next-journey-copy">Keep the current text and move it into the tool that matches what you want to make next. The handoff stays in this browser.</p>' +
             '<div class="wu-next-journey-actions">' +
-                '<button type="button" class="wu-next-journey-action is-primary" data-create-card data-editor-source="' + sourceName() + '" data-wu-journey="write-to-card"><strong>Create an Urdu card</strong><small>Turn the text into a quote, poetry or announcement image.</small></button>' +
+                richAction +
+                '<button type="button" class="wu-next-journey-action' + cardClass + '" data-create-card data-editor-source="' + sourceName() + '" data-wu-journey="write-to-card"><strong>Create an Urdu card</strong><small>Turn the text into a quote, poetry or announcement image.</small></button>' +
                 '<button type="button" class="wu-next-journey-action" data-create-stylish data-editor-source="' + sourceName() + '" data-wu-journey="write-to-stylish"><strong>Try Stylish Urdu Text</strong><small>Generate copyable Unicode-decorated versions of the text.</small></button>' +
                 '<button type="button" class="wu-next-journey-action" data-create-name-art data-editor-source="' + sourceName() + '" data-wu-journey="write-to-name-art"><strong>Make Urdu Name Art</strong><small>Render the text with real Urdu fonts as an image.</small></button>' +
                 '<a class="wu-next-journey-action" href="/urdu-templates" data-wu-journey="write-to-templates"><strong>Browse Urdu templates</strong><small>Choose a ready-made visual starting point for Card Studio.</small></a>' +
@@ -115,11 +216,23 @@
         mount.parentNode.insertBefore(section, mount);
     }
 
+    function bindRichEditorActions() {
+        if (normalizePath() === '/urdu-editor') return;
+        document.querySelectorAll('[data-continue-rich], .home-actions-group-create a[href="/urdu-editor"]').forEach(function (control) {
+            if (control.dataset.continueRichBound) return;
+            control.dataset.continueRichBound = 'true';
+            control.addEventListener('click', function (event) {
+                event.preventDefault();
+                openDestination('rich', control);
+            });
+        });
+    }
+
     function bindJourneyLinks() {
         document.querySelectorAll('[data-wu-journey]').forEach(function (element) {
             if (element.dataset.wuJourneyBound) return;
             element.dataset.wuJourneyBound = 'true';
-            if (element.matches('[data-create-card],[data-create-stylish],[data-create-name-art]')) return;
+            if (element.matches('[data-continue-rich],[data-create-card],[data-create-stylish],[data-create-name-art]')) return;
             element.addEventListener('click', function () {
                 dispatchJourney(element.getAttribute('data-wu-journey'), '', sourceName());
             });
@@ -127,7 +240,9 @@
     }
 
     function bind() {
+        consumeRichHandoff();
         renderJourneyPanel();
+        bindRichEditorActions();
         document.querySelectorAll('[data-create-card]').forEach(function (button) {
             if (button.dataset.createCardBound) return;
             button.dataset.createCardBound = 'true';

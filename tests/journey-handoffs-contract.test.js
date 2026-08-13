@@ -9,13 +9,20 @@ const stylish = fs.readFileSync(path.join(root, 'js', 'stylish-urdu-text.js'), '
 const css = fs.readFileSync(path.join(root, 'css', 'journey-handoffs.css'), 'utf8');
 const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 
+assert.match(entry, /writeUrdu\.richEditor\.incoming\.v1/, 'Rich Editor incoming handoff is missing');
 assert.match(entry, /writeUrdu\.cardStudio\.incoming/, 'Card Studio text handoff key changed');
 assert.match(entry, /writeUrdu\.stylishText\.incoming\.v1/, 'Stylish Text incoming handoff is missing');
 assert.match(entry, /writeUrdu\.nameArt\.handoff\.v1/, 'Name Art handoff is missing');
+assert.match(entry, /data-continue-rich/, 'Rich Editor continuation action is missing');
 assert.match(entry, /data-create-card/, 'Card journey action is missing');
 assert.match(entry, /data-create-stylish/, 'Stylish Text journey action is missing');
 assert.match(entry, /data-create-name-art/, 'Name Art journey action is missing');
 assert.match(entry, /data-wu-journey="write-to-templates"/, 'Template journey action is missing');
+assert.match(entry, /HANDOFF_TTL = 30 \* 60 \* 1000/, 'Journey handoffs must expire after 30 minutes');
+assert.match(entry, /write-urdu:draft:v1:rich/, 'Rich Editor current-draft preservation key is missing');
+assert.match(entry, /write-urdu:history:v1:rich/, 'Rich Editor history preservation key is missing');
+assert.match(entry, /preserveRichSnapshot/, 'Existing Rich Editor work must be preserved before continuation');
+assert.match(entry, /stageRichDraft/, 'Incoming student text must be staged as the current Rich Editor draft');
 assert.match(entry, /\['\/', '\/urdu-editor', '\/urdu-keyboard'\]/, 'Core Write route guard changed unexpectedly');
 assert.match(entry, /\.homepage-seo/, 'Homepage journey must remain below the writing task');
 assert.match(entry, /\.fb-comments/, 'Rich Editor journey insertion boundary is missing');
@@ -23,6 +30,7 @@ assert.match(entry, /\.keyboard-supporting-content/, 'Keyboard journey insertion
 assert.match(entry, /hasText:\s*Boolean/, 'Journey event must expose only a text-presence flag');
 assert.doesNotMatch(entry, /detail:\s*\{[^}]*text\s*:/s, 'Journey analytics/event detail must never contain user text');
 assert.match(entry, /sessionStorage\.setItem/, 'Journey handoffs must remain browser-session local');
+assert.match(entry, /sessionStorage\.removeItem/, 'One-time handoffs must be consumed from session storage');
 assert.doesNotMatch(entry, /[?&](?:text|name)=/, 'Journey handoffs must not put user text into URLs');
 
 assert.match(main, /path !== '\/urdu-keyboard'/, 'Urdu Keyboard must load the shared journey handoff runtime');
