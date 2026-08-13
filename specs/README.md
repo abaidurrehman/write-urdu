@@ -12,6 +12,8 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-CS-UX-001` | Urdu Card Studio guided workflow | `/urdu-card-studio` | Implemented — v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Urdu Card Studio empty-state guidance | `/urdu-card-studio` | Implemented — retained through v2 creation migration |
 | `WU-SEO-CS-001` | Card Studio SEO acquisition | `/urdu-card-studio`, `/how-to-write-urdu-on-photo` | Implemented — Card Studio owns Urdu text/poetry-on-photo acquisition cluster |
+| `WU-SEO-STYLISH-001` | Stylish Urdu Text acquisition | `/stylish-urdu-text-generator` | Implemented — owner route strengthened for copyable Urdu name/text style intent |
+| `WU-SEO-NAMEART-001` | Urdu Name Art acquisition | `/urdu-name-art-maker` | Implemented — focused owner for Urdu name image, DP/profile and exact-font image intent |
 | `WU-SM-001` | WhatsApp Status and Instagram Makers | `/urdu-whatsapp-status-maker`, `/urdu-instagram-post-maker` | Implemented — v2 creation hierarchy migrated in PR #26 |
 | `WU-SUA-001` | Stylish Urdu Text and Name Art Studio | `/stylish-urdu-text-generator`, `/urdu-name-art-maker` | Implemented — acceptance closed and v2 creation hierarchy migrated in PR #25 |
 | `WU-IG-001` | Urdu / English Invoice Generator | `/urdu-invoice-generator` | Implemented — strategy review before v2 migration |

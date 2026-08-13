@@ -54,8 +54,9 @@ assert.match(formattingGuide.title, /Formatting Guide/i, 'Formatting guide must 
 
 assert.match(runtimeSeo, /home: \['English to Urdu typing'/, 'Homepage entity topics must include the prime typing phrase');
 assert.match(runtimeSeo, /function applyResolvedSearchMetadata\(\)/, 'Runtime SEO must centralize resolved search metadata');
-assert.match(runtimeSeo, /write-urdu:locale-change[\s\S]*restoreSearchMetadataAfterLocale/, 'Runtime SEO must restore registry metadata from the shared-shell locale lifecycle');
-assert.match(runtimeSeo, /locale !== ['"]ur['"][\s\S]*applyResolvedSearchMetadata\(\)/, 'English shell applications must restore acquisition metadata without overriding Urdu localization');
+assert.match(runtimeSeo, /function applyResolvedEnglishHeading\(\)/, 'Runtime SEO must centralize canonical English H1 restoration');
+assert.match(runtimeSeo, /write-urdu:locale-change[\s\S]*restoreResolvedPageIdentityAfterLocale/, 'Runtime SEO must restore registry page identity from the shared-shell locale lifecycle');
+assert.match(runtimeSeo, /locale !== ['"]ur['"][\s\S]*applyResolvedSearchMetadata\(\)[\s\S]*applyResolvedEnglishHeading\(\)/, 'English shell applications must restore acquisition metadata and registered H1 without overriding Urdu localization');
 
 assert.match(llms, /homepage is the main English to Urdu typing/i, 'llms.txt must name the homepage as the English-to-Urdu typing owner');
 assert.match(llms, /English to Urdu typing \/ Urdu typing online/, 'llms.txt start-writing section must expose the prime acquisition job');

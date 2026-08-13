@@ -105,6 +105,12 @@
         setMeta('twitter:description', resolvedDescription);
     }
 
+    function applyResolvedEnglishHeading() {
+        if (!page.h1) return;
+        var heading = document.querySelector('h1');
+        if (heading) heading.textContent = page.h1;
+    }
+
     applyResolvedSearchMetadata();
     setMeta('robots', page.indexable ? 'index,follow,max-image-preview:large' : 'noindex,follow');
     setMeta('googlebot', page.indexable ? 'index,follow,max-image-preview:large' : 'noindex,follow');
@@ -274,11 +280,14 @@
     // The shared shell may load after DOMContentLoaded and re-apply page copy.
     // Its locale-change event fires after that copy has been applied, so use the
     // semantic lifecycle signal instead of a timing guess. English keeps the
-    // SEO-registry search metadata; an explicitly selected Urdu locale may keep
-    // its localized UI/document title.
-    function restoreSearchMetadataAfterLocale(event) {
+    // SEO-registry search metadata and canonical H1; an explicitly selected
+    // Urdu locale may keep its localized UI/document title and heading.
+    function restoreResolvedPageIdentityAfterLocale(event) {
         var locale = event && event.detail && event.detail.locale;
-        if (locale !== 'ur') applyResolvedSearchMetadata();
+        if (locale !== 'ur') {
+            applyResolvedSearchMetadata();
+            applyResolvedEnglishHeading();
+        }
     }
-    document.addEventListener('write-urdu:locale-change', restoreSearchMetadataAfterLocale);
+    document.addEventListener('write-urdu:locale-change', restoreResolvedPageIdentityAfterLocale);
 }());

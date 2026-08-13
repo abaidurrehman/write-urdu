@@ -40,6 +40,17 @@ test('Card Studio keeps its acquisition metadata and application schema after sh
   expect(types).toContain('WebPage');
 });
 
+test('Urdu Name Art keeps its focused image/DP acquisition metadata after shared shell initialization', async ({ page }) => {
+  await open(page, '/urdu-name-art-maker');
+  await expect(page.locator('h1')).toHaveText('Urdu Name Art Studio');
+  await expect.poll(() => page.title()).toBe('Urdu Name Art Maker – Urdu Name Image & DP Maker | WriteUrdu');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://www.write-urdu.com/urdu-name-art-maker');
+  await expect(page.locator('.name-art-guidance')).toContainText('24 original templates in 12 packs');
+  const types = await schemaTypes(page);
+  expect(types).toContain('WebApplication');
+  expect(types).toContain('WebPage');
+});
+
 test('Urdu-on-photo guide exposes its canonical Article schema', async ({ page }) => {
   await open(page, '/how-to-write-urdu-on-photo');
   await expect(page.locator('h1')).toHaveText('How to write Urdu text or poetry on a photo online');

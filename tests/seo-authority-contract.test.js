@@ -62,7 +62,7 @@ const llms = read('llms.txt');
 assert.match(llms, /^# Write Urdu\n\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
 assert.match(llms, /Canonical site: https:\/\/www\.write-urdu\.com\//, 'llms.txt canonical site statement is missing');
 assert.match(llms, /transliteration, not translation/i, 'llms.txt must preserve the central transliteration distinction');
-assert.match(llms, /Last reviewed: 2026-08-12/, 'llms.txt review date is missing');
+assert.match(llms, /Last reviewed: 2026-08-13/, 'llms.txt review date is missing');
 assert.match(llms, /## Start writing/, 'llms.txt must prioritize core writing workflows');
 assert.match(llms, /## Trust, policies and corrections/, 'llms.txt trust resource section is missing');
 assert.match(llms, /https:\/\/www\.write-urdu\.com\/why-write-urdu/, 'llms.txt must link to About');
@@ -85,7 +85,8 @@ const revisionDates = {
   '/urdu-alphabet': '2026-08-07',
   '/write-urdu-documentation': '2026-08-07',
   '/urdu-faq': '2026-08-07',
-  '/roman-urdu-transliteration': '2026-08-07'
+  '/roman-urdu-transliteration': '2026-08-07',
+  '/urdu-name-art-maker': '2026-08-13'
 };
 for (const [route, revisionDate] of Object.entries(revisionDates)) {
   const page = config.pages.find(candidate => candidate.path === route);
