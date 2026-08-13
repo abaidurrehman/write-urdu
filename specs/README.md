@@ -7,6 +7,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | ID | Feature | Route | Status |
 | --- | --- | --- | --- |
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Active — mature-domain authority/growth control plane |
+| `WU-RW-001` | Role-owned direct workspaces | Writing + creation role routes | Active — one top-level editor/canvas per role; remove nested WriteUrdu app/iframe architecture |
 | `WU-PLAT-001` | Unified product journey and acquisition-first homepage | `/` and related tools | Implemented — foundation complete |
 | `WU-SEO-ETU-001` | English to Urdu Typing acquisition | `/` | Implemented — homepage owns English-letter / Roman Urdu to Urdu-script typing intent |
 | `WU-CS-UX-001` | Urdu Card Studio guided workflow | `/urdu-card-studio` | Implemented — v2 creation hierarchy migrated in PR #20 |
