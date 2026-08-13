@@ -61,14 +61,18 @@ test('homepage text is carried locally into Stylish Urdu and consumed once', asy
   expect(page.url()).not.toContain('میرا');
 });
 
-test('keyboard text is carried locally into Name Art without entering the URL', async ({ page }) => {
+test('keyboard text is carried locally into direct Name Art without entering the URL', async ({ page }) => {
   await open(page, '/urdu-keyboard.html');
   await page.locator('#write').fill('میرا نام');
   await page.locator('[data-wu-journey-panel] [data-create-name-art]').click();
   await page.waitForURL(/urdu-name-art-maker/, { timeout: 10000 });
   await expect(page.locator('[data-name-art-status]')).toContainText('ready', { timeout: 10000 });
-  const studio = page.frameLocator('[data-name-art-frame]');
-  await expect(studio.locator('#cardText')).toHaveValue('میرا نام', { timeout: 10000 });
+  await expect(page.locator('#nameArtText')).toHaveValue('میرا نام', { timeout: 10000 });
+  await expect(page.locator('.name-art-workspace iframe')).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => {
+    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
+    return app && app.getState().text.value;
+  })).toBe('میرا نام');
   expect(await page.evaluate(() => sessionStorage.getItem('writeUrdu.nameArt.handoff.v1'))).toBeNull();
   expect(page.url()).not.toContain('میرا');
 });

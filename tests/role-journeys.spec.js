@@ -21,17 +21,17 @@ test('direct Name Art journey starts with the name and reaches a useful export',
   const status = page.locator('[data-name-art-status]');
   const workspace = page.locator('.name-art-workspace');
   const styles = page.locator('.name-art-style-picker');
+  const canvas = page.locator('.name-art-workspace #cardCanvas');
   await expect(name).toBeVisible();
   await expect(page.locator('[data-name-art-purpose]')).toHaveCount(4);
   await expect(page.locator('.name-art-template-preview')).toHaveCount(24);
+  await expect(page.locator('.name-art-workspace iframe')).toHaveCount(0);
+  await expect(canvas).toHaveCount(1);
   await expect.poll(() => page.evaluate(() => Boolean(
-    window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getFrameApp && window.WriteUrduNameArtApp.getFrameApp()
+    window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp && window.WriteUrduNameArtApp.getWorkspaceApp()
   )), { timeout: 20000 }).toBe(true);
 
-  const initialText = await page.locator('[data-name-art-frame]').evaluate(frame => {
-    const app = frame.contentWindow && frame.contentWindow.WriteUrduCardStudioApp;
-    return app && app.getState().text.value;
-  });
+  const initialText = await page.evaluate(() => window.WriteUrduNameArtApp.getWorkspaceApp().getState().text.value);
   expect(initialText).toBe('');
 
   await page.locator('[data-name-art-download]').click();
@@ -42,17 +42,14 @@ test('direct Name Art journey starts with the name and reaches a useful export',
   await page.locator('[data-name-art-convert]').click();
   await expect(name).toHaveValue('عائشہ');
   await expect(status).toContainText('Converted to Urdu script');
-  await expect.poll(() => page.locator('[data-name-art-frame]').evaluate(frame => {
-    const app = frame.contentWindow && frame.contentWindow.WriteUrduCardStudioApp;
-    return app && app.getState().text.value;
-  })).toBe('عائشہ');
+  await expect.poll(() => page.evaluate(() => window.WriteUrduNameArtApp.getWorkspaceApp().getState().text.value)).toBe('عائشہ');
 
   await page.locator('[data-name-art-purpose="story"]').click();
   await expect(page.locator('[data-name-art-purpose="story"]')).toHaveAttribute('aria-pressed', 'true');
-  await expect.poll(() => page.locator('[data-name-art-frame]').evaluate(frame => {
-    const app = frame.contentWindow && frame.contentWindow.WriteUrduCardStudioApp;
-    const canvas = app && app.getCanvas();
-    return app && canvas ? [app.getState().presetId, canvas.width, canvas.height] : null;
+  await expect.poll(() => page.evaluate(() => {
+    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
+    const directCanvas = app && app.getCanvas();
+    return app && directCanvas ? [app.getState().presetId, directCanvas.width, directCanvas.height] : null;
   })).toEqual(['story', 1080, 1920]);
 
   const positions = await page.evaluate(() => {
@@ -83,5 +80,6 @@ test('direct Name Art journey starts with the name and reaches a useful export',
   expect(download[0].suggestedFilename()).toMatch(/\.png$/i);
   expect(page.url()).not.toContain('عائشہ');
   await expect(workspace).toBeVisible();
+  await expect(canvas).toBeVisible();
   await expect(styles).toBeVisible();
 });

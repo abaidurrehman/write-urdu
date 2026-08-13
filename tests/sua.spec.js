@@ -54,7 +54,7 @@ test('Stylish Urdu filters and local state work end to end', async ({ page }) =>
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test('Stylish Urdu handoff opens Name Art with 24 templates and exact presets', async ({ page }) => {
+test('Stylish Urdu handoff opens direct Name Art with 24 templates and exact presets', async ({ page }) => {
   await open(page, '/stylish-urdu-text-generator.html');
   const input = page.locator('#stylishText');
   await input.fill('میرا نام');
@@ -65,8 +65,12 @@ test('Stylish Urdu handoff opens Name Art with 24 templates and exact presets', 
   await page.waitForURL(/urdu-name-art-maker/, { timeout: 10000 });
 
   await expect(page.locator('[data-name-art-status]')).toContainText('ready', { timeout: 10000 });
-  const studio = page.frameLocator('[data-name-art-frame]');
-  await expect(studio.locator('#cardText')).toHaveValue(expectedText, { timeout: 10000 });
+  await expect(page.locator('#nameArtText')).toHaveValue(expectedText, { timeout: 10000 });
+  await expect(page.locator('.name-art-workspace iframe')).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => {
+    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
+    return app && app.getState().text.value;
+  })).toBe(expectedText);
   expect(await page.evaluate(() => sessionStorage.getItem('writeUrdu.nameArt.handoff.v1'))).toBeNull();
 
   const contract = await page.evaluate(() => ({
@@ -82,22 +86,20 @@ test('Stylish Urdu handoff opens Name Art with 24 templates and exact presets', 
   await expect(page.locator('[data-name-art-template]')).toHaveCount(2);
   await page.locator('[data-name-art-template]').first().click();
   await expect.poll(() => page.evaluate(() => {
-    const frame = document.querySelector('[data-name-art-frame]');
-    return frame && frame.contentWindow.WriteUrduCardStudioApp && frame.contentWindow.WriteUrduCardStudioApp.getState().templateId;
+    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
+    return app && app.getState().templateId;
   })).toMatch(/^name-social-profile-/);
 
   await page.selectOption('[data-name-art-preset]', 'portrait');
   await expect.poll(() => page.evaluate(() => {
-    const frame = document.querySelector('[data-name-art-frame]');
-    const app = frame && frame.contentWindow.WriteUrduCardStudioApp;
+    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
     const canvas = app && app.getCanvas();
     return app && canvas ? [app.getState().presetId, canvas.width, canvas.height] : null;
   })).toEqual(['portrait', 1080, 1350]);
 
   await page.selectOption('[data-name-art-preset]', 'name-transparent');
   await expect.poll(() => page.evaluate(() => {
-    const frame = document.querySelector('[data-name-art-frame]');
-    const app = frame && frame.contentWindow.WriteUrduCardStudioApp;
+    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
     const canvas = app && app.getCanvas();
     if (!app || !canvas || canvas.width !== 1600 || canvas.height !== 900) return null;
     return [app.getState().presetId, canvas.width, canvas.height, canvas.getContext('2d').getImageData(0, 0, 1, 1).data[3]];

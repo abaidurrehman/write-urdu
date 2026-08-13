@@ -1,5 +1,5 @@
-/* Task-first Name Art layer. Loaded after the shared v2 creation CSS so the
-   wrapper can simplify the direct Name Art journey without changing Card Studio. */
+/* Task-first Name Art layer. Loaded after the shared v2 creation CSS.
+   Name Art owns one top-level canvas; Card Studio rendering stays an internal engine. */
 .wu-v2-shell.name-art-page .name-art-rail{
   grid-column:1;
   grid-row:2;
@@ -148,10 +148,90 @@
 }
 .wu-v2-shell.name-art-page .name-art-template strong{font-size:.74rem}
 .wu-v2-shell.name-art-page .name-art-template small{font-size:.64rem;line-height:1.25}
+
+/* Direct role-owned workspace. One canvas, one scroll context, no embedded app. */
 .wu-v2-shell.name-art-page .name-art-workspace{
   grid-column:2;
   grid-row:2;
+  min-width:0;
+  align-self:start;
+  padding:12px;
+  overflow:visible;
 }
+.wu-v2-shell.name-art-page .name-art-direct-shell{
+  display:grid;
+  gap:12px;
+  min-width:0;
+}
+.wu-v2-shell.name-art-page .name-art-direct-preview{
+  min-width:0;
+  margin:0;
+  padding:12px;
+  border:1px solid #dce8e1;
+  border-radius:14px;
+  background:#fff;
+}
+.wu-v2-shell.name-art-page .name-art-direct-preview .card-studio-artboard-wrap{
+  min-height:460px;
+  max-height:calc(100vh - 220px);
+}
+.wu-v2-shell.name-art-page .name-art-direct-preview .card-studio-canvas{
+  max-height:calc(100vh - 245px);
+}
+.wu-v2-shell.name-art-page .name-art-refine{
+  border:1px solid #dce8e1;
+  border-radius:14px;
+  background:#fff;
+  padding:0 14px 14px;
+}
+.wu-v2-shell.name-art-page .name-art-refine>summary{
+  padding:13px 0;
+  cursor:pointer;
+  color:#234538;
+  font-weight:800;
+}
+.wu-v2-shell.name-art-page .name-art-refine-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px 12px;
+  align-items:end;
+}
+.wu-v2-shell.name-art-page .name-art-refine-grid input[type="color"]{
+  width:100%;
+  min-height:42px;
+  padding:3px;
+  border:1px solid #bdd3c6;
+  border-radius:10px;
+  background:#fff;
+}
+.wu-v2-shell.name-art-page .name-art-refine-grid input[type="range"]{width:100%}
+.wu-v2-shell.name-art-page .name-art-check{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  min-height:42px;
+  color:#244638;
+  font-size:.82rem;
+  font-weight:700;
+}
+.wu-v2-shell.name-art-page .name-art-background-image{
+  display:grid;
+  grid-column:span 2;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:8px;
+  align-items:end;
+}
+.wu-v2-shell.name-art-page .name-art-small-button{
+  min-height:42px;
+  padding:8px 11px;
+  border:1px solid #b8d4c3;
+  border-radius:9px;
+  background:#eef7f1;
+  color:#185d3b;
+  font-weight:750;
+  cursor:pointer;
+}
+.wu-v2-shell.name-art-page .name-art-engine-support{display:none!important}
 
 @media(max-width:900px){
   .wu-v2-shell.name-art-page .name-art-main{
@@ -162,18 +242,23 @@
   .wu-v2-shell.name-art-page .name-art-hero{order:1}
   .wu-v2-shell.name-art-page .name-art-rail{display:contents}
   .wu-v2-shell.name-art-page .name-art-shortcuts{order:2;margin-top:14px}
-  .wu-v2-shell.name-art-page .name-art-workspace{order:3;margin-top:14px}
+  .wu-v2-shell.name-art-page .name-art-workspace{order:3;margin-top:14px;padding:8px}
   .wu-v2-shell.name-art-page .name-art-style-picker{order:4;margin-top:14px}
   .wu-v2-shell.name-art-page .name-art-guidance{order:5}
   .wu-v2-shell.name-art-page .name-art-faq{order:6}
   .wu-v2-shell.name-art-page .name-art-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .wu-v2-shell.name-art-page .name-art-frame{height:78vh;min-height:620px}
+  .wu-v2-shell.name-art-page .name-art-direct-preview .card-studio-artboard-wrap{min-height:420px;max-height:none}
+  .wu-v2-shell.name-art-page .name-art-direct-preview .card-studio-canvas{max-height:72vh}
+  .wu-v2-shell.name-art-page .name-art-refine-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:560px){
   .wu-v2-shell.name-art-page .name-art-main{width:calc(100% - 20px)}
   .wu-v2-shell.name-art-page .name-art-purpose-grid{grid-template-columns:1fr 1fr}
   .wu-v2-shell.name-art-page .name-art-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .wu-v2-shell.name-art-page .name-art-frame{min-height:560px}
+  .wu-v2-shell.name-art-page .name-art-direct-preview{padding:7px}
+  .wu-v2-shell.name-art-page .name-art-direct-preview .card-studio-artboard-wrap{min-height:360px}
+  .wu-v2-shell.name-art-page .name-art-refine-grid{grid-template-columns:1fr}
+  .wu-v2-shell.name-art-page .name-art-background-image{grid-column:auto;grid-template-columns:1fr}
 }
 @media(max-width:390px){
   .wu-v2-shell.name-art-page .name-art-purpose-grid{grid-template-columns:1fr}

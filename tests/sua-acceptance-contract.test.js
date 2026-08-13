@@ -53,6 +53,9 @@ assert.match(nameArtPage, /js\/name-art-core\.js[^\n]*js\/name-art\.js/, 'Name A
 assert.match(nameArtPage, /data-name-art-pack/, 'Name Art pack selector is missing');
 assert.match(nameArtPage, /data-name-art-preset/, 'Name Art preset selector is missing');
 assert.match(nameArtPage, /data-name-art-transparent/, 'Transparent PNG action is missing');
+assert.match(nameArtPage, /data-name-art-workspace[^>]+data-card-studio/, 'Name Art must mount the shared visual engine directly');
+assert.match(nameArtPage, /<canvas[^>]+id="cardCanvas"/, 'Name Art direct export canvas is missing');
+assert.doesNotMatch(nameArtPage, /<iframe\b/i, 'Name Art must not embed a second WriteUrdu application');
 assert.match(nameArtPage, /data-wu-ad-boundary="post-workspace"/, 'Name Art monetization boundary must remain outside the workspace');
 assert.match(nameArtPage, /Nothing is uploaded|stay in this browser/i, 'Name Art local-processing privacy message is missing');
 assert.doesNotMatch(nameArtPage, /[?&](?:text|name)=/i, 'Name Art must not put user text into URLs');
@@ -60,8 +63,10 @@ assert.doesNotMatch(nameArtPage, /[?&](?:text|name)=/i, 'Name Art must not put u
 const nameArtController = fs.readFileSync(path.join(root, 'js', 'name-art.js'), 'utf8');
 assert.match(nameArtController, /30 \* 60 \* 1000/, 'Name Art handoff must expire after 30 minutes');
 assert.match(nameArtController, /sessionStorage\.removeItem\(handoffKey\)/, 'Name Art must remove the one-time handoff after import');
-assert.match(nameArtController, /nameArt\.install\(frameCore\)/, 'Name Art must extend the existing Card Studio core rather than create another renderer');
-assert.match(nameArtController, /document\.fonts|doc\.fonts/, 'Name Art export must wait for fonts');
+assert.match(nameArtController, /nameArt\.install\(cardCore\)/, 'Name Art must extend the existing Card Studio core rather than create another renderer');
+assert.match(nameArtController, /WriteUrduCardStudioApp/, 'Name Art must reuse the existing Card Studio application engine directly');
+assert.doesNotMatch(nameArtController, /frame\.contentWindow|frame\.contentDocument|data-name-art-frame/, 'Name Art must not depend on iframe internals');
+assert.match(nameArtController, /document\.fonts/, 'Name Art export must wait for fonts');
 assert.match(nameArtController, /canvas\.width !== 1600 \|\| canvas\.height !== 900/, 'Transparent export must verify exact pixel dimensions');
 assert.match(nameArtController, /canvas\.toBlob/, 'Transparent export must use the rendered canvas PNG pipeline');
 
