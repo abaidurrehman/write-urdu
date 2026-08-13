@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v13';
+const CACHE_NAME = 'write-urdu-shell-v14';
 const APP_SHELL = [
   './',
   './index.html',
@@ -25,6 +25,7 @@ const APP_SHELL = [
   './css/name-art.css',
   './css/name-art-task-first.css',
   './css/social-maker.css',
+  './css/social-direct-workspace.css',
   './css/journey-handoffs.css',
   './css/v2-creation.css',
   './css/v2-creation-tools.css',
@@ -52,12 +53,14 @@ const APP_SHELL = [
   './js/input-mode.js',
   './js/batch-transliteration.js',
   './js/content-locale.js',
+  './js/social-maker-core.js',
   './js/card-studio-core.js',
   './js/template-library-core.js',
   './js/card-studio-interaction-core.js',
   './js/card-studio.js',
   './js/card-studio-interaction.js',
   './js/card-studio-entry.js',
+  './js/social-direct-workspace.js',
   './js/template-library.js',
   './js/stylish-urdu-core.js',
   './js/stylish-urdu-text.js',
