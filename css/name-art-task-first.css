@@ -13,6 +13,8 @@
 }
 .wu-v2-shell.name-art-page .name-art-shortcuts,
 .wu-v2-shell.name-art-page .name-art-style-picker{
+  grid-column:auto;
+  grid-row:auto;
   position:static;
   max-height:none;
   overflow:visible;
@@ -23,6 +25,8 @@
   background:rgba(255,255,255,.92);
   box-shadow:0 10px 28px rgba(20,35,28,.055);
 }
+.wu-v2-shell.name-art-page .name-art-shortcuts{order:1}
+.wu-v2-shell.name-art-page .name-art-style-picker{order:2}
 .wu-v2-shell.name-art-page .name-art-shortcut-heading,
 .wu-v2-shell.name-art-page .name-art-style-heading{display:block}
 .wu-v2-shell.name-art-page .name-art-shortcut-heading h2,
