@@ -1,0 +1,177 @@
+/* Task-first Name Art layer. Loaded after the shared v2 creation CSS so the
+   wrapper can simplify the direct Name Art journey without changing Card Studio. */
+.wu-v2-shell.name-art-page .name-art-rail{
+  grid-column:1;
+  grid-row:2;
+  position:sticky;
+  top:108px;
+  align-self:start;
+  display:grid;
+  gap:12px;
+  max-height:calc(100vh - 126px);
+  overflow:auto;
+}
+.wu-v2-shell.name-art-page .name-art-shortcuts,
+.wu-v2-shell.name-art-page .name-art-style-picker{
+  position:static;
+  max-height:none;
+  overflow:visible;
+  margin:0;
+  padding:15px;
+  border:1px solid var(--wu-create-line,#dce7e0);
+  border-radius:16px;
+  background:rgba(255,255,255,.92);
+  box-shadow:0 10px 28px rgba(20,35,28,.055);
+}
+.wu-v2-shell.name-art-page .name-art-shortcut-heading,
+.wu-v2-shell.name-art-page .name-art-style-heading{display:block}
+.wu-v2-shell.name-art-page .name-art-shortcut-heading h2,
+.wu-v2-shell.name-art-page .name-art-style-heading h2{
+  margin:.1rem 0 .3rem;
+  font-size:1.08rem;
+}
+.wu-v2-shell.name-art-page .name-art-shortcut-heading p,
+.wu-v2-shell.name-art-page .name-art-style-heading p{
+  margin:.25rem 0;
+  color:#526d61;
+  font-size:.82rem;
+  line-height:1.5;
+}
+.wu-v2-shell.name-art-page .name-art-name-field{margin-top:13px}
+.wu-v2-shell.name-art-page #nameArtText{
+  box-sizing:border-box;
+  width:100%;
+  min-height:82px;
+  padding:11px 12px;
+  border:1px solid #b9d1c3;
+  border-radius:10px;
+  background:#fff;
+  color:#173326;
+  font:600 1.06rem/1.8 "Noto Nastaliq Urdu","Noto Naskh Arabic",serif;
+  resize:vertical;
+}
+.wu-v2-shell.name-art-page #nameArtText:focus{
+  border-color:#176f45;
+  outline:0;
+  box-shadow:0 0 0 3px rgba(23,111,69,.12);
+}
+.wu-v2-shell.name-art-page .name-art-text-actions{
+  display:grid;
+  gap:6px;
+  margin-top:8px;
+}
+.wu-v2-shell.name-art-page .name-art-text-actions button{
+  min-height:38px;
+  padding:8px 10px;
+  border:1px solid #b8d4c3;
+  border-radius:9px;
+  background:#eef7f1;
+  color:#185d3b;
+  font-weight:750;
+  cursor:pointer;
+}
+.wu-v2-shell.name-art-page .name-art-text-actions button:disabled{cursor:wait;opacity:.6}
+.wu-v2-shell.name-art-page .name-art-convert-note{
+  color:#66796f;
+  font-size:.7rem;
+  line-height:1.4;
+}
+.wu-v2-shell.name-art-page .name-art-purpose{
+  min-width:0;
+  margin:14px 0 0;
+  padding:0;
+  border:0;
+}
+.wu-v2-shell.name-art-page .name-art-purpose legend{
+  margin:0 0 7px;
+  color:#244638;
+  font-size:.82rem;
+  font-weight:750;
+}
+.wu-v2-shell.name-art-page .name-art-purpose-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+.wu-v2-shell.name-art-page .name-art-purpose-grid button{
+  display:grid;
+  gap:3px;
+  min-height:58px;
+  padding:8px 9px;
+  border:1px solid #d4e3da;
+  border-radius:10px;
+  background:#fbfdfc;
+  color:#244638;
+  text-align:left;
+  cursor:pointer;
+}
+.wu-v2-shell.name-art-page .name-art-purpose-grid button strong{font-size:.78rem}
+.wu-v2-shell.name-art-page .name-art-purpose-grid button small{color:#687b71;font-size:.67rem}
+.wu-v2-shell.name-art-page .name-art-purpose-grid button:hover,
+.wu-v2-shell.name-art-page .name-art-purpose-grid button:focus-visible,
+.wu-v2-shell.name-art-page .name-art-purpose-grid button.is-selected{
+  border-color:#6fa486;
+  outline:0;
+  background:#edf8f1;
+  box-shadow:inset 0 0 0 1px #6fa486;
+}
+.wu-v2-shell.name-art-page .name-art-shortcuts>.name-art-field:not(.name-art-name-field){margin-top:13px}
+.wu-v2-shell.name-art-page .name-art-local-note{margin:12px 0 0!important}
+.wu-v2-shell.name-art-page .name-art-style-picker>.name-art-field{margin-top:12px}
+.wu-v2-shell.name-art-page .name-art-template-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin-top:10px;
+}
+.wu-v2-shell.name-art-page .name-art-template{
+  display:grid;
+  grid-template-rows:auto auto auto;
+  gap:5px;
+  min-height:105px;
+  padding:7px;
+}
+.wu-v2-shell.name-art-page .name-art-template-preview{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:48px;
+  padding:5px;
+  border-radius:7px;
+  font-size:1.05rem;
+  line-height:1.6;
+  direction:rtl;
+  overflow:hidden;
+}
+.wu-v2-shell.name-art-page .name-art-template strong{font-size:.74rem}
+.wu-v2-shell.name-art-page .name-art-template small{font-size:.64rem;line-height:1.25}
+.wu-v2-shell.name-art-page .name-art-workspace{
+  grid-column:2;
+  grid-row:2;
+}
+
+@media(max-width:900px){
+  .wu-v2-shell.name-art-page .name-art-main{
+    display:flex;
+    flex-direction:column;
+    width:min(100% - 22px,720px);
+  }
+  .wu-v2-shell.name-art-page .name-art-hero{order:1}
+  .wu-v2-shell.name-art-page .name-art-rail{display:contents}
+  .wu-v2-shell.name-art-page .name-art-shortcuts{order:2;margin-top:14px}
+  .wu-v2-shell.name-art-page .name-art-workspace{order:3;margin-top:14px}
+  .wu-v2-shell.name-art-page .name-art-style-picker{order:4;margin-top:14px}
+  .wu-v2-shell.name-art-page .name-art-guidance{order:5}
+  .wu-v2-shell.name-art-page .name-art-faq{order:6}
+  .wu-v2-shell.name-art-page .name-art-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wu-v2-shell.name-art-page .name-art-frame{height:78vh;min-height:620px}
+}
+@media(max-width:560px){
+  .wu-v2-shell.name-art-page .name-art-main{width:calc(100% - 20px)}
+  .wu-v2-shell.name-art-page .name-art-purpose-grid{grid-template-columns:1fr 1fr}
+  .wu-v2-shell.name-art-page .name-art-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wu-v2-shell.name-art-page .name-art-frame{min-height:560px}
+}
+@media(max-width:390px){
+  .wu-v2-shell.name-art-page .name-art-purpose-grid{grid-template-columns:1fr}
+  .wu-v2-shell.name-art-page .name-art-template-grid{grid-template-columns:1fr 1fr}
+}
