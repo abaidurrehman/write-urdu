@@ -204,8 +204,8 @@
             frameApp.replaceState(initialNameArtState(), { save: false });
             frameApp.requestRender();
             syncSelection();
-            if (String(textInput.value || '').trim()) setStatus('Your name is in the live preview. Choose a style or refine it below.');
-            else setStatus('Type your name above to start. The live preview updates as you type.');
+            if (String(textInput.value || '').trim()) setStatus('Your name is ready in the live preview. Choose a style or refine it below.');
+            else setStatus('Name Art is ready. Type your name above to start; the live preview updates as you type.');
             return;
         }
         if (attempt >= 120) {
