@@ -12,10 +12,12 @@ const creationCss = read('css/v2-creation.css');
 const focusedCss = read('css/v2-creation-tools.css');
 const nameArtCss = read('css/name-art-task-first.css');
 const publishCss = read('css/v2-publish-tools.css');
+const socialDirectCss = read('css/social-direct-workspace.css');
 const cardUi = read('js/card-studio-ui.js');
 const templateUi = read('js/template-library.js');
 const stylishUi = read('js/stylish-urdu-text.js');
 const nameArtUi = read('js/name-art.js');
+const socialDirectUi = read('js/social-direct-workspace.js');
 const cardPage = read('urdu-card-studio.html');
 const templatePage = read('urdu-templates.html');
 const stylishPage = read('stylish-urdu-text-generator.html');
@@ -39,6 +41,8 @@ assert.match(nameArtCss, /\.name-art-engine-support\{display:none!important\}/, 
 assert.match(publishCss, /\.wu-v2-shell\.social-maker-page/, 'Social publish layer missing');
 assert.match(publishCss, /\.wu-v2-shell\.qr-generator-page/, 'QR publish layer missing');
 assert.match(publishCss, /@media\(max-width:900px\)/, 'Publish mobile breakpoint missing');
+assert.match(socialDirectCss, /\.social-maker-workspace-direct/, 'Direct social workspace styling missing');
+assert.match(socialDirectCss, /\.social-maker-engine-support\{display:none!important\}/, 'Direct social shared-engine support UI must remain internal');
 
 assert.match(cardUi, /css\/v2-creation\.css/, 'Card Studio must load v2 creation CSS');
 assert.match(cardUi, /root\.dataset\.v2CreationWorkspace = 'card-studio'/, 'Card Studio marker missing');
@@ -86,19 +90,29 @@ assert.match(nameArtPage, /data-name-art-templates/, 'Name Art template controls
 assert.match(nameArtPage, /data-name-art-transparent/, 'Name Art transparent export changed');
 assert.ok(nameArtPage.includes(`href="${seoConfig.canonical('/urdu-name-art-maker')}"`), 'Name Art canonical changed');
 
-for (const [page, route, marker, mode] of [
-  [whatsappPage, '/urdu-whatsapp-status-maker', 'social-whatsapp', 'whatsapp'],
-  [instagramPage, '/urdu-instagram-post-maker', 'social-instagram', 'instagram']
-]) {
-  assert.match(page, new RegExp(`data-v2-creation-workspace="${marker}"`), `${marker} marker missing`);
-  assert.match(page, new RegExp(`urdu-card-studio\\.html\\?social=${mode}`), `${marker} current shared-engine iframe contract changed before its migration slice`);
-  assert.match(page, /data-wu-ad-boundary="post-workspace"/, `${marker} must keep monetization after the workspace`);
-  assert.ok(page.includes(`href="${seoConfig.canonical(route)}"`), `${marker} canonical changed`);
-  assert.doesNotMatch(page, /<ins[^>]+adsbygoogle/i, `${marker} must not contain a manual active-workspace ad`);
-}
+assert.match(whatsappPage, /data-v2-creation-workspace="social-whatsapp"/, 'WhatsApp migration marker missing');
+assert.match(whatsappPage, /data-social-direct-workspace="whatsapp"[^>]+data-card-studio|data-card-studio[^>]+data-social-direct-workspace="whatsapp"/, 'WhatsApp must own the shared visual-engine root directly');
+assert.match(whatsappPage, /js\/social-direct-workspace\.js/, 'WhatsApp direct workspace adapter is not loaded');
+assert.match(whatsappPage, /css\/social-direct-workspace\.css/, 'WhatsApp direct workspace styles are not loaded');
+assert.doesNotMatch(whatsappPage, /<iframe\b|urdu-card-studio\.html\?social=whatsapp/i, 'WhatsApp must not embed the Card Studio route');
+assert.match(socialDirectUi, /WriteUrduCardStudioApp/, 'Direct social roles must reuse the existing Card Studio application engine');
+assert.match(socialDirectUi, /getWorkspaceApp/, 'Direct social adapter must expose its top-level shared workspace');
+assert.match(socialDirectUi, /id="cardCanvas"/, 'Direct WhatsApp role must mount the actual canvas');
+assert.doesNotMatch(socialDirectUi, /contentWindow|contentDocument|frameLocator/, 'Direct social adapter must not reach into iframe internals');
+assert.ok(whatsappPage.includes(`href="${seoConfig.canonical('/urdu-whatsapp-status-maker')}"`), 'WhatsApp canonical changed');
+assert.match(whatsappPage, /data-wu-ad-boundary="post-workspace"/, 'WhatsApp must keep monetization after the workspace');
+assert.doesNotMatch(whatsappPage, /<ins[^>]+adsbygoogle/i, 'WhatsApp must not contain a manual active-workspace ad');
+
+assert.match(instagramPage, /data-v2-creation-workspace="social-instagram"/, 'Instagram migration marker missing');
+assert.match(instagramPage, /urdu-card-studio\.html\?social=instagram/, 'Instagram current iframe contract changed before its migration slice');
+assert.match(instagramPage, /data-wu-ad-boundary="post-workspace"/, 'Instagram must keep monetization after the workspace');
+assert.ok(instagramPage.includes(`href="${seoConfig.canonical('/urdu-instagram-post-maker')}"`), 'Instagram canonical changed');
+assert.doesNotMatch(instagramPage, /<ins[^>]+adsbygoogle/i, 'Instagram must not contain a manual active-workspace ad');
 
 assert.strictEqual(socialCore.getMode('whatsapp').defaultPreset, 'story', 'WhatsApp default changed');
 assert.strictEqual(socialCore.getMode('instagram').defaultPreset, 'square', 'Instagram default changed');
+assert.strictEqual(socialCore.getModeFromLocation({ pathname: '/urdu-whatsapp-status-maker.html', search: '' }).id, 'whatsapp', 'Direct WhatsApp route must resolve to WhatsApp social mode');
+assert.strictEqual(socialCore.getModeFromLocation({ pathname: '/urdu-card-studio.html', search: '?social=instagram' }).id, 'instagram', 'Legacy/query social mode resolution changed');
 assert.deepStrictEqual(socialCore.getSafeArea('whatsapp', { id: 'story', width: 1080, height: 1920 }), { top: 230, right: 100, bottom: 290, left: 100 }, 'WhatsApp safe area changed');
 assert.deepStrictEqual(socialCore.getSafeArea('instagram', { id: 'portrait', width: 1080, height: 1350 }), { top: 120, right: 90, bottom: 150, left: 90 }, 'Instagram safe area changed');
 
@@ -116,4 +130,4 @@ assert.match(sw, /css\/v2-publish-tools\.css/, 'publish CSS missing from PWA she
 assert.match(sw, /urdu-whatsapp-status-maker\.html/, 'WhatsApp maker missing from PWA shell');
 assert.match(sw, /urdu-instagram-post-maker\.html/, 'Instagram maker missing from PWA shell');
 
-console.log('V2 creation contract passed including direct Name Art workspace.');
+console.log('V2 creation contract passed including direct Name Art and WhatsApp Status workspaces.');
