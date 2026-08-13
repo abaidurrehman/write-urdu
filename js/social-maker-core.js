@@ -7,25 +7,16 @@
 
     var MODES = {
         whatsapp: {
-            id: 'whatsapp',
-            route: '/urdu-whatsapp-status-maker',
-            title: 'WhatsApp Status Maker',
+            id: 'whatsapp', route: '/urdu-whatsapp-status-maker', title: 'WhatsApp Status Maker',
             subtitle: 'Create a polished Urdu status image, download it, and upload it to WhatsApp yourself.',
-            defaultPreset: 'story',
-            templateId: 'midnight',
-            filenamePrefix: 'urdu-whatsapp-status',
-            sampleText: 'آج کا دن ایک نئی شروعات ہے۔',
-            safeAreas: { story: { top: 230, right: 100, bottom: 290, left: 100 } },
+            defaultPreset: 'story', templateId: 'midnight', filenamePrefix: 'urdu-whatsapp-status',
+            sampleText: 'آج کا دن ایک نئی شروعات ہے۔', safeAreas: { story: { top: 230, right: 100, bottom: 290, left: 100 } },
             guideLabel: 'WhatsApp status safe area'
         },
         instagram: {
-            id: 'instagram',
-            route: '/urdu-instagram-post-maker',
-            title: 'Instagram Post Maker',
+            id: 'instagram', route: '/urdu-instagram-post-maker', title: 'Instagram Post Maker',
             subtitle: 'Design an Urdu post, quote or announcement, then download the image for Instagram.',
-            defaultPreset: 'square',
-            templateId: 'minimal-white',
-            filenamePrefix: 'urdu-instagram-post',
+            defaultPreset: 'square', templateId: 'minimal-white', filenamePrefix: 'urdu-instagram-post',
             sampleText: 'اپنی بات خوب صورت انداز میں شیئر کریں۔',
             safeAreas: {
                 square: { top: 90, right: 90, bottom: 90, left: 90 },
@@ -33,55 +24,50 @@
                 story: { top: 230, right: 100, bottom: 290, left: 100 }
             },
             guideLabel: 'Instagram safe area'
+        },
+        facebook: {
+            id: 'facebook', route: null, roleOnly: true, useCase: 'facebook', title: 'Facebook Post Maker',
+            subtitle: 'Create a wide 1200 × 630 Urdu Facebook post, download it, and upload it yourself.',
+            defaultPreset: 'facebook', templateId: 'minimal-white', filenamePrefix: 'urdu-facebook-post',
+            sampleText: 'اپنی بات واضح اور خوب صورت انداز میں شیئر کریں۔',
+            safeAreas: { facebook: { top: 70, right: 96, bottom: 70, left: 96 } },
+            guideLabel: 'Facebook post safe area'
         }
     };
 
-    function getMode(value) {
-        return value && MODES[value] ? MODES[value] : null;
-    }
-
+    function getMode(value) { return value && MODES[value] ? MODES[value] : null; }
     function normalizeRoute(pathname) {
         var value = String(pathname || '/').split('?')[0].split('#')[0];
         if (value.length > 1) value = value.replace(/\/+$/, '');
         value = value.replace(/\.html$/i, '');
         return value || '/';
     }
-
     function getModeFromLocation(location) {
         try {
             var current = location || (typeof window !== 'undefined' ? window.location : {});
             var params = new URLSearchParams(current.search || '');
-            var explicit = getMode(params.get('social'));
+            var explicit = getMode(params.get('social')) || getMode(params.get('role'));
             if (explicit) return explicit;
             var route = normalizeRoute(current.pathname || '');
             var keys = Object.keys(MODES);
             for (var index = 0; index < keys.length; index += 1) {
                 var config = MODES[keys[index]];
+                if (!config.route) continue;
                 if (normalizeRoute(config.route) === route) return config;
             }
             return null;
-        } catch (error) {
-            return null;
-        }
+        } catch (error) { return null; }
     }
-
-    function storageKey(mode) {
-        return 'writeUrdu.socialProjects.v1:' + (getMode(mode) || { id: 'card' }).id;
-    }
-
+    function storageKey(mode) { return 'writeUrdu.socialProjects.v1:' + (getMode(mode) || { id: 'card' }).id; }
     function recentKey() { return 'writeUrdu.socialRecentTemplates.v1'; }
-
     function getSafeArea(mode, preset) {
         var config = getMode(mode);
         var selected = config && config.safeAreas[preset && preset.id];
         if (selected) return Object.assign({}, selected);
         var width = Number(preset && preset.width) || 1080;
         var height = Number(preset && preset.height) || 1080;
-        var horizontal = Math.round(width * .09);
-        var vertical = Math.round(height * .09);
-        return { top: vertical, right: horizontal, bottom: vertical, left: horizontal };
+        return { top: Math.round(height * .09), right: Math.round(width * .09), bottom: Math.round(height * .09), left: Math.round(width * .09) };
     }
-
     function applyDefaults(core, project, mode, incomingText) {
         var config = getMode(mode);
         if (!config || !core || !project) return project;
@@ -89,30 +75,23 @@
         next = core.applyTemplate(next, config.templateId);
         next.name = config.filenamePrefix;
         next.socialMode = config.id;
+        if (config.useCase) next.useCase = config.useCase;
         if (incomingText != null) next.text.value = String(incomingText);
         else if (!String(next.text.value || '').trim() || next.text.value === core.DEFAULT_TEXT) next.text.value = config.sampleText;
         return core.normalizeCardProject(next);
     }
-
     function isInsideSafeArea(rect, preset, safeArea) {
         if (!rect || !preset || !safeArea) return false;
-        return rect.x >= safeArea.left && rect.y >= safeArea.top &&
-            rect.x + rect.width <= preset.width - safeArea.right &&
-            rect.y + rect.height <= preset.height - safeArea.bottom;
+        return rect.x >= safeArea.left && rect.y >= safeArea.top && rect.x + rect.width <= preset.width - safeArea.right && rect.y + rect.height <= preset.height - safeArea.bottom;
     }
-
     function evaluateSafeArea(objects, preset, safeArea) {
         var outside = [];
-        Object.keys(objects || {}).forEach(function (id) {
-            if (objects[id] && !isInsideSafeArea(objects[id], preset, safeArea)) outside.push(id);
-        });
+        Object.keys(objects || {}).forEach(function (id) { if (objects[id] && !isInsideSafeArea(objects[id], preset, safeArea)) outside.push(id); });
         return { valid: outside.length === 0, outside: outside };
     }
-
     function safeFilename(prefix, extension) {
         var base = String(prefix || 'write-urdu-social').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '-').replace(/\s+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'write-urdu-social';
         return base + '-' + new Date().toISOString().slice(0, 10) + '.' + (extension === 'jpeg' ? 'jpg' : 'png');
     }
-
     return { MODES: MODES, getMode: getMode, normalizeRoute: normalizeRoute, getModeFromLocation: getModeFromLocation, storageKey: storageKey, recentKey: recentKey, getSafeArea: getSafeArea, applyDefaults: applyDefaults, isInsideSafeArea: isInsideSafeArea, evaluateSafeArea: evaluateSafeArea, safeFilename: safeFilename };
 }));

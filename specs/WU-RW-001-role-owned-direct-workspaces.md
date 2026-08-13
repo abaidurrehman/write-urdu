@@ -1,6 +1,6 @@
 # WU-RW-001 — Role-owned direct workspaces
 
-**Status:** Active  
+**Status:** Implemented  
 **Priority:** P0/P1 product architecture  
 **Date:** 2026-08-13  
 **Routes:** `/`, `/urdu-editor`, `/urdu-card-studio`, `/urdu-name-art-maker`, `/urdu-whatsapp-status-maker`, `/urdu-instagram-post-maker`, plus role entry points that reuse these engines  
@@ -16,35 +16,37 @@ A user should complete the job they came for on one top-level task surface.
 - Shared engines may be reused internally, but the user must not encounter a nested WriteUrdu product, iframe, second application shell, or a required jump to another tool to finish the job.
 - Advanced controls may be progressively disclosed, but they remain controls of the same role workspace.
 
-The architectural target is **shared engine, role-owned workspace** — not duplicated renderers and not wrappers around Card Studio.
+The implemented architecture is **shared engine, role-owned workspace** — not duplicated renderers and not wrappers around Card Studio.
 
 ## 2. Role completion map
 
-| Role / job | Direct role workspace | Required end-to-end completion | Target state |
+| Role / job | Direct role workspace | Required end-to-end completion | Implemented state |
 | --- | --- | --- | --- |
 | Student / assignment / report | Rich Editor | write/transliterate → format → preserve → Word/PDF/print | Direct editor, no nested product |
-| Ordinary Urdu writer / WhatsApp message | Homepage writer | type/transliterate → copy/share | Direct writer, preserve current simple flow |
-| Poetry / quote / Urdu on photo | Card Studio | write → choose size/style/background → preview → PNG/share | Direct image canvas |
-| Urdu Name Art / DP | Name Art | enter/convert name → choose DP/transparent/story/wide purpose → style/refine → PNG | **Implemented — direct shared-engine canvas (PR #37)** |
-| WhatsApp Status / greeting image | WhatsApp Status Maker | write → status-safe preview → background/style → PNG/JPEG → manual upload | **Implemented — direct 1080×1920 shared-engine canvas (PR #38)** |
-| Instagram creator | Instagram Post Maker | write → square/portrait/story → safe-area preview → caption copy → PNG/JPEG | **Implemented — direct Square/Portrait/Story shared-engine canvas** |
-| Facebook marketer | Facebook role entry into shared visual engine | write → 1200×630/default Facebook-safe composition → brand/style → PNG/JPEG | Direct canvas role mode; no need to understand generic Card Studio presets |
+| Ordinary Urdu writer / WhatsApp message | Homepage writer | type/transliterate → copy/share | Direct writer, preserves simple flow |
+| Poetry / quote / Urdu on photo | Card Studio | write → choose size/style/background → preview → PNG/share | Direct image canvas and broad creation owner |
+| Urdu Name Art / DP | Name Art | enter/convert name → choose DP/transparent/story/wide purpose → style/refine → PNG | **Direct shared-engine canvas — PR #37** |
+| WhatsApp Status / greeting image | WhatsApp Status Maker | write → status-safe preview → background/style → PNG/JPEG → manual upload | **Direct 1080×1920 shared-engine canvas — PR #38** |
+| Instagram creator | Instagram Post Maker | write → square/portrait/story → safe-area preview → caption copy → PNG/JPEG | **Direct Square/Portrait/Story shared-engine canvas — PR #39** |
+| Facebook marketer | Card Studio Facebook role | write → 1200×630 composition → safe-area preview → style/background → PNG/JPEG | **Direct role at `/urdu-card-studio?role=facebook`; canonical remains `/urdu-card-studio`** |
 
 ## 3. Definition of “direct”
 
-A role route is direct only when all of the following are true:
+A role is direct only when all of the following are true:
 
-1. The page contains the actual editable textarea/content controls and the actual rendered canvas/editor used for the final output.
+1. The top-level task surface contains the actual editable controls and rendered canvas/editor used for final output.
 2. No iframe or embedded WriteUrdu route is required to render or export the result.
-3. The role page owns its state and can initialize sensible role defaults without round-tripping through another page.
-4. The user can complete the role’s primary output from that route.
+3. The role owns sensible role defaults without round-tripping through another page.
+4. The user can complete the primary output from that surface.
 5. Export/share originates from the role workspace and validates role-specific requirements.
-6. Mobile contains one scroll context for the task surface; there is no outer-page + inner-app scrolling model.
-7. The role page can expose only relevant controls by default while sharing deeper engine capabilities internally.
+6. Mobile contains one scroll context for the task surface.
+7. Relevant controls are shown by default while deeper shared-engine capability remains internal.
+
+Facebook intentionally uses the existing Card Studio owner route with `?role=facebook`. A query role is still direct because it changes the role state/presentation of the same top-level Card Studio canvas; it does not embed another route or create another indexable search owner.
 
 ## 4. Shared engine boundary
 
-The role routes must not fork image rendering behavior.
+The role surfaces do not fork image rendering behavior.
 
 ### Shared visual engine owns
 
@@ -69,130 +71,116 @@ The role routes must not fork image rendering behavior.
 - platform-specific safe-area toggle/copy;
 - role-specific export wording and filename;
 - task-first mobile ordering;
-- related role transitions only when they are optional, never required to finish.
+- optional transitions to other roles.
 
-## 5. Shared-engine implementation direction
+## 5. Implemented module direction
 
-The original plan proposed extracting dedicated renderer/controller modules from `js/card-studio.js` before removing the role iframes. Slices B–D proved that the critical boundary can be achieved safely without a renderer fork: each role page mounts the existing Card Studio application engine directly into its own top-level DOM and surrounds it with role-owned controls.
+The original plan proposed extracting dedicated renderer/controller modules from `js/card-studio.js` before iframe removal. Slices B–E proved the critical boundary can be achieved safely without a renderer fork: role surfaces mount or configure the existing Card Studio application engine directly and surround it with role-owned controls.
 
 Current implementation shape:
 
 - `js/card-studio-core.js` — shared pure state/layout primitives.
 - `js/card-studio-interaction-core.js` — shared interaction primitives.
-- `js/card-studio.js` — existing shared canvas/render/export/application engine.
+- `js/card-studio.js` — shared canvas/render/export/application engine.
 - `js/card-studio-interaction.js` — shared direct-canvas interaction layer.
+- `js/card-studio-ui.js` — Card Studio workflow presentation plus Facebook role presentation/state enforcement.
 - `js/name-art.js` — Name Art role controller mounting the shared application directly.
-- `js/social-maker-core.js` — platform defaults, safe areas and social export rules.
+- `js/social-maker-core.js` — WhatsApp, Instagram and Facebook defaults, safe areas and social export rules.
 - `js/social-direct-workspace.js` — shared direct social-role adapter used by WhatsApp Status and Instagram.
-- `js/social-direct-instagram.js` — Instagram-owned Square/Portrait/Story role controls mapped into shared project state.
+- `js/social-direct-instagram.js` — Instagram-owned Square/Portrait/Story controls mapped into shared project state.
 
-Dedicated `card-canvas-renderer.js` / `card-workspace-controller.js` extraction is now a maintainability option rather than a prerequisite. The non-negotiable dependency rule remains: role controllers reuse the shared renderer/state/export behavior and must never create a second visual renderer.
+Dedicated `card-canvas-renderer.js` / `card-workspace-controller.js` extraction remains a maintainability option, not a prerequisite. Role controllers must continue to reuse shared renderer/state/export behavior and must never create a second visual renderer.
 
-## 6. Migration sequence
+## 6. Migration slices
 
-### Slice A — renderer safety net
+### Slice A — renderer safety net — **Implemented**
 
-1. Preserve one renderer and shared state/export contracts.
-2. Keep `/urdu-card-studio` visually and functionally stable.
-3. Add contracts proving role migrations do not create a second renderer.
+- One renderer/state/export contract preserved.
+- `/urdu-card-studio` remains the broad visual creator.
+- Static and browser contracts prevent role layers from adding a renderer.
 
 ### Slice B — direct Name Art — **Implemented**
 
-1. Replaced `<iframe data-name-art-frame>` with a top-level Name Art canvas/artboard.
-2. Kept the task-first flow: name → purpose → live result → style → export.
-3. Mounted shared rendering/interaction behavior directly.
-4. Preserved 24 templates, 12 packs, six presets, transparent 1600×900 export and handoff from Stylish Text.
-5. Removed iframe-dependent Name Art app access/tests.
-6. Merged in PR #37 at `f5c3f6c9d6369f269cca99d6883a3b2205a66a59`.
+- Replaced the Name Art iframe with a top-level canvas/artboard.
+- Preserved 24 templates, 12 packs, six presets and transparent 1600×900 PNG.
+- Preserved Stylish Text handoff.
+- Desktop and Pixel 5 prove real PNG output.
+- Merged in PR #37 at `f5c3f6c9d6369f269cca99d6883a3b2205a66a59`.
 
 ### Slice C — direct WhatsApp Status — **Implemented**
 
-1. Replaced `urdu-card-studio.html?social=whatsapp` with a direct role-owned workspace.
-2. Resolves WhatsApp mode from `/urdu-whatsapp-status-maker` and locks the role to 1080×1920 Story/Status output.
-3. Preserves safe area top 230, right 100, bottom 290, left 100 pixels.
-4. Keeps PNG/JPEG export, JPEG quality, text copy, direct canvas editing, local backgrounds and manual-upload honesty.
-5. Keeps normal WhatsApp-message flow on `/`; message and Status jobs remain separate.
-6. Desktop Chrome and Pixel 5 acceptance complete a real JPEG download from the top-level canvas.
-7. Merged in PR #38 at `be5f39e40f30715dbbb3ce2398bfc525c0f984be`.
+- Replaced `urdu-card-studio.html?social=whatsapp` with a direct 1080×1920 role workspace.
+- Safe area remains top 230, right 100, bottom 290, left 100.
+- Preserves PNG/JPEG, JPEG quality, text copy, local backgrounds and manual-upload honesty.
+- Desktop and Pixel 5 prove real JPEG output.
+- Merged in PR #38 at `be5f39e40f30715dbbb3ce2398bfc525c0f984be`.
 
 ### Slice D — direct Instagram — **Implemented**
 
-1. Replaced `urdu-card-studio.html?social=instagram` with a direct role-owned canvas.
-2. Exposes Square 1080×1080, Portrait 1080×1350 and Story 1080×1920 as Instagram-owned choices.
-3. Preserves adaptive safe areas: Square 90/90/90/90, Portrait 120/90/150/90, Story 230/100/290/100.
-4. Keeps caption-text copy, PNG/JPEG, JPEG quality, templates, local backgrounds and direct canvas editing.
-5. Reuses the shared direct-social adapter and Card Studio renderer; `js/social-direct-instagram.js` only maps role choices into shared project state.
-6. Desktop Chrome and Pixel 5 acceptance complete a real Portrait JPEG download from the top-level canvas with no iframe/contentWindow access.
+- Replaced `urdu-card-studio.html?social=instagram` with a direct role-owned canvas.
+- Square 1080×1080, Portrait 1080×1350 and Story 1080×1920 are Instagram-owned choices.
+- Safe areas remain Square 90/90/90/90, Portrait 120/90/150/90 and Story 230/100/290/100.
+- Preserves caption copy, PNG/JPEG, JPEG quality, templates, backgrounds and direct editing.
+- Desktop and Pixel 5 prove real Portrait JPEG output.
+- Merged in PR #39 at `e53456df776967174844bfc4743da7745106c6ba`.
 
-### Slice E — Facebook role mode
+### Slice E — Facebook role mode — **Implemented**
 
-1. Add a Facebook-directed role entry using the same direct visual workspace engine.
-2. Default to the existing 1200×630 wide-social capability.
-3. Expose marketer-relevant controls without requiring generic Card Studio terminology.
-4. Do not create a second renderer or a near-duplicate SEO doorway route without evidence; role entry can initially be task navigation/preset configuration on an existing owner route.
+- Facebook is exposed from Card Studio as an optional role entry, not a new public SEO route.
+- Role URL: `/urdu-card-studio?role=facebook`.
+- Canonical/search owner remains `/urdu-card-studio`.
+- Uses the existing `facebook` 1200×630 Card Studio preset.
+- Facebook safe area is top 70, right 96, bottom 70, left 96.
+- Generic output presets are locked while the Facebook role is active so the role cannot drift away from 1200×630.
+- Shared social controls provide PNG/JPEG, JPEG quality, safe-area guide and manual-upload messaging.
+- Desktop and Pixel 5 follow the normal guided flow: write → Export → JPEG quality → real `urdu-facebook-post-…jpg` download.
+- No `/facebook-post-maker`, `/urdu-facebook-post-maker` or similar indexable doorway was created.
 
 ## 7. Mobile contract
 
-For every role route on mobile:
+Every migrated role preserves:
 
-1. role task/primary input appears first;
-2. useful live output appears immediately after the minimum required input/choice;
-3. refinement controls follow the live output unless required to produce it;
-4. export/share remains reachable without entering another app shell;
-5. no nested scroll containers for the primary task;
-6. no iframe; no full second WriteUrdu page embedded below the role controls;
-7. no horizontal overflow at Pixel 5 and 360–390px widths.
+1. primary task/input before supporting content;
+2. useful live output as early as the role permits;
+3. refinement after the live result unless required first;
+4. export/share without entering another app shell;
+5. no nested primary-task scroll container;
+6. no iframe or second WriteUrdu page;
+7. no horizontal overflow in Pixel 5 acceptance.
 
-## 8. End-to-end acceptance by role
+Facebook remains within Card Studio’s guided mobile ordering, where the preview is deliberately shown before the control panel and Export is a normal guided step.
 
-### Student
+## 8. End-to-end acceptance
 
-`basic writing → Continue in Rich Editor → format heading/body → export document`
+- **Name Art:** `Ayesha → عائشہ → DP/Story → style → direct canvas → PNG`.
+- **WhatsApp Status:** `Urdu status text → 1080×1920 → safe area → JPEG quality → real JPEG`.
+- **Instagram:** `Urdu post text → Portrait → 1080×1350 → portrait safe area → JPEG quality → real JPEG`.
+- **Facebook:** `/urdu-card-studio?role=facebook → Urdu text → 1200×630 → Facebook safe area → Export → JPEG quality → real JPEG`.
 
-### WhatsApp message
-
-`Roman Urdu → Urdu script → Copy/Share → safe fallback`
-
-### Name Art
-
-`Ayesha → عائشہ → DP or Story → choose visual style → direct canvas changes → download PNG`
-
-### WhatsApp Status
-
-`Urdu status text → verify 1080×1920 → safe-area guide → JPEG quality → download real JPEG`
-
-### Instagram
-
-`Urdu post text → Portrait → verify 1080×1350 → portrait safe area → JPEG quality → download real JPEG`
-
-All three migrated visual-role tests assert no iframe, keep user text out of URLs, originate export from the top-level role canvas, and run on desktop Chrome and Pixel 5.
-
-### Facebook
-
-`enter text → Facebook/wide-social role choice → verify 1200×630 → style/background → download`
+Migrated visual-role acceptance runs on desktop Chrome and Pixel 5, keeps user text out of URLs, and does not reach through `frame.contentWindow` or `frameLocator`.
 
 ## 9. SEO / AdSense / privacy guardrails
 
-- Existing canonical URLs and route ownership stay unchanged during renderer migration.
-- No new query-variant routes are created merely to expose a role mode.
-- Search-facing copy remains owned by the existing acquisition specs.
+- Existing canonical URLs and route ownership remain unchanged.
+- Facebook role mode deliberately does **not** create an additional indexable route.
+- Search-facing Card Studio acquisition ownership remains on `/urdu-card-studio`.
 - No ad is placed inside an active role workspace/canvas or primary export/action region.
-- User text and local images remain browser-local except for the already documented transliteration network behavior.
-- Do not place user text in URLs when passing optional context between role entry points.
+- User text and local images remain browser-local except for the documented transliteration network behavior.
+- User text is never placed in role URLs.
 
 ## 10. Completion criteria
 
-WU-RW-001 is complete when:
-
-- [x] `/urdu-name-art-maker` has no iframe and completes Name Art end to end on its own top-level canvas.
-- [x] `/urdu-whatsapp-status-maker` has no iframe and completes Status creation end to end on its own top-level canvas.
-- [x] `/urdu-instagram-post-maker` has no iframe and completes Instagram creation end to end on its own top-level canvas.
-- [ ] Facebook role intent has a direct 1200×630 role workflow using the shared engine.
-- [x] Card Studio still owns the broad poetry/quote/text-on-photo job and has no regression in the migration gates.
+- [x] `/urdu-name-art-maker` has no iframe and completes Name Art on its own top-level canvas.
+- [x] `/urdu-whatsapp-status-maker` has no iframe and completes Status creation on its own top-level canvas.
+- [x] `/urdu-instagram-post-maker` has no iframe and completes Instagram creation on its own top-level canvas.
+- [x] Facebook has a direct 1200×630 role workflow using the shared Card Studio engine without a competing SEO route.
+- [x] Card Studio remains the broad poetry/quote/text-on-photo owner with no renderer regression.
 - [x] Student and ordinary-message roles remain direct editor/writer workflows.
-- [x] No migrated visual-role acceptance test reaches into `frame.contentWindow` or `frameLocator`.
-- [x] Role-level desktop and Pixel 5 tests prove actual export completion for Name Art, WhatsApp Status and Instagram.
-- [x] Static, SEO, governance and AdSense contracts remain green for Slices B–D.
+- [x] Migrated visual-role acceptance does not use `frame.contentWindow` or `frameLocator`.
+- [x] Desktop and Pixel 5 tests prove actual export completion for Name Art, WhatsApp Status, Instagram and Facebook.
+- [x] Static, SEO, governance and AdSense contracts remain green.
+
+**WU-RW-001 is complete.**
 
 ## 11. Non-goals
 
@@ -201,4 +189,4 @@ WU-RW-001 is complete when:
 - accounts/cloud persistence as a prerequisite;
 - multi-slide Instagram carousel composition;
 - forcing every role into a literal image canvas when an editor is the correct task surface;
-- redesigning SEO ownership while performing the workspace architecture refactor.
+- creating SEO doorway routes merely to expose role presets.
