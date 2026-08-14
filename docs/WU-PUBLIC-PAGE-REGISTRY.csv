@@ -23,4 +23,4 @@ why-write-urdu.html,/why-write-urdu,About,why use WriteUrdu,index,yes,keep-refra
 write-urdu-feedback.html,/write-urdu-feedback,About,feedback and contact,noindex,no,keep,pending,P2,Utility contact page intentionally excluded from sitemap
 write-urdu-privacy.html,/write-urdu-privacy,About,privacy policy,index,yes,keep,pending,P1,Legal and provider disclosure
 write-urdu-search.html,/write-urdu-search,Utility,internal site search,noindex,no,review,pending,P2,Recommended noindex follow unless curated
-write-urdu-sitemap.html,/write-urdu-sitemap,Utility,human-readable sitemap,index,yes,keep-if-generated,pending,P2,Must share route registry source
+write-urdu-sitemap.html,/write-urdu-sitemap,Utility,human-readable sitemap,index,yes,keep-if-generated,migrated,P2,Task-first professional directory grouped by Write Create Learn and About while staying aligned with the public route registry
