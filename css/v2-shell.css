@@ -1,3 +1,5 @@
+@import url("./v3-design-system.css");
+
 /* WriteUrdu v2 application shell.
    The writing surface stays primary; navigation and footer provide calm,
    predictable routes without exposing the whole product at once. */
