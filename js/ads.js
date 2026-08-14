@@ -59,6 +59,10 @@
         '[data-invoice-generator]',
         '[data-stylish-generator]',
         '[data-template-library]',
+        '.card-studio-workspace',
+        '.card-studio-shell',
+        '.qr-workspace',
+        '.qr-generator-shell',
         'main'
     ];
 
@@ -142,6 +146,39 @@
         });
     }
 
+    function buildSlotMarkup() {
+        return '<ins class="adsbygoogle"' +
+            ' style="display:block"' +
+            ' data-ad-client="' + ADSENSE_CLIENT + '"' +
+            ' data-ad-slot="' + SHARED_SLOT + '"' +
+            ' data-ad-format="auto"' +
+            ' data-full-width-responsive="true"></ins>';
+    }
+
+    // V3 treats the ad region as part of the shared layout system. Older pages
+    // can still provide their own .wu-header-ad, but if a Learn/Create route
+    // has no slot (for example Card Studio or QR Generator), create exactly one
+    // after a known safe content/workspace boundary. Core Write routes remain
+    // owned by write-monetization.js because their authoring boundaries are
+    // intentionally stricter.
+    function createCanonicalRegion(document, pageType) {
+        if (!document || document.querySelector('.wu-header-ad')) return document && document.querySelector('.wu-header-ad');
+        if (pageType !== 'learn' && pageType !== 'create') return null;
+
+        var anchor = pageType === 'learn' ? findFirst(document, LEARN_ANCHORS) : findFirst(document, CREATE_ANCHORS);
+        if (!anchor || !anchor.insertAdjacentElement) return null;
+
+        var region = document.createElement('aside');
+        region.className = 'wu-header-ad wu-ad-region wu-ad-placeholder';
+        region.setAttribute('aria-label', 'Advertisement');
+        region.setAttribute('data-wu-design-ad-slot', '');
+        region.setAttribute('data-wu-ad-placement', placementName(pageType));
+        region.setAttribute('data-wu-ad-page-type', pageType);
+        region.innerHTML = buildSlotMarkup();
+        anchor.insertAdjacentElement('afterend', region);
+        return region;
+    }
+
     function positionCanonicalRegion(document, pageType, region) {
         if (!region) return { moved: false, placement: null };
         var placement = placementName(pageType);
@@ -214,7 +251,7 @@
             return { path: path, pageType: pageType, placement: null, slotCount: 0, adsenseLoaded: false };
         }
 
-        var canonicalRegion = document.querySelector('.wu-header-ad');
+        var canonicalRegion = document.querySelector('.wu-header-ad') || createCanonicalRegion(document, pageType);
         var removedLegacySlots = cleanLegacyDuplicates(document, path, canonicalRegion);
         var position = positionCanonicalRegion(document, pageType, canonicalRegion);
         var slots = Array.prototype.slice.call(document.querySelectorAll('ins.adsbygoogle'));
@@ -251,6 +288,7 @@
         normalizePath: normalizePath,
         resolvePageType: resolvePageType,
         placementName: placementName,
+        createCanonicalRegion: createCanonicalRegion,
         init: init
     };
 }));
