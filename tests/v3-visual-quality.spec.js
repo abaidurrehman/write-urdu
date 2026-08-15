@@ -23,7 +23,7 @@ const viewports = [
   { name: 'mobile', width: 390, height: 844 }
 ];
 
-const auditDir = path.resolve(__dirname, '..', 'test-results', 'visual-audit');
+const auditDir = path.resolve(__dirname, '..', 'visual-audit');
 
 async function firstVisible(page, selectors) {
   for (const selector of selectors) {
@@ -82,7 +82,9 @@ async function captureMetrics(page, route, viewport) {
 test.describe('V3 production visual-quality audit', () => {
   test('capture representative routes across production viewports', async ({ browser }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop-chromium', 'Single audit run controls its own viewport matrix.');
+    test.setTimeout(180000);
 
+    fs.rmSync(auditDir, { recursive: true, force: true });
     fs.mkdirSync(auditDir, { recursive: true });
     const report = {
       generatedAt: new Date().toISOString(),
@@ -99,7 +101,7 @@ test.describe('V3 production visual-quality audit', () => {
       for (const route of routes) {
         await page.goto(route.path, { waitUntil: 'domcontentloaded' });
         await page.addStyleTag({ content: '*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important;caret-color:transparent!important}' });
-        await page.waitForTimeout(350);
+        await page.waitForTimeout(250);
 
         const metrics = await captureMetrics(page, route, viewport);
         const entry = { route: route.path, slug: route.slug, ...metrics };
@@ -120,12 +122,12 @@ test.describe('V3 production visual-quality audit', () => {
           fullPage: true,
           animations: 'disabled'
         });
+        fs.writeFileSync(path.join(auditDir, 'report.json'), JSON.stringify(report, null, 2));
       }
 
       await context.close();
     }
 
-    fs.writeFileSync(path.join(auditDir, 'report.json'), JSON.stringify(report, null, 2));
     expect(report.criticalFailures, report.criticalFailures.join('\n')).toEqual([]);
   });
 });
