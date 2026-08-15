@@ -221,7 +221,3 @@ export async function onRequestPost({ request, env, fetchImpl = fetch }) {
       : 'Thank you—your message was sent.'
   });
 }
-
-export function onRequest() {
-  return jsonResponse({ ok: false, message: 'Method not allowed.' }, 405);
-}
