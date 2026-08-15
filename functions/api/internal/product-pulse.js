@@ -1,4 +1,15 @@
 const ALLOWED_DAYS = new Set([1, 7, 30]);
+const METRIC_COLUMNS = [
+  'visits', 'engaged_visits', 'copies', 'exports',
+  'export_pdf', 'export_png', 'export_png_transparent', 'export_jpeg', 'export_doc', 'export_txt', 'export_svg',
+  'prints', 'shares', 'handoffs', 'batch_transliterations',
+  'canvas_interactions', 'template_uses', 'background_image_uses', 'summary_count',
+  'length_0', 'length_1_20', 'length_21_50', 'length_51_100', 'length_101_250',
+  'length_251_500', 'length_501_1000', 'length_1001_2500', 'length_2500_plus',
+  'active_0_10', 'active_11_30', 'active_31_60', 'active_61_180', 'active_181_600', 'active_600_plus',
+  'input_roman', 'input_direct', 'input_unknown',
+  'device_mobile', 'device_tablet', 'device_desktop'
+];
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -21,35 +32,59 @@ function rows(result) {
   return result && Array.isArray(result.results) ? result.results : [];
 }
 
-async function hasProductEventsTable(db) {
+async function hasRollupTable(db) {
   const result = await db.prepare(
-    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'product_events'"
+    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'product_hourly_metrics'"
   ).first();
-  return Boolean(result && result.name === 'product_events');
+  return Boolean(result && result.name === 'product_hourly_metrics');
 }
 
-async function summaryForWindow(db, startModifier, endModifier) {
-  const endClause = endModifier ? 'AND received_at < strftime(\'%Y-%m-%dT%H:%M:%fZ\', \'now\', ?2)' : '';
-  const sql = `
-    SELECT
-      COUNT(DISTINCT CASE WHEN event_name = 'page_session_started' THEN session_id END) AS sessions,
-      COUNT(DISTINCT CASE WHEN event_name = 'editor_engaged' THEN session_id END) AS engaged_sessions,
-      SUM(CASE WHEN event_name = 'copy_completed' THEN 1 ELSE 0 END) AS copies,
-      SUM(CASE WHEN event_name = 'export_completed' THEN 1 ELSE 0 END) AS exports,
-      SUM(CASE WHEN event_name = 'print_started' THEN 1 ELSE 0 END) AS prints,
-      SUM(CASE WHEN event_name = 'share_clicked' THEN 1 ELSE 0 END) AS shares,
-      SUM(CASE WHEN event_name = 'tool_handoff' THEN 1 ELSE 0 END) AS handoffs,
-      SUM(CASE WHEN event_name = 'batch_transliteration' THEN 1 ELSE 0 END) AS batch_transliterations,
-      MAX(received_at) AS latest_event_at
-    FROM product_events
-    WHERE received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
-      ${endClause}
-  `;
-  const statement = db.prepare(sql);
-  const result = endModifier
-    ? await statement.bind(startModifier, endModifier).first()
-    : await statement.bind(startModifier).first();
-  return result || {};
+function hourIso(date) {
+  return date.toISOString().slice(0, 13) + ':00:00Z';
+}
+
+function windowBounds(days) {
+  const now = new Date();
+  const currentHour = new Date(now);
+  currentHour.setUTCMinutes(0, 0, 0);
+  const end = new Date(currentHour.getTime() + 60 * 60 * 1000);
+  const start = new Date(currentHour.getTime() - days * 24 * 60 * 60 * 1000);
+  const previousStart = new Date(start.getTime() - days * 24 * 60 * 60 * 1000);
+  return {
+    currentStart: hourIso(start),
+    currentEnd: hourIso(end),
+    previousStart: hourIso(previousStart),
+    previousEnd: hourIso(start)
+  };
+}
+
+async function summaryForWindow(db, start, end) {
+  const sums = METRIC_COLUMNS.map((column) => `SUM(${column}) AS ${column}`).join(',\n      ');
+  return (await db.prepare(`
+    SELECT ${sums}, MAX(latest_event_at) AS latest_event_at
+    FROM product_hourly_metrics
+    WHERE tool = 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
+  `).bind(start, end).first()) || {};
+}
+
+function n(row, key) {
+  return Number(row && row[key] || 0);
+}
+
+function distribution(items) {
+  return items.filter((item) => Number(item.summaries || 0) > 0);
+}
+
+function exportRows(summary) {
+  return [
+    { format: 'pdf', events: n(summary, 'export_pdf') },
+    { format: 'png', events: n(summary, 'export_png') + n(summary, 'export_png_transparent') },
+    { format: 'jpeg', events: n(summary, 'export_jpeg') },
+    { format: 'doc', events: n(summary, 'export_doc') },
+    { format: 'txt', events: n(summary, 'export_txt') },
+    { format: 'svg', events: n(summary, 'export_svg') },
+    { format: 'png_transparent', events: n(summary, 'export_png_transparent') }
+  ].filter((item) => item.events > 0);
 }
 
 export async function onRequestGet(context) {
@@ -60,140 +95,132 @@ export async function onRequestGet(context) {
   const url = new URL(request.url);
   const requestedDays = Number(url.searchParams.get('days') || 7);
   const days = ALLOWED_DAYS.has(requestedDays) ? requestedDays : 7;
-  const currentStart = `-${days} days`;
-  const previousStart = `-${days * 2} days`;
-  const previousEnd = `-${days} days`;
   const db = env.METRICS_DB;
 
-  if (!(await hasProductEventsTable(db))) {
+  if (!(await hasRollupTable(db))) {
     return json({
       ready: false,
       days,
       generated_at: new Date().toISOString(),
-      message: 'No product telemetry table exists yet. It will be created by the first valid /api/events request.'
+      message: 'Product rollups are not initialized yet. The first valid /api/events request after deployment will initialize them.'
     });
   }
 
-  const [current, previous, exportResult, lengthResult, activeResult, modeResult, deviceResult, handoffResult, toolResult, dailyResult] = await Promise.all([
-    summaryForWindow(db, currentStart),
-    summaryForWindow(db, previousStart, previousEnd),
+  const bounds = windowBounds(days);
+  const [current, previous, handoffResult, toolResult, dailyResult] = await Promise.all([
+    summaryForWindow(db, bounds.currentStart, bounds.currentEnd),
+    summaryForWindow(db, bounds.previousStart, bounds.previousEnd),
     db.prepare(`
-      SELECT COALESCE(format, 'unknown') AS format, COUNT(*) AS events,
-             COUNT(DISTINCT session_id) AS sessions
-      FROM product_events
-      WHERE event_name = 'export_completed'
-        AND received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
-      GROUP BY format
-      ORDER BY events DESC
-    `).bind(currentStart).all(),
-    db.prepare(`
-      SELECT COALESCE(length_bucket, 'unknown') AS bucket, COUNT(*) AS summaries
-      FROM product_events
-      WHERE event_name = 'session_summary'
-        AND received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
-      GROUP BY length_bucket
-    `).bind(currentStart).all(),
-    db.prepare(`
-      SELECT COALESCE(active_time_bucket, 'unknown') AS bucket, COUNT(*) AS summaries
-      FROM product_events
-      WHERE event_name = 'session_summary'
-        AND received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
-      GROUP BY active_time_bucket
-    `).bind(currentStart).all(),
-    db.prepare(`
-      SELECT COALESCE(input_mode, 'unknown') AS input_mode, COUNT(*) AS summaries
-      FROM product_events
-      WHERE event_name = 'session_summary'
-        AND received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
-      GROUP BY input_mode
-      ORDER BY summaries DESC
-    `).bind(currentStart).all(),
-    db.prepare(`
-      SELECT COALESCE(device_class, 'unknown') AS device_class,
-             COUNT(DISTINCT session_id) AS sessions
-      FROM product_events
-      WHERE event_name = 'page_session_started'
-        AND received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
-      GROUP BY device_class
-      ORDER BY sessions DESC
-    `).bind(currentStart).all(),
-    db.prepare(`
-      SELECT COALESCE(target_route, 'unknown') AS target_route,
-             COUNT(*) AS events,
-             COUNT(DISTINCT session_id) AS sessions
-      FROM product_events
-      WHERE event_name = 'tool_handoff'
-        AND received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
+      SELECT target_route, SUM(events) AS events
+      FROM product_hourly_handoffs
+      WHERE tool = 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
       GROUP BY target_route
       ORDER BY events DESC
       LIMIT 12
-    `).bind(currentStart).all(),
+    `).bind(bounds.currentStart, bounds.currentEnd).all(),
     db.prepare(`
       SELECT tool,
-             COUNT(DISTINCT CASE WHEN event_name = 'page_session_started' THEN session_id END) AS sessions,
-             COUNT(DISTINCT CASE WHEN event_name = 'editor_engaged' THEN session_id END) AS engaged_sessions,
-             SUM(CASE WHEN event_name = 'copy_completed' THEN 1 ELSE 0 END) AS copies,
-             SUM(CASE WHEN event_name = 'export_completed' THEN 1 ELSE 0 END) AS exports
-      FROM product_events
-      WHERE received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
+             SUM(visits) AS sessions,
+             SUM(engaged_visits) AS engaged_sessions,
+             SUM(copies) AS copies,
+             SUM(exports) AS exports,
+             SUM(canvas_interactions) AS canvas_interactions,
+             SUM(template_uses) AS template_uses,
+             SUM(background_image_uses) AS background_image_uses
+      FROM product_hourly_metrics
+      WHERE tool <> 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
       GROUP BY tool
-      HAVING sessions > 0 OR engaged_sessions > 0 OR copies > 0 OR exports > 0
+      HAVING SUM(visits) > 0 OR SUM(engaged_visits) > 0 OR SUM(copies) > 0 OR SUM(exports) > 0
       ORDER BY sessions DESC, engaged_sessions DESC
-    `).bind(currentStart).all(),
+    `).bind(bounds.currentStart, bounds.currentEnd).all(),
     db.prepare(`
-      SELECT substr(received_at, 1, 10) AS day,
-             COUNT(DISTINCT CASE WHEN event_name = 'page_session_started' THEN session_id END) AS sessions,
-             COUNT(DISTINCT CASE WHEN event_name = 'editor_engaged' THEN session_id END) AS engaged_sessions,
-             SUM(CASE WHEN event_name = 'copy_completed' THEN 1 ELSE 0 END) AS copies,
-             SUM(CASE WHEN event_name = 'export_completed' THEN 1 ELSE 0 END) AS exports
-      FROM product_events
-      WHERE received_at >= strftime('%Y-%m-%dT%H:%M:%fZ', 'now', ?1)
-      GROUP BY substr(received_at, 1, 10)
+      SELECT substr(bucket_hour, 1, 10) AS day,
+             SUM(visits) AS sessions,
+             SUM(engaged_visits) AS engaged_sessions,
+             SUM(copies) AS copies,
+             SUM(exports) AS exports
+      FROM product_hourly_metrics
+      WHERE tool = 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
+      GROUP BY substr(bucket_hour, 1, 10)
       ORDER BY day ASC
-    `).bind(currentStart).all()
+    `).bind(bounds.currentStart, bounds.currentEnd).all()
   ]);
 
-  const exportsByFormat = rows(exportResult);
-  const exportMap = Object.fromEntries(exportsByFormat.map(item => [item.format, Number(item.events || 0)]));
-  const sessions = Number(current.sessions || 0);
-  const engagedSessions = Number(current.engaged_sessions || 0);
+  const sessions = n(current, 'visits');
+  const engagedSessions = n(current, 'engaged_visits');
+  const pngTotal = n(current, 'export_png') + n(current, 'export_png_transparent');
 
   return json({
     ready: true,
+    storage: 'hourly_rollups',
     days,
     generated_at: new Date().toISOString(),
     current: {
       sessions,
       engaged_sessions: engagedSessions,
       engagement_rate: sessions ? engagedSessions / sessions : 0,
-      copies: Number(current.copies || 0),
-      exports: Number(current.exports || 0),
-      prints: Number(current.prints || 0),
-      shares: Number(current.shares || 0),
-      handoffs: Number(current.handoffs || 0),
-      batch_transliterations: Number(current.batch_transliterations || 0),
+      copies: n(current, 'copies'),
+      exports: n(current, 'exports'),
+      prints: n(current, 'prints'),
+      shares: n(current, 'shares'),
+      handoffs: n(current, 'handoffs'),
+      batch_transliterations: n(current, 'batch_transliterations'),
+      canvas_interactions: n(current, 'canvas_interactions'),
+      template_uses: n(current, 'template_uses'),
+      background_image_uses: n(current, 'background_image_uses'),
       latest_event_at: current.latest_event_at || null,
       exports_by_format: {
-        pdf: exportMap.pdf || 0,
-        png: exportMap.png || 0,
-        doc: exportMap.doc || 0,
-        txt: exportMap.txt || 0
+        pdf: n(current, 'export_pdf'),
+        png: pngTotal,
+        png_transparent: n(current, 'export_png_transparent'),
+        jpeg: n(current, 'export_jpeg'),
+        doc: n(current, 'export_doc'),
+        txt: n(current, 'export_txt'),
+        svg: n(current, 'export_svg')
       }
     },
     previous: {
-      sessions: Number(previous.sessions || 0),
-      engaged_sessions: Number(previous.engaged_sessions || 0),
-      copies: Number(previous.copies || 0),
-      exports: Number(previous.exports || 0),
-      prints: Number(previous.prints || 0),
-      shares: Number(previous.shares || 0),
-      handoffs: Number(previous.handoffs || 0)
+      sessions: n(previous, 'visits'),
+      engaged_sessions: n(previous, 'engaged_visits'),
+      copies: n(previous, 'copies'),
+      exports: n(previous, 'exports'),
+      prints: n(previous, 'prints'),
+      shares: n(previous, 'shares'),
+      handoffs: n(previous, 'handoffs'),
+      canvas_interactions: n(previous, 'canvas_interactions'),
+      template_uses: n(previous, 'template_uses'),
+      background_image_uses: n(previous, 'background_image_uses')
     },
-    exports: exportsByFormat,
-    length_distribution: rows(lengthResult),
-    active_time_distribution: rows(activeResult),
-    input_modes: rows(modeResult),
-    devices: rows(deviceResult),
+    exports: exportRows(current),
+    length_distribution: distribution([
+      { bucket: '0', summaries: n(current, 'length_0') },
+      { bucket: '1-20', summaries: n(current, 'length_1_20') },
+      { bucket: '21-50', summaries: n(current, 'length_21_50') },
+      { bucket: '51-100', summaries: n(current, 'length_51_100') },
+      { bucket: '101-250', summaries: n(current, 'length_101_250') },
+      { bucket: '251-500', summaries: n(current, 'length_251_500') },
+      { bucket: '501-1000', summaries: n(current, 'length_501_1000') },
+      { bucket: '1001-2500', summaries: n(current, 'length_1001_2500') },
+      { bucket: '2500+', summaries: n(current, 'length_2500_plus') }
+    ]),
+    active_time_distribution: distribution([
+      { bucket: '0-10s', summaries: n(current, 'active_0_10') },
+      { bucket: '11-30s', summaries: n(current, 'active_11_30') },
+      { bucket: '31-60s', summaries: n(current, 'active_31_60') },
+      { bucket: '61-180s', summaries: n(current, 'active_61_180') },
+      { bucket: '181-600s', summaries: n(current, 'active_181_600') },
+      { bucket: '600s+', summaries: n(current, 'active_600_plus') }
+    ]),
+    input_modes: distribution([
+      { input_mode: 'roman', summaries: n(current, 'input_roman') },
+      { input_mode: 'direct', summaries: n(current, 'input_direct') },
+      { input_mode: 'unknown', summaries: n(current, 'input_unknown') }
+    ]),
+    devices: [
+      { device_class: 'desktop', sessions: n(current, 'device_desktop') },
+      { device_class: 'mobile', sessions: n(current, 'device_mobile') },
+      { device_class: 'tablet', sessions: n(current, 'device_tablet') }
+    ].filter((item) => item.sessions > 0),
     handoffs: rows(handoffResult),
     tools: rows(toolResult),
     daily: rows(dailyResult)
