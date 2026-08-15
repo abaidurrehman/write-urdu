@@ -1,0 +1,398 @@
+/* V3 utility surfaces: feedback and internal search.
+   These routes are intentionally noindex and ad-free, so the design favors
+   clarity and task completion over acquisition content. */
+
+.v3-utility-page {
+  --utility-max: 72rem;
+}
+
+.v3-utility-page .utility-main {
+  width: min(var(--utility-max), calc(100% - 40px));
+  margin: 0 auto;
+  padding: clamp(28px, 4vw, 54px) 0 0;
+}
+
+.v3-utility-page .utility-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, .72fr);
+  gap: clamp(28px, 5vw, 58px);
+  align-items: center;
+  padding: clamp(26px, 4vw, 44px);
+  border: 1px solid var(--wu-color-border, #dfe7e2);
+  border-radius: var(--wu-radius-xl, 20px);
+  background:
+    radial-gradient(circle at 92% 8%, rgb(21 147 77 / 8%), transparent 17rem),
+    linear-gradient(135deg, #fff, var(--wu-color-brand-softer, #f4fbf6));
+  box-shadow: var(--wu-shadow-sm, 0 7px 22px rgb(20 35 27 / 7%));
+}
+
+.v3-utility-page .utility-eyebrow,
+.v3-utility-page .utility-section-label {
+  margin: 0 0 8px;
+  color: var(--wu-color-brand-strong, #0d783e);
+  font-size: .69rem;
+  font-weight: 750;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.v3-utility-page .utility-hero h1 {
+  margin: 0;
+  color: var(--wu-color-ink, #17221c);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.04;
+  letter-spacing: -.045em;
+}
+
+.v3-utility-page .utility-lede {
+  max-width: 740px;
+  margin: 17px 0 0;
+  color: var(--wu-color-muted, #68766e);
+  font-size: clamp(1rem, 1.35vw, 1.1rem);
+  line-height: 1.72;
+}
+
+.v3-utility-page .utility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.v3-utility-page .utility-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border: 1px solid var(--wu-color-border-strong, #cbd9d1);
+  border-radius: var(--wu-radius-md, 13px);
+  color: var(--wu-color-ink-soft, #33453b) !important;
+  background: #fff;
+  font-size: .86rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.v3-utility-page .utility-button:hover {
+  transform: translateY(-1px);
+  border-color: #b8d5c4;
+  box-shadow: var(--wu-shadow-sm, 0 7px 22px rgb(20 35 27 / 7%));
+}
+
+.v3-utility-page .utility-button-primary,
+.v3-utility-page .utility-search-form button {
+  border-color: var(--wu-color-brand, #15934d);
+  color: #fff !important;
+  background: linear-gradient(180deg, #19a656, var(--wu-color-brand, #15934d));
+  box-shadow: 0 8px 18px rgb(21 147 77 / 15%);
+}
+
+.v3-utility-page .utility-note-card {
+  padding: 22px;
+  border: 1px solid #d5e6db;
+  border-radius: var(--wu-radius-xl, 20px);
+  background: rgb(255 255 255 / 90%);
+  box-shadow: var(--wu-shadow-xs, 0 1px 2px rgb(20 35 27 / 4%));
+}
+
+.v3-utility-page .utility-card-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--wu-color-subtle, #87938c);
+  font-size: .68rem;
+  font-weight: 750;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.v3-utility-page .utility-note-card strong {
+  display: block;
+  color: var(--wu-color-ink, #17221c);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.v3-utility-page .utility-note-card p {
+  margin: 10px 0 0;
+  color: var(--wu-color-muted, #68766e);
+  font-size: .84rem;
+  line-height: 1.6;
+}
+
+.v3-utility-page .utility-section,
+.v3-utility-page .utility-search-panel,
+.v3-utility-page .utility-results {
+  margin-top: clamp(40px, 6vw, 68px);
+}
+
+.v3-utility-page .utility-section-heading {
+  max-width: 720px;
+}
+
+.v3-utility-page .utility-section-heading h2,
+.v3-utility-page .utility-contact h2 {
+  margin: 0;
+  color: var(--wu-color-ink, #17221c);
+  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  line-height: 1.16;
+  letter-spacing: -.035em;
+}
+
+.v3-utility-page .utility-section-heading > p:last-child,
+.v3-utility-page .utility-contact p {
+  color: var(--wu-color-muted, #68766e);
+  line-height: 1.68;
+}
+
+.v3-utility-page .utility-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.v3-utility-page .utility-card-grid article,
+.v3-utility-page .utility-list-cards article {
+  padding: 18px;
+  border: 1px solid var(--wu-color-border, #dfe7e2);
+  border-radius: var(--wu-radius-lg, 16px);
+  background: #fff;
+  box-shadow: var(--wu-shadow-xs, 0 1px 2px rgb(20 35 27 / 4%));
+}
+
+.v3-utility-page .utility-card-grid article > span {
+  color: var(--wu-color-brand-strong, #0d783e);
+  font-size: .67rem;
+  font-weight: 750;
+  letter-spacing: .08em;
+}
+
+.v3-utility-page .utility-card-grid strong,
+.v3-utility-page .utility-list-cards strong {
+  display: block;
+  margin-top: 9px;
+  color: var(--wu-color-ink-soft, #33453b);
+  font-size: .9rem;
+}
+
+.v3-utility-page .utility-card-grid p,
+.v3-utility-page .utility-list-cards p {
+  margin: 7px 0 0;
+  color: var(--wu-color-muted, #68766e);
+  font-size: .82rem;
+  line-height: 1.58;
+}
+
+.v3-utility-page .utility-list-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.v3-utility-page .utility-contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: clamp(44px, 7vw, 72px);
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid #cfe5d7;
+  border-radius: var(--wu-radius-xl, 20px);
+  background: linear-gradient(135deg, var(--wu-color-brand-softer, #f4fbf6), #fff);
+  box-shadow: var(--wu-shadow-xs, 0 1px 2px rgb(20 35 27 / 4%));
+}
+
+.v3-utility-page .utility-contact p {
+  max-width: 650px;
+  margin: 9px 0 0;
+}
+
+.v3-utility-page .utility-contact > .utility-button {
+  flex: none;
+}
+
+/* Search */
+.v3-utility-page .utility-search-panel {
+  padding: clamp(22px, 3vw, 30px);
+  border: 1px solid var(--wu-color-border, #dfe7e2);
+  border-radius: var(--wu-radius-xl, 20px);
+  background: #fff;
+  box-shadow: var(--wu-shadow-sm, 0 7px 22px rgb(20 35 27 / 7%));
+}
+
+.v3-utility-page .utility-search-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.v3-utility-page .utility-search-form label {
+  color: var(--wu-color-ink-soft, #33453b);
+  font-size: .78rem;
+  font-weight: 650;
+}
+
+.v3-utility-page .utility-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.v3-utility-page .utility-search-form input[type="search"] {
+  min-height: 48px;
+  width: 100%;
+  padding: 10px 13px;
+  border: 1px solid var(--wu-color-border-strong, #cbd9d1);
+  border-radius: var(--wu-radius-md, 13px);
+  color: var(--wu-color-ink, #17221c);
+  background: #fff;
+  font: 500 .92rem/1.2 var(--wu-font-ui, Inter, sans-serif);
+}
+
+.v3-utility-page .utility-search-form input[type="search"]:focus {
+  border-color: #8fc5a4;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgb(21 147 77 / 10%);
+}
+
+.v3-utility-page .utility-search-form button {
+  min-height: 48px;
+  padding: 10px 20px;
+  border: 1px solid var(--wu-color-brand, #15934d);
+  border-radius: var(--wu-radius-md, 13px);
+  font: 650 .88rem/1 var(--wu-font-ui, Inter, sans-serif);
+  cursor: pointer;
+}
+
+.v3-utility-page .utility-provider-note {
+  margin: 10px 0 0;
+  color: var(--wu-color-subtle, #87938c);
+  font-size: .75rem;
+}
+
+.v3-utility-page .utility-link-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.v3-utility-page .utility-link-grid a {
+  display: grid;
+  gap: 6px;
+  min-height: 118px;
+  padding: 17px;
+  border: 1px solid var(--wu-color-border, #dfe7e2);
+  border-radius: var(--wu-radius-lg, 16px);
+  color: inherit !important;
+  background: var(--wu-color-surface-soft, #f8faf9);
+  text-decoration: none;
+}
+
+.v3-utility-page .utility-link-grid a:hover {
+  border-color: #c7decf;
+  background: var(--wu-color-brand-softer, #f4fbf6);
+}
+
+.v3-utility-page .utility-link-grid strong {
+  color: var(--wu-color-ink-soft, #33453b);
+  font-size: .88rem;
+}
+
+.v3-utility-page .utility-link-grid span {
+  color: var(--wu-color-muted, #68766e);
+  font-size: .8rem;
+  line-height: 1.55;
+}
+
+.v3-utility-page .utility-results {
+  min-height: 180px;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid var(--wu-color-border, #dfe7e2);
+  border-radius: var(--wu-radius-xl, 20px);
+  background: #fff;
+  box-shadow: var(--wu-shadow-xs, 0 1px 2px rgb(20 35 27 / 4%));
+}
+
+.v3-utility-page #cse-search-results,
+.v3-utility-page #cse-search-results iframe,
+.v3-utility-page .gsc-control-cse,
+.v3-utility-page .gsc-results-wrapper-overlay {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Feedback and Search both belong to the central ad-free trust group. */
+.v3-utility-page .wu-header-ad,
+.v3-utility-page .wu-ad-region,
+.v3-utility-page ins.adsbygoogle {
+  display: none !important;
+}
+
+@media (max-width: 920px) {
+  .v3-utility-page .utility-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .v3-utility-page .utility-note-card {
+    max-width: 620px;
+  }
+
+  .v3-utility-page .utility-card-grid,
+  .v3-utility-page .utility-link-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .v3-utility-page .utility-main {
+    width: calc(100% - 22px);
+    padding-top: 22px;
+  }
+
+  .v3-utility-page .utility-hero {
+    gap: 20px;
+    padding: 22px 18px;
+    border-radius: var(--wu-radius-lg, 16px);
+  }
+
+  .v3-utility-page .utility-card-grid,
+  .v3-utility-page .utility-list-cards,
+  .v3-utility-page .utility-link-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .v3-utility-page .utility-contact {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .v3-utility-page .utility-search-row {
+    grid-template-columns: 1fr;
+  }
+
+  .v3-utility-page .utility-search-form button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 440px) {
+  .v3-utility-page .utility-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .v3-utility-page .utility-button,
+  .v3-utility-page .utility-contact > .utility-button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v3-utility-page .utility-button {
+    transition: none;
+  }
+}
