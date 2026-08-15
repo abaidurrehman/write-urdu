@@ -1,5 +1,5 @@
 -- WU-ANALYTICS-001: privacy-safe product telemetry
--- Additive only. No editor text, IP address, email, referrer or user-agent fields.
+-- Additive only. The schema contains coarse product-event fields only.
 
 CREATE TABLE IF NOT EXISTS product_events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
