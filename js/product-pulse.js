@@ -119,7 +119,10 @@
       { label: 'Share', value: c.shares },
       { label: 'Print', value: c.prints },
       { label: 'Handoff', value: c.handoffs },
-      { label: 'Batch translit.', value: c.batch_transliterations }
+      { label: 'Batch translit.', value: c.batch_transliterations },
+      { label: 'Canvas edit', value: c.canvas_interactions },
+      { label: 'Template use', value: c.template_uses },
+      { label: 'Local image', value: c.background_image_uses }
     ], 'label', 'value');
   }
 
@@ -148,7 +151,7 @@
     body.innerHTML = '';
     var tools = data.tools || [];
     if (!tools.length) {
-      body.innerHTML = '<tr><td colspan="6" class="os-empty">No tool activity yet for this period.</td></tr>';
+      body.innerHTML = '<tr><td colspan="7" class="os-empty">No tool activity yet for this period.</td></tr>';
       return;
     }
     tools.forEach(function (item) {
@@ -161,7 +164,8 @@
         fmt(engaged),
         sessions ? percent(engaged / sessions) : '—',
         fmt(item.copies),
-        fmt(item.exports)
+        fmt(item.exports),
+        fmt(item.canvas_interactions)
       ];
       values.forEach(function (value, index) {
         var cell = document.createElement('td');
@@ -186,7 +190,7 @@
     daily.forEach(function (item) {
       var day = document.createElement('div');
       day.className = 'os-day';
-      day.title = item.day + ': ' + fmt(item.sessions) + ' sessions, ' + fmt(item.engaged_sessions) + ' engaged';
+      day.title = item.day + ': ' + fmt(item.sessions) + ' visits, ' + fmt(item.engaged_sessions) + ' engaged';
       var bars = document.createElement('div');
       bars.className = 'os-day-bars';
       var sessionBar = document.createElement('div');
@@ -218,7 +222,7 @@
     renderTools(data);
     renderDaily(data);
     q('#lastUpdated').textContent = 'Updated ' + new Date(data.generated_at).toLocaleString() + (data.current && data.current.latest_event_at ? ' · latest event ' + new Date(data.current.latest_event_at).toLocaleString() : '');
-    q('#dataStatus').textContent = data.current && data.current.latest_event_at ? 'Telemetry live' : 'Telemetry ready';
+    q('#dataStatus').textContent = data.storage === 'hourly_rollups' ? 'Rollups live' : (data.current && data.current.latest_event_at ? 'Telemetry live' : 'Telemetry ready');
   }
 
   async function load() {
