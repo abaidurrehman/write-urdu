@@ -14,6 +14,7 @@
     var summarySent = false;
     var editorReader = null;
     var currentInputMode = 'unknown';
+    var outcomeHooksInstalled = false;
 
     function normalizedPath(value) {
         var path = String(value || '/').split('?')[0].split('#')[0].replace(/\.html$/i, '').replace(/\/+$/, '') || '/';
@@ -180,9 +181,7 @@
         if (!node) return false;
         editorReader = function () { return node.value; };
         ['input', 'keyup', 'paste', 'change'].forEach(function (name) {
-            node.addEventListener(name, function () {
-                markEngaged();
-            }, { passive: true });
+            node.addEventListener(name, markEngaged, { passive: true });
         });
         node.addEventListener('focus', noteActivity, { passive: true });
         return true;
@@ -220,7 +219,9 @@
     function bindProductActions() {
         currentInputMode = selectedInputMode();
         document.addEventListener('click', function (event) {
-            var mode = event.target.closest && event.target.closest('[data-input-mode-option]');
+            var closest = event.target.closest ? event.target.closest.bind(event.target) : null;
+            if (!closest) return;
+            var mode = closest('[data-input-mode-option]');
             if (mode) {
                 currentInputMode = mode.getAttribute('data-input-mode-option') || 'unknown';
                 track('input_mode_changed', { input_mode: currentInputMode });
@@ -228,24 +229,127 @@
                 return;
             }
 
-            if (event.target.closest && event.target.closest('[data-batch-action]')) {
+            if (closest('[data-batch-action]')) {
                 track('batch_transliteration', { input_mode: currentInputMode, length_bucket: lengthBucket(textLength()) });
                 noteActivity();
                 return;
             }
 
-            if (event.target.closest && event.target.closest('[data-write-urdu-share]')) {
+            if (closest('[data-write-urdu-share]')) {
                 track('share_clicked', { length_bucket: lengthBucket(textLength()) });
                 return;
             }
 
-            var handoff = event.target.closest && event.target.closest('[data-create-card], [data-create-qr], .home-actions-group-create a');
+            var handoff = closest('[data-create-card], [data-create-qr], .home-actions-group-create a');
             if (handoff) {
                 var href = handoff.getAttribute('href');
                 var targetRoute = href || (handoff.hasAttribute('data-create-card') ? '/urdu-card-studio' : '/qr-code-generator');
                 track('tool_handoff', { target_route: targetRoute, length_bucket: lengthBucket(textLength()) });
             }
         }, true);
+    }
+
+    function trackOutcome(name, detail) {
+        detail = detail || {};
+        if (typeof detail.length_bucket === 'undefined') detail.length_bucket = lengthBucket(textLength());
+        track(name, detail);
+    }
+
+    function formatFromFilename(filename) {
+        var match = String(filename || '').toLowerCase().match(/\.([a-z0-9]+)$/);
+        if (!match) return null;
+        if (match[1] === 'doc' || match[1] === 'docx') return 'doc';
+        if (match[1] === 'txt' || match[1] === 'png') return match[1];
+        return null;
+    }
+
+    function wrapExportRuntime() {
+        var runtime = window.WriteUrduExport;
+        if (!runtime || runtime.__wuTelemetryWrapped) return false;
+        runtime.__wuTelemetryWrapped = true;
+
+        if (typeof runtime.downloadData === 'function') {
+            var originalDownloadData = runtime.downloadData;
+            runtime.downloadData = function (uri, filename) {
+                var result = originalDownloadData.apply(this, arguments);
+                var format = formatFromFilename(filename);
+                if (format) trackOutcome('export_completed', { format: format, success: true });
+                return result;
+            };
+        }
+
+        if (typeof runtime.downloadPdf === 'function') {
+            var originalDownloadPdf = runtime.downloadPdf;
+            runtime.downloadPdf = function () {
+                var result;
+                try {
+                    result = originalDownloadPdf.apply(this, arguments);
+                } catch (error) {
+                    throw error;
+                }
+                return Promise.resolve(result).then(function (value) {
+                    trackOutcome('export_completed', { format: 'pdf', success: true });
+                    return value;
+                });
+            };
+        }
+
+        if (typeof runtime.printCanvas === 'function') {
+            var originalPrintCanvas = runtime.printCanvas;
+            runtime.printCanvas = function () {
+                var result = originalPrintCanvas.apply(this, arguments);
+                trackOutcome('print_started', { format: 'print', success: true });
+                return result;
+            };
+        }
+        return true;
+    }
+
+    function wrapNotifications() {
+        var ui = window.WriteUrduUI;
+        if (!ui || ui.__wuTelemetryWrapped || typeof ui.notify !== 'function') return false;
+        ui.__wuTelemetryWrapped = true;
+        var originalNotify = ui.notify;
+        ui.notify = function (message, type) {
+            var result = originalNotify.apply(this, arguments);
+            if (type === 'success' && /copied to the clipboard/i.test(String(message || ''))) {
+                trackOutcome('copy_completed', { format: 'clipboard', success: true });
+            }
+            return result;
+        };
+        return true;
+    }
+
+    function wrapTextExport() {
+        if (typeof window.saveTextAsFile !== 'function' || window.saveTextAsFile.__wuTelemetryWrapped) return false;
+        var originalSave = window.saveTextAsFile;
+        var wrapped = function () {
+            var result = originalSave.apply(this, arguments);
+            trackOutcome('export_completed', { format: 'txt', success: true });
+            return result;
+        };
+        wrapped.__wuTelemetryWrapped = true;
+        window.saveTextAsFile = wrapped;
+        return true;
+    }
+
+    function installOutcomeHooks() {
+        if (outcomeHooksInstalled) return;
+        var attempts = 0;
+        var timer = window.setInterval(function () {
+            attempts += 1;
+            var exportsReady = wrapExportRuntime();
+            var notifyReady = wrapNotifications();
+            var textReady = wrapTextExport();
+            if ((exportsReady || (window.WriteUrduExport && window.WriteUrduExport.__wuTelemetryWrapped)) &&
+                (notifyReady || (window.WriteUrduUI && window.WriteUrduUI.__wuTelemetryWrapped)) &&
+                (textReady || typeof window.saveTextAsFile !== 'function' || window.saveTextAsFile.__wuTelemetryWrapped)) {
+                outcomeHooksInstalled = true;
+                window.clearInterval(timer);
+            } else if (attempts >= 40) {
+                window.clearInterval(timer);
+            }
+        }, 250);
     }
 
     function sendSummary() {
@@ -269,18 +373,13 @@
     function start() {
         bindPrimaryEditor();
         bindProductActions();
+        installOutcomeHooks();
         startActiveTimer();
         track('page_session_started');
         document.addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'hidden') flush(true);
         });
         window.addEventListener('pagehide', sendSummary, { once: true });
-    }
-
-    function trackOutcome(name, detail) {
-        detail = detail || {};
-        if (typeof detail.length_bucket === 'undefined') detail.length_bucket = lengthBucket(textLength());
-        track(name, detail);
     }
 
     window.WriteUrduTelemetry = {
