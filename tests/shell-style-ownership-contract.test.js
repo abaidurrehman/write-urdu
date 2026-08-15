@@ -30,6 +30,9 @@ assert.match(v2Shell, /@import\s+url\(["']\.\/v3-design-system\.css["']\)/, 'V2 
 assert.match(v2Shell, /@import\s+url\(["']\.\/v3-production-polish\.css["']\)/, 'V2 compatibility shim must load production polish after the V3 system');
 assert.doesNotMatch(v2Shell, /--wu-v2-shell-ink|--wu-v2-shell-bg|#0b2f1f|#072719|#0b3422|rgba\(236\s*,\s*247\s*,\s*240/i, 'V2 compatibility shim must not own a competing shell palette');
 
-assert.doesNotMatch(productionPolish, /P0 production contrast guard|-webkit-text-fill-color/, 'Temporary incident override must be removed after fixing shell ownership');
+assert.doesNotMatch(productionPolish, /P0 production contrast guard/, 'Temporary whole-header incident override must stay retired after fixing shell ownership');
+assert.match(productionPolish, /summary\.btn-dark[\s\S]*color:\s*var\(--wu-color-ink-soft\)\s*!important/, 'Legacy Export summaries must explicitly reset Bootstrap white text on the V3 light control surface');
+assert.match(productionPolish, /min-width:\s*1281px[\s\S]*max-width:\s*1400px/, 'Medium-width laptops must switch to the collapsed navigation before the full nav can clip');
+assert.match(productionPolish, /\.wu-menu-toggle\s*\{[\s\S]*display:\s*inline-flex/, 'Medium-width navigation correction must expose the menu toggle');
 
 console.log('Shared shell style-ownership contract passed.');
