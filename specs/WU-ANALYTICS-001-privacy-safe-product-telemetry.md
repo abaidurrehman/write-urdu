@@ -1,13 +1,13 @@
 # WU-ANALYTICS-001 — Privacy-Safe Product Telemetry & Product Pulse
 
-**Status:** Implementation in progress  
+**Status:** Implemented — production data validation pending  
 **Priority:** P0  
 **Area:** Product intelligence / retention / monetization support  
 **Storage:** Existing Cloudflare D1 database `writeurdu-db` through the `METRICS_DB` binding
 
 ## 1. Problem
 
-WriteUrdu has strong search and AdSense evidence but almost no reliable product-behaviour evidence. We cannot currently answer basic questions such as:
+WriteUrdu has strong search and AdSense evidence but almost no reliable product-behaviour evidence. We need to answer basic questions such as:
 
 - how many visitors actually start writing;
 - how long an engaged writing session lasts;
@@ -18,13 +18,13 @@ WriteUrdu has strong search and AdSense evidence but almost no reliable product-
 - whether batch transliteration is used;
 - whether users continue from the basic editor into Rich Editor, Card Studio, QR or other tools.
 
-This creates roadmap risk: search demand is measured much better than actual product use.
+Without this evidence, search demand is measured much better than actual product use and roadmap decisions become guesswork.
 
 ## 2. Product decision
 
-Introduce first-party, privacy-safe aggregate telemetry using a small browser client, Cloudflare Pages Function and the existing D1 database.
+Use first-party, privacy-safe aggregate telemetry through a small browser client, Cloudflare Pages Functions and the existing D1 database.
 
-The system must measure **interaction facts, never writing content**.
+The system measures **interaction facts, never writing content**.
 
 ## 3. Privacy contract
 
@@ -101,15 +101,15 @@ Primary behavioural instrumentation:
 
 Shared outcomes are instrumented centrally where possible so existing export code remains the source of truth. Copy completion is recorded only after the existing UI reports clipboard success; clicking Copy alone is not counted as success.
 
-The telemetry client can identify other product routes from day one, but deep per-tool events for Card Studio, Invoice, Name Art, social makers and QR remain a follow-on slice after the core writing funnel is verified.
+The telemetry client can identify other product routes, but deep per-tool completion events for Card Studio, Invoice, Name Art, social makers and QR remain a follow-on slice after the core writing funnel is verified.
 
 ## 7. Architecture
 
+### Collection
+
 `Browser -> /api/events -> Cloudflare Pages Function -> METRICS_DB -> product_events`
 
-### Browser client
-
-`js/product-telemetry.js`
+`js/product-telemetry.js`:
 
 - generates an ephemeral session id in `sessionStorage`;
 - buffers small batches;
@@ -118,9 +118,7 @@ The telemetry client can identify other product routes from day one, but deep pe
 - sends only the approved fields;
 - never sends editor content.
 
-### API
-
-`functions/api/events.js`
+`functions/api/events.js`:
 
 - POST only;
 - same-site / Pages-preview origin allowlist;
@@ -129,17 +127,44 @@ The telemetry client can identify other product routes from day one, but deep pe
 - strict event/tool/format/bucket enums;
 - deduplication by client event id;
 - no free-form metadata payload;
-- self-initializes the additive schema with `CREATE ... IF NOT EXISTS` so the collector can start safely even if the migration has not been applied manually.
-
-### D1
+- self-initializes the additive schema with `CREATE ... IF NOT EXISTS` so collection does not depend on a manual first migration.
 
 Canonical migration: `migrations/0001_product_telemetry.sql`.
 
-The table is intentionally separate from any future authentication/draft tables. Anonymous telemetry must not be joined to authenticated user records.
+The telemetry table is intentionally separate from future authentication/draft tables. Anonymous telemetry must not be joined to authenticated user records.
+
+### Product Pulse
+
+`product_events -> /api/internal/product-pulse -> /os/product-pulse`
+
+The Product Pulse dashboard is a noindex founder surface and does not load AdSense, the public SEO shell or the public product-telemetry client.
+
+The aggregate endpoint:
+
+- uses the existing `METRICS_DB` binding;
+- supports bounded 24-hour, 7-day and 30-day windows;
+- defaults to the `os.write-urdu.com` host and returns 404 on the public `www` host;
+- returns aggregate counts/distributions only;
+- does not expose individual event rows.
+
+Dashboard views include:
+
+- product sessions and engaged writers;
+- engagement rate;
+- confirmed Copy outcomes;
+- total exports and PDF / PNG / Word / TXT breakdown;
+- daily session/engagement trend;
+- final writing-length buckets;
+- active-writing-time buckets;
+- Roman/direct input-mode distribution;
+- device distribution;
+- next-tool handoffs;
+- tool-level session/engagement/copy/export table;
+- previous-period comparison for headline KPIs.
 
 ## 8. Core product questions
 
-After a representative data period, Product Pulse should answer:
+Product Pulse should answer:
 
 1. How many sessions actually engage with a writing surface?
 2. What proportion ends with Copy, Export, Print, Share or a tool handoff?
@@ -152,7 +177,7 @@ After a representative data period, Product Pulse should answer:
 9. How do these metrics differ between desktop/tablet/mobile?
 10. Which product features deserve more or less roadmap investment based on demonstrated use?
 
-## 9. Initial D1 queries
+## 9. Example D1 queries
 
 Daily exports:
 
@@ -204,9 +229,9 @@ ORDER BY tool, events DESC;
 Initial operating target:
 
 - raw `product_events`: approximately 90 days;
-- longer-term reporting should use aggregated daily metrics when the Product Pulse dashboard is implemented.
+- longer-term reporting should move to daily aggregate tables once the telemetry shape is proven in production.
 
-Retention automation is a follow-on operational task; the initial collector must not claim automatic deletion until that job exists.
+Retention automation is a follow-on operational task; the current collector does not claim automatic deletion until that job exists.
 
 ## 11. Acceptance criteria
 
@@ -222,14 +247,16 @@ Retention automation is a follow-on operational task; the initial collector must
 - [x] Core Write runtime loads the telemetry client.
 - [x] Privacy page documents first-party aggregate product telemetry.
 - [x] Static regression tests protect privacy and event contracts.
-- [ ] CI passes.
+- [x] Product Pulse aggregate API exists.
+- [x] Product Pulse dashboard covers sessions, engagement, outcomes, export formats, length, active time, input modes, devices and handoffs.
+- [x] Product Pulse stays outside the public SEO/AdSense/product-telemetry shell.
 - [ ] Production is verified to return HTTP 202 from `/api/events` and D1 receives first events.
+- [ ] Production OS is verified to return live aggregate data from `/api/internal/product-pulse`.
 
 ## 12. Follow-on slices
 
 1. Card Studio / Name Art / social maker completion events.
 2. Invoice PDF/PNG completion events.
 3. QR creation/download completion events.
-4. Product Pulse view inside the existing WriteUrdu OS.
-5. Daily aggregation + raw-event retention cleanup.
-6. Search Console + product-use joins at route/day level, never user/session level.
+4. Daily aggregation + raw-event retention cleanup.
+5. Search Console + product-use joins at route/day level, never user/session level.
