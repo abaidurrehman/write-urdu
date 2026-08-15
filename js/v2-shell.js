@@ -2,9 +2,48 @@
     'use strict';
 
     var shellObserver;
+    var telemetryRoutes = [
+        '/urdu-card-studio', '/stylish-urdu-text-generator', '/urdu-name-art-maker',
+        '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker',
+        '/urdu-invoice-generator', '/qr-code-generator'
+    ];
 
     function normalizedPath() {
         return (window.location.pathname || '/').replace(/\/+$/, '') || '/';
+    }
+
+    function normalizedProductPath() {
+        var path = normalizedPath().replace(/\.html$/i, '');
+        return path === '/index' ? '/' : path;
+    }
+
+    function ensureProductTelemetry() {
+        if (telemetryRoutes.indexOf(normalizedProductPath()) < 0) return;
+
+        function loadIntegrations() {
+            if (document.querySelector('script[data-write-urdu-product-telemetry-integrations]')) return;
+            var integrations = document.createElement('script');
+            integrations.src = 'js/product-telemetry-integrations.js';
+            integrations.async = false;
+            integrations.setAttribute('data-write-urdu-product-telemetry-integrations', '');
+            document.head.appendChild(integrations);
+        }
+
+        if (window.WriteUrduTelemetry) {
+            loadIntegrations();
+            return;
+        }
+        var existing = document.querySelector('script[data-write-urdu-product-telemetry], script[src$="js/product-telemetry.js"]');
+        if (existing) {
+            existing.addEventListener('load', loadIntegrations, { once: true });
+            return;
+        }
+        var telemetry = document.createElement('script');
+        telemetry.src = 'js/product-telemetry.js';
+        telemetry.async = false;
+        telemetry.setAttribute('data-write-urdu-product-telemetry', '');
+        telemetry.addEventListener('load', loadIntegrations, { once: true });
+        document.head.appendChild(telemetry);
     }
 
     function isCurrent(href) {
@@ -175,6 +214,7 @@
     }
 
     function start() {
+        ensureProductTelemetry();
         ensureStylesheet();
         if (upgradeShell()) return;
         if (!window.MutationObserver) return;
