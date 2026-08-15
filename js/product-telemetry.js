@@ -15,6 +15,7 @@
     var editorReader = null;
     var currentInputMode = 'unknown';
     var outcomeHooksInstalled = false;
+    var copyWatchToken = 0;
 
     function normalizedPath(value) {
         var path = String(value || '/').split('?')[0].split('#')[0].replace(/\.html$/i, '').replace(/\/+$/, '') || '/';
@@ -216,11 +217,49 @@
         return selected ? (selected.getAttribute('data-input-mode-option') || 'unknown') : 'unknown';
     }
 
+    function trackOutcome(name, detail) {
+        detail = detail || {};
+        if (typeof detail.length_bucket === 'undefined') detail.length_bucket = lengthBucket(textLength());
+        track(name, detail);
+    }
+
+    function watchCopyConfirmation() {
+        copyWatchToken += 1;
+        var token = copyWatchToken;
+        var attempts = 0;
+        function inspect() {
+            if (token !== copyWatchToken) return;
+            attempts += 1;
+            var notice = document.getElementById('appNotifications');
+            if (notice) {
+                var message = String(notice.textContent || '');
+                if (notice.classList.contains('is-success') && /copied to the clipboard/i.test(message)) {
+                    copyWatchToken += 1;
+                    trackOutcome('copy_completed', { format: 'clipboard', success: true });
+                    return;
+                }
+                if (notice.classList.contains('is-error') && /copy failed/i.test(message)) {
+                    copyWatchToken += 1;
+                    return;
+                }
+            }
+            if (attempts < 24) window.setTimeout(inspect, 100);
+        }
+        window.setTimeout(inspect, 0);
+    }
+
     function bindProductActions() {
         currentInputMode = selectedInputMode();
         document.addEventListener('click', function (event) {
             var closest = event.target.closest ? event.target.closest.bind(event.target) : null;
             if (!closest) return;
+
+            if (closest('[data-copy-target], [data-clipboard-target]')) {
+                watchCopyConfirmation();
+                noteActivity();
+                return;
+            }
+
             var mode = closest('[data-input-mode-option]');
             if (mode) {
                 currentInputMode = mode.getAttribute('data-input-mode-option') || 'unknown';
@@ -249,12 +288,6 @@
         }, true);
     }
 
-    function trackOutcome(name, detail) {
-        detail = detail || {};
-        if (typeof detail.length_bucket === 'undefined') detail.length_bucket = lengthBucket(textLength());
-        track(name, detail);
-    }
-
     function formatFromFilename(filename) {
         var match = String(filename || '').toLowerCase().match(/\.([a-z0-9]+)$/);
         if (!match) return null;
@@ -274,6 +307,15 @@
                 var result = originalDownloadData.apply(this, arguments);
                 var format = formatFromFilename(filename);
                 if (format) trackOutcome('export_completed', { format: format, success: true });
+                return result;
+            };
+        }
+
+        if (typeof runtime.downloadWord === 'function') {
+            var originalDownloadWord = runtime.downloadWord;
+            runtime.downloadWord = function () {
+                var result = originalDownloadWord.apply(this, arguments);
+                trackOutcome('export_completed', { format: 'doc', success: true });
                 return result;
             };
         }
@@ -305,21 +347,6 @@
         return true;
     }
 
-    function wrapNotifications() {
-        var ui = window.WriteUrduUI;
-        if (!ui || ui.__wuTelemetryWrapped || typeof ui.notify !== 'function') return false;
-        ui.__wuTelemetryWrapped = true;
-        var originalNotify = ui.notify;
-        ui.notify = function (message, type) {
-            var result = originalNotify.apply(this, arguments);
-            if (type === 'success' && /copied to the clipboard/i.test(String(message || ''))) {
-                trackOutcome('copy_completed', { format: 'clipboard', success: true });
-            }
-            return result;
-        };
-        return true;
-    }
-
     function wrapTextExport() {
         if (typeof window.saveTextAsFile !== 'function' || window.saveTextAsFile.__wuTelemetryWrapped) return false;
         var originalSave = window.saveTextAsFile;
@@ -339,10 +366,8 @@
         var timer = window.setInterval(function () {
             attempts += 1;
             var exportsReady = wrapExportRuntime();
-            var notifyReady = wrapNotifications();
             var textReady = wrapTextExport();
             if ((exportsReady || (window.WriteUrduExport && window.WriteUrduExport.__wuTelemetryWrapped)) &&
-                (notifyReady || (window.WriteUrduUI && window.WriteUrduUI.__wuTelemetryWrapped)) &&
                 (textReady || typeof window.saveTextAsFile !== 'function' || window.saveTextAsFile.__wuTelemetryWrapped)) {
                 outcomeHooksInstalled = true;
                 window.clearInterval(timer);
