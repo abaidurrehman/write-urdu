@@ -23,6 +23,15 @@
         return null;
     }
 
+    function ensureTelemetryRuntime() {
+        if (window.WriteUrduTelemetry || document.querySelector('script[src="js/product-telemetry.js"]')) return;
+        var script = document.createElement('script');
+        script.src = 'js/product-telemetry.js';
+        script.defer = true;
+        script.setAttribute('data-write-urdu-product-telemetry', '');
+        document.head.appendChild(script);
+    }
+
     function ensureAdsRuntime() {
         if (window.WriteUrduAds && typeof window.WriteUrduAds.init === 'function') {
             window.WriteUrduAds.init(window);
@@ -38,6 +47,7 @@
     function restoreCoreWriteAd() {
         var path = normalizePath(window.location && window.location.pathname);
         if (CORE_ROUTES.indexOf(path) < 0) return false;
+        ensureTelemetryRuntime();
         if (document.querySelector('.wu-header-ad')) {
             ensureAdsRuntime();
             return true;
