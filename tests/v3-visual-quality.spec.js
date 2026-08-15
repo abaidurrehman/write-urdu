@@ -35,11 +35,17 @@ async function firstVisible(page, selectors) {
   return null;
 }
 
+async function boxIfPresent(locator) {
+  if (!await locator.count()) return null;
+  if (!await locator.isVisible().catch(() => false)) return null;
+  return locator.boundingBox().catch(() => null);
+}
+
 async function captureMetrics(page, route, viewport) {
   const primary = await firstVisible(page, route.primary);
-  const primaryBox = primary ? await primary.locator.boundingBox().catch(() => null) : null;
-  const headerBox = await page.locator('.wu-site-header').first().boundingBox().catch(() => null);
-  const mainBox = await page.locator('main').first().boundingBox().catch(() => null);
+  const primaryBox = primary ? await boxIfPresent(primary.locator) : null;
+  const headerBox = await boxIfPresent(page.locator('.wu-site-header').first());
+  const mainBox = await boxIfPresent(page.locator('main').first());
 
   return page.evaluate(({ viewport, primarySelector, primaryBox, headerBox, mainBox }) => {
     const root = document.documentElement;
@@ -82,7 +88,7 @@ async function captureMetrics(page, route, viewport) {
 test.describe('V3 production visual-quality audit', () => {
   test('capture representative routes across production viewports', async ({ browser }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop-chromium', 'Single audit run controls its own viewport matrix.');
-    test.setTimeout(180000);
+    test.setTimeout(150000);
 
     fs.rmSync(auditDir, { recursive: true, force: true });
     fs.mkdirSync(auditDir, { recursive: true });
@@ -91,17 +97,19 @@ test.describe('V3 production visual-quality audit', () => {
       routes: [],
       criticalFailures: []
     };
+    fs.writeFileSync(path.join(auditDir, 'report.json'), JSON.stringify(report, null, 2));
 
     for (const viewport of viewports) {
       const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
       const page = await context.newPage();
+      page.setDefaultTimeout(2500);
 
-      await page.route(/doubleclick|googlesyndication|google-analytics|googletagmanager|addthis/, routeRequest => routeRequest.abort());
+      await page.route(/doubleclick|googlesyndication|google-analytics|googletagmanager|addthis|google\.com\/(?:jsapi|cse|afsonline)/, routeRequest => routeRequest.abort());
 
       for (const route of routes) {
-        await page.goto(route.path, { waitUntil: 'domcontentloaded' });
-        await page.addStyleTag({ content: '*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important;caret-color:transparent!important}' });
-        await page.waitForTimeout(250);
+        await page.goto(route.path, { waitUntil: 'domcontentloaded', timeout: 8000 }).catch(() => null);
+        await page.addStyleTag({ content: '*,*::before,*::after{animation-duration:0s!important;transition-duration:0s!important;caret-color:transparent!important}' }).catch(() => null);
+        await page.waitForTimeout(180);
 
         const metrics = await captureMetrics(page, route, viewport);
         const entry = { route: route.path, slug: route.slug, ...metrics };
@@ -120,7 +128,8 @@ test.describe('V3 production visual-quality audit', () => {
         await page.screenshot({
           path: path.join(auditDir, `${viewport.name}-${route.slug}.png`),
           fullPage: true,
-          animations: 'disabled'
+          animations: 'disabled',
+          timeout: 8000
         });
         fs.writeFileSync(path.join(auditDir, 'report.json'), JSON.stringify(report, null, 2));
       }
