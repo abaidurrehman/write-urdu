@@ -112,13 +112,17 @@ test('direct WhatsApp Status journey reaches a status-safe JPEG export', async (
   const positions = await page.evaluate(() => {
     const task = document.querySelector('.social-maker-direct-task').getBoundingClientRect();
     const preview = document.querySelector('.social-maker-direct-preview').getBoundingClientRect();
+    const previewCanvas = document.querySelector('.social-maker-direct-preview #cardCanvas').getBoundingClientRect();
     const refine = document.querySelector('.social-maker-direct-refine').getBoundingClientRect();
-    return { taskTop:task.top, previewTop:preview.top, refineTop:refine.top, overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth };
+    return { taskTop:task.top, previewTop:preview.top, canvasTop:previewCanvas.top, refineTop:refine.top, overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth };
   });
   expect(positions.overflow).toBeLessThanOrEqual(1);
   if (isMobile) {
     expect(positions.taskTop).toBeLessThan(positions.previewTop);
     expect(positions.previewTop).toBeLessThan(positions.refineTop);
+  } else {
+    expect(Math.abs(positions.taskTop - positions.previewTop)).toBeLessThanOrEqual(2);
+    expect(positions.canvasTop).toBeLessThan(positions.refineTop);
   }
 
   const download = await Promise.all([
