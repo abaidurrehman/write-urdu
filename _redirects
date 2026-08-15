@@ -28,6 +28,7 @@
 /write-urdu-feedback.html /write-urdu-feedback 301
 /roman-urdu-transliteration.html /roman-urdu-transliteration 301
 /urdu-fonts-nastaliq-vs-naskh.html /urdu-fonts-nastaliq-vs-naskh 301
+/product-pulse.html /product-pulse 301
 
 # Normalize common trailing-slash variants of public routes.
 /urdu-editor/ /urdu-editor 301
@@ -54,3 +55,4 @@
 /roman-urdu-transliteration/ /roman-urdu-transliteration 301
 /urdu-fonts-nastaliq-vs-naskh/ /urdu-fonts-nastaliq-vs-naskh 301
 /how-to-write-urdu-on-photo/ /how-to-write-urdu-on-photo 301
+/product-pulse/ /product-pulse 301
