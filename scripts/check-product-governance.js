@@ -132,6 +132,7 @@ registry.forEach(page => {
       if (normalized !== page.canonical_route) incoming.get(normalized).add(page.canonical_route);
       return;
     }
+    if (redirectSources.has(pathname)) return;
     const localPath = pathname.replace(/^\//, '');
     if (localPath && !fs.existsSync(path.join(root, localPath))) errors.push(`${page.source_file}: broken internal link ${href}`);
   });
