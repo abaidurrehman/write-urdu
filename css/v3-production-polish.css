@@ -1,0 +1,231 @@
+/* V3 production visual-quality corrections.
+   Keep the primary writing surface above the fold and ensure post-task
+   monetization/journeys cannot be pulled ahead of the Rich Editor by the
+   legacy flex-order compatibility layer. */
+
+/* --------------------------------------------------------------------------
+   Homepage: task first
+   -------------------------------------------------------------------------- */
+
+body.wu-v2-shell:not(.content-page) > .container-fluid > .row:nth-of-type(2) {
+  padding-top: clamp(16px, 2.2vw, 28px);
+}
+
+body.wu-v2-shell:not(.content-page) h1 {
+  margin-bottom: 6px;
+}
+
+body.wu-v2-shell:not(.content-page) .page-intro {
+  line-height: 1.55;
+}
+
+body.wu-v2-shell:not(.content-page) .home-hero-meta {
+  margin-top: 10px;
+}
+
+body.wu-v2-shell:not(.content-page) .home-hero-actions {
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+body.wu-v2-shell:not(.content-page) hr.solid {
+  margin: 8px 0 10px;
+}
+
+body.wu-v2-shell:not(.content-page) .home-actions {
+  gap: 7px;
+  padding: 8px;
+}
+
+body.wu-v2-shell:not(.content-page) .home-actions-group {
+  gap: 6px;
+}
+
+body.wu-v2-shell:not(.content-page) .home-actions .btn,
+body.wu-v2-shell:not(.content-page) .home-actions summary {
+  min-height: 38px;
+  padding: .45rem .68rem !important;
+  font-size: .8rem;
+}
+
+body.wu-v2-shell:not(.content-page) .editor-chrome {
+  min-height: 40px;
+  margin-top: 7px;
+  padding: 6px 9px;
+  gap: 7px;
+}
+
+body.wu-v2-shell:not(.content-page) .batch-transliteration-panel {
+  min-height: 38px;
+  margin: 6px 0;
+  padding: 6px 9px;
+  gap: 8px;
+}
+
+body.wu-v2-shell:not(.content-page) .batch-transliteration-panel [data-batch-guide],
+body.wu-v2-shell:not(.content-page) .batch-transliteration-panel [data-batch-note] {
+  display: none;
+}
+
+/* The normal typing hint below the editor already explains the basic flow.
+   Reserve this pre-editor panel for the moment its long-passage action is
+   actually useful. */
+body.wu-v2-shell:not(.content-page) .batch-transliteration-panel:not(:has([data-batch-prompt]:not([hidden]))) {
+  display: none;
+}
+
+@media (max-width: 1280px) {
+  body.wu-v2-shell:not(.content-page) .home-hero-meta {
+    display: none;
+  }
+
+  body.wu-v2-shell:not(.content-page) .home-hero-actions {
+    margin: 9px 0 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  body.wu-v2-shell:not(.content-page) > .container-fluid > .row:nth-of-type(2) {
+    padding-top: 12px;
+  }
+
+  body.wu-v2-shell:not(.content-page) h1 {
+    font-size: clamp(1.65rem, 8vw, 2.15rem);
+    line-height: 1.08;
+  }
+
+  body.wu-v2-shell:not(.content-page) .page-intro {
+    font-size: .92rem;
+    line-height: 1.48;
+  }
+
+  /* Secondary discovery actions are repeated below the editor. Mobile keeps
+     the single action that gets the user into the task immediately. */
+  body.wu-v2-shell:not(.content-page) .home-hero-cta-secondary,
+  body.wu-v2-shell:not(.content-page) .home-hero-cta-tertiary {
+    display: none;
+  }
+
+  body.wu-v2-shell:not(.content-page) .home-hero-actions {
+    margin: 8px 0 10px;
+  }
+
+  body.wu-v2-shell:not(.content-page) .home-hero-cta-primary {
+    width: auto;
+    min-height: 38px;
+    flex: 0 0 auto;
+    padding: .5rem .78rem;
+    font-size: .8rem;
+  }
+
+  /* Keep every editor command reachable without letting three action groups
+     become three vertical rows above the textarea. */
+  body.wu-v2-shell:not(.content-page) .home-actions {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+
+  body.wu-v2-shell:not(.content-page) .home-actions .home-actions-group {
+    width: max-content !important;
+    flex: 0 0 auto;
+    flex-wrap: nowrap !important;
+  }
+
+  body.wu-v2-shell:not(.content-page) .home-actions .btn,
+  body.wu-v2-shell:not(.content-page) .home-actions summary,
+  body.wu-v2-shell:not(.content-page) .home-actions .action-menu {
+    width: auto !important;
+    min-height: 36px;
+    flex: 0 0 auto !important;
+    white-space: nowrap;
+  }
+
+  body.wu-v2-shell:not(.content-page) .editor-chrome {
+    min-height: 0;
+    flex-wrap: nowrap;
+    margin-top: 5px;
+    padding: 5px 6px;
+  }
+
+  body.wu-v2-shell:not(.content-page) .editor-chrome > span:first-child,
+  body.wu-v2-shell:not(.content-page) .editor-shortcut,
+  body.wu-v2-shell:not(.content-page) .input-mode-title,
+  body.wu-v2-shell:not(.content-page) .input-mode-note {
+    display: none !important;
+  }
+
+  body.wu-v2-shell:not(.content-page) .editor-chrome .input-mode-control {
+    display: flex !important;
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 4px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  body.wu-v2-shell:not(.content-page) .editor-chrome .input-mode-option {
+    min-height: 32px;
+    padding: 4px 7px;
+    font-size: .68rem;
+    line-height: 1.2;
+  }
+
+  body.wu-v2-shell:not(.content-page) .btn-clear {
+    min-height: 32px;
+    flex: 0 0 auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Rich Editor: authoring before post-task surfaces
+   -------------------------------------------------------------------------- */
+
+/* v2-workspace deliberately orders the legacy Rich Editor children. Dynamic
+   nodes otherwise default to order:0 and jump above the H1/editor. Assign
+   explicit post-task positions so the visual order matches the semantic job. */
+body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .wu-next-journey {
+  order: 7;
+  width: 100%;
+  margin: 16px 0 0;
+}
+
+body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .wu-write-ad {
+  order: 8;
+  width: 100%;
+  max-width: none;
+  margin: 22px 0 6px;
+}
+
+body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .card {
+  order: 9;
+}
+
+body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .fb-comments {
+  order: 10;
+}
+
+@media (max-width: 767px) {
+  body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .container:first-of-type {
+    padding-top: 8px;
+    padding-bottom: 9px;
+  }
+
+  body.wu-v2-shell.rich-editor-page .page-intro {
+    margin-bottom: 6px;
+    line-height: 1.45;
+  }
+
+  body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .wu-next-journey {
+    margin-top: 12px;
+  }
+
+  body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .wu-write-ad {
+    margin-top: 16px;
+  }
+}
