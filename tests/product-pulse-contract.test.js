@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'product-pulse.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'os', 'product-pulse.html'), 'utf8');
 const client = fs.readFileSync(path.join(root, 'js', 'product-pulse.js'), 'utf8');
 const api = fs.readFileSync(path.join(root, 'functions', 'api', 'internal', 'product-pulse.js'), 'utf8');
 const telemetry = fs.readFileSync(path.join(root, 'js', 'product-telemetry.js'), 'utf8');
