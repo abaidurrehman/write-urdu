@@ -53,8 +53,13 @@ const configByRoute = new Map(config.pages.map(page => [page.path, page]));
 if (registryByFile.size !== registry.length) errors.push('registry: duplicate source_file entries');
 if (registryByRoute.size !== registry.length) errors.push('registry: duplicate canonical_route entries');
 
+const explicitLegacyHtmlFiles = new Set(config.pages.flatMap(page => (page.legacyPaths || [])
+  .filter(candidate => /^\/[\w/-]+\.html$/i.test(candidate))
+  .map(candidate => candidate.replace(/^\//, ''))));
 const htmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html') && !file.startsWith('google'));
-htmlFiles.forEach(file => { if (!registryByFile.has(file)) errors.push(`${file}: public HTML file is missing from route registry`); });
+htmlFiles.forEach(file => {
+  if (!registryByFile.has(file) && !explicitLegacyHtmlFiles.has(file)) errors.push(`${file}: public HTML file is missing from route registry`);
+});
 registry.forEach(page => {
   if (!fs.existsSync(path.join(root, page.source_file))) errors.push(`${page.source_file}: registry source file does not exist`);
   if (!configByRoute.has(page.canonical_route)) errors.push(`${page.source_file}: canonical route is missing from seo.config.js`);
