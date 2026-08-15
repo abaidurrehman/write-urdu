@@ -3,10 +3,10 @@
   "private": true,
   "scripts": {
     "start": "node scripts/dev-server.js",
-    "test": "node tests/transliteration-contract.test.js && node tests/product-shell-contract.test.js && node tests/v2-shell-content-contract.test.js && node tests/v2-authority-contract.test.js && node tests/seo-authority-contract.test.js && node tests/ads-policy-contract.test.js && node tests/v3-reference-pages-contract.test.js && node tests/static.test.js && node tests/invoice-preview-footer-contract.test.js && node tests/sitemap-directory-contract.test.js && node tests/stylish-urdu-core.test.js && node tests/sua-acceptance-contract.test.js && node tests/journey-handoffs-contract.test.js && node tests/v2-creation-contract.test.js && node tests/card-studio-acquisition-contract.test.js && node tests/english-urdu-typing-acquisition-contract.test.js && node tests/stylish-urdu-acquisition-contract.test.js && node tests/name-art-acquisition-contract.test.js && node tests/name-art-task-first-contract.test.js",
+    "test": "node tests/transliteration-contract.test.js && node tests/product-shell-contract.test.js && node tests/v2-shell-content-contract.test.js && node tests/v2-authority-contract.test.js && node tests/seo-authority-contract.test.js && node tests/ads-policy-contract.test.js && node tests/v3-reference-pages-contract.test.js && node tests/v3-utility-pages-contract.test.js && node tests/static.test.js && node tests/invoice-preview-footer-contract.test.js && node tests/sitemap-directory-contract.test.js && node tests/stylish-urdu-core.test.js && node tests/sua-acceptance-contract.test.js && node tests/journey-handoffs-contract.test.js && node tests/v2-creation-contract.test.js && node tests/card-studio-acquisition-contract.test.js && node tests/english-urdu-typing-acquisition-contract.test.js && node tests/stylish-urdu-acquisition-contract.test.js && node tests/name-art-acquisition-contract.test.js && node tests/name-art-task-first-contract.test.js",
     "test:browser": "playwright test",
     "test:all": "npm test && npm run seo:check && npm run governance:check && npm run test:browser",
-    "seo:generate": "node scripts/generate-seo-files.js",
+    "seo:generate": "node scripts/generate-seo-files.js --write",
     "seo:sync-heads": "node scripts/sync-static-search-metadata.js --write",
     "seo:heads:check": "node scripts/sync-static-search-metadata.js --check",
     "seo:check": "node scripts/check-seo.js && npm run seo:heads:check",
