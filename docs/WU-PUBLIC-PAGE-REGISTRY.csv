@@ -17,8 +17,8 @@ write-urdu-documentation.html,/write-urdu-documentation,Learn,WriteUrdu product 
 urdu-fonts-nastaliq-vs-naskh.html,/urdu-fonts-nastaliq-vs-naskh,Learn,Urdu font comparison,index,yes,keep,migrated,P2,V2 authority guide for Nastaliq versus Naskh choice and product handoff
 how-to-write-urdu-on-photo.html,/how-to-write-urdu-on-photo,Learn,how to write Urdu text or poetry on a photo,index,yes,keep,migrated,P1,Informational support for Card Studio without competing generator intent
 urdu-alphabet.html,/urdu-alphabet,Learn,Urdu alphabet,index,yes,keep,migrated,P1,V2 authority guide with complete standalone chart and legacy framework dependencies removed
-write-urdu-features.html,/write-urdu-features,Learn,WriteUrdu drafts import export and sharing operations,index,yes,keep-narrowed,pending,P2,Distinct operational reference; preserve URL and keep broad product overview ownership with Documentation
-urdu-editor-features.html,/urdu-editor-features,Learn,rich editor formatting reference,index,yes,keep-narrowed,pending,P2,Distinct formatting reference; preserve URL and keep editor product intent with the Rich Editor route
+write-urdu-features.html,/write-urdu-features,Learn,WriteUrdu drafts import export and sharing operations,index,yes,keep-narrowed,migrated,P2,V3 operational reference with legacy Bootstrap social SDK dead editor code and duplicate ad markup removed
+urdu-editor-features.html,/urdu-editor-features,Learn,rich editor formatting reference,index,yes,keep-narrowed,migrated,P2,V3 formatting reference with current screenshots shared guide layout and legacy framework dependencies removed
 why-write-urdu.html,/why-write-urdu,About,why use WriteUrdu,index,yes,keep-reframe,pending,P1,Become clear About and trust page
 write-urdu-feedback.html,/write-urdu-feedback,About,feedback and contact,noindex,no,keep,pending,P2,Utility contact page intentionally excluded from sitemap
 write-urdu-privacy.html,/write-urdu-privacy,About,privacy policy,index,yes,keep,pending,P1,Legal and provider disclosure
