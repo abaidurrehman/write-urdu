@@ -6,16 +6,30 @@
   --wu-weight-medium: 500;
   --wu-weight-semibold: 600;
   --wu-weight-bold: 700;
+  --wu-text-xs: 0.75rem;
+  --wu-text-sm: 0.875rem;
+  --wu-text-base: 1rem;
+  --wu-text-lg: 1.125rem;
+  --wu-text-xl: 1.375rem;
+  --wu-text-2xl: clamp(1.65rem, 2.5vw, 2.15rem);
+  --wu-text-display: clamp(2rem, 4.4vw, 3.45rem);
 
   /* Color */
-  --wu-color-ink: #14231b;
-  --wu-color-muted: #5f6f66;
+  --wu-color-ink: #17221c;
+  --wu-color-ink-soft: #33453b;
+  --wu-color-muted: #68766e;
+  --wu-color-subtle: #87938c;
+  --wu-color-page: #f6f8f7;
   --wu-color-surface: #ffffff;
-  --wu-color-surface-soft: #f6f9f7;
-  --wu-color-border: #dce7e0;
-  --wu-color-brand: #177245;
-  --wu-color-brand-strong: #105b36;
-  --wu-color-brand-soft: #edf8f1;
+  --wu-color-surface-soft: #f8faf9;
+  --wu-color-surface-muted: #f0f5f2;
+  --wu-color-border: #dfe7e2;
+  --wu-color-border-strong: #cbd9d1;
+  --wu-color-brand: #15934d;
+  --wu-color-brand-strong: #0d783e;
+  --wu-color-brand-deep: #0a5d31;
+  --wu-color-brand-soft: #eaf8ef;
+  --wu-color-brand-softer: #f4fbf6;
   --wu-color-danger: #a93636;
   --wu-color-focus: #0b6fc2;
 
@@ -28,18 +42,31 @@
   --wu-space-6: 2rem;
   --wu-space-7: 3rem;
   --wu-space-8: 4rem;
+  --wu-space-9: 5rem;
 
   /* Shape and elevation */
-  --wu-radius-sm: 0.5rem;
-  --wu-radius-md: 0.75rem;
-  --wu-radius-lg: 1.125rem;
+  --wu-radius-xs: 0.375rem;
+  --wu-radius-sm: 0.6rem;
+  --wu-radius-md: 0.8rem;
+  --wu-radius-lg: 1rem;
+  --wu-radius-xl: 1.25rem;
   --wu-radius-pill: 999px;
-  --wu-shadow-sm: 0 6px 18px rgb(20 35 27 / 7%);
-  --wu-shadow-md: 0 14px 36px rgb(20 35 27 / 10%);
+  --wu-shadow-xs: 0 1px 2px rgb(20 35 27 / 4%);
+  --wu-shadow-sm: 0 7px 22px rgb(20 35 27 / 7%);
+  --wu-shadow-md: 0 18px 48px rgb(20 35 27 / 10%);
+  --wu-shadow-float: 0 24px 70px rgb(20 35 27 / 12%);
 
   /* Layout and controls */
-  --wu-content-width: 70rem;
-  --wu-reading-width: 46rem;
+  --wu-shell-width: 92rem;
+  --wu-content-width: 78rem;
+  --wu-reading-width: 48rem;
   --wu-control-height: 2.75rem;
+  --wu-control-height-lg: 3rem;
   --wu-transition-fast: 150ms ease;
+  --wu-transition-base: 220ms ease;
+
+  /* Ad surfaces */
+  --wu-ad-max-width: 72rem;
+  --wu-ad-min-height-desktop: 7.5rem;
+  --wu-ad-min-height-mobile: 6.25rem;
 }

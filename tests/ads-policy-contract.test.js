@@ -9,6 +9,9 @@ const ads = require(adsPath);
 const writeMonetization = fs.readFileSync(path.join(root, 'js', 'write-monetization.js'), 'utf8');
 const mainSource = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
 const inputModeSource = fs.readFileSync(path.join(root, 'js', 'input-mode.js'), 'utf8');
+const v2ShellCss = fs.readFileSync(path.join(root, 'css', 'v2-shell.css'), 'utf8');
+const v3DesignCss = fs.readFileSync(path.join(root, 'css', 'v3-design-system.css'), 'utf8');
+const designTokens = fs.readFileSync(path.join(root, 'css', 'design-tokens.css'), 'utf8');
 
 assert.strictEqual(ads.ADSENSE_CLIENT, 'ca-pub-4727847909946286', 'AdSense publisher client changed unexpectedly');
 assert.strictEqual(ads.SHARED_SLOT, '8323789671', 'Shared responsive ad slot changed unexpectedly');
@@ -31,11 +34,16 @@ assert.strictEqual(ads.placementName('learn'), 'guide_after_answer', 'Learn plac
 assert.strictEqual(ads.placementName('create'), 'tool_post_workspace', 'Create placement family changed');
 assert.strictEqual(ads.placementName('write'), 'write_post_workspace', 'Write placement family changed');
 assert.strictEqual(ads.LEGACY_DUPLICATE_ROUTES['/english-urdu-typing-tutorial'], true, 'Legacy tutorial duplicate-slot cleanup must remain enabled');
+assert.strictEqual(typeof ads.createCanonicalRegion, 'function', 'V3 must expose the safe Learn/Create slot fallback for contract tests');
 
 assert.match(adsSource, /data-wu-monetization-type/, 'Page-type measurement metadata is missing');
 assert.match(adsSource, /data-wu-ad-placement/, 'Placement measurement metadata is missing');
 assert.match(adsSource, /post-workspace/, 'Explicit post-workspace boundary guard is missing');
 assert.match(adsSource, /data-write-urdu-ads/, 'AdSense single-loader marker is missing');
+assert.match(adsSource, /createCanonicalRegion/, 'Learn/Create pages must be able to create one design-system ad region when legacy markup has none');
+assert.match(adsSource, /data-wu-design-ad-slot/, 'Design-system-created ad regions need an explicit DOM marker');
+assert.match(adsSource, /card-studio-workspace|card-studio-shell/, 'Card Studio needs a safe post-workspace placement anchor');
+assert.match(adsSource, /qr-workspace|qr-generator-shell/, 'QR Generator needs a safe post-workspace placement anchor');
 assert.doesNotMatch(adsSource, /data-ad-channel\s*=/, 'Do not invent AdSense custom-channel IDs before channels exist in the publisher account');
 
 // Regression contract for the 2026-07-11 monetization incident: the major
@@ -53,6 +61,21 @@ assert.doesNotMatch(writeMonetization, /enable_page_level_ads|3607727011|6402857
 assert.match(mainSource, /js\/write-monetization\.js/, 'Homepage/keyboard runtime must load the core Write monetization module');
 assert.match(inputModeSource, /js\/write-monetization\.js/, 'Rich editor runtime must load the core Write monetization module');
 
+// V3 design-system contract: every route gets the visual layer through the
+// already-global V2 shell, so individual HTML files do not need duplicate CSS
+// links. Advertising uses the same geometry but remains clearly labelled and
+// outside protected authoring surfaces.
+assert.match(v2ShellCss, /@import\s+url\(["']\.\/v3-design-system\.css["']\)/, 'Shared shell must load the V3 design system on every migrated page');
+assert.match(v3DesignCss, /\.wu-v2-shell \.wu-site-header/, 'V3 must style the shared header rather than page-local copies');
+assert.match(v3DesignCss, /\.wu-v2-shell \.wu-footer/, 'V3 must style the shared footer rather than page-local copies');
+assert.match(v3DesignCss, /\.wu-v2-shell \.wu-header-ad[\s\S]*min-height:/, 'Ad slots must reserve layout space to reduce CLS');
+assert.match(v3DesignCss, /content:\s*["']Advertisement["']/, 'Advertising surfaces must remain explicitly labelled');
+assert.match(v3DesignCss, /data-wu-monetization-type=["']trust["']/, 'Trust pages must keep their no-ad visual rule');
+assert.match(v3DesignCss, /#transliterateTextarea/, 'The primary authoring surface must receive the V3 workspace treatment');
+assert.match(v3DesignCss, /@media \(max-width: 767px\)/, 'V3 needs a dedicated mobile layout pass');
+assert.match(designTokens, /--wu-ad-min-height-desktop/, 'Ad layout reservation belongs in the shared token system');
+assert.match(designTokens, /--wu-shell-width/, 'Global page width belongs in the shared token system');
+
 const registryPath = path.join(root, 'docs', 'WU-PUBLIC-PAGE-REGISTRY.csv');
 const registryLines = fs.readFileSync(registryPath, 'utf8').trim().split(/\r?\n/).slice(1);
 const registryRoutes = registryLines.map(line => line.split(',')[1]).filter(Boolean);
@@ -63,4 +86,4 @@ const siteHeader = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 assert.match(siteHeader, /script\[src=\\?"js\/ads\.js\\?"\]/, 'Shared shell must keep the AdSense loader single-instance guard');
 assert.doesNotMatch(siteHeader, /adsbygoogle[^\n]*data-ad-channel/, 'Shared shell must not hard-code an unverified custom-channel ID');
 
-console.log('AdSense page-type policy contract passed.');
+console.log('AdSense and V3 design-system policy contract passed.');

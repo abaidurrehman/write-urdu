@@ -1,3 +1,6 @@
+@import url("./v3-design-system.css");
+
+@layer wu-v2-legacy {
 /* WriteUrdu v2 application shell.
    The writing surface stays primary; navigation and footer provide calm,
    predictable routes without exposing the whole product at once. */
@@ -333,4 +336,5 @@ html[dir="rtl"] .wu-v2-shell .wu-footer-links {
     scroll-behavior: auto !important;
     transition: none !important;
   }
+}
 }
