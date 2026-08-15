@@ -1,562 +1,183 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
-
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Write Urdu Features – Word, PDF, PNG, Drafts and Sharing</title>
     <meta name="description" content="Learn how to copy, share, recover local drafts, import text, and export Urdu as TXT, Word, PDF, PNG or print.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="canonical" href="https://www.write-urdu.com/write-urdu-features">
-    <meta property="og:type" content="article"><meta property="og:site_name" content="Write Urdu"><meta property="og:title" content="Write Urdu Features – Word, PDF, PNG, Drafts and Sharing"><meta property="og:description" content="Learn how to copy, share, recover local drafts, import text, and export Urdu as TXT, Word, PDF, PNG or print."><meta property="og:url" content="https://www.write-urdu.com/write-urdu-features"><meta property="og:image" content="https://www.write-urdu.com/image/logo10.png"><meta property="og:image:alt" content="Write Urdu editor export and draft features">
-    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Write Urdu Features – Word, PDF, PNG, Drafts and Sharing"><meta name="twitter:description" content="Learn about local drafts, imports, sharing and Urdu export formats."><meta name="twitter:image" content="https://www.write-urdu.com/image/logo10.png">
-    <meta name="Keywords" content="English to Urdu typing, Write Urdu, Urdu typing online, Write in Urdu, write Urdu online, Urdu keyboard, online Urdu editor, online urdu typing, Urdu writing, Urdu writing online in facebook">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="Write Urdu Features – Word, PDF, PNG, Drafts and Sharing">
+    <meta property="og:description" content="Learn how to copy, share, recover local drafts, import text, and export Urdu as TXT, Word, PDF, PNG or print.">
+    <meta property="og:url" content="https://www.write-urdu.com/write-urdu-features">
+    <meta property="og:image" content="https://www.write-urdu.com/image/logo10.png">
+    <meta property="og:image:alt" content="Write Urdu editor export and draft features">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Write Urdu Features – Word, PDF, PNG, Drafts and Sharing">
+    <meta name="twitter:description" content="Learn about local drafts, imports, sharing and Urdu export formats.">
+    <meta name="twitter:image" content="https://www.write-urdu.com/image/logo10.png">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="css/menu.css">
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.2.0/css/bootstrap-colorpicker.css"
-        integrity="sha512-XLInoY7BRabO37CGsZjuNbQgIUq/XJAoP4iNGSjHpYt5JRGl4DYrPwjMcGhyBi+NZgocGJhRW3cTaQ1d8ecEig==" crossorigin="anonymous"
-    />
-    <link href="https://fonts.googleapis.com/earlyaccess/notonastaliqurdu.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
-        crossorigin="anonymous" />
-
-    <script src="google_jsapi.js"></script>
-    <script src="main.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.2.0/js/bootstrap-colorpicker.js"></script>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-80884320-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-80884320-1');
-    </script>
-
-
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-        ga('create', 'UA-80884320-1', 'auto');
-        ga('send', 'pageview');
-
-    </script>
-
-    <script>
-        window.twttr = (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0],
-                t = window.twttr || {};
-            if (d.getElementById(id)) return t;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://platform.twitter.com/widgets.js";
-            fjs.parentNode.insertBefore(js, fjs);
-
-            t._e = [];
-            t.ready = function (f) {
-                t._e.push(f);
-            };
-
-            return t;
-        }(document, "script", "twitter-wjs"));</script>
-    <style type="text/css">
-        .twitter-share-button {
-            vertical-align: middle;
-            padding-right: 8px;
-        }
-
-        canvas {
-            border: 1px black solid;
-        }
-
-        #textCanvas {
-            display: none;
-        }
-    </style>
-
-
-<script src="site-header.js" defer></script>
-<link href="css/site-header.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/site-header.css">
+    <link rel="stylesheet" href="css/v2-content.css">
+    <link rel="stylesheet" href="css/v3-reference.css">
+    <script src="seo.config.js" defer></script>
+    <script src="js/seo.js" defer></script>
+    <script src="site-header.js" defer></script>
 </head>
+<body class="v2-content-page v3-reference-page">
+    <nav aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
 
-<body>
-
-
-    <!-- Load Facebook SDK for JavaScript -->
-    <script>
-        window.fbAsyncInit = function () {
-            FB.init({
-                xfbml: true,
-                version: 'v9.0'
-            });
-        };
-
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-
-    <!-- Your Chat Plugin code -->
-    <div class="fb-customerchat" attribution=setup_tool page_id="173170983094537">
-    </div>
-
-
-    <div id="fb-root"></div>
-    <script>
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7&appId=1410577659240776";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-
-    <div class="container-fluid">
-
-        <div class="row mw-100" style="width: 100%;">
-            <div class="container-fluid">
-                <nav class="navbar navbar-expand-md bg-dark navbar-dark mw-100">
-                    <a class="navbar-brand" href="/">
-                        <i class="fas fa-pen" title="English to urdu typing"></i> Write Urdu</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="collapsibleNavbar">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write Urdu</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/urdu-editor" title="Write Urdu | Urdu Rich Text Editor - Online Urdu editor -  English to Urdu typing">Urdu Text Editor</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="/urdu-keyboard" class="nav-link" title="Write Urdu | Free online Urdu Keyboard">Urdu Keyboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/urdu-alphabet" title="Write Urdu | Urdu alphabet">Urdu Alphabet</a>
-                            </li>
-                            <li class="nav-item bg-success">
-                                <a class="nav-link" href="/write-urdu-features" title="Write Urdu | Write Urdu Features">Write Urdu Features</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/urdu-editor-features" title="Write Urdu | Urdu Rich Text Editor features">Urdu Rich Text Editor Features</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/write-urdu-feedback" title="Write Urdu | feedback and suggestion">Feedback</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-
-            <div class="col-6 col-md-3">
-                <div class="col-6 col-md-3">
-                    <div style="line-height:30px;">
-                        <div class="fb-like" data-href="https://www.facebook.com/WriteUrdu/" data-layout="standard" data-action="like" data-size="small"
-                            data-show-faces="true" data-share="true"></div>
-                        <a class="twitter-follow-button" style="vertical-align:bottom;" href="https://twitter.com/UrduEditor" data-size="small">
-                            Follow @UrduEditor
-                        </a>
-                    </div>
-                    <hr class="solid">
-                    <div style="float:left;width:250px">
-
-                        <!-- Right panel -->
-                        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286" data-ad-slot="3607727011" data-ad-format="auto"></ins>
-
-                    </div>
+    <main class="reference-main">
+        <header class="reference-hero">
+            <div class="reference-hero-copy">
+                <p class="reference-eyebrow">WRITE URDU GUIDE</p>
+                <h1>Write Urdu features and export options</h1>
+                <p class="reference-lede">Turn a Roman Urdu draft into useful Urdu text, keep local copies while you work, and choose the right export or sharing option when the writing is ready.</p>
+                <div class="reference-actions">
+                    <a class="reference-button reference-button-primary" href="/">Open the basic editor</a>
+                    <a class="reference-button" href="/urdu-editor">Open rich editing</a>
                 </div>
-                <br>
-
-                <!-- Right panel -->
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286" data-ad-slot="3607727011" data-ad-format="auto"></ins>
-
             </div>
+            <aside class="reference-hero-card" aria-label="Feature overview">
+                <span class="reference-card-label">From draft to destination</span>
+                <p class="reference-urdu" lang="ur" dir="rtl">لکھیں، محفوظ کریں، شیئر کریں</p>
+                <ul class="reference-mini-list">
+                    <li>Local drafts and recent history</li>
+                    <li>TXT, Word, PDF and PNG export</li>
+                    <li>Copy, print and device sharing</li>
+                </ul>
+            </aside>
+        </header>
 
-            <div class="col-12 col-md-9">
-                <a href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">
-                    <img src="image/logo10.png" class="logo" width="80" height="80" decoding="async" alt="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online"
-                        title="Write Urdu | Online Urdu editor - Write Urdu in English - Urdu typing online" />
-                </a>
+        <nav class="v2-page-nav reference-page-nav" aria-label="Feature guide sections">
+            <a href="#quick-answer">Quick answer</a>
+            <a href="#save-copy">Save and copy</a>
+            <a href="#export-formats">Export formats</a>
+            <a href="#draft-tools">Draft tools</a>
+            <a href="#share-format">Share and format</a>
+        </nav>
 
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm" style="padding-right:0px;">
-                            <h3> Write Urdu online
-                            </h3>
-
-                            <h4 class="small">
-                                <mark class="sm">Copy, export, print and share Urdu</mark>
-                            </h4>
-                        </div>
-
-
-                </div>
-                <hr class="solid">
-                <div class="container">
-
-                    <article class="content-article">
-                        <h1>Write Urdu features and export options</h1>
-                        <p class="page-intro"><a href="/" title="Open the basic Urdu editor">Write Urdu</a> converts
-                            Roman Urdu into Urdu script as you type. Once your text is ready, you can copy, share, print
-                            or download it in several useful formats. This guide explains each option.</p>
-
-                        <h2>1. Save a plain-text file</h2>
-                        <p>A text file is lightweight and easy to open in Notepad, TextEdit or another plain-text editor.
-                            Saving a copy also protects your work if you close or refresh the page.</p>
-                        <ol>
-                            <li>Finish typing your Urdu in the editor.</li>
-                            <li>Open <strong>Export</strong> and enter a filename.</li>
-                            <li>Select <strong>Text file</strong> to download a <code>.txt</code> copy.</li>
-                        </ol>
-
-                        <h2>2. Copy text to the clipboard</h2>
-                        <p>Use the clipboard when you want to paste your Urdu into an email, document, message or social
-                            media post without downloading a file.</p>
-                        <ol>
-                            <li>Select <strong>Copy text</strong> above the editor.</li>
-                            <li>Paste the text in another app with Ctrl+V, Command+V or your device's Paste command.</li>
-                        </ol>
-
-                        <h2>3. Print Urdu text</h2>
-                        <p>The print option opens your browser's print dialog, where you can choose a printer, page size
-                            and other available settings.</p>
-                        <ol>
-                            <li>Open <strong>Export</strong> and select <strong>Print</strong>.</li>
-                            <li>Review the preview, choose your print settings and confirm.</li>
-                        </ol>
-
-                        <h2>4. Export a Word document</h2>
-                        <p>Choose Word format when you want an editable document that can be opened in Microsoft Word or
-                            another compatible word processor.</p>
-                        <ol>
-                            <li>Open <strong>Export</strong>.</li>
-                            <li>Select <strong>Word document</strong> to download the file.</li>
-                        </ol>
-
-                        <h2>5. Export a PDF</h2>
-                        <p>PDF is useful when you want to preserve the document's appearance for reading, printing or
-                            sharing. Recipients can open it without having the same editor configuration.</p>
-                        <ol>
-                            <li>Open <strong>Export</strong>.</li>
-                            <li>Select <strong>PDF document</strong> and wait for the download to finish.</li>
-                        </ol>
-
-                        <h2>6. Export a PNG image</h2>
-                        <p>An image is convenient for presentations, visual posts and apps that do not handle Urdu text
-                            consistently.</p>
-                        <ol>
-                            <li>Open <strong>Export</strong> and select <strong>PNG image</strong>.</li>
-                            <li>Save or share the downloaded PNG using your device's normal controls.</li>
-                        </ol>
-
-                        <h2>7. Share with WhatsApp</h2>
-                        <p>The Share button prepares your Urdu text for WhatsApp. Depending on your device, WhatsApp may
-                            open in the installed app or in the browser.</p>
-                        <ol>
-                            <li>Select <strong>Share</strong> above the editor.</li>
-                            <li>Choose a conversation in WhatsApp and review the text before sending it.</li>
-                        </ol>
-
-                        <h2>8. Use the Urdu Rich Text Editor</h2>
-                        <p>Open the <a href="/urdu-editor" title="Open the Urdu Rich Text Editor">Urdu Rich Text
-                                Editor</a> when you need headings, lists, colours, alignment, multiple fonts or other
-                            document formatting.</p>
-
-                        <h2>9. Recover local drafts</h2>
-                        <p>The editors save recent drafts in this browser only. No account or server upload is required,
-                            and the saved text stays on this device unless you clear it.</p>
-                        <ol>
-                            <li>Type or paste text into any Write Urdu editor.</li>
-                            <li>Open <strong>Recent drafts</strong> below the editor.</li>
-                            <li>Select a previous draft to restore it, or choose <strong>Clear history</strong> to remove local copies.</li>
-                        </ol>
-
-                        <h2>10. Import a text file</h2>
-                        <p>Use <strong>Import text</strong> to bring a UTF-8 plain-text file into the editor. Imported content
-                            is processed locally and can then be converted, formatted, copied or exported normally.</p>
-                    </article>
-                    <br>
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Video guide to Write Urdu features</h4>
-                                <div class="facebook-responsive">
-                                    <iframe src="https://www.facebook.com/plugins/video.php?height=325&href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F3434891606638257%2F&show_text=false"
-                                        width="560" height="325" style="border:none;overflow:hidden" scrolling="no" frameborder="0"
-                                        allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                        allowFullScreen="true"></iframe>
-                                </div>
-                        </div>
-                    </div>
-                    <div class="fb-comments" data-href="http://www.write-urdu.com/" style="align-content: center;width:100%;" data-width="800"
-                        data-numposts="7"></div>
-                </div>
-
-
+        <section id="quick-answer" class="reference-summary" data-wu-ad-boundary="after-answer" aria-labelledby="quick-answer-title">
+            <div>
+                <p class="reference-section-label">QUICK ANSWER</p>
+                <h2 id="quick-answer-title">What can you do after typing Urdu?</h2>
+                <p>Use <strong>Copy text</strong> for the fastest handoff, save a UTF-8 text file for portability, or export a polished document from the rich editor. Draft recovery and import tools stay in your browser, so you can continue working without creating an account.</p>
             </div>
-        </div>
-    </div>
-    <footer>
-        <div class="Footer-credits">
-            <span class="Footer-credit">
-                Created and maintained by
-                <a href="/" title="Write Urdu | Online roman Urdu editor - Write Urdu in English - Write Urdu for facebook">Write Urdu</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="/urdu-faq" title="Write Urdu | Frequently Asked Questions">FAQs</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="/write-urdu-features" title="Write Urdu | Write Urdu Features">Write Urdu Features</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="/english-urdu-typing-tutorial" title="Write Urdu | English to Urdu typing tutorial">English to Urdu typing tutorial</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="/write-urdu-privacy" title="Write Urdu | Free Urdu online Keyboard Terms of Service and Privacy Policy"> Privacy policy</a> |
-                <a href="/write-urdu-sitemap" title="Write Urdu | Free online Urdu Keyboard Sitemap">Sitemap</a>
-                |
-                <a href="/write-urdu-search" title="Write Urdu online using English alphabets, Search Urdu articles, Urdu information">Search Urdu</a>
-                | Why
-                <a href="/why-write-urdu" title=" Write Urdu | Why Write Urdu Online">Write-Urdu.com</a>
-            </span>
-            |
-            <span class="Footer-credit">
-                <a href="https://www.onlinekidsmadrasa.com" target="_blank" title="Online Kids Madrasa | Learn Quran Online">Learn Quran Online</a>
-            </span
-        </div>
-    </footer>
-    <script>
-        var clipboard = new Clipboard('.btn');
+            <div class="reference-chip-row" aria-label="Available actions">
+                <span>Copy</span><span>TXT</span><span>Word</span><span>PDF</span><span>PNG</span><span>Print</span><span>Share</span>
+            </div>
+        </section>
 
-        clipboard.on('success', function (e) {
-            console.log(e);
-        });
+        <section id="save-copy" class="reference-section" aria-labelledby="save-copy-title">
+            <div class="reference-section-heading">
+                <p class="reference-section-label">SAVE AND REUSE</p>
+                <h2 id="save-copy-title">Keep a portable copy or move text into another app</h2>
+                <p>Choose the lightest option that matches the next task. Plain text is ideal for portability; clipboard copy is best for an immediate handoff.</p>
+            </div>
+            <div class="reference-card-grid two">
+                <article class="reference-card">
+                    <span class="reference-step">01</span>
+                    <h3>Save a plain-text file</h3>
+                    <p>A UTF-8 text file is small, reliable and easy to open in Notepad, TextEdit or another editor.</p>
+                    <ol>
+                        <li>Finish typing your Urdu.</li>
+                        <li>Open <strong>Export</strong> and enter a filename.</li>
+                        <li>Select <strong>Text file</strong> to download the <code>.txt</code> copy.</li>
+                    </ol>
+                </article>
+                <article class="reference-card">
+                    <span class="reference-step">02</span>
+                    <h3>Copy text to the clipboard</h3>
+                    <p>Use the clipboard when the next destination is email, a document, messaging or another website.</p>
+                    <ol>
+                        <li>Select <strong>Copy text</strong> above the editor.</li>
+                        <li>Paste with your device’s normal Paste command.</li>
+                    </ol>
+                </article>
+            </div>
+        </section>
 
-        clipboard.on('error', function (e) {
-            console.log(e);
-        });
-    </script>
+        <section id="export-formats" class="reference-section" aria-labelledby="export-formats-title">
+            <div class="reference-section-heading">
+                <p class="reference-section-label">EXPORT</p>
+                <h2 id="export-formats-title">Choose the output that matches the finished work</h2>
+                <p>The basic editor is best for text-first output. Use the rich editor when presentation, fonts, headings or page layout matter.</p>
+            </div>
+            <div class="reference-card-grid four">
+                <article class="reference-card compact"><strong>Print</strong><p>Open the browser print dialog and choose the available printer and page settings.</p></article>
+                <article class="reference-card compact"><strong>Word</strong><p>Download an editable document when the text needs more work in a word processor.</p></article>
+                <article class="reference-card compact"><strong>PDF</strong><p>Preserve the finished appearance for reading, printing or sending to someone else.</p></article>
+                <article class="reference-card compact"><strong>PNG</strong><p>Create an image for visual posts, presentations or apps where styled Urdu text is easier to share as a picture.</p></article>
+            </div>
+            <div class="reference-note">
+                <strong>Preview before important exports.</strong>
+                <span>Urdu fonts and right-to-left layout can look different across apps. Review the result before sending a formal document.</span>
+            </div>
+        </section>
 
-    <script type="text/javascript">
-        function OnLoad() {
-            var options = {
-                sourceLanguage:
-                    google.elements.transliteration.LanguageCode.ENGLISH,
-                destinationLanguage:
-                    [google.elements.transliteration.LanguageCode.URDU],
-                shortcutKey: "ctrl+g"
-                , transliterationEnabled: !0
-            };
+        <section id="draft-tools" class="reference-section" aria-labelledby="draft-tools-title">
+            <div class="reference-section-heading">
+                <p class="reference-section-label">LOCAL WORKFLOW</p>
+                <h2 id="draft-tools-title">Recover drafts and bring existing text back into the editor</h2>
+            </div>
+            <div class="reference-card-grid two">
+                <article class="reference-card">
+                    <h3>Recover local drafts</h3>
+                    <p>The editors can keep recent working copies in this browser. No account or server-side document library is required.</p>
+                    <ol>
+                        <li>Type or paste text into a Write Urdu editor.</li>
+                        <li>Open <strong>Recent drafts</strong>.</li>
+                        <li>Restore an earlier version, rename it, or clear the local history.</li>
+                    </ol>
+                </article>
+                <article class="reference-card">
+                    <h3>Import a text file</h3>
+                    <p>Use <strong>Import text</strong> to bring a UTF-8 plain-text file into the editor. The file is read locally and can then be converted, formatted, copied or exported normally.</p>
+                    <a class="reference-inline-link" href="/write-urdu-documentation">Read the complete writing workflow →</a>
+                </article>
+            </div>
+        </section>
 
-            // Create an instance on TransliterationControl with the required
-            // options.
-            var control =
-                new google.elements.transliteration.TransliterationControl(options);
+        <section id="share-format" class="reference-section" aria-labelledby="share-format-title">
+            <div class="reference-section-heading">
+                <p class="reference-section-label">NEXT STEP</p>
+                <h2 id="share-format-title">Share quickly or move into a richer workspace</h2>
+            </div>
+            <div class="reference-card-grid two">
+                <article class="reference-card">
+                    <h3>Share from your device</h3>
+                    <p>The Share action uses the browser or device sharing flow when available. Review the text and choose the destination yourself; Write Urdu does not post on your behalf.</p>
+                </article>
+                <article class="reference-card">
+                    <h3>Use the Urdu Rich Text Editor</h3>
+                    <p>Open the rich editor when you need headings, lists, colours, alignment, multiple fonts or presentation-ready document output.</p>
+                    <a class="reference-inline-link" href="/urdu-editor">Format an Urdu document →</a>
+                </article>
+            </div>
+        </section>
 
-            // Enable transliteration in the textbox with id
-            // 'transliterateTextarea'.
-            control.makeTransliteratable(['transliterateTextarea']);
+        <section class="reference-video" aria-labelledby="video-title">
+            <div class="reference-section-heading">
+                <p class="reference-section-label">VIDEO WALKTHROUGH</p>
+                <h2 id="video-title">See the feature workflow in action</h2>
+                <p>The video is optional; all essential instructions are available in the written guide above.</p>
+            </div>
+            <div class="reference-video-frame">
+                <iframe src="https://www.facebook.com/plugins/video.php?height=325&amp;href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F3434891606638257%2F&amp;show_text=false" width="560" height="325" loading="lazy" title="Write Urdu feature video" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </section>
 
-            $('#spinner').hide();
-            $('[data-toggle="tooltip"]').tooltip()
+        <section class="reference-cta" aria-labelledby="features-cta-title">
+            <div>
+                <p class="reference-section-label">READY TO WRITE?</p>
+                <h2 id="features-cta-title">Start with the simplest editor, then add formatting only when you need it.</h2>
+            </div>
+            <a class="reference-button reference-button-primary" href="/">Start typing Urdu</a>
+        </section>
+    </main>
 
-        }
-
-        google.load("elements", "1", {
-            packages: "transliteration"
-        }), google.setOnLoadCallback(OnLoad);
-
-        function clearText() {
-            document.getElementById('transliterateTextarea').value = '';
-            document.getElementById('transliterateTextarea').focus();
-            $('#demo').css('background-color', "White");
-            $('#transliterateTextarea').css('background-color', "White");
-        }
-
-
-        function downloadURI(uri, name) {
-            var link = document.createElement("a");
-
-            link.download = name;
-            link.href = uri;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        }
-
-        function DownloadAsImage() {
-            var element = document.getElementById('transliterateTextarea');
-            html2canvas((element), {
-                onrendered: function (canvas) {
-                    var ctx = canvas.getContext("2d");
-                    var markSize = 22;
-                    var baseline = canvas.height - 17;
-                    var mark = new Image();
-                    function finish() {
-                        var textImage = canvas.toDataURL();
-                        downloadURI(textImage, document.getElementById('inputFileNameToSaveAs').value + ".png");
-                    }
-                    ctx.strokeStyle = "rgba(23, 114, 69, .18)";
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(12, canvas.height - 42);
-                    ctx.lineTo(canvas.width - 12, canvas.height - 42);
-                    ctx.stroke();
-                    ctx.textBaseline = "middle";
-                    ctx.font = "600 11px Arial, sans-serif";
-                    ctx.fillStyle = "#6b7d73";
-                    ctx.fillText("Write Urdu · Write-Urdu.com", 42, baseline);
-                    mark.onload = function () {
-                        ctx.drawImage(mark, 12, canvas.height - 31, markSize, markSize);
-                        finish();
-                    };
-                    mark.onerror = finish;
-                    mark.src = new URL("image/logo10.png", document.baseURI).href;
-                }
-            });
-        }
-
-        function DownloadAsWord() {
-
-            var preHtml = "<html lang="en" xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML To Doc</title></head><body>";
-            var postHtml = "</body></html>";
-            var html = preHtml + '<div dir="rtl">' + document.getElementById("transliterateTextarea").value + '</div>' + postHtml;
-
-            var blob = new Blob(['\ufeff', html], {
-                type: 'application/msword'
-            });
-
-            var url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(html);
-            filename = document.getElementById('inputFileNameToSaveAs').value + '.doc';
-            // Create download link element
-            var downloadLink = document.createElement("a");
-            document.body.appendChild(downloadLink);
-
-            if (navigator.msSaveOrOpenBlob) {
-                navigator.msSaveOrOpenBlob(blob, filename);
-            } else {
-                // Create a link to the file
-                downloadLink.href = url;
-
-                // Setting the file name
-                downloadLink.download = filename;
-
-                //triggering the function
-                downloadLink.click();
-            }
-
-            document.body.removeChild(downloadLink);
-
-            // $("#transliterateTextarea").wordExport(document.getElementById('inputFileNameToSaveAs').value);
-        }
-
-        function DownloadAsPdf() {
-            var element = document.getElementById('transliterateTextarea');
-            element.style.backgroundColor = 'white';
-            element.style.borderWidth = '0px';
-            var w = 2480;
-            var h = 3508;
-            html2canvas((element), {
-                /*  dpi: 300, // Set to 300 DPI
-                  scale: 3, // Adjusts your resolution*/
-                onrendered: function (canvas) {
-                    var img = canvas.toDataURL("image/png", 1);
-                    var doc = new jsPDF()
-                    var width = doc.internal.pageSize.width;
-                    var height = doc.internal.pageSize.height;
-
-                    var widthRatio = width / canvas.width;
-                    var heightRatio = height / canvas.height;
-
-                    var ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
-
-                    doc.addImage(img, 'png', -1, 5, canvas.width * ratio, canvas.height * ratio, );
-                    doc.text("Write Urdu · Write-Urdu.com", width - 65, height - 10);
-                    doc.save(document.getElementById('inputFileNameToSaveAs').value + '.pdf');
-                }
-            });
-        }
-
-
-        function PrintText() {
-            var element = document.getElementById('transliterateTextarea');
-            html2canvas((element), {
-                onrendered: function (canvas) {
-                    var myImage = canvas.toDataURL("image/png", 1);
-                    var tWindow = window.open("");
-                    $(tWindow.document.body)
-                        .html("<img id='Image' src=" + myImage + " style='width:100%;'></img>")
-                        .ready(function () {
-                            tWindow.focus();
-                            tWindow.print();
-                        });
-                }
-            });
-        }
-
-        function OpenWhatsApp() {
-            var Url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(document.getElementById('transliterateTextarea').value);
-            window.open(Url, "_blank");
-        }
-
-        var loadFile = function (event) {
-            var output = document.getElementById('transliterateTextarea');
-            output.style.backgroundImage = "url(" + URL.createObjectURL(event.target.files[0]) + ")";
-
-        };
-    </script>
-
-    <script type="text/javascript">
-
-        setTimeout(function () {
-            // Closing the alert
-            $('#UsageAlert').alert('close');
-        }, 15000);
-    </script>
-
-    <script>
-        $(function () {
-            // Basic instantiation:
-            $('#demo-input').colorpicker();
-
-            // Example using an event, to change the color of the #demo div background:
-            $('#demo-input').on('colorpickerChange', function (event) {
-                $('#demo').css('background-color', event.color.toString());
-                $('#transliterateTextarea').css('background-color', event.color.toString());
-            });
-        });
-    </script>
-
+    <footer><div class="Footer-credits">Write Urdu features and export guide</div></footer>
 </body>
-
 </html>
