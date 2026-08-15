@@ -18,6 +18,7 @@ const routes = [
 
 const viewports = [
   { name: 'desktop', width: 1440, height: 1000 },
+  { name: 'laptop-wide', width: 1366, height: 768 },
   { name: 'laptop', width: 1280, height: 720 },
   { name: 'tablet', width: 820, height: 1180 },
   { name: 'mobile', width: 390, height: 844 }
@@ -56,7 +57,10 @@ async function captureMetrics(page, route, viewport) {
     const urduSample = document.querySelector('[lang="ur"], [dir="rtl"]');
     const urduStyle = urduSample ? getComputedStyle(urduSample) : null;
     const header = document.querySelector('.wu-site-header');
+    const nav = document.querySelector('.wu-primary-nav');
     const navItem = document.querySelector('.wu-primary-nav > a:not(.is-active), .wu-nav-more > summary:not(.is-active), .wu-primary-nav > a');
+    const menuToggle = document.querySelector('.wu-menu-toggle');
+    const neutralAction = document.querySelector('.home-actions summary.btn-dark, .tool-actions summary.btn-dark, .keyboard-actions summary.btn-dark');
 
     const parseRgb = value => {
       const match = String(value || '').match(/rgba?\((\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)/i);
@@ -78,14 +82,19 @@ async function captureMetrics(page, route, viewport) {
       const darker = Math.min(fg, bg);
       return Number(((lighter + 0.05) / (darker + 0.05)).toFixed(2));
     };
-
-    const headerStyle = header ? getComputedStyle(header) : null;
-    const navStyle = navItem ? getComputedStyle(navItem) : null;
-    const visibleAds = [...document.querySelectorAll('.adsbygoogle, [data-wu-ad-slot]')].filter(node => {
+    const isVisible = node => {
+      if (!node) return false;
       const style = getComputedStyle(node);
       const rect = node.getBoundingClientRect();
       return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
-    }).length;
+    };
+
+    const headerStyle = header ? getComputedStyle(header) : null;
+    const navStyle = nav ? getComputedStyle(nav) : null;
+    const navItemStyle = navItem ? getComputedStyle(navItem) : null;
+    const menuToggleStyle = menuToggle ? getComputedStyle(menuToggle) : null;
+    const neutralActionStyle = neutralAction ? getComputedStyle(neutralAction) : null;
+    const visibleAds = [...document.querySelectorAll('.adsbygoogle, [data-wu-ad-slot]')].filter(isVisible).length;
 
     return {
       viewport,
@@ -96,9 +105,17 @@ async function captureMetrics(page, route, viewport) {
       bodyFontSize: parseFloat(bodyStyle.fontSize),
       headerHeight: headerBox ? Math.round(headerBox.height) : null,
       headerBackground: headerStyle ? headerStyle.backgroundColor : null,
-      navColor: navStyle ? navStyle.color : null,
-      navOpacity: navStyle ? parseFloat(navStyle.opacity) : null,
-      navContrastRatio: headerStyle && navStyle ? contrastRatio(navStyle.color, headerStyle.backgroundColor) : null,
+      navColor: navItemStyle ? navItemStyle.color : null,
+      navOpacity: navItemStyle ? parseFloat(navItemStyle.opacity) : null,
+      navContrastRatio: headerStyle && navItemStyle ? contrastRatio(navItemStyle.color, headerStyle.backgroundColor) : null,
+      navDisplay: navStyle ? navStyle.display : null,
+      menuToggleDisplay: menuToggleStyle ? menuToggleStyle.display : null,
+      menuToggleVisible: isVisible(menuToggle),
+      neutralActionText: neutralAction ? neutralAction.textContent.trim().replace(/\s+/g, ' ') : null,
+      neutralActionVisible: isVisible(neutralAction),
+      neutralActionColor: neutralActionStyle ? neutralActionStyle.color : null,
+      neutralActionBackground: neutralActionStyle ? neutralActionStyle.backgroundColor : null,
+      neutralActionContrastRatio: neutralActionStyle ? contrastRatio(neutralActionStyle.color, neutralActionStyle.backgroundColor) : null,
       mainTop: mainBox ? Math.round(mainBox.y) : null,
       h1Top: h1Box ? Math.round(h1Box.y) : null,
       primarySelector,
@@ -128,7 +145,7 @@ async function captureMetrics(page, route, viewport) {
 test.describe('V3 production visual-quality audit', () => {
   test('capture representative routes across production viewports', async ({ browser }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop-chromium', 'Single audit run controls its own viewport matrix.');
-    test.setTimeout(150000);
+    test.setTimeout(180000);
 
     fs.rmSync(auditDir, { recursive: true, force: true });
     fs.mkdirSync(auditDir, { recursive: true });
@@ -170,12 +187,18 @@ test.describe('V3 production visual-quality audit', () => {
         if (metrics.navContrastRatio !== null && metrics.navContrastRatio < 4.5) {
           report.criticalFailures.push(`${viewport.name} ${route.path}: primary navigation contrast ${metrics.navContrastRatio}:1 (${metrics.navColor} on ${metrics.headerBackground})`);
         }
+        if (viewport.name === 'laptop-wide' && (!metrics.menuToggleVisible || metrics.navDisplay !== 'none')) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: 1366px header must collapse instead of clipping primary navigation`);
+        }
+        if (metrics.neutralActionVisible && metrics.neutralActionContrastRatio !== null && metrics.neutralActionContrastRatio < 4.5) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: neutral action '${metrics.neutralActionText}' contrast ${metrics.neutralActionContrastRatio}:1 (${metrics.neutralActionColor} on ${metrics.neutralActionBackground})`);
+        }
 
         /* Task-first quality gates discovered by the production screenshot pass. */
-        if (route.slug === 'home' && ['laptop', 'mobile'].includes(viewport.name) && metrics.primaryStartsBeforeFoldRatio > 0.85) {
+        if (route.slug === 'home' && ['laptop-wide', 'laptop', 'mobile'].includes(viewport.name) && metrics.primaryStartsBeforeFoldRatio > 0.85) {
           report.criticalFailures.push(`${viewport.name} ${route.path}: typing surface starts too low (${metrics.primaryStartsBeforeFoldRatio} of viewport)`);
         }
-        if (route.slug === 'rich-editor' && ['laptop', 'mobile'].includes(viewport.name) && metrics.primaryStartsBeforeFoldRatio > 0.70) {
+        if (route.slug === 'rich-editor' && ['laptop-wide', 'laptop', 'mobile'].includes(viewport.name) && metrics.primaryStartsBeforeFoldRatio > 0.70) {
           report.criticalFailures.push(`${viewport.name} ${route.path}: Rich Editor starts too low (${metrics.primaryStartsBeforeFoldRatio} of viewport)`);
         }
         if (route.slug === 'rich-editor' && metrics.h1Top !== null && metrics.primaryTop !== null && metrics.h1Top >= metrics.primaryTop) {
