@@ -55,6 +55,32 @@ async function captureMetrics(page, route, viewport) {
     const bodyStyle = getComputedStyle(document.body);
     const urduSample = document.querySelector('[lang="ur"], [dir="rtl"]');
     const urduStyle = urduSample ? getComputedStyle(urduSample) : null;
+    const header = document.querySelector('.wu-site-header');
+    const navItem = document.querySelector('.wu-primary-nav > a:not(.is-active), .wu-nav-more > summary:not(.is-active), .wu-primary-nav > a');
+
+    const parseRgb = value => {
+      const match = String(value || '').match(/rgba?\((\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)[,\s]+(\d+(?:\.\d+)?)/i);
+      return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
+    };
+    const luminance = rgb => {
+      if (!rgb) return null;
+      const channels = rgb.map(value => {
+        const normalized = value / 255;
+        return normalized <= 0.03928 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+    };
+    const contrastRatio = (foreground, background) => {
+      const fg = luminance(parseRgb(foreground));
+      const bg = luminance(parseRgb(background));
+      if (fg === null || bg === null) return null;
+      const lighter = Math.max(fg, bg);
+      const darker = Math.min(fg, bg);
+      return Number(((lighter + 0.05) / (darker + 0.05)).toFixed(2));
+    };
+
+    const headerStyle = header ? getComputedStyle(header) : null;
+    const navStyle = navItem ? getComputedStyle(navItem) : null;
     const visibleAds = [...document.querySelectorAll('.adsbygoogle, [data-wu-ad-slot]')].filter(node => {
       const style = getComputedStyle(node);
       const rect = node.getBoundingClientRect();
@@ -69,6 +95,10 @@ async function captureMetrics(page, route, viewport) {
       documentHeight: root.scrollHeight,
       bodyFontSize: parseFloat(bodyStyle.fontSize),
       headerHeight: headerBox ? Math.round(headerBox.height) : null,
+      headerBackground: headerStyle ? headerStyle.backgroundColor : null,
+      navColor: navStyle ? navStyle.color : null,
+      navOpacity: navStyle ? parseFloat(navStyle.opacity) : null,
+      navContrastRatio: headerStyle && navStyle ? contrastRatio(navStyle.color, headerStyle.backgroundColor) : null,
       mainTop: mainBox ? Math.round(mainBox.y) : null,
       h1Top: h1Box ? Math.round(h1Box.y) : null,
       primarySelector,
@@ -133,6 +163,12 @@ test.describe('V3 production visual-quality audit', () => {
         }
         if (metrics.headerHeight && metrics.headerHeight > (viewport.name === 'mobile' ? 76 : 90)) {
           report.criticalFailures.push(`${viewport.name} ${route.path}: header height ${metrics.headerHeight}px`);
+        }
+        if (metrics.navOpacity !== null && metrics.navOpacity < 0.95) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: primary navigation opacity ${metrics.navOpacity}`);
+        }
+        if (metrics.navContrastRatio !== null && metrics.navContrastRatio < 4.5) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: primary navigation contrast ${metrics.navContrastRatio}:1 (${metrics.navColor} on ${metrics.headerBackground})`);
         }
 
         /* Task-first quality gates discovered by the production screenshot pass. */
