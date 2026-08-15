@@ -6,6 +6,7 @@
     var QUEUE_LIMIT = 10;
     var FLUSH_DELAY = 4500;
     var ACTIVE_WINDOW_MS = 15000;
+    var CORE_EDITOR_ROUTES = ['/', '/urdu-editor', '/urdu-keyboard'];
     var queue = [];
     var flushTimer = null;
     var engaged = false;
@@ -16,6 +17,7 @@
     var currentInputMode = 'unknown';
     var outcomeHooksInstalled = false;
     var copyWatchToken = 0;
+    var trackedOnce = Object.create(null);
 
     function normalizedPath(value) {
         var path = String(value || '/').split('?')[0].split('#')[0].replace(/\.html$/i, '').replace(/\/+$/, '') || '/';
@@ -71,6 +73,7 @@
     }
 
     function lengthBucket(length) {
+        if (length === null || typeof length === 'undefined') return null;
         var count = Math.max(0, Number(length) || 0);
         if (!count) return '0';
         if (count <= 20) return '1-20';
@@ -94,10 +97,11 @@
     }
 
     function textLength() {
+        if (!editorReader) return null;
         try {
-            return editorReader ? String(editorReader() || '').trim().length : 0;
+            return String(editorReader() || '').trim().length;
         } catch (error) {
-            return 0;
+            return null;
         }
     }
 
@@ -132,6 +136,13 @@
         queue.push(payload(eventName, detail));
         if (queue.length >= QUEUE_LIMIT) flush(false);
         else scheduleFlush();
+    }
+
+    function trackOnce(key, eventName, detail) {
+        if (trackedOnce[key]) return false;
+        trackedOnce[key] = true;
+        track(eventName, detail);
+        return true;
     }
 
     function send(events, beacon) {
@@ -175,7 +186,11 @@
         noteActivity();
         if (engaged) return;
         engaged = true;
-        track('editor_engaged', { length_bucket: lengthBucket(textLength()), input_mode: currentInputMode });
+        var detail = {};
+        var bucket = lengthBucket(textLength());
+        if (bucket) detail.length_bucket = bucket;
+        if (currentInputMode !== 'unknown') detail.input_mode = currentInputMode;
+        track(CORE_EDITOR_ROUTES.indexOf(route) >= 0 ? 'editor_engaged' : 'tool_engaged', detail);
     }
 
     function attachTextarea(node) {
@@ -185,6 +200,14 @@
             node.addEventListener(name, markEngaged, { passive: true });
         });
         node.addEventListener('focus', noteActivity, { passive: true });
+        return true;
+    }
+
+    function attachDynamicReader(selector) {
+        editorReader = function () {
+            var node = document.querySelector(selector);
+            return node && typeof node.value !== 'undefined' ? node.value : '';
+        };
         return true;
     }
 
@@ -209,6 +232,10 @@
             }, 250);
             return true;
         }
+        if (route === '/urdu-card-studio') return attachDynamicReader('#cardText');
+        if (route === '/stylish-urdu-text-generator') return attachTextarea(document.getElementById('stylishText'));
+        if (route === '/urdu-name-art-maker') return attachTextarea(document.getElementById('nameArtText'));
+        if (route === '/urdu-whatsapp-status-maker' || route === '/urdu-instagram-post-maker') return attachDynamicReader('#cardText');
         return false;
     }
 
@@ -219,7 +246,11 @@
 
     function trackOutcome(name, detail) {
         detail = detail || {};
-        if (typeof detail.length_bucket === 'undefined') detail.length_bucket = lengthBucket(textLength());
+        markEngaged();
+        if (typeof detail.length_bucket === 'undefined') {
+            var bucket = lengthBucket(textLength());
+            if (bucket) detail.length_bucket = bucket;
+        }
         track(name, detail);
     }
 
@@ -263,29 +294,79 @@
             var mode = closest('[data-input-mode-option]');
             if (mode) {
                 currentInputMode = mode.getAttribute('data-input-mode-option') || 'unknown';
-                track('input_mode_changed', { input_mode: currentInputMode });
-                noteActivity();
+                markEngaged();
                 return;
             }
 
             if (closest('[data-batch-action]')) {
-                track('batch_transliteration', { input_mode: currentInputMode, length_bucket: lengthBucket(textLength()) });
-                noteActivity();
+                markEngaged();
+                track('batch_transliteration', {
+                    input_mode: currentInputMode !== 'unknown' ? currentInputMode : null,
+                    length_bucket: lengthBucket(textLength())
+                });
                 return;
             }
 
             if (closest('[data-write-urdu-share]')) {
-                track('share_clicked', { length_bucket: lengthBucket(textLength()) });
+                trackOutcome('share_clicked', {});
                 return;
             }
 
             var handoff = closest('[data-create-card], [data-create-qr], .home-actions-group-create a');
             if (handoff) {
+                markEngaged();
                 var href = handoff.getAttribute('href');
                 var targetRoute = href || (handoff.hasAttribute('data-create-card') ? '/urdu-card-studio' : '/qr-code-generator');
                 track('tool_handoff', { target_route: targetRoute, length_bucket: lengthBucket(textLength()) });
             }
         }, true);
+    }
+
+    function rootSelectorForTool() {
+        var selectors = {
+            card_studio: '[data-card-studio]',
+            stylish_text: '[data-stylish-generator]',
+            name_art: '[data-name-art]',
+            whatsapp_status: '[data-social-direct-workspace="whatsapp"]',
+            instagram_post: '[data-social-direct-workspace="instagram"]',
+            invoice_generator: '[data-invoice-generator]',
+            qr_generator: '[data-qr-generator]'
+        };
+        return selectors[tool] || null;
+    }
+
+    function bindCreationToolSignals() {
+        var rootSelector = rootSelectorForTool();
+        if (!rootSelector) return;
+
+        document.addEventListener('input', function (event) {
+            if (event.target && event.target.closest && event.target.closest(rootSelector)) markEngaged();
+        }, true);
+        document.addEventListener('change', function (event) {
+            if (!event.target || !event.target.closest || !event.target.closest(rootSelector)) return;
+            markEngaged();
+            if (event.target.matches && event.target.matches('input[type="file"]') && event.target.files && event.target.files.length) {
+                track('background_image_used');
+            }
+        }, true);
+        document.addEventListener('click', function (event) {
+            if (!event.target || !event.target.closest) return;
+            var template = event.target.closest('[data-card-use-case], [data-card-template], [data-name-art-template]');
+            if (template && template.closest(rootSelector)) {
+                markEngaged();
+                track('template_used');
+                return;
+            }
+            var action = event.target.closest('[data-stylish-generate], [data-stylish-surprise], [data-stylish-example], [data-name-art-purpose], [data-invoice-add-item], [data-invoice-sample], [data-qr-reset-colors]');
+            if (action && action.closest(rootSelector)) markEngaged();
+        }, true);
+
+        document.addEventListener('write-urdu:card-interaction-state', function (event) {
+            var detail = event && event.detail || {};
+            if (!detail.selectedObjectId && !detail.editingObjectId) return;
+            markEngaged();
+            trackOnce('canvas-interaction', 'canvas_interaction');
+        });
     }
 
     function formatFromFilename(filename) {
@@ -378,13 +459,13 @@
     }
 
     function sendSummary() {
-        if (summarySent) return;
+        if (summarySent || !engaged) return;
         summarySent = true;
-        track('session_summary', {
-            length_bucket: lengthBucket(textLength()),
-            active_time_bucket: activeTimeBucket(activeSeconds),
-            input_mode: currentInputMode
-        });
+        var detail = { active_time_bucket: activeTimeBucket(activeSeconds) };
+        var bucket = lengthBucket(textLength());
+        if (bucket) detail.length_bucket = bucket;
+        if (currentInputMode !== 'unknown') detail.input_mode = currentInputMode;
+        track('session_summary', detail);
         flush(true);
     }
 
@@ -398,6 +479,7 @@
     function start() {
         bindPrimaryEditor();
         bindProductActions();
+        bindCreationToolSignals();
         installOutcomeHooks();
         startActiveTimer();
         track('page_session_started');
@@ -409,6 +491,8 @@
 
     window.WriteUrduTelemetry = {
         track: track,
+        trackOnce: trackOnce,
+        engage: markEngaged,
         trackOutcome: trackOutcome,
         lengthBucket: lengthBucket,
         activeTimeBucket: activeTimeBucket,
