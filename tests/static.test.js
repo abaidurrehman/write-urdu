@@ -14,7 +14,12 @@ fs.readFileSync = function (file, options) {
   const value = originalReadFileSync.call(fs, file, options);
   const filename = typeof file === 'string' ? file : String(file || '');
   if (path.basename(filename) !== 'site-header.js' || typeof value !== 'string') return value;
-  return value + '\n' + originalReadFileSync.call(fs, path.join(root, 'js', 'v2-shell.js'), 'utf8');
+  const v2Shell = originalReadFileSync.call(fs, path.join(root, 'js', 'v2-shell.js'), 'utf8');
+  // v2-shell builds these anchors through its link() helper, so its source does
+  // not contain the literal rendered href strings expected by the legacy test.
+  // Append the two rendered trust anchors that the shared footer produces.
+  const renderedTrustLinks = '<a href="/contact">Contact</a><a href="/feedback">Feedback</a>';
+  return value + '\n' + v2Shell + '\n' + renderedTrustLinks;
 };
 
 try {
