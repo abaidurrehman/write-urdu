@@ -57,6 +57,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: v3-visual-audit-${{ github.run_id }}
-          path: test-results/visual-audit
+          path: visual-audit
           if-no-files-found: warn
           retention-days: 7
