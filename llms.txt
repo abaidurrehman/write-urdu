@@ -15,8 +15,8 @@ Important facts:
 - Urdu Name Art Maker is the focused image-rendering surface for Urdu name art, name images and DP/profile designs, with 24 original templates across 12 packs, six output presets and transparent PNG export.
 - Local drafts and several creation workflows use browser storage or browser-side processing. Roman Urdu suggestions may use the transliteration provider described in the privacy policy.
 - Write Urdu does not require an account for the core editors.
-- Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel.
-- Last reviewed: 2026-08-13.
+- Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel, while questions that need a reply have a dedicated contact route.
+- Last reviewed: 2026-08-15.
 
 ## Start writing
 
@@ -46,8 +46,9 @@ Important facts:
 ## Trust, policies and corrections
 
 - [About Write Urdu](https://www.write-urdu.com/why-write-urdu): Product purpose, who the project helps, known limitations, maintenance approach and editorial/correction policy.
-- [Privacy policy](https://www.write-urdu.com/write-urdu-privacy): Local storage, uploaded images, transliteration, analytics, ads, QR content and feedback handling.
-- [Feedback and corrections](https://www.write-urdu.com/write-urdu-feedback): Public channel for transliteration issues, outdated guidance, accessibility problems and browser bugs.
+- [Contact Write Urdu](https://www.write-urdu.com/contact): Direct route for product and technical questions, transliteration corrections, privacy requests, accessibility issues and general enquiries.
+- [Feedback and improvements](https://www.write-urdu.com/feedback): Product-feedback channel for ideas, workflow friction, bugs and corrections; identity and reply email are optional.
+- [Privacy policy](https://www.write-urdu.com/write-urdu-privacy): Local storage, uploaded images, transliteration, analytics, ads, QR content and contact/feedback handling.
 - [Security contact](https://www.write-urdu.com/.well-known/security.txt): Standard security-reporting contact and canonical policy file.
 - [Human-readable sitemap](https://www.write-urdu.com/write-urdu-sitemap): Index of public editors, tools, guides and policy pages.
 
