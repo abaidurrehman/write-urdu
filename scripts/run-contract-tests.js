@@ -29,14 +29,25 @@ const tests = [
   'tests/name-art-task-first-contract.test.js'
 ];
 
+function annotationText(value) {
+  return String(value || '')
+    .replace(/%/g, '%25')
+    .replace(/\r/g, '%0D')
+    .replace(/\n/g, '%0A')
+    .slice(0, 7000);
+}
+
 for (const file of tests) {
-  const result = spawnSync(process.execPath, [file], { stdio: 'inherit' });
+  const result = spawnSync(process.execPath, [file], { encoding: 'utf8' });
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
   if (result.error) {
-    console.error(`::error file=${file},title=Contract runner error::${result.error.message}`);
+    console.error(`::error file=${file},title=Contract runner error::${annotationText(result.error.message)}`);
     process.exit(1);
   }
   if (result.status !== 0) {
-    console.error(`::error file=${file},title=Contract test failed::${file} exited with status ${result.status}`);
+    const details = (result.stderr || result.stdout || `${file} exited with status ${result.status}`).trim();
+    console.error(`::error file=${file},title=Contract test failed::${annotationText(details)}`);
     process.exit(result.status || 1);
   }
 }
