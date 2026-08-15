@@ -46,8 +46,11 @@ async function captureMetrics(page, route, viewport) {
   const primaryBox = primary ? await boxIfPresent(primary.locator) : null;
   const headerBox = await boxIfPresent(page.locator('.wu-site-header').first());
   const mainBox = await boxIfPresent(page.locator('main').first());
+  const h1Box = await boxIfPresent(page.locator('h1').first());
+  const journeyBox = await boxIfPresent(page.locator('[data-wu-journey-panel]').first());
+  const adBox = await boxIfPresent(page.locator('.wu-write-ad, .wu-ad-region, .wu-header-ad').first());
 
-  return page.evaluate(({ viewport, primarySelector, primaryBox, headerBox, mainBox }) => {
+  return page.evaluate(({ viewport, primarySelector, primaryBox, headerBox, mainBox, h1Box, journeyBox, adBox }) => {
     const root = document.documentElement;
     const bodyStyle = getComputedStyle(document.body);
     const urduSample = document.querySelector('[lang="ur"], [dir="rtl"]');
@@ -67,11 +70,15 @@ async function captureMetrics(page, route, viewport) {
       bodyFontSize: parseFloat(bodyStyle.fontSize),
       headerHeight: headerBox ? Math.round(headerBox.height) : null,
       mainTop: mainBox ? Math.round(mainBox.y) : null,
+      h1Top: h1Box ? Math.round(h1Box.y) : null,
       primarySelector,
       primaryTop: primaryBox ? Math.round(primaryBox.y) : null,
       primaryHeight: primaryBox ? Math.round(primaryBox.height) : null,
+      primaryBottom: primaryBox ? Math.round(primaryBox.y + primaryBox.height) : null,
       primaryVisibleInInitialViewport: primaryBox ? primaryBox.y < viewport.height : null,
       primaryStartsBeforeFoldRatio: primaryBox ? Number((primaryBox.y / viewport.height).toFixed(3)) : null,
+      journeyTop: journeyBox ? Math.round(journeyBox.y) : null,
+      adTop: adBox ? Math.round(adBox.y) : null,
       visibleAds,
       urduDirection: urduStyle ? urduStyle.direction : null,
       urduFontFamily: urduStyle ? urduStyle.fontFamily : null
@@ -81,7 +88,10 @@ async function captureMetrics(page, route, viewport) {
     primarySelector: primary ? primary.selector : null,
     primaryBox,
     headerBox,
-    mainBox
+    mainBox,
+    h1Box,
+    journeyBox,
+    adBox
   });
 }
 
@@ -123,6 +133,23 @@ test.describe('V3 production visual-quality audit', () => {
         }
         if (metrics.headerHeight && metrics.headerHeight > (viewport.name === 'mobile' ? 76 : 90)) {
           report.criticalFailures.push(`${viewport.name} ${route.path}: header height ${metrics.headerHeight}px`);
+        }
+
+        /* Task-first quality gates discovered by the production screenshot pass. */
+        if (route.slug === 'home' && ['laptop', 'mobile'].includes(viewport.name) && metrics.primaryStartsBeforeFoldRatio > 0.85) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: typing surface starts too low (${metrics.primaryStartsBeforeFoldRatio} of viewport)`);
+        }
+        if (route.slug === 'rich-editor' && ['laptop', 'mobile'].includes(viewport.name) && metrics.primaryStartsBeforeFoldRatio > 0.70) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: Rich Editor starts too low (${metrics.primaryStartsBeforeFoldRatio} of viewport)`);
+        }
+        if (route.slug === 'rich-editor' && metrics.h1Top !== null && metrics.primaryTop !== null && metrics.h1Top >= metrics.primaryTop) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: Rich Editor heading must remain before the editor`);
+        }
+        if (route.slug === 'rich-editor' && metrics.primaryBottom !== null && metrics.journeyTop !== null && metrics.journeyTop < metrics.primaryBottom - 4) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: next-step journey must remain after the authoring surface`);
+        }
+        if (route.slug === 'rich-editor' && metrics.primaryBottom !== null && metrics.adTop !== null && metrics.adTop < metrics.primaryBottom - 4) {
+          report.criticalFailures.push(`${viewport.name} ${route.path}: advertisement must remain after the authoring surface`);
         }
 
         await page.screenshot({
