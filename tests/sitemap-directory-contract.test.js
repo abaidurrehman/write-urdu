@@ -23,11 +23,12 @@ for (const route of [
   '/roman-urdu-transliteration', '/english-urdu-typing-tutorial', '/urdu-alphabet',
   '/urdu-fonts-nastaliq-vs-naskh', '/how-to-write-urdu-on-photo', '/write-urdu-documentation',
   '/write-urdu-features', '/urdu-editor-features', '/urdu-faq', '/why-write-urdu',
-  '/write-urdu-privacy', '/write-urdu-feedback', '/write-urdu-search', '/write-urdu-sitemap'
+  '/write-urdu-privacy', '/contact', '/feedback', '/write-urdu-search', '/write-urdu-sitemap'
 ]) {
   assert.ok(html.includes(`href="${route}"`), `Sitemap directory is missing ${route}`);
 }
 
+assert.doesNotMatch(html, /href="\/write-urdu-feedback"/, 'Human sitemap must not keep the retired feedback canonical route');
 assert.doesNotMatch(html, /w3schools|bootstrap(?:\.min)?\.css|jquery(?:\.min)?\.js|font-awesome|google\.com\/cse|google\.com\/jsapi/i, 'Legacy framework/search dependencies must not return');
 assert.doesNotMatch(html, /<table\b/i, 'Professional sitemap must not regress to the legacy route table');
 assert.match(html, /<footer>/, 'Shared site footer placeholder missing');
