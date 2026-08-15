@@ -99,7 +99,7 @@ Primary behavioural instrumentation:
 - `/urdu-editor` — Rich Text Editor;
 - `/urdu-keyboard` — direct Urdu keyboard.
 
-Shared outcomes are instrumented centrally where possible so existing export code remains the source of truth.
+Shared outcomes are instrumented centrally where possible so existing export code remains the source of truth. Copy completion is recorded only after the existing UI reports clipboard success; clicking Copy alone is not counted as success.
 
 The telemetry client can identify other product routes from day one, but deep per-tool events for Card Studio, Invoice, Name Art, social makers and QR remain a follow-on slice after the core writing funnel is verified.
 
@@ -217,11 +217,11 @@ Retention automation is a follow-on operational task; the initial collector must
 - [x] Browser telemetry never includes written content or exact character count.
 - [x] Session identity is ephemeral and stored only in `sessionStorage`.
 - [x] Basic Editor, Rich Editor and Urdu Keyboard can emit engagement/session summaries.
-- [ ] Copy/export success paths are connected to telemetry.
-- [ ] Homepage text export is connected to telemetry.
-- [ ] Global SEO/runtime loads the telemetry client.
-- [ ] Privacy page documents first-party aggregate product telemetry.
-- [ ] Static regression tests protect privacy and event contracts.
+- [x] Copy/export success paths are connected to telemetry for the Phase 1 core controls.
+- [x] Homepage/keyboard text export is connected to telemetry.
+- [x] Core Write runtime loads the telemetry client.
+- [x] Privacy page documents first-party aggregate product telemetry.
+- [x] Static regression tests protect privacy and event contracts.
 - [ ] CI passes.
 - [ ] Production is verified to return HTTP 202 from `/api/events` and D1 receives first events.
 
