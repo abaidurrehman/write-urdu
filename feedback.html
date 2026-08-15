@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Write Urdu Feedback – Ideas, Bugs and Product Improvements</title>
+    <meta name="description" content="Share product feedback about Write Urdu typing, transliteration, exports, creative tools, accessibility or mobile experience.">
+    <meta name="robots" content="noindex,follow">
+    <meta name="googlebot" content="noindex,follow">
+    <link rel="canonical" href="https://www.write-urdu.com/feedback">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="Write Urdu Feedback – Ideas, Bugs and Product Improvements">
+    <meta property="og:description" content="Share focused product feedback about Write Urdu tools, transliteration, exports, accessibility or mobile experience.">
+    <meta property="og:url" content="https://www.write-urdu.com/feedback">
+    <meta property="og:image" content="https://www.write-urdu.com/image/logo10.png">
+    <meta property="og:image:alt" content="Write Urdu feedback">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Write Urdu Feedback – Ideas, Bugs and Product Improvements">
+    <meta name="twitter:description" content="Share focused product feedback about Write Urdu tools and workflows.">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/site-header.css">
+    <link rel="stylesheet" href="css/v3-utility.css">
+    <link rel="stylesheet" href="css/contact-feedback.css">
+    <script src="seo.config.js" defer></script>
+    <script src="js/seo.js" defer></script>
+    <script src="site-header.js" defer></script>
+</head>
+<body class="content-page v3-utility-page trust-form-page feedback-page">
+    <nav aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+
+    <main class="trust-form-main">
+        <section class="trust-form-hero" aria-labelledby="feedback-title">
+            <div class="trust-form-intro">
+                <p class="utility-eyebrow">FEEDBACK &amp; IMPROVEMENT</p>
+                <h1 id="feedback-title">Help shape what Write Urdu improves next.</h1>
+                <p class="trust-form-lede">Tell us what felt useful, what slowed you down or what would make a real Urdu-writing task easier. Short, specific observations are more useful than a long wish list.</p>
+
+                <div class="trust-feedback-principles" aria-label="How to give useful feedback">
+                    <article><span>01</span><div><strong>Name the moment</strong><p>What were you trying to type, format, create, copy or export?</p></div></article>
+                    <article><span>02</span><div><strong>Describe the friction</strong><p>What felt unclear, inaccurate, slow, broken or unnecessarily complicated?</p></div></article>
+                    <article><span>03</span><div><strong>Share the outcome</strong><p>What would a better result or simpler flow look like?</p></div></article>
+                </div>
+
+                <aside class="trust-form-safety">
+                    <strong>Keep private writing private.</strong>
+                    <p>Do not paste confidential documents, personal conversations, payment details, passwords or other sensitive content. Use only the smallest non-sensitive example needed to explain a bug.</p>
+                </aside>
+
+                <p class="trust-form-direct">Need an answer, privacy response or technical help? Use <a href="/contact">Contact Write Urdu</a> instead.</p>
+            </div>
+
+            <section class="trust-message-card" id="product-feedback" aria-labelledby="feedback-form-title">
+                <div class="trust-message-heading">
+                    <div><p class="utility-section-label">PRODUCT FEEDBACK</p><h2 id="feedback-form-title">What should we improve?</h2></div>
+                    <span><b aria-hidden="true">*</b> Required</span>
+                </div>
+
+                <form action="/api/messages" method="post" data-message-form data-form-type="feedback">
+                    <input type="hidden" name="formType" value="feedback">
+                    <input type="hidden" name="startedAt" data-started-at>
+                    <div class="trust-form-honeypot" aria-hidden="true">
+                        <label for="feedback-website">Leave this field empty</label>
+                        <input id="feedback-website" name="website" type="text" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <label class="trust-field" for="feedback-topic"><span>Feedback area <b aria-hidden="true">*</b></span><select id="feedback-topic" name="topic" required><option value="">Choose an area</option><option value="typing">Roman Urdu typing</option><option value="transliteration">Transliteration accuracy</option><option value="editor">Rich Text Editor</option><option value="keyboard">Urdu Keyboard</option><option value="export">Copy, PDF, PNG, Word or TXT export</option><option value="card-studio">Card Studio and social makers</option><option value="stylish-name-art">Stylish Text or Name Art</option><option value="invoice-qr">Invoice or QR tools</option><option value="mobile">Mobile experience</option><option value="accessibility">Accessibility</option><option value="feature">Feature idea</option><option value="bug">Bug report</option><option value="other">Something else</option></select></label>
+
+                    <fieldset class="trust-rating">
+                        <legend>How is your experience so far? <span>Optional</span></legend>
+                        <div class="trust-rating-options">
+                            <label><input type="radio" name="rating" value="1"><span>1</span><small>Rough</small></label>
+                            <label><input type="radio" name="rating" value="2"><span>2</span><small>Needs work</small></label>
+                            <label><input type="radio" name="rating" value="3"><span>3</span><small>Okay</small></label>
+                            <label><input type="radio" name="rating" value="4"><span>4</span><small>Good</small></label>
+                            <label><input type="radio" name="rating" value="5"><span>5</span><small>Excellent</small></label>
+                        </div>
+                    </fieldset>
+
+                    <label class="trust-field" for="feedback-message"><span>Your feedback <b aria-hidden="true">*</b></span><textarea id="feedback-message" name="message" rows="9" minlength="20" maxlength="4000" required></textarea><small>20–4,000 characters. Describe the task, friction and ideal outcome without including private writing.</small></label>
+
+                    <div class="trust-field-grid">
+                        <label class="trust-field" for="feedback-name"><span>Name <em>Optional</em></span><input id="feedback-name" name="name" type="text" autocomplete="name" maxlength="80"></label>
+                        <label class="trust-field" for="feedback-email"><span>Reply email <em>Optional</em></span><input id="feedback-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254"></label>
+                    </div>
+
+                    <div class="trust-turnstile"><div data-turnstile-slot aria-label="Spam protection"></div><span data-turnstile-note>Loading privacy-friendly spam protection…</span></div>
+                    <button class="trust-submit" type="submit" data-message-submit disabled><span>Send feedback</span></button>
+                    <p class="trust-message-status" data-message-status role="status" aria-live="polite"></p>
+                    <p class="trust-form-fallback" data-form-fallback hidden>If the form is unavailable, email <a href="mailto:admin@write-urdu.com?subject=Write%20Urdu%20feedback">admin@write-urdu.com</a>.</p>
+                    <p class="trust-form-privacy">Submitting sends only these form fields through Cloudflare for spam verification and product improvement. It does not send editor drafts, local images or locally stored projects. Read <a href="/write-urdu-privacy#contact-feedback-data">how feedback data is handled</a>.</p>
+                </form>
+            </section>
+        </section>
+
+        <section class="trust-form-support" aria-labelledby="direct-help-title">
+            <div><p class="utility-section-label">DIRECT HELP</p><h2 id="direct-help-title">Need a reply rather than product feedback?</h2><p>Use the contact page for technical questions, privacy requests, accessibility problems or anything that needs a direct response.</p></div>
+            <a class="utility-button utility-button-primary" href="/contact">Contact Write Urdu</a>
+        </section>
+    </main>
+
+    <footer><div class="Footer-credits">Write Urdu feedback</div></footer>
+    <script src="js/contact-forms.js" defer></script>
+</body>
+</html>
