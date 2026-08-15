@@ -4,6 +4,95 @@
    legacy flex-order compatibility layer. */
 
 /* --------------------------------------------------------------------------
+   Shared shell: medium-width navigation
+   -------------------------------------------------------------------------- */
+
+/* A 1280px collapse threshold is too late once the V3 brand, utility controls
+   and six primary destinations share the same row. At common 1288/1366px
+   laptop widths the navigation can extend beyond the clipped viewport. Keep
+   the full desktop row for genuinely wide screens and use the existing menu
+   interaction for medium-width laptops. */
+@media (min-width: 1281px) and (max-width: 1400px) {
+  body.wu-v2-shell .wu-header-inner {
+    position: relative;
+    width: min(var(--wu-shell-width), calc(100% - 32px));
+  }
+
+  body.wu-v2-shell .wu-menu-toggle {
+    display: inline-flex;
+  }
+
+  body.wu-v2-shell .wu-primary-nav {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    left: 0;
+    display: none;
+    align-items: stretch;
+    padding: 10px;
+    border: 1px solid var(--wu-color-border);
+    border-radius: var(--wu-radius-lg);
+    background: #fff;
+    box-shadow: var(--wu-shadow-float);
+  }
+
+  body.wu-v2-shell .wu-primary-nav.is-open {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body.wu-v2-shell .wu-primary-nav > a,
+  body.wu-v2-shell .wu-nav-more > summary {
+    padding: 13px;
+  }
+
+  body.wu-v2-shell .wu-nav-more {
+    grid-column: 1 / -1;
+  }
+
+  body.wu-v2-shell .wu-nav-more-menu,
+  body.wu-v2-shell .wu-nav-create .wu-nav-more-menu,
+  body.wu-v2-shell .wu-nav-learn .wu-nav-more-menu {
+    position: static;
+    width: auto;
+    min-width: 0;
+    margin-top: 6px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    background: var(--wu-color-surface-soft);
+    box-shadow: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Shared authoring controls: neutral-button contrast
+   -------------------------------------------------------------------------- */
+
+/* Bootstrap's legacy .btn-dark supplies white text. V3 deliberately changes
+   the Export summary to a white surface, so the foreground must be reset at
+   the same time. Scope this to export/menu summaries rather than globally
+   changing Bootstrap buttons. */
+body.wu-v2-shell .home-actions summary.btn-dark,
+body.wu-v2-shell .tool-actions summary.btn-dark,
+body.wu-v2-shell .keyboard-actions summary.btn-dark {
+  color: var(--wu-color-ink-soft) !important;
+  -webkit-text-fill-color: var(--wu-color-ink-soft);
+  border-color: var(--wu-color-border-strong) !important;
+  background: #fff !important;
+}
+
+body.wu-v2-shell .home-actions summary.btn-dark:hover,
+body.wu-v2-shell .tool-actions summary.btn-dark:hover,
+body.wu-v2-shell .keyboard-actions summary.btn-dark:hover,
+body.wu-v2-shell .home-actions details[open] > summary.btn-dark,
+body.wu-v2-shell .tool-actions details[open] > summary.btn-dark,
+body.wu-v2-shell .keyboard-actions details[open] > summary.btn-dark {
+  color: var(--wu-color-brand-strong) !important;
+  -webkit-text-fill-color: var(--wu-color-brand-strong);
+  border-color: #bcd9c7 !important;
+  background: var(--wu-color-brand-softer) !important;
+}
+
+/* --------------------------------------------------------------------------
    Homepage: task first
    -------------------------------------------------------------------------- */
 
