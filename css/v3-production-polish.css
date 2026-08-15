@@ -229,3 +229,92 @@ body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .fb-comments {
     margin-top: 16px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   P0 production contrast guard
+   --------------------------------------------------------------------------
+   The V3 shell uses a light header. Legacy site-header.css still contains
+   high-priority light-on-dark navigation declarations. Keep this final,
+   deliberately specific guard here so a partial cascade can never produce
+   white/pale navigation text on the V3 light surface again. */
+
+body.wu-v2-shell .wu-site-header {
+  color: #17221c !important;
+  background: rgba(255, 255, 255, .98) !important;
+  border-bottom-color: #dfe7e2 !important;
+}
+
+body.wu-v2-shell .wu-site-header .wu-brand,
+body.wu-v2-shell .wu-site-header .wu-brand strong {
+  color: #17221c !important;
+  opacity: 1 !important;
+}
+
+body.wu-v2-shell .wu-site-header .wu-brand small {
+  color: #68766e !important;
+  opacity: 1 !important;
+}
+
+body.wu-v2-shell .wu-site-header .wu-primary-nav > a,
+body.wu-v2-shell .wu-site-header .wu-nav-more > summary {
+  color: #334039 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #334039;
+}
+
+body.wu-v2-shell .wu-site-header .wu-primary-nav > a:hover,
+body.wu-v2-shell .wu-site-header .wu-nav-more > summary:hover,
+body.wu-v2-shell .wu-site-header .wu-primary-nav > a.is-active,
+body.wu-v2-shell .wu-site-header .wu-nav-more > summary.is-active {
+  color: #0d783e !important;
+  -webkit-text-fill-color: #0d783e;
+}
+
+body.wu-v2-shell .wu-site-header .wu-primary-nav > a.is-active,
+body.wu-v2-shell .wu-site-header .wu-nav-more > summary.is-active {
+  border-color: #cde6d6 !important;
+  background: #eaf8ef !important;
+  box-shadow: none !important;
+}
+
+body.wu-v2-shell .wu-site-header .wu-nav-more-menu {
+  color: #17221c !important;
+  border-color: #dfe7e2 !important;
+  background: #fff !important;
+}
+
+body.wu-v2-shell .wu-site-header .wu-nav-menu-heading {
+  color: #68766e !important;
+  opacity: 1 !important;
+}
+
+body.wu-v2-shell .wu-site-header .wu-nav-more-menu a {
+  color: #334039 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #334039;
+}
+
+body.wu-v2-shell .wu-site-header .wu-nav-more-menu a:hover,
+body.wu-v2-shell .wu-site-header .wu-nav-more-menu a.is-active {
+  color: #0d783e !important;
+  -webkit-text-fill-color: #0d783e;
+  background: #f4fbf6 !important;
+}
+
+body.wu-v2-shell .wu-site-header .wu-language-toggle,
+body.wu-v2-shell .wu-site-header .wu-install-toggle,
+body.wu-v2-shell .wu-site-header .wu-menu-toggle {
+  color: #34433b !important;
+  -webkit-text-fill-color: #34433b;
+  border-color: #cbd9d1 !important;
+  background: #fff !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 1280px) {
+  body.wu-v2-shell .wu-site-header .wu-primary-nav {
+    border-color: #dfe7e2 !important;
+    background: #fff !important;
+    box-shadow: 0 18px 48px rgb(20 35 27 / 10%) !important;
+  }
+}
