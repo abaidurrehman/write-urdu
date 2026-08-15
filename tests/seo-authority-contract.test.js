@@ -24,8 +24,8 @@ assert.match(homeHtml, new RegExp(`<meta name="description" content="${resolvedH
 const publisher = config.PUBLISHER;
 assert.strictEqual(publisher.type, 'Organization', 'publisher must remain an Organization while no public individual byline is used');
 assert.strictEqual(publisher.publicMaintainerName, null, 'private maintainer identity must not be published through SEO config');
-assert.strictEqual(publisher.contactEmail, 'admin@write-urdu.com', 'public correction email changed unexpectedly');
-assert.strictEqual(publisher.contactPath, '/write-urdu-feedback', 'public correction route changed unexpectedly');
+assert.strictEqual(publisher.contactEmail, 'admin@write-urdu.com', 'public contact email changed unexpectedly');
+assert.strictEqual(publisher.contactPath, '/contact', 'Organization contactPoint must resolve to the dedicated public contact route');
 assert.strictEqual(publisher.aboutPath, '/why-write-urdu', 'About authority route changed unexpectedly');
 assert.strictEqual(publisher.privacyPath, '/write-urdu-privacy', 'Privacy authority route changed unexpectedly');
 assert.strictEqual(publisher.publishingPrinciplesPath, '/why-write-urdu', 'publishing principles must resolve to a real public page');
@@ -34,8 +34,12 @@ assert.strictEqual(Object.prototype.hasOwnProperty.call(publisher, 'sameAs'), fa
 
 const aboutConfig = config.pages.find(page => page.id === 'why-write-urdu');
 const privacyConfig = config.pages.find(page => page.id === 'write-urdu-privacy');
+const contactConfig = config.pages.find(page => page.id === 'contact');
+const feedbackConfig = config.pages.find(page => page.id === 'feedback');
 assert.deepStrictEqual(aboutConfig.schema, [], 'About must use AboutPage semantics rather than pretending to be an Article');
 assert.deepStrictEqual(privacyConfig.schema, [], 'Privacy policy must remain a WebPage rather than pretending to be an Article');
+assert.ok(contactConfig && contactConfig.indexable === true && contactConfig.path === '/contact', 'Contact must be a durable indexable trust page');
+assert.ok(feedbackConfig && feedbackConfig.indexable === false && feedbackConfig.path === '/feedback', 'Feedback must remain a noindex product utility');
 const romanConfig = config.pages.find(page => page.id === 'roman-urdu-transliteration');
 assert.strictEqual(romanConfig.datePublished, '2026-07-16', 'Roman Urdu publication date must match the visible published date');
 assert.strictEqual(romanConfig.lastmod, '2026-08-07', 'Roman Urdu revision date must remain distinct from its publication date');
@@ -62,12 +66,13 @@ const llms = read('llms.txt');
 assert.match(llms, /^# Write Urdu\n\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
 assert.match(llms, /Canonical site: https:\/\/www\.write-urdu\.com\//, 'llms.txt canonical site statement is missing');
 assert.match(llms, /transliteration, not translation/i, 'llms.txt must preserve the central transliteration distinction');
-assert.match(llms, /Last reviewed: 2026-08-13/, 'llms.txt review date is missing');
+assert.match(llms, /Last reviewed: 2026-08-15/, 'llms.txt review date is missing');
 assert.match(llms, /## Start writing/, 'llms.txt must prioritize core writing workflows');
 assert.match(llms, /## Trust, policies and corrections/, 'llms.txt trust resource section is missing');
 assert.match(llms, /https:\/\/www\.write-urdu\.com\/why-write-urdu/, 'llms.txt must link to About');
+assert.match(llms, /https:\/\/www\.write-urdu\.com\/contact/, 'llms.txt must link to Contact');
+assert.match(llms, /https:\/\/www\.write-urdu\.com\/feedback/, 'llms.txt must link to the public product-feedback channel');
 assert.match(llms, /https:\/\/www\.write-urdu\.com\/write-urdu-privacy/, 'llms.txt must link to Privacy');
-assert.match(llms, /https:\/\/www\.write-urdu\.com\/write-urdu-feedback/, 'llms.txt must link to the public correction channel');
 assert.match(llms, /https:\/\/www\.write-urdu\.com\/\.well-known\/security\.txt/, 'llms.txt must link to the standard security contact file');
 assert.match(llms, /## Optional/, 'llms.txt should keep secondary resources skippable');
 assert.doesNotMatch(llms, /https:\/\/www\.write-urdu\.com\/[\w-]+\.html/, 'llms.txt must use canonical extensionless routes');
@@ -86,7 +91,10 @@ const revisionDates = {
   '/write-urdu-documentation': '2026-08-07',
   '/urdu-faq': '2026-08-07',
   '/roman-urdu-transliteration': '2026-08-07',
-  '/urdu-name-art-maker': '2026-08-13'
+  '/urdu-name-art-maker': '2026-08-13',
+  '/write-urdu-privacy': '2026-08-15',
+  '/contact': '2026-08-15',
+  '/write-urdu-sitemap': '2026-08-15'
 };
 for (const [route, revisionDate] of Object.entries(revisionDates)) {
   const page = config.pages.find(candidate => candidate.path === route);
@@ -96,6 +104,7 @@ for (const [route, revisionDate] of Object.entries(revisionDates)) {
   assert.ok(block, `sitemap is missing ${route}`);
   assert.match(block[0], new RegExp(`<lastmod>${revisionDate}<\\/lastmod>`), `${route} sitemap lastmod is stale`);
 }
+assert.doesNotMatch(sitemap, /<loc>https:\/\/www\.write-urdu\.com\/feedback<\/loc>/, 'noindex Feedback must stay out of the XML sitemap');
 
 const about = read('why-write-urdu.html');
 assert.match(about, /Who maintains Write Urdu/, 'About page must identify the project maintainer model');

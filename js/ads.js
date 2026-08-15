@@ -32,7 +32,7 @@
             '/urdu-invoice-generator', '/qr-code-generator'
         ],
         trust: [
-            '/why-write-urdu', '/write-urdu-feedback', '/write-urdu-privacy',
+            '/why-write-urdu', '/contact', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
             '/write-urdu-search', '/write-urdu-sitemap'
         ]
     };

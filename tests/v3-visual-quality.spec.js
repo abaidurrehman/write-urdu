@@ -12,7 +12,7 @@ const routes = [
   { slug: 'documentation', path: '/write-urdu-documentation', primary: ['main'] },
   { slug: 'about', path: '/why-write-urdu', primary: ['main'] },
   { slug: 'privacy', path: '/write-urdu-privacy', primary: ['main'] },
-  { slug: 'feedback', path: '/write-urdu-feedback', primary: ['main'] },
+  { slug: 'feedback', path: '/feedback', primary: ['main'] },
   { slug: 'search', path: '/write-urdu-search', primary: ['main'] }
 ];
 

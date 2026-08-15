@@ -152,7 +152,8 @@
                         '</div>' +
                         '<div class="wu-footer-group"><h2>' + customLabel('About', 'تعارف') + '</h2>' +
                             link('/why-write-urdu', customLabel('Why Write Urdu?', 'رائٹ اردو کیوں؟')) +
-                            link('/write-urdu-feedback', label('feedback', 'Feedback')) +
+                            link('/contact', customLabel('Contact', 'رابطہ')) +
+                            link('/feedback', customLabel('Feedback', 'رائے')) +
                             link('/write-urdu-privacy', label('privacy', 'Privacy and terms')) +
                             link('/write-urdu-sitemap', customLabel('Sitemap', 'سائٹ میپ')) +
                         '</div>' +

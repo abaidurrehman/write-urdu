@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const config = require('../seo.config.js');
 const root = path.resolve(__dirname, '..');
-const urls = config.pages.filter(page => page.indexable && page.path !== '/write-urdu-search' && page.path !== '/write-urdu-feedback');
+const urls = config.pages.filter(page => page.indexable);
 const escapeXml = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 const sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', ...urls.map(page => [
   '  <url>', `    <loc>${escapeXml(config.canonical(page.path))}</loc>`, page.lastmod ? `    <lastmod>${page.lastmod}</lastmod>` : null,
