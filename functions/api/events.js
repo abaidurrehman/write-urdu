@@ -1,14 +1,19 @@
 const EVENT_NAMES = new Set([
     'page_session_started',
     'editor_engaged',
+    'tool_engaged',
     'session_summary',
     'copy_completed',
     'export_completed',
     'print_started',
     'share_clicked',
+    'share_completed',
     'tool_handoff',
     'batch_transliteration',
-    'input_mode_changed'
+    'input_mode_changed',
+    'canvas_interaction',
+    'template_used',
+    'background_image_used'
 ]);
 
 const TOOLS = new Set([
@@ -16,14 +21,32 @@ const TOOLS = new Set([
     'name_art', 'whatsapp_status', 'instagram_post', 'invoice_generator', 'qr_generator', 'content'
 ]);
 
-const FORMATS = new Set(['txt', 'png', 'pdf', 'doc', 'print', 'clipboard']);
+const FORMATS = new Set([
+    'txt', 'png', 'png_transparent', 'jpeg', 'pdf', 'doc', 'svg',
+    'print', 'clipboard', 'clipboard_image'
+]);
 const LENGTH_BUCKETS = new Set(['0', '1-20', '21-50', '51-100', '101-250', '251-500', '501-1000', '1001-2500', '2500+']);
 const ACTIVE_BUCKETS = new Set(['0-10s', '11-30s', '31-60s', '61-180s', '181-600s', '600s+']);
 const INPUT_MODES = new Set(['roman', 'direct', 'unknown']);
 const DEVICE_CLASSES = new Set(['mobile', 'tablet', 'desktop']);
 
-let schemaReady = null;
+const METRIC_COLUMNS = [
+    'visits', 'engaged_visits', 'copies', 'exports',
+    'export_pdf', 'export_png', 'export_png_transparent', 'export_jpeg', 'export_doc', 'export_txt', 'export_svg',
+    'prints', 'shares', 'handoffs', 'batch_transliterations',
+    'canvas_interactions', 'template_uses', 'background_image_uses', 'summary_count',
+    'length_0', 'length_1_20', 'length_21_50', 'length_51_100', 'length_101_250',
+    'length_251_500', 'length_501_1000', 'length_1001_2500', 'length_2500_plus',
+    'active_0_10', 'active_11_30', 'active_31_60', 'active_61_180', 'active_181_600', 'active_600_plus',
+    'input_roman', 'input_direct', 'input_unknown',
+    'device_mobile', 'device_tablet', 'device_desktop'
+];
 
+let schemaReady = null;
+let backfillReady = null;
+let maintenanceDay = null;
+
+const METRIC_DEFINITIONS = METRIC_COLUMNS.map((column) => `${column} INTEGER NOT NULL DEFAULT 0`).join(',\n        ');
 const SCHEMA_STATEMENTS = [
     `CREATE TABLE IF NOT EXISTS product_events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,11 +64,30 @@ const SCHEMA_STATEMENTS = [
         device_class TEXT,
         target_route TEXT
     )`,
+    `CREATE TABLE IF NOT EXISTS product_hourly_metrics (
+        bucket_hour TEXT NOT NULL,
+        tool TEXT NOT NULL,
+        ${METRIC_DEFINITIONS},
+        latest_event_at TEXT,
+        PRIMARY KEY (bucket_hour, tool)
+    )`,
+    `CREATE TABLE IF NOT EXISTS product_hourly_handoffs (
+        bucket_hour TEXT NOT NULL,
+        tool TEXT NOT NULL,
+        target_route TEXT NOT NULL,
+        events INTEGER NOT NULL DEFAULT 0,
+        PRIMARY KEY (bucket_hour, tool, target_route)
+    )`,
+    `CREATE TABLE IF NOT EXISTS product_telemetry_meta (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+    )`,
     'CREATE INDEX IF NOT EXISTS idx_product_events_received_at ON product_events(received_at)',
-    'CREATE INDEX IF NOT EXISTS idx_product_events_event_name ON product_events(event_name)',
-    'CREATE INDEX IF NOT EXISTS idx_product_events_tool ON product_events(tool)',
-    'CREATE INDEX IF NOT EXISTS idx_product_events_route ON product_events(route)',
-    'CREATE INDEX IF NOT EXISTS idx_product_events_session ON product_events(session_id)'
+    'DROP INDEX IF EXISTS idx_product_events_event_name',
+    'DROP INDEX IF EXISTS idx_product_events_tool',
+    'DROP INDEX IF EXISTS idx_product_events_route',
+    'DROP INDEX IF EXISTS idx_product_events_session'
 ];
 
 function json(status, payload) {
@@ -114,6 +156,121 @@ async function ensureSchema(db) {
     return schemaReady;
 }
 
+function legacyMetricSelect(toolExpression) {
+    return `
+        SELECT substr(received_at, 1, 13) || ':00:00Z' AS bucket_hour,
+               ${toolExpression} AS tool,
+               SUM(CASE WHEN event_name = 'page_session_started' THEN 1 ELSE 0 END) AS visits,
+               SUM(CASE WHEN event_name = 'editor_engaged' THEN 1 ELSE 0 END) AS engaged_visits,
+               SUM(CASE WHEN event_name = 'copy_completed' THEN 1 ELSE 0 END) AS copies,
+               SUM(CASE WHEN event_name = 'export_completed' THEN 1 ELSE 0 END) AS exports,
+               SUM(CASE WHEN event_name = 'export_completed' AND format = 'pdf' THEN 1 ELSE 0 END) AS export_pdf,
+               SUM(CASE WHEN event_name = 'export_completed' AND format = 'png' THEN 1 ELSE 0 END) AS export_png,
+               0 AS export_png_transparent,
+               0 AS export_jpeg,
+               SUM(CASE WHEN event_name = 'export_completed' AND format = 'doc' THEN 1 ELSE 0 END) AS export_doc,
+               SUM(CASE WHEN event_name = 'export_completed' AND format = 'txt' THEN 1 ELSE 0 END) AS export_txt,
+               0 AS export_svg,
+               SUM(CASE WHEN event_name = 'print_started' THEN 1 ELSE 0 END) AS prints,
+               SUM(CASE WHEN event_name = 'share_clicked' THEN 1 ELSE 0 END) AS shares,
+               SUM(CASE WHEN event_name = 'tool_handoff' THEN 1 ELSE 0 END) AS handoffs,
+               SUM(CASE WHEN event_name = 'batch_transliteration' THEN 1 ELSE 0 END) AS batch_transliterations,
+               0 AS canvas_interactions,
+               0 AS template_uses,
+               0 AS background_image_uses,
+               SUM(CASE WHEN event_name = 'session_summary' THEN 1 ELSE 0 END) AS summary_count,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '0' THEN 1 ELSE 0 END) AS length_0,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '1-20' THEN 1 ELSE 0 END) AS length_1_20,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '21-50' THEN 1 ELSE 0 END) AS length_21_50,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '51-100' THEN 1 ELSE 0 END) AS length_51_100,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '101-250' THEN 1 ELSE 0 END) AS length_101_250,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '251-500' THEN 1 ELSE 0 END) AS length_251_500,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '501-1000' THEN 1 ELSE 0 END) AS length_501_1000,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '1001-2500' THEN 1 ELSE 0 END) AS length_1001_2500,
+               SUM(CASE WHEN event_name = 'session_summary' AND length_bucket = '2500+' THEN 1 ELSE 0 END) AS length_2500_plus,
+               SUM(CASE WHEN event_name = 'session_summary' AND active_time_bucket = '0-10s' THEN 1 ELSE 0 END) AS active_0_10,
+               SUM(CASE WHEN event_name = 'session_summary' AND active_time_bucket = '11-30s' THEN 1 ELSE 0 END) AS active_11_30,
+               SUM(CASE WHEN event_name = 'session_summary' AND active_time_bucket = '31-60s' THEN 1 ELSE 0 END) AS active_31_60,
+               SUM(CASE WHEN event_name = 'session_summary' AND active_time_bucket = '61-180s' THEN 1 ELSE 0 END) AS active_61_180,
+               SUM(CASE WHEN event_name = 'session_summary' AND active_time_bucket = '181-600s' THEN 1 ELSE 0 END) AS active_181_600,
+               SUM(CASE WHEN event_name = 'session_summary' AND active_time_bucket = '600s+' THEN 1 ELSE 0 END) AS active_600_plus,
+               SUM(CASE WHEN event_name = 'session_summary' AND input_mode = 'roman' THEN 1 ELSE 0 END) AS input_roman,
+               SUM(CASE WHEN event_name = 'session_summary' AND input_mode = 'direct' THEN 1 ELSE 0 END) AS input_direct,
+               SUM(CASE WHEN event_name = 'session_summary' AND input_mode = 'unknown' THEN 1 ELSE 0 END) AS input_unknown,
+               SUM(CASE WHEN event_name = 'page_session_started' AND device_class = 'mobile' THEN 1 ELSE 0 END) AS device_mobile,
+               SUM(CASE WHEN event_name = 'page_session_started' AND device_class = 'tablet' THEN 1 ELSE 0 END) AS device_tablet,
+               SUM(CASE WHEN event_name = 'page_session_started' AND device_class = 'desktop' THEN 1 ELSE 0 END) AS device_desktop,
+               MAX(received_at) AS latest_event_at
+        FROM product_events
+        WHERE received_at < strftime('%Y-%m-%dT%H:00:00Z', 'now')
+        GROUP BY bucket_hour${toolExpression === "'all'" ? '' : ', tool'}
+    `;
+}
+
+function replaceFromSelect(selectSql) {
+    const columns = ['bucket_hour', 'tool'].concat(METRIC_COLUMNS).concat(['latest_event_at']);
+    const assignments = METRIC_COLUMNS.map((column) => `${column} = excluded.${column}`).concat(['latest_event_at = excluded.latest_event_at']);
+    return `INSERT INTO product_hourly_metrics (${columns.join(', ')}) ${selectSql}
+            ON CONFLICT(bucket_hour, tool) DO UPDATE SET ${assignments.join(', ')}`;
+}
+
+async function ensureBackfill(db) {
+    if (!backfillReady) {
+        backfillReady = (async () => {
+            const marker = await db.prepare("SELECT value FROM product_telemetry_meta WHERE key = 'rollup_backfill_v1'").first();
+            if (marker && marker.value === 'done') return;
+            const perTool = replaceFromSelect(legacyMetricSelect('tool'));
+            const global = replaceFromSelect(legacyMetricSelect("'all'"));
+            const handoffsByTool = `
+                INSERT INTO product_hourly_handoffs (bucket_hour, tool, target_route, events)
+                SELECT substr(received_at, 1, 13) || ':00:00Z', tool, target_route, COUNT(*)
+                FROM product_events
+                WHERE event_name = 'tool_handoff' AND target_route IS NOT NULL
+                  AND received_at < strftime('%Y-%m-%dT%H:00:00Z', 'now')
+                GROUP BY substr(received_at, 1, 13), tool, target_route
+                ON CONFLICT(bucket_hour, tool, target_route) DO UPDATE SET events = excluded.events`;
+            const handoffsGlobal = `
+                INSERT INTO product_hourly_handoffs (bucket_hour, tool, target_route, events)
+                SELECT substr(received_at, 1, 13) || ':00:00Z', 'all', target_route, COUNT(*)
+                FROM product_events
+                WHERE event_name = 'tool_handoff' AND target_route IS NOT NULL
+                  AND received_at < strftime('%Y-%m-%dT%H:00:00Z', 'now')
+                GROUP BY substr(received_at, 1, 13), target_route
+                ON CONFLICT(bucket_hour, tool, target_route) DO UPDATE SET events = excluded.events`;
+            await db.batch([
+                db.prepare(perTool),
+                db.prepare(global),
+                db.prepare(handoffsByTool),
+                db.prepare(handoffsGlobal),
+                db.prepare(`INSERT INTO product_telemetry_meta (key, value, updated_at)
+                            VALUES ('rollup_backfill_v1', 'done', strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+                            ON CONFLICT(key) DO UPDATE SET value = 'done', updated_at = excluded.updated_at`)
+            ]);
+        })().catch((error) => {
+            backfillReady = null;
+            throw error;
+        });
+    }
+    return backfillReady;
+}
+
+async function runMaintenance(db) {
+    const today = new Date().toISOString().slice(0, 10);
+    if (maintenanceDay === today) return;
+    const marker = await db.prepare("SELECT value FROM product_telemetry_meta WHERE key = 'raw_cleanup_day'").first();
+    if (marker && marker.value === today) {
+        maintenanceDay = today;
+        return;
+    }
+    await db.batch([
+        db.prepare("DELETE FROM product_events WHERE received_at < strftime('%Y-%m-%dT%H:%M:%fZ','now','-7 days')"),
+        db.prepare(`INSERT INTO product_telemetry_meta (key, value, updated_at)
+                    VALUES ('raw_cleanup_day', ?1, strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+                    ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at`).bind(today)
+    ]);
+    maintenanceDay = today;
+}
+
 function originAllowed(request) {
     const origin = request.headers.get('origin');
     if (!origin) return true;
@@ -123,6 +280,94 @@ function originAllowed(request) {
     } catch (error) {
         return false;
     }
+}
+
+function hourBucket(date) {
+    return date.toISOString().slice(0, 13) + ':00:00Z';
+}
+
+function emptyDelta(tool, now) {
+    const delta = { tool, latest_event_at: now };
+    METRIC_COLUMNS.forEach((column) => { delta[column] = 0; });
+    return delta;
+}
+
+function incrementBucket(delta, prefix, value, mapping) {
+    if (!value || !mapping[value]) return;
+    delta[prefix + mapping[value]] += 1;
+}
+
+function applyEvent(delta, event) {
+    if (event.eventName === 'page_session_started') {
+        delta.visits += 1;
+        incrementBucket(delta, 'device_', event.deviceClass, { mobile: 'mobile', tablet: 'tablet', desktop: 'desktop' });
+    }
+    if (event.eventName === 'editor_engaged' || event.eventName === 'tool_engaged') delta.engaged_visits += 1;
+    if (event.eventName === 'copy_completed') delta.copies += 1;
+    if (event.eventName === 'export_completed') {
+        delta.exports += 1;
+        const exportColumns = {
+            pdf: 'export_pdf', png: 'export_png', png_transparent: 'export_png_transparent', jpeg: 'export_jpeg',
+            doc: 'export_doc', txt: 'export_txt', svg: 'export_svg'
+        };
+        if (exportColumns[event.format]) delta[exportColumns[event.format]] += 1;
+    }
+    if (event.eventName === 'print_started') delta.prints += 1;
+    if (event.eventName === 'share_clicked' || event.eventName === 'share_completed') delta.shares += 1;
+    if (event.eventName === 'tool_handoff') delta.handoffs += 1;
+    if (event.eventName === 'batch_transliteration') delta.batch_transliterations += 1;
+    if (event.eventName === 'canvas_interaction') delta.canvas_interactions += 1;
+    if (event.eventName === 'template_used') delta.template_uses += 1;
+    if (event.eventName === 'background_image_used') delta.background_image_uses += 1;
+    if (event.eventName === 'session_summary') {
+        delta.summary_count += 1;
+        incrementBucket(delta, 'length_', event.lengthBucket, {
+            '0': '0', '1-20': '1_20', '21-50': '21_50', '51-100': '51_100', '101-250': '101_250',
+            '251-500': '251_500', '501-1000': '501_1000', '1001-2500': '1001_2500', '2500+': '2500_plus'
+        });
+        incrementBucket(delta, 'active_', event.activeTimeBucket, {
+            '0-10s': '0_10', '11-30s': '11_30', '31-60s': '31_60', '61-180s': '61_180', '181-600s': '181_600', '600s+': '600_plus'
+        });
+        incrementBucket(delta, 'input_', event.inputMode, { roman: 'roman', direct: 'direct', unknown: 'unknown' });
+    }
+}
+
+function aggregateEvents(events, now) {
+    const byTool = new Map();
+    const handoffs = new Map();
+    const getDelta = (tool) => {
+        if (!byTool.has(tool)) byTool.set(tool, emptyDelta(tool, now));
+        return byTool.get(tool);
+    };
+
+    events.forEach((event) => {
+        applyEvent(getDelta(event.tool), event);
+        applyEvent(getDelta('all'), event);
+        if (event.eventName === 'tool_handoff' && event.targetRoute) {
+            [event.tool, 'all'].forEach((tool) => {
+                const key = tool + '|' + event.targetRoute;
+                handoffs.set(key, { tool, targetRoute: event.targetRoute, events: (handoffs.get(key)?.events || 0) + 1 });
+            });
+        }
+    });
+    return { byTool: Array.from(byTool.values()), handoffs: Array.from(handoffs.values()) };
+}
+
+function metricUpsert(db, bucket, delta) {
+    const columns = ['bucket_hour', 'tool'].concat(METRIC_COLUMNS).concat(['latest_event_at']);
+    const placeholders = columns.map(() => '?').join(', ');
+    const assignments = METRIC_COLUMNS.map((column) => `${column} = ${column} + excluded.${column}`)
+        .concat(['latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)']);
+    const values = [bucket, delta.tool].concat(METRIC_COLUMNS.map((column) => delta[column])).concat([delta.latest_event_at]);
+    return db.prepare(`INSERT INTO product_hourly_metrics (${columns.join(', ')}) VALUES (${placeholders})
+                       ON CONFLICT(bucket_hour, tool) DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
+}
+
+function handoffUpsert(db, bucket, item) {
+    return db.prepare(`INSERT INTO product_hourly_handoffs (bucket_hour, tool, target_route, events)
+                       VALUES (?1, ?2, ?3, ?4)
+                       ON CONFLICT(bucket_hour, tool, target_route) DO UPDATE SET events = events + excluded.events`)
+        .bind(bucket, item.tool, item.targetRoute, item.events);
 }
 
 export async function onRequestPost(context) {
@@ -147,31 +392,20 @@ export async function onRequestPost(context) {
     if (events.some((event) => !event)) return json(400, { error: 'invalid_event' });
 
     try {
-        await ensureSchema(env.METRICS_DB);
-        const statements = events.map((event) => env.METRICS_DB.prepare(`
-            INSERT OR IGNORE INTO product_events (
-                event_id, session_id, route, tool, event_name, format,
-                length_bucket, active_time_bucket, input_mode, success,
-                device_class, target_route
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `).bind(
-            event.eventId,
-            event.sessionId,
-            event.route,
-            event.tool,
-            event.eventName,
-            event.format,
-            event.lengthBucket,
-            event.activeTimeBucket,
-            event.inputMode,
-            event.success,
-            event.deviceClass,
-            event.targetRoute
-        ));
-        await env.METRICS_DB.batch(statements);
-        return json(202, { accepted: events.length });
+        const db = env.METRICS_DB;
+        await ensureSchema(db);
+        await ensureBackfill(db);
+        await runMaintenance(db);
+
+        const now = new Date();
+        const bucket = hourBucket(now);
+        const aggregated = aggregateEvents(events, now.toISOString());
+        const statements = aggregated.byTool.map((delta) => metricUpsert(db, bucket, delta))
+            .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)));
+        await db.batch(statements);
+        return json(202, { accepted: events.length, rollup_rows: statements.length });
     } catch (error) {
-        console.error('product telemetry insert failed', error);
+        console.error('product telemetry rollup failed', error);
         return json(503, { error: 'metrics_write_failed' });
     }
 }
