@@ -56,6 +56,7 @@
         '[data-wu-ad-boundary="post-workspace"]',
         '.name-art-workspace',
         '.social-maker-workspace',
+        '.invoice-workspace',
         '[data-invoice-generator]',
         '[data-stylish-generator]',
         '[data-template-library]',
