@@ -1,7 +1,21 @@
 const config = require('../seo.config.js');
 
 const canonicalOrigin = (process.env.CANONICAL_ORIGIN || config.SITE_ORIGIN).replace(/\/$/, '');
-const alternateOrigin = (process.env.ALTERNATE_ORIGIN || 'https://write-urdu.com').replace(/\/$/, '');
+
+function counterpartOrigin(origin) {
+  const url = new URL(origin);
+  url.protocol = 'https:';
+  url.username = '';
+  url.password = '';
+  url.port = '';
+  url.pathname = '/';
+  url.search = '';
+  url.hash = '';
+  url.hostname = url.hostname.startsWith('www.') ? url.hostname.slice(4) : `www.${url.hostname}`;
+  return url.origin;
+}
+
+const alternateOrigin = (process.env.ALTERNATE_ORIGIN || counterpartOrigin(canonicalOrigin)).replace(/\/$/, '');
 const pagesDevOrigin = (process.env.PAGES_DEV_ORIGIN || '').replace(/\/$/, '');
 const timeoutMs = Number(process.env.CANONICAL_AUDIT_TIMEOUT_MS || 10000);
 const requestedPaths = (process.env.CANONICAL_AUDIT_PATHS || '')
@@ -13,6 +27,8 @@ const auditPaths = requestedPaths.length ? requestedPaths : indexablePaths;
 
 const failures = [];
 const successes = [];
+const canonicalHost = new URL(canonicalOrigin).hostname;
+const alternateHost = new URL(alternateOrigin).hostname;
 
 function permanent(status) {
   return status === 301 || status === 308;
@@ -28,7 +44,7 @@ async function request(url) {
     return await fetch(url, {
       redirect: 'manual',
       signal: withTimeout(),
-      headers: { 'user-agent': 'WriteUrduCanonicalAudit/1.1' }
+      headers: { 'user-agent': 'WriteUrduCanonicalAudit/1.2' }
     });
   } catch (error) {
     failures.push(`${url}: request failed (${error.message})`);
@@ -107,12 +123,13 @@ async function main() {
     failures.push(`CANONICAL_ORIGIN ${canonicalOrigin} disagrees with seo.config.js ${config.SITE_ORIGIN}`);
   }
 
-  if (canonicalOrigin !== 'https://www.write-urdu.com') {
-    failures.push(`canonical host contract changed unexpectedly: ${canonicalOrigin}`);
+  if (canonicalHost === alternateHost) {
+    failures.push(`ALTERNATE_ORIGIN must use a different hostname from ${canonicalOrigin}`);
   }
 
-  if (new URL(canonicalOrigin).hostname === new URL(alternateOrigin).hostname) {
-    failures.push(`ALTERNATE_ORIGIN must use a different hostname from ${canonicalOrigin}`);
+  const expectedAlternate = counterpartOrigin(canonicalOrigin);
+  if (!process.env.ALTERNATE_ORIGIN && alternateOrigin !== expectedAlternate) {
+    failures.push(`derived alternate origin ${alternateOrigin} does not match expected counterpart ${expectedAlternate}`);
   }
 
   const knownPaths = new Set(config.pages.map(page => page.path));
@@ -126,18 +143,18 @@ async function main() {
     const queryPath = `${pathname}${pathname.includes('?') ? '&' : '?'}canonical_audit=1`;
     const alternateUrl = new URL(queryPath, `${alternateOrigin}/`).href;
     const canonicalUrl = new URL(queryPath, `${canonicalOrigin}/`).href;
-    await expectRedirect(alternateUrl, canonicalUrl, 'apex -> www');
+    await expectRedirect(alternateUrl, canonicalUrl, `${alternateHost} -> ${canonicalHost}`);
   }
 
   await expectRedirect(
-    'http://write-urdu.com/?canonical_audit=1',
+    `http://${alternateHost}/?canonical_audit=1`,
     `${canonicalOrigin}/?canonical_audit=1`,
-    'HTTP apex -> HTTPS www'
+    `HTTP ${alternateHost} -> HTTPS ${canonicalHost}`
   );
   await expectRedirect(
-    'http://www.write-urdu.com/?canonical_audit=1',
+    `http://${canonicalHost}/?canonical_audit=1`,
     `${canonicalOrigin}/?canonical_audit=1`,
-    'HTTP www -> HTTPS www'
+    `HTTP ${canonicalHost} -> HTTPS ${canonicalHost}`
   );
   await expectRedirect(
     `${canonicalOrigin}/index.html`,
@@ -159,7 +176,7 @@ async function main() {
   await expectRedirect(
     `${alternateOrigin}${missingPath}?canonical_audit=1`,
     `${canonicalOrigin}${missingPath}?canonical_audit=1`,
-    'missing apex path -> same missing www path'
+    `missing ${alternateHost} path -> same missing ${canonicalHost} path`
   );
   await expectStatus(
     `${canonicalOrigin}${missingPath}`,
@@ -171,7 +188,7 @@ async function main() {
     await expectRedirect(
       `${pagesDevOrigin}/urdu-editor?canonical_audit=1`,
       `${canonicalOrigin}/urdu-editor?canonical_audit=1`,
-      'pages.dev -> custom domain'
+      'pages.dev -> canonical custom domain'
     );
   } else {
     console.warn('CANONICAL AUDIT: PAGES_DEV_ORIGIN is not set; production pages.dev redirect was not tested.');
