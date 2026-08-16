@@ -2,7 +2,7 @@
 
 > Write Urdu is an independently maintained browser-based Urdu writing platform for Roman Urdu transliteration, direct Urdu typing, document formatting and practical creative tools. No account or installation is required for the core writing experience.
 
-Canonical site: https://www.write-urdu.com/
+Canonical site: https://write-urdu.com/
 
 Important facts:
 
@@ -20,39 +20,39 @@ Important facts:
 
 ## Start writing
 
-- [English to Urdu typing / Urdu typing online](https://www.write-urdu.com/): Type Roman Urdu with English letters, press Space to convert words into Urdu script, review suggestions, copy text and continue into other writing tools. This is transliteration, not English-language translation.
-- [Urdu Rich Text Editor](https://www.write-urdu.com/urdu-editor): Format Urdu with headings, fonts, colours, lists and alignment, then export a document.
-- [Online Urdu Keyboard](https://www.write-urdu.com/urdu-keyboard): Type Urdu characters directly with an on-screen or physical keyboard.
+- [English to Urdu typing / Urdu typing online](https://write-urdu.com/): Type Roman Urdu with English letters, press Space to convert words into Urdu script, review suggestions, copy text and continue into other writing tools. This is transliteration, not English-language translation.
+- [Urdu Rich Text Editor](https://write-urdu.com/urdu-editor): Format Urdu with headings, fonts, colours, lists and alignment, then export a document.
+- [Online Urdu Keyboard](https://write-urdu.com/urdu-keyboard): Type Urdu characters directly with an on-screen or physical keyboard.
 
 ## Learn Urdu writing
 
-- [Roman Urdu transliteration guide](https://www.write-urdu.com/roman-urdu-transliteration): Explains how Roman Urdu becomes Urdu script, why spellings can be ambiguous and why transliteration is not translation.
-- [Urdu alphabet guide](https://www.write-urdu.com/urdu-alphabet): Common standalone Urdu characters, names, right-to-left direction and joining behavior.
-- [Complete Write Urdu documentation](https://www.write-urdu.com/write-urdu-documentation): Editor modes, transliteration, direct input, formatting, drafts, exports and related creation tools.
-- [Write Urdu FAQ](https://www.write-urdu.com/urdu-faq): Product, privacy, export, transliteration and Urdu-script questions.
-- [Urdu fonts: Nastaliq vs Naskh](https://www.write-urdu.com/urdu-fonts-nastaliq-vs-naskh): Practical comparison of Urdu font styles for documents, interfaces and designs.
-- [How to write Urdu on a photo](https://www.write-urdu.com/how-to-write-urdu-on-photo): Practical steps for adding Urdu text, poetry or quotes to a local photo, choosing readable Urdu fonts and exporting the image in Card Studio.
-- [Roman Urdu typing tutorial](https://www.write-urdu.com/english-urdu-typing-tutorial): Step-by-step typing, suggestion and formatting guidance.
+- [Roman Urdu transliteration guide](https://write-urdu.com/roman-urdu-transliteration): Explains how Roman Urdu becomes Urdu script, why spellings can be ambiguous and why transliteration is not translation.
+- [Urdu alphabet guide](https://write-urdu.com/urdu-alphabet): Common standalone Urdu characters, names, right-to-left direction and joining behavior.
+- [Complete Write Urdu documentation](https://write-urdu.com/write-urdu-documentation): Editor modes, transliteration, direct input, formatting, drafts, exports and related creation tools.
+- [Write Urdu FAQ](https://write-urdu.com/urdu-faq): Product, privacy, export, transliteration and Urdu-script questions.
+- [Urdu fonts: Nastaliq vs Naskh](https://write-urdu.com/urdu-fonts-nastaliq-vs-naskh): Practical comparison of Urdu font styles for documents, interfaces and designs.
+- [How to write Urdu on a photo](https://write-urdu.com/how-to-write-urdu-on-photo): Practical steps for adding Urdu text, poetry or quotes to a local photo, choosing readable Urdu fonts and exporting the image in Card Studio.
+- [Roman Urdu typing tutorial](https://write-urdu.com/english-urdu-typing-tutorial): Step-by-step typing, suggestion and formatting guidance.
 
 ## Create and export
 
-- [Urdu Card Studio](https://www.write-urdu.com/urdu-card-studio): Write Urdu text or poetry on a photo, create quote/post/announcement images with Urdu fonts and templates, and export the finished PNG.
-- [Stylish Urdu Text Generator](https://www.write-urdu.com/stylish-urdu-text-generator): Generate curated copyable Urdu name/text styles, filter by category and intensity, and hand wording into image-based Name Art when exact typography matters.
-- [Urdu Name Art Maker](https://www.write-urdu.com/urdu-name-art-maker): Render your own Urdu name as a profile/DP image or transparent name layer using Urdu-safe fonts, 24 original templates, local backgrounds and browser-side PNG export.
-- [Urdu Template Library](https://www.write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.
-- [Urdu and English Invoice Generator](https://www.write-urdu.com/urdu-invoice-generator): Create Urdu, English or bilingual invoices with automatic totals and local export.
-- [Static QR Code Generator](https://www.write-urdu.com/qr-code-generator): Create static QR codes for Urdu text, links, Wi-Fi, WhatsApp and contacts.
+- [Urdu Card Studio](https://write-urdu.com/urdu-card-studio): Write Urdu text or poetry on a photo, create quote/post/announcement images with Urdu fonts and templates, and export the finished PNG.
+- [Stylish Urdu Text Generator](https://write-urdu.com/stylish-urdu-text-generator): Generate curated copyable Urdu name/text styles, filter by category and intensity, and hand wording into image-based Name Art when exact typography matters.
+- [Urdu Name Art Maker](https://write-urdu.com/urdu-name-art-maker): Render your own Urdu name as a profile/DP image or transparent name layer using Urdu-safe fonts, 24 original templates, local backgrounds and browser-side PNG export.
+- [Urdu Template Library](https://write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.
+- [Urdu and English Invoice Generator](https://write-urdu.com/urdu-invoice-generator): Create Urdu, English or bilingual invoices with automatic totals and local export.
+- [Static QR Code Generator](https://write-urdu.com/qr-code-generator): Create static QR codes for Urdu text, links, Wi-Fi, WhatsApp and contacts.
 
 ## Trust, policies and corrections
 
-- [About Write Urdu](https://www.write-urdu.com/why-write-urdu): Product purpose, who the project helps, known limitations, maintenance approach and editorial/correction policy.
-- [Contact Write Urdu](https://www.write-urdu.com/contact): Direct route for product and technical questions, transliteration corrections, privacy requests, accessibility issues and general enquiries.
-- [Feedback and improvements](https://www.write-urdu.com/feedback): Product-feedback channel for ideas, workflow friction, bugs and corrections; identity and reply email are optional.
-- [Privacy policy](https://www.write-urdu.com/write-urdu-privacy): Local storage, uploaded images, transliteration, analytics, ads, QR content and contact/feedback handling.
-- [Security contact](https://www.write-urdu.com/.well-known/security.txt): Standard security-reporting contact and canonical policy file.
-- [Human-readable sitemap](https://www.write-urdu.com/write-urdu-sitemap): Index of public editors, tools, guides and policy pages.
+- [About Write Urdu](https://write-urdu.com/why-write-urdu): Product purpose, who the project helps, known limitations, maintenance approach and editorial/correction policy.
+- [Contact Write Urdu](https://write-urdu.com/contact): Direct route for product and technical questions, transliteration corrections, privacy requests, accessibility issues and general enquiries.
+- [Feedback and improvements](https://write-urdu.com/feedback): Product-feedback channel for ideas, workflow friction, bugs and corrections; identity and reply email are optional.
+- [Privacy policy](https://write-urdu.com/write-urdu-privacy): Local storage, uploaded images, transliteration, analytics, ads, QR content and contact/feedback handling.
+- [Security contact](https://write-urdu.com/.well-known/security.txt): Standard security-reporting contact and canonical policy file.
+- [Human-readable sitemap](https://write-urdu.com/write-urdu-sitemap): Index of public editors, tools, guides and policy pages.
 
 ## Optional
 
-- [Urdu WhatsApp Status Maker](https://www.write-urdu.com/urdu-whatsapp-status-maker): Create downloadable Urdu status images.
-- [Urdu Instagram Post Maker](https://www.write-urdu.com/urdu-instagram-post-maker): Create Urdu social images in common Instagram dimensions.
+- [Urdu WhatsApp Status Maker](https://write-urdu.com/urdu-whatsapp-status-maker): Create downloadable Urdu status images.
+- [Urdu Instagram Post Maker](https://write-urdu.com/urdu-instagram-post-maker): Create Urdu social images in common Instagram dimensions.

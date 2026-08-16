@@ -64,18 +64,18 @@ assert.doesNotMatch(seo, /SearchAction|query-input|search_term_string/, 'retired
 
 const llms = read('llms.txt');
 assert.match(llms, /^# Write Urdu\n\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
-assert.match(llms, /Canonical site: https:\/\/www\.write-urdu\.com\//, 'llms.txt canonical site statement is missing');
+assert.match(llms, /Canonical site: https:\/\/write-urdu\.com\//, 'llms.txt canonical site statement is missing');
 assert.match(llms, /transliteration, not translation/i, 'llms.txt must preserve the central transliteration distinction');
 assert.match(llms, /Last reviewed: 2026-08-15/, 'llms.txt review date is missing');
 assert.match(llms, /## Start writing/, 'llms.txt must prioritize core writing workflows');
 assert.match(llms, /## Trust, policies and corrections/, 'llms.txt trust resource section is missing');
-assert.match(llms, /https:\/\/www\.write-urdu\.com\/why-write-urdu/, 'llms.txt must link to About');
-assert.match(llms, /https:\/\/www\.write-urdu\.com\/contact/, 'llms.txt must link to Contact');
-assert.match(llms, /https:\/\/www\.write-urdu\.com\/feedback/, 'llms.txt must link to the public product-feedback channel');
-assert.match(llms, /https:\/\/www\.write-urdu\.com\/write-urdu-privacy/, 'llms.txt must link to Privacy');
-assert.match(llms, /https:\/\/www\.write-urdu\.com\/\.well-known\/security\.txt/, 'llms.txt must link to the standard security contact file');
+assert.match(llms, /https:\/\/write-urdu\.com\/why-write-urdu/, 'llms.txt must link to About');
+assert.match(llms, /https:\/\/write-urdu\.com\/contact/, 'llms.txt must link to Contact');
+assert.match(llms, /https:\/\/write-urdu\.com\/feedback/, 'llms.txt must link to the public product-feedback channel');
+assert.match(llms, /https:\/\/write-urdu\.com\/write-urdu-privacy/, 'llms.txt must link to Privacy');
+assert.match(llms, /https:\/\/write-urdu\.com\/\.well-known\/security\.txt/, 'llms.txt must link to the standard security contact file');
 assert.match(llms, /## Optional/, 'llms.txt should keep secondary resources skippable');
-assert.doesNotMatch(llms, /https:\/\/www\.write-urdu\.com\/[\w-]+\.html/, 'llms.txt must use canonical extensionless routes');
+assert.doesNotMatch(llms, /https:\/\/write-urdu\.com\/[\w-]+\.html/, 'llms.txt must use canonical extensionless routes');
 assert.doesNotMatch(llms, /being reviewed|internal|dogfood|guarantee|guaranteed ranking|guaranteed citation/i, 'llms.txt must remain public-facing and avoid internal or outcome-guarantee language');
 
 const robots = read('robots.txt');
@@ -99,12 +99,12 @@ const revisionDates = {
 for (const [route, revisionDate] of Object.entries(revisionDates)) {
   const page = config.pages.find(candidate => candidate.path === route);
   assert.ok(page && page.lastmod === revisionDate, `${route} must carry its current material revision date in config`);
-  const escaped = route === '/' ? 'https://www.write-urdu.com/' : `https://www.write-urdu.com${route}`;
+  const escaped = route === '/' ? 'https://write-urdu.com/' : `https://write-urdu.com${route}`;
   const block = sitemap.match(new RegExp(`<url>[\\s\\S]*?<loc>${escaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/loc>[\\s\\S]*?<\\/url>`));
   assert.ok(block, `sitemap is missing ${route}`);
   assert.match(block[0], new RegExp(`<lastmod>${revisionDate}<\\/lastmod>`), `${route} sitemap lastmod is stale`);
 }
-assert.doesNotMatch(sitemap, /<loc>https:\/\/www\.write-urdu\.com\/feedback<\/loc>/, 'noindex Feedback must stay out of the XML sitemap');
+assert.doesNotMatch(sitemap, /<loc>https:\/\/write-urdu\.com\/feedback<\/loc>/, 'noindex Feedback must stay out of the XML sitemap');
 
 const about = read('why-write-urdu.html');
 assert.match(about, /Who maintains Write Urdu/, 'About page must identify the project maintainer model');
@@ -113,7 +113,7 @@ assert.match(about, /admin@write-urdu\.com/, 'About page must expose the public 
 
 const security = read('.well-known/security.txt');
 assert.match(security, /^Contact: mailto:admin@write-urdu\.com$/m, 'security.txt must use the public security contact');
-assert.match(security, /^Canonical: https:\/\/www\.write-urdu\.com\/\.well-known\/security\.txt$/m, 'security.txt canonical URL is missing');
+assert.match(security, /^Canonical: https:\/\/write-urdu\.com\/\.well-known\/security\.txt$/m, 'security.txt canonical URL is missing');
 assert.match(security, /^Expires: 2027-08-07T00:00:00Z$/m, 'security.txt must carry a future expiry date');
 
 const ads = read('ads.txt');

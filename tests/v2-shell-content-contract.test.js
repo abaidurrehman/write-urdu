@@ -35,14 +35,14 @@ assert.match(shellRuntime, /Roman Urdu guide/, 'v2 navigation must expose the Ro
 assert.match(documentation, /class="documentation-page v2-content-page"/, 'Documentation must use the shared v2 content page contract');
 assert.match(documentation, /css\/v2-content\.css/, 'Documentation must load the v2 content system');
 assert.match(documentation, /class="v2-page-nav"/, 'Documentation must expose in-page task navigation');
-assert.match(documentation, /https:\/\/www\.write-urdu\.com\/write-urdu-documentation/, 'Documentation canonical changed unexpectedly');
+assert.match(documentation, /https:\/\/write-urdu\.com\/write-urdu-documentation/, 'Documentation canonical changed unexpectedly');
 assert.match(documentation, /id="docs-title"/, 'Documentation H1 contract changed');
 assert.match(documentation, /Roman Urdu/, 'Documentation must retain Roman Urdu guidance');
 
 assert.match(faq, /class="faq-page v2-content-page"/, 'FAQ must use the shared v2 content page contract');
 assert.match(faq, /css\/v2-content\.css/, 'FAQ must load the v2 content system');
 assert.match(faq, /class="v2-page-nav"/, 'FAQ must expose category navigation');
-assert.match(faq, /https:\/\/www\.write-urdu\.com\/urdu-faq/, 'FAQ canonical changed unexpectedly');
+assert.match(faq, /https:\/\/write-urdu\.com\/urdu-faq/, 'FAQ canonical changed unexpectedly');
 assert.match(faq, /id="faq-title"/, 'FAQ H1 contract changed');
 assert.ok((faq.match(/<details class="faq-item"/g) || []).length >= 8, 'FAQ should expose all core answers as accessible details');
 assert.doesNotMatch(faq, /UA-80884320-1|google-analytics\.com\/analytics\.js/, 'FAQ must not retain obsolete Universal Analytics');

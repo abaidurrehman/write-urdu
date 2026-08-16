@@ -16,7 +16,7 @@ assert(/24 original templates/i.test(page.searchDescription), 'search descriptio
 assert.strictEqual(page.lastmod, '2026-08-13');
 
 assert(html.includes('<title>Urdu Name Art Maker – Urdu Name Image &amp; DP Maker | WriteUrdu</title>'), 'initial HTML title must expose the escaped acquisition title');
-assert(html.includes('rel="canonical" href="https://www.write-urdu.com/urdu-name-art-maker"'), 'Name Art must remain self-canonical');
+assert(html.includes('rel="canonical" href="https://write-urdu.com/urdu-name-art-maker"'), 'Name Art must remain self-canonical');
 assert(html.includes('<h1>Urdu Name Art Studio</h1>'), 'product H1 must remain stable');
 assert(/Urdu name image or DP/i.test(html), 'source-visible guidance should cover name-image/DP intent');
 assert(/24 original templates in 12 packs/i.test(html), 'source-visible guidance should expose template depth');

@@ -5,9 +5,9 @@ This checklist covers account, crawler, structured-data and measurement actions 
 ## Cloudflare Pages
 
 1. Confirm root `_redirects`, `_headers`, `robots.txt`, `sitemap.xml` and `llms.txt` are included in the Pages artifact.
-2. Configure the zone-level canonical rule so all `write-urdu.com` apex requests (HTTP and HTTPS) permanently redirect directly to `https://www.write-urdu.com` with the same path and query string.
-3. Keep HTTP → HTTPS enabled for `www.write-urdu.com`.
-4. Redirect the production `<project>.pages.dev` hostname to `https://www.write-urdu.com` with path/query preservation.
+2. Configure the zone-level canonical rule so all `write-urdu.com` apex requests (HTTP and HTTPS) permanently redirect directly to `https://write-urdu.com` with the same path and query string.
+3. Keep HTTP → HTTPS enabled for `write-urdu.com`.
+4. Redirect the production `<project>.pages.dev` hostname to `https://write-urdu.com` with path/query preservation.
 5. Test a deep `.html` URL and trailing-slash URL. Each should reach the `www` extensionless URL without avoidable redirect chains.
 6. Check CDN/WAF rules do not block Googlebot, OAI-SearchBot, PerplexityBot, Bingbot, ClaudeBot or Claude-SearchBot.
 7. Confirm the homepage, Roman Urdu guide, Urdu Alphabet, Documentation, About and Privacy pages return successful responses on canonical `www` without a challenge, login or interstitial.
@@ -15,7 +15,7 @@ This checklist covers account, crawler, structured-data and measurement actions 
 ## Search engines
 
 1. Keep a Google Search Console **Domain property** for `write-urdu.com` so both `www` and apex history can be compared.
-2. Submit `https://www.write-urdu.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+2. Submit `https://write-urdu.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 3. Inspect canonical `www` versions of `/`, `/urdu-keyboard`, `/urdu-editor`, `/roman-urdu-transliteration`, `/urdu-alphabet`, `/write-urdu-documentation` and `/why-write-urdu` after deployment.
 4. Confirm Google's selected canonical is the `www` URL.
 5. Request recrawls for materially changed high-value canonical pages.
@@ -27,14 +27,14 @@ This checklist covers account, crawler, structured-data and measurement actions 
 1. Run Google's Rich Results Test on canonical `www` versions of `/`, `/urdu-keyboard`, `/urdu-editor`, `/write-urdu-documentation`, `/roman-urdu-transliteration` and `/urdu-alphabet`.
 2. Run Schema.org Validator on the same pages.
 3. Confirm the homepage graph contains one canonical `WebSite`, one `Organization` publisher and one `WebApplication` main entity.
-4. Confirm `WebSite.name` is `Write Urdu` and its URL is `https://www.write-urdu.com/`.
+4. Confirm `WebSite.name` is `Write Urdu` and its URL is `https://write-urdu.com/`.
 5. Confirm Organization URLs, logo URLs, breadcrumbs and page entity IDs use the canonical `www` origin.
 6. On guide pages, confirm `Article` dates match visible/repository revision dates and no unsupported individual byline is claimed.
 7. FAQ structured data must match visible questions and answers.
 
 ## LLM and crawler discovery
 
-1. Open `https://www.write-urdu.com/llms.txt` and confirm it is publicly accessible and contains canonical `www` links.
+1. Open `https://write-urdu.com/llms.txt` and confirm it is publicly accessible and contains canonical `www` links.
 2. Verify the file describes transliteration accurately and links to About, Privacy and Feedback.
 3. Confirm `OAI-SearchBot` is allowed in `robots.txt` and `GPTBot` remains deliberately blocked unless product policy changes.
 4. Confirm Cloudflare bot/WAF rules do not contradict `robots.txt`.

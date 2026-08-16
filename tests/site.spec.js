@@ -801,7 +801,7 @@ test('QR generator validates types and downloads PNG and SVG locally', async ({ 
   await page.locator('[data-qr-field="url"]').fill('not a url');
   await expect(page.locator('[data-qr-download-png]')).toBeDisabled();
   await expect(page.locator('[data-qr-health]')).toContainText('complete website address');
-  await page.locator('[data-qr-field="url"]').fill('https://www.write-urdu.com/');
+  await page.locator('[data-qr-field="url"]').fill('https://write-urdu.com/');
   await expect(page.locator('[data-qr-download-png]')).toBeEnabled();
   const png = await Promise.all([page.waitForEvent('download'), page.locator('[data-qr-download-png]').click()]);
   expect(png[0].suggestedFilename()).toMatch(/\.png$/i);

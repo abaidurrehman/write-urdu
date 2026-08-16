@@ -45,8 +45,8 @@ assert.match(cardPage, /<main class="card-studio-shell" data-card-studio>/, 'Car
 assert.match(cardPage, /<section class="seo-content"/, 'Card Studio supporting content must remain after the active workspace');
 assert.doesNotMatch(cardPage, /<ins[^>]+adsbygoogle/i, 'Card Studio must not gain a manual ad inside its markup');
 
-assert.match(sitemap, /<loc>https:\/\/www\.write-urdu\.com\/how-to-write-urdu-on-photo<\/loc>/, 'Guide is missing from sitemap');
-assert.match(sitemap, /<loc>https:\/\/www\.write-urdu\.com\/urdu-card-studio<\/loc>[\s\S]*?<lastmod>2026-08-12<\/lastmod>/, 'Card Studio sitemap freshness was not updated');
+assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/how-to-write-urdu-on-photo<\/loc>/, 'Guide is missing from sitemap');
+assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/urdu-card-studio<\/loc>[\s\S]*?<lastmod>2026-08-12<\/lastmod>/, 'Card Studio sitemap freshness was not updated');
 assert.match(redirects, /\/how-to-write-urdu-on-photo\/ \/how-to-write-urdu-on-photo 301/, 'Guide trailing-slash normalization is missing');
 assert.match(llms, /How to write Urdu on a photo/i, 'Guide is missing from llms.txt');
 assert.match(llms, /Urdu Card Studio[\s\S]*text or poetry on a photo/i, 'Card Studio acquisition role is missing from llms.txt');

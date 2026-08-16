@@ -1,9 +1,9 @@
 # P0 SEO — Canonical Host Consolidation
 
-**Status:** Decision locked; migration staged
+**Status:** Step 3 repository migration in progress
 **Started:** 2026-08-16
 **Permanent canonical target:** `https://write-urdu.com`
-**Host to consolidate:** `https://www.write-urdu.com`
+**Host to consolidate:** `https://write-urdu.com`
 
 ## Decision
 
@@ -23,7 +23,7 @@ The decision accepts the following evidence and trade-off:
 
 ## Important transition state
 
-At the moment this decision is recorded, production and the repository still declare `https://www.write-urdu.com` as canonical. That remains intentional until the repository-wide canonical signals are changed atomically and validated.
+The migration release changes the repository canonical source of truth to `https://write-urdu.com`; production routing remains unchanged until the release is deployed and verified. That remains intentional until the repository-wide canonical signals are changed atomically and validated.
 
 Therefore:
 
@@ -66,7 +66,7 @@ A production verification run on 15 August 2026 repeatedly confirmed the pre-mig
 
 - current canonical `www` priority pages return `200`;
 - `robots.txt`, `sitemap.xml`, `llms.txt`, `security.txt` and `ads.txt` on `www` return `200` and pass the existing production SEO assertions;
-- `http://www.write-urdu.com/...` permanently redirects to HTTPS `www` correctly;
+- `http://write-urdu.com/...` permanently redirects to HTTPS `www` correctly;
 - legacy `/index.html`, `.html` routes and trailing-slash routes on `www` normalize correctly;
 - the apex host still serves `200` copies for representative high-value routes;
 - `http://write-urdu.com/...` currently redirects only to HTTPS apex;
@@ -74,7 +74,7 @@ A production verification run on 15 August 2026 repeatedly confirmed the pre-mig
 
 This baseline proves the application is healthy and isolates the issue to canonical-host consolidation.
 
-### Step 3 — Atomic repository canonical migration — NEXT
+### Step 3 — Atomic repository canonical migration — IN PROGRESS
 
 Change the repository from `www` to apex as one coherent release. The release must update, regenerate or validate all relevant signals together:
 
@@ -124,7 +124,7 @@ This creates a safe transitional state: both hosts may briefly return `200`, but
 Create one zone-level Single Redirect matching:
 
 ```text
-(http.host eq "www.write-urdu.com")
+(http.host eq "write-urdu.com")
 ```
 
 Target expression:
@@ -145,7 +145,7 @@ Keep both hostnames attached for DNS/TLS continuity. Hostname normalization belo
 Expected final behavior:
 
 ```text
-https://www.write-urdu.com/page?x=1
+https://write-urdu.com/page?x=1
         -> 301
 https://write-urdu.com/page?x=1
         -> 200, self-canonical

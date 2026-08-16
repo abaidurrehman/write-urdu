@@ -20,7 +20,7 @@ const humanSitemap = read('write-urdu-sitemap.html');
 const shell = read('js/v2-shell.js');
 const registry = read('docs/WU-PUBLIC-PAGE-REGISTRY.csv');
 
-assert.match(contact, /rel="canonical" href="https:\/\/www\.write-urdu\.com\/contact"/, 'Contact canonical route is missing');
+assert.match(contact, /rel="canonical" href="https:\/\/write-urdu\.com\/contact"/, 'Contact canonical route is missing');
 assert.match(contact, /name="robots" content="index,follow,max-image-preview:large"/, 'Contact should be indexable');
 assert.match(contact, /<h1 id="contact-title">A direct way to reach Write Urdu\.<\/h1>/, 'Contact H1 changed unexpectedly');
 assert.match(contact, /action="\/api\/messages"/, 'Contact form must submit to the first-party endpoint');
@@ -32,7 +32,7 @@ assert.match(contact, /Keep private writing out of support messages/, 'Contact p
 assert.match(contact, /admin@write-urdu\.com/, 'Contact page must preserve the public email fallback');
 assert.doesNotMatch(contact, /adsbygoogle|data-ad-slot|pagead2\.googlesyndication/i, 'Contact must not contain an ad unit');
 
-assert.match(feedback, /rel="canonical" href="https:\/\/www\.write-urdu\.com\/feedback"/, 'Feedback canonical route is missing');
+assert.match(feedback, /rel="canonical" href="https:\/\/write-urdu\.com\/feedback"/, 'Feedback canonical route is missing');
 assert.match(feedback, /name="robots" content="noindex,follow"/, 'Feedback must remain noindex');
 assert.match(feedback, /data-form-type="feedback"/, 'Feedback form type marker is missing');
 assert.match(feedback, /name="rating" value="5"/, 'Optional feedback rating is missing');
@@ -82,8 +82,8 @@ assert.strictEqual(ads.resolvePageType('/feedback'), 'trust', 'Feedback must be 
 
 assert.match(redirects, /^\/write-urdu-feedback \/feedback 301$/m, 'Legacy feedback route must permanently redirect to /feedback');
 assert.match(redirects, /^\/write-urdu-feedback\.html \/feedback 301$/m, 'Legacy feedback HTML route must permanently redirect to /feedback');
-assert.match(sitemap, /<loc>https:\/\/www\.write-urdu\.com\/contact<\/loc>/, 'Indexable Contact must be in the XML sitemap');
-assert.doesNotMatch(sitemap, /<loc>https:\/\/www\.write-urdu\.com\/feedback<\/loc>/, 'Noindex Feedback must not be in the XML sitemap');
+assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/contact<\/loc>/, 'Indexable Contact must be in the XML sitemap');
+assert.doesNotMatch(sitemap, /<loc>https:\/\/write-urdu\.com\/feedback<\/loc>/, 'Noindex Feedback must not be in the XML sitemap');
 assert.match(humanSitemap, /href="\/contact"/, 'Human sitemap must expose Contact');
 assert.match(humanSitemap, /href="\/feedback"/, 'Human sitemap must expose Feedback');
 assert.match(shell, /link\('\/contact'/, 'Shared footer must expose Contact');

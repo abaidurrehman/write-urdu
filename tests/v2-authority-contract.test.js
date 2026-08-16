@@ -26,7 +26,7 @@ assert.deepStrictEqual(
 assert.match(roman, /class="content-page guide-page v2-content-page authority-page roman-urdu-page"/, 'Roman Urdu guide must use the v2 authority page contract');
 assert.match(roman, /css\/v2-content\.css/, 'Roman Urdu guide must load the shared v2 content system');
 assert.match(roman, /css\/v2-authority\.css/, 'Roman Urdu guide must load the v2 authority system');
-assert.match(roman, /https:\/\/www\.write-urdu\.com\/roman-urdu-transliteration/, 'Roman Urdu canonical changed unexpectedly');
+assert.match(roman, /https:\/\/write-urdu\.com\/roman-urdu-transliteration/, 'Roman Urdu canonical changed unexpectedly');
 assert.match(roman, /id="transliteration-title"/, 'Roman Urdu H1 contract changed');
 assert.match(roman, /Transliteration is not translation/, 'Roman Urdu guide must keep the central language distinction');
 assert.match(roman, /href="\/"[^>]*>Try Roman Urdu typing/, 'Roman Urdu guide must support the homepage writing workflow');
@@ -35,7 +35,7 @@ assert.doesNotMatch(roman, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Roman Urdu guide
 assert.match(alphabet, /class="content-page guide-page v2-content-page authority-page alphabet-page"/, 'Urdu Alphabet must use the v2 authority page contract');
 assert.match(alphabet, /css\/v2-content\.css/, 'Urdu Alphabet must load the shared v2 content system');
 assert.match(alphabet, /css\/v2-authority\.css/, 'Urdu Alphabet must load the v2 authority system');
-assert.match(alphabet, /https:\/\/www\.write-urdu\.com\/urdu-alphabet/, 'Urdu Alphabet canonical changed unexpectedly');
+assert.match(alphabet, /https:\/\/write-urdu\.com\/urdu-alphabet/, 'Urdu Alphabet canonical changed unexpectedly');
 assert.match(alphabet, /id="alphabet-title"/, 'Urdu Alphabet H1 contract changed');
 assert.ok((alphabet.match(/<tr><td lang="ur" dir="rtl">/g) || []).length >= 40, 'Urdu Alphabet must retain the complete standalone character chart');
 assert.match(alphabet, />آ<\/td>/, 'Urdu Alphabet must retain alif madd');
@@ -48,7 +48,7 @@ assert.doesNotMatch(alphabet, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Urdu Alphabet
 assert.match(fonts, /class="content-page guide-page v2-content-page authority-page font-guide-page"/, 'Urdu font guide must use the v2 authority page contract');
 assert.match(fonts, /css\/v2-content\.css/, 'Urdu font guide must load the shared v2 content system');
 assert.match(fonts, /css\/v2-authority\.css/, 'Urdu font guide must load the v2 authority system');
-assert.match(fonts, /https:\/\/www\.write-urdu\.com\/urdu-fonts-nastaliq-vs-naskh/, 'Urdu font guide canonical changed unexpectedly');
+assert.match(fonts, /https:\/\/write-urdu\.com\/urdu-fonts-nastaliq-vs-naskh/, 'Urdu font guide canonical changed unexpectedly');
 assert.match(fonts, /id="font-guide-title"/, 'Urdu font guide H1 contract changed');
 assert.match(fonts, /Nastaliq: traditional Urdu character/, 'Urdu font guide must retain practical Nastaliq guidance');
 assert.match(fonts, /Naskh: compact and predictable/, 'Urdu font guide must retain practical Naskh guidance');

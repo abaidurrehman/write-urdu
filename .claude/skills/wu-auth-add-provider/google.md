@@ -19,9 +19,9 @@ Values belong in Cloudflare encrypted/environment configuration, never source co
 
 Register the callback expected by the current Auth.js Google provider under WriteUrdu's production custom domain, following the project's `/api/auth` base path. At spec time the intended shape is:
 
-`https://www.write-urdu.com/api/auth/callback/google`
+`https://write-urdu.com/api/auth/callback/google`
 
-**Verify the exact callback path against the implementation and current Auth.js provider before registering it.** The canonical host is `www.write-urdu.com`; do not register a non-canonical hostname accidentally.
+**Verify the exact callback path against the implementation and current Auth.js provider before registering it.** The canonical host is `write-urdu.com`; do not register a non-canonical hostname accidentally.
 
 Preview callbacks are separate configuration and should be added only when a deliberate preview-OAuth workflow exists.
 
