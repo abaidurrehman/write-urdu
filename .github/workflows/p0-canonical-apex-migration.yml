@@ -1,0 +1,72 @@
+name: P0 canonical apex migration
+
+on:
+  push:
+    branches:
+      - p0/seo-canonical-host-consolidation
+    paths:
+      - scripts/p0-migrate-canonical-apex.js
+      - .github/workflows/p0-canonical-apex-migration.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: p0-canonical-apex-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@v4
+        with:
+          ref: p0/seo-canonical-host-consolidation
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply atomic canonical migration
+        run: |
+          node --check scripts/p0-migrate-canonical-apex.js
+          node scripts/p0-migrate-canonical-apex.js
+          npm run seo:generate
+          npm run seo:sync-heads
+
+      - name: Verify no active canonical signal still points to www
+        run: |
+          set -euo pipefail
+          old_refs=$(grep -RIl --exclude='p0-migrate-canonical-apex.js' --exclude='p0-canonical-apex-migration.yml' --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=docs 'https://www.write-urdu.com' . || true)
+          if [ -n "$old_refs" ]; then
+            echo 'Active non-doc files still contain the old canonical origin:'
+            echo "$old_refs"
+            exit 1
+          fi
+
+      - name: Run repository release gate
+        run: |
+          npm run seo:check
+          npm run governance:check
+          npm test
+
+      - name: Commit validated migration as one repository change
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No migration changes were produced.'
+            exit 1
+          fi
+          git commit -m 'SEO P0: migrate canonical host to apex'
+          git push origin HEAD:p0/seo-canonical-host-consolidation
