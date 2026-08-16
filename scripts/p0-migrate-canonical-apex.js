@@ -6,6 +6,8 @@ const oldOrigin = 'https://www.write-urdu.com';
 const newOrigin = 'https://write-urdu.com';
 const oldHost = 'www.write-urdu.com';
 const newHost = 'write-urdu.com';
+const oldEscapedHost = 'www\\.write-urdu\\.com';
+const newEscapedHost = 'write-urdu\\.com';
 
 const activeDocs = new Set([
   'docs/CLOUDFLARE-CANONICAL-HOST.md',
@@ -48,6 +50,7 @@ function migrateFile(file) {
   const original = source;
   source = source.split(oldOrigin).join(newOrigin);
   source = source.split(oldHost).join(newHost);
+  source = source.split(oldEscapedHost).join(newEscapedHost);
 
   const rel = relative(file);
 
