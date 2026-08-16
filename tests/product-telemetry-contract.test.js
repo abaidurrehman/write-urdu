@@ -68,6 +68,8 @@ assert.match(endpoint, /EVENT_NAMES = new Set/, 'Telemetry endpoint must use an 
 assert.match(endpoint, /LENGTH_BUCKETS = new Set/, 'Telemetry endpoint must validate length buckets');
 assert.match(endpoint, /ACTIVE_BUCKETS = new Set/, 'Telemetry endpoint must validate active-time buckets');
 assert.match(endpoint, /originAllowed/, 'Telemetry endpoint must restrict browser origins');
+assert.match(endpoint, /www\.write-urdu\.com/, 'Telemetry endpoint must keep accepting the legacy www origin during canonical-host migration');
+assert.match(endpoint, /host === 'write-urdu\.com'/, 'Telemetry endpoint must accept the canonical apex origin');
 assert.doesNotMatch(endpoint, /request\.headers\.get\(['"]user-agent|cf-connecting-ip|referer/i, 'Endpoint must not persist request identity/referrer metadata');
 
 assert.match(migration, /CREATE TABLE IF NOT EXISTS product_events/, 'Legacy diagnostic product_events schema is missing');
