@@ -33,24 +33,24 @@ Therefore this P0 keeps `www` as the canonical host and consolidates the apex in
 - [x] Confirm the repository already has static canonical, sitemap, robots and redirect guardrails.
 - [x] Strengthen `scripts/check-live-canonical.js` so the default live audit covers every indexable route rather than only representative routes.
 - [x] Add a missing-route check so an unknown apex path must map to the same unknown path on `www`, and the canonical target must remain a real `404`.
-- [ ] Run the branch quality suite in an environment with the repository checkout and dependencies available.
+- [x] Changed JavaScript passes `node --check`.
+- [ ] Complete the branch quality workflow.
 
 **Production traffic change in Step 1:** none.
 
-### Step 2 — Read-only production baseline
+### Step 2 — Read-only production baseline — COMPLETE EXCEPT PAGES ALIAS
 
-Before changing Cloudflare, record the behavior of:
+A production verification run on 15 August 2026 repeatedly confirmed the current state from a GitHub-hosted runner:
 
-- `https://www.write-urdu.com/`
-- `https://write-urdu.com/`
-- both hosts for every indexable path
-- path + query-string examples
-- HTTP variants
-- `.html` legacy routes
-- trailing-slash routes
-- the production `pages.dev` alias
+- canonical `www` priority pages return `200`;
+- `robots.txt`, `sitemap.xml`, `llms.txt`, `security.txt` and `ads.txt` on `www` return `200` and pass the existing production SEO assertions;
+- `http://www.write-urdu.com/...` permanently redirects to HTTPS `www` correctly;
+- legacy `/index.html`, `.html` routes and trailing-slash routes on `www` normalize correctly;
+- **the apex host is still serving `200` copies** for `/`, `/urdu-editor`, `/urdu-keyboard`, `/roman-urdu-transliteration`, `/write-urdu-documentation`, `/urdu-card-studio` and `/how-to-write-urdu-on-photo`;
+- `http://write-urdu.com/...` currently redirects only to HTTPS apex, not directly to canonical `www`;
+- the production `pages.dev` alias was not configured in the live audit environment, so that one origin remains an explicit follow-up check.
 
-Expected before the edge switch: the audit may fail specifically because apex URLs still return `200`. All unrelated failures must be resolved before proceeding.
+This isolates the P0 defect: repository-level canonical/discovery signals are already aligned to `www`; the missing production control is the Cloudflare zone-level apex → `www` redirect.
 
 ### Step 3 — Repository release gate
 
