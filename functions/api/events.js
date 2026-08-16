@@ -276,7 +276,7 @@ function originAllowed(request) {
     if (!origin) return true;
     try {
         const host = new URL(origin).hostname.toLowerCase();
-        return host === 'write-urdu.com' || host === 'write-urdu.com' || host.endsWith('.pages.dev') || host === 'localhost';
+        return host === 'www.write-urdu.com' || host === 'write-urdu.com' || host.endsWith('.pages.dev') || host === 'localhost';
     } catch (error) {
         return false;
     }
