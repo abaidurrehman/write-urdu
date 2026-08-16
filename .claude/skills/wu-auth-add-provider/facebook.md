@@ -19,7 +19,7 @@ Store values in Cloudflare encrypted/environment configuration, never source con
 
 Register the callback expected by the current Auth.js Facebook provider under WriteUrdu's canonical production domain and `/api/auth` base path. At spec time the intended shape is:
 
-`https://www.write-urdu.com/api/auth/callback/facebook`
+`https://write-urdu.com/api/auth/callback/facebook`
 
 **Verify the exact callback path and current Meta/Auth.js requirements before app registration.** Do not accidentally register only the non-canonical hostname or a temporary Pages URL.
 

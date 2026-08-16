@@ -1,16 +1,34 @@
 const config = require('../seo.config.js');
 
 const canonicalOrigin = (process.env.CANONICAL_ORIGIN || config.SITE_ORIGIN).replace(/\/$/, '');
-const alternateOrigin = (process.env.ALTERNATE_ORIGIN || 'https://write-urdu.com').replace(/\/$/, '');
+
+function counterpartOrigin(origin) {
+  const url = new URL(origin);
+  url.protocol = 'https:';
+  url.username = '';
+  url.password = '';
+  url.port = '';
+  url.pathname = '/';
+  url.search = '';
+  url.hash = '';
+  url.hostname = url.hostname.startsWith('www.') ? url.hostname.slice(4) : `www.${url.hostname}`;
+  return url.origin;
+}
+
+const alternateOrigin = (process.env.ALTERNATE_ORIGIN || counterpartOrigin(canonicalOrigin)).replace(/\/$/, '');
 const pagesDevOrigin = (process.env.PAGES_DEV_ORIGIN || '').replace(/\/$/, '');
 const timeoutMs = Number(process.env.CANONICAL_AUDIT_TIMEOUT_MS || 10000);
-const samplePaths = (process.env.CANONICAL_AUDIT_PATHS || '/,/urdu-editor,/urdu-keyboard,/roman-urdu-transliteration,/write-urdu-documentation')
+const requestedPaths = (process.env.CANONICAL_AUDIT_PATHS || '')
   .split(',')
   .map(value => value.trim())
   .filter(Boolean);
+const indexablePaths = config.pages.filter(page => page.indexable).map(page => page.path);
+const auditPaths = requestedPaths.length ? requestedPaths : indexablePaths;
 
 const failures = [];
 const successes = [];
+const canonicalHost = new URL(canonicalOrigin).hostname;
+const alternateHost = new URL(alternateOrigin).hostname;
 
 function permanent(status) {
   return status === 301 || status === 308;
@@ -26,7 +44,7 @@ async function request(url) {
     return await fetch(url, {
       redirect: 'manual',
       signal: withTimeout(),
-      headers: { 'user-agent': 'WriteUrduCanonicalAudit/1.0' }
+      headers: { 'user-agent': 'WriteUrduCanonicalAudit/1.2' }
     });
   } catch (error) {
     failures.push(`${url}: request failed (${error.message})`);
@@ -67,6 +85,16 @@ async function expectRedirect(sourceUrl, targetUrl, label) {
   successes.push(`${label}: ${response.status} ${sourceUrl} -> ${actualTarget}`);
 }
 
+async function expectStatus(url, expectedStatus, label) {
+  const response = await request(url);
+  if (!response) return;
+  if (response.status !== expectedStatus) {
+    failures.push(`${label}: expected ${expectedStatus} from ${url}, received ${response.status}`);
+    return;
+  }
+  successes.push(`${label}: ${response.status} ${url}`);
+}
+
 async function expectCanonicalPage(pathname) {
   const expectedUrl = new URL(pathname, `${canonicalOrigin}/`).href;
   const response = await request(expectedUrl);
@@ -95,24 +123,38 @@ async function main() {
     failures.push(`CANONICAL_ORIGIN ${canonicalOrigin} disagrees with seo.config.js ${config.SITE_ORIGIN}`);
   }
 
-  for (const pathname of samplePaths) {
+  if (canonicalHost === alternateHost) {
+    failures.push(`ALTERNATE_ORIGIN must use a different hostname from ${canonicalOrigin}`);
+  }
+
+  const expectedAlternate = counterpartOrigin(canonicalOrigin);
+  if (!process.env.ALTERNATE_ORIGIN && alternateOrigin !== expectedAlternate) {
+    failures.push(`derived alternate origin ${alternateOrigin} does not match expected counterpart ${expectedAlternate}`);
+  }
+
+  const knownPaths = new Set(config.pages.map(page => page.path));
+  requestedPaths.forEach(pathname => {
+    if (!knownPaths.has(pathname)) failures.push(`CANONICAL_AUDIT_PATHS contains unknown route ${pathname}`);
+  });
+
+  for (const pathname of auditPaths) {
     await expectCanonicalPage(pathname);
 
     const queryPath = `${pathname}${pathname.includes('?') ? '&' : '?'}canonical_audit=1`;
     const alternateUrl = new URL(queryPath, `${alternateOrigin}/`).href;
     const canonicalUrl = new URL(queryPath, `${canonicalOrigin}/`).href;
-    await expectRedirect(alternateUrl, canonicalUrl, 'apex -> www');
+    await expectRedirect(alternateUrl, canonicalUrl, `${alternateHost} -> ${canonicalHost}`);
   }
 
   await expectRedirect(
-    'http://write-urdu.com/?canonical_audit=1',
+    `http://${alternateHost}/?canonical_audit=1`,
     `${canonicalOrigin}/?canonical_audit=1`,
-    'HTTP apex -> HTTPS www'
+    `HTTP ${alternateHost} -> HTTPS ${canonicalHost}`
   );
   await expectRedirect(
-    'http://www.write-urdu.com/?canonical_audit=1',
+    `http://${canonicalHost}/?canonical_audit=1`,
     `${canonicalOrigin}/?canonical_audit=1`,
-    'HTTP www -> HTTPS www'
+    `HTTP ${canonicalHost} -> HTTPS ${canonicalHost}`
   );
   await expectRedirect(
     `${canonicalOrigin}/index.html`,
@@ -130,11 +172,23 @@ async function main() {
     'trailing slash route'
   );
 
+  const missingPath = '/__canonical-host-audit-missing__';
+  await expectRedirect(
+    `${alternateOrigin}${missingPath}?canonical_audit=1`,
+    `${canonicalOrigin}${missingPath}?canonical_audit=1`,
+    `missing ${alternateHost} path -> same missing ${canonicalHost} path`
+  );
+  await expectStatus(
+    `${canonicalOrigin}${missingPath}`,
+    404,
+    'canonical missing path remains 404'
+  );
+
   if (pagesDevOrigin) {
     await expectRedirect(
       `${pagesDevOrigin}/urdu-editor?canonical_audit=1`,
       `${canonicalOrigin}/urdu-editor?canonical_audit=1`,
-      'pages.dev -> custom domain'
+      'pages.dev -> canonical custom domain'
     );
   } else {
     console.warn('CANONICAL AUDIT: PAGES_DEV_ORIGIN is not set; production pages.dev redirect was not tested.');
@@ -145,7 +199,7 @@ async function main() {
     console.error(failures.map(message => `CANONICAL FAIL: ${message}`).join('\n'));
     process.exit(1);
   }
-  console.log(`Canonical-host audit passed for ${samplePaths.length} representative public routes.`);
+  console.log(`Canonical-host audit passed for ${auditPaths.length} ${requestedPaths.length ? 'requested' : 'indexable'} public routes.`);
 }
 
 main().catch(error => {

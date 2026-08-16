@@ -60,7 +60,7 @@ assert.match(runtimeSeo, /locale !== ['"]ur['"][\s\S]*applyResolvedSearchMetadat
 
 assert.match(llms, /homepage is the main English to Urdu typing/i, 'llms.txt must name the homepage as the English-to-Urdu typing owner');
 assert.match(llms, /English to Urdu typing \/ Urdu typing online/, 'llms.txt start-writing section must expose the prime acquisition job');
-assert.match(sitemap, /<loc>https:\/\/www\.write-urdu\.com\/<\/loc>[\s\S]*?<lastmod>2026-08-12<\/lastmod>/, 'Homepage sitemap freshness must reflect the acquisition revision');
+assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/<\/loc>[\s\S]*?<lastmod>2026-08-12<\/lastmod>/, 'Homepage sitemap freshness must reflect the acquisition revision');
 assert.match(redirects, /^\/index\.html \/ 301$/m, 'Legacy homepage URL must continue consolidating to the canonical root');
 
 for (const forbidden of ['/english-to-urdu-typing', '/english-urdu-typing', '/type-urdu-in-english', '/urdu-typing-in-english']) {

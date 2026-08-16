@@ -151,7 +151,7 @@ async function main() {
 
   await checkResource('/.well-known/security.txt', /text\/plain/i, [
     { pattern: /^Contact:\s*mailto:admin@write-urdu\.com$/mi, message: 'public security contact missing' },
-    { pattern: /^Canonical:\s*https:\/\/www\.write-urdu\.com\/\.well-known\/security\.txt$/mi, message: 'security canonical missing' }
+    { pattern: /^Canonical:\s*https:\/\/write-urdu\.com\/\.well-known\/security\.txt$/mi, message: 'security canonical missing' }
   ]);
 
   await checkResource('/ads.txt', /text\/plain/i, [

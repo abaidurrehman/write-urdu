@@ -32,7 +32,7 @@ assert.ok(fs.existsSync(unifiedJourneySpec), 'Unified product journey specificat
 assert.match(fs.readFileSync(unifiedJourneySpec, 'utf8'), /Feature ID:[^\n]*WU-PLAT-001/, 'Unified product journey specification has no stable ID');
 
 const seoConfig = require(path.join(root, 'seo.config.js'));
-assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://www.write-urdu.com', 'SEO canonical origin changed unexpectedly');
+assert.strictEqual(seoConfig.SITE_ORIGIN, 'https://write-urdu.com', 'SEO canonical origin changed unexpectedly');
 assert.ok(seoConfig.pages.some(page => page.path === '/urdu-card-studio' && page.indexable), 'Card Studio is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/qr-code-generator' && page.indexable), 'QR Generator is missing from the SEO registry');
 assert.ok(seoConfig.pages.some(page => page.path === '/urdu-templates' && page.indexable), 'Template Library is missing from the SEO registry');
