@@ -1,0 +1,83 @@
+@import url('./urdu-tools.css');
+
+.urdu-voice-control {
+  display: grid;
+  place-items: center;
+  min-height: 20rem;
+  padding: 1.5rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: radial-gradient(circle at top, var(--wu-color-brand-softer), var(--wu-color-surface-soft) 55%);
+  text-align: center;
+}
+
+.urdu-voice-mic {
+  display: grid;
+  place-items: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  margin: 0 auto 1rem;
+  border: 1px solid var(--wu-color-brand);
+  border-radius: 50%;
+  background: var(--wu-color-surface);
+  color: var(--wu-color-brand-deep);
+  font-size: 2.5rem;
+  box-shadow: var(--wu-shadow-sm);
+}
+
+[data-voice-state="listening"] .urdu-voice-mic,
+[data-voice-state="hearing-speech"] .urdu-voice-mic {
+  box-shadow: 0 0 0 .55rem rgb(15 118 110 / 10%), var(--wu-shadow-sm);
+  animation: wuVoicePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes wuVoicePulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-voice-state="listening"] .urdu-voice-mic,
+  [data-voice-state="hearing-speech"] .urdu-voice-mic { animation: none; }
+}
+
+.urdu-voice-control h3 { margin: 0; font-size: var(--wu-text-xl); }
+.urdu-voice-control p { max-width: 32rem; margin: .55rem auto 0; color: var(--wu-color-muted); line-height: 1.55; }
+
+.urdu-voice-interim {
+  min-height: 3.2rem;
+  margin-top: 1rem;
+  padding: .75rem 1rem;
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface);
+  color: var(--wu-color-ink-soft);
+  font-family: var(--wu-font-urdu);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  direction: rtl;
+}
+
+.urdu-voice-support-note {
+  margin-top: .9rem;
+  padding: .8rem .9rem;
+  border-left: 3px solid var(--wu-color-brand);
+  border-radius: 0 var(--wu-radius-sm) var(--wu-radius-sm) 0;
+  background: var(--wu-color-brand-softer);
+  color: var(--wu-color-ink-soft);
+  font-size: var(--wu-text-sm);
+  line-height: 1.55;
+  text-align: left;
+}
+
+.urdu-voice-support-note.is-warning {
+  border-left-color: #b7791f;
+  background: #fff8e6;
+}
+
+.urdu-voice-transcript .urdu-tool-textarea { min-height: 24rem; }
+
+@media (max-width: 600px) {
+  .urdu-voice-control { min-height: 16rem; padding: 1rem; }
+  .urdu-voice-mic { width: 5.5rem; height: 5.5rem; font-size: 2rem; }
+  .urdu-voice-transcript .urdu-tool-textarea { min-height: 18rem; }
+}
