@@ -24,6 +24,8 @@ const tests = [
   'tests/urdu-text-cleaner-core.test.js',
   'tests/urdu-ocr-contract.test.js',
   'tests/urdu-voice-typing-contract.test.js',
+  'tests/inpage-unicode-core.test.js',
+  'tests/inpage-unicode-contract.test.js',
   'tests/sua-acceptance-contract.test.js',
   'tests/journey-handoffs-contract.test.js',
   'tests/v2-creation-contract.test.js',
