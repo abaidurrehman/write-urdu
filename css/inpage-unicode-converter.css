@@ -1,0 +1,100 @@
+@import url('./urdu-tools.css');
+
+.inpage-mode-switch {
+  display: inline-flex;
+  gap: .35rem;
+  padding: .3rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: var(--wu-color-surface-soft);
+}
+
+.inpage-mode-switch button {
+  min-height: 2.65rem;
+  padding: .55rem .85rem;
+  border: 0;
+  border-radius: var(--wu-radius-md);
+  background: transparent;
+  color: var(--wu-color-ink-soft);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.inpage-mode-switch button[aria-pressed="true"] {
+  background: var(--wu-color-surface);
+  color: var(--wu-color-brand-deep);
+  box-shadow: var(--wu-shadow-sm);
+}
+
+.inpage-converter-page .urdu-tool-textarea {
+  min-height: 20rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.inpage-converter-page #inpageResult {
+  background: var(--wu-color-surface-soft);
+}
+
+.inpage-converter-toolbar {
+  display: flex;
+  gap: .65rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.inpage-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  align-items: center;
+  padding: 1rem 1.1rem;
+  border-top: 1px solid var(--wu-color-border);
+}
+
+.inpage-summary-empty,
+.inpage-warning-empty {
+  color: var(--wu-color-muted);
+}
+
+.inpage-warning-panel {
+  padding: 0 1.1rem 1.1rem;
+}
+
+.inpage-warning-panel h3 {
+  margin: .25rem 0 .6rem;
+  font-size: var(--wu-text-base);
+}
+
+.inpage-warning-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--wu-color-ink-soft);
+}
+
+.inpage-warning-item + .inpage-warning-item { margin-top: .45rem; }
+
+.inpage-scope-note {
+  margin: 1rem 0 0;
+  padding: .85rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+  line-height: 1.55;
+}
+
+.inpage-legacy-example {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  .inpage-mode-switch { width: 100%; }
+  .inpage-mode-switch button { flex: 1; }
+  .inpage-converter-page .urdu-tool-textarea { min-height: 15rem; }
+  .inpage-converter-toolbar { align-items: stretch; }
+}
