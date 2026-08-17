@@ -120,3 +120,13 @@
             script.defer = true;
             document.head.appendChild(script);
         }());
+
+        (function loadTextHandoff() {
+            var path = String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+            if (path === '/index') path = '/';
+            if (path !== '/' || document.querySelector('script[src="js/text-handoff.js"]')) return;
+            var script = document.createElement('script');
+            script.src = 'js/text-handoff.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        }());
