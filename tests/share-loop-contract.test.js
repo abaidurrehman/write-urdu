@@ -1,0 +1,125 @@
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+
+const root = path.resolve(__dirname, '..');
+const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
+
+const helper = read('functions', '_lib', 'share-artifacts.js');
+const publishApi = read('functions', 'api', 'shares.js');
+const shareApi = read('functions', 'api', 'shares', '[id].js');
+const reportApi = read('functions', 'api', 'shares', '[id]', 'report.js');
+const publicPage = read('functions', 's', '[id].js');
+const media = read('functions', 'share-media', '[id].js');
+const migration = read('migrations', '0004_share_artifacts.sql');
+const shareTelemetry = read('js', 'share-loop-telemetry.js');
+const events = read('functions', 'api', 'events.js');
+const cardPublish = read('js', 'card-studio-publish.js');
+const cardUi = read('js', 'card-studio-ui.js');
+const shareClient = read('js', 'share-page.js');
+const guide = read('how-to-share-urdu-writing-online.html');
+const privacy = read('write-urdu-privacy.html');
+const sitemap = read('sitemap.xml');
+const seo = read('seo.config.js');
+const pulseHtml = read('os', 'product-pulse.html');
+const pulseClient = read('js', 'product-pulse.js');
+const pulseApi = read('functions', 'api', 'internal', 'product-pulse.js');
+
+// Generic storage binding + hard share namespace boundary.
+assert.match(helper, /env\.CONTENT_STORE/, 'Share service must use the generic CONTENT_STORE binding');
+assert.doesNotMatch([helper, publishApi, shareApi, media].join('\n'), /SHARE_MEDIA/, 'Runtime must not retain the old share-specific R2 binding');
+assert.match(helper, /`shares\/\$\{now\.getUTCFullYear\(\)\}/, 'Public objects must live under the shares/ namespace');
+assert.match(media, /startsWith\('shares\/'\)/, 'Public media delivery must reject non-share CONTENT_STORE keys');
+assert.match(publishApi, /env\.CONTENT_STORE\.put/, 'Publishing must write the rendered PNG to CONTENT_STORE');
+assert.match(shareApi, /env\.CONTENT_STORE\.delete/, 'Deleting a share must remove its R2 object when possible');
+
+// Opaque IDs, immutable snapshot metadata, and management-token protection.
+assert.match(helper, /const BASE62/, 'Share IDs must use an opaque URL-safe alphabet');
+assert.match(helper, /randomBase62\(8\)/, 'Share IDs must be short random opaque identifiers');
+assert.match(helper, /crypto\.getRandomValues/, 'Share IDs/tokens must use cryptographic randomness');
+assert.match(helper, /crypto\.subtle\.digest\('SHA-256'/, 'Management tokens must be hashed before storage');
+assert.match(migration, /manage_token_hash TEXT NOT NULL/, 'D1 must store only the management-token hash');
+assert.match(migration, /origin_share_id TEXT/, 'Share artifacts must retain parent-child reproduction relationships');
+assert.match(shareApi, /x-writeurdu-manage-token/, 'Deletion must require a management token outside the URL');
+assert.doesNotMatch(publicPage, /manage_token|manageToken|manage_token_hash/, 'Public share HTML must never expose management credentials');
+
+// Publish endpoint only accepts bounded plain data and a validated PNG snapshot.
+assert.match(publishApi, /request\.formData\(\)/, 'Share publishing must use a bounded multipart snapshot request');
+assert.match(publishApi, /validatePng\(image\)/, 'Share publishing must validate the uploaded PNG');
+assert.match(helper, /image\/png/, 'Only the approved Phase 1 PNG share artifact should be accepted');
+assert.match(helper, /MAX_IMAGE_BYTES/, 'Share media must have a server-side size limit');
+assert.match(helper, /cleanPlainText/, 'Public Urdu text must be normalized as plain text');
+assert.doesNotMatch(publishApi, /innerHTML|dangerouslySetInnerHTML/, 'Publish API must not accept/render HTML content');
+assert.match(publishApi, /origin_share_unavailable/, 'Child publication must validate its parent share');
+
+// Public UGC pages stay acquisition surfaces, not an indexable content farm.
+assert.match(publicPage, /x-robots-tag': 'noindex, follow'/i, 'Public share responses must emit a noindex HTTP header');
+assert.match(publicPage, /meta name="robots" content="noindex,follow,max-image-preview:large"/, 'Public share HTML must be noindex');
+assert.match(publicPage, /property="og:image"/, 'Public shares must expose server-rendered OG image metadata');
+assert.match(publicPage, /twitter:card.*summary_large_image/, 'Public shares must expose a large social preview card');
+assert.match(publicPage, /\/share-media\/\$\{id\}/, 'Social metadata must use controlled same-site share media delivery');
+assert.match(publicPage, /data-share-public-text/, 'Published Urdu must remain real selectable HTML text');
+assert.match(publicPage, /Create your own Urdu design/, 'Public share must expose a creation CTA');
+assert.match(publicPage, /Use this text/, 'Public share must expose an explicit public-text continuation action');
+assert.match(publicPage, /Report this shared page/, 'Public share must expose an abuse-report path');
+assert.doesNotMatch(publicPage, /adsbygoogle|googlesyndication|google_ad_client/i, 'User-generated share pages must remain ad-free');
+assert.doesNotMatch(sitemap, /write-urdu\.com\/s\//, 'Individual user-generated share pages must never enter the XML sitemap');
+
+// Card Studio retains local export while adding an explicit public-publish boundary.
+assert.match(cardUi, /card-studio-publish\.js/, 'Card Studio guided UI must load the isolated publish layer');
+assert.match(cardPublish, /Publish & Share/, 'Card Studio must have an explicit public publishing action');
+assert.match(cardPublish, /Share image only/, 'Existing file-only sharing must remain visibly distinct from publishing');
+assert.match(cardPublish, /Download PNG/, 'Publish explanation must preserve the local download concept');
+assert.match(cardPublish, /Public to anyone with the link/, 'First publish must communicate the public boundary');
+assert.match(cardPublish, /Your other local drafts and project history stay in this browser/, 'Publish confirmation must protect the local-first contract');
+assert.match(cardPublish, /Write-Urdu\.com/, 'Hosted publish image must carry restrained Write Urdu provenance');
+assert.match(cardPublish, /writeUrdu\.shareManagement\.v1/, 'Management tokens must be retained locally for later deletion');
+assert.match(cardPublish, /\/api\/shares/, 'Card Studio must publish through the first-party share API');
+
+// Recipient continuation must not put text or share IDs in destination URLs.
+assert.match(shareClient, /writeUrdu\.shareReferral\.v1/, 'Recipient continuation must use short-lived first-party referral context');
+assert.match(shareClient, /writeUrdu\.cardStudio\.incoming/, 'Public text handoff must use session storage');
+assert.match(shareClient, /JSON\.stringify\(\{ text: text \}\)/, 'Create/Use text must explicitly seed a fresh Card Studio handoff');
+assert.doesNotMatch(shareClient, /location\.href\s*=\s*[^;]*(?:text=|share=|origin_share_id)/, 'Recipient handoff must not leak text/share identity in the destination URL');
+
+// Anonymous telemetry normalizes the dynamic route before it reaches /api/events.
+assert.match(shareTelemetry, /return '\/s\/:share'/, 'Dynamic share routes must normalize to one low-cardinality telemetry route');
+assert.match(shareTelemetry, /public_share/, 'Public share pages need their own coarse tool enum');
+assert.doesNotMatch(shareTelemetry, /share_id|origin_share_id|public_text|manage_token|manageToken/, 'Anonymous telemetry must not contain public share identity/content fields');
+for (const event of [
+  'share_publish_started', 'share_publish_completed', 'share_publish_failed', 'share_page_viewed',
+  'share_page_cta_clicked', 'share_referred_creation_started', 'share_republish_completed',
+  'share_deleted', 'share_reported'
+]) {
+  assert.ok(events.includes(`'${event}'`), `Telemetry event allowlist is missing ${event}`);
+}
+assert.match(events, /'public_share'/, 'Telemetry collector must accept the normalized public_share tool');
+assert.match(events, /share_hourly_metrics/, 'Share events must roll up separately from existing product metrics');
+
+// Product Pulse must answer whether sharing reproduces new creation/publishing.
+assert.match(pulseHtml, />Share Loop</, 'Founder Product Pulse must expose the Share Loop section');
+assert.match(pulseHtml, /Publish → visit → create → republish/, 'Share Loop must show the intended funnel');
+assert.match(pulseClient, /reproduction_ratio/, 'Product Pulse client must render reproduction ratio');
+assert.match(pulseClient, /republish_rate/, 'Product Pulse client must render republish rate');
+assert.match(pulseApi, /origin_share_id/, 'Aggregate Share Loop API must compute child-share relationships');
+assert.match(pulseApi, /parent_activation_rate/, 'Aggregate Share Loop API must report parent activation');
+assert.match(pulseApi, /report_rate_per_1000_views/, 'Aggregate Share Loop API must report abuse rate');
+assert.doesNotMatch(pulseApi, /SELECT[^;]*(?:public_text|manage_token_hash|image_key)/i, 'Product Pulse must not select public content or management secrets');
+
+// Guide/privacy/SEO contract ships with the feature.
+assert.match(guide, /Publish &amp; Share/, 'Public guide must explain the publish action');
+assert.match(guide, /Download PNG/, 'Public guide must distinguish local download from publishing');
+assert.match(guide, /Manage published links/, 'Public guide must explain later deletion');
+assert.match(guide, /If a local photo is visible in the card, it is naturally present inside that published rendered PNG/, 'Guide must accurately describe published-background privacy');
+assert.match(privacy, /Public share links/, 'Privacy policy must disclose public shares');
+assert.match(privacy, /Clearing browser\/site storage may remove that self-service management token and does not, by itself, delete/, 'Privacy policy must explain local-token deletion semantics');
+assert.match(seo, /how-to-share-urdu-writing-online/, 'Sharing guide must be registered in SEO configuration');
+assert.match(sitemap, /how-to-share-urdu-writing-online/, 'Sharing guide must be in the XML sitemap');
+
+// Anonymous publishing has bounded safety controls from launch.
+assert.match(helper, /allowPublish/, 'Publishing must have a rate-limiting control');
+assert.match(helper, /allowReport/, 'Reporting must have a rate-limiting control');
+assert.match(reportApi, /spam.*abuse.*privacy.*copyright.*other|cleanReportReason/s, 'Reporting must use a bounded reason enum');
+assert.match(migration, /status TEXT NOT NULL DEFAULT 'active'/, 'Share artifacts need an explicit moderation lifecycle');
+
+console.log('Public share loop contracts passed.');
