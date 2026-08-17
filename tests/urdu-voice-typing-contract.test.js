@@ -3,17 +3,17 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.join(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'urdu-voice-typing.html'), 'utf8');
-const js = fs.readFileSync(path.join(root, 'js/urdu-voice-typing.js'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'tools', 'urdu-voice-typing', 'index.html'), 'utf8');
+const js = fs.readFileSync(path.join(root, 'js', 'urdu-voice-typing.js'), 'utf8');
 
 assert.match(html, /<h1>Urdu Voice Typing<\/h1>/, 'voice page should expose a focused H1');
-assert.match(html, /rel="canonical" href="https:\/\/write-urdu\.com\/urdu-voice-typing"/, 'voice page should self-canonicalize');
+assert.match(html, /rel="canonical" href="https:\/\/write-urdu\.com\/tools\/urdu-voice-typing\/"/, 'voice page should self-canonicalize');
 assert.match(html, /data-urdu-voice-typing/, 'voice page should expose its protected workspace hook');
 assert.match(html, /google-anno-skip/, 'voice workspace should be excluded from annotation-style auto ads');
 assert.match(html, /google-side-rail-overlap="false"/, 'voice workspace should protect side-rail overlap');
 assert.match(html, /data-wu-ad-boundary="post-workspace"/, 'voice page should expose a post-workspace monetization boundary');
 assert.match(html, /Speech recognition is provided by your browser or platform and may use a vendor service\./, 'voice page should disclose browser/vendor processing');
-assert.match(html, /js\/text-handoff\.js/, 'voice page should use session-only tool handoff support');
+assert.match(html, /\/js\/text-handoff\.js/, 'voice page should use session-only tool handoff support');
 
 assert.match(js, /window\.SpeechRecognition \|\| window\.webkitSpeechRecognition/, 'voice typing should use feature detection');
 assert.match(js, /instance\.lang = 'ur-PK'/, 'voice recognition should request Urdu');
