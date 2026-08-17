@@ -1,7 +1,8 @@
 const { test, expect } = require('@playwright/test');
 
 test('InPage converter runs both directions in the browser', async ({ page }) => {
-  await page.goto('/tools/inpage-unicode-converter/index.html');
+  const response = await page.goto('/tools/inpage-unicode-converter/');
+  expect(response && response.status()).toBe(200);
   await expect(page.getByRole('heading', { name: 'InPage to Unicode Urdu Converter', level: 1 })).toBeVisible();
 
   await page.getByRole('button', { name: 'Load example' }).click();
