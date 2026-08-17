@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Urdu Voice Typing — Speak to Type Urdu Online | WriteUrdu</title>
+    <meta name="description" content="Speak Urdu and turn supported browser speech recognition into editable Urdu text. Copy the transcript, clean it or continue editing in WriteUrdu.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://write-urdu.com/urdu-voice-typing">
+    <meta property="og:type" content="website"><meta property="og:site_name" content="Write Urdu"><meta property="og:title" content="Urdu Voice Typing — Speak to Type Urdu"><meta property="og:description" content="Use supported browser speech recognition to create editable Urdu text."><meta property="og:url" content="https://write-urdu.com/urdu-voice-typing"><meta property="og:image" content="https://write-urdu.com/image/logo10.png"><meta property="og:image:alt" content="Write Urdu voice typing tool">
+    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Urdu Voice Typing — Speak to Type Urdu"><meta name="twitter:description" content="Turn supported browser speech recognition into editable Urdu text."><meta name="twitter:image" content="https://write-urdu.com/image/logo10.png">
+    <link rel="icon" href="image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="css/site-header.css">
+    <link rel="stylesheet" href="css/urdu-voice-typing.css">
+    <script src="seo.config.js" defer></script>
+    <script src="js/seo.js" defer></script>
+    <script src="site-header.js" defer></script>
+    <script src="js/site-runtime.js" defer></script>
+    <script src="js/text-handoff.js" defer></script>
+    <script src="js/urdu-voice-typing.js" defer></script>
+    <script src="js/product-telemetry.js" defer></script>
+    <script src="js/ads.js" defer></script>
+</head>
+<body class="urdu-tool-page urdu-voice-typing-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+    <main class="urdu-tool-main" data-urdu-voice-typing data-voice-state="ready">
+        <header class="urdu-tool-hero">
+            <div>
+                <p class="urdu-tool-eyebrow">Speak → editable Urdu</p>
+                <h1>Urdu Voice Typing</h1>
+                <p>Speak Urdu and let a supported browser turn it into editable text. Review the transcript, make corrections, copy it, clean it or continue in WriteUrdu.</p>
+            </div>
+            <aside class="urdu-tool-trust" aria-label="Voice processing note">
+                <strong>Free browser feature</strong><br>
+                Microphone access is requested only after you start. Speech recognition is provided by your browser or platform and may use a vendor service.
+            </aside>
+        </header>
+
+        <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="voice-workspace-title" google-side-rail-overlap="false">
+            <div class="urdu-tool-workspace-header">
+                <div>
+                    <h2 id="voice-workspace-title">Speak Urdu into an editable transcript</h2>
+                    <p>No account is required. Browser support varies, so normal Urdu typing remains available as a fallback.</p>
+                </div>
+                <span class="urdu-tool-status-pill" data-voice-status-pill>Checking support</span>
+            </div>
+
+            <div class="urdu-tool-grid">
+                <section class="urdu-tool-column" aria-labelledby="voice-control-title">
+                    <div class="urdu-voice-control">
+                        <div>
+                            <span class="urdu-voice-mic" aria-hidden="true">🎙</span>
+                            <h3 id="voice-control-title">Start speaking in Urdu</h3>
+                            <p>Allow microphone access when your browser asks, then speak after the listening indicator appears.</p>
+                            <div class="urdu-tool-actions" style="justify-content:center">
+                                <button class="urdu-tool-button primary" type="button" data-voice-start>Start voice typing</button>
+                                <button class="urdu-tool-button" type="button" data-voice-stop hidden>Stop listening</button>
+                            </div>
+                            <div class="urdu-voice-interim" data-voice-interim aria-live="polite" aria-label="Interim speech recognition"></div>
+                            <div class="urdu-voice-support-note" data-voice-support-note></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="urdu-tool-column urdu-voice-transcript" aria-labelledby="voice-result-title">
+                    <div class="urdu-tool-label-row">
+                        <label id="voice-result-title" for="voiceTranscript">Editable transcript</label>
+                        <span class="urdu-tool-helper">Final recognition only</span>
+                    </div>
+                    <textarea id="voiceTranscript" class="urdu-tool-textarea" dir="rtl" lang="ur" spellcheck="true" maxlength="100000" placeholder="آپ کی پہچانی گئی اردو یہاں نظر آئے گی۔"></textarea>
+                    <div class="urdu-tool-actions">
+                        <button class="urdu-tool-button primary" type="button" data-voice-copy disabled>Copy text</button>
+                        <button class="urdu-tool-button" type="button" data-voice-clean disabled>Clean text</button>
+                        <button class="urdu-tool-button" type="button" data-voice-editor disabled>Open in WriteUrdu</button>
+                        <button class="urdu-tool-button ghost" type="button" data-voice-clear disabled>Clear</button>
+                    </div>
+                    <p class="urdu-tool-notice" data-voice-notice aria-live="polite"></p>
+                </section>
+            </div>
+        </section>
+
+        <div class="stylish-workspace-end" data-wu-ad-boundary="post-workspace" aria-hidden="true"></div>
+
+        <section class="urdu-tool-content" aria-label="About Urdu voice typing">
+            <section>
+                <h2>How Urdu voice typing works</h2>
+                <p>This tool uses the speech-recognition interface exposed by supported browsers. WriteUrdu asks the browser for Urdu recognition and places final recognized phrases into an ordinary editable text area.</p>
+                <h3>Browser support and internet access</h3>
+                <p>Speech recognition is not implemented the same way in every browser. Some browsers may send microphone audio to a browser-vendor recognition service, and some may require an internet connection. WriteUrdu does not provide or store the speech-recognition audio itself.</p>
+                <h3>Review the transcript</h3>
+                <p>Names, punctuation, English words, numbers and similar-sounding Urdu words can be recognized incorrectly. The transcript stays editable so you can correct it before copying or opening it in another WriteUrdu tool.</p>
+                <h3>Continue with the Urdu workspace</h3>
+                <p>You can send the transcript to the <a href="/urdu-text-cleaner">Urdu Text Cleaner &amp; RTL Fixer</a> or open it in the <a href="/">WriteUrdu editor</a>. The handoff uses session-only browser storage instead of putting the transcript in a URL.</p>
+            </section>
+            <aside class="urdu-tool-related">
+                <h2>How to use it</h2>
+                <ol>
+                    <li>Select <strong>Start voice typing</strong>.</li>
+                    <li>Allow microphone access if your browser asks.</li>
+                    <li>Speak clearly in Urdu.</li>
+                    <li>Stop listening and review the editable transcript.</li>
+                    <li>Copy, clean or continue editing the result.</li>
+                </ol>
+                <h2>Questions</h2>
+                <details open><summary>Is Urdu voice typing free?</summary><p>Yes. WriteUrdu does not require a paid speech API or an account for this browser feature.</p></details>
+                <details><summary>Does it work in every browser?</summary><p>No. The page detects whether the browser exposes the speech-recognition interface and shows a normal typing fallback when it is unavailable.</p></details>
+                <details><summary>Is recognition always done on my device?</summary><p>No. Processing depends on your browser and platform. Some implementations use a remote browser-vendor service, so this page does not claim guaranteed on-device recognition.</p></details>
+                <details><summary>Does WriteUrdu save my transcript?</summary><p>This tool does not send the transcript to WriteUrdu analytics or save it on a WriteUrdu server. An explicit tool handoff may use session-only browser storage until the destination consumes it.</p></details>
+                <p><a href="/urdu-text-cleaner">Clean Urdu text</a><br><a href="/">Type Roman Urdu → Urdu</a><br><a href="/urdu-keyboard">Use the Urdu keyboard</a></p>
+            </aside>
+        </section>
+    </main>
+    <footer aria-label="Footer navigation"></footer>
+    <div id="appNotifications" class="app-notifications" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
