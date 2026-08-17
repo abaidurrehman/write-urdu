@@ -7,6 +7,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | ID | Feature | Route | Status |
 | --- | --- | --- | --- |
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Active — mature-domain authority/growth control plane |
+| `WU-SHARE-001` | Public Share Pages & Viral Publishing Loop | `/urdu-card-studio`, `/s/:id`, `/api/shares*`; later core editors | Planned — P0.6 Card Studio proving ground with release-blocking share-loop telemetry |
 | `WU-AUTH-001` | Optional social authentication foundation | `/sign-in`, `/api/auth/*`, `/api/me`, shared header | Planned — founder-approved Google first; Facebook fast-follow |
 | `WU-DRAFT-001` | Cross-device cloud drafts | Core writing editors, `/my-drafts`, `/api/drafts*` | Planned — local-first account persistence; depends on `WU-AUTH-001` |
 | `WU-RW-001` | Role-owned direct workspaces | Writing + creation role routes | Active — one top-level editor/canvas per role; remove nested WriteUrdu app/iframe architecture |

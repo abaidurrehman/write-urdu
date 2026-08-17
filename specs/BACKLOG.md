@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Product & Spec Backlog
 
 **Status:** Active  
-**Last updated:** 2026-08-12  
+**Last updated:** 2026-08-17  
 **Purpose:** One source of truth for priority, sequence and product state.
 
 This file owns **priority and sequence**. Individual feature specs own detailed behaviour and acceptance criteria. `specs/README.md` is the feature registry. `docs/WU-I001-IMPLEMENTATION-TRACKER.md` records v2 migration execution. Supporting SEO/audit documents provide evidence but do not own roadmap priority.
@@ -149,6 +149,28 @@ Create deliberate, contextually useful paths between established writing demand 
 
 **Guardrail:** internal links must answer the user’s next likely task, not exist only to circulate pageviews. User text remains in short-lived `sessionStorage`, never the journey event or URL.
 
+## P0.6 — `WU-SHARE-001` public share pages & viral publishing loop
+
+**Type:** Product-led growth / distribution  
+**Spec:** `specs/WU-SHARE-001-public-share-pages-viral-publishing-loop.md`  
+**Guide source:** `docs/WU-SHARE-001-USER-GUIDE.md`  
+**Status:** Planned — founder-approved; Card Studio is the Phase 1 proving ground.
+
+Turn finished Urdu creations into short branded public links such as `write-urdu.com/s/:id`, with a polished social preview, restrained Write-Urdu.com provenance and a strong path for recipients to create and publish their own version.
+
+- [ ] Build generic Share Artifact storage/API using D1 metadata + R2 image storage; do not hard-code the backend to Card Studio.
+- [ ] Add explicit Card Studio `Publish & Share` while preserving local Download and image-only sharing semantics.
+- [ ] Serve dynamic `/s/:id` pages with server-rendered OG/Twitter preview metadata, selectable RTL Urdu text and `noindex,follow`.
+- [ ] Add `Create your own` / `Use this text` continuation without putting Urdu text into URLs.
+- [ ] Add author-side delete token, public report flow, bounded anonymous publishing controls and no public gallery.
+- [ ] Keep UGC share pages out of sitemap/feed/llms discovery and ad-free in Phase 1.
+- [ ] Instrument publish → public view → CTA → referred creation → republish from the first release using `WU-ANALYTICS-001`.
+- [ ] Add Share Loop reporting to Product Pulse, including parent/child reproduction metrics.
+- [ ] Ship the public `/how-to-share-urdu-writing-online` guide and update privacy copy as part of the feature release.
+- [ ] After Phase 1 proves the loop, integrate the same service into the main/basic editor, where mature adoption is highest.
+
+**Release gate:** do not mark the feature released if production publishing works but share-loop telemetry/Product Pulse reporting does not. Measurement is part of the feature, not a later analytics task.
+
 ---
 
 # NEXT — P1
@@ -294,6 +316,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 | ID | Groomed state | Roadmap treatment |
 | --- | --- | --- |
 | `WU-GROWTH-001` | Active | P0 commercial control plane; runtime AdSense normalization/restoration shipped, Authority Map awaits detailed exports |
+| `WU-SHARE-001` | Planned | P0.6 product-led distribution; Card Studio Phase 1 with release-blocking telemetry, then main editor expansion |
 | `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
 | `WU-CS-UX-001` | Implemented | Card Studio behavior complete; v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Implemented | Card Studio empty-state behavior retained through v2 migration |
@@ -315,6 +338,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 ## Current queue
 
 **Completed product implementation:** P1.4 Card Studio + Templates v2 creation migration in PR #20.  
-**Next product implementation:** continue P1.4 with Stylish Urdu Text + Name Art while preserving the complete `WU-SUA-001` acceptance contract.  
+**Next product implementation:** P0.6 `WU-SHARE-001` Phase 1 — generic share-artifact foundation + Card Studio Publish & Share with metrics from day one.  
+**Following product implementation:** continue P1.4 with Stylish Urdu Text + Name Art while preserving the complete `WU-SUA-001` acceptance contract.  
 **Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
 **Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.
