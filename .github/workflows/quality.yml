@@ -46,6 +46,9 @@ jobs:
       - name: Validate routes and product governance
         run: npm run governance:check
 
+      - name: Run InPage converter browser acceptance
+        run: npx playwright test tests/inpage.spec.js
+
       - name: Run focused product browser acceptance
         run: npx playwright test tests/sua.spec.js tests/journey.spec.js tests/v2-creation.spec.js tests/seo-acquisition.spec.js tests/role-journeys.spec.js tests/sitemap-directory.spec.js
 
