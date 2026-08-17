@@ -9,6 +9,7 @@ const tests = [
   'tests/ads-policy-contract.test.js',
   'tests/shell-style-ownership-contract.test.js',
   'tests/product-telemetry-contract.test.js',
+  'tests/acquisition-revenue-contract.test.js',
   'tests/product-pulse-contract.test.js',
   'tests/v3-reference-pages-contract.test.js',
   'tests/v3-trust-pages-contract.test.js',
