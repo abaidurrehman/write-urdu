@@ -13,12 +13,22 @@ const EVENT_NAMES = new Set([
     'input_mode_changed',
     'canvas_interaction',
     'template_used',
-    'background_image_used'
+    'background_image_used',
+    'share_publish_started',
+    'share_publish_completed',
+    'share_publish_failed',
+    'share_page_viewed',
+    'share_page_cta_clicked',
+    'share_referred_creation_started',
+    'share_republish_completed',
+    'share_deleted',
+    'share_reported'
 ]);
 
 const TOOLS = new Set([
     'basic_editor', 'rich_editor', 'urdu_keyboard', 'card_studio', 'stylish_text',
-    'name_art', 'whatsapp_status', 'instagram_post', 'invoice_generator', 'qr_generator', 'content'
+    'name_art', 'whatsapp_status', 'instagram_post', 'invoice_generator', 'qr_generator',
+    'public_share', 'content'
 ]);
 
 const FORMATS = new Set([
@@ -42,11 +52,18 @@ const METRIC_COLUMNS = [
     'device_mobile', 'device_tablet', 'device_desktop'
 ];
 
+const SHARE_METRIC_COLUMNS = [
+    'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
+    'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
+    'device_mobile', 'device_tablet', 'device_desktop'
+];
+
 let schemaReady = null;
 let backfillReady = null;
 let maintenanceDay = null;
 
 const METRIC_DEFINITIONS = METRIC_COLUMNS.map((column) => `${column} INTEGER NOT NULL DEFAULT 0`).join(',\n        ');
+const SHARE_METRIC_DEFINITIONS = SHARE_METRIC_COLUMNS.map((column) => `${column} INTEGER NOT NULL DEFAULT 0`).join(',\n        ');
 const SCHEMA_STATEMENTS = [
     `CREATE TABLE IF NOT EXISTS product_events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -78,6 +95,13 @@ const SCHEMA_STATEMENTS = [
         events INTEGER NOT NULL DEFAULT 0,
         PRIMARY KEY (bucket_hour, tool, target_route)
     )`,
+    `CREATE TABLE IF NOT EXISTS share_hourly_metrics (
+        bucket_hour TEXT NOT NULL,
+        tool TEXT NOT NULL,
+        ${SHARE_METRIC_DEFINITIONS},
+        latest_event_at TEXT,
+        PRIMARY KEY (bucket_hour, tool)
+    )`,
     `CREATE TABLE IF NOT EXISTS product_telemetry_meta (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL,
@@ -108,7 +132,7 @@ function cleanId(value, maxLength) {
 
 function cleanRoute(value) {
     const route = String(value || '').trim().split('?')[0].split('#')[0];
-    if (!/^\/[a-z0-9\/-]*$/i.test(route) || route.length > 120) return null;
+    if (!/^\/[a-z0-9\/:_-]*$/i.test(route) || route.length > 120) return null;
     return route.replace(/\.html$/i, '').replace(/\/+$/, '') || '/';
 }
 
@@ -276,7 +300,7 @@ function originAllowed(request) {
     if (!origin) return true;
     try {
         const host = new URL(origin).hostname.toLowerCase();
-        return host === 'www.write-urdu.com' || host === 'write-urdu.com' || host.endsWith('.pages.dev') || host === 'localhost';
+        return host === 'www.write-urdu.com' || host === 'write-urdu.com' || host.endsWith('.pages.dev') || host === 'localhost' || host === '127.0.0.1';
     } catch (error) {
         return false;
     }
@@ -289,6 +313,12 @@ function hourBucket(date) {
 function emptyDelta(tool, now) {
     const delta = { tool, latest_event_at: now };
     METRIC_COLUMNS.forEach((column) => { delta[column] = 0; });
+    return delta;
+}
+
+function emptyShareDelta(tool, now) {
+    const delta = { tool, latest_event_at: now };
+    SHARE_METRIC_COLUMNS.forEach((column) => { delta[column] = 0; });
     return delta;
 }
 
@@ -332,17 +362,49 @@ function applyEvent(delta, event) {
     }
 }
 
+function applyShareEvent(delta, event) {
+    const mapping = {
+        share_publish_started: 'publish_started',
+        share_publish_completed: 'publish_completed',
+        share_publish_failed: 'publish_failed',
+        share_page_viewed: 'page_views',
+        share_page_cta_clicked: 'cta_clicks',
+        share_referred_creation_started: 'referred_creation_starts',
+        share_republish_completed: 'republish_completed',
+        share_deleted: 'deletions',
+        share_reported: 'reports'
+    };
+    if (mapping[event.eventName]) delta[mapping[event.eventName]] += 1;
+    if (event.eventName === 'share_clicked' && (event.tool === 'public_share' || event.tool === 'card_studio')) delta.link_share_actions += 1;
+    if (event.eventName === 'share_page_viewed') {
+        incrementBucket(delta, 'device_', event.deviceClass, { mobile: 'mobile', tablet: 'tablet', desktop: 'desktop' });
+    }
+}
+
+function isShareLoopEvent(event) {
+    return event.eventName.indexOf('share_') === 0 || (event.eventName === 'share_clicked' && (event.tool === 'public_share' || event.tool === 'card_studio'));
+}
+
 function aggregateEvents(events, now) {
     const byTool = new Map();
+    const shareByTool = new Map();
     const handoffs = new Map();
     const getDelta = (tool) => {
         if (!byTool.has(tool)) byTool.set(tool, emptyDelta(tool, now));
         return byTool.get(tool);
     };
+    const getShareDelta = (tool) => {
+        if (!shareByTool.has(tool)) shareByTool.set(tool, emptyShareDelta(tool, now));
+        return shareByTool.get(tool);
+    };
 
     events.forEach((event) => {
         applyEvent(getDelta(event.tool), event);
         applyEvent(getDelta('all'), event);
+        if (isShareLoopEvent(event)) {
+            applyShareEvent(getShareDelta(event.tool), event);
+            applyShareEvent(getShareDelta('all'), event);
+        }
         if (event.eventName === 'tool_handoff' && event.targetRoute) {
             [event.tool, 'all'].forEach((tool) => {
                 const key = tool + '|' + event.targetRoute;
@@ -350,7 +412,7 @@ function aggregateEvents(events, now) {
             });
         }
     });
-    return { byTool: Array.from(byTool.values()), handoffs: Array.from(handoffs.values()) };
+    return { byTool: Array.from(byTool.values()), shareByTool: Array.from(shareByTool.values()), handoffs: Array.from(handoffs.values()) };
 }
 
 function metricUpsert(db, bucket, delta) {
@@ -360,6 +422,16 @@ function metricUpsert(db, bucket, delta) {
         .concat(['latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)']);
     const values = [bucket, delta.tool].concat(METRIC_COLUMNS.map((column) => delta[column])).concat([delta.latest_event_at]);
     return db.prepare(`INSERT INTO product_hourly_metrics (${columns.join(', ')}) VALUES (${placeholders})
+                       ON CONFLICT(bucket_hour, tool) DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
+}
+
+function shareMetricUpsert(db, bucket, delta) {
+    const columns = ['bucket_hour', 'tool'].concat(SHARE_METRIC_COLUMNS).concat(['latest_event_at']);
+    const placeholders = columns.map(() => '?').join(', ');
+    const assignments = SHARE_METRIC_COLUMNS.map((column) => `${column} = ${column} + excluded.${column}`)
+        .concat(['latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)']);
+    const values = [bucket, delta.tool].concat(SHARE_METRIC_COLUMNS.map((column) => delta[column])).concat([delta.latest_event_at]);
+    return db.prepare(`INSERT INTO share_hourly_metrics (${columns.join(', ')}) VALUES (${placeholders})
                        ON CONFLICT(bucket_hour, tool) DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
 }
 
@@ -401,6 +473,7 @@ export async function onRequestPost(context) {
         const bucket = hourBucket(now);
         const aggregated = aggregateEvents(events, now.toISOString());
         const statements = aggregated.byTool.map((delta) => metricUpsert(db, bucket, delta))
+            .concat(aggregated.shareByTool.map((delta) => shareMetricUpsert(db, bucket, delta)))
             .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)));
         await db.batch(statements);
         return json(202, { accepted: events.length, rollup_rows: statements.length });
