@@ -19,6 +19,7 @@
         { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates', icon: 'grid' },
         { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator', icon: 'qr' },
         { href: '/urdu-text-cleaner', match: ['/urdu-text-cleaner', '/urdu-text-cleaner.html'], key: 'textCleaner', label: 'Urdu Text Cleaner', icon: 'sliders', secondary: true },
+        { href: '/urdu-ocr', match: ['/urdu-ocr', '/urdu-ocr.html'], key: 'urduOcr', label: 'Urdu OCR', icon: 'image', secondary: true },
         { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation', icon: 'book', secondary: true },
         { href: '/how-to-write-urdu-on-photo', match: ['/how-to-write-urdu-on-photo'], key: 'photoGuide', label: 'Urdu on Photo Guide', icon: 'image', secondary: true },
         { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features', icon: 'sliders', secondary: true },
@@ -54,13 +55,13 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', documentation: 'Documentation', photoGuide: 'Urdu on Photo Guide', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', urduOcr: 'Urdu OCR', documentation: 'Documentation', photoGuide: 'Urdu on Photo Guide', features: 'Features',
                 tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', create: 'Create', more: 'More', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
-                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', quran: 'Learn Quran Online',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', urduOcr: 'Urdu OCR', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
                 about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
@@ -102,13 +103,13 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', textCleaner: 'اردو متن صاف کریں', documentation: 'دستاویزات', photoGuide: 'تصویر پر اردو گائیڈ', features: 'خصوصیات',
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', textCleaner: 'اردو متن صاف کریں', urduOcr: 'اردو OCR', documentation: 'دستاویزات', photoGuide: 'تصویر پر اردو گائیڈ', features: 'خصوصیات',
                 tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', create: 'تخلیق', more: 'مزید', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', textCleaner: 'اردو متن صاف کریں', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', textCleaner: 'اردو متن صاف کریں', urduOcr: 'اردو OCR', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
@@ -152,6 +153,7 @@
         '/urdu-editor.html': { title: ['Urdu Rich Text Editor', 'اردو رچ ٹیکسٹ ایڈیٹر'], subtitle: ['Write, format and export Urdu documents online', 'آن لائن اردو دستاویز لکھیں، فارمیٹ کریں اور برآمد کریں'], documentTitle: ['Urdu Rich Text Editor | Type and Format Urdu Online', 'اردو رچ ٹیکسٹ ایڈیٹر | آن لائن اردو لکھیں'] },
         '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Type Urdu directly—no installation required', 'براہِ راست اردو لکھیں—انسٹالیشن کی ضرورت نہیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
         '/urdu-text-cleaner.html': { title: ['Urdu Text Cleaner & RTL Fixer', 'اردو متن صاف کریں اور RTL مسائل دیکھیں'], documentTitle: ['Urdu Text Cleaner & RTL Fixer — Fix Unicode Urdu Online | WriteUrdu', 'اردو متن صاف کریں اور RTL درست کریں | رائٹ اردو'] },
+        '/urdu-ocr.html': { title: ['Urdu OCR — Image to Urdu Text', 'اردو OCR — تصویر سے اردو متن'], documentTitle: ['Urdu OCR — Image to Urdu Text Online | WriteUrdu', 'اردو OCR — تصویر سے اردو متن | رائٹ اردو'] },
         '/urdu-alphabet.html': { title: ['Urdu alphabet', 'اردو حروف تہجی'], subtitle: ['A practical guide to Urdu letters and writing direction', 'اردو حروف اور لکھنے کی سمت کا عملی رہنما'], documentTitle: ['Urdu Alphabet Guide | Letters and Writing Direction', 'اردو حروف تہجی | حروف اور لکھنے کی سمت'] },
         '/urdu-card-studio.html': { title: ['Urdu Card Studio', 'اردو کارڈ اسٹوڈیو'], subtitle: ['Design and download polished Urdu cards in your browser', 'براؤزر میں خوب صورت اردو کارڈ بنائیں اور ڈاؤن لوڈ کریں'], documentTitle: ['Urdu Card Studio | Design Urdu Cards Online', 'اردو کارڈ اسٹوڈیو | آن لائن اردو کارڈ بنائیں'] },
         '/urdu-whatsapp-status-maker.html': { title: ['Urdu WhatsApp Status Maker', 'اردو واٹس ایپ اسٹیٹس میکر'], subtitle: ['Create a status image and download it for manual upload', 'اسٹیٹس تصویر بنائیں اور خود اپ لوڈ کرنے کے لیے ڈاؤن لوڈ کریں'], documentTitle: ['Urdu WhatsApp Status Maker | Write Urdu', 'اردو واٹس ایپ اسٹیٹس میکر | رائٹ اردو'] },
@@ -171,18 +173,13 @@
         '/write-urdu-sitemap.html': { title: ['Write Urdu Sitemap', 'رائٹ اردو سائٹ میپ'], subtitle: ['Editors, guides and information pages', 'ایڈیٹرز، رہنما اور معلوماتی صفحات'], documentTitle: ['Write Urdu Sitemap | Editors, Guides and Policies', 'رائٹ اردو سائٹ میپ | ایڈیٹرز، رہنما اور پالیسیاں'] }
     };
 
-    // The source files remain available with their .html names for backwards
-    // compatibility, while the public URLs use clean extensionless routes.
     Object.keys(pageCopy).forEach(function (path) {
         if (/\.html$/i.test(path)) pageCopy[path.replace(/\.html$/i, '')] = pageCopy[path];
     });
 
     function readLocale() {
-        try {
-            return window.localStorage.getItem(LOCALE_KEY) === 'ur' ? 'ur' : 'en';
-        } catch (error) {
-            return 'en';
-        }
+        try { return window.localStorage.getItem(LOCALE_KEY) === 'ur' ? 'ur' : 'en'; }
+        catch (error) { return 'en'; }
     }
 
     function translation(key, fallback) {
@@ -233,10 +230,6 @@
     }
 
     function ensureUrduFonts() {
-        // Most pages use these families through the shared editorial CSS. Add
-        // one deduplicated stylesheet so Canvas, form controls and examples do
-        // not silently fall back to a system Arabic font. Card Studio already
-        // declares the same link in its head, so it is intentionally reused.
         if (document.querySelector('link[data-write-urdu-fonts], link[href*="fonts.googleapis.com"]')) return;
         var link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -246,8 +239,6 @@
     }
 
     function ensureBrandFavicon() {
-        // Keep the tab icon in sync with the current logo even on legacy
-        // pages that still contain the old /favicon.ico link in their head.
         if (document.querySelector('link[data-write-urdu-favicon]')) return;
         var favicon = document.createElement('link');
         favicon.rel = 'icon';
@@ -287,6 +278,7 @@
                             '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
                             '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
                             '<a href="/urdu-text-cleaner" data-wu-i18n-key="footer.textCleaner">Urdu Text Cleaner</a>' +
+                            '<a href="/urdu-ocr" data-wu-i18n-key="footer.urduOcr">Urdu OCR</a>' +
                             '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
                             '<a href="/urdu-invoice-generator" data-wu-i18n-key="footer.invoiceGenerator">Invoice Generator</a>' +
                             '<a href="/stylish-urdu-text-generator" data-wu-i18n-key="footer.stylishText">Stylish Urdu Text</a>' +
@@ -328,17 +320,10 @@
 
     function renderHeaderAd(header) {
         if (!document.body.classList.contains('content-page') || document.body.classList.contains('card-studio-page') || document.body.classList.contains('qr-generator-page') || document.querySelector('.wu-header-ad')) return;
-
         var adRegion = document.createElement('aside');
         adRegion.className = 'wu-header-ad';
         adRegion.setAttribute('aria-label', 'Advertisement');
-        adRegion.innerHTML =
-            '<ins class="adsbygoogle"' +
-                ' style="display:block"' +
-                ' data-ad-client="ca-pub-4727847909946286"' +
-                ' data-ad-slot="8323789671"' +
-                ' data-ad-format="auto"' +
-                ' data-full-width-responsive="true"></ins>';
+        adRegion.innerHTML = '<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4727847909946286" data-ad-slot="8323789671" data-ad-format="auto" data-full-width-responsive="true"></ins>';
         header.insertAdjacentElement('afterend', adRegion);
     }
 
@@ -372,9 +357,7 @@
             document.head.appendChild(theme);
         }
         if (window.location.protocol !== 'file:' && 'serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {
-                document.body.classList.add('pwa-unavailable');
-            });
+            navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () { document.body.classList.add('pwa-unavailable'); });
         }
         window.addEventListener('beforeinstallprompt', function (event) {
             event.preventDefault();
@@ -391,24 +374,17 @@
             var button = event.target.closest('[data-wu-install]');
             if (!button || !deferredInstallPrompt) return;
             deferredInstallPrompt.prompt();
-            deferredInstallPrompt.userChoice.finally(function () {
-                deferredInstallPrompt = null;
-                button.hidden = true;
-            });
+            deferredInstallPrompt.userChoice.finally(function () { deferredInstallPrompt = null; button.hidden = true; });
         });
     }
 
     function normalizePageTitle() {
         if (document.body.classList.contains('documentation-page')) return;
-
         var title = document.querySelector('h1');
         if (!title) return;
         title.classList.add('wu-page-title');
-
         var subtitle = title.nextElementSibling;
-        if (subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) {
-            subtitle.classList.add('wu-page-subtitle');
-        }
+        if (subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) subtitle.classList.add('wu-page-subtitle');
     }
 
     function textWithoutIcons(element) {
@@ -418,27 +394,16 @@
     }
 
     function setLabelPreservingIcon(element, label) {
-        var icons = Array.prototype.slice.call(element.children).filter(function (child) {
-            return /^(I|SVG|IMG)$/i.test(child.tagName);
-        });
-        var textNodes = Array.prototype.slice.call(element.childNodes).filter(function (node) {
-            return node.nodeType === 3;
-        });
+        var icons = Array.prototype.slice.call(element.children).filter(function (child) { return /^(I|SVG|IMG)$/i.test(child.tagName); });
+        var textNodes = Array.prototype.slice.call(element.childNodes).filter(function (node) { return node.nodeType === 3; });
         var current = textWithoutIcons(element);
         if (current === label) return;
         if (textNodes.length) {
             var target = textNodes.find(function (node) { return node.nodeValue.trim(); }) || textNodes[textNodes.length - 1];
             target.nodeValue = ' ' + label;
-            textNodes.forEach(function (node) {
-                if (node !== target && node.nodeValue.trim()) node.remove();
-            });
-        } else if (element.children.length && !icons.length) {
-            // Leave complex controls (for example the mobile menu's icon and
-            // label spans) intact; their dedicated labels are handled below.
-            return;
-        } else {
-            element.appendChild(document.createTextNode(' ' + label));
-        }
+            textNodes.forEach(function (node) { if (node !== target && node.nodeValue.trim()) node.remove(); });
+        } else if (element.children.length && !icons.length) return;
+        else element.appendChild(document.createTextNode(' ' + label));
         if (!icons.length && element.textContent.trim() !== label) element.textContent = label;
     }
 
@@ -447,9 +412,7 @@
         var title = document.querySelector('h1');
         if (title && copy.title) title.textContent = copy.title[currentLocale === 'ur' ? 1 : 0];
         var subtitle = title && title.nextElementSibling;
-        if (subtitle && copy.subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) {
-            subtitle.textContent = copy.subtitle[currentLocale === 'ur' ? 1 : 0];
-        }
+        if (subtitle && copy.subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) subtitle.textContent = copy.subtitle[currentLocale === 'ur' ? 1 : 0];
         var lede = document.querySelector('.docs-lede');
         if (lede && copy.lede) lede.textContent = copy.lede[currentLocale === 'ur' ? 1 : 0];
         if (copy.documentTitle) document.title = copy.documentTitle[currentLocale === 'ur' ? 1 : 0];
@@ -477,10 +440,7 @@
             }
             var key = element.getAttribute('data-wu-i18n-control');
             var original = textWithoutIcons(element);
-            if (!key && dictionary.en.ui[original]) {
-                key = original;
-                element.setAttribute('data-wu-i18n-control', key);
-            }
+            if (!key && dictionary.en.ui[original]) { key = original; element.setAttribute('data-wu-i18n-control', key); }
             if (key && dictionary.en.ui[key]) setLabelPreservingIcon(element, translation('ui.' + key, key));
         });
     }
@@ -489,7 +449,6 @@
         document.documentElement.lang = currentLocale;
         document.documentElement.dir = currentLocale === 'ur' ? 'rtl' : 'ltr';
         document.body.classList.toggle('locale-urdu', currentLocale === 'ur');
-
         document.querySelectorAll('[data-wu-i18n-key]').forEach(function (element) {
             var key = element.getAttribute('data-wu-i18n-key');
             var label = translation(key, element.textContent.trim());
@@ -511,8 +470,6 @@
         if (footer) footer.setAttribute('aria-label', translation('aria.footer', 'Footer navigation'));
         var languageButton = document.querySelector('[data-wu-language-toggle]');
         if (languageButton) {
-            // Keep the action name in the language it switches to; this makes
-            // the control discoverable to screen readers in either locale.
             languageButton.setAttribute('aria-label', currentLocale === 'ur' ? 'Switch to English' : 'Switch to Urdu');
             languageButton.setAttribute('aria-pressed', String(currentLocale === 'ur'));
             var languageLabel = languageButton.querySelector('[data-wu-language-label]');
@@ -524,16 +481,14 @@
         if (menuToggle) menuToggle.setAttribute('aria-label', currentLocale === 'ur' ? 'مینو کھولیں' : 'Open menu');
         applyPageCopy();
         applyControlCopy();
-        if (window.WriteUrduContentLocale && typeof window.WriteUrduContentLocale.apply === 'function') {
-            window.WriteUrduContentLocale.apply(currentLocale);
-        }
+        if (window.WriteUrduContentLocale && typeof window.WriteUrduContentLocale.apply === 'function') window.WriteUrduContentLocale.apply(currentLocale);
         normalizeInternalLinks();
         document.dispatchEvent(new CustomEvent('write-urdu:locale-change', { detail: { locale: currentLocale } }));
     }
 
     function changeLocale(locale) {
         currentLocale = locale === 'ur' ? 'ur' : 'en';
-        try { window.localStorage.setItem(LOCALE_KEY, currentLocale); } catch (error) { /* private browsing */ }
+        try { window.localStorage.setItem(LOCALE_KEY, currentLocale); } catch (error) { }
         applyLocale();
     }
 
@@ -541,9 +496,7 @@
         if (!window.MutationObserver || !document.body) return;
         var pending = false;
         new MutationObserver(function (mutations) {
-            if (pending || !mutations.some(function (mutation) {
-                return Array.prototype.some.call(mutation.addedNodes, function (node) { return node.nodeType === 1; });
-            })) return;
+            if (pending || !mutations.some(function (mutation) { return Array.prototype.some.call(mutation.addedNodes, function (node) { return node.nodeType === 1; }); })) return;
             pending = true;
             window.setTimeout(function () { pending = false; applyControlCopy(); }, 0);
         }).observe(document.body, { childList: true, subtree: true });
@@ -552,15 +505,9 @@
     function renderHeader() {
         var oldNav = document.querySelector('nav.navbar, nav');
         if (!oldNav) return;
-
         var currentPath = normalizedPath();
-        if (!['/', '/index.html', '/urdu-editor', '/urdu-editor.html', '/urdu-keyboard', '/urdu-keyboard.html'].includes(currentPath)) {
-            document.body.classList.add('content-page');
-        }
-
-        document.querySelectorAll('a[target="_blank"]').forEach(function (link) {
-            link.rel = 'noopener noreferrer';
-        });
+        if (!['/', '/index.html', '/urdu-editor', '/urdu-editor.html', '/urdu-keyboard', '/urdu-keyboard.html'].includes(currentPath)) document.body.classList.add('content-page');
+        document.querySelectorAll('a[target="_blank"]').forEach(function (link) { link.rel = 'noopener noreferrer'; });
         var path = currentPath;
         var header = document.createElement('header');
         header.className = 'wu-site-header';
@@ -576,44 +523,20 @@
         }
         header.innerHTML =
                 '<div class="wu-header-inner">' +
-                '<a class="wu-brand" href="/" aria-label="Write Urdu home">' +
-                    '<img class="wu-brand-mark" src="image/logo10.png" alt="" width="42" height="42">' +
-                    '<span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply</small></span>' +
-                '</a>' +
-                '<button class="wu-menu-toggle" type="button" aria-expanded="false" aria-controls="wu-primary-nav">' +
-                    '<span class="wu-menu-icon" aria-hidden="true"></span><span class="wu-menu-label">Menu</span>' +
-                '</button>' +
-                '<nav class="wu-primary-nav" id="wu-primary-nav" aria-label="Primary navigation">' +
-                    primaryLinks.map(renderLink).join('') +
-                    '<details class="wu-nav-more wu-nav-create"' + (creativeActive ? ' open' : '') + '>' +
-                        '<summary' + (creativeActive ? ' class="is-active"' : '') + '>' + navIcon('sparkle') + '<span data-wu-i18n-key="nav.create">Create</span><span aria-hidden="true">⌄</span></summary>' +
-                        '<div class="wu-nav-more-menu">' + creativeLinks.map(renderLink).join('') + '</div>' +
-                    '</details>' +
-                    '<details class="wu-nav-more"' + (secondaryActive ? ' open' : '') + '>' +
-                        '<summary' + (secondaryActive ? ' class="is-active"' : '') + '>' + navIcon('book') + '<span data-wu-i18n-key="nav.more">More</span><span aria-hidden="true">⌄</span></summary>' +
-                        '<div class="wu-nav-more-menu">' +
-                            secondaryLinks.map(renderLink).join('') +
-                            '<a href="/write-urdu-feedback">' + navIcon('question') + '<span data-wu-i18n-key="nav.feedback">Feedback</span></a>' +
-                        '</div>' +
-                    '</details>' +
+                '<a class="wu-brand" href="/" aria-label="Write Urdu home"><img class="wu-brand-mark" src="image/logo10.png" alt="" width="42" height="42"><span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply</small></span></a>' +
+                '<button class="wu-menu-toggle" type="button" aria-expanded="false" aria-controls="wu-primary-nav"><span class="wu-menu-icon" aria-hidden="true"></span><span class="wu-menu-label">Menu</span></button>' +
+                '<nav class="wu-primary-nav" id="wu-primary-nav" aria-label="Primary navigation">' + primaryLinks.map(renderLink).join('') +
+                    '<details class="wu-nav-more wu-nav-create"' + (creativeActive ? ' open' : '') + '><summary' + (creativeActive ? ' class="is-active"' : '') + '>' + navIcon('sparkle') + '<span data-wu-i18n-key="nav.create">Create</span><span aria-hidden="true">⌄</span></summary><div class="wu-nav-more-menu">' + creativeLinks.map(renderLink).join('') + '</div></details>' +
+                    '<details class="wu-nav-more"' + (secondaryActive ? ' open' : '') + '><summary' + (secondaryActive ? ' class="is-active"' : '') + '>' + navIcon('book') + '<span data-wu-i18n-key="nav.more">More</span><span aria-hidden="true">⌄</span></summary><div class="wu-nav-more-menu">' + secondaryLinks.map(renderLink).join('') + '<a href="/write-urdu-feedback">' + navIcon('question') + '<span data-wu-i18n-key="nav.feedback">Feedback</span></a></div></details>' +
                 '</nav>' +
                 '<button class="wu-install-toggle" type="button" data-wu-install hidden>Install app</button>' +
                 '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
             '</div>' +
-            '<div class="wu-header-trustbar" role="note" aria-label="Privacy and access information">' +
-                '<div class="wu-header-trustbar-inner">' +
-                    '<span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.local">Runs in your browser</span></span>' +
-                    '<span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.noAccount">No account required</span></span>' +
-                    '<span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.free">Free to use</span></span>' +
-                    '<span class="wu-header-privacy" data-wu-i18n-key="header.privacy">Your writing stays in this browser unless you choose to export or share it.</span>' +
-                '</div>' +
-            '</div>';
+            '<div class="wu-header-trustbar" role="note" aria-label="Privacy and access information"><div class="wu-header-trustbar-inner"><span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.local">Runs in your browser</span></span><span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.noAccount">No account required</span></span><span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.free">Free to use</span></span><span class="wu-header-privacy" data-wu-i18n-key="header.privacy">Your writing stays in this browser unless you choose to export or share it.</span></div></div>';
 
         var wrapper = oldNav.parentElement;
         oldNav.replaceWith(header);
-        if (wrapper && wrapper.children.length === 1 && wrapper.firstElementChild === header) {
-            wrapper.classList.add('wu-header-wrapper');
-        }
+        if (wrapper && wrapper.children.length === 1 && wrapper.firstElementChild === header) wrapper.classList.add('wu-header-wrapper');
         renderHeaderAd(header);
         loadAds();
         loadContentLocale();
@@ -626,35 +549,17 @@
         var toggle = header.querySelector('.wu-menu-toggle');
         var nav = header.querySelector('.wu-primary-nav');
         var languageToggle = header.querySelector('[data-wu-language-toggle]');
-
-        function closeMenu() {
-            toggle.setAttribute('aria-expanded', 'false');
-            nav.classList.remove('is-open');
-        }
-        function closeSecondaryMenus(target) {
-            nav.querySelectorAll('.wu-nav-more[open]').forEach(function (menu) {
-                if (!target || !menu.contains(target)) menu.removeAttribute('open');
-            });
-        }
-
+        function closeMenu() { toggle.setAttribute('aria-expanded', 'false'); nav.classList.remove('is-open'); }
+        function closeSecondaryMenus(target) { nav.querySelectorAll('.wu-nav-more[open]').forEach(function (menu) { if (!target || !menu.contains(target)) menu.removeAttribute('open'); }); }
         toggle.addEventListener('click', function () {
             var open = toggle.getAttribute('aria-expanded') === 'true';
             toggle.setAttribute('aria-expanded', String(!open));
             nav.classList.toggle('is-open', !open);
         });
-        languageToggle.addEventListener('click', function () {
-            changeLocale(currentLocale === 'ur' ? 'en' : 'ur');
-        });
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') closeMenu();
-        });
-        document.addEventListener('click', function (event) {
-            if (!header.contains(event.target)) closeMenu();
-            else closeSecondaryMenus(event.target);
-        });
-        window.addEventListener('resize', function () {
-            if (window.innerWidth >= 1281) { closeMenu(); closeSecondaryMenus(null); }
-        });
+        languageToggle.addEventListener('click', function () { changeLocale(currentLocale === 'ur' ? 'en' : 'ur'); });
+        document.addEventListener('keydown', function (event) { if (event.key === 'Escape') closeMenu(); });
+        document.addEventListener('click', function (event) { if (!header.contains(event.target)) closeMenu(); else closeSecondaryMenus(event.target); });
+        window.addEventListener('resize', function () { if (window.innerWidth >= 1281) { closeMenu(); closeSecondaryMenus(null); } });
     }
 
     window.WriteUrduLocale = {
@@ -669,9 +574,6 @@
     addStylesheet();
     ensureUrduFonts();
     ensureBrandFavicon();
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', renderHeader);
-    } else {
-        renderHeader();
-    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderHeader);
+    else renderHeader();
 }());

@@ -15,13 +15,8 @@
     var SHARED_SLOT = '8323789671';
     var ACQUISITION_SCRIPT = '/js/acquisition-telemetry.js';
 
-    // GROWTH-A1: every public product route has one monetization posture.
-    // This is deliberately independent from SEO intent ownership: the groups
-    // only describe how aggressively a page may carry advertising.
     var PAGE_TYPES = {
-        write: [
-            '/', '/urdu-editor', '/urdu-keyboard'
-        ],
+        write: ['/', '/urdu-editor', '/urdu-keyboard'],
         learn: [
             '/roman-urdu-transliteration', '/urdu-alphabet', '/urdu-fonts-nastaliq-vs-naskh',
             '/english-urdu-typing-tutorial', '/urdu-faq', '/write-urdu-documentation',
@@ -30,7 +25,7 @@
         create: [
             '/urdu-card-studio', '/urdu-templates', '/stylish-urdu-text-generator',
             '/urdu-name-art-maker', '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker',
-            '/urdu-invoice-generator', '/qr-code-generator', '/urdu-text-cleaner'
+            '/urdu-invoice-generator', '/qr-code-generator', '/urdu-text-cleaner', '/urdu-ocr'
         ],
         trust: [
             '/why-write-urdu', '/contact', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
@@ -38,50 +33,24 @@
         ]
     };
 
-    var LEGACY_DUPLICATE_ROUTES = {
-        '/english-urdu-typing-tutorial': true
-    };
+    var LEGACY_DUPLICATE_ROUTES = { '/english-urdu-typing-tutorial': true };
 
     var LEARN_ANCHORS = [
-        '[data-wu-ad-boundary="after-answer"]',
-        '.authority-quick-answer',
-        '.authority-section',
-        '.seo-content > section',
-        '.content-article > section',
-        'main section',
-        '.page-intro',
-        '.docs-lede'
+        '[data-wu-ad-boundary="after-answer"]', '.authority-quick-answer', '.authority-section',
+        '.seo-content > section', '.content-article > section', 'main section', '.page-intro', '.docs-lede'
     ];
 
     var CREATE_ANCHORS = [
-        '[data-wu-ad-boundary="post-workspace"]',
-        '.name-art-workspace',
-        '.social-maker-workspace',
-        '.invoice-workspace',
-        '[data-invoice-generator]',
-        '[data-stylish-generator]',
-        '[data-template-library]',
-        '[data-urdu-text-cleaner]',
-        '.card-studio-workspace',
-        '.card-studio-shell',
-        '.qr-workspace',
-        '.qr-generator-shell',
-        'main'
+        '[data-wu-ad-boundary="post-workspace"]', '.name-art-workspace', '.social-maker-workspace',
+        '.invoice-workspace', '[data-invoice-generator]', '[data-stylish-generator]', '[data-template-library]',
+        '[data-urdu-text-cleaner]', '[data-urdu-ocr]', '.card-studio-workspace', '.card-studio-shell',
+        '.qr-workspace', '.qr-generator-shell', 'main'
     ];
 
     var CREATE_PROTECTED_AREAS = [
-        '[data-card-studio]',
-        '[data-invoice-generator]',
-        '[data-stylish-generator]',
-        '[data-template-library]',
-        '[data-urdu-text-cleaner]',
-        '.name-art-workspace',
-        '.social-maker-workspace',
-        '.invoice-workspace',
-        '.card-studio-workspace',
-        '.card-studio-shell',
-        '.qr-workspace',
-        '.qr-generator-shell'
+        '[data-card-studio]', '[data-invoice-generator]', '[data-stylish-generator]', '[data-template-library]',
+        '[data-urdu-text-cleaner]', '[data-urdu-ocr]', '.name-art-workspace', '.social-maker-workspace',
+        '.invoice-workspace', '.card-studio-workspace', '.card-studio-shell', '.qr-workspace', '.qr-generator-shell'
     ];
 
     function normalizePath(pathname) {
@@ -94,9 +63,7 @@
 
     function resolvePageType(pathname) {
         var path = normalizePath(pathname);
-        var type = Object.keys(PAGE_TYPES).find(function (key) {
-            return PAGE_TYPES[key].indexOf(path) >= 0;
-        });
+        var type = Object.keys(PAGE_TYPES).find(function (key) { return PAGE_TYPES[key].indexOf(path) >= 0; });
         return type || 'unclassified';
     }
 
@@ -125,9 +92,7 @@
         if (!slot || !slot.parentElement) return;
         var parent = slot.parentElement;
         slot.remove();
-        if (!parent.textContent.trim() && !parent.querySelector('img,iframe,video,canvas,a,button,input,textarea,select')) {
-            parent.hidden = true;
-        }
+        if (!parent.textContent.trim() && !parent.querySelector('img,iframe,video,canvas,a,button,input,textarea,select')) parent.hidden = true;
     }
 
     function cleanLegacyDuplicates(document, path, canonicalRegion) {
@@ -138,20 +103,12 @@
             removeSlot(slot);
             removed += 1;
         });
-
-        // The legacy tutorial used a dedicated Bootstrap side rail containing
-        // only social widgets and repeated ad units. After the repeated units
-        // are retired, let the article use the full row instead of preserving
-        // an empty 25% column.
         if (path === '/english-urdu-typing-tutorial' && removed) {
             var article = document.querySelector('.col-12.col-md-9');
             var row = article && article.parentElement;
             var side = row && row.querySelector('.col-6.col-md-3');
             if (side) side.hidden = true;
-            if (article) {
-                article.style.flex = '0 0 100%';
-                article.style.maxWidth = '100%';
-            }
+            if (article) { article.style.flex = '0 0 100%'; article.style.maxWidth = '100%'; }
             if (document.body) document.body.classList.add('wu-legacy-ad-cleanup');
         }
         return removed;
@@ -159,18 +116,11 @@
 
     function removeAllAds(document) {
         Array.prototype.slice.call(document.querySelectorAll('ins.adsbygoogle')).forEach(removeSlot);
-        Array.prototype.slice.call(document.querySelectorAll('.wu-header-ad')).forEach(function (region) {
-            region.remove();
-        });
+        Array.prototype.slice.call(document.querySelectorAll('.wu-header-ad')).forEach(function (region) { region.remove(); });
     }
 
     function buildSlotMarkup() {
-        return '<ins class="adsbygoogle"' +
-            ' style="display:block"' +
-            ' data-ad-client="' + ADSENSE_CLIENT + '"' +
-            ' data-ad-slot="' + SHARED_SLOT + '"' +
-            ' data-ad-format="auto"' +
-            ' data-full-width-responsive="true"></ins>';
+        return '<ins class="adsbygoogle" style="display:block" data-ad-client="' + ADSENSE_CLIENT + '" data-ad-slot="' + SHARED_SLOT + '" data-ad-format="auto" data-full-width-responsive="true"></ins>';
     }
 
     function ensureAcquisitionTelemetry(root) {
@@ -187,17 +137,11 @@
     function protectAutoAds(document, pageType) {
         if (!document) return 0;
         var protectedCount = 0;
-
-        // Intent-driven formats are useful on Learn pages, but should not turn
-        // an editor or trust page into a commercial text surface. Write routes
-        // are also protected from side-rail overlap if an account-side setting
-        // is accidentally broadened later.
         if (document.body && (pageType === 'write' || pageType === 'trust')) {
             document.body.classList.add('google-anno-skip');
             document.body.setAttribute('google-side-rail-overlap', 'false');
             protectedCount += 1;
         }
-
         if (pageType === 'create') {
             CREATE_PROTECTED_AREAS.forEach(function (selector) {
                 Array.prototype.slice.call(document.querySelectorAll(selector)).forEach(function (node) {
@@ -207,32 +151,18 @@
                 });
             });
         }
-
-        // Vignettes may be tested later on content navigation, but never on
-        // normal navigation, downloads, in-page jumps or product handoffs.
-        Array.prototype.slice.call(document.querySelectorAll(
-            'nav a, a[download], a[href^="#"], [data-create-card], [data-create-qr], .home-actions-group-create a'
-        )).forEach(function (link) {
+        Array.prototype.slice.call(document.querySelectorAll('nav a, a[download], a[href^="#"], [data-create-card], [data-create-qr], .home-actions-group-create a')).forEach(function (link) {
             link.setAttribute('data-google-vignette', 'false');
             protectedCount += 1;
         });
-
         return protectedCount;
     }
 
-    // V3 treats the ad region as part of the shared layout system. Older pages
-    // can still provide their own .wu-header-ad, but if a Learn/Create route
-    // has no slot (for example Card Studio or QR Generator), create exactly one
-    // after a known safe content/workspace boundary. Core Write routes remain
-    // owned by write-monetization.js because their authoring boundaries are
-    // intentionally stricter.
     function createCanonicalRegion(document, pageType) {
         if (!document || document.querySelector('.wu-header-ad')) return document && document.querySelector('.wu-header-ad');
         if (pageType !== 'learn' && pageType !== 'create') return null;
-
         var anchor = pageType === 'learn' ? findFirst(document, LEARN_ANCHORS) : findFirst(document, CREATE_ANCHORS);
         if (!anchor || !anchor.insertAdjacentElement) return null;
-
         var region = document.createElement('aside');
         region.className = 'wu-header-ad wu-ad-region wu-ad-placeholder';
         region.setAttribute('aria-label', 'Advertisement');
@@ -248,22 +178,12 @@
         if (!region) return { moved: false, placement: null };
         var placement = placementName(pageType);
         var anchor = null;
-
         if (pageType === 'learn') anchor = findFirst(document, LEARN_ANCHORS);
         if (pageType === 'create') anchor = findFirst(document, CREATE_ANCHORS);
-
-        // Core writing routes intentionally require an explicit post-workspace
-        // boundary before a shared unit can be shown. If a future shell change
-        // accidentally injects a top-of-page unit, remove it rather than
-        // guessing where the active editor ends.
         if (pageType === 'write') {
             anchor = document.querySelector('[data-wu-ad-boundary="post-workspace"]');
-            if (!anchor) {
-                region.remove();
-                return { moved: false, placement: null };
-            }
+            if (!anchor) { region.remove(); return { moved: false, placement: null }; }
         }
-
         var moved = anchor ? moveAfter(region, anchor) : false;
         region.classList.add('wu-ad-region');
         region.setAttribute('data-wu-ad-placement', placement);
@@ -275,20 +195,13 @@
     function loadAdSense(root, slots) {
         var document = root.document;
         if (!slots.length || document.querySelector('script[data-write-urdu-ads]')) return false;
-
         function initializeSlots() {
             slots.forEach(function (slot) {
                 if (!slot.isConnected || slot.getAttribute('data-adsbygoogle-status')) return;
-                try {
-                    (root.adsbygoogle = root.adsbygoogle || []).push({});
-                } catch (error) {
-                    if (root.console && typeof root.console.warn === 'function') {
-                        root.console.warn('An advertising slot could not be initialized.', error);
-                    }
-                }
+                try { (root.adsbygoogle = root.adsbygoogle || []).push({}); }
+                catch (error) { if (root.console && typeof root.console.warn === 'function') root.console.warn('An advertising slot could not be initialized.', error); }
             });
         }
-
         var script = document.createElement('script');
         script.async = true;
         script.src = ADSENSE_SCRIPT;
@@ -302,7 +215,6 @@
     function init(root) {
         root = root || (typeof window !== 'undefined' ? window : null);
         if (!root || !root.document) return null;
-
         var document = root.document;
         var path = normalizePath(root.location && root.location.pathname);
         var pageType = resolvePageType(path);
@@ -310,42 +222,22 @@
             document.body.setAttribute('data-wu-monetization-type', pageType);
             document.body.classList.add('wu-monetization-' + pageType);
         }
-
         var protectedAutoAds = protectAutoAds(document, pageType);
         ensureAcquisitionTelemetry(root);
-
         if (pageType === 'trust') {
             removeAllAds(document);
             return { path: path, pageType: pageType, placement: null, slotCount: 0, adsenseLoaded: false, protectedAutoAds: protectedAutoAds };
         }
-
         var canonicalRegion = document.querySelector('.wu-header-ad') || createCanonicalRegion(document, pageType);
         var removedLegacySlots = cleanLegacyDuplicates(document, path, canonicalRegion);
         var position = positionCanonicalRegion(document, pageType, canonicalRegion);
         var slots = Array.prototype.slice.call(document.querySelectorAll('ins.adsbygoogle'));
-
-        // Stable non-AdSense metadata makes DOM checks and future reporting
-        // integrations possible without inventing custom-channel IDs. Actual
-        // AdSense data-ad-channel values are added only after the matching
-        // channels are created in the publisher account.
         slots.forEach(function (slot) {
-            if (!slot.getAttribute('data-wu-ad-placement')) {
-                slot.setAttribute('data-wu-ad-placement', position.placement || 'legacy_manual');
-            }
+            if (!slot.getAttribute('data-wu-ad-placement')) slot.setAttribute('data-wu-ad-placement', position.placement || 'legacy_manual');
             slot.setAttribute('data-wu-ad-page-type', pageType);
         });
-
         var loaded = loadAdSense(root, slots);
-        return {
-            path: path,
-            pageType: pageType,
-            placement: position.placement,
-            moved: position.moved,
-            removedLegacySlots: removedLegacySlots,
-            slotCount: slots.length,
-            adsenseLoaded: loaded,
-            protectedAutoAds: protectedAutoAds
-        };
+        return { path: path, pageType: pageType, placement: position.placement, moved: position.moved, removedLegacySlots: removedLegacySlots, slotCount: slots.length, adsenseLoaded: loaded, protectedAutoAds: protectedAutoAds };
     }
 
     return {
