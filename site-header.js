@@ -22,6 +22,7 @@
         { href: '/urdu-ocr', match: ['/urdu-ocr', '/urdu-ocr.html'], key: 'urduOcr', label: 'Urdu OCR', icon: 'image', secondary: true },
         { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation', icon: 'book', secondary: true },
         { href: '/how-to-write-urdu-on-photo', match: ['/how-to-write-urdu-on-photo'], key: 'photoGuide', label: 'Urdu on Photo Guide', icon: 'image', secondary: true },
+        { href: '/how-to-share-urdu-writing-online', match: ['/how-to-share-urdu-writing-online'], key: 'shareGuide', label: 'Share Urdu Guide', icon: 'share', secondary: true },
         { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features', icon: 'sliders', secondary: true },
         { href: '/english-urdu-typing-tutorial', match: ['/english-urdu-typing-tutorial', '/english-urdu-typing-tutorial.html'], key: 'tutorials', label: 'Tutorials', icon: 'play', secondary: true },
         { href: '/urdu-faq', match: ['/urdu-faq', '/urdu-faq.html'], key: 'faq', label: 'FAQ', icon: 'question', secondary: true },
@@ -45,7 +46,8 @@
         sliders: '<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="11" cy="18" r="2"/>',
         play: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4V8Z"/>',
         question: '<circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.8 1.7c-1.1.8-1.6 1.2-1.6 2.5M12 16.5h.01"/>',
-        shield: '<path d="M12 3 19 6v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/>'
+        shield: '<path d="M12 3 19 6v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3Z"/><path d="m9 12 2 2 4-4"/>',
+        share: '<path d="M8 12h8"/><path d="m13 7 5 5-5 5"/><path d="M6 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/>'
     };
     function navIcon(name) { return '<span class="wu-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">' + (navIcons[name] || navIcons.grid) + '</svg></span>'; }
 
@@ -55,7 +57,7 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', urduOcr: 'Urdu OCR', documentation: 'Documentation', photoGuide: 'Urdu on Photo Guide', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', urduOcr: 'Urdu OCR', documentation: 'Documentation', photoGuide: 'Urdu on Photo Guide', shareGuide: 'Share Urdu Guide', features: 'Features',
                 tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', create: 'Create', more: 'More', feedback: 'Feedback'
             },
             footer: {
@@ -103,7 +105,7 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', textCleaner: 'اردو متن صاف کریں', urduOcr: 'اردو OCR', documentation: 'دستاویزات', photoGuide: 'تصویر پر اردو گائیڈ', features: 'خصوصیات',
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', textCleaner: 'اردو متن صاف کریں', urduOcr: 'اردو OCR', documentation: 'دستاویزات', photoGuide: 'تصویر پر اردو گائیڈ', shareGuide: 'اردو شیئرنگ گائیڈ', features: 'خصوصیات',
                 tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', create: 'تخلیق', more: 'مزید', feedback: 'رائے'
             },
             footer: {
@@ -162,6 +164,7 @@
         '/qr-code-generator.html': { title: ['Free QR Code Generator', 'مفت QR کوڈ جنریٹر'], subtitle: ['Create a static QR code privately in your browser', 'اپنے براؤزر میں نجی طور پر جامد QR کوڈ بنائیں'], documentTitle: ['Free QR Code Generator | Create QR Codes Privately', 'مفت QR کوڈ جنریٹر | نجی طور پر QR کوڈ بنائیں'] },
         '/write-urdu-documentation.html': { title: ['Write Urdu, beautifully explained.', 'رائٹ اردو، آسان انداز میں'], lede: ['A clear guide to every writing path on the site—from typing Roman Urdu and converting it into Urdu to polishing, saving and sharing a finished piece.', 'اس ویب سائٹ پر اردو لکھنے کے ہر طریقے کی واضح رہنمائی—رومن اردو کو اردو میں تبدیل کرنے سے لے کر متن کو سنوارنے، محفوظ کرنے اور شیئر کرنے تک۔'], documentTitle: ['Write Urdu Documentation | Roman Urdu, Keyboard and Rich Editor', 'رائٹ اردو دستاویزات | رومن اردو، کی بورڈ اور رچ ایڈیٹر'] },
         '/how-to-write-urdu-on-photo': { title: ['How to write Urdu text or poetry on a photo online', 'تصویر پر اردو متن یا شاعری آن لائن کیسے لکھیں'] },
+        '/how-to-share-urdu-writing-online': { title: ['How to share Urdu writing online with a WriteUrdu link', 'WriteUrdu لنک کے ساتھ اردو تحریر آن لائن کیسے شیئر کریں'], documentTitle: ['How to Share Urdu Writing Online with a WriteUrdu Link', 'WriteUrdu لنک کے ساتھ اردو تحریر آن لائن شیئر کریں'] },
         '/write-urdu-features.html': { title: ['Write Urdu features and export options', 'رائٹ اردو کی خصوصیات اور برآمد کے اختیارات'], subtitle: ['Write, refine and share Urdu text with browser-based tools', 'براؤزر پر مبنی ٹولز سے اردو متن لکھیں، بہتر بنائیں اور شیئر کریں'], documentTitle: ['Write Urdu Features | Drafts, Import, Export and Share', 'رائٹ اردو خصوصیات | مسودے، درآمد، برآمد اور شیئرنگ'] },
         '/urdu-editor-features.html': { title: ['Urdu Rich Text Editor formatting guide', 'اردو رچ ٹیکسٹ ایڈیٹر فارمیٹنگ گائیڈ'], subtitle: ['Learn how to format, export and share polished Urdu documents', 'خوب صورت اردو دستاویزات کو فارمیٹ، برآمد اور شیئر کرنے کا طریقہ سیکھیں'], documentTitle: ['Urdu Editor Formatting Guide | Fonts, Colour and Size', 'اردو ایڈیٹر فارمیٹنگ گائیڈ | فونٹس، رنگ اور سائز'] },
         '/english-urdu-typing-tutorial.html': { title: ['Write Urdu video tutorials', 'رائٹ اردو ویڈیو اسباق'], subtitle: ['Short guides for transliteration, typing and formatting', 'تحریر کی تبدیلی، ٹائپنگ اور فارمیٹنگ کے مختصر رہنما'], documentTitle: ['Write Urdu Tutorials | Typing and Formatting Guides', 'رائٹ اردو اسباق | ٹائپنگ اور فارمیٹنگ رہنما'] },
@@ -296,6 +299,7 @@
                             '<a href="/write-urdu-features" data-wu-i18n-key="footer.features">Features</a>' +
                             '<a href="/urdu-editor-features" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
                             '<a href="/english-urdu-typing-tutorial" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
+                            '<a href="/how-to-share-urdu-writing-online" data-wu-i18n-key="nav.shareGuide">Share Urdu Guide</a>' +
                             '<a href="/roman-urdu-transliteration" data-wu-i18n-key="footer.transliteration">Roman Urdu and transliteration</a>' +
                             '<a href="/urdu-fonts-nastaliq-vs-naskh" data-wu-i18n-key="footer.fonts">Urdu font comparison</a>' +
                         '</div>' +

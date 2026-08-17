@@ -10,6 +10,11 @@ const METRIC_COLUMNS = [
   'input_roman', 'input_direct', 'input_unknown',
   'device_mobile', 'device_tablet', 'device_desktop'
 ];
+const SHARE_METRIC_COLUMNS = [
+  'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
+  'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
+  'device_mobile', 'device_tablet', 'device_desktop'
+];
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -32,11 +37,9 @@ function rows(result) {
   return result && Array.isArray(result.results) ? result.results : [];
 }
 
-async function hasRollupTable(db) {
-  const result = await db.prepare(
-    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'product_hourly_metrics'"
-  ).first();
-  return Boolean(result && result.name === 'product_hourly_metrics');
+async function tableExists(db, table) {
+  const result = await db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?1").bind(table).first();
+  return Boolean(result && result.name === table);
 }
 
 function hourIso(date) {
@@ -67,8 +70,21 @@ async function summaryForWindow(db, start, end) {
   `).bind(start, end).first()) || {};
 }
 
+async function shareSummaryForWindow(db, start, end) {
+  const sums = SHARE_METRIC_COLUMNS.map((column) => `SUM(${column}) AS ${column}`).join(',\n      ');
+  return (await db.prepare(`
+    SELECT ${sums}, MAX(latest_event_at) AS latest_event_at
+    FROM share_hourly_metrics
+    WHERE tool = 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
+  `).bind(start, end).first()) || {};
+}
+
 function n(row, key) {
   return Number(row && row[key] || 0);
+}
+
+function ratio(numerator, denominator) {
+  return denominator ? numerator / denominator : 0;
 }
 
 function distribution(items) {
@@ -87,6 +103,99 @@ function exportRows(summary) {
   ].filter((item) => item.events > 0);
 }
 
+async function shareLoopForWindow(db, bounds) {
+  const [hasMetrics, hasArtifacts] = await Promise.all([
+    tableExists(db, 'share_hourly_metrics'),
+    tableExists(db, 'share_artifacts')
+  ]);
+  if (!hasMetrics && !hasArtifacts) return { ready: false };
+
+  const metrics = hasMetrics ? await shareSummaryForWindow(db, bounds.currentStart, bounds.currentEnd) : {};
+  let artifacts = {};
+  let parentCohort = {};
+  let sourceRows = [];
+  if (hasArtifacts) {
+    [artifacts, parentCohort, sourceRows] = await Promise.all([
+      db.prepare(`
+        SELECT COUNT(*) AS published_links,
+               SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS active_links,
+               SUM(CASE WHEN status = 'deleted' THEN 1 ELSE 0 END) AS deleted_links,
+               SUM(CASE WHEN status = 'blocked' THEN 1 ELSE 0 END) AS blocked_links
+        FROM share_artifacts
+        WHERE created_at >= ?1 AND created_at < ?2
+      `).bind(bounds.currentStart, bounds.currentEnd).first(),
+      db.prepare(`
+        SELECT COUNT(*) AS eligible_parents,
+               SUM(CASE WHEN EXISTS (
+                 SELECT 1 FROM share_artifacts child
+                 WHERE child.origin_share_id = parent.id
+                   AND child.created_at >= ?1 AND child.created_at < ?2
+               ) THEN 1 ELSE 0 END) AS activated_parents,
+               SUM((
+                 SELECT COUNT(*) FROM share_artifacts child
+                 WHERE child.origin_share_id = parent.id
+                   AND child.created_at >= ?1 AND child.created_at < ?2
+               )) AS child_share_artifacts
+        FROM share_artifacts parent
+        WHERE parent.created_at >= ?1 AND parent.created_at < ?2
+      `).bind(bounds.currentStart, bounds.currentEnd).first(),
+      db.prepare(`
+        SELECT source_tool, COUNT(*) AS published_links
+        FROM share_artifacts
+        WHERE created_at >= ?1 AND created_at < ?2
+        GROUP BY source_tool
+        ORDER BY published_links DESC
+      `).bind(bounds.currentStart, bounds.currentEnd).all().then(rows)
+    ]);
+  }
+
+  const attempts = n(metrics, 'publish_started');
+  const completed = n(metrics, 'publish_completed');
+  const pageViews = n(metrics, 'page_views');
+  const ctaClicks = n(metrics, 'cta_clicks');
+  const referredStarts = n(metrics, 'referred_creation_starts');
+  const republishes = n(metrics, 'republish_completed');
+  const publishedLinks = n(artifacts, 'published_links');
+  const eligibleParents = n(parentCohort, 'eligible_parents');
+  const activatedParents = n(parentCohort, 'activated_parents');
+  const childShares = n(parentCohort, 'child_share_artifacts');
+
+  return {
+    ready: true,
+    publish_attempts: attempts,
+    publish_completed_events: completed,
+    publish_failures: n(metrics, 'publish_failed'),
+    publish_success_rate: ratio(completed, attempts),
+    published_links: publishedLinks,
+    active_links: n(artifacts, 'active_links'),
+    public_page_views: pageViews,
+    views_per_published_link: ratio(pageViews, publishedLinks),
+    link_share_actions: n(metrics, 'link_share_actions'),
+    cta_clicks: ctaClicks,
+    cta_rate: ratio(ctaClicks, pageViews),
+    referred_creation_starts: referredStarts,
+    referred_creation_rate: ratio(referredStarts, ctaClicks),
+    republish_completed: republishes,
+    republish_rate: ratio(republishes, referredStarts),
+    eligible_parent_shares: eligibleParents,
+    activated_parent_shares: activatedParents,
+    parent_activation_rate: ratio(activatedParents, eligibleParents),
+    child_share_artifacts: childShares,
+    reproduction_ratio: ratio(childShares, eligibleParents),
+    deletions: n(metrics, 'deletions'),
+    reports: n(metrics, 'reports'),
+    report_rate_per_1000_views: pageViews ? n(metrics, 'reports') * 1000 / pageViews : 0,
+    blocked_artifacts: n(artifacts, 'blocked_links'),
+    latest_event_at: metrics.latest_event_at || null,
+    devices: [
+      { device_class: 'desktop', views: n(metrics, 'device_desktop') },
+      { device_class: 'mobile', views: n(metrics, 'device_mobile') },
+      { device_class: 'tablet', views: n(metrics, 'device_tablet') }
+    ].filter((item) => item.views > 0),
+    by_source_tool: sourceRows
+  };
+}
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   if (!allowedHost(request, env)) return json({ error: 'not_found' }, 404);
@@ -97,7 +206,7 @@ export async function onRequestGet(context) {
   const days = ALLOWED_DAYS.has(requestedDays) ? requestedDays : 7;
   const db = env.METRICS_DB;
 
-  if (!(await hasRollupTable(db))) {
+  if (!(await tableExists(db, 'product_hourly_metrics'))) {
     return json({
       ready: false,
       days,
@@ -107,7 +216,7 @@ export async function onRequestGet(context) {
   }
 
   const bounds = windowBounds(days);
-  const [current, previous, handoffResult, toolResult, dailyResult] = await Promise.all([
+  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop] = await Promise.all([
     summaryForWindow(db, bounds.currentStart, bounds.currentEnd),
     summaryForWindow(db, bounds.previousStart, bounds.previousEnd),
     db.prepare(`
@@ -143,7 +252,8 @@ export async function onRequestGet(context) {
       WHERE tool = 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
       GROUP BY substr(bucket_hour, 1, 10)
       ORDER BY day ASC
-    `).bind(bounds.currentStart, bounds.currentEnd).all()
+    `).bind(bounds.currentStart, bounds.currentEnd).all(),
+    shareLoopForWindow(db, bounds)
   ]);
 
   const sessions = n(current, 'visits');
@@ -223,7 +333,8 @@ export async function onRequestGet(context) {
     ].filter((item) => item.sessions > 0),
     handoffs: rows(handoffResult),
     tools: rows(toolResult),
-    daily: rows(dailyResult)
+    daily: rows(dailyResult),
+    share_loop: shareLoop
   });
 }
 

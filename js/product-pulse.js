@@ -14,6 +14,7 @@
     instagram_post: 'Instagram Post',
     invoice_generator: 'Invoice Generator',
     qr_generator: 'QR Generator',
+    public_share: 'Public share page',
     content: 'Content page'
   };
 
@@ -21,6 +22,7 @@
   function qa(selector) { return Array.prototype.slice.call(document.querySelectorAll(selector)); }
   function fmt(value) { return number.format(Number(value || 0)); }
   function percent(value) { return (Number(value || 0) * 100).toFixed(1).replace(/\.0$/, '') + '%'; }
+  function ratio(value) { return Number(value || 0).toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1') + '×'; }
   function safeText(value) { return String(value == null ? '' : value); }
 
   function showBanner(message, error) {
@@ -80,6 +82,7 @@
 
   function renderBars(containerSelector, items, labelKey, valueKey, labelTransform) {
     var container = q(containerSelector);
+    if (!container) return;
     container.innerHTML = '';
     if (!items || !items.length) {
       container.innerHTML = '<div class="os-empty">No data yet for this period.</div>';
@@ -124,6 +127,56 @@
       { label: 'Template use', value: c.template_uses },
       { label: 'Local image', value: c.background_image_uses }
     ], 'label', 'value');
+  }
+
+  function renderShareLoop(data) {
+    var share = data.share_loop || {};
+    var panel = q('#shareLoopPanel');
+    if (!panel) return;
+
+    var published = q('[data-share-kpi="published_links"]');
+    var views = q('[data-share-kpi="public_page_views"]');
+    var cta = q('[data-share-kpi="cta_rate"]');
+    var republish = q('[data-share-kpi="republish_rate"]');
+    var reproduction = q('[data-share-kpi="reproduction_ratio"]');
+    var viewsMeta = q('[data-share-meta="views_per_link"]');
+    var trustNote = q('#shareLoopTrustNote');
+
+    if (!share.ready) {
+      [published, views, cta, republish, reproduction].forEach(function (node) { if (node) node.textContent = '—'; });
+      if (viewsMeta) viewsMeta.textContent = 'Waiting for first published link';
+      renderBars('#shareLoopBars', [], 'label', 'value');
+      renderBars('#shareDeviceBars', [], 'device_class', 'views');
+      if (trustNote) trustNote.textContent = 'Share Loop will appear after the first publishing/visitor events. Share IDs and public Urdu text are never included in anonymous telemetry.';
+      return;
+    }
+
+    if (published) published.textContent = fmt(share.published_links);
+    if (views) views.textContent = fmt(share.public_page_views);
+    if (cta) cta.textContent = percent(share.cta_rate);
+    if (republish) republish.textContent = percent(share.republish_rate);
+    if (reproduction) reproduction.textContent = ratio(share.reproduction_ratio);
+    if (viewsMeta) viewsMeta.textContent = Number(share.views_per_published_link || 0).toFixed(1).replace(/\.0$/, '') + ' views / link';
+
+    renderBars('#shareLoopBars', [
+      { label: 'Publish attempts', value: share.publish_attempts },
+      { label: 'Published links', value: share.published_links },
+      { label: 'Public views', value: share.public_page_views },
+      { label: 'CTA clicks', value: share.cta_clicks },
+      { label: 'Referred starts', value: share.referred_creation_starts },
+      { label: 'Republished', value: share.republish_completed },
+      { label: 'Child shares', value: share.child_share_artifacts }
+    ], 'label', 'value');
+    renderBars('#shareDeviceBars', share.devices || [], 'device_class', 'views', function (label) {
+      return safeText(label).replace(/^./, function (c) { return c.toUpperCase(); });
+    });
+
+    if (trustNote) {
+      trustNote.textContent = fmt(share.link_share_actions) + ' copy/native share actions · ' +
+        fmt(share.deletions) + ' deletions · ' + fmt(share.reports) + ' reports · ' +
+        Number(share.report_rate_per_1000_views || 0).toFixed(1).replace(/\.0$/, '') +
+        ' reports / 1,000 public views. Share IDs and public Urdu text are not included in anonymous telemetry.';
+    }
   }
 
   function orderedBuckets(items, order) {
@@ -218,6 +271,7 @@
     hideBanner();
     renderKpis(data);
     renderOutcomes(data);
+    renderShareLoop(data);
     renderDistributions(data);
     renderTools(data);
     renderDaily(data);

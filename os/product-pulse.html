@@ -22,7 +22,7 @@
       <div>
         <p class="os-eyebrow">Product intelligence</p>
         <h1>Product Pulse</h1>
-        <p class="os-lede">See what people actually do after they arrive: writing engagement, canvas/design usage, copy/export outcomes, devices, handoffs and coarse arrival sources — without collecting the text they write.</p>
+        <p class="os-lede">See what people actually do after they arrive: writing engagement, canvas/design usage, copy/export outcomes, share-loop reproduction, devices, handoffs and coarse arrival sources — without collecting the text they write.</p>
       </div>
       <div class="os-controls" aria-label="Dashboard period controls">
         <div class="os-range" role="group" aria-label="Reporting period">
@@ -63,6 +63,22 @@
       <article class="os-card os-panel span-4">
         <div class="os-panel-head"><h2>Product outcomes</h2><span class="os-panel-note">Current period</span></div>
         <div class="os-bars" id="outcomeBars"></div>
+      </article>
+
+      <article class="os-card os-panel span-12" id="shareLoopPanel">
+        <div class="os-panel-head"><h2>Share Loop</h2><span class="os-panel-note">Publish → visit → create → republish</span></div>
+        <section class="os-kpis" aria-label="Share loop metrics">
+          <article class="os-card os-kpi"><div class="os-kpi-label">Published links</div><div class="os-kpi-value" data-share-kpi="published_links">—</div><div class="os-kpi-meta" data-share-meta="published_links">Successful public snapshots</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Public views</div><div class="os-kpi-value" data-share-kpi="public_page_views">—</div><div class="os-kpi-meta" data-share-meta="views_per_link">— views / link</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">CTA rate</div><div class="os-kpi-value" data-share-kpi="cta_rate">—</div><div class="os-kpi-meta">Create / Use text from shared pages</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Republish rate</div><div class="os-kpi-value" data-share-kpi="republish_rate">—</div><div class="os-kpi-meta">Referred creators who publish</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Reproduction ratio</div><div class="os-kpi-value" data-share-kpi="reproduction_ratio">—</div><div class="os-kpi-meta">Child shares / eligible parent shares</div></article>
+        </section>
+        <div class="os-grid">
+          <div class="span-6"><div class="os-panel-head"><h2>Funnel volume</h2><span class="os-panel-note">Current period</span></div><div class="os-bars" id="shareLoopBars"></div></div>
+          <div class="span-6"><div class="os-panel-head"><h2>Share-page devices</h2><span class="os-panel-note">Human JS page-view signal</span></div><div class="os-bars" id="shareDeviceBars"></div></div>
+        </div>
+        <div class="os-panel-note" id="shareLoopTrustNote" style="margin-top:18px">Share IDs and public Urdu text are not included in anonymous telemetry.</div>
       </article>
 
       <article class="os-card os-panel span-6">
@@ -114,7 +130,7 @@
 
     <footer class="os-footer">
       <span id="lastUpdated">Waiting for telemetry…</span>
-      <span>Hourly aggregate metrics · no editor text, filenames, full referrer URLs or persistent user identity</span>
+      <span>Hourly aggregate metrics · no editor text, share IDs, filenames, full referrer URLs or persistent user identity</span>
     </footer>
   </main>
   <script src="/js/product-pulse.js" defer></script>

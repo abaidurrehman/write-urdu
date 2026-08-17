@@ -208,3 +208,21 @@
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 }());
+
+/* Load the public publishing layer only after the Card Studio application and
+   guided UI are available. Keeping this separate protects the mature canvas
+   renderer and existing download/image-share behavior from the networked
+   publication feature. */
+(function () {
+    'use strict';
+    function loadPublishLayer() {
+        if (!window.WriteUrduCardStudioApp || document.querySelector('script[data-write-urdu-share-publish]')) return;
+        var script = document.createElement('script');
+        script.src = '/js/card-studio-publish.js';
+        script.defer = true;
+        script.setAttribute('data-write-urdu-share-publish', '');
+        document.body.appendChild(script);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { window.setTimeout(loadPublishLayer, 0); });
+    else window.setTimeout(loadPublishLayer, 0);
+}());

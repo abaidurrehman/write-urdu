@@ -22,7 +22,7 @@ assert.match(card.searchTitle || '', /Urdu Text on Photo/i, 'Card Studio acquisi
 assert.match(card.searchTitle || '', /Poetry|Post Maker/i, 'Card Studio acquisition title must retain poetry/post-maker intent');
 assert.match(card.searchDescription || '', /photo/i, 'Card Studio acquisition description must explain photo creation');
 assert.match(card.searchDescription || '', /Nastaliq|Naskh/i, 'Card Studio acquisition description should surface Urdu font differentiation');
-assert.strictEqual(card.lastmod, '2026-08-12', 'Card Studio acquisition freshness date is missing');
+assert.strictEqual(card.lastmod, '2026-08-17', 'Card Studio acquisition freshness date is missing');
 
 const escapedCardTitle = (card.searchTitle || '').replace(/&/g, '&amp;');
 assert.ok(cardPage.includes(`<title>${escapedCardTitle}</title>`), 'Initial Card Studio HTML must expose the acquisition title without waiting for JavaScript');
@@ -46,7 +46,7 @@ assert.match(cardPage, /<section class="seo-content"/, 'Card Studio supporting c
 assert.doesNotMatch(cardPage, /<ins[^>]+adsbygoogle/i, 'Card Studio must not gain a manual ad inside its markup');
 
 assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/how-to-write-urdu-on-photo<\/loc>/, 'Guide is missing from sitemap');
-assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/urdu-card-studio<\/loc>[\s\S]*?<lastmod>2026-08-12<\/lastmod>/, 'Card Studio sitemap freshness was not updated');
+assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/urdu-card-studio<\/loc>[\s\S]*?<lastmod>2026-08-17<\/lastmod>/, 'Card Studio sitemap freshness was not updated');
 assert.match(redirects, /\/how-to-write-urdu-on-photo\/ \/how-to-write-urdu-on-photo 301/, 'Guide trailing-slash normalization is missing');
 assert.match(llms, /How to write Urdu on a photo/i, 'Guide is missing from llms.txt');
 assert.match(llms, /Urdu Card Studio[\s\S]*text or poetry on a photo/i, 'Card Studio acquisition role is missing from llms.txt');
