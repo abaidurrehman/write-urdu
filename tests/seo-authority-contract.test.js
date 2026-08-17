@@ -92,7 +92,9 @@ const revisionDates = {
   '/urdu-faq': '2026-08-07',
   '/roman-urdu-transliteration': '2026-08-07',
   '/urdu-name-art-maker': '2026-08-13',
-  '/write-urdu-privacy': '2026-08-15',
+  '/urdu-card-studio': '2026-08-17',
+  '/how-to-share-urdu-writing-online': '2026-08-17',
+  '/write-urdu-privacy': '2026-08-17',
   '/contact': '2026-08-15',
   '/write-urdu-sitemap': '2026-08-15'
 };
@@ -105,6 +107,7 @@ for (const [route, revisionDate] of Object.entries(revisionDates)) {
   assert.match(block[0], new RegExp(`<lastmod>${revisionDate}<\\/lastmod>`), `${route} sitemap lastmod is stale`);
 }
 assert.doesNotMatch(sitemap, /<loc>https:\/\/write-urdu\.com\/feedback<\/loc>/, 'noindex Feedback must stay out of the XML sitemap');
+assert.doesNotMatch(sitemap, /<loc>https:\/\/write-urdu\.com\/s\//, 'user-generated share pages must stay out of the XML sitemap');
 
 const about = read('why-write-urdu.html');
 assert.match(about, /Who maintains Write Urdu/, 'About page must identify the project maintainer model');
