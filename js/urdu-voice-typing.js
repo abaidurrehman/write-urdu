@@ -21,6 +21,19 @@
     var listening = false;
     var startedAt = 0;
 
+    function restorePageIdentity() {
+        var urdu = document.documentElement.lang === 'ur';
+        var heading = root.querySelector('h1');
+        if (heading) heading.textContent = urdu ? 'اردو آواز سے ٹائپنگ' : 'Urdu Voice Typing';
+        document.title = urdu ? 'اردو آواز سے ٹائپنگ | رائٹ اردو' : 'Urdu Voice Typing — Speak to Type Urdu Online | WriteUrdu';
+    }
+
+    // Nested tool routes retain their own title after the shared shell applies
+    // locale copy. Unknown shared-shell routes otherwise inherit homepage copy.
+    document.addEventListener('write-urdu:locale-change', restorePageIdentity);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
+    else restorePageIdentity();
+
     function setNotice(message, type) {
         notice.textContent = message || '';
         notice.className = 'urdu-tool-notice' + (type ? ' ' + type : '');

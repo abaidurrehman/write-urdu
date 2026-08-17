@@ -24,3 +24,11 @@ test('InPage converter runs both directions in the browser', async ({ page }) =>
   const decoded = await page.evaluate(value => window.WriteUrduInPageCore.decodeLegacyText(value).text, legacy);
   expect(decoded).toBe('یہ اردو ہے۔');
 });
+
+test('nested Urdu tools preserve their own shared-shell page identity', async ({ page }) => {
+  const response = await page.goto('/tools/urdu-voice-typing/');
+  expect(response && response.status()).toBe(200);
+  await expect(page.locator('h1')).toBeVisible();
+  await expect(page.locator('h1')).toHaveText('Urdu Voice Typing');
+  await expect(page).toHaveTitle('Urdu Voice Typing — Speak to Type Urdu Online | WriteUrdu');
+});
