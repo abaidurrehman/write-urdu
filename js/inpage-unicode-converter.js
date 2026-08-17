@@ -25,6 +25,20 @@
     var notice = root.querySelector('[data-inpage-notice]');
     var mode = 'legacy-to-unicode';
 
+    function restorePageIdentity() {
+        var urdu = document.documentElement.lang === 'ur';
+        var heading = root.querySelector('h1');
+        if (heading) heading.textContent = urdu ? 'InPage سے Unicode اردو کنورٹر' : 'InPage to Unicode Urdu Converter';
+        document.title = urdu ? 'InPage سے Unicode اردو کنورٹر | رائٹ اردو' : 'InPage to Unicode Urdu Converter — Both Directions | WriteUrdu';
+    }
+
+    // The shared shell historically falls back to homepage copy for routes it does
+    // not own. Nested tool routes preserve their own page identity after locale/shell
+    // initialization instead of inheriting the homepage H1.
+    document.addEventListener('write-urdu:locale-change', restorePageIdentity);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
+    else restorePageIdentity();
+
     function telemetryEngage() {
         if (window.WriteUrduTelemetry && typeof window.WriteUrduTelemetry.engage === 'function') {
             window.WriteUrduTelemetry.engage();
