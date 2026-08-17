@@ -13,6 +13,7 @@
     var ADSENSE_CLIENT = 'ca-pub-4727847909946286';
     var ADSENSE_SCRIPT = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4727847909946286';
     var SHARED_SLOT = '8323789671';
+    var ACQUISITION_SCRIPT = '/js/acquisition-telemetry.js';
 
     // GROWTH-A1: every public product route has one monetization posture.
     // This is deliberately independent from SEO intent ownership: the groups
@@ -65,6 +66,20 @@
         '.qr-workspace',
         '.qr-generator-shell',
         'main'
+    ];
+
+    var CREATE_PROTECTED_AREAS = [
+        '[data-card-studio]',
+        '[data-invoice-generator]',
+        '[data-stylish-generator]',
+        '[data-template-library]',
+        '.name-art-workspace',
+        '.social-maker-workspace',
+        '.invoice-workspace',
+        '.card-studio-workspace',
+        '.card-studio-shell',
+        '.qr-workspace',
+        '.qr-generator-shell'
     ];
 
     function normalizePath(pathname) {
@@ -154,6 +169,53 @@
             ' data-ad-slot="' + SHARED_SLOT + '"' +
             ' data-ad-format="auto"' +
             ' data-full-width-responsive="true"></ins>';
+    }
+
+    function ensureAcquisitionTelemetry(root) {
+        var document = root && root.document;
+        if (!document || root.__wuAcquisitionTelemetryLoaded || document.querySelector('script[data-write-urdu-acquisition-telemetry]')) return false;
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = ACQUISITION_SCRIPT;
+        script.setAttribute('data-write-urdu-acquisition-telemetry', '');
+        document.head.appendChild(script);
+        return true;
+    }
+
+    function protectAutoAds(document, pageType) {
+        if (!document) return 0;
+        var protectedCount = 0;
+
+        // Intent-driven formats are useful on Learn pages, but should not turn
+        // an editor or trust page into a commercial text surface. Write routes
+        // are also protected from side-rail overlap if an account-side setting
+        // is accidentally broadened later.
+        if (document.body && (pageType === 'write' || pageType === 'trust')) {
+            document.body.classList.add('google-anno-skip');
+            document.body.setAttribute('google-side-rail-overlap', 'false');
+            protectedCount += 1;
+        }
+
+        if (pageType === 'create') {
+            CREATE_PROTECTED_AREAS.forEach(function (selector) {
+                Array.prototype.slice.call(document.querySelectorAll(selector)).forEach(function (node) {
+                    node.classList.add('google-anno-skip');
+                    node.setAttribute('google-side-rail-overlap', 'false');
+                    protectedCount += 1;
+                });
+            });
+        }
+
+        // Vignettes may be tested later on content navigation, but never on
+        // normal navigation, downloads, in-page jumps or product handoffs.
+        Array.prototype.slice.call(document.querySelectorAll(
+            'nav a, a[download], a[href^="#"], [data-create-card], [data-create-qr], .home-actions-group-create a'
+        )).forEach(function (link) {
+            link.setAttribute('data-google-vignette', 'false');
+            protectedCount += 1;
+        });
+
+        return protectedCount;
     }
 
     // V3 treats the ad region as part of the shared layout system. Older pages
@@ -247,9 +309,12 @@
             document.body.classList.add('wu-monetization-' + pageType);
         }
 
+        var protectedAutoAds = protectAutoAds(document, pageType);
+        ensureAcquisitionTelemetry(root);
+
         if (pageType === 'trust') {
             removeAllAds(document);
-            return { path: path, pageType: pageType, placement: null, slotCount: 0, adsenseLoaded: false };
+            return { path: path, pageType: pageType, placement: null, slotCount: 0, adsenseLoaded: false, protectedAutoAds: protectedAutoAds };
         }
 
         var canonicalRegion = document.querySelector('.wu-header-ad') || createCanonicalRegion(document, pageType);
@@ -276,7 +341,8 @@
             moved: position.moved,
             removedLegacySlots: removedLegacySlots,
             slotCount: slots.length,
-            adsenseLoaded: loaded
+            adsenseLoaded: loaded,
+            protectedAutoAds: protectedAutoAds
         };
     }
 
@@ -284,12 +350,14 @@
         ADSENSE_CLIENT: ADSENSE_CLIENT,
         ADSENSE_SCRIPT: ADSENSE_SCRIPT,
         SHARED_SLOT: SHARED_SLOT,
+        ACQUISITION_SCRIPT: ACQUISITION_SCRIPT,
         PAGE_TYPES: PAGE_TYPES,
         LEGACY_DUPLICATE_ROUTES: LEGACY_DUPLICATE_ROUTES,
         normalizePath: normalizePath,
         resolvePageType: resolvePageType,
         placementName: placementName,
         createCanonicalRegion: createCanonicalRegion,
+        protectAutoAds: protectAutoAds,
         init: init
     };
 }));

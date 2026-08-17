@@ -22,7 +22,7 @@
       <div>
         <p class="os-eyebrow">Product intelligence</p>
         <h1>Product Pulse</h1>
-        <p class="os-lede">See what people actually do after they arrive: writing engagement, canvas/design usage, copy/export outcomes, devices and handoffs — without collecting the text they write.</p>
+        <p class="os-lede">See what people actually do after they arrive: writing engagement, canvas/design usage, copy/export outcomes, devices, handoffs and coarse arrival sources — without collecting the text they write.</p>
       </div>
       <div class="os-controls" aria-label="Dashboard period controls">
         <div class="os-range" role="group" aria-label="Reporting period">
@@ -90,6 +90,17 @@
         <div class="os-bars" id="handoffBars"></div>
       </article>
 
+      <article class="os-card os-panel span-6">
+        <div class="os-panel-head"><h2>How product visits begin</h2><span class="os-panel-note" id="productEntryNote">Coarse entry source</span></div>
+        <div class="os-bars" id="productEntryBars"></div>
+        <div class="os-panel-note">Direct / saved / unknown can include bookmarks, typed URLs, browser history or visits with no external referrer. It is not bookmark detection.</div>
+      </article>
+
+      <article class="os-card os-panel span-6">
+        <div class="os-panel-head"><h2>Top site entry pages</h2><span class="os-panel-note" id="entryRouteNote">Landing routes</span></div>
+        <div class="os-bars" id="entryRouteBars"></div>
+      </article>
+
       <article class="os-card os-panel span-12">
         <div class="os-panel-head"><h2>Tool usage</h2><span class="os-panel-note">Editors, Card Studio, Name Art, social makers, Invoice, QR and Stylish Text</span></div>
         <div class="os-table-wrap">
@@ -103,9 +114,10 @@
 
     <footer class="os-footer">
       <span id="lastUpdated">Waiting for telemetry…</span>
-      <span>Hourly aggregate metrics · no editor text, filenames or persistent user identity</span>
+      <span>Hourly aggregate metrics · no editor text, filenames, full referrer URLs or persistent user identity</span>
     </footer>
   </main>
   <script src="/js/product-pulse.js" defer></script>
+  <script src="/js/acquisition-pulse.js" defer></script>
 </body>
 </html>
