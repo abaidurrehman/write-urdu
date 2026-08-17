@@ -21,6 +21,7 @@ const tests = [
   'tests/sitemap-directory-contract.test.js',
   'tests/stylish-urdu-core.test.js',
   'tests/urdu-text-cleaner-core.test.js',
+  'tests/urdu-ocr-contract.test.js',
   'tests/sua-acceptance-contract.test.js',
   'tests/journey-handoffs-contract.test.js',
   'tests/v2-creation-contract.test.js',
