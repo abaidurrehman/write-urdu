@@ -14,7 +14,7 @@ test('InPage converter runs both directions in the browser', async ({ page }) =>
   await page.getByRole('button', { name: 'Load example' }).click();
   await page.getByRole('button', { name: 'Convert to Unicode' }).click();
   await expect(page.locator('#inpageResult')).toHaveValue('یہ ایک اردو متن ہے۔ ۱۲۳');
-  await expect(page.getByText('No unsupported characters')).toBeVisible();
+  await expect(page.getByText('No unsupported characters', { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Unicode → InPage' }).click();
   await page.locator('#inpageSource').fill('یہ اردو ہے۔');
