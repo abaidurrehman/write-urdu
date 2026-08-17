@@ -18,6 +18,7 @@
         { href: '/urdu-instagram-post-maker', match: ['/urdu-instagram-post-maker', '/urdu-instagram-post-maker.html'], key: 'instagramMaker', label: 'Instagram Post Maker', icon: 'image', group: 'create' },
         { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates', icon: 'grid' },
         { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator', icon: 'qr' },
+        { href: '/urdu-text-cleaner', match: ['/urdu-text-cleaner', '/urdu-text-cleaner.html'], key: 'textCleaner', label: 'Urdu Text Cleaner', icon: 'sliders', secondary: true },
         { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation', icon: 'book', secondary: true },
         { href: '/how-to-write-urdu-on-photo', match: ['/how-to-write-urdu-on-photo'], key: 'photoGuide', label: 'Urdu on Photo Guide', icon: 'image', secondary: true },
         { href: '/write-urdu-features', match: ['/write-urdu-features', '/write-urdu-features.html'], key: 'features', label: 'Features', icon: 'sliders', secondary: true },
@@ -53,13 +54,13 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', documentation: 'Documentation', photoGuide: 'Urdu on Photo Guide', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', documentation: 'Documentation', photoGuide: 'Urdu on Photo Guide', features: 'Features',
                 tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', create: 'Create', more: 'More', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
-                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', quran: 'Learn Quran Online',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
                 about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
@@ -101,13 +102,13 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', documentation: 'دستاویزات', photoGuide: 'تصویر پر اردو گائیڈ', features: 'خصوصیات',
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', textCleaner: 'اردو متن صاف کریں', documentation: 'دستاویزات', photoGuide: 'تصویر پر اردو گائیڈ', features: 'خصوصیات',
                 tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', create: 'تخلیق', more: 'مزید', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', textCleaner: 'اردو متن صاف کریں', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
@@ -150,6 +151,7 @@
         '/index.html': { title: ['Type Roman Urdu and convert it to Urdu script', 'آن لائن اردو لکھیں'], subtitle: ['Type Roman Urdu and convert it to Urdu in your browser', 'رومن اردو لکھیں اور اسے براؤزر میں اردو میں تبدیل کریں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
         '/urdu-editor.html': { title: ['Urdu Rich Text Editor', 'اردو رچ ٹیکسٹ ایڈیٹر'], subtitle: ['Write, format and export Urdu documents online', 'آن لائن اردو دستاویز لکھیں، فارمیٹ کریں اور برآمد کریں'], documentTitle: ['Urdu Rich Text Editor | Type and Format Urdu Online', 'اردو رچ ٹیکسٹ ایڈیٹر | آن لائن اردو لکھیں'] },
         '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Type Urdu directly—no installation required', 'براہِ راست اردو لکھیں—انسٹالیشن کی ضرورت نہیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
+        '/urdu-text-cleaner.html': { title: ['Urdu Text Cleaner & RTL Fixer', 'اردو متن صاف کریں اور RTL مسائل دیکھیں'], documentTitle: ['Urdu Text Cleaner & RTL Fixer — Fix Unicode Urdu Online | WriteUrdu', 'اردو متن صاف کریں اور RTL درست کریں | رائٹ اردو'] },
         '/urdu-alphabet.html': { title: ['Urdu alphabet', 'اردو حروف تہجی'], subtitle: ['A practical guide to Urdu letters and writing direction', 'اردو حروف اور لکھنے کی سمت کا عملی رہنما'], documentTitle: ['Urdu Alphabet Guide | Letters and Writing Direction', 'اردو حروف تہجی | حروف اور لکھنے کی سمت'] },
         '/urdu-card-studio.html': { title: ['Urdu Card Studio', 'اردو کارڈ اسٹوڈیو'], subtitle: ['Design and download polished Urdu cards in your browser', 'براؤزر میں خوب صورت اردو کارڈ بنائیں اور ڈاؤن لوڈ کریں'], documentTitle: ['Urdu Card Studio | Design Urdu Cards Online', 'اردو کارڈ اسٹوڈیو | آن لائن اردو کارڈ بنائیں'] },
         '/urdu-whatsapp-status-maker.html': { title: ['Urdu WhatsApp Status Maker', 'اردو واٹس ایپ اسٹیٹس میکر'], subtitle: ['Create a status image and download it for manual upload', 'اسٹیٹس تصویر بنائیں اور خود اپ لوڈ کرنے کے لیے ڈاؤن لوڈ کریں'], documentTitle: ['Urdu WhatsApp Status Maker | Write Urdu', 'اردو واٹس ایپ اسٹیٹس میکر | رائٹ اردو'] },
@@ -284,6 +286,7 @@
                             '<a href="/" data-wu-i18n-key="footer.home">Write Urdu</a>' +
                             '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
                             '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
+                            '<a href="/urdu-text-cleaner" data-wu-i18n-key="footer.textCleaner">Urdu Text Cleaner</a>' +
                             '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
                             '<a href="/urdu-invoice-generator" data-wu-i18n-key="footer.invoiceGenerator">Invoice Generator</a>' +
                             '<a href="/stylish-urdu-text-generator" data-wu-i18n-key="footer.stylishText">Stylish Urdu Text</a>' +
