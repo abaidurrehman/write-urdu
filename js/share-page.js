@@ -30,13 +30,14 @@
 
   function handoff(action, useText) {
     setReferral(action);
+    var text = '';
     if (useText) {
       var textNode = q('[data-share-public-text]');
-      var text = textNode ? String(textNode.textContent || '').trim() : '';
-      if (text) {
-        try { sessionStorage.setItem(CARD_INCOMING_KEY, JSON.stringify({ text: text })); } catch (error) {}
-      }
+      text = textNode ? String(textNode.textContent || '').trim() : '';
     }
+    try {
+      sessionStorage.setItem(CARD_INCOMING_KEY, JSON.stringify({ text: text }));
+    } catch (error) {}
     track('share_page_cta_clicked', { target_route: '/urdu-card-studio' });
     track('tool_handoff', { target_route: '/urdu-card-studio' });
     window.location.href = '/urdu-card-studio';
