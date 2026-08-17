@@ -1,0 +1,108 @@
+(function (root, factory) {
+    'use strict';
+    var api = factory(root);
+    if (typeof module === 'object' && module.exports) module.exports = api;
+    if (root) root.WriteUrduTextHandoff = api;
+}(typeof window !== 'undefined' ? window : null, function (root) {
+    'use strict';
+
+    var KEY = 'write-urdu:text-handoff:v1';
+    var MAX_LENGTH = 100000;
+    var MAX_AGE_MS = 30 * 60 * 1000;
+
+    function storage() {
+        if (!root || !root.sessionStorage) return null;
+        try {
+            var probe = KEY + ':probe';
+            root.sessionStorage.setItem(probe, '1');
+            root.sessionStorage.removeItem(probe);
+            return root.sessionStorage;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function store(text, target) {
+        var value = String(text || '');
+        var storeRef = storage();
+        if (!storeRef || !value.trim() || value.length > MAX_LENGTH) return false;
+        try {
+            storeRef.setItem(KEY, JSON.stringify({
+                version: 1,
+                target: target || '/',
+                createdAt: Date.now(),
+                text: value
+            }));
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    function take(target) {
+        var storeRef = storage();
+        if (!storeRef) return null;
+        var raw = null;
+        try {
+            raw = storeRef.getItem(KEY);
+            if (!raw) return null;
+            storeRef.removeItem(KEY);
+            var payload = JSON.parse(raw);
+            if (!payload || payload.version !== 1 || typeof payload.text !== 'string') return null;
+            if (payload.text.length > MAX_LENGTH) return null;
+            if (!payload.createdAt || Date.now() - Number(payload.createdAt) > MAX_AGE_MS) return null;
+            if (target && payload.target && payload.target !== target) return null;
+            return payload.text;
+        } catch (error) {
+            try { storeRef.removeItem(KEY); } catch (ignored) { }
+            return null;
+        }
+    }
+
+    function switchBasicEditorToDirectMode() {
+        if (!root || !root.document) return;
+        var direct = root.document.querySelector('[data-input-mode-control][data-input-mode-storage="basic"] [data-input-mode-option="direct"]');
+        if (direct && direct.getAttribute('aria-pressed') !== 'true') direct.click();
+    }
+
+    function consumeBasicEditor() {
+        if (!root || !root.document) return false;
+        var path = (root.location && root.location.pathname || '/').replace(/\/index\.html$/i, '/').replace(/\/+$/, '') || '/';
+        if (path !== '/') return false;
+        var target = root.document.getElementById('transliterateTextarea');
+        if (!target) return false;
+        var text = take('/');
+        if (text === null) return false;
+        switchBasicEditorToDirectMode();
+        target.value = text;
+        target.dispatchEvent(new Event('input', { bubbles: true }));
+        target.dispatchEvent(new Event('change', { bubbles: true }));
+        if (typeof target.focus === 'function') target.focus();
+        try { target.setSelectionRange(target.value.length, target.value.length); } catch (error) { }
+        var notice = root.document.getElementById('appNotifications');
+        if (notice) {
+            notice.textContent = 'Your cleaned Urdu text is ready to edit.';
+            notice.className = 'app-notifications is-visible is-success';
+        }
+        return true;
+    }
+
+    function start() {
+        // Run after other editor controls have initialized so switching to
+        // Direct Urdu / English does not trigger transliteration on imported text.
+        root.setTimeout(consumeBasicEditor, 0);
+    }
+
+    if (root && root.document) {
+        if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', start);
+        else start();
+    }
+
+    return {
+        KEY: KEY,
+        MAX_LENGTH: MAX_LENGTH,
+        store: store,
+        take: take,
+        consumeBasicEditor: consumeBasicEditor
+    };
+}));

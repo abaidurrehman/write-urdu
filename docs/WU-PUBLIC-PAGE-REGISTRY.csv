@@ -2,6 +2,7 @@ source_file,canonical_route,area,primary_intent,indexability,sitemap,status,desi
 index.html,/,Write,English to Urdu typing / Urdu typing / Urdu writing,index,yes,keep,migrated,P0,Protected transliteration owner for English-letter Roman Urdu to Urdu script and broad typing acquisition
 urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,migrated,P0,V2 workspace applied without changing TinyMCE or export bindings
 urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,migrated,P0,V2 workspace applied without changing keyboard input bindings
+urdu-text-cleaner.html,/urdu-text-cleaner,Create,Urdu text cleaning Unicode normalization and RTL diagnostics,index,yes,keep,migrated,P0,Browser-local utility with conservative safe fixes review-only bidi diagnostics and editor handoff
 urdu-card-studio.html,/urdu-card-studio,Create,Urdu text poetry and posts on photos,index,yes,keep,migrated,P1,Primary creation acquisition owner after P1.5
 urdu-templates.html,/urdu-templates,Create,Urdu design templates,index,yes,keep,migrated,P1,Entry point into Card Studio
 stylish-urdu-text-generator.html,/stylish-urdu-text-generator,Create,stylish Urdu text,index,yes,keep,migrated,P1,Distinct copy paste styling intent

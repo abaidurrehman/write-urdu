@@ -30,7 +30,7 @@
         create: [
             '/urdu-card-studio', '/urdu-templates', '/stylish-urdu-text-generator',
             '/urdu-name-art-maker', '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker',
-            '/urdu-invoice-generator', '/qr-code-generator'
+            '/urdu-invoice-generator', '/qr-code-generator', '/urdu-text-cleaner'
         ],
         trust: [
             '/why-write-urdu', '/contact', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
@@ -61,6 +61,7 @@
         '[data-invoice-generator]',
         '[data-stylish-generator]',
         '[data-template-library]',
+        '[data-urdu-text-cleaner]',
         '.card-studio-workspace',
         '.card-studio-shell',
         '.qr-workspace',
@@ -73,6 +74,7 @@
         '[data-invoice-generator]',
         '[data-stylish-generator]',
         '[data-template-library]',
+        '[data-urdu-text-cleaner]',
         '.name-art-workspace',
         '.social-maker-workspace',
         '.invoice-workspace',
