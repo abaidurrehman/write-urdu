@@ -14,8 +14,12 @@ test('core writing surfaces retire premature header creation and reveal contextu
     await page.waitForFunction(() => Boolean(window.WriteUrduCoreWorkspaceConvergence), null, { timeout: 10000 });
 
     await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveCount(0);
-    const textShare = page.locator('[data-write-urdu-share]').first();
-    await expect(textShare).toContainText('Share text only');
+    if (route === '/') {
+      await expect(page.locator('[data-write-urdu-share]')).toHaveCount(0);
+      await expect(page.locator('[data-wu-basic-share-action]')).toContainText('Share text only');
+    } else {
+      await expect(page.locator('[data-write-urdu-share]').first()).toContainText('Share text only');
+    }
 
     await page.waitForFunction(() => Boolean(window.WriteUrduWorkspaceNextStep), null, { timeout: 10000 });
     const panel = page.locator('[data-wu-next-step-version="2"]');
