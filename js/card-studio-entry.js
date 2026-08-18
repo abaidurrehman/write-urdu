@@ -196,8 +196,7 @@
         ensureStylesheet();
 
         var richAction = path === '/urdu-editor' ? '' :
-            '<button type="button" class="wu-next-journey-action is-primary" data-continue-rich data-editor-source="' + sourceName() + '" data-wu-journey="write-to-rich"><strong>Continue in Rich Editor</strong><small>Format an assignment or document, then export Word or PDF.</small></button>';
-        var cardClass = path === '/urdu-editor' ? ' is-primary' : '';
+            '<button type="button" class="wu-next-journey-action" data-continue-rich data-editor-source="' + sourceName() + '" data-wu-journey="write-to-rich"><strong>Continue in Rich Editor</strong><small>Format an assignment or document, then export Word or PDF.</small></button>';
         var section = document.createElement('section');
         section.className = 'wu-next-journey';
         section.setAttribute('data-wu-journey-panel', '');
@@ -205,10 +204,10 @@
         section.innerHTML =
             '<p class="wu-next-journey-eyebrow">Your next step</p>' +
             '<h2 id="wu-next-journey-title">Use the Urdu you just wrote</h2>' +
-            '<p class="wu-next-journey-copy">Keep the current text and move it into the tool that matches what you want to make next. The handoff stays in this browser.</p>' +
+            '<p class="wu-next-journey-copy">Move the current text into the tool that matches what you want to do next. The handoff stays in this browser; a public link is created only when you explicitly choose Publish &amp; Share.</p>' +
             '<div class="wu-next-journey-actions">' +
+                '<button type="button" class="wu-next-journey-action is-primary is-share" data-create-card data-editor-source="' + sourceName() + '" data-wu-journey="write-to-card"><strong>Create &amp; share this Urdu</strong><small>Open the text in Card Studio, make it visual, then publish a beautiful Write-Urdu.com link.</small></button>' +
                 richAction +
-                '<button type="button" class="wu-next-journey-action' + cardClass + '" data-create-card data-editor-source="' + sourceName() + '" data-wu-journey="write-to-card"><strong>Create an Urdu card</strong><small>Turn the text into a quote, poetry or announcement image.</small></button>' +
                 '<button type="button" class="wu-next-journey-action" data-create-stylish data-editor-source="' + sourceName() + '" data-wu-journey="write-to-stylish"><strong>Try Stylish Urdu Text</strong><small>Generate copyable Unicode-decorated versions of the text.</small></button>' +
                 '<button type="button" class="wu-next-journey-action" data-create-name-art data-editor-source="' + sourceName() + '" data-wu-journey="write-to-name-art"><strong>Make Urdu Name Art</strong><small>Render the text with real Urdu fonts as an image.</small></button>' +
                 '<a class="wu-next-journey-action" href="/urdu-templates" data-wu-journey="write-to-templates"><strong>Browse Urdu templates</strong><small>Choose a ready-made visual starting point for Card Studio.</small></a>' +
