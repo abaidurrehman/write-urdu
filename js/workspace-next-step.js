@@ -82,6 +82,15 @@
         };
     }
 
+    function modelSignature(workspaceId, model) {
+        return [
+            workspaceId,
+            model.visible.map(function (action) { return action.id; }).join(','),
+            model.more.map(function (action) { return action.id; }).join(','),
+            model.visible.length ? 'visible' : 'hidden'
+        ].join('|');
+    }
+
     function textFromTinyMce() {
         var editor = root && root.tinymce && root.tinymce.get && root.tinymce.get('basic-example');
         return editor && editor.initialized ? String(editor.getContent({ format: 'text' }) || '').trim() : '';
@@ -173,6 +182,7 @@
 
         var hasContent = Boolean(currentText(workspace.id));
         var model = buildModel(workspace.id, { hasContent: hasContent });
+        var signature = modelSignature(workspace.id, model);
         var panel = root.document.querySelector('[data-wu-next-step-version="2"]');
         if (!panel) {
             panel = root.document.createElement('section');
@@ -183,7 +193,10 @@
             mount.parentNode.insertBefore(panel, mount);
         }
         panel.setAttribute('data-wu-source-workspace', workspace.id);
-        panel.innerHTML = panelMarkup(model);
+        if (panel.getAttribute('data-wu-next-step-signature') !== signature) {
+            panel.innerHTML = panelMarkup(model);
+            panel.setAttribute('data-wu-next-step-signature', signature);
+        }
         panel.hidden = model.visible.length === 0;
         panel.setAttribute('aria-hidden', panel.hidden ? 'true' : 'false');
         return !panel.hidden;
@@ -196,7 +209,6 @@
         if (!input || input.getAttribute('data-wu-next-step-bound') === 'true') return;
         input.setAttribute('data-wu-next-step-bound', 'true');
         input.addEventListener('input', render);
-        input.addEventListener('change', render);
     }
 
     function bindRichEditor(attempt) {
@@ -205,7 +217,7 @@
         if (editor && editor.initialized) {
             if (!editor.__writeUrduNextStepBound) {
                 editor.__writeUrduNextStepBound = true;
-                editor.on('input change keyup SetContent Undo Redo', render);
+                editor.on('input keyup SetContent Undo Redo', render);
             }
             render();
             return;
@@ -237,6 +249,7 @@
         normalizeRoute: normalizeRoute,
         classifyWorkspace: classifyWorkspace,
         buildModel: buildModel,
+        modelSignature: modelSignature,
         currentWorkspace: currentWorkspace,
         currentText: currentText,
         render: render,
