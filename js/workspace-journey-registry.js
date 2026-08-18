@@ -51,7 +51,8 @@
             next: [
                 { id: 'cleaner-to-basic', target: 'basic-writer', type: 'handoff', label: 'Continue writing', payloadKind: 'plain-text' },
                 { id: 'cleaner-to-rich', target: 'rich-editor', type: 'handoff', label: 'Format this as a document', payloadKind: 'plain-text' },
-                { id: 'cleaner-to-card', target: 'card-studio', type: 'transformation', label: 'Create a card with this text', payloadKind: 'plain-text' }
+                { id: 'cleaner-to-card', target: 'card-studio', type: 'transformation', label: 'Create a card with this text', payloadKind: 'plain-text' },
+                { id: 'cleaner-to-qr', target: 'qr-generator', type: 'transformation', label: 'Make a QR code from this text', payloadKind: 'plain-text' }
             ]
         },
         {
