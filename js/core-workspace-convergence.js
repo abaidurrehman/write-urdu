@@ -112,11 +112,28 @@
         return Boolean(editor && String(editor.value || '').trim());
     }
 
+    function keepBasicLocalActionsUsable(actions) {
+        if (!actions) return;
+        var secondary = actions.querySelector('.home-actions-group-secondary');
+        var share = actions.querySelector('[data-write-urdu-share]');
+        if (secondary) {
+            secondary.hidden = false;
+            secondary.removeAttribute('hidden');
+            secondary.setAttribute('aria-hidden', 'false');
+        }
+        if (share) {
+            share.hidden = false;
+            share.removeAttribute('hidden');
+            share.setAttribute('aria-hidden', 'false');
+        }
+    }
+
     function syncBasicActions() {
         if (!root || !root.document || currentRoute() !== '/') return false;
         var actions = root.document.querySelector('.home-actions');
         if (!actions) return false;
         var hasContent = basicHasContent();
+        keepBasicLocalActionsUsable(actions);
         actions.hidden = !hasContent;
         actions.setAttribute('aria-hidden', hasContent ? 'false' : 'true');
         actions.setAttribute('data-wu-core-actionbar', 'post-editor');
