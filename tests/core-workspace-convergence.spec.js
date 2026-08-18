@@ -31,19 +31,20 @@ test('Basic Writer is canvas-first and defers generic actions until text exists'
   await expect(actions.getByText('Templates', { exact: true })).toHaveCount(0);
   await expect(actions.getByText('Create Urdu Card', { exact: true })).toHaveCount(0);
   await expect(actions.getByText('Create QR Code', { exact: true })).toHaveCount(0);
+  await expect(actions.locator('[data-write-urdu-share]')).toHaveCount(0);
 
   const more = actions.locator('[data-wu-basic-more]');
   const toggle = more.locator('[data-wu-basic-more-toggle]');
   const panel = more.locator('[data-wu-basic-more-panel]');
-  const share = panel.locator('[data-write-urdu-share]');
+  const share = panel.locator('[data-wu-basic-share-action]');
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(panel).toBeHidden();
-  await expect(share).toHaveAttribute('data-wu-share-location', 'more');
+  await expect(share).toContainText('Share text only');
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(panel).toBeVisible();
   await expect(share).toBeVisible();
-  await expect(share).toContainText('Share text only');
+  expect(await page.evaluate(() => Boolean(window.WriteUrduTools && typeof window.WriteUrduTools.share === 'function'))).toBe(true);
 
   const nextStep = page.locator('[data-wu-next-step-version="2"]');
   await expect(nextStep).toBeVisible();
