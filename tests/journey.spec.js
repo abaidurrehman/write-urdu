@@ -8,14 +8,14 @@ async function open(page, route) {
   await page.locator('body').waitFor({ state: 'attached' });
 }
 
-test('core writing surfaces keep Create & Share in the toolbar and reveal contextual next steps after work exists', async ({ page }) => {
+test('core writing surfaces retire premature header creation and reveal contextual next steps after work exists', async ({ page }) => {
   for (const route of ['/', '/urdu-editor.html', '/urdu-keyboard.html']) {
     await open(page, route);
+    await page.waitForFunction(() => Boolean(window.WriteUrduCoreWorkspaceConvergence), null, { timeout: 10000 });
 
-    const toolbarShare = page.locator('.wu-authoring-share-primary').first();
-    await expect(toolbarShare).toBeVisible({ timeout: 10000 });
-    await expect(toolbarShare).toContainText('Create & Share');
-    await expect(page.locator('[data-write-urdu-share]').first()).toContainText('Share text only');
+    await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveCount(0);
+    const textShare = page.locator('[data-write-urdu-share]').first();
+    await expect(textShare).toContainText('Share text only');
 
     await page.waitForFunction(() => Boolean(window.WriteUrduWorkspaceNextStep), null, { timeout: 10000 });
     const panel = page.locator('[data-wu-next-step-version="2"]');
@@ -38,10 +38,12 @@ test('core writing surfaces keep Create & Share in the toolbar and reveal contex
   }
 });
 
-test('Create & Share carries current Urdu into Card Studio and exposes Publish & Share in Step 4', async ({ page }) => {
+test('contextual Card Studio continuation carries current Urdu and exposes Publish & Share in Step 4', async ({ page }) => {
   await open(page, '/');
   await page.locator('#transliterateTextarea').fill('یہ میرا شیئر کرنے والا اردو متن ہے');
-  await page.locator('.wu-authoring-share-primary').first().click();
+  const cardAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-card"]');
+  await expect(cardAction).toBeVisible({ timeout: 10000 });
+  await cardAction.click();
   await page.waitForURL(/urdu-card-studio/, { timeout: 10000 });
   await expect(page.locator('#cardText')).toHaveValue('یہ میرا شیئر کرنے والا اردو متن ہے', { timeout: 10000 });
   await page.locator('button[data-card-step="export"]').first().click();
@@ -64,7 +66,9 @@ test('homepage assignment continues into Rich Editor without losing an older ric
   });
   await page.locator('#transliterateTextarea').fill('میرا اردو اسائنمنٹ تیار ہے');
   await page.waitForFunction(() => Boolean(window.WriteUrduCoreContinuity));
-  await page.locator('.home-actions-group-create a[href="/urdu-editor"]').first().click();
+  const richAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-rich"]');
+  await expect(richAction).toBeVisible({ timeout: 10000 });
+  await richAction.click();
   await page.waitForURL(/urdu-editor/, { timeout: 10000 });
 
   const richBody = page.frameLocator('#basic-example_ifr').locator('body');
