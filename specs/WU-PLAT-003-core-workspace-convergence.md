@@ -36,6 +36,7 @@ It must not behave like a portal that asks users to choose among unrelated tools
 8. Do not create a new design language; reuse the current V2/V3 design system.
 9. Remove implementation jargon from primary labels where a user-job phrase is clearer.
 10. Dedicated SEO/task routes remain independently addressable even if navigation becomes simpler.
+11. Shared shell text and navigation must maintain readable contrast on every migrated route.
 
 ## UX findings being addressed
 
@@ -67,6 +68,12 @@ Examples include RTL/Unicode/OCR wording in primary selection UI.
 
 **Desired:** progressively converge them toward the shared task-first workspace pattern without replacing their proven input/editor engines.
 
+### F6 — Shared footer contrast regressed
+
+The V3 shell can render a light footer while parts of the footer still assume light-on-dark text, making navigation and supporting copy difficult or impossible to read.
+
+**Desired:** the shared footer must have an explicit dark surface with high-contrast headings, links and supporting text on desktop and mobile. The visual gate should measure computed contrast, not rely on a screenshot alone.
+
 ## Delivery slices
 
 ### Slice A — Canvas-first Basic Writer — **in implementation**
@@ -91,7 +98,8 @@ Examples include RTL/Unicode/OCR wording in primary selection UI.
 - place Text Cleaner under Write/Fix rather than Create;
 - place Invoice under Work rather than Create;
 - extend documentation capture paths to Voice Typing, Image to Urdu Text and InPage → Unicode;
-- replace primary jargon with user-job wording.
+- replace primary jargon with user-job wording;
+- restore a dark readable shared footer and keep its contrast protected by browser acceptance.
 
 ### Slice D — Urdu Keyboard convergence
 
@@ -141,8 +149,9 @@ Examples include RTL/Unicode/OCR wording in primary selection UI.
 8. Image-to-text navigation leads with screenshot/photo → editable text and uses `Image to Urdu Text` as the tool identity.
 9. The human sitemap has a visible Work section; Invoice belongs there; Text Cleaner belongs under Write.
 10. Documentation represents Roman Urdu, direct Urdu, Voice, Image and InPage as legitimate ways to start with Urdu text.
-11. Desktop and Pixel 5 acceptance remain green.
-12. V3 production visual-quality audit remains a merge gate.
+11. Shared footer background remains dark and footer headings, links and supporting text meet at least 4.5:1 contrast in desktop and Pixel 5 acceptance.
+12. Desktop and Pixel 5 acceptance remain green.
+13. V3 production visual-quality audit remains a merge gate.
 
 ## Explicit non-scope for this slice
 
