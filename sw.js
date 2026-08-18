@@ -54,6 +54,8 @@ const APP_SHELL = [
   './js/site-header-core.js',
   './js/outcome-navigation.js',
   './js/workspace-journey-registry.js',
+  './js/workspace-handoff.js',
+  './js/core-continuity.js',
   './js/workspace-next-step.js',
   './js/site-runtime.js',
   './js/editor-tools.js',
