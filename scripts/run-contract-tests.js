@@ -34,6 +34,7 @@ const tests = [
   'tests/workspace-next-step-contract.test.js',
   'tests/core-workspace-convergence-contract.test.js',
   'tests/capture-continuity-contract.test.js',
+  'tests/create-publish-boundaries-contract.test.js',
   'tests/v2-creation-contract.test.js',
   'tests/card-studio-acquisition-contract.test.js',
   'tests/english-urdu-typing-acquisition-contract.test.js',
