@@ -28,6 +28,7 @@ const tests = [
   'tests/inpage-unicode-contract.test.js',
   'tests/sua-acceptance-contract.test.js',
   'tests/journey-handoffs-contract.test.js',
+  'tests/workspace-journey-runtime.test.js',
   'tests/v2-creation-contract.test.js',
   'tests/card-studio-acquisition-contract.test.js',
   'tests/english-urdu-typing-acquisition-contract.test.js',
