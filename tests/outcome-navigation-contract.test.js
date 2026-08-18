@@ -37,8 +37,8 @@ assert.match(navigation, /Get answers to common questions/, 'FAQ must be exposed
 assert.match(navigation, /<strong>.*<\/strong><small>/, 'Outcome label must be visually primary with tool name secondary');
 assert.match(navigation, /FOOTER_ABOUT/, 'Footer utility links must remain separate from the four product categories');
 
-assert.match(css, /@media\(min-width:901px\)/, 'Four-category desktop navigation must remain visible on normal laptop widths');
-assert.match(css, /@media\(max-width:900px\)/, 'Outcome navigation needs an explicit mobile collapse contract');
+assert.match(css, /@media\(min-width:1367px\)/, 'Expanded outcome navigation must only appear above the proven laptop safety breakpoint');
+assert.match(css, /@media\(max-width:1366px\)/, 'Outcome navigation must collapse safely at common 1366px laptop widths');
 assert.match(css, /repeat\(5,minmax\(0,1fr\)\)/, 'Footer must support Write/Create/Work/Learn plus a separate About utility group');
 assert.match(css, /prefers-reduced-motion:reduce/, 'Outcome navigation must respect reduced-motion preferences');
 assert.match(sw, /write-urdu-shell-v17/, 'PWA cache version must change with the shell architecture');
