@@ -40,9 +40,9 @@ assert.match(navigation, /FOOTER_ABOUT/, 'Footer utility links must remain separ
 assert.match(css, /@media\(min-width:1367px\)/, 'Expanded outcome navigation must only appear above the proven laptop safety breakpoint');
 assert.match(css, /@media\(max-width:1366px\)/, 'Outcome navigation must collapse safely at common 1366px laptop widths');
 assert.match(css, /repeat\(5,minmax\(0,1fr\)\)/, 'Footer must support Write/Create/Work/Learn plus a separate About utility group');
-assert.match(css, /footer\.wu-footer\{color:#b9ccc1!important;background:#10281c!important/, 'Shared footer must retain a dark readable surface');
-assert.match(css, /footer\.wu-footer a,body footer\.wu-footer \.wu-footer-group a\{color:#dce9e1!important\}/, 'Footer links must retain explicit light contrast');
-assert.match(css, /footer\.wu-footer \.wu-footer-brand,body footer\.wu-footer \.wu-footer-group h2,body footer\.wu-footer strong\{color:#f4faf6!important\}/, 'Footer headings/brand must retain explicit high contrast');
+assert.match(css, /body\.wu-v2-shell footer\.wu-footer\{color:#b9ccc1!important;background:#10281c!important/, 'Shared footer must retain a dark readable surface with shell-level specificity');
+assert.match(css, /body\.wu-v2-shell footer\.wu-footer a,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group a\{color:#dce9e1!important\}/, 'Footer links must retain explicit light contrast');
+assert.match(css, /body\.wu-v2-shell footer\.wu-footer \.wu-footer-brand,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group h2,body\.wu-v2-shell footer\.wu-footer strong\{color:#f4faf6!important\}/, 'Footer headings/brand must retain explicit high contrast');
 assert.match(css, /prefers-reduced-motion:reduce/, 'Outcome navigation must respect reduced-motion preferences');
 assert.match(sw, /write-urdu-shell-v19/, 'PWA cache version must include WU-PLAT-003 convergence assets');
 assert.match(sw, /js\/site-header-core\.js/, 'Preserved shell core must be cached for offline use');
