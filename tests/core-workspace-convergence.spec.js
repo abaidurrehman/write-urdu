@@ -4,49 +4,102 @@ async function waitForConvergence(page) {
   await page.waitForFunction(() => Boolean(window.WriteUrduCoreWorkspaceConvergence));
 }
 
-test('Basic Writer is canvas-first and defers generic actions until text exists', async ({ page }) => {
+async function waitForBasicToolbar(page) {
+  await page.waitForFunction(() => Boolean(
+    window.WriteUrduBasicCommandToolbar &&
+    document.querySelector('[data-wu-basic-command-surface]')
+  ));
+}
+
+test('Basic Writer exposes one share-first command toolbar directly above the canvas', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async payload => { window.__writeUrduSharedPayload = payload; }
+    });
+  });
   await page.goto('/');
   await waitForConvergence(page);
+  await waitForBasicToolbar(page);
 
   const editor = page.locator('#transliterateTextarea');
-  const actions = page.locator('.home-actions');
+  const surface = page.locator('[data-wu-basic-command-surface]');
+  const toolbar = page.locator('.home-actions[data-wu-basic-command-toolbar]');
+  const share = toolbar.locator('[data-wu-command-action="share"]');
+  const copy = toolbar.locator('[data-wu-command-action="copy"]');
+  const clear = toolbar.locator('[data-wu-command-action="clear"]');
+  const mode = toolbar.locator('[data-input-mode-control]');
+
   await expect(editor).toBeVisible();
-  await expect(actions).toBeHidden();
+  await expect(surface).toBeVisible();
+  await expect(toolbar).toBeVisible();
+  await expect(toolbar).toHaveAttribute('data-wu-core-actionbar', 'pre-editor');
   await expect(page.locator('.home-actions-group-create')).toHaveCount(0);
   await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveCount(0);
+  await expect(toolbar.getByText('Export', { exact: true })).toHaveCount(0);
+  await expect(toolbar.getByText('Share text only', { exact: true })).toHaveCount(0);
 
-  const order = await page.evaluate(() => {
-    const editor = document.querySelector('#transliterateTextarea');
-    const actions = document.querySelector('.home-actions');
-    return Boolean(editor && actions && (editor.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING));
+  const commandOrder = await toolbar.locator('[data-wu-command-action]').evaluateAll(nodes => nodes.map(node => node.getAttribute('data-wu-command-action')));
+  expect(commandOrder.slice(0, 2)).toEqual(['share', 'copy']);
+
+  const toolbarBeforeCanvas = await page.evaluate(() => {
+    const surface = document.querySelector('[data-wu-basic-command-surface]');
+    const canvas = document.querySelector('#demo');
+    return Boolean(surface && canvas && (surface.compareDocumentPosition(canvas) & Node.DOCUMENT_POSITION_FOLLOWING));
   });
-  expect(order).toBe(true);
+  expect(toolbarBeforeCanvas).toBe(true);
+
+  await expect(share).toBeDisabled();
+  await expect(copy).toBeDisabled();
+  await expect(clear).toBeDisabled();
+  await expect(mode.locator('[data-input-mode-option="roman"]')).toBeEnabled();
+  await expect(toolbar.locator('[data-wu-basic-more-toggle]')).toBeEnabled();
+  await expect(page.locator('[data-wu-basic-mode-helper]')).toContainText('Type Roman Urdu');
 
   await editor.fill('میرا خیال ہے');
-  await expect(actions).toBeVisible();
-  await expect(actions).toHaveAttribute('data-wu-core-actionbar', 'post-editor');
-  await expect(actions.getByText('Copy text')).toBeVisible();
-  await expect(actions.getByText('Export', { exact: true })).toBeVisible();
-  await expect(actions.getByText('Invoice', { exact: true })).toHaveCount(0);
-  await expect(actions.getByText('Templates', { exact: true })).toHaveCount(0);
-  await expect(actions.getByText('Create Urdu Card', { exact: true })).toHaveCount(0);
-  await expect(actions.getByText('Create QR Code', { exact: true })).toHaveCount(0);
-  await expect(actions.locator('[data-write-urdu-share]')).toHaveCount(0);
+  await expect(share).toBeEnabled();
+  await expect(copy).toBeEnabled();
+  await expect(clear).toBeEnabled();
 
-  const more = actions.locator('[data-wu-basic-more]');
-  const toggle = more.locator('[data-wu-basic-more-toggle]');
-  const panel = more.locator('[data-wu-basic-more-panel]');
-  const share = panel.locator('[data-wu-basic-share-action]');
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await expect(panel).toBeHidden();
-  await expect(share).toContainText('Share text only');
-  await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(panel).toBeVisible();
-  await expect(share).toBeVisible();
-  expect(await page.evaluate(() => Boolean(window.WriteUrduTools && typeof window.WriteUrduTools.share === 'function'))).toBe(true);
+  const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
+  const outputs = ['pdf', 'word', 'png', 'preview', 'print'];
+  if (compact) {
+    await expect(toolbar.locator('[data-wu-basic-output-group]')).toBeHidden();
+    const toggle = toolbar.locator('[data-wu-basic-more-toggle]');
+    await toggle.click();
+    const panel = toolbar.locator('[data-wu-basic-more-panel]');
+    await expect(panel).toBeVisible();
+    for (const action of outputs) {
+      await expect(panel.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
+    }
+  } else {
+    await expect(toolbar.locator('[data-wu-basic-output-group]')).toBeVisible();
+    for (const action of outputs) {
+      await expect(toolbar.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
+    }
+  }
+
+  const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
+  if (await moreToggle.getAttribute('aria-expanded') !== 'true') await moreToggle.click();
+  const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
+  await expect(morePanel).toBeVisible();
+  await expect(morePanel.locator('#inputFileNameToSaveAs')).toBeVisible();
+  await expect(morePanel.getByText('Text file', { exact: true })).toBeVisible();
+
+  await share.click();
+  await page.waitForFunction(() => Boolean(window.__writeUrduSharedPayload));
+  const payload = await page.evaluate(() => window.__writeUrduSharedPayload);
+  expect(payload.text).toBe('میرا خیال ہے');
+  expect(payload.url).toBeUndefined();
+
+  await clear.click();
+  await expect(editor).toHaveValue('');
+  await expect(share).toBeDisabled();
+  await expect(copy).toBeDisabled();
+  await expect(clear).toBeDisabled();
 
   const nextStep = page.locator('[data-wu-next-step-version="2"]');
+  await editor.fill('ایک نئی تحریر');
   await expect(nextStep).toBeVisible();
   await expect(nextStep.locator('.wu-continue-actions > [data-wu-next-step-action]')).toHaveCount(3);
   await expect(nextStep.locator('[data-wu-next-step-action]')).toHaveCount(4);
