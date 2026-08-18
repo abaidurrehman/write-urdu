@@ -121,6 +121,15 @@
         announce(action === 'sample' ? 'Sample Urdu text added.' : 'Card text cleared.');
     }
 
+    function ownImageShareLabels() {
+        root.querySelectorAll('[data-card-action="share"]').forEach(function (button) {
+            button.removeAttribute('data-card-i18n');
+            button.removeAttribute('data-wu-i18n-control');
+            if (String(button.textContent || '').trim() !== 'Share image only') button.textContent = 'Share image only';
+            button.title = 'Share the image file without creating a public Write Urdu link';
+        });
+    }
+
     function ensureFacebookEntry() {
         var group = root.querySelector('[data-card-use-cases]');
         if (!group) return;
@@ -181,10 +190,10 @@
                 updateHistoryButtons();
             });
         });
-        document.addEventListener('write-urdu:locale-change', function () { syncSteps(); applyFacebookPresentation(); });
+        document.addEventListener('write-urdu:locale-change', function () { syncSteps(); applyFacebookPresentation(); ownImageShareLabels(); });
         document.addEventListener('write-urdu:card-interaction-state', syncInteractionState);
         if (role === 'facebook') document.addEventListener('write-urdu:card-rendered', enforceFacebookRole);
-        syncInteractionState(); syncSteps(); updateHistoryButtons();
+        syncInteractionState(); syncSteps(); updateHistoryButtons(); ownImageShareLabels();
     }
     function start() {
         ensureV2CreationStyles();
