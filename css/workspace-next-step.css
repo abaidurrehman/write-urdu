@@ -1,4 +1,4 @@
-/* WU-PLAT-002 Slice E: contextual, registry-driven continuation. */
+/* WU-PLAT-002 Slice E/F: contextual, registry-driven continuation. */
 .wu-continue-panel{margin:24px 0;padding:20px;border:1px solid var(--wu-color-border,#d7e5dd);border-radius:18px;background:var(--wu-color-surface,#fff);box-shadow:0 10px 30px rgba(18,54,37,.06)}
 .wu-continue-panel[hidden]{display:none!important}
 .rich-editor-page .col-12.col-md-9>.wu-continue-panel{order:7;width:100%;margin:16px 0 0}
@@ -20,6 +20,17 @@
 .wu-continue-more-actions{margin-top:9px}
 html[dir="rtl"] .wu-continue-action{align-items:flex-end;text-align:right}
 html[dir="rtl"] .wu-continue-more>summary:after{margin-right:7px;margin-left:0}
+
+/* Capture workspaces keep Copy/Clear/recognition/conversion controls embedded.
+   Their older Clean/Open buttons are duplicate navigation once the shared
+   registry-driven continuation panel is active. */
+body[data-wu-continuation-mode="shared-recommendations"] [data-ocr-clean],
+body[data-wu-continuation-mode="shared-recommendations"] [data-ocr-editor],
+body[data-wu-continuation-mode="shared-recommendations"] [data-voice-clean],
+body[data-wu-continuation-mode="shared-recommendations"] [data-voice-editor],
+body[data-wu-continuation-mode="shared-recommendations"] [data-inpage-clean],
+body[data-wu-continuation-mode="shared-recommendations"] [data-inpage-editor]{display:none!important}
+
 @media(max-width:760px){.wu-continue-actions,.wu-continue-more-actions{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.wu-continue-panel{margin:18px 0;padding:15px}.rich-editor-page .col-12.col-md-9>.wu-continue-panel{margin-top:12px}.wu-continue-actions,.wu-continue-more-actions{grid-template-columns:1fr}.wu-continue-action{min-height:62px}.wu-continue-more>summary{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.wu-continue-action,.wu-continue-more>summary{transition:none}}
