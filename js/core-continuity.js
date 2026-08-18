@@ -290,9 +290,30 @@
         sync();
     }
 
+    function installCoreJourneyActions(attempt) {
+        attempt = attempt || 0;
+        var route = currentRoute();
+        if (['/', '/urdu-keyboard', '/urdu-editor'].indexOf(route) < 0 || !root.document) return;
+        var actions = root.document.querySelector('[data-wu-journey-panel] .wu-next-journey-actions');
+        if (!actions) {
+            if (attempt < 30) root.setTimeout(function () { installCoreJourneyActions(attempt + 1); }, 50);
+            return;
+        }
+        if (actions.querySelector('[data-create-qr]')) return;
+        var button = root.document.createElement('button');
+        button.type = 'button';
+        button.className = 'wu-next-journey-action';
+        button.setAttribute('data-create-qr', '');
+        button.setAttribute('data-wu-continuity-target', 'qr-generator');
+        button.setAttribute('data-wu-journey', 'write-to-qr');
+        button.innerHTML = '<strong>Make a QR code</strong><small>Turn the current Urdu text into a QR code you can download.</small>';
+        actions.appendChild(button);
+    }
+
     function bootUi() {
         installKeyboardQrAction();
         installCleanerActions();
+        installCoreJourneyActions(0);
     }
 
     if (root && root.document) {
@@ -311,6 +332,7 @@
         mirrorQrLegacy: mirrorQrLegacy,
         transfer: transfer,
         installKeyboardQrAction: installKeyboardQrAction,
-        installCleanerActions: installCleanerActions
+        installCleanerActions: installCleanerActions,
+        installCoreJourneyActions: installCoreJourneyActions
     };
 }));
