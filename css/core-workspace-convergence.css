@@ -7,11 +7,16 @@
 body[data-wu-core-workspace] .fb-like,
 body[data-wu-core-workspace] .twitter-follow-button,
 body[data-wu-core-workspace] .fb-comments,
-body[data-wu-core-workspace] #fb-root {
+body[data-wu-core-workspace] #fb-root,
+body[data-wu-core-workspace] [data-wu-authoring-share-primary] {
   display: none !important;
 }
 
 body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   width: 100%;
   margin: 12px 0 0;
   padding: 10px 12px;
@@ -21,13 +26,15 @@ body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions 
   box-shadow: none;
 }
 
-body[data-wu-core-workspace="basic"] .home-actions[hidden],
-body[data-wu-core-workspace="basic"] .home-actions-group-create[hidden] {
+body[data-wu-core-workspace="basic"] .home-actions[hidden] {
   display: none !important;
 }
 
 body[data-wu-core-workspace="basic"] .home-actions-group-primary,
 body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
 }
 
