@@ -112,20 +112,27 @@
         return Boolean(editor && String(editor.value || '').trim());
     }
 
-    function keepBasicLocalActionsUsable(actions) {
-        if (!actions) return;
+    function organizeBasicCompletionActions(actions) {
+        if (!actions) return false;
         var secondary = actions.querySelector('.home-actions-group-secondary');
         var share = actions.querySelector('[data-write-urdu-share]');
-        if (secondary) {
-            secondary.hidden = false;
-            secondary.removeAttribute('hidden');
-            secondary.setAttribute('aria-hidden', 'false');
-        }
-        if (share) {
-            share.hidden = false;
-            share.removeAttribute('hidden');
-            share.setAttribute('aria-hidden', 'false');
-        }
+        var menu = secondary && secondary.querySelector('details.action-menu');
+        var panel = menu && menu.querySelector('.action-menu-panel.settings-panel');
+        if (!secondary || !share || !menu || !panel) return false;
+
+        secondary.hidden = false;
+        secondary.removeAttribute('hidden');
+        secondary.setAttribute('aria-label', 'More editor options');
+        share.hidden = false;
+        share.removeAttribute('hidden');
+        share.removeAttribute('aria-hidden');
+        share.classList.remove('btn', 'btn-quiet');
+        share.classList.add('wu-more-share-action');
+        share.title = 'Share the Urdu text only without creating a public Write Urdu link';
+        share.innerHTML = '<i class="fas fa-share-alt" aria-hidden="true"></i> Share text only';
+        share.setAttribute('data-wu-share-location', 'more');
+        if (share.parentNode !== panel) panel.insertBefore(share, panel.firstChild);
+        return true;
     }
 
     function syncBasicActions() {
@@ -133,7 +140,7 @@
         var actions = root.document.querySelector('.home-actions');
         if (!actions) return false;
         var hasContent = basicHasContent();
-        keepBasicLocalActionsUsable(actions);
+        organizeBasicCompletionActions(actions);
         actions.hidden = !hasContent;
         actions.setAttribute('aria-hidden', hasContent ? 'false' : 'true');
         actions.setAttribute('data-wu-core-actionbar', 'post-editor');
@@ -166,6 +173,7 @@
         root.document.body.setAttribute('data-wu-canvas-first', 'true');
 
         retireBasicCreateGroup(actions);
+        organizeBasicCompletionActions(actions);
         syncBasicActions();
 
         if (editor.getAttribute('data-wu-convergence-bound') !== 'true') {
@@ -307,6 +315,7 @@
         convergeSitemap: convergeSitemap,
         convergeDocumentation: convergeDocumentation,
         enhanceGlobalLabels: enhanceGlobalLabels,
+        organizeBasicCompletionActions: organizeBasicCompletionActions,
         removeLegacyTrustChrome: removeLegacyTrustChrome,
         removePrematureCoreChrome: removePrematureCoreChrome
     };
