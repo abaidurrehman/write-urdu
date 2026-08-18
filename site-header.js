@@ -1,11 +1,10 @@
 (function (root, document) {
     'use strict';
 
-    // The preserved core still owns the established shell behaviors checked by
-    // older contracts, including the single AdSense loader guard
-    // script[src="js/ads.js"]. Slice D replaces rendered taxonomy and Slice E
-    // adds contextual continuation only on the core Write/Fix workspaces.
-    // Established route ownership remains unchanged.
+    // The preserved core still owns established shell behavior. Slice D owns
+    // rendered taxonomy; Slice E owns contextual continuation on the four
+    // v2-ready Write/Fix workspaces and loads its continuity dependencies in a
+    // deterministic order instead of relying on route-specific bootstrap races.
 
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
@@ -43,10 +42,14 @@
     function loadContextualNextSteps() {
         if (!shouldLoadContextualNextSteps()) return;
         loadScript('/js/workspace-journey-registry.js', 'WriteUrduWorkspaceRegistry', function () {
-            loadScript('/js/workspace-next-step.js', 'WriteUrduWorkspaceNextStep', function () {
-                if (root.WriteUrduWorkspaceNextStep && typeof root.WriteUrduWorkspaceNextStep.render === 'function') {
-                    root.WriteUrduWorkspaceNextStep.render();
-                }
+            loadScript('/js/workspace-handoff.js', 'WriteUrduWorkspaceHandoff', function () {
+                loadScript('/js/core-continuity.js', 'WriteUrduCoreContinuity', function () {
+                    loadScript('/js/workspace-next-step.js', 'WriteUrduWorkspaceNextStep', function () {
+                        if (root.WriteUrduWorkspaceNextStep && typeof root.WriteUrduWorkspaceNextStep.render === 'function') {
+                            root.WriteUrduWorkspaceNextStep.render();
+                        }
+                    });
+                });
             });
         });
     }
