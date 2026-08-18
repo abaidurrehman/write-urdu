@@ -57,6 +57,17 @@
         });
     }
 
+    function runAuthoringShare() {
+        if (root.WriteUrduTools && typeof root.WriteUrduTools.share === 'function') {
+            root.WriteUrduTools.share();
+            return true;
+        }
+        if (root.WriteUrduUI && typeof root.WriteUrduUI.notify === 'function') {
+            root.WriteUrduUI.notify('Sharing is still loading. Try again in a moment.', 'error');
+        }
+        return false;
+    }
+
     function createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel) {
         var wrapper = root.document.createElement('div');
         wrapper.className = 'wu-basic-command-more';
@@ -208,15 +219,12 @@
         var secondary = actions.querySelector('.home-actions-group-secondary');
         var settingsDetails = secondary && secondary.querySelector('details.action-menu');
         var settingsPanel = settingsDetails && settingsDetails.querySelector('.action-menu-panel.settings-panel');
+        var legacyShare = secondary && secondary.querySelector('[data-write-urdu-share]');
+        if (legacyShare) legacyShare.remove();
 
-        var share = secondary && secondary.querySelector('[data-write-urdu-share]');
-        var shareWasCreated = false;
-        if (!share) {
-            share = root.document.createElement('button');
-            share.type = 'button';
-            share.setAttribute('data-write-urdu-share', '');
-            shareWasCreated = true;
-        }
+        var share = root.document.createElement('button');
+        share.type = 'button';
+        share.setAttribute('data-wu-basic-share', '');
         var copy = primary && primary.querySelector('[data-copy-target="#transliterateTextarea"]');
         var pdf = exportPanel && exportPanel.querySelector('#exportPdf');
         var word = exportPanel && exportPanel.querySelector('#exportWord');
@@ -328,11 +336,7 @@
         root.document.body.setAttribute('data-wu-basic-command-toolbar', 'true');
         removeEmptyLegacyContainer(legacyContainer);
 
-        if (shareWasCreated) {
-            share.addEventListener('click', function () {
-                if (root.WriteUrduTools && typeof root.WriteUrduTools.share === 'function') root.WriteUrduTools.share();
-            });
-        }
+        share.addEventListener('click', runAuthoringShare);
 
         if (actions.getAttribute('data-wu-toolbar-telemetry-bound') !== 'true') {
             actions.setAttribute('data-wu-toolbar-telemetry-bound', 'true');
@@ -384,6 +388,7 @@
         syncState: syncState,
         syncModeHelper: syncModeHelper,
         syncResponsiveOutputs: syncResponsiveOutputs,
+        runAuthoringShare: runAuthoringShare,
         build: build,
         run: run
     };
