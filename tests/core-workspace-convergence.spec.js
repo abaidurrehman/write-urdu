@@ -12,7 +12,8 @@ test('Basic Writer is canvas-first and defers generic actions until text exists'
   const actions = page.locator('.home-actions');
   await expect(editor).toBeVisible();
   await expect(actions).toBeHidden();
-  await expect(page.locator('.home-actions-group-create')).toBeHidden();
+  await expect(page.locator('.home-actions-group-create')).toHaveCount(0);
+  await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveCount(0);
 
   const order = await page.evaluate(() => {
     const editor = document.querySelector('#transliterateTextarea');
@@ -25,7 +26,7 @@ test('Basic Writer is canvas-first and defers generic actions until text exists'
   await expect(actions).toBeVisible();
   await expect(actions).toHaveAttribute('data-wu-core-actionbar', 'post-editor');
   await expect(actions.getByText('Copy text')).toBeVisible();
-  await expect(actions.getByText('Share', { exact: true })).toBeVisible();
+  await expect(actions.getByText('Share text only')).toBeVisible();
   await expect(actions.getByText('Invoice', { exact: true })).toHaveCount(0);
   await expect(actions.getByText('Templates', { exact: true })).toHaveCount(0);
   await expect(actions.getByText('Create Urdu Card', { exact: true })).toHaveCount(0);
@@ -36,14 +37,16 @@ test('Basic Writer is canvas-first and defers generic actions until text exists'
   await expect(nextStep.locator('[data-wu-next-step-action]')).toHaveCount(3);
 });
 
-test('legacy follow and comment chrome is retired from core workspaces', async ({ page }) => {
+test('legacy follow/comment chrome and premature header creation are retired from core workspaces', async ({ page }) => {
   for (const route of ['/', '/urdu-keyboard', '/urdu-editor']) {
     await page.goto(route);
     await waitForConvergence(page);
     await expect(page.locator('.fb-like')).toHaveCount(0);
     await expect(page.locator('.twitter-follow-button')).toHaveCount(0);
     await expect(page.locator('.fb-comments')).toHaveCount(0);
+    await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveCount(0);
     await expect(page.locator('body')).toHaveAttribute('data-wu-legacy-social-retired', 'true');
+    await expect(page.locator('body')).toHaveAttribute('data-wu-premature-header-action-retired', 'true');
   }
 });
 
