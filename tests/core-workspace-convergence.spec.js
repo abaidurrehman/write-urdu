@@ -32,11 +32,16 @@ test('Basic Writer is canvas-first and defers generic actions until text exists'
   await expect(actions.getByText('Create Urdu Card', { exact: true })).toHaveCount(0);
   await expect(actions.getByText('Create QR Code', { exact: true })).toHaveCount(0);
 
-  const more = actions.locator('.home-actions-group-secondary details.action-menu');
-  const share = more.locator('[data-write-urdu-share]');
+  const more = actions.locator('[data-wu-basic-more]');
+  const toggle = more.locator('[data-wu-basic-more-toggle]');
+  const panel = more.locator('[data-wu-basic-more-panel]');
+  const share = panel.locator('[data-write-urdu-share]');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(panel).toBeHidden();
   await expect(share).toHaveAttribute('data-wu-share-location', 'more');
-  await expect(share).toBeHidden();
-  await more.locator('summary').click();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(panel).toBeVisible();
   await expect(share).toBeVisible();
   await expect(share).toContainText('Share text only');
 
