@@ -10,7 +10,6 @@
     var HISTORY_PREFIX = 'write-urdu:history:v1:';
     var MAX_HISTORY = 5;
     var CORE_SOURCES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'];
-    var LEGACY_QR_KEY = 'writeUrdu.qrGenerator.incoming';
 
     function normalizeRoute(value) {
         if (Registry && typeof Registry.normalizeRoute === 'function') return Registry.normalizeRoute(value);
@@ -34,42 +33,48 @@
         return workspace && workspace.id || null;
     }
 
-    function selectedTextFrom(element) {
+    function selectedOrAll(element) {
         if (!element || typeof element.value !== 'string') return '';
+        var value = String(element.value || '');
         var start = typeof element.selectionStart === 'number' ? element.selectionStart : 0;
         var end = typeof element.selectionEnd === 'number' ? element.selectionEnd : 0;
-        if (end > start) return element.value.slice(start, end).trim();
-        return String(element.value || '').trim();
+        return (end > start ? value.slice(start, end) : value).trim();
     }
 
-    function currentPlainText() {
+    function fullPlainText() {
         var route = currentRoute();
+        if (route === '/') {
+            var basic = root.document && root.document.getElementById('transliterateTextarea');
+            return basic ? String(basic.value || '').trim() : '';
+        }
+        if (route === '/urdu-keyboard') {
+            var keyboard = root.document && root.document.getElementById('write');
+            return keyboard ? String(keyboard.value || '').trim() : '';
+        }
+        if (route === '/urdu-editor') {
+            var editor = root.tinymce && root.tinymce.get && root.tinymce.get('basic-example');
+            return editor && editor.initialized ? String(editor.getContent({ format: 'text' }) || '').trim() : '';
+        }
         if (route === '/urdu-text-cleaner') {
             var cleaned = root.document && root.document.getElementById('cleanerResult');
             return cleaned ? String(cleaned.value || '').trim() : '';
         }
+        return '';
+    }
 
-        var active = root.document && root.document.activeElement;
-        if (active && /^(TEXTAREA|INPUT)$/.test(active.tagName || '') && typeof active.value === 'string') {
-            var activeText = selectedTextFrom(active);
-            if (activeText) return activeText;
-        }
-
-        var basic = root.document && root.document.getElementById('transliterateTextarea');
-        if (basic && basic.value.trim()) return selectedTextFrom(basic);
-
-        var keyboard = root.document && root.document.getElementById('write');
-        if (keyboard && keyboard.value.trim()) return selectedTextFrom(keyboard);
-
-        var editor = root.tinymce && root.tinymce.get && root.tinymce.get('basic-example');
-        if (editor && editor.initialized) {
+    function currentPlainText() {
+        var route = currentRoute();
+        if (route === '/') return selectedOrAll(root.document && root.document.getElementById('transliterateTextarea'));
+        if (route === '/urdu-keyboard') return selectedOrAll(root.document && root.document.getElementById('write'));
+        if (route === '/urdu-editor') {
+            var editor = root.tinymce && root.tinymce.get && root.tinymce.get('basic-example');
+            if (!editor || !editor.initialized) return '';
             var selected = editor.selection && editor.selection.getContent({ format: 'text' });
-            if (selected && selected.trim()) return selected.trim();
-            return String(editor.getContent({ format: 'text' }) || '').trim();
+            return String((selected && selected.trim()) || editor.getContent({ format: 'text' }) || '').trim();
         }
-
-        if (root.WriteUrduTools && root.WriteUrduTools.adapter && typeof root.WriteUrduTools.adapter.getText === 'function') {
-            return String(root.WriteUrduTools.adapter.getText() || '').trim();
+        if (route === '/urdu-text-cleaner') {
+            var cleaned = root.document && root.document.getElementById('cleanerResult');
+            return cleaned ? String(cleaned.value || '').trim() : '';
         }
         return '';
     }
@@ -77,7 +82,7 @@
     function currentRichContent() {
         var editor = root.tinymce && root.tinymce.get && root.tinymce.get('basic-example');
         if (editor && editor.initialized) return String(editor.getContent() || '');
-        return currentPlainText();
+        return fullPlainText();
     }
 
     function draftKindFor(workspace) {
@@ -118,7 +123,7 @@
     function preserveSourceDraft(sourceWorkspace) {
         var kind = draftKindFor(sourceWorkspace);
         if (!kind) return false;
-        var text = currentPlainText();
+        var text = fullPlainText();
         if (!text) return false;
         var snapshot = {
             text: text,
@@ -129,22 +134,6 @@
             try { root.WriteUrduTools.saveDraft(); } catch (error) { /* direct snapshot below is the safety layer */ }
         }
         return preserveSnapshot(kind, snapshot);
-    }
-
-    function preserveExistingDestinationDraft(targetWorkspace) {
-        var kind = draftKindFor(targetWorkspace);
-        if (!kind) return false;
-        try {
-            var existing = JSON.parse(root.localStorage.getItem(DRAFT_PREFIX + kind) || 'null');
-            if (!existing || !String(existing.text || existing.content || '').trim()) return false;
-            var signature = snapshotSignature(existing);
-            var items = readHistory(kind).filter(function (item) { return snapshotSignature(item) !== signature; });
-            items.unshift(existing);
-            root.localStorage.setItem(HISTORY_PREFIX + kind, JSON.stringify(items.slice(0, MAX_HISTORY)));
-            return true;
-        } catch (error) {
-            return false;
-        }
     }
 
     function targetRoute(targetWorkspace) {
@@ -270,51 +259,13 @@
         handoff.closest('.urdu-tool-actions').insertAdjacentElement('afterend', group);
 
         function sync() {
-            var disabled = !String(root.document.getElementById('cleanerResult').value || '').trim();
+            var result = root.document.getElementById('cleanerResult');
+            var disabled = !result || !String(result.value || '').trim();
             group.querySelectorAll('button').forEach(function (button) { button.disabled = disabled; });
         }
-        root.document.getElementById('cleanerResult').addEventListener('input', sync);
+        var result = root.document.getElementById('cleanerResult');
+        if (result) result.addEventListener('input', sync);
         sync();
-    }
-
-    function bridgeToLegacy(envelope, targetWorkspace) {
-        if (!envelope || !envelope.payload || envelope.payload.kind !== 'plain-text' || typeof envelope.payload.text !== 'string') return false;
-        if (targetWorkspace === 'qr-generator') {
-            try {
-                root.sessionStorage.setItem(LEGACY_QR_KEY, JSON.stringify({
-                    version: 1,
-                    type: 'text',
-                    text: envelope.payload.text,
-                    source: envelope.source && envelope.source.workspace || 'workspace',
-                    createdAt: new Date(envelope.createdAt).toISOString()
-                }));
-                return true;
-            } catch (error) {
-                return false;
-            }
-        }
-        if (Handoff && typeof Handoff.writeLegacyMirror === 'function') {
-            return Handoff.writeLegacyMirror(envelope, root.sessionStorage);
-        }
-        return false;
-    }
-
-    function bridgeIncoming() {
-        if (!Handoff || typeof Handoff.take !== 'function') return null;
-        var target = workspaceId();
-        if (['basic-writer', 'rich-editor', 'card-studio', 'qr-generator'].indexOf(target) < 0) return null;
-        preserveExistingDestinationDraft(target);
-        var envelope = Handoff.take(target);
-        if (!envelope) return null;
-        if (!bridgeToLegacy(envelope, target)) return null;
-        try {
-            root.document.documentElement.setAttribute('data-wu-handoff-bridged', target);
-            root.document.documentElement.setAttribute('data-wu-handoff-source', envelope.source && envelope.source.workspace || 'unknown');
-        } catch (error) { /* marker is diagnostic only */ }
-        if (target === 'qr-generator') {
-            root.setTimeout(function () { notify('Your imported Urdu text is ready as a QR code.', 'success'); }, 0);
-        }
-        return envelope;
     }
 
     function bootUi() {
@@ -324,7 +275,6 @@
 
     if (root && root.document) {
         root.document.addEventListener('click', onClick, true);
-        bridgeIncoming();
         if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', bootUi);
         else bootUi();
     }
@@ -332,13 +282,11 @@
     return {
         currentRoute: currentRoute,
         workspaceId: workspaceId,
+        fullPlainText: fullPlainText,
         currentPlainText: currentPlainText,
         preserveSourceDraft: preserveSourceDraft,
-        preserveExistingDestinationDraft: preserveExistingDestinationDraft,
         targetForControl: targetForControl,
         transfer: transfer,
-        bridgeIncoming: bridgeIncoming,
-        bridgeToLegacy: bridgeToLegacy,
         installKeyboardQrAction: installKeyboardQrAction,
         installCleanerActions: installCleanerActions
     };
