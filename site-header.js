@@ -1,9 +1,10 @@
 (function (root, document) {
     'use strict';
 
-    // The preserved core still owns established shell behavior. Slice D owns
-    // rendered taxonomy; Slice E owns contextual continuation on the four
-    // v2-ready Write/Fix workspaces and loads its continuity dependencies in a
+    // The preserved core still owns established shell behavior, including the
+    // single AdSense loader guard script[src="js/ads.js"]. Slice D owns rendered
+    // taxonomy; Slice E owns contextual continuation on the four v2-ready
+    // Write/Fix workspaces and loads its continuity dependencies in a
     // deterministic order instead of relying on route-specific bootstrap races.
 
     function loadScript(src, marker, done) {
