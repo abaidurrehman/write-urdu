@@ -8,6 +8,8 @@ const NextStep = require(path.join(root, 'js', 'workspace-next-step.js'));
 const runtime = fs.readFileSync(path.join(root, 'js', 'workspace-next-step.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'css', 'workspace-next-step.css'), 'utf8');
 const header = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
+const playwright = fs.readFileSync(path.join(root, 'playwright.config.js'), 'utf8');
+const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 
 assert.strictEqual(NextStep.MAX_VISIBLE, 3, 'Continue with must never expose more than three primary recommendations');
 assert.deepStrictEqual(NextStep.SHARED_WORKSPACES, ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'], 'Slice E shared-workspace ownership changed unexpectedly');
@@ -46,5 +48,15 @@ assert.match(css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/, 'Desktop 
 assert.match(css, /@media\(max-width:520px\)/, 'Mobile continuation layout is missing');
 assert.match(header, /workspace-next-step\.js/, 'Shared shell must load contextual next steps on supported workspaces');
 assert.match(header, /\['\/', '\/urdu-editor', '\/urdu-keyboard', '\/urdu-text-cleaner'\]/, 'Slice E loader must remain scoped to the four v2-ready sources');
+
+const registryPos = header.indexOf("/js/workspace-journey-registry.js");
+const handoffPos = header.indexOf("/js/workspace-handoff.js");
+const continuityPos = header.indexOf("/js/core-continuity.js");
+const nextStepPos = header.indexOf("/js/workspace-next-step.js");
+assert.ok(registryPos >= 0 && handoffPos > registryPos && continuityPos > handoffPos && nextStepPos > continuityPos, 'Slice E dependencies must load registry → handoff → continuity → renderer');
+assert.match(playwright, /outcome-navigation\.spec\.js/, 'Slice D browser acceptance must be discoverable by Playwright');
+assert.match(playwright, /workspace-next-step\.spec\.js/, 'Slice E browser acceptance must be discoverable by Playwright');
+assert.match(sw, /js\/workspace-handoff\.js/, 'PWA shell must cache the v2 handoff dependency loaded by Slice E');
+assert.match(sw, /js\/core-continuity\.js/, 'PWA shell must cache the continuity dependency loaded by Slice E');
 
 console.log('Contextual workspace next-step contract passed.');
