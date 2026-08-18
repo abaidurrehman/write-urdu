@@ -16,6 +16,7 @@
     var CAPTURE_WORKSPACES = ['image-to-urdu-text', 'voice-typing', 'inpage-converter'];
     var SHARED_WORKSPACES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'].concat(CAPTURE_WORKSPACES);
     var BIND_TIMEOUT_MS = 6000;
+    var OCR_WATCH_ATTEMPTS = 240;
     var cleanupObserver = null;
     var cleanupTimer = null;
 
@@ -236,6 +237,39 @@
         return selectors[workspaceId] || null;
     }
 
+    function watchOcrResult(attempt) {
+        attempt = Number(attempt) || 0;
+        render();
+        if (currentText('image-to-urdu-text')) return;
+        var status = root && root.document && root.document.querySelector('[data-ocr-status-pill]');
+        var label = status ? String(status.textContent || '') : '';
+        if (/failed|no text|cancelled/i.test(label)) return;
+        if (attempt < OCR_WATCH_ATTEMPTS) root.setTimeout(function () { watchOcrResult(attempt + 1); }, 250);
+    }
+
+    function bindCaptureControls(workspaceId) {
+        if (!root || !root.document) return;
+        if (workspaceId === 'image-to-urdu-text') {
+            var start = root.document.querySelector('[data-ocr-start]');
+            var clear = root.document.querySelector('[data-ocr-clear]');
+            if (start && start.getAttribute('data-wu-next-step-control-bound') !== 'true') {
+                start.setAttribute('data-wu-next-step-control-bound', 'true');
+                start.addEventListener('click', function () { root.setTimeout(function () { watchOcrResult(0); }, 0); });
+            }
+            if (clear && clear.getAttribute('data-wu-next-step-control-bound') !== 'true') {
+                clear.setAttribute('data-wu-next-step-control-bound', 'true');
+                clear.addEventListener('click', function () { root.setTimeout(render, 0); });
+            }
+        }
+        if (workspaceId === 'inpage-converter') {
+            root.document.querySelectorAll('[data-inpage-mode],[data-inpage-convert],[data-inpage-swap],[data-inpage-clear]').forEach(function (control) {
+                if (control.getAttribute('data-wu-next-step-control-bound') === 'true') return;
+                control.setAttribute('data-wu-next-step-control-bound', 'true');
+                control.addEventListener('click', function () { root.setTimeout(render, 0); });
+            });
+        }
+    }
+
     function bindStandardInput(workspaceId) {
         if (!root || !root.document) return;
         var selector = inputSelector(workspaceId);
@@ -243,11 +277,7 @@
         if (!input || input.getAttribute('data-wu-next-step-bound') === 'true') return;
         input.setAttribute('data-wu-next-step-bound', 'true');
         input.addEventListener('input', render);
-        if (workspaceId === 'inpage-converter') {
-            root.document.querySelectorAll('[data-inpage-mode]').forEach(function (button) {
-                button.addEventListener('click', function () { root.setTimeout(render, 0); });
-            });
-        }
+        bindCaptureControls(workspaceId);
     }
 
     function bindRichEditor(attempt) {
