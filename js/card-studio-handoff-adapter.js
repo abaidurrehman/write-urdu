@@ -74,17 +74,20 @@
     function consume() {
         if (normalizePath() !== '/urdu-card-studio') return null;
         var handoff = root.WriteUrduWorkspaceHandoff;
-        if (!handoff || typeof handoff.take !== 'function') return null;
-        var envelope = handoff.take(TARGET);
-        if (!envelope || !envelope.payload) return null;
+        if (!handoff || typeof handoff.take !== 'function' || typeof handoff.peek !== 'function') return null;
 
-        var kind = envelope.payload.kind;
+        var preview = handoff.peek(TARGET);
+        if (!preview || !preview.payload) return null;
+        var kind = preview.payload.kind;
         var template = null;
         if (kind === 'template-seed') {
-            template = templateFromId(envelope.payload.templateId || envelope.context && envelope.context.templateId);
+            template = templateFromId(preview.payload.templateId || preview.context && preview.context.templateId);
             if (!template) return null;
-            applyTemplateRoute(template);
         } else if (kind !== 'plain-text') return null;
+
+        var envelope = handoff.take(TARGET);
+        if (!envelope || !envelope.payload) return null;
+        if (template) applyTemplateRoute(template);
 
         var appliedLive = applyToRunningApp(envelope, template);
         if (!appliedLive && !writeLegacyText(envelope)) return null;
