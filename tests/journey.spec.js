@@ -8,7 +8,7 @@ async function open(page, route) {
   await page.locator('body').waitFor({ state: 'attached' });
 }
 
-test('core writing surfaces expose Create & Share as a primary toolbar and next-step action', async ({ page }) => {
+test('core writing surfaces keep Create & Share in the toolbar and reveal contextual next steps after work exists', async ({ page }) => {
   for (const route of ['/', '/urdu-editor.html', '/urdu-keyboard.html']) {
     await open(page, route);
 
@@ -17,20 +17,22 @@ test('core writing surfaces expose Create & Share as a primary toolbar and next-
     await expect(toolbarShare).toContainText('Create & Share');
     await expect(page.locator('[data-write-urdu-share]').first()).toContainText('Share text only');
 
-    const panel = page.locator('[data-wu-journey-panel]');
+    await page.waitForFunction(() => Boolean(window.WriteUrduWorkspaceNextStep), null, { timeout: 10000 });
+    const panel = page.locator('[data-wu-next-step-version="2"]');
+    await expect(panel).toBeAttached();
+    await expect(panel).toBeHidden();
+
+    if (route === '/') await page.locator('#transliterateTextarea').fill('یہ تیار اردو متن ہے');
+    else if (route.includes('urdu-keyboard')) await page.locator('#write').fill('یہ تیار اردو متن ہے');
+    else await page.frameLocator('#basic-example_ifr').locator('body').fill('یہ تیار اردو متن ہے');
+
     await expect(panel).toBeVisible({ timeout: 10000 });
-    await expect(panel.locator('[data-continue-rich]')).toHaveCount(route.includes('urdu-editor') ? 0 : 1);
-    const shareAction = panel.locator('[data-create-card]');
-    await expect(shareAction).toHaveCount(1);
-    await expect(shareAction).toContainText('Create & share this Urdu');
-    await expect(shareAction).toHaveClass(/is-primary/);
-    await expect(shareAction).toHaveClass(/is-share/);
-    const qrAction = panel.locator('[data-create-qr]');
-    await expect(qrAction).toHaveCount(1, { timeout: 10000 });
-    await expect(qrAction).toContainText('Make a QR code');
-    await expect(panel.locator('[data-create-stylish]')).toHaveCount(1);
-    await expect(panel.locator('[data-create-name-art]')).toHaveCount(1);
-    await expect(panel.locator('[data-wu-journey="write-to-templates"]')).toHaveCount(1);
+    const visibleActions = panel.locator('.wu-continue-actions > .wu-continue-action');
+    expect(await visibleActions.count()).toBeLessThanOrEqual(3);
+    await expect(panel.locator('[data-wu-continuity-target="card-studio"]')).toHaveCount(1);
+    await expect(panel.locator('[data-wu-continuity-target="qr-generator"]')).toHaveCount(1);
+    await expect(panel.locator('[data-wu-continuity-target="rich-editor"]')).toHaveCount(route.includes('urdu-editor') ? 0 : 1);
+    await expect(panel.locator('[data-create-stylish],[data-create-name-art],[data-wu-journey="write-to-templates"]')).toHaveCount(0);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
   }
@@ -90,7 +92,7 @@ test('selected homepage text becomes a QR while the full Basic draft remains sav
     element.focus();
     element.setSelectionRange(start, start + selected.length);
   }, selectedText);
-  const qrAction = page.locator('[data-wu-journey-panel] [data-create-qr]');
+  const qrAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-qr"]');
   await expect(qrAction).toBeVisible({ timeout: 10000 });
   await qrAction.click();
   await page.waitForURL(/qr-code-generator/, { timeout: 10000 });
@@ -112,7 +114,7 @@ test('Urdu Keyboard can continue directly to a QR code without copy and paste', 
   expect(page.url()).not.toContain('کی');
 });
 
-test('Cleaner can continue writing without destroying an older Basic draft', async ({ page }) => {
+test('Cleaner uses the shared continuation panel and can continue writing without destroying an older Basic draft', async ({ page }) => {
   await open(page, '/urdu-text-cleaner.html');
   await page.evaluate(() => {
     localStorage.setItem('write-urdu:draft:v1:basic', JSON.stringify({
@@ -124,40 +126,14 @@ test('Cleaner can continue writing without destroying an older Basic draft', asy
   await page.locator('#cleanerSource').fill('یہ صاف اردو متن ہے');
   await page.locator('[data-cleaner-analyze]').click();
   await page.waitForFunction(() => Boolean(window.WriteUrduCoreContinuity));
-  await expect(page.locator('[data-cleaner-continuity-actions]')).toBeVisible({ timeout: 10000 });
-  await expect(page.locator('[data-cleaner-continuity-actions] [data-wu-continuity-target="rich-editor"]')).toContainText('Format as a document');
-  await expect(page.locator('[data-cleaner-continuity-actions] [data-wu-continuity-target="card-studio"]')).toContainText('Create a card');
-  await expect(page.locator('[data-cleaner-continuity-actions] [data-wu-continuity-target="qr-generator"]')).toContainText('Make a QR code');
+  const panel = page.locator('[data-wu-next-step-version="2"]');
+  await expect(panel).toBeVisible({ timeout: 10000 });
+  await expect(panel.locator('[data-wu-next-step-action="cleaner-to-rich"]')).toContainText('Format this as a document');
+  await expect(panel.locator('[data-wu-next-step-action="cleaner-to-card"]')).toContainText('Create a card');
+  await expect(page.locator('[data-cleaner-continuity-actions]')).toHaveCount(0);
   await page.locator('[data-cleaner-handoff]').click();
   await page.waitForURL(url => url.pathname === '/', { timeout: 10000 });
   await expect(page.locator('#transliterateTextarea')).toHaveValue('یہ صاف اردو متن ہے', { timeout: 10000 });
   const history = await page.evaluate(() => JSON.parse(localStorage.getItem('write-urdu:history:v1:basic') || '[]'));
   expect(history.some(item => item.text === 'پرانا بنیادی مسودہ')).toBe(true);
-});
-
-test('homepage text is carried locally into Stylish Urdu and consumed once', async ({ page }) => {
-  await open(page, '/');
-  await page.locator('#transliterateTextarea').fill('میرا خوب صورت نام');
-  await page.locator('[data-wu-journey-panel] [data-create-stylish]').click();
-  await page.waitForURL(/stylish-urdu-text-generator/, { timeout: 10000 });
-  await expect(page.locator('#stylishText')).toHaveValue('میرا خوب صورت نام', { timeout: 10000 });
-  await expect(page.locator('[data-stylish-status]')).toContainText('ready to style');
-  expect(await page.evaluate(() => sessionStorage.getItem('writeUrdu.stylishText.incoming.v1'))).toBeNull();
-  expect(page.url()).not.toContain('میرا');
-});
-
-test('keyboard text is carried locally into direct Name Art without entering the URL', async ({ page }) => {
-  await open(page, '/urdu-keyboard.html');
-  await page.locator('#write').fill('میرا نام');
-  await page.locator('[data-wu-journey-panel] [data-create-name-art]').click();
-  await page.waitForURL(/urdu-name-art-maker/, { timeout: 10000 });
-  await expect(page.locator('[data-name-art-status]')).toContainText('ready', { timeout: 10000 });
-  await expect(page.locator('#nameArtText')).toHaveValue('میرا نام', { timeout: 10000 });
-  await expect(page.locator('.name-art-workspace iframe')).toHaveCount(0);
-  await expect.poll(() => page.evaluate(() => {
-    const app = window.WriteUrduNameArtApp && window.WriteUrduNameArtApp.getWorkspaceApp();
-    return app && app.getState().text.value;
-  })).toBe('میرا نام');
-  expect(await page.evaluate(() => sessionStorage.getItem('writeUrdu.nameArt.handoff.v1'))).toBeNull();
-  expect(page.url()).not.toContain('میرا');
 });
