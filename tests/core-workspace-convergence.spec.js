@@ -80,8 +80,9 @@ test('documentation includes all current ways to start with Urdu text', async ({
   await page.goto('/write-urdu-documentation');
   await waitForConvergence(page);
   await expect(page.locator('#paths-title')).toHaveText('Choose how your Urdu starts');
-  await expect(page.locator('[data-wu-capture-path]')).toHaveCount(3);
-  await expect(page.locator('a[href="/tools/urdu-voice-typing"]')).toBeVisible();
-  await expect(page.locator('a[href="/urdu-ocr"]')).toBeVisible();
-  await expect(page.locator('a[href="/tools/inpage-unicode-converter"]')).toBeVisible();
+  const capturePaths = page.locator('[data-wu-capture-path]');
+  await expect(capturePaths).toHaveCount(3);
+  await expect(capturePaths.locator('a[href="/tools/urdu-voice-typing"]')).toBeVisible();
+  await expect(capturePaths.locator('a[href="/urdu-ocr"]')).toBeVisible();
+  await expect(capturePaths.locator('a[href="/tools/inpage-unicode-converter"]')).toBeVisible();
 });
