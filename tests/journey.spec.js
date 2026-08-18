@@ -25,6 +25,9 @@ test('core writing surfaces expose Create & Share as a primary toolbar and next-
     await expect(shareAction).toContainText('Create & share this Urdu');
     await expect(shareAction).toHaveClass(/is-primary/);
     await expect(shareAction).toHaveClass(/is-share/);
+    const qrAction = panel.locator('[data-create-qr]');
+    await expect(qrAction).toHaveCount(1, { timeout: 10000 });
+    await expect(qrAction).toContainText('Make a QR code');
     await expect(panel.locator('[data-create-stylish]')).toHaveCount(1);
     await expect(panel.locator('[data-create-name-art]')).toHaveCount(1);
     await expect(panel.locator('[data-wu-journey="write-to-templates"]')).toHaveCount(1);
@@ -87,7 +90,9 @@ test('selected homepage text becomes a QR while the full Basic draft remains sav
     element.focus();
     element.setSelectionRange(start, start + selected.length);
   }, selectedText);
-  await page.locator('.home-actions-group-create [data-create-qr]').click();
+  const qrAction = page.locator('[data-wu-journey-panel] [data-create-qr]');
+  await expect(qrAction).toBeVisible({ timeout: 10000 });
+  await qrAction.click();
   await page.waitForURL(/qr-code-generator/, { timeout: 10000 });
   await expect(page.locator('[data-qr-field="text"]')).toHaveValue(selectedText, { timeout: 10000 });
   const basicDraft = await page.evaluate(() => JSON.parse(localStorage.getItem('write-urdu:draft:v1:basic') || 'null'));
