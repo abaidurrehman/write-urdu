@@ -173,10 +173,10 @@ Turn finished Urdu creations into short branded public links such as `write-urdu
 
 ## P0.7 — `WU-PLAT-002` V2 Product Journey & Workspace Handoffs
 
-**Type:** P0 product architecture / information architecture / continuity  
+**Type:** Product architecture / information architecture / continuity  
 **Spec:** `specs/WU-PLAT-002-v2-product-journey-workspace-handoffs.md`  
 **Research:** `docs/WU-V2-PRODUCT-JOURNEY-UX-RESEARCH-2026-08-18.md`  
-**Status:** Active — approved initiative.
+**Status:** Active — approved P0 initiative.
 
 Turn the expanded WriteUrdu product into one continuous user journey instead of exposing a growing directory of implementation-named tools. This is the successor layer above the completed P0.5 tactical links/handoffs; it does not reopen completed renderer or role-workspace work.
 
@@ -302,3 +302,69 @@ Winners get stronger landing content, examples, valid schema and supporting cont
 - [ ] Remove only confirmed unused assets/dependencies.
 - [ ] Audit legacy Bootstrap/jQuery/social dependencies after v2 migration.
 - [ ] Measure whether ads/scripts contribute to LCP/CLS/INP regressions on high-traffic pages.
+- [ ] Confirm production artifact contains only required files.
+
+## P2.3 — Answer-ready content backlog
+
+Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
+
+- [ ] Common Roman Urdu phrases with reviewed Urdu examples.
+- [ ] Urdu in WhatsApp, Microsoft Word and Google Docs.
+- [ ] Urdu WhatsApp Status / poetry-card creation.
+- [ ] Static QR mechanics and quiet-zone guidance.
+- [ ] Browser compatibility for writing/creation tools.
+- [ ] Local-draft/image-upload/QR-logo privacy guidance.
+- [ ] Urdu punctuation, numerals and RTL direction.
+
+---
+
+# HOLD / do not distract the roadmap
+
+- Separate doorway pages for near-identical `urdu typing` / `urdu writing` variants.
+- Generic new tools unrelated to Urdu writing/creation without strong evidence.
+- Ads inside the active writing/editor/control/result region.
+- Site-wide maximum Auto ads load without page-type rules and experiments.
+- Vignette ads as a default core-editor transition.
+- Ad intents on core writing pages before page-level economics and UX are understood.
+- Related search for Auto ads.
+- Changing the transliteration provider or initialization contract without a compelling reason.
+- Accounts/cloud documents/server-side storage for the core writing workflow without demonstrated user demand.
+- AI translation/calligraphy features as a novelty project.
+- Removing established URLs because they look visually old or redundant without query/route evidence.
+- Publishing founder identity, reviews, ratings, usage counts or `sameAs` profiles without verified public evidence.
+
+---
+
+# Feature-spec reconciliation
+
+| ID | Groomed state | Roadmap treatment |
+| --- | --- | --- |
+| `WU-GROWTH-001` | Active | P0 commercial control plane; runtime AdSense normalization/restoration shipped, Authority Map awaits detailed exports |
+| `WU-SHARE-001` | Planned | P0.6 product-led distribution; Card Studio Phase 1 with release-blocking telemetry, then main editor expansion |
+| `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
+| `WU-PLAT-002` | Active | P0.7 outcome-led IA + shared workspace continuity; governs new-tool journey integration |
+| `WU-CS-UX-001` | Implemented | Card Studio behavior complete; v2 creation hierarchy migrated in PR #20 |
+| `WU-CS-UX-002` | Implemented | Card Studio empty-state behavior retained through v2 migration |
+| `WU-SM-001` | Implemented core | v2 migration P1 |
+| `WU-SUA-001` | Implemented | Acceptance closed; Stylish Text + Name Art v2 presentation migration is next |
+| `WU-IG-001` | Implemented | Strategic evidence review before v2 migration |
+| `WU-IG-002` | Implemented | Same invoice decision |
+| `WU-IG-003` | Implemented | Same invoice decision |
+| `WU-SEO-001` | Superseded | Requirements absorbed by `WU-PLAT-001`, SEO-A1 and `WU-GROWTH-001` |
+
+## Grooming rules going forward
+
+- A spec may be **Implemented**, **Implemented core / acceptance pending**, **Active**, **Planned**, **Hold** or **Superseded**.
+- “Implemented but v2 migration pending” is a migration state, not an unfinished feature state.
+- When work is absorbed by a later umbrella spec, mark it Superseded instead of leaving it Planned forever.
+- Every merged implementation PR updates its spec status, `specs/README.md`, and this backlog when priority/state changes.
+- New ideas enter HOLD first unless they displace an existing item using evidence.
+
+## Current queue
+
+**Completed product implementation:** P1.4 Card Studio + Templates v2 creation migration in PR #20.  
+**Next product-architecture implementation:** P0.7 `WU-PLAT-002` Slice A/B — workspace registry + shared handoff runtime before adding more destination-specific seams.  
+**Parallel P0 distribution work:** P0.6 `WU-SHARE-001` remains approved; its public-to-local continuation should integrate with the new workspace-ownership contract rather than invent a separate journey model.  
+**Following product implementation:** continue P1.4 with Stylish Urdu Text + Name Art while preserving the complete `WU-SUA-001` acceptance contract.  
+**Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
+**Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.
