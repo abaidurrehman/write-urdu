@@ -9,6 +9,7 @@
     var MOBILE_QUERY = '(max-width: 767px)';
     var OUTPUT_ACTIONS = ['pdf', 'word', 'png', 'preview', 'print'];
     var mediaQuery = null;
+    var publishLoader = null;
 
     function normalizeRoute(value) {
         var path = String(value || '/').split('?')[0].split('#')[0] || '/';
@@ -43,6 +44,9 @@
         button.classList.add('wu-basic-command--' + (kind || 'utility'));
         button.setAttribute('data-wu-command-action', action);
         button.setAttribute('data-wu-basic-content-action', '');
+        button.removeAttribute('data-wu-i18n-control');
+        button.removeAttribute('data-wu-i18n-aria');
+        button.removeAttribute('data-wu-i18n-title');
         button.setAttribute('aria-label', label);
         button.innerHTML = '<i class="' + icon + '" aria-hidden="true"></i><span>' + label + '</span>';
         return button;
@@ -57,15 +61,51 @@
         });
     }
 
-    function runAuthoringShare() {
-        if (root.WriteUrduTools && typeof root.WriteUrduTools.share === 'function') {
-            root.WriteUrduTools.share();
-            return true;
-        }
+    function notifyShareLoadError() {
         if (root.WriteUrduUI && typeof root.WriteUrduUI.notify === 'function') {
-            root.WriteUrduUI.notify('Sharing is still loading. Try again in a moment.', 'error');
+            root.WriteUrduUI.notify('Public sharing is still loading. Try again in a moment.', 'error');
+            return;
         }
-        return false;
+        if (root.alert) root.alert('Public sharing is still loading. Try again in a moment.');
+    }
+
+    function ensurePublicSharePublisher() {
+        if (root.WriteUrduBasicPublish && typeof root.WriteUrduBasicPublish.open === 'function') {
+            return Promise.resolve(root.WriteUrduBasicPublish);
+        }
+        if (publishLoader) return publishLoader;
+        publishLoader = new Promise(function (resolve, reject) {
+            var existing = root.document.querySelector('script[data-wu-basic-publish-loader],script[src$="/js/basic-writer-publish.js"]');
+            function finish() {
+                if (root.WriteUrduBasicPublish && typeof root.WriteUrduBasicPublish.open === 'function') resolve(root.WriteUrduBasicPublish);
+                else reject(new Error('basic_share_publisher_unavailable'));
+            }
+            if (existing) {
+                existing.addEventListener('load', finish, { once: true });
+                root.setTimeout(finish, 1200);
+                return;
+            }
+            var script = root.document.createElement('script');
+            script.src = '/js/basic-writer-publish.js';
+            script.setAttribute('data-wu-basic-publish-loader', '');
+            script.onload = finish;
+            script.onerror = function () { reject(new Error('basic_share_publisher_load_failed')); };
+            root.document.head.appendChild(script);
+        }).catch(function (error) {
+            publishLoader = null;
+            throw error;
+        });
+        return publishLoader;
+    }
+
+    function runAuthoringShare() {
+        if (!hasContent()) return false;
+        ensurePublicSharePublisher().then(function (publisher) {
+            publisher.open();
+        }).catch(function () {
+            notifyShareLoadError();
+        });
+        return true;
     }
 
     function createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel) {
@@ -104,6 +144,7 @@
         if (filenameInput) fileSection.appendChild(filenameInput);
         if (textExport) {
             textExport.className = 'wu-basic-command-more-action';
+            textExport.removeAttribute('data-wu-i18n-control');
             textExport.setAttribute('data-wu-command-action', 'text');
             textExport.setAttribute('data-wu-basic-content-action', '');
             textExport.innerHTML = '<i class="far fa-file-alt" aria-hidden="true"></i><span>Text file</span>';
@@ -259,6 +300,7 @@
         primaryGroup.setAttribute('role', 'group');
         primaryGroup.setAttribute('aria-label', 'Share and copy');
         setAction(share, 'share', 'Share', 'fas fa-share-alt', 'share');
+        share.setAttribute('title', 'Create a short Write Urdu link');
         setAction(copy, 'copy', 'Copy', 'far fa-copy', 'copy');
         primaryGroup.appendChild(share);
         primaryGroup.appendChild(copy);
