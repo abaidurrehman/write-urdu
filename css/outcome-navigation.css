@@ -11,11 +11,11 @@
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-chevron{margin-left:1px;font-size:.9rem;opacity:.68}
 .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="learn"]>.wu-outcome-menu-panel,.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="work"]>.wu-outcome-menu-panel{right:0;left:auto}
 
-/* Four categories fit comfortably on normal laptop widths. The old 1280px
-   hamburger threshold existed because implementation-level tools competed in
-   the header; Slice D intentionally keeps the four user-intent categories
-   visible until a genuinely compact layout is reached. */
-@media(min-width:901px){
+/* The taxonomy is smaller, but the complete header also contains brand,
+   language/install/share utilities. Keep the proven 1366px laptop safety rule:
+   the four outcome categories remain identical inside the compact menu rather
+   than clipping or compressing their labels. */
+@media(min-width:1367px){
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-menu-toggle{display:none!important}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav{position:static!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{display:flex!important}
@@ -23,9 +23,11 @@
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-more-menu{position:absolute!important;width:auto!important;margin-top:0!important;border:1px solid var(--wu-shell-header-border)!important;background:var(--wu-shell-menu-bg)!important;box-shadow:var(--wu-shadow-float)!important;grid-template-columns:1fr!important}
 }
 
-@media(max-width:900px){
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-menu-toggle{display:inline-flex}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:1366px){
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-header-inner{position:relative}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-menu-toggle{display:inline-flex!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav{position:absolute!important;top:calc(100% + 8px)!important;right:0!important;left:0!important;display:none!important;align-items:stretch!important;padding:10px!important;border:1px solid var(--wu-shell-header-border)!important;border-radius:var(--wu-radius-lg)!important;background:var(--wu-shell-menu-bg)!important;box-shadow:var(--wu-shadow-float)!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu{grid-column:auto}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>summary{height:100%;justify-content:flex-start;padding:13px}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{position:static;min-width:0;width:auto;margin-top:6px;grid-template-columns:1fr;background:var(--wu-color-surface-soft);box-shadow:none}
