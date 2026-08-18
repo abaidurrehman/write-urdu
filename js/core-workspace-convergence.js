@@ -112,21 +112,33 @@
         return Boolean(editor && String(editor.value || '').trim());
     }
 
-    function normalizeBasicShare(panel) {
-        var share = panel && panel.querySelector('[data-write-urdu-share]');
-        if (!share) return null;
-        share.hidden = false;
-        share.removeAttribute('hidden');
-        share.removeAttribute('aria-hidden');
-        share.style.removeProperty('display');
-        share.style.removeProperty('visibility');
-        share.style.removeProperty('opacity');
-        share.classList.remove('btn', 'btn-quiet');
-        share.classList.add('wu-more-share-action');
-        share.title = 'Share the Urdu text only without creating a public Write Urdu link';
-        share.innerHTML = '<i class="fas fa-share-alt" aria-hidden="true"></i> Share text only';
-        share.setAttribute('data-wu-share-location', 'more');
-        return share;
+    function runBasicShare() {
+        if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.trackOutcome === 'function') {
+            root.WriteUrduTelemetry.trackOutcome('share_clicked', {});
+        }
+        if (root.WriteUrduTools && typeof root.WriteUrduTools.share === 'function') {
+            root.WriteUrduTools.share();
+            return true;
+        }
+        if (root.WriteUrduUI && typeof root.WriteUrduUI.notify === 'function') {
+            root.WriteUrduUI.notify('Sharing is still loading. Try again in a moment.', 'error');
+        }
+        return false;
+    }
+
+    function ensureBasicShareAction(panel) {
+        if (!panel) return null;
+        var existing = panel.querySelector('[data-wu-basic-share-action]');
+        if (existing) return existing;
+        var button = root.document.createElement('button');
+        button.type = 'button';
+        button.className = 'wu-basic-share-action';
+        button.setAttribute('data-wu-basic-share-action', '');
+        button.title = 'Share the Urdu text only without creating a public Write Urdu link';
+        button.innerHTML = '<i class="fas fa-share-alt" aria-hidden="true"></i> Share text only';
+        button.addEventListener('click', function () { runBasicShare(); });
+        panel.insertBefore(button, panel.firstChild);
+        return button;
     }
 
     function convertBasicMoreMenu(secondary) {
@@ -161,25 +173,13 @@
         wrapper.appendChild(toggle);
         wrapper.appendChild(panel);
         legacy.replaceWith(wrapper);
+        ensureBasicShareAction(panel);
 
         toggle.addEventListener('click', function () {
             var opening = panel.hidden;
-            if (opening) normalizeBasicShare(panel);
             panel.hidden = !opening;
             toggle.setAttribute('aria-expanded', String(opening));
             wrapper.classList.toggle('is-open', opening);
-            if (opening) {
-                // Older authoring startup code can relabel/reclassify the same
-                // button late in the page lifecycle. Reassert only the
-                // visibility contract after those synchronous handlers finish.
-                root.setTimeout(function () { normalizeBasicShare(panel); }, 0);
-            }
-        });
-        panel.addEventListener('click', function (event) {
-            if (!event.target.closest('[data-write-urdu-share]')) return;
-            panel.hidden = true;
-            toggle.setAttribute('aria-expanded', 'false');
-            wrapper.classList.remove('is-open');
         });
         return wrapper;
     }
@@ -188,16 +188,19 @@
         if (!actions) return false;
         var secondary = actions.querySelector('.home-actions-group-secondary');
         if (!secondary) return false;
+
+        // Retire the old toolbar Share node completely. Its sharing behavior is
+        // exposed as WriteUrduTools.share(), which the convergence-owned More
+        // action calls without inheriting legacy visibility or layout state.
+        secondary.querySelectorAll('[data-write-urdu-share]').forEach(function (node) { node.remove(); });
+
         var menu = convertBasicMoreMenu(secondary);
         var panel = menu && menu.querySelector('[data-wu-basic-more-panel]');
-        var share = actions.querySelector('[data-write-urdu-share]');
-        if (!menu || !panel || !share) return false;
-
+        if (!menu || !panel) return false;
         secondary.hidden = false;
         secondary.removeAttribute('hidden');
         secondary.setAttribute('aria-label', 'More editor options');
-        if (share.parentNode !== panel) panel.insertBefore(share, panel.firstChild);
-        normalizeBasicShare(panel);
+        ensureBasicShareAction(panel);
         return true;
     }
 
@@ -379,7 +382,8 @@
         convergeSitemap: convergeSitemap,
         convergeDocumentation: convergeDocumentation,
         enhanceGlobalLabels: enhanceGlobalLabels,
-        normalizeBasicShare: normalizeBasicShare,
+        runBasicShare: runBasicShare,
+        ensureBasicShareAction: ensureBasicShareAction,
         convertBasicMoreMenu: convertBasicMoreMenu,
         organizeBasicCompletionActions: organizeBasicCompletionActions,
         removeLegacyTrustChrome: removeLegacyTrustChrome,
