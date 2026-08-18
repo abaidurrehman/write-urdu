@@ -42,10 +42,12 @@ body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
   margin-left: auto;
 }
 
-body[data-wu-core-workspace="basic"] .home-actions-group-secondary [data-write-urdu-share] {
-  display: inline-flex !important;
-  visibility: visible !important;
-  align-items: center;
+body[data-wu-core-workspace="basic"] .wu-more-share-action {
+  width: 100%;
+  border: 0;
+  color: var(--wu-color-ink-soft);
+  background: transparent;
+  text-align: left;
 }
 
 body[data-wu-core-workspace="basic"] #UsageAlert {
@@ -71,7 +73,7 @@ body[data-wu-taxonomy-synced] #work {
 
   body[data-wu-core-workspace="basic"] .home-actions-group-primary,
   body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
-    width: 100%;
+    width: auto;
   }
 
   body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
