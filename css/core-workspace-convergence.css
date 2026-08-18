@@ -103,10 +103,7 @@ body[data-wu-core-workspace="basic"] .wu-basic-more-panel a {
   text-decoration: none;
 }
 
-/* Old authoring CSS can still carry button visibility assumptions from the
-   pre-convergence toolbar. Once More is open, the relocated text-share action
-   is an explicit child of this panel and must be reachable. */
-body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-basic-more.is-open .wu-basic-more-panel:not([hidden]) [data-write-urdu-share] {
+body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-basic-more.is-open .wu-basic-more-panel:not([hidden]) [data-wu-basic-share-action] {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
