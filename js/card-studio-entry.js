@@ -220,31 +220,41 @@
         control.innerHTML = (iconClass ? '<i class="' + iconClass + '" aria-hidden="true"></i> ' : '') + label;
     }
 
+    function createPrimaryShareButton(path) {
+        var existing = document.querySelector('[data-wu-authoring-share-primary]');
+        if (existing) return existing;
+
+        var mount = null;
+        var before = null;
+        if (path === '/') {
+            mount = document.querySelector('.home-actions-group-primary');
+            before = mount && mount.querySelector('.action-menu');
+        } else if (path === '/urdu-editor') {
+            mount = document.querySelector('.home-actions-group-export');
+            before = mount && mount.firstElementChild;
+        } else if (path === '/urdu-keyboard') {
+            mount = document.querySelector('.keyboard-actions');
+            before = mount && mount.querySelector('[data-write-urdu-share]');
+        }
+        if (!mount) return null;
+
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-success' + (path === '/' ? ' action-primary' : ' btn-sm') + ' wu-authoring-share-primary';
+        button.setAttribute('data-wu-authoring-share-primary', '');
+        button.setAttribute('data-create-card', '');
+        button.setAttribute('data-editor-source', sourceName());
+        button.title = 'Create a visual from this Urdu, then publish a Write-Urdu.com share link';
+        setActionLabel(button, 'Create & Share', 'fas fa-share-square');
+        mount.insertBefore(button, before || null);
+        return button;
+    }
+
     function promoteAuthoringShareAction() {
         var path = normalizePath();
         if (!['/', '/urdu-editor', '/urdu-keyboard'].includes(path)) return;
         ensureStylesheet();
-
-        var create = document.querySelector('.home-actions-group-create [data-create-card], .tool-actions [data-create-card]');
-        if (!create && path === '/urdu-keyboard') {
-            var keyboardActions = document.querySelector('.keyboard-actions');
-            if (keyboardActions) {
-                create = document.createElement('button');
-                create.type = 'button';
-                create.className = 'btn btn-success btn-sm wu-authoring-share-primary';
-                create.setAttribute('data-create-card', '');
-                create.setAttribute('data-editor-source', 'urdu-keyboard');
-                var localShare = keyboardActions.querySelector('[data-write-urdu-share]');
-                keyboardActions.insertBefore(create, localShare || keyboardActions.children[1] || null);
-            }
-        }
-        if (create) {
-            create.classList.add('wu-authoring-share-primary');
-            create.classList.remove('btn-outline-editor');
-            create.classList.add('btn-success');
-            create.title = 'Create a visual from this Urdu, then publish a Write-Urdu.com share link';
-            setActionLabel(create, 'Create & Share', 'fas fa-share-square');
-        }
+        createPrimaryShareButton(path);
         document.querySelectorAll('[data-write-urdu-share]').forEach(function (button) {
             if (button.dataset.wuShareTextOnlyLabelled) return;
             button.dataset.wuShareTextOnlyLabelled = 'true';
