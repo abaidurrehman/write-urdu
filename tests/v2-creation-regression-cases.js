@@ -39,7 +39,7 @@ test('Template Library still hands a selected design into Card Studio', async ({
   await expect(page.locator('[data-template-grid] .template-card')).toHaveCount(46);
   await expect(page.locator('[data-template-hero-actions] .template-hero-action.primary')).toHaveText('Start a blank card');
   const first = page.locator('[data-template-grid] [data-template-open]').first();
-  await expect(first).toHaveText('Edit in Card Studio');
+  await expect(first).toHaveText('Use this template');
   const slug = await first.getAttribute('data-template-open');
   await first.click();
   await expect(page).toHaveURL(new RegExp('/urdu-card-studio\\?template=' + slug));

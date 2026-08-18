@@ -5,7 +5,9 @@
     // single AdSense loader guard script[src="js/ads.js"]. Slice D owns rendered
     // taxonomy; Slice E owns contextual continuation. Slice F extends that same
     // governed runtime to successful Voice, Image-to-Text and InPage capture
-    // results. WU-PLAT-003 remains the low-risk core-workspace convergence layer.
+    // results. Slice G extends the registry before continuity renders Create /
+    // Publish boundaries and adds a compatibility-safe Card Studio seed adapter.
+    // WU-PLAT-003 remains the low-risk core-workspace convergence layer.
 
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
@@ -36,6 +38,14 @@
         return path || '/';
     }
 
+    function loadJourneyFoundation(done) {
+        loadScript('/js/workspace-journey-registry.js', 'WriteUrduWorkspaceRegistry', function () {
+            loadScript('/js/create-publish-boundaries-registry.js', 'WriteUrduCreatePublishBoundariesRegistry', function () {
+                loadScript('/js/workspace-handoff.js', 'WriteUrduWorkspaceHandoff', done);
+            });
+        });
+    }
+
     function shouldLoadContextualNextSteps() {
         return [
             '/',
@@ -50,16 +60,21 @@
 
     function loadContextualNextSteps() {
         if (!shouldLoadContextualNextSteps()) return;
-        loadScript('/js/workspace-journey-registry.js', 'WriteUrduWorkspaceRegistry', function () {
-            loadScript('/js/workspace-handoff.js', 'WriteUrduWorkspaceHandoff', function () {
-                loadScript('/js/core-continuity.js', 'WriteUrduCoreContinuity', function () {
-                    loadScript('/js/workspace-next-step.js', 'WriteUrduWorkspaceNextStep', function () {
-                        if (root.WriteUrduWorkspaceNextStep && typeof root.WriteUrduWorkspaceNextStep.render === 'function') {
-                            root.WriteUrduWorkspaceNextStep.render();
-                        }
-                    });
+        loadJourneyFoundation(function () {
+            loadScript('/js/core-continuity.js', 'WriteUrduCoreContinuity', function () {
+                loadScript('/js/workspace-next-step.js', 'WriteUrduWorkspaceNextStep', function () {
+                    if (root.WriteUrduWorkspaceNextStep && typeof root.WriteUrduWorkspaceNextStep.render === 'function') {
+                        root.WriteUrduWorkspaceNextStep.render();
+                    }
                 });
             });
+        });
+    }
+
+    function loadCreationDestinationAdapters() {
+        if (normalizedPath() !== '/urdu-card-studio') return;
+        loadJourneyFoundation(function () {
+            loadScript('/js/card-studio-handoff-adapter.js', 'WriteUrduCardStudioHandoffAdapter', function () {});
         });
     }
 
@@ -113,6 +128,7 @@
                     root.WriteUrduCoreWorkspaceConvergence.run();
                 }
                 loadContextualNextSteps();
+                loadCreationDestinationAdapters();
             });
         });
     });

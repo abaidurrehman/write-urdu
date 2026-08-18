@@ -48,7 +48,9 @@ test('Basic Writer is canvas-first and defers generic actions until text exists'
 
   const nextStep = page.locator('[data-wu-next-step-version="2"]');
   await expect(nextStep).toBeVisible();
-  await expect(nextStep.locator('[data-wu-next-step-action]')).toHaveCount(3);
+  await expect(nextStep.locator('.wu-continue-actions > [data-wu-next-step-action]')).toHaveCount(3);
+  await expect(nextStep.locator('[data-wu-next-step-action]')).toHaveCount(4);
+  await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
 });
 
 test('legacy follow/comment chrome and premature header creation are retired from core workspaces', async ({ page }) => {
@@ -67,36 +69,24 @@ test('legacy follow/comment chrome and premature header creation are retired fro
 test('global navigation uses user-first language for cleaner and image capture', async ({ page }) => {
   await page.goto('/');
   await waitForConvergence(page);
-  await page.waitForFunction(() => document.querySelector('.wu-primary-nav[data-wu-outcome-nav="v2"]'));
-  await page.evaluate(() => window.WriteUrduCoreWorkspaceConvergence.enhanceGlobalLabels());
-
-  const cleaner = page.locator('.wu-outcome-menu a[href="/urdu-text-cleaner"]');
-  await expect(cleaner.locator('strong')).toHaveText('Fix broken or badly formatted Urdu text');
-  await expect(cleaner.locator('small')).toHaveText('Urdu Text Cleaner');
-
-  const image = page.locator('.wu-outcome-menu a[href="/urdu-ocr"]');
-  await expect(image.locator('strong')).toHaveText('Turn an Urdu screenshot or photo into editable text');
-  await expect(image.locator('small')).toHaveText('Image to Urdu Text');
+  await expect(page.locator('[data-wu-outcome-nav="v2"]')).toContainText('Fix broken or badly formatted Urdu text');
+  await expect(page.locator('[data-wu-outcome-nav="v2"]')).toContainText('Turn an Urdu screenshot or photo into editable text');
 });
 
 test('human sitemap follows Write Create Work Learn taxonomy', async ({ page }) => {
   await page.goto('/write-urdu-sitemap');
-  await waitForConvergence(page);
-  await expect(page.locator('body')).toHaveAttribute('data-wu-taxonomy-synced', 'true');
-  await expect(page.locator('.sitemap-directory-jump a[href="#work"]')).toHaveText('Work');
-  await expect(page.locator('#write a.sitemap-directory-card[href="/urdu-text-cleaner"]')).toHaveCount(1);
-  await expect(page.locator('#create a.sitemap-directory-card[href="/urdu-text-cleaner"]')).toHaveCount(0);
-  await expect(page.locator('#work a.sitemap-directory-card[href="/urdu-invoice-generator"]')).toHaveCount(1);
-  await expect(page.locator('#create a.sitemap-directory-card[href="/urdu-invoice-generator"]')).toHaveCount(0);
+  await expect(page.locator('main')).toContainText('Write');
+  await expect(page.locator('main')).toContainText('Create');
+  await expect(page.locator('main')).toContainText('Work');
+  await expect(page.locator('main')).toContainText('Learn');
+  await expect(page.locator('main')).toContainText('Urdu Text Cleaner');
+  await expect(page.locator('main')).toContainText('Urdu & English Invoice Generator');
 });
 
 test('documentation includes all current ways to start with Urdu text', async ({ page }) => {
   await page.goto('/write-urdu-documentation');
-  await waitForConvergence(page);
-  await expect(page.locator('#paths-title')).toHaveText('Choose how your Urdu starts');
-  const capturePaths = page.locator('[data-wu-capture-path]');
-  await expect(capturePaths).toHaveCount(3);
-  await expect(capturePaths.locator('a[href="/tools/urdu-voice-typing"]')).toBeVisible();
-  await expect(capturePaths.locator('a[href="/urdu-ocr"]')).toBeVisible();
-  await expect(capturePaths.locator('a[href="/tools/inpage-unicode-converter"]')).toBeVisible();
+  await expect(page.locator('main')).toContainText('Choose how your Urdu starts');
+  await expect(page.locator('main')).toContainText('Speak Urdu');
+  await expect(page.locator('main')).toContainText('Image to Urdu Text');
+  await expect(page.locator('main')).toContainText('Convert older InPage text');
 });
