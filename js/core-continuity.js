@@ -10,7 +10,8 @@
     var HISTORY_PREFIX = 'write-urdu:history:v1:';
     var LEGACY_QR_KEY = 'writeUrdu.qrGenerator.incoming';
     var MAX_HISTORY = 5;
-    var CORE_SOURCES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'];
+    var DRAFT_SOURCES = ['basic-writer', 'urdu-keyboard', 'rich-editor'];
+    var CONTINUITY_SOURCES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner', 'image-to-urdu-text', 'voice-typing', 'inpage-converter'];
 
     function normalizeRoute(value) {
         if (Registry && typeof Registry.normalizeRoute === 'function') return Registry.normalizeRoute(value);
@@ -42,42 +43,45 @@
         return (end > start ? value.slice(start, end) : value).trim();
     }
 
+    function inPageProducesUnicode() {
+        if (!root || !root.document || currentRoute() !== '/tools/inpage-unicode-converter') return false;
+        var unicodeMode = root.document.querySelector('[data-inpage-mode="legacy-to-unicode"]');
+        return Boolean(unicodeMode && unicodeMode.getAttribute('aria-pressed') === 'true');
+    }
+
+    function plainTextElementForRoute(route) {
+        if (!root || !root.document) return null;
+        if (route === '/') return root.document.getElementById('transliterateTextarea');
+        if (route === '/urdu-keyboard') return root.document.getElementById('write');
+        if (route === '/urdu-text-cleaner') return root.document.getElementById('cleanerResult');
+        if (route === '/urdu-ocr') return root.document.getElementById('ocrResult');
+        if (route === '/tools/urdu-voice-typing') return root.document.getElementById('voiceTranscript');
+        if (route === '/tools/inpage-unicode-converter') return inPageProducesUnicode() ? root.document.getElementById('inpageResult') : null;
+        return null;
+    }
+
     function fullPlainText() {
         var route = currentRoute();
-        if (route === '/') {
-            var basic = root.document && root.document.getElementById('transliterateTextarea');
-            return basic ? String(basic.value || '').trim() : '';
-        }
-        if (route === '/urdu-keyboard') {
-            var keyboard = root.document && root.document.getElementById('write');
-            return keyboard ? String(keyboard.value || '').trim() : '';
-        }
         if (route === '/urdu-editor') {
             var editor = root.tinymce && root.tinymce.get && root.tinymce.get('basic-example');
             return editor && editor.initialized ? String(editor.getContent({ format: 'text' }) || '').trim() : '';
         }
-        if (route === '/urdu-text-cleaner') {
-            var cleaned = root.document && root.document.getElementById('cleanerResult');
-            return cleaned ? String(cleaned.value || '').trim() : '';
-        }
-        return '';
+        var element = plainTextElementForRoute(route);
+        return element ? String(element.value || '').trim() : '';
     }
 
     function currentPlainText() {
         var route = currentRoute();
-        if (route === '/') return selectedOrAll(root.document && root.document.getElementById('transliterateTextarea'));
-        if (route === '/urdu-keyboard') return selectedOrAll(root.document && root.document.getElementById('write'));
         if (route === '/urdu-editor') {
             var editor = root.tinymce && root.tinymce.get && root.tinymce.get('basic-example');
             if (!editor || !editor.initialized) return '';
             var selected = editor.selection && editor.selection.getContent({ format: 'text' });
             return String((selected && selected.trim()) || editor.getContent({ format: 'text' }) || '').trim();
         }
-        if (route === '/urdu-text-cleaner') {
-            var cleaned = root.document && root.document.getElementById('cleanerResult');
-            return cleaned ? String(cleaned.value || '').trim() : '';
-        }
-        return '';
+        var element = plainTextElementForRoute(route);
+        if (!element) return '';
+        if (route === '/' || route === '/urdu-keyboard') return selectedOrAll(element);
+        return String(element.value || '').trim();
     }
 
     function currentRichContent() {
@@ -122,6 +126,7 @@
     }
 
     function preserveSourceDraft(sourceWorkspace) {
+        if (DRAFT_SOURCES.indexOf(sourceWorkspace) < 0) return false;
         var kind = draftKindFor(sourceWorkspace);
         if (!kind) return false;
         var text = fullPlainText();
@@ -157,6 +162,7 @@
                 '/urdu-editor': 'urdu-editor.html',
                 '/urdu-card-studio': 'urdu-card-studio.html',
                 '/qr-code-generator': 'qr-code-generator.html',
+                '/urdu-text-cleaner': 'urdu-text-cleaner.html',
                 '/': 'index.html'
             };
             root.location.href = fileMap[route] || route;
@@ -195,7 +201,7 @@
 
     function transfer(targetWorkspace) {
         var sourceWorkspace = workspaceId();
-        if (!sourceWorkspace || CORE_SOURCES.indexOf(sourceWorkspace) < 0) return false;
+        if (!sourceWorkspace || CONTINUITY_SOURCES.indexOf(sourceWorkspace) < 0) return false;
         var route = targetRoute(targetWorkspace);
         if (!route) return false;
         var text = currentPlainText();
@@ -241,7 +247,7 @@
 
     function onClick(event) {
         var source = workspaceId();
-        if (!source || CORE_SOURCES.indexOf(source) < 0) return;
+        if (!source || CONTINUITY_SOURCES.indexOf(source) < 0) return;
         var control = event.target && event.target.closest && event.target.closest('[data-wu-continuity-target],[data-continue-rich],[data-create-card],[data-create-qr],[data-cleaner-handoff],.home-actions-group-create a[href="/urdu-editor"]');
         if (!control) return;
         var target = targetForControl(control);
@@ -323,10 +329,13 @@
     }
 
     return {
+        DRAFT_SOURCES: DRAFT_SOURCES.slice(),
+        CONTINUITY_SOURCES: CONTINUITY_SOURCES.slice(),
         currentRoute: currentRoute,
         workspaceId: workspaceId,
         fullPlainText: fullPlainText,
         currentPlainText: currentPlainText,
+        inPageProducesUnicode: inPageProducesUnicode,
         preserveSourceDraft: preserveSourceDraft,
         targetForControl: targetForControl,
         mirrorQrLegacy: mirrorQrLegacy,
