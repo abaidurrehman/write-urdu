@@ -3,9 +3,9 @@
 
     // The preserved core still owns the established shell behaviors checked by
     // older contracts, including the single AdSense loader guard
-    // script[src="js/ads.js"]. Slice D only replaces rendered taxonomy.
-    // Established route ownership also remains unchanged, including
-    // /urdu-invoice-generator; no /write, /create, /work or /learn URLs exist.
+    // script[src="js/ads.js"]. Slice D replaces rendered taxonomy and Slice E
+    // adds contextual continuation only on the core Write/Fix workspaces.
+    // Established route ownership remains unchanged.
 
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
@@ -14,7 +14,7 @@
         }
         var existing = document.querySelector('script[src="' + src + '"]');
         if (existing) {
-            if (existing.getAttribute('data-wu-loaded') === 'true') done();
+            if (existing.getAttribute('data-wu-loaded') === 'true' || (marker && root[marker])) done();
             else existing.addEventListener('load', done, { once: true });
             return;
         }
@@ -26,6 +26,29 @@
             done();
         }, { once: true });
         document.head.appendChild(script);
+    }
+
+    function normalizedPath() {
+        var path = String(root.location && root.location.pathname || '/').split('?')[0].split('#')[0] || '/';
+        if (path === '/index' || path === '/index.html') return '/';
+        if (/\.html$/i.test(path)) path = path.slice(0, -5);
+        if (path.length > 1) path = path.replace(/\/+$/, '');
+        return path || '/';
+    }
+
+    function shouldLoadContextualNextSteps() {
+        return ['/', '/urdu-editor', '/urdu-keyboard', '/urdu-text-cleaner'].indexOf(normalizedPath()) >= 0;
+    }
+
+    function loadContextualNextSteps() {
+        if (!shouldLoadContextualNextSteps()) return;
+        loadScript('/js/workspace-journey-registry.js', 'WriteUrduWorkspaceRegistry', function () {
+            loadScript('/js/workspace-next-step.js', 'WriteUrduWorkspaceNextStep', function () {
+                if (root.WriteUrduWorkspaceNextStep && typeof root.WriteUrduWorkspaceNextStep.render === 'function') {
+                    root.WriteUrduWorkspaceNextStep.render();
+                }
+            });
+        });
     }
 
     function protectOutcomeNavigationDuringV2Start() {
@@ -70,6 +93,7 @@
                 root.WriteUrduOutcomeNavigation.render();
                 protectOutcomeNavigationDuringV2Start();
             }
+            loadContextualNextSteps();
         });
     });
 }(window, document));
