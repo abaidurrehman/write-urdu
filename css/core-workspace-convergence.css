@@ -152,4 +152,23 @@ body[data-wu-taxonomy-synced] #work {
     flex-basis: 100%;
     width: 100%;
   }
+
+  /* WU-PLAT-004: keep More and Clear as real, non-overlapping tap targets.
+     Their labels can overflow a shrink-to-zero flex item on narrow screens,
+     allowing the following group to intercept the pointer. */
+  body[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] .wu-basic-command-primary {
+    flex: 1 1 160px !important;
+    min-width: 150px;
+  }
+
+  body[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] .wu-basic-command-overflow,
+  body[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] .wu-basic-command-destructive {
+    flex: 0 0 auto !important;
+    min-width: max-content;
+  }
+
+  body[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] .wu-basic-command-more {
+    flex: 0 0 auto;
+    min-width: max-content;
+  }
 }
