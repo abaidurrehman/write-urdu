@@ -7,7 +7,7 @@ const html = fs.readFileSync(path.join(root, 'tools', 'urdu-voice-typing', 'inde
 const js = fs.readFileSync(path.join(root, 'js', 'urdu-voice-typing.js'), 'utf8');
 
 assert.match(html, /<h1>Urdu Voice Typing<\/h1>/, 'voice page should expose a focused H1');
-assert.match(html, /rel="canonical" href="https:\/\/write-urdu\.com\/tools\/urdu-voice-typing\/"/, 'voice page should self-canonicalize');
+assert.match(html, /rel="canonical" href="https:\/\/write-urdu\.com\/tools\/urdu-voice-typing"/, 'voice page should self-canonicalize without a trailing slash');
 assert.match(html, /data-urdu-voice-typing/, 'voice page should expose its protected workspace hook');
 assert.match(html, /google-anno-skip/, 'voice workspace should be excluded from annotation-style auto ads');
 assert.match(html, /google-side-rail-overlap="false"/, 'voice workspace should protect side-rail overlap');

@@ -8,7 +8,7 @@ const core = fs.readFileSync(path.join(root, 'js', 'inpage-unicode-core.js'), 'u
 const ui = fs.readFileSync(path.join(root, 'js', 'inpage-unicode-converter.js'), 'utf8');
 
 assert.match(html, /<h1>InPage to Unicode Urdu Converter<\/h1>/, 'InPage converter needs a focused H1');
-assert.match(html, /rel="canonical" href="https:\/\/write-urdu\.com\/tools\/inpage-unicode-converter\/"/, 'converter should self-canonicalize');
+assert.match(html, /rel="canonical" href="https:\/\/write-urdu\.com\/tools\/inpage-unicode-converter"/, 'converter should self-canonicalize without a trailing slash');
 assert.match(html, /data-inpage-mode="legacy-to-unicode"/, 'forward conversion mode is missing');
 assert.match(html, /data-inpage-mode="unicode-to-legacy"/, 'reverse conversion mode is missing');
 assert.match(html, /google-anno-skip/, 'converter workspace must be protected from annotation-style ads');

@@ -3,7 +3,7 @@ index.html,/,Write,English to Urdu typing / Urdu typing / Urdu writing,index,yes
 urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,migrated,P0,V2 workspace applied without changing TinyMCE or export bindings
 urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,migrated,P0,V2 workspace applied without changing keyboard input bindings
 urdu-text-cleaner.html,/urdu-text-cleaner,Create,Urdu text cleaning Unicode normalization and RTL diagnostics,index,yes,keep,migrated,P0,Browser-local utility with conservative safe fixes review-only bidi diagnostics and editor handoff
-urdu-ocr.html,/urdu-ocr,Create,Urdu OCR image screenshot to editable Urdu text,index,yes,keep,migrated,P0,Browser OCR MVP for clear printed Urdu with explicit accuracy limits lazy-loaded model and cleaner/editor handoffs
+urdu-ocr.html,/urdu-ocr,Create,Urdu image to text / screenshot or photo to editable Urdu text,index,yes,keep,migrated,P0,Browser-based image-to-text tool for clear printed Urdu with explicit accuracy limits and cleaner/editor handoffs; OCR is a secondary technical term
 urdu-card-studio.html,/urdu-card-studio,Create,Urdu text poetry and posts on photos,index,yes,keep,migrated,P1,Primary creation acquisition owner after P1.5
 urdu-templates.html,/urdu-templates,Create,Urdu design templates,index,yes,keep,migrated,P1,Entry point into Card Studio
 stylish-urdu-text-generator.html,/stylish-urdu-text-generator,Create,stylish Urdu text,index,yes,keep,migrated,P1,Distinct copy paste styling intent
@@ -12,6 +12,8 @@ urdu-whatsapp-status-maker.html,/urdu-whatsapp-status-maker,Create,Urdu WhatsApp
 urdu-instagram-post-maker.html,/urdu-instagram-post-maker,Create,Urdu Instagram post,index,yes,keep,migrated,P2,Focused Instagram maker intent
 qr-code-generator.html,/qr-code-generator,Create,static Urdu QR codes,index,yes,keep,migrated,P2,Supporting browser-local tool
 urdu-invoice-generator.html,/urdu-invoice-generator,Business,Urdu English invoice generator,index,yes,keep,migrated,P1,V3 business workspace with compact hero sticky actions persistent preview and one post-workspace AdSense boundary
+tools/urdu-voice-typing/index.html,/tools/urdu-voice-typing,Write,speak Urdu and turn it into editable text,index,yes,keep,migrated,P0,Browser speech-recognition workspace with explicit browser/vendor processing disclosure and editor handoff
+tools/inpage-unicode-converter/index.html,/tools/inpage-unicode-converter,Write,convert legacy InPage Urdu text to Unicode Urdu,index,yes,keep,migrated,P0,Browser-local InPage and Unicode text conversion with review copy and editor continuation
 roman-urdu-transliteration.html,/roman-urdu-transliteration,Learn,Roman Urdu transliteration guide,index,yes,keep,migrated,P1,V2 authority guide owns language mechanics and supports homepage typing intent
 english-urdu-typing-tutorial.html,/english-urdu-typing-tutorial,Learn,WriteUrdu video and step-by-step product tutorial,index,yes,keep-narrowed,migrated,P1,Retained for distinct walkthrough intent; broad Roman Urdu language mechanics belong to the transliteration guide
 urdu-faq.html,/urdu-faq,Learn,Urdu writing and product FAQ,index,yes,keep,migrated,P1,V2 help-centre layout with accessible disclosure items and legacy dependencies removed

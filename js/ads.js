@@ -26,7 +26,8 @@
         create: [
             '/urdu-card-studio', '/urdu-templates', '/stylish-urdu-text-generator',
             '/urdu-name-art-maker', '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker',
-            '/urdu-invoice-generator', '/qr-code-generator', '/urdu-text-cleaner', '/urdu-ocr'
+            '/urdu-invoice-generator', '/qr-code-generator', '/urdu-text-cleaner', '/urdu-ocr',
+            '/tools/urdu-voice-typing', '/tools/inpage-unicode-converter'
         ],
         trust: [
             '/why-write-urdu', '/contact', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
@@ -44,14 +45,15 @@
     var CREATE_ANCHORS = [
         '[data-wu-ad-boundary="post-workspace"]', '.name-art-workspace', '.social-maker-workspace',
         '.invoice-workspace', '[data-invoice-generator]', '[data-stylish-generator]', '[data-template-library]',
-        '[data-urdu-text-cleaner]', '[data-urdu-ocr]', '.card-studio-workspace', '.card-studio-shell',
-        '.qr-workspace', '.qr-generator-shell', 'main'
+        '[data-urdu-text-cleaner]', '[data-urdu-ocr]', '[data-urdu-voice-typing]', '[data-inpage-converter]',
+        '.card-studio-workspace', '.card-studio-shell', '.qr-workspace', '.qr-generator-shell', 'main'
     ];
 
     var CREATE_PROTECTED_AREAS = [
         '[data-card-studio]', '[data-invoice-generator]', '[data-stylish-generator]', '[data-template-library]',
-        '[data-urdu-text-cleaner]', '[data-urdu-ocr]', '.name-art-workspace', '.social-maker-workspace',
-        '.invoice-workspace', '.card-studio-workspace', '.card-studio-shell', '.qr-workspace', '.qr-generator-shell'
+        '[data-urdu-text-cleaner]', '[data-urdu-ocr]', '[data-urdu-voice-typing]', '[data-inpage-converter]',
+        '.name-art-workspace', '.social-maker-workspace', '.invoice-workspace', '.card-studio-workspace',
+        '.card-studio-shell', '.qr-workspace', '.qr-generator-shell'
     ];
 
     function normalizePath(pathname) {
