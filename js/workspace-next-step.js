@@ -118,7 +118,7 @@
         if (!root || !root.document) return null;
         if (workspaceId === 'basic-writer') return root.document.querySelector('.homepage-seo');
         if (workspaceId === 'urdu-keyboard') return root.document.querySelector('.keyboard-supporting-content');
-        if (workspaceId === 'rich-editor') return root.document.querySelector('.fb-comments');
+        if (workspaceId === 'rich-editor') return root.document.querySelector('.rich-editor-page .col-12.col-md-9 > .card');
         if (workspaceId === 'text-cleaner') return root.document.querySelector('[data-wu-ad-boundary="post-workspace"]');
         return null;
     }

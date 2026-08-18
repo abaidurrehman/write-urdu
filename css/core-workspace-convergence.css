@@ -1,0 +1,155 @@
+@import url("./design-tokens.css");
+
+/* P0 V2 Core Workspace Convergence
+   Keep the writing surface dominant. This layer intentionally avoids changing
+   editor engines or SEO-owned page structure. */
+
+body[data-wu-core-workspace] .fb-like,
+body[data-wu-core-workspace] .twitter-follow-button,
+body[data-wu-core-workspace] .fb-comments,
+body[data-wu-core-workspace] #fb-root,
+body[data-wu-core-workspace] [data-wu-authoring-share-primary] {
+  display: none !important;
+}
+
+body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  overflow: visible;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: var(--wu-color-surface-soft);
+  box-shadow: none;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions[hidden] {
+  display: none !important;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-primary,
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+  margin-left: auto;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more.is-open {
+  flex: 1 1 100%;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel {
+  flex: 1 1 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: #fff;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel[hidden] {
+  display: none !important;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel label,
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel input {
+  width: 100%;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel input {
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-sm);
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel button,
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel a {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: var(--wu-radius-sm);
+  color: var(--wu-color-ink-soft);
+  background: var(--wu-color-surface-soft);
+  text-align: left;
+  text-decoration: none;
+}
+
+body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-basic-more.is-open .wu-basic-more-panel:not([hidden]) [data-wu-basic-share-action] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel button:hover,
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel a:hover {
+  background: var(--wu-color-brand-softer);
+}
+
+body[data-wu-core-workspace="basic"] #UsageAlert {
+  margin-bottom: 0;
+}
+
+body[data-wu-taxonomy-synced] .docs-card-grid {
+  align-items: stretch;
+}
+
+body[data-wu-taxonomy-synced] [data-wu-capture-path] {
+  min-height: 100%;
+}
+
+body[data-wu-taxonomy-synced] #work {
+  scroll-margin-top: 96px;
+}
+
+@media (max-width: 767px) {
+  body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions {
+    align-items: stretch;
+    overflow-x: visible !important;
+  }
+
+  body[data-wu-core-workspace="basic"] .home-actions-group-primary,
+  body[data-wu-core-workspace="basic"] .home-actions-group-secondary,
+  body[data-wu-core-workspace="basic"] .wu-basic-more,
+  body[data-wu-core-workspace="basic"] .wu-basic-more.is-open {
+    width: auto;
+  }
+
+  body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+    margin-left: 0;
+  }
+
+  body[data-wu-core-workspace="basic"] .wu-basic-more.is-open,
+  body[data-wu-core-workspace="basic"] .wu-basic-more-panel {
+    flex-basis: 100%;
+    width: 100%;
+  }
+}

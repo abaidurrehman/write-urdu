@@ -80,6 +80,42 @@ test('footer mirrors outcome taxonomy while About remains a utility group', asyn
   await expect(footer.locator('a[href="/urdu-invoice-generator"]')).toHaveCount(1);
 });
 
+test('shared footer keeps a dark readable surface on desktop and mobile', async ({ page }) => {
+  await open(page, '/');
+  const contrast = await page.locator('footer.wu-footer').evaluate(footer => {
+    function rgb(value) {
+      const match = String(value || '').match(/rgba?\((\d+)[, ]+(\d+)[, ]+(\d+)/);
+      return match ? match.slice(1, 4).map(Number) : [255, 255, 255];
+    }
+    function luminance(value) {
+      const channels = rgb(value).map(channel => {
+        const normalized = channel / 255;
+        return normalized <= 0.03928 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+    }
+    function ratio(foreground, background) {
+      const a = luminance(foreground);
+      const b = luminance(background);
+      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    }
+    const background = getComputedStyle(footer).backgroundColor;
+    const heading = footer.querySelector('.wu-footer-group h2');
+    const link = footer.querySelector('.wu-footer-group a');
+    const muted = footer.querySelector('.wu-v2-footer-brand p, .wu-v2-footer-status, p, span');
+    return {
+      backgroundLuminance: luminance(background),
+      headingContrast: heading ? ratio(getComputedStyle(heading).color, background) : 0,
+      linkContrast: link ? ratio(getComputedStyle(link).color, background) : 0,
+      mutedContrast: muted ? ratio(getComputedStyle(muted).color, background) : 0
+    };
+  });
+  expect(contrast.backgroundLuminance, 'Footer background must remain dark').toBeLessThan(0.08);
+  expect(contrast.headingContrast, 'Footer headings must meet readable contrast').toBeGreaterThanOrEqual(4.5);
+  expect(contrast.linkContrast, 'Footer links must meet readable contrast').toBeGreaterThanOrEqual(4.5);
+  expect(contrast.mutedContrast, 'Footer supporting text must meet readable contrast').toBeGreaterThanOrEqual(4.5);
+});
+
 test('language switch re-renders the outcome categories in Urdu', async ({ page }) => {
   await open(page, '/');
   await page.locator('[data-wu-language-toggle]').click();

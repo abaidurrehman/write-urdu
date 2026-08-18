@@ -32,6 +32,7 @@ const tests = [
   'tests/core-continuity-contract.test.js',
   'tests/outcome-navigation-contract.test.js',
   'tests/workspace-next-step-contract.test.js',
+  'tests/core-workspace-convergence-contract.test.js',
   'tests/v2-creation-contract.test.js',
   'tests/card-studio-acquisition-contract.test.js',
   'tests/english-urdu-typing-acquisition-contract.test.js',
