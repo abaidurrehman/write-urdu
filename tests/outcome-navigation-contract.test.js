@@ -41,9 +41,11 @@ assert.match(css, /@media\(min-width:1367px\)/, 'Expanded outcome navigation mus
 assert.match(css, /@media\(max-width:1366px\)/, 'Outcome navigation must collapse safely at common 1366px laptop widths');
 assert.match(css, /repeat\(5,minmax\(0,1fr\)\)/, 'Footer must support Write/Create/Work/Learn plus a separate About utility group');
 assert.match(css, /prefers-reduced-motion:reduce/, 'Outcome navigation must respect reduced-motion preferences');
-assert.match(sw, /write-urdu-shell-v18/, 'PWA cache version must advance when Slice E adds shell-loaded continuation assets');
+assert.match(sw, /write-urdu-shell-v19/, 'PWA cache version must include WU-PLAT-003 convergence assets');
 assert.match(sw, /js\/site-header-core\.js/, 'Preserved shell core must be cached for offline use');
 assert.match(sw, /js\/outcome-navigation\.js/, 'Outcome navigation runtime must be cached for offline use');
+assert.match(sw, /js\/core-workspace-convergence\.js/, 'Core workspace convergence runtime must be cached for offline use');
 assert.match(sw, /css\/outcome-navigation\.css/, 'Outcome navigation styles must be cached for offline use');
+assert.match(sw, /css\/core-workspace-convergence\.css/, 'Core workspace convergence styles must be cached for offline use');
 
 console.log('Outcome-led navigation contract passed.');
