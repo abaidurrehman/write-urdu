@@ -10,6 +10,7 @@
     var LEGACY_TRUST_SELECTORS = ['#fb-root', '.fb-like', '.twitter-follow-button', '.fb-comments'];
     var PREMATURE_CORE_SELECTORS = ['[data-wu-authoring-share-primary]'];
     var CLEANUP_GUARD_MS = 6000;
+    var BASIC_COMMAND_TOOLBAR_SRC = '/js/basic-writer-command-toolbar.js';
     var cleanupObserver = null;
     var cleanupTimer = null;
     var USER_FIRST_LABELS = {
@@ -107,115 +108,6 @@
         setOutcomeLabel('/urdu-ocr', USER_FIRST_LABELS.image, 'Image to Urdu Text');
     }
 
-    function basicHasContent() {
-        var editor = root.document.getElementById('transliterateTextarea');
-        return Boolean(editor && String(editor.value || '').trim());
-    }
-
-    function runBasicShare() {
-        if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.trackOutcome === 'function') {
-            root.WriteUrduTelemetry.trackOutcome('share_clicked', {});
-        }
-        if (root.WriteUrduTools && typeof root.WriteUrduTools.share === 'function') {
-            root.WriteUrduTools.share();
-            return true;
-        }
-        if (root.WriteUrduUI && typeof root.WriteUrduUI.notify === 'function') {
-            root.WriteUrduUI.notify('Sharing is still loading. Try again in a moment.', 'error');
-        }
-        return false;
-    }
-
-    function ensureBasicShareAction(panel) {
-        if (!panel) return null;
-        var existing = panel.querySelector('[data-wu-basic-share-action]');
-        if (existing) return existing;
-        var button = root.document.createElement('button');
-        button.type = 'button';
-        button.className = 'wu-basic-share-action';
-        button.setAttribute('data-wu-basic-share-action', '');
-        button.title = 'Share the Urdu text only without creating a public Write Urdu link';
-        button.innerHTML = '<i class="fas fa-share-alt" aria-hidden="true"></i> Share text only';
-        button.addEventListener('click', function () { runBasicShare(); });
-        panel.insertBefore(button, panel.firstChild);
-        return button;
-    }
-
-    function convertBasicMoreMenu(secondary) {
-        if (!secondary) return null;
-        var existing = secondary.querySelector('[data-wu-basic-more]');
-        if (existing) return existing;
-
-        var legacy = secondary.querySelector('details.action-menu');
-        if (!legacy) return null;
-        var legacyPanel = legacy.querySelector('.action-menu-panel.settings-panel');
-        if (!legacyPanel) return null;
-
-        var wrapper = root.document.createElement('div');
-        wrapper.className = 'wu-basic-more';
-        wrapper.setAttribute('data-wu-basic-more', '');
-
-        var toggle = root.document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'btn btn-quiet wu-basic-more-toggle';
-        toggle.setAttribute('data-wu-basic-more-toggle', '');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.setAttribute('aria-controls', 'wuBasicMorePanel');
-        toggle.innerHTML = '<i class="fas fa-sliders-h" aria-hidden="true"></i> More';
-
-        var panel = root.document.createElement('div');
-        panel.id = 'wuBasicMorePanel';
-        panel.className = 'wu-basic-more-panel';
-        panel.setAttribute('data-wu-basic-more-panel', '');
-        panel.hidden = true;
-        while (legacyPanel.firstChild) panel.appendChild(legacyPanel.firstChild);
-
-        wrapper.appendChild(toggle);
-        wrapper.appendChild(panel);
-        legacy.replaceWith(wrapper);
-        ensureBasicShareAction(panel);
-
-        toggle.addEventListener('click', function () {
-            var opening = panel.hidden;
-            panel.hidden = !opening;
-            toggle.setAttribute('aria-expanded', String(opening));
-            wrapper.classList.toggle('is-open', opening);
-        });
-        return wrapper;
-    }
-
-    function organizeBasicCompletionActions(actions) {
-        if (!actions) return false;
-        var secondary = actions.querySelector('.home-actions-group-secondary');
-        if (!secondary) return false;
-
-        // Retire the old toolbar Share node completely. Its sharing behavior is
-        // exposed as WriteUrduTools.share(), which the convergence-owned More
-        // action calls without inheriting legacy visibility or layout state.
-        secondary.querySelectorAll('[data-write-urdu-share]').forEach(function (node) { node.remove(); });
-
-        var menu = convertBasicMoreMenu(secondary);
-        var panel = menu && menu.querySelector('[data-wu-basic-more-panel]');
-        if (!menu || !panel) return false;
-        secondary.hidden = false;
-        secondary.removeAttribute('hidden');
-        secondary.setAttribute('aria-label', 'More editor options');
-        ensureBasicShareAction(panel);
-        return true;
-    }
-
-    function syncBasicActions() {
-        if (!root || !root.document || currentRoute() !== '/') return false;
-        var actions = root.document.querySelector('.home-actions');
-        if (!actions) return false;
-        var hasContent = basicHasContent();
-        organizeBasicCompletionActions(actions);
-        actions.hidden = !hasContent;
-        actions.setAttribute('aria-hidden', hasContent ? 'false' : 'true');
-        actions.setAttribute('data-wu-core-actionbar', 'post-editor');
-        return hasContent;
-    }
-
     function retireBasicCreateGroup(actions) {
         if (!actions) return false;
         var createGroup = actions.querySelector('.home-actions-group-create');
@@ -225,30 +117,43 @@
         return true;
     }
 
+    function loadBasicCommandToolbar() {
+        if (!root || !root.document || currentRoute() !== '/') return false;
+        if (root.WriteUrduBasicCommandToolbar && typeof root.WriteUrduBasicCommandToolbar.run === 'function') {
+            root.WriteUrduBasicCommandToolbar.run();
+            return true;
+        }
+        var existing = root.document.querySelector('script[data-wu-basic-command-toolbar-script]');
+        if (existing) return true;
+        var script = root.document.createElement('script');
+        script.src = BASIC_COMMAND_TOOLBAR_SRC;
+        script.defer = true;
+        script.setAttribute('data-wu-basic-command-toolbar-script', '');
+        script.addEventListener('load', function () {
+            if (root.WriteUrduBasicCommandToolbar && typeof root.WriteUrduBasicCommandToolbar.run === 'function') root.WriteUrduBasicCommandToolbar.run();
+        });
+        root.document.head.appendChild(script);
+        return true;
+    }
+
     function convergeBasicWriter() {
         if (!root || !root.document || currentRoute() !== '/') return false;
         var editor = root.document.getElementById('transliterateTextarea');
-        var hint = root.document.getElementById('UsageAlert');
         var actions = root.document.querySelector('.home-actions');
-        if (!editor || !hint || !actions) return false;
-
-        var parent = hint.parentNode;
-        if (parent && actions.parentNode !== parent) parent.insertBefore(actions, hint.nextSibling);
-        else if (parent && hint.nextSibling !== actions) parent.insertBefore(actions, hint.nextSibling);
+        if (!editor || !actions) return false;
 
         var heroActions = root.document.querySelector('.home-hero-actions');
         if (heroActions) heroActions.setAttribute('data-wu-pre-workspace-actions', 'orientation-only');
         root.document.body.setAttribute('data-wu-core-workspace', 'basic');
         root.document.body.setAttribute('data-wu-canvas-first', 'true');
+        root.document.body.setAttribute('data-wu-command-toolbar-transition', 'source-controls');
 
         retireBasicCreateGroup(actions);
-        organizeBasicCompletionActions(actions);
-        syncBasicActions();
-
-        if (editor.getAttribute('data-wu-convergence-bound') !== 'true') {
-            editor.setAttribute('data-wu-convergence-bound', 'true');
-            editor.addEventListener('input', syncBasicActions);
-        }
+        actions.hidden = false;
+        actions.removeAttribute('hidden');
+        actions.setAttribute('aria-hidden', 'false');
+        actions.setAttribute('data-wu-core-actionbar', 'pre-editor');
+        loadBasicCommandToolbar();
         return true;
     }
 
@@ -375,6 +280,7 @@
         LEGACY_TRUST_SELECTORS: LEGACY_TRUST_SELECTORS.slice(),
         PREMATURE_CORE_SELECTORS: PREMATURE_CORE_SELECTORS.slice(),
         USER_FIRST_LABELS: Object.assign({}, USER_FIRST_LABELS),
+        BASIC_COMMAND_TOOLBAR_SRC: BASIC_COMMAND_TOOLBAR_SRC,
         normalizeRoute: normalizeRoute,
         coreWorkspace: coreWorkspace,
         run: run,
@@ -382,10 +288,7 @@
         convergeSitemap: convergeSitemap,
         convergeDocumentation: convergeDocumentation,
         enhanceGlobalLabels: enhanceGlobalLabels,
-        runBasicShare: runBasicShare,
-        ensureBasicShareAction: ensureBasicShareAction,
-        convertBasicMoreMenu: convertBasicMoreMenu,
-        organizeBasicCompletionActions: organizeBasicCompletionActions,
+        loadBasicCommandToolbar: loadBasicCommandToolbar,
         removeLegacyTrustChrome: removeLegacyTrustChrome,
         removePrematureCoreChrome: removePrematureCoreChrome
     };

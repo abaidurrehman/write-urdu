@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v21';
+const CACHE_NAME = 'write-urdu-shell-v22';
 const APP_SHELL = [
   './',
   './index.html',
@@ -18,6 +18,7 @@ const APP_SHELL = [
   './css/outcome-navigation.css',
   './css/workspace-next-step.css',
   './css/core-workspace-convergence.css',
+  './css/basic-writer-command-toolbar.css',
   './css/editor-tools.css',
   './css/input-mode.css',
   './css/modern-home.css',
@@ -55,6 +56,7 @@ const APP_SHELL = [
   './js/site-header-core.js',
   './js/outcome-navigation.js',
   './js/core-workspace-convergence.js',
+  './js/basic-writer-command-toolbar.js',
   './js/workspace-journey-registry.js',
   './js/create-publish-boundaries-registry.js',
   './js/workspace-handoff.js',

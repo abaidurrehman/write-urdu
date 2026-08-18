@@ -1,0 +1,431 @@
+@import url("./design-tokens.css");
+
+/* WU-PLAT-004 — Basic Writer Command Toolbar */
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-surface {
+  width: 100%;
+  margin: 14px 0 10px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 10px 12px;
+  overflow: visible !important;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(16, 40, 28, 0.06);
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-destructive {
+  position: relative;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-destructive {
+  padding-left: 12px;
+  margin-left: 4px;
+  border-left: 1px solid var(--wu-color-border);
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+  margin-left: auto;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command {
+  appearance: none;
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 650;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command:focus-visible {
+  outline: 3px solid rgba(16, 122, 75, 0.22);
+  outline-offset: 2px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 14px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share {
+  color: #fff;
+  border-color: #0c9a58;
+  background: #0c9a58;
+  box-shadow: 0 7px 16px rgba(12, 154, 88, 0.18);
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share:not(:disabled):hover {
+  border-color: #087a45;
+  background: #087a45;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy {
+  color: #087a45;
+  border-color: #a9d9c0;
+  background: #f8fffb;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy:not(:disabled):hover,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more:hover {
+  border-color: #78bd98;
+  background: #effaf4;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--utility {
+  display: inline-flex;
+  min-width: 56px;
+  min-height: 48px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 5px 7px;
+  color: #17392b;
+  background: transparent;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--utility i {
+  font-size: 1.05rem;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--utility:not(:disabled):hover {
+  background: #f2f8f4;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more {
+  color: #27483a;
+  border-color: var(--wu-color-border);
+  background: #fff;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
+  color: #a93030;
+  border-color: #f2d2d2;
+  background: #fff4f4;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear:not(:disabled):hover {
+  border-color: #e6b1b1;
+  background: #ffecec;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode.input-mode-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-title {
+  margin-right: 2px;
+  color: #476457;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-option {
+  min-height: 40px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-mode-note-source {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-alert {
+  flex-basis: 100%;
+  margin-top: 6px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-helper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 9px 12px;
+  border: 1px solid #dcece3;
+  border-radius: 12px;
+  color: #526c60;
+  background: #f4faf6;
+  font-size: 0.9rem;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-helper > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-helper .fa-magic {
+  color: #438666;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-spinner {
+  width: 18px;
+  height: 18px;
+  margin-left: 2px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-shortcut {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-shortcut kbd {
+  padding: 3px 7px;
+  border: 1px solid #d4e3da;
+  border-radius: 6px;
+  color: #466054;
+  background: #fff;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 0.78rem;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more.is-open {
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel {
+  display: grid;
+  flex: 1 1 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: 12px;
+  background: #fbfdfb;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel[hidden] {
+  display: none !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  padding: 9px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs[hidden] {
+  display: none !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-heading {
+  color: #25493a;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel label {
+  margin: 0;
+  color: #526c60;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel input {
+  width: 100%;
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-action,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  color: #27483a;
+  background: #f2f8f4;
+  text-align: left;
+  text-decoration: none;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs .wu-basic-command--utility {
+  width: 100%;
+  min-height: 42px;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 8px 10px;
+  background: #f2f8f4;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-basic-legacy-hint] {
+  display: none !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] #demo {
+  margin-top: 0;
+}
+
+@media (max-width: 1180px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+    flex: 1 1 100%;
+    order: 10;
+    margin-left: 0;
+    padding-top: 8px;
+    padding-left: 0;
+    border-top: 1px solid var(--wu-color-border);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar {
+    gap: 7px;
+    padding: 8px;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
+    flex: 1 1 auto;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
+    min-height: 44px;
+    padding: 0 11px;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-destructive {
+    padding-left: 7px;
+    margin-left: 0;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+    width: 100%;
+    padding-top: 8px;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode.input-mode-control {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-title {
+    flex: 1 1 100%;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-option {
+    flex: 1 1 145px;
+    white-space: normal;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more.is-open {
+    width: 100%;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs {
+    display: grid;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-helper {
+    align-items: flex-start;
+    font-size: 0.84rem;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-shortcut {
+    align-self: center;
+  }
+}
+
+@media (max-width: 390px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
+    width: 100%;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy {
+    flex: 1 1 0;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
+    margin-left: auto;
+    border-left: 0;
+    padding-left: 0;
+  }
+}
