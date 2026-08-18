@@ -4,8 +4,8 @@
     // The preserved core still owns established shell behavior, including the
     // single AdSense loader guard script[src="js/ads.js"]. Slice D owns rendered
     // taxonomy; Slice E owns contextual continuation on the four v2-ready
-    // Write/Fix workspaces and loads its continuity dependencies in a
-    // deterministic order instead of relying on route-specific bootstrap races.
+    // Write/Fix workspaces. WU-PLAT-003 adds a low-risk convergence layer that
+    // makes the legacy core workspaces follow the newer task-first hierarchy.
 
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
@@ -83,6 +83,9 @@
             var outcomeWasReplaced = (nav && nav.getAttribute('data-wu-outcome-nav') !== 'v2') || (footer && footer.getAttribute('data-wu-outcome-footer') !== 'v2');
             if (outcomeWasReplaced && root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
                 root.WriteUrduOutcomeNavigation.render();
+                if (root.WriteUrduCoreWorkspaceConvergence && typeof root.WriteUrduCoreWorkspaceConvergence.enhanceGlobalLabels === 'function') {
+                    root.WriteUrduCoreWorkspaceConvergence.enhanceGlobalLabels();
+                }
             }
             settle();
         });
@@ -97,7 +100,12 @@
                 root.WriteUrduOutcomeNavigation.render();
                 protectOutcomeNavigationDuringV2Start();
             }
-            loadContextualNextSteps();
+            loadScript('/js/core-workspace-convergence.js', 'WriteUrduCoreWorkspaceConvergence', function () {
+                if (root.WriteUrduCoreWorkspaceConvergence && typeof root.WriteUrduCoreWorkspaceConvergence.run === 'function') {
+                    root.WriteUrduCoreWorkspaceConvergence.run();
+                }
+                loadContextualNextSteps();
+            });
         });
     });
 }(window, document));
