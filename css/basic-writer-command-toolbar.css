@@ -87,6 +87,22 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
   padding: 0 14px;
 }
 
+/* The legacy Basic Writer deliberately hid [data-write-urdu-share] while
+   Share lived in More. WU-PLAT-004 promotes that same proven control to the
+   primary command surface, so this layer explicitly owns its visibility. */
+body[data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] [data-write-urdu-share].wu-basic-command--share {
+  display: inline-flex !important;
+  visibility: visible !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] [data-write-urdu-share].wu-basic-command--share:not(:disabled) {
+  opacity: 1 !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] [data-write-urdu-share].wu-basic-command--share:disabled {
+  opacity: 0.42 !important;
+}
+
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share {
   color: #fff;
   border-color: #0c9a58;
