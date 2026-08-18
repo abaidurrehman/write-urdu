@@ -26,8 +26,10 @@ assert.match(runtime, /actions\.hidden = !hasContent/, 'Basic Writer action bar 
 assert.match(runtime, /convertBasicMoreMenu\(secondary\)/, 'Basic Writer must replace the legacy overlay menu with a convergence-owned disclosure');
 assert.match(runtime, /data-wu-basic-more-toggle/, 'Basic Writer More disclosure toggle is missing');
 assert.match(runtime, /data-wu-basic-more-panel/, 'Basic Writer More disclosure panel is missing');
-assert.match(runtime, /data-wu-share-location.*more/, 'Basic Writer text sharing must live under More rather than compete with Copy and Export');
-assert.match(runtime, /panel\.insertBefore\(share, panel\.firstChild\)/, 'Basic Writer share action must move into the More panel');
+assert.match(runtime, /data-wu-basic-share-action/, 'Basic Writer convergence-owned Share action is missing');
+assert.match(runtime, /WriteUrduTools\.share/, 'Basic Writer Share action must use the existing authoring share API');
+assert.match(runtime, /trackOutcome\('share_clicked'/, 'Basic Writer Share action must preserve privacy-safe sharing telemetry');
+assert.match(runtime, /querySelectorAll\('\[data-write-urdu-share\]'\).*remove/, 'Legacy Basic toolbar Share node must be retired instead of re-used');
 assert.match(runtime, /parent\.insertBefore\(actions, hint\.nextSibling\)/, 'Basic Writer action bar must move below the editor hint');
 assert.match(runtime, /findCardByHref\(create, '\/urdu-text-cleaner'\)/, 'Text Cleaner taxonomy move is missing');
 assert.match(runtime, /findCardByHref\(create, '\/urdu-invoice-generator'\)/, 'Invoice Work taxonomy move is missing');
@@ -41,6 +43,7 @@ assert.match(nextStepCss, /rich-editor-page .*wu-continue-panel\{order:7/, 'Rich
 assert.match(css, /home-actions\[hidden\]/, 'Hidden-empty action bar CSS is missing');
 assert.match(css, /\.wu-basic-more-panel \{/, 'Basic Writer inline More panel styling is missing');
 assert.match(css, /\.wu-basic-more-panel\[hidden\]/, 'Basic Writer More panel must stay hidden until requested');
+assert.match(css, /\[data-wu-basic-share-action\]/, 'Convergence-owned Basic Share styling is missing');
 assert.doesNotMatch(css, /position\s*:\s*(?:fixed|sticky)/, 'Core convergence must not introduce fixed/sticky authoring controls');
 assert.match(spec, /Make the oldest, most-used parts of Write Urdu feel as intentional as the newest parts/, 'Initiative principle is missing');
 assert.match(spec, /Slice D — Urdu Keyboard convergence/, 'Keyboard convergence follow-up is not documented');
