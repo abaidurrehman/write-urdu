@@ -5,7 +5,8 @@
     // single AdSense loader guard script[src="js/ads.js"]. Slice D owns rendered
     // taxonomy; Slice E owns contextual continuation. Slice F extends that same
     // governed runtime to successful Voice, Image-to-Text and InPage capture
-    // results. WU-PLAT-003 remains the low-risk core-workspace convergence layer.
+    // results. Slice G extends the registry before continuity renders Create /
+    // Publish boundaries. WU-PLAT-003 remains the low-risk core-workspace layer.
 
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
@@ -51,12 +52,14 @@
     function loadContextualNextSteps() {
         if (!shouldLoadContextualNextSteps()) return;
         loadScript('/js/workspace-journey-registry.js', 'WriteUrduWorkspaceRegistry', function () {
-            loadScript('/js/workspace-handoff.js', 'WriteUrduWorkspaceHandoff', function () {
-                loadScript('/js/core-continuity.js', 'WriteUrduCoreContinuity', function () {
-                    loadScript('/js/workspace-next-step.js', 'WriteUrduWorkspaceNextStep', function () {
-                        if (root.WriteUrduWorkspaceNextStep && typeof root.WriteUrduWorkspaceNextStep.render === 'function') {
-                            root.WriteUrduWorkspaceNextStep.render();
-                        }
+            loadScript('/js/create-publish-boundaries-registry.js', 'WriteUrduCreatePublishBoundariesRegistry', function () {
+                loadScript('/js/workspace-handoff.js', 'WriteUrduWorkspaceHandoff', function () {
+                    loadScript('/js/core-continuity.js', 'WriteUrduCoreContinuity', function () {
+                        loadScript('/js/workspace-next-step.js', 'WriteUrduWorkspaceNextStep', function () {
+                            if (root.WriteUrduWorkspaceNextStep && typeof root.WriteUrduWorkspaceNextStep.render === 'function') {
+                                root.WriteUrduWorkspaceNextStep.render();
+                            }
+                        });
                     });
                 });
             });
