@@ -35,7 +35,7 @@ assert.doesNotMatch(runtime, /parent\.insertBefore\(actions, hint\.nextSibling\)
 
 assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'word', 'png', 'preview', 'print'], 'Direct output action order changed unexpectedly');
 assert.strictEqual(Toolbar.MOBILE_QUERY, '(max-width: 767px)');
-assert.match(toolbarRuntime, /data-wu-command-action', 'share'/, 'Share must be a first-class toolbar action');
+assert.match(toolbarRuntime, /setAction\(share, 'share', 'Share'/, 'Share must be a first-class toolbar action');
 assert.match(toolbarRuntime, /setAction\(copy, 'copy', 'Copy'/, 'Copy must be directly visible');
 assert.match(toolbarRuntime, /setAction\(pdf, 'pdf', 'PDF'/, 'PDF must be a direct desktop action');
 assert.match(toolbarRuntime, /setAction\(word, 'word', 'Word'/, 'Word must be a direct desktop action');
