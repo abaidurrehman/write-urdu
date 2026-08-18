@@ -1,6 +1,32 @@
 (function () {
     'use strict';
 
+    function ensureCoreContinuityForRich() {
+        var path = String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
+        if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+        if (path.endsWith('.html')) path = path.slice(0, -5);
+        if (path !== '/urdu-editor' || window.WriteUrduCoreContinuity) return;
+
+        function load(src, ready, next) {
+            if (ready()) { next(); return; }
+            var existing = document.querySelector('script[src="' + src + '"]');
+            if (existing) { existing.addEventListener('load', next, { once: true }); return; }
+            var script = document.createElement('script');
+            script.src = src;
+            script.async = false;
+            script.addEventListener('load', next, { once: true });
+            document.head.appendChild(script);
+        }
+
+        load('js/workspace-journey-registry.js', function () { return Boolean(window.WriteUrduWorkspaceRegistry); }, function () {
+            load('js/workspace-handoff.js', function () { return Boolean(window.WriteUrduWorkspaceHandoff); }, function () {
+                load('js/core-continuity.js', function () { return Boolean(window.WriteUrduCoreContinuity); }, function () {});
+            });
+        });
+    }
+
+    ensureCoreContinuityForRich();
+
     var HANDOFF_TTL = 30 * 60 * 1000;
     var RICH_DRAFT_KEY = 'write-urdu:draft:v1:rich';
     var RICH_HISTORY_KEY = 'write-urdu:history:v1:rich';
