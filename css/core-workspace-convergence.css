@@ -32,7 +32,7 @@ body[data-wu-core-workspace="basic"] .home-actions[hidden] {
 
 body[data-wu-core-workspace="basic"] .home-actions-group-primary,
 body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
-  display: flex;
+  display: flex !important;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
@@ -40,6 +40,12 @@ body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
 
 body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
   margin-left: auto;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary [data-write-urdu-share] {
+  display: inline-flex !important;
+  visibility: visible !important;
+  align-items: center;
 }
 
 body[data-wu-core-workspace="basic"] #UsageAlert {
