@@ -224,29 +224,22 @@
         var existing = document.querySelector('[data-wu-authoring-share-primary]');
         if (existing) return existing;
 
-        var mount = null;
-        var before = null;
-        if (path === '/') {
-            mount = document.querySelector('.home-actions-group-primary');
-            before = mount && mount.querySelector('.action-menu');
-        } else if (path === '/urdu-editor') {
-            mount = document.querySelector('.home-actions-group-export');
-            before = mount && mount.firstElementChild;
-        } else if (path === '/urdu-keyboard') {
-            mount = document.querySelector('.keyboard-actions');
-            before = mount && mount.querySelector('[data-write-urdu-share]');
-        }
+        var mount = path === '/' ? document.querySelector('.home-actions') : document.querySelector('.tool-actions');
         if (!mount) return null;
+        var before = null;
+        if (path === '/') before = mount.querySelector('.home-actions-group-export');
+        else if (path === '/urdu-editor') before = mount.querySelector('.home-actions-group-export');
+        else if (path === '/urdu-keyboard') before = mount.querySelector('[data-write-urdu-share]');
 
         var button = document.createElement('button');
         button.type = 'button';
-        button.className = 'btn btn-success' + (path === '/' ? ' action-primary' : ' btn-sm') + ' wu-authoring-share-primary';
+        button.className = 'btn btn-success btn-sm wu-authoring-share-primary';
         button.setAttribute('data-wu-authoring-share-primary', '');
         button.setAttribute('data-create-card', '');
         button.setAttribute('data-editor-source', sourceName());
         button.title = 'Create a visual from this Urdu, then publish a Write-Urdu.com share link';
         setActionLabel(button, 'Create & Share', 'fas fa-share-square');
-        mount.insertBefore(button, before || null);
+        mount.insertBefore(button, before || mount.firstElementChild || null);
         return button;
     }
 
