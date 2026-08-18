@@ -20,6 +20,7 @@ body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions 
   width: 100%;
   margin: 12px 0 0;
   padding: 10px 12px;
+  overflow: visible;
   border: 1px solid var(--wu-color-border);
   border-radius: var(--wu-radius-lg);
   background: var(--wu-color-surface-soft);
@@ -42,12 +43,46 @@ body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
   margin-left: auto;
 }
 
-body[data-wu-core-workspace="basic"] .wu-more-share-action {
+/* The legacy toolbar treated More as an overlay. Once the bar moves below the
+   editor that popover can be clipped by historical responsive overflow rules.
+   Expand the disclosure inline instead: secondary actions remain hidden until
+   requested, but are always reachable on desktop and mobile. */
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] {
+  flex: 1 1 100% !important;
+  width: min(100%, 360px) !important;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] > .settings-panel {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto;
+  display: grid !important;
+  visibility: visible !important;
+  width: 100% !important;
+  max-height: none;
+  margin-top: 8px;
+  overflow: visible;
+  opacity: 1 !important;
+  box-shadow: none;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] > .settings-panel .wu-more-share-action {
+  display: flex !important;
+  visibility: visible !important;
+  min-height: 40px;
   width: 100%;
+  align-items: center;
+  gap: 7px;
   border: 0;
+  border-radius: var(--wu-radius-sm);
   color: var(--wu-color-ink-soft);
-  background: transparent;
+  background: var(--wu-color-surface-soft);
   text-align: left;
+  opacity: 1 !important;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] > .settings-panel .wu-more-share-action:hover {
+  background: var(--wu-color-brand-softer);
 }
 
 body[data-wu-core-workspace="basic"] #UsageAlert {
@@ -69,6 +104,7 @@ body[data-wu-taxonomy-synced] #work {
 @media (max-width: 767px) {
   body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions {
     align-items: stretch;
+    overflow-x: visible !important;
   }
 
   body[data-wu-core-workspace="basic"] .home-actions-group-primary,
@@ -78,5 +114,10 @@ body[data-wu-taxonomy-synced] #work {
 
   body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
     margin-left: 0;
+  }
+
+  body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] {
+    flex-basis: 100% !important;
+    width: 100% !important;
   }
 }
