@@ -33,8 +33,12 @@ assert.match(entry, /sessionStorage\.setItem/, 'Journey handoffs must remain bro
 assert.match(entry, /sessionStorage\.removeItem/, 'One-time handoffs must be consumed from session storage');
 assert.doesNotMatch(entry, /[?&](?:text|name)=/, 'Journey handoffs must not put user text into URLs');
 
-assert.match(main, /path !== '\/urdu-keyboard'/, 'Urdu Keyboard must load the shared journey handoff runtime');
-assert.match(main, /js\/card-studio-entry\.js/, 'Keyboard journey runtime loader is missing');
+assert.match(main, /loadCoreContinuity/, 'Basic/Keyboard must load the shared Slice C continuity layer');
+assert.match(main, /workspace-journey-registry\.js/, 'Core continuity loader must load the workspace registry');
+assert.match(main, /workspace-handoff\.js/, 'Core continuity loader must load the shared v2 handoff runtime');
+assert.match(main, /core-continuity\.js/, 'Core continuity loader must load the capture/continuity bridge');
+assert.match(main, /loadScript\('js\/card-studio-entry\.js'/, 'Keyboard must retain the existing journey UI after continuity loads');
+assert.match(main, /loadScript\('js\/qr-generator-entry\.js'/, 'Keyboard must retain the QR entry fallback after continuity loads');
 
 assert.match(stylish, /INCOMING_KEY = 'writeUrdu\.stylishText\.incoming\.v1'/, 'Stylish Text must read the editor handoff');
 assert.match(stylish, /sessionStorage\.removeItem\(INCOMING_KEY\)/, 'Stylish Text incoming handoff must be one-time');
