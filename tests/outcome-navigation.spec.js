@@ -1,0 +1,91 @@
+const { test, expect } = require('@playwright/test');
+
+const blockExternalServices = page => page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+
+async function open(page, route) {
+  await blockExternalServices(page);
+  await page.goto(route, { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await page.locator('[data-wu-outcome-nav="v2"]').waitFor({ state: 'attached', timeout: 10000 });
+}
+
+async function openMobileMenuIfNeeded(page) {
+  const toggle = page.locator('.wu-menu-toggle');
+  if (await toggle.isVisible()) await toggle.click();
+}
+
+test('global navigation is organized by Write / Create / Work / Learn outcomes', async ({ page }) => {
+  await open(page, '/');
+  await openMobileMenuIfNeeded(page);
+
+  const nav = page.locator('[data-wu-outcome-nav="v2"]');
+  const groups = nav.locator(':scope > [data-wu-nav-group]');
+  await expect(groups).toHaveCount(4);
+  await expect(groups.nth(0).locator('summary')).toContainText('Write');
+  await expect(groups.nth(1).locator('summary')).toContainText('Create');
+  await expect(groups.nth(2).locator('summary')).toContainText('Work');
+  await expect(groups.nth(3).locator('summary')).toContainText('Learn');
+
+  await groups.nth(0).locator('summary').click();
+  const firstWrite = groups.nth(0).locator('.wu-outcome-link').first();
+  await expect(firstWrite.locator('strong')).toHaveText('Start writing in Urdu');
+  await expect(firstWrite.locator('small')).toHaveText('Roman Urdu writer');
+  await expect(groups.nth(0).locator('a[href="/tools/urdu-voice-typing"]')).toContainText('Speak and turn it into Urdu text');
+  await expect(groups.nth(0).locator('a[href="/tools/inpage-unicode-converter"]')).toContainText('Convert legacy InPage text');
+
+  await groups.nth(1).locator('summary').click();
+  await expect(groups.nth(1).locator('a[href="/urdu-card-studio"] strong')).toContainText('Make a poetry, quote or announcement image');
+  await expect(groups.nth(1).locator('a[href="/urdu-card-studio?role=facebook"]')).toContainText('Create a Facebook post');
+
+  await groups.nth(2).locator('summary').click();
+  await expect(groups.nth(2).locator('a[href="/urdu-invoice-generator"] strong')).toHaveText('Create an Urdu or English invoice');
+  await expect(groups.nth(2).locator('a[href="/urdu-editor"] strong')).toHaveText('Prepare a formal Urdu document');
+
+  await groups.nth(3).locator('summary').click();
+  await expect(groups.nth(3).locator('a[href="/urdu-alphabet"] strong')).toHaveText('Learn the Urdu alphabet');
+  await expect(groups.nth(3).locator('a[href="/urdu-faq"] strong')).toHaveText('Get answers to common questions');
+
+  await expect(page.locator('[data-wu-drafts-utility-slot]')).toHaveCount(1);
+  await expect(nav.locator('[data-wu-nav-group="my-drafts"], [data-wu-nav-group="drafts"]')).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+test('outcome navigation keeps established route owners and active category state', async ({ page }) => {
+  const cases = [
+    ['/urdu-editor.html', 'write'],
+    ['/urdu-card-studio.html', 'create'],
+    ['/urdu-invoice-generator.html', 'work'],
+    ['/roman-urdu-transliteration.html', 'learn'],
+    ['/tools/urdu-voice-typing/', 'write'],
+    ['/tools/inpage-unicode-converter/', 'write']
+  ];
+
+  for (const [route, group] of cases) {
+    await open(page, route);
+    await openMobileMenuIfNeeded(page);
+    await expect(page.locator(`[data-wu-nav-group="${group}"] > summary`)).toHaveClass(/is-active/);
+    expect(page.url()).not.toMatch(/\/(write|create|work|learn)(?:\/|$)/);
+  }
+});
+
+test('footer mirrors outcome taxonomy while About remains a utility group', async ({ page }) => {
+  await open(page, '/');
+  const footer = page.locator('[data-wu-outcome-footer="v2"]');
+  await expect(footer.locator(':scope > [data-wu-footer-group]')).toHaveCount(5);
+  await expect(footer.locator('[data-wu-footer-group="write"] h2')).toHaveText('Write');
+  await expect(footer.locator('[data-wu-footer-group="create"] h2')).toHaveText('Create');
+  await expect(footer.locator('[data-wu-footer-group="work"] h2')).toHaveText('Work');
+  await expect(footer.locator('[data-wu-footer-group="learn"] h2')).toHaveText('Learn');
+  await expect(footer.locator('[data-wu-footer-group="about"] h2')).toHaveText('About');
+  await expect(footer.locator('a[href="/urdu-editor"]')).toHaveCount(1);
+  await expect(footer.locator('a[href="/urdu-invoice-generator"]')).toHaveCount(1);
+});
+
+test('language switch re-renders the outcome categories in Urdu', async ({ page }) => {
+  await open(page, '/');
+  await page.locator('[data-wu-language-toggle]').click();
+  await expect(page.locator('[data-wu-nav-group="write"] > summary')).toContainText('لکھیں');
+  await expect(page.locator('[data-wu-nav-group="create"] > summary')).toContainText('بنائیں');
+  await expect(page.locator('[data-wu-nav-group="work"] > summary')).toContainText('کام');
+  await expect(page.locator('[data-wu-nav-group="learn"] > summary')).toContainText('سیکھیں');
+  await expect(page.locator('[data-wu-footer-group="about"] h2')).toHaveText('متعلق');
+});
