@@ -1,623 +1,370 @@
 @import url("./design-tokens.css");
 
-/*
- * WriteUrdu V3 design system
- * --------------------------
- * A shared visual layer for every public route. It deliberately styles the
- * product shell and page surfaces without changing transliteration, editor,
- * keyboard, canvas, QR or invoice behavior.
- *
- * AdSense is treated as a page-layout primitive. Ad regions share the same
- * geometry as WriteUrdu surfaces while remaining clearly labelled and
- * separated from authoring controls.
- */
+/* WriteUrdu V3 design system — single visual owner for the shared shell and
+   the migrated public product surfaces. Keep legacy compatibility selectors
+   narrow so page-specific product CSS can continue to own workspace details. */
 
-html {
-  color-scheme: light;
-  background: var(--wu-color-page);
-}
-
-body.wu-v2-shell {
-  min-height: 100vh;
-  margin: 0 !important;
-  color: var(--wu-color-ink);
-  background:
-    radial-gradient(circle at 12% -8%, rgb(21 147 77 / 7%), transparent 31rem),
-    linear-gradient(180deg, #fbfcfb 0, var(--wu-color-page) 25rem, #fbfcfb 100%);
-  font-family: var(--wu-font-ui);
-  font-size: var(--wu-text-base);
-  line-height: 1.65;
-  text-rendering: optimizeLegibility;
-}
-
-body.wu-v2-shell *,
-body.wu-v2-shell *::before,
-body.wu-v2-shell *::after {
-  box-sizing: border-box;
-}
-
-body.wu-v2-shell a {
-  color: var(--wu-color-brand-strong);
-  text-underline-offset: 3px;
-}
-
-body.wu-v2-shell a:hover {
-  color: var(--wu-color-brand-deep);
-}
-
-body.wu-v2-shell :focus-visible {
-  outline: 3px solid rgb(11 111 194 / 28%);
-  outline-offset: 3px;
-}
-
-body.wu-v2-shell h1,
-body.wu-v2-shell h2,
-body.wu-v2-shell h3,
-body.wu-v2-shell h4,
-body.wu-v2-shell h5,
-body.wu-v2-shell h6 {
-  color: var(--wu-color-ink);
-  font-family: var(--wu-font-ui);
-  font-weight: var(--wu-weight-bold);
-  letter-spacing: -.03em;
-}
-
-body.wu-v2-shell p,
-body.wu-v2-shell li {
-  color: var(--wu-color-ink-soft);
-}
-
-body.wu-v2-shell [lang="ur"],
-body.wu-v2-shell [dir="rtl"],
-html[lang="ur"] body.wu-v2-shell {
-  font-family: var(--wu-font-urdu);
+:root {
+  --wu-v3-header-bg: rgba(255, 255, 255, .96);
+  --wu-v3-footer-bg: #10281c;
+  --wu-v3-footer-ink: #f4faf6;
+  --wu-v3-footer-muted: #b9ccc1;
+  --wu-v3-footer-link: #dce9e1;
+  --wu-v3-footer-link-hover: #ffffff;
+  --wu-v3-footer-border: rgba(255, 255, 255, .14);
 }
 
 /* --------------------------------------------------------------------------
    Shared shell
    -------------------------------------------------------------------------- */
 
-.wu-v2-shell .wu-site-header {
-  position: sticky;
-  top: 0;
-  z-index: 1500;
+.wu-v2-shell {
   color: var(--wu-color-ink);
-  background: rgb(255 255 255 / 96%);
+  background: var(--wu-color-canvas);
+}
+
+.wu-v2-shell .wu-site-header {
   border-bottom: 1px solid var(--wu-color-border);
-  box-shadow: 0 4px 22px rgb(23 34 28 / 5%);
-  backdrop-filter: blur(16px);
+  background: var(--wu-v3-header-bg);
+  box-shadow: 0 1px 0 rgba(16, 40, 28, .02);
+  backdrop-filter: blur(18px);
 }
 
 .wu-v2-shell .wu-header-inner {
   width: min(var(--wu-shell-width), calc(100% - 48px));
   min-height: 72px;
-  gap: 28px;
 }
 
 .wu-v2-shell .wu-brand {
-  gap: 12px;
-  color: var(--wu-color-ink) !important;
-}
-
-.wu-v2-shell .wu-brand:hover {
-  color: var(--wu-color-ink) !important;
+  gap: 10px;
 }
 
 .wu-v2-shell .wu-brand-mark {
-  width: 44px;
-  height: 44px;
-  padding: 3px;
-  border: 1px solid #cfe4d7;
-  border-radius: 13px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d4e4db;
+  border-radius: 12px;
   background: #fff;
-  box-shadow: var(--wu-shadow-sm);
+  box-shadow: var(--wu-shadow-xs);
 }
 
 .wu-v2-shell .wu-brand strong {
   color: var(--wu-color-ink);
-  font-size: 1.2rem;
-  font-weight: var(--wu-weight-bold);
-  letter-spacing: -.035em;
+  font-size: 1.08rem;
 }
 
 .wu-v2-shell .wu-brand small {
-  display: block;
-  margin-top: 5px;
   color: var(--wu-color-muted);
-  font: var(--wu-weight-regular) .72rem/1.2 var(--wu-font-ui);
+  font-size: .72rem;
 }
 
-.wu-v2-shell .wu-primary-nav {
-  gap: 6px;
+.wu-v2-shell .wu-primary-nav,
+.wu-v2-shell .wu-header-utility {
+  gap: 5px;
 }
 
 .wu-v2-shell .wu-primary-nav > a,
-.wu-v2-shell .wu-nav-more > summary {
-  min-height: 42px;
-  padding: 11px 13px;
+.wu-v2-shell .wu-nav-more > summary,
+.wu-v2-shell .wu-language-toggle,
+.wu-v2-shell .wu-install-button,
+.wu-v2-shell .wu-menu-toggle {
   border: 1px solid transparent;
-  border-radius: var(--wu-radius-md);
-  color: #334039 !important;
+  color: var(--wu-color-ink-soft) !important;
   background: transparent;
-  font-size: .86rem;
-  font-weight: var(--wu-weight-semibold);
-  transition: color var(--wu-transition-fast), background var(--wu-transition-fast), border-color var(--wu-transition-fast);
 }
 
 .wu-v2-shell .wu-primary-nav > a:hover,
-.wu-v2-shell .wu-nav-more > summary:hover {
+.wu-v2-shell .wu-primary-nav > a:focus-visible,
+.wu-v2-shell .wu-nav-more > summary:hover,
+.wu-v2-shell .wu-nav-more > summary:focus-visible,
+.wu-v2-shell .wu-language-toggle:hover,
+.wu-v2-shell .wu-language-toggle:focus-visible,
+.wu-v2-shell .wu-install-button:hover,
+.wu-v2-shell .wu-install-button:focus-visible,
+.wu-v2-shell .wu-menu-toggle:hover,
+.wu-v2-shell .wu-menu-toggle:focus-visible {
+  border-color: var(--wu-color-border);
   color: var(--wu-color-brand-strong) !important;
-  border-color: #dcebe2;
   background: var(--wu-color-brand-softer);
 }
 
 .wu-v2-shell .wu-primary-nav > a.is-active,
 .wu-v2-shell .wu-nav-more > summary.is-active {
+  border-color: #b9d8c5;
   color: var(--wu-color-brand-strong) !important;
-  border-color: #cde6d6;
   background: var(--wu-color-brand-soft);
-  box-shadow: none;
 }
 
-.wu-v2-shell .wu-nav-business {
-  border-color: #d9e8df !important;
-}
-
-.wu-v2-shell .wu-nav-more-menu,
-.wu-v2-shell .wu-nav-create .wu-nav-more-menu,
-.wu-v2-shell .wu-nav-learn .wu-nav-more-menu {
-  padding: 10px;
+.wu-v2-shell .wu-nav-more-menu {
   border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-lg);
-  color: var(--wu-color-ink);
   background: #fff;
   box-shadow: var(--wu-shadow-float);
 }
 
-.wu-v2-shell .wu-nav-menu-heading {
-  color: var(--wu-color-subtle);
-}
-
 .wu-v2-shell .wu-nav-more-menu a {
-  color: #44524a !important;
+  color: var(--wu-color-ink-soft) !important;
 }
 
 .wu-v2-shell .wu-nav-more-menu a:hover,
-.wu-v2-shell .wu-nav-more-menu a.is-active {
+.wu-v2-shell .wu-nav-more-menu a:focus-visible {
   color: var(--wu-color-brand-strong) !important;
   background: var(--wu-color-brand-softer);
 }
 
 .wu-v2-shell .wu-language-toggle,
-.wu-v2-shell .wu-install-toggle,
+.wu-v2-shell .wu-install-button,
 .wu-v2-shell .wu-menu-toggle {
-  min-height: 42px;
-  border: 1px solid var(--wu-color-border-strong);
-  border-radius: var(--wu-radius-md);
-  color: #34433b;
-  background: #fff;
-  font-weight: var(--wu-weight-semibold);
-}
-
-.wu-v2-shell .wu-language-toggle:hover,
-.wu-v2-shell .wu-install-toggle:hover,
-.wu-v2-shell .wu-menu-toggle:hover,
-.wu-v2-shell .wu-language-toggle:focus-visible,
-.wu-v2-shell .wu-install-toggle:focus-visible,
-.wu-v2-shell .wu-menu-toggle:focus-visible {
-  color: var(--wu-color-brand-strong);
-  border-color: #bcd9c7;
-  background: var(--wu-color-brand-softer);
-}
-
-/* Trust is communicated inside the product and content surfaces in V3. Keeping
-   the shell to one row gives the editor more room on laptop screens. */
-.wu-v2-shell .wu-header-trustbar {
-  display: none;
+  min-height: 38px;
 }
 
 /* --------------------------------------------------------------------------
-   Page geometry and reading surfaces
+   Page canvas and common typography
    -------------------------------------------------------------------------- */
 
-.wu-v2-shell .seo-breadcrumbs {
-  width: min(var(--wu-content-width), calc(100% - 40px));
-  margin: 18px auto 0;
-  color: var(--wu-color-muted);
-  font-size: .78rem;
-}
-
-.wu-v2-shell .seo-breadcrumbs a {
-  color: var(--wu-color-muted);
-  text-decoration: none;
-}
-
-.wu-v2-shell .seo-breadcrumbs a:hover {
-  color: var(--wu-color-brand-strong);
-}
-
-.wu-v2-shell .seo-breadcrumbs span[aria-hidden="true"] {
-  margin-inline: 8px;
-  color: #a4aea8;
-}
-
+.wu-v2-shell:not(.content-page) > .container-fluid > .row:nth-of-type(2),
 .wu-v2-shell.content-page main,
 .wu-v2-shell[data-wu-monetization-type="learn"] main,
 .wu-v2-shell[data-wu-monetization-type="trust"] main,
-.wu-v2-shell[data-wu-monetization-type="create"] main {
-  width: min(var(--wu-content-width), calc(100% - 40px));
-  margin-inline: auto;
-}
-
-.wu-v2-shell .content-article,
-.wu-v2-shell .legal-copy,
-.wu-v2-shell .authority-shell,
-.wu-v2-shell .documentation-shell,
-.wu-v2-shell .faq-shell {
-  color: var(--wu-color-ink-soft);
-}
-
-.wu-v2-shell .content-article > section,
-.wu-v2-shell .legal-copy,
-.wu-v2-shell .authority-section,
-.wu-v2-shell .authority-quick-answer,
-.wu-v2-shell .docs-card,
-.wu-v2-shell .faq-card,
-.wu-v2-shell .search-card,
-.wu-v2-shell .directory-card {
-  border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-xl);
-  background: rgb(255 255 255 / 96%);
-  box-shadow: var(--wu-shadow-xs);
-}
-
-.wu-v2-shell .authority-quick-answer,
-.wu-v2-shell .content-article > section,
-.wu-v2-shell .legal-copy,
-.wu-v2-shell .docs-card,
-.wu-v2-shell .faq-card {
-  padding: clamp(22px, 3vw, 34px);
-}
-
-.wu-v2-shell .authority-quick-answer {
-  border-color: #cde5d6;
-  background: linear-gradient(135deg, var(--wu-color-brand-softer), #fff 64%);
-}
-
-.wu-v2-shell .page-intro,
-.wu-v2-shell .docs-lede,
-.wu-v2-shell .authority-lede {
-  color: var(--wu-color-muted);
-  font-size: clamp(1rem, 1.4vw, 1.12rem);
-  line-height: 1.75;
-}
-
-.wu-v2-shell table {
-  border-color: var(--wu-color-border);
-  border-radius: var(--wu-radius-lg);
-  box-shadow: var(--wu-shadow-xs);
-}
-
-.wu-v2-shell th {
-  background: var(--wu-color-surface-muted);
-}
-
-/* --------------------------------------------------------------------------
-   Homepage / primary Urdu typing surface
-   -------------------------------------------------------------------------- */
-
-.wu-v2-shell[data-wu-monetization-type="write"] > .container-fluid,
-.wu-v2-shell:not(.content-page) > .container-fluid {
-  padding-inline: 0 !important;
-}
-
-.wu-v2-shell:not(.content-page) > .container-fluid > .row:nth-of-type(2) {
-  width: min(var(--wu-content-width), calc(100% - 40px));
-  margin-inline: auto;
-  padding-top: clamp(28px, 4vw, 54px);
-}
-
-.wu-v2-shell:not(.content-page) > .container-fluid > .row:nth-of-type(2) > .col-6 {
-  display: none !important;
-}
-
-.wu-v2-shell:not(.content-page) > .container-fluid > .row:nth-of-type(2) > .col-12 {
-  flex: 0 0 100%;
-  width: 100%;
-  max-width: none;
-  padding-inline: 0;
-}
-
-.wu-v2-shell:not(.content-page) .logo {
-  display: none !important;
-}
-
-.wu-v2-shell:not(.content-page) h1 {
-  max-width: 930px;
-  margin: 0 auto 10px;
-  font-size: var(--wu-text-display);
-  line-height: 1.05;
-  text-align: center;
-}
-
-.wu-v2-shell:not(.content-page) .page-intro {
-  max-width: 760px;
-  margin-inline: auto;
-  text-align: center;
-}
-
-.wu-v2-shell:not(.content-page) .home-hero-meta,
-.wu-v2-shell:not(.content-page) .home-hero-actions {
-  justify-content: center;
-}
-
-.wu-v2-shell:not(.content-page) .home-hero-meta {
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.wu-v2-shell:not(.content-page) .home-hero-meta span {
-  padding: 7px 12px;
-  border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-pill);
-  color: var(--wu-color-muted);
-  background: #fff;
-  box-shadow: var(--wu-shadow-xs);
-}
-
-.wu-v2-shell:not(.content-page) .home-hero-meta span:first-child {
-  color: var(--wu-color-brand-strong);
-  border-color: #cae5d4;
-  background: var(--wu-color-brand-soft);
-}
-
-.wu-v2-shell:not(.content-page) .home-hero-actions {
-  margin: 20px 0 30px;
-}
-
-.wu-v2-shell .home-hero-cta,
-.wu-v2-shell .btn,
-.wu-v2-shell button:not(.tox-tbtn):not(.keyboard-key):not(.key) {
-  border-radius: var(--wu-radius-md);
-}
-
-.wu-v2-shell .home-hero-cta-primary,
-.wu-v2-shell .btn-success,
-.wu-v2-shell .action-primary {
-  border-color: var(--wu-color-brand) !important;
-  color: #fff !important;
-  background: linear-gradient(180deg, #19a656, var(--wu-color-brand)) !important;
-  box-shadow: 0 8px 18px rgb(21 147 77 / 17%) !important;
-}
-
-.wu-v2-shell .home-hero-cta-primary:hover,
-.wu-v2-shell .btn-success:hover,
-.wu-v2-shell .action-primary:hover {
-  background: var(--wu-color-brand-strong) !important;
-}
-
-.wu-v2-shell .home-actions {
-  position: relative;
-  z-index: 6;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin: 0;
-  padding: 12px;
-  border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-lg) var(--wu-radius-lg) 0 0;
-  background: #fff;
-  box-shadow: var(--wu-shadow-xs);
-}
-
-.wu-v2-shell .home-actions-group {
-  gap: 8px;
-}
-
-.wu-v2-shell .home-actions .btn,
-.wu-v2-shell .home-actions summary {
-  min-height: 42px;
-  border-color: var(--wu-color-border-strong) !important;
-  background: #fff !important;
-  font-size: .84rem;
-  font-weight: var(--wu-weight-semibold);
-}
-
-.wu-v2-shell .home-actions .action-primary {
-  color: #fff !important;
-  background: var(--wu-color-brand) !important;
-}
-
-.wu-v2-shell .home-actions .btn-quiet {
-  border-color: transparent !important;
-  color: var(--wu-color-muted) !important;
-  background: var(--wu-color-surface-soft) !important;
-}
-
-.wu-v2-shell .editor-chrome {
-  margin-top: 14px;
-  padding: 10px 13px;
-  border: 1px solid var(--wu-color-border);
-  border-bottom: 0;
-  border-radius: var(--wu-radius-lg) var(--wu-radius-lg) 0 0;
-  color: var(--wu-color-muted);
-  background: var(--wu-color-surface-soft);
-}
-
-.wu-v2-shell #demo {
-  overflow: hidden;
-  border: 1px solid var(--wu-color-border) !important;
-  border-radius: 0 0 var(--wu-radius-xl) var(--wu-radius-xl) !important;
-  background: #fff;
-  box-shadow: var(--wu-shadow-md);
-}
-
-.wu-v2-shell #transliterateTextarea {
-  min-height: clamp(390px, 55vh, 610px);
-  padding: clamp(26px, 4vw, 50px);
-  color: #17211b;
-  background: #fff;
-  caret-color: var(--wu-color-brand);
-  font-family: var(--wu-font-urdu) !important;
-  font-size: clamp(1.45rem, 2.5vw, 1.9rem) !important;
-  line-height: 2.18;
-}
-
-.wu-v2-shell #transliterateTextarea:focus {
-  box-shadow: inset 0 0 0 3px rgb(21 147 77 / 13%);
-}
-
-.wu-v2-shell .input-mode-control {
-  border-color: var(--wu-color-border) !important;
-  background: #fff !important;
-}
-
-.wu-v2-shell .input-mode-option[aria-pressed="true"] {
-  color: #fff !important;
-  border-color: var(--wu-color-brand) !important;
-  background: var(--wu-color-brand) !important;
-}
-
-.wu-v2-shell #UsageAlert {
-  margin-top: 18px;
-  border: 1px solid #cfe7d8;
-  border-radius: var(--wu-radius-lg);
-  color: var(--wu-color-brand-deep);
-  background: var(--wu-color-brand-softer);
-}
-
-.wu-v2-shell .home-new-tools,
-.wu-v2-shell .home-how-it-works,
-.wu-v2-shell:not(.content-page) .card {
-  border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-xl);
-  background: #fff;
-  box-shadow: var(--wu-shadow-sm);
-}
-
-.wu-v2-shell .tool-promo-card,
-.wu-v2-shell .home-how-it-works-list li {
-  border-color: var(--wu-color-border);
-  border-radius: var(--wu-radius-lg);
-  background: var(--wu-color-surface-soft);
-  box-shadow: none;
-}
-
-/* --------------------------------------------------------------------------
-   Workspaces: editor, keyboard, create and business tools
-   -------------------------------------------------------------------------- */
-
-.wu-v2-shell .editor-workspace,
-.wu-v2-shell .workspace-shell,
-.wu-v2-shell .card-studio-shell,
-.wu-v2-shell .card-studio-workspace,
-.wu-v2-shell .name-art-workspace,
-.wu-v2-shell .social-maker-workspace,
-.wu-v2-shell [data-template-library],
-.wu-v2-shell [data-stylish-generator],
-.wu-v2-shell [data-invoice-generator],
-.wu-v2-shell .qr-generator-shell,
-.wu-v2-shell .qr-workspace {
-  border-color: var(--wu-color-border) !important;
-  border-radius: var(--wu-radius-xl) !important;
-  background: #fff;
-  box-shadow: var(--wu-shadow-sm);
-}
-
-.wu-v2-shell .workspace-toolbar,
-.wu-v2-shell .editor-toolbar,
-.wu-v2-shell .tool-toolbar,
-.wu-v2-shell .card-studio-toolbar {
-  border-color: var(--wu-color-border) !important;
-  background: var(--wu-color-surface-soft) !important;
-}
-
-.wu-v2-shell input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
-.wu-v2-shell select,
-.wu-v2-shell textarea:not(#transliterateTextarea) {
-  border-color: var(--wu-color-border-strong);
-  border-radius: var(--wu-radius-md);
-}
-
-.wu-v2-shell input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):focus,
-.wu-v2-shell select:focus,
-.wu-v2-shell textarea:not(#transliterateTextarea):focus {
-  border-color: #8fc5a4;
-  box-shadow: 0 0 0 3px rgb(21 147 77 / 10%);
-}
-
-/* Keep tool pages spacious. Their own CSS controls the internal grid; V3 only
-   establishes the shared outer rhythm and visual surface. */
 .wu-v2-shell[data-wu-monetization-type="create"] main,
 .wu-v2-shell.card-studio-page main,
 .wu-v2-shell.qr-generator-page main {
-  width: min(var(--wu-shell-width), calc(100% - 40px));
+  width: min(var(--wu-content-width), calc(100% - 40px));
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.wu-v2-shell:not(.content-page) > .container-fluid > .row:nth-of-type(2) {
+  padding-top: clamp(28px, 4vw, 48px);
+  padding-bottom: 64px;
+}
+
+.wu-v2-shell h1,
+.wu-v2-shell h2,
+.wu-v2-shell h3,
+.wu-v2-shell h4,
+.wu-v2-shell h5,
+.wu-v2-shell h6 {
+  color: var(--wu-color-ink);
+}
+
+.wu-v2-shell h1 {
+  color: var(--wu-color-ink-strong);
+  letter-spacing: -.035em;
+}
+
+.wu-v2-shell .page-intro,
+.wu-v2-shell .lead,
+.wu-v2-shell .text-muted {
+  color: var(--wu-color-muted) !important;
+}
+
+.wu-v2-shell a {
+  color: var(--wu-color-brand-strong);
+}
+
+.wu-v2-shell a:hover {
+  color: var(--wu-color-brand-deep);
 }
 
 /* --------------------------------------------------------------------------
-   AdSense-safe slots
+   Core writing workspace
+   -------------------------------------------------------------------------- */
+
+.wu-v2-shell .home-hero-meta span {
+  border-color: var(--wu-color-border);
+  color: var(--wu-color-ink-soft);
+  background: var(--wu-color-surface-soft);
+}
+
+.wu-v2-shell .home-hero-meta span:first-child {
+  border-color: #b9dfc8;
+  color: var(--wu-color-brand-strong);
+  background: var(--wu-color-brand-soft);
+}
+
+.wu-v2-shell .home-hero-cta {
+  border-color: var(--wu-color-border-strong);
+  color: var(--wu-color-ink-soft);
+  background: #fff;
+  box-shadow: var(--wu-shadow-xs);
+}
+
+.wu-v2-shell .home-hero-cta:hover,
+.wu-v2-shell .home-hero-cta:focus-visible {
+  border-color: #afd0bd;
+  color: var(--wu-color-brand-strong);
+  background: var(--wu-color-brand-softer);
+}
+
+.wu-v2-shell .home-hero-cta-primary {
+  border-color: var(--wu-color-brand-strong);
+  color: #fff !important;
+  background: var(--wu-color-brand-strong);
+}
+
+.wu-v2-shell .home-hero-cta-primary:hover,
+.wu-v2-shell .home-hero-cta-primary:focus-visible {
+  border-color: var(--wu-color-brand-deep);
+  color: #fff !important;
+  background: var(--wu-color-brand-deep);
+}
+
+.wu-v2-shell .home-hero-cta-tertiary {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.wu-v2-shell .home-actions,
+.wu-v2-shell .tool-actions,
+.wu-v2-shell .keyboard-actions,
+.wu-v2-shell .invoice-actions {
+  border-color: var(--wu-color-border);
+  background: #fff;
+  box-shadow: var(--wu-shadow-xs);
+}
+
+.wu-v2-shell .btn,
+.wu-v2-shell .home-actions summary,
+.wu-v2-shell .tool-actions summary,
+.wu-v2-shell .keyboard-actions summary,
+.wu-v2-shell .invoice-actions summary {
+  border-color: var(--wu-color-border-strong) !important;
+  color: var(--wu-color-ink-soft) !important;
+  background: #fff !important;
+}
+
+.wu-v2-shell .btn:hover,
+.wu-v2-shell .btn:focus-visible,
+.wu-v2-shell .home-actions summary:hover,
+.wu-v2-shell .home-actions summary:focus-visible,
+.wu-v2-shell .tool-actions summary:hover,
+.wu-v2-shell .tool-actions summary:focus-visible,
+.wu-v2-shell .keyboard-actions summary:hover,
+.wu-v2-shell .keyboard-actions summary:focus-visible,
+.wu-v2-shell .invoice-actions summary:hover,
+.wu-v2-shell .invoice-actions summary:focus-visible {
+  border-color: #aecfba !important;
+  color: var(--wu-color-brand-strong) !important;
+  background: var(--wu-color-brand-softer) !important;
+}
+
+.wu-v2-shell .btn-success,
+.wu-v2-shell .btn-primary,
+.wu-v2-shell .primary-action {
+  border-color: var(--wu-color-brand-strong) !important;
+  color: #fff !important;
+  background: var(--wu-color-brand-strong) !important;
+}
+
+.wu-v2-shell .btn-success:hover,
+.wu-v2-shell .btn-primary:hover,
+.wu-v2-shell .primary-action:hover,
+.wu-v2-shell .btn-success:focus-visible,
+.wu-v2-shell .btn-primary:focus-visible,
+.wu-v2-shell .primary-action:focus-visible {
+  border-color: var(--wu-color-brand-deep) !important;
+  color: #fff !important;
+  background: var(--wu-color-brand-deep) !important;
+}
+
+.wu-v2-shell .editor-chrome,
+.wu-v2-shell .input-mode-control,
+.wu-v2-shell .batch-transliteration-panel {
+  border-color: var(--wu-color-border);
+  color: var(--wu-color-muted);
+  background: var(--wu-color-surface-soft);
+}
+
+.wu-v2-shell #demo,
+.wu-v2-shell .tox.tox-tinymce,
+.wu-v2-shell .keyboard-page #write,
+.wu-v2-shell .keyboard-page #key1 {
+  border-color: var(--wu-color-border) !important;
+  background: #fff;
+  box-shadow: var(--wu-shadow-card) !important;
+}
+
+.wu-v2-shell #transliterateTextarea,
+.wu-v2-shell .keyboard-page #write {
+  color: var(--wu-color-ink);
+  background: #fff;
+}
+
+.wu-v2-shell #transliterateTextarea:focus,
+.wu-v2-shell .keyboard-page #write:focus {
+  box-shadow: inset 0 0 0 3px rgba(23, 114, 69, .16);
+}
+
+.wu-v2-shell .editor-productivity,
+.wu-v2-shell .editor-onboarding,
+.wu-v2-shell .editor-command-dialog,
+.wu-v2-shell .action-menu-panel,
+.wu-v2-shell .editor-tools-menu-panel {
+  border-color: var(--wu-color-border);
+  background: #fff;
+  box-shadow: var(--wu-shadow-card);
+}
+
+/* --------------------------------------------------------------------------
+   Cards and secondary product surfaces
+   -------------------------------------------------------------------------- */
+
+.wu-v2-shell .card,
+.wu-v2-shell .tool-promo-card,
+.wu-v2-shell .home-how-it-works-list li,
+.wu-v2-shell .docs-card,
+.wu-v2-shell .faq-item,
+.wu-v2-shell .template-card,
+.wu-v2-shell .sitemap-directory-card,
+.wu-v2-shell .visual-panel,
+.wu-v2-shell .trust-card,
+.wu-v2-shell .authority-card,
+.wu-v2-shell .guide-card {
+  border-color: var(--wu-color-border);
+  background: #fff;
+  box-shadow: var(--wu-shadow-xs);
+}
+
+.wu-v2-shell .card-title,
+.wu-v2-shell .tool-promo-card h3,
+.wu-v2-shell .home-how-it-works-list strong,
+.wu-v2-shell .docs-card h3,
+.wu-v2-shell .faq-item h2,
+.wu-v2-shell .template-card h3,
+.wu-v2-shell .sitemap-directory-card h3,
+.wu-v2-shell .visual-panel h2,
+.wu-v2-shell .trust-card h3,
+.wu-v2-shell .authority-card h2,
+.wu-v2-shell .guide-card h2 {
+  color: var(--wu-color-ink);
+}
+
+.wu-v2-shell .card-text,
+.wu-v2-shell .tool-promo-card p,
+.wu-v2-shell .home-how-it-works-list span,
+.wu-v2-shell .docs-card p,
+.wu-v2-shell .faq-item p,
+.wu-v2-shell .template-card p,
+.wu-v2-shell .sitemap-directory-card p,
+.wu-v2-shell .visual-panel p,
+.wu-v2-shell .trust-card p,
+.wu-v2-shell .authority-card p,
+.wu-v2-shell .guide-card p {
+  color: var(--wu-color-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Ads and monetization surfaces
    -------------------------------------------------------------------------- */
 
 .wu-v2-shell .wu-header-ad,
 .wu-v2-shell .wu-ad-region {
-  position: relative;
-  width: min(var(--wu-ad-max-width), calc(100% - 40px));
-  min-height: var(--wu-ad-min-height-desktop);
-  margin: clamp(28px, 4vw, 48px) auto;
-  padding: 30px 14px 14px;
-  overflow: hidden;
-  border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-xl);
-  background:
-    linear-gradient(135deg, rgb(21 147 77 / 2.5%), transparent 58%),
-    var(--wu-color-surface-soft);
-  box-shadow: var(--wu-shadow-xs);
-  text-align: center;
-  isolation: isolate;
+  border-color: var(--wu-color-border);
+  background: #fff;
 }
 
-.wu-v2-shell .wu-header-ad::before,
-.wu-v2-shell .wu-ad-region::before {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  width: 100%;
-  margin: 0;
+.wu-v2-shell .wu-ad-label {
   color: var(--wu-color-subtle);
-  content: "Advertisement";
-  font: var(--wu-weight-medium) .62rem/1 var(--wu-font-ui);
-  letter-spacing: .11em;
-  text-transform: uppercase;
-}
-
-.wu-v2-shell .wu-header-ad .adsbygoogle,
-.wu-v2-shell .wu-ad-region .adsbygoogle {
-  display: block !important;
-  width: 100% !important;
-  max-width: var(--wu-ad-max-width) !important;
-  min-height: 68px;
-  margin: 0 auto;
-}
-
-/* Ads never inherit action/button styling and always keep a visual buffer from
-   the protected writing or creation workspace. */
-.wu-v2-shell .wu-write-ad,
-.wu-v2-shell [data-wu-ad-placement="write_post_workspace"],
-.wu-v2-shell [data-wu-ad-placement="tool_post_workspace"] {
-  margin-top: clamp(34px, 5vw, 58px);
-}
-
-.wu-v2-shell .wu-ad-region a,
-.wu-v2-shell .wu-header-ad a {
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.wu-v2-shell[data-wu-monetization-type="trust"] .wu-header-ad,
-.wu-v2-shell[data-wu-monetization-type="trust"] .wu-ad-region {
-  display: none !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -626,9 +373,9 @@ html[lang="ur"] body.wu-v2-shell {
 
 .wu-v2-shell .wu-footer {
   margin-top: clamp(56px, 8vw, 92px);
-  color: var(--wu-color-muted) !important;
-  background: #fff !important;
-  border-top: 1px solid var(--wu-color-border);
+  color: var(--wu-v3-footer-muted) !important;
+  background: var(--wu-v3-footer-bg) !important;
+  border-top: 1px solid var(--wu-v3-footer-border);
   text-align: left;
 }
 
@@ -638,38 +385,42 @@ html[lang="ur"] body.wu-v2-shell {
 }
 
 .wu-v2-shell .wu-footer-brand {
-  color: var(--wu-color-ink) !important;
+  color: var(--wu-v3-footer-ink) !important;
 }
 
 .wu-v2-shell .wu-footer-brand img {
-  border: 1px solid #d5e5db;
+  border: 1px solid rgba(255, 255, 255, .2);
   background: #fff;
-  box-shadow: var(--wu-shadow-xs);
+  box-shadow: none;
 }
 
 .wu-v2-shell .wu-v2-footer-brand p,
 .wu-v2-shell .wu-footer,
-.wu-v2-shell .wu-footer span {
-  color: var(--wu-color-muted) !important;
+.wu-v2-shell .wu-footer span,
+.wu-v2-shell .wu-footer p {
+  color: var(--wu-v3-footer-muted) !important;
 }
 
-.wu-v2-shell .wu-footer-group h2 {
-  color: var(--wu-color-ink);
+.wu-v2-shell .wu-footer-group h2,
+.wu-v2-shell .wu-footer strong {
+  color: var(--wu-v3-footer-ink) !important;
 }
 
 .wu-v2-shell .wu-footer-group a,
 .wu-v2-shell .wu-footer a {
-  color: #526159 !important;
+  color: var(--wu-v3-footer-link) !important;
 }
 
 .wu-v2-shell .wu-footer-group a:hover,
-.wu-v2-shell .wu-footer a:hover {
-  color: var(--wu-color-brand-strong) !important;
+.wu-v2-shell .wu-footer-group a:focus-visible,
+.wu-v2-shell .wu-footer a:hover,
+.wu-v2-shell .wu-footer a:focus-visible {
+  color: var(--wu-v3-footer-link-hover) !important;
 }
 
 .wu-v2-shell .wu-v2-footer-status {
-  border-top-color: var(--wu-color-border);
-  color: var(--wu-color-subtle);
+  border-top-color: var(--wu-v3-footer-border);
+  color: var(--wu-v3-footer-muted) !important;
 }
 
 /* --------------------------------------------------------------------------
