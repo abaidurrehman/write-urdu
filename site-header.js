@@ -3,9 +3,9 @@
 
     // The preserved core still owns established shell behavior, including the
     // single AdSense loader guard script[src="js/ads.js"]. Slice D owns rendered
-    // taxonomy; Slice E owns contextual continuation on the four v2-ready
-    // Write/Fix workspaces. WU-PLAT-003 adds a low-risk convergence layer that
-    // makes the legacy core workspaces follow the newer task-first hierarchy.
+    // taxonomy; Slice E owns contextual continuation. Slice F extends that same
+    // governed runtime to successful Voice, Image-to-Text and InPage capture
+    // results. WU-PLAT-003 remains the low-risk core-workspace convergence layer.
 
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
@@ -37,7 +37,15 @@
     }
 
     function shouldLoadContextualNextSteps() {
-        return ['/', '/urdu-editor', '/urdu-keyboard', '/urdu-text-cleaner'].indexOf(normalizedPath()) >= 0;
+        return [
+            '/',
+            '/urdu-editor',
+            '/urdu-keyboard',
+            '/urdu-text-cleaner',
+            '/urdu-ocr',
+            '/tools/urdu-voice-typing',
+            '/tools/inpage-unicode-converter'
+        ].indexOf(normalizedPath()) >= 0;
     }
 
     function loadContextualNextSteps() {

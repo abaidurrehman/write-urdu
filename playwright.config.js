@@ -2,7 +2,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: ['site.spec.js', 'sua.spec.js', 'journey.spec.js', 'outcome-navigation.spec.js', 'workspace-next-step.spec.js', 'core-workspace-convergence.spec.js', 'v2-creation.spec.js', 'seo-acquisition.spec.js', 'role-journeys.spec.js', 'v3-visual-quality.spec.js', 'inpage.spec.js'],
+  testMatch: ['site.spec.js', 'sua.spec.js', 'journey.spec.js', 'outcome-navigation.spec.js', 'workspace-next-step.spec.js', 'core-workspace-convergence.spec.js', 'capture-continuity.spec.js', 'v2-creation.spec.js', 'seo-acquisition.spec.js', 'role-journeys.spec.js', 'v3-visual-quality.spec.js', 'inpage.spec.js'],
   timeout: 45000,
   expect: { timeout: 10000 },
   fullyParallel: false,

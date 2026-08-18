@@ -12,15 +12,20 @@ const playwright = fs.readFileSync(path.join(root, 'playwright.config.js'), 'utf
 const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 
 assert.strictEqual(NextStep.MAX_VISIBLE, 3, 'Continue with must never expose more than three primary recommendations');
-assert.deepStrictEqual(NextStep.SHARED_WORKSPACES, ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'], 'Slice E shared-workspace ownership changed unexpectedly');
+assert.deepStrictEqual(
+  NextStep.SHARED_WORKSPACES,
+  ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner', 'image-to-urdu-text', 'voice-typing', 'inpage-converter'],
+  'Shared workspace ownership changed unexpectedly'
+);
+assert.deepStrictEqual(NextStep.CAPTURE_WORKSPACES, ['image-to-urdu-text', 'voice-typing', 'inpage-converter'], 'Slice F capture ownership changed unexpectedly');
 
 const modes = Registry.list({ status: 'current' }).map(workspace => [workspace.id, NextStep.classifyWorkspace(workspace)]);
 assert.ok(modes.every(([, mode]) => mode !== 'unavailable'), 'Every current workspace needs an intentional continuation or endpoint mode');
 assert.strictEqual(NextStep.classifyWorkspace(Registry.get('card-studio')), 'embedded-endpoint', 'Card Studio completion should remain embedded in its owning workspace');
 assert.strictEqual(NextStep.classifyWorkspace(Registry.get('invoice')), 'embedded-endpoint', 'Invoice completion should remain embedded in its owning workspace');
-assert.strictEqual(NextStep.classifyWorkspace(Registry.get('image-to-urdu-text')), 'native-continuation', 'OCR should retain its current native result actions until Slice F');
-assert.strictEqual(NextStep.classifyWorkspace(Registry.get('voice-typing')), 'native-continuation', 'Voice should retain its current native result actions until Slice F');
-assert.strictEqual(NextStep.classifyWorkspace(Registry.get('inpage-converter')), 'native-continuation', 'InPage should retain its current native result actions until Slice F');
+assert.strictEqual(NextStep.classifyWorkspace(Registry.get('image-to-urdu-text')), 'shared-recommendations', 'Image-to-text should use shared result continuation in Slice F');
+assert.strictEqual(NextStep.classifyWorkspace(Registry.get('voice-typing')), 'shared-recommendations', 'Voice should use shared result continuation in Slice F');
+assert.strictEqual(NextStep.classifyWorkspace(Registry.get('inpage-converter')), 'shared-recommendations', 'InPage should use shared result continuation in Slice F');
 
 const emptyBasic = NextStep.buildModel('basic-writer', { hasContent: false });
 assert.strictEqual(emptyBasic.visible.length, 0, 'Empty writer must not show continuation actions before the user has work');
@@ -42,21 +47,24 @@ assert.match(runtime, /<details class=\"wu-continue-more\"><summary>More options
 assert.match(runtime, /data-wu-continuity-target/, 'Shared actions must reuse the established v2 continuity target contract');
 assert.match(runtime, /data-wu-journey-panel/, 'Shared panel must preserve the journey placement contract used by visual tests');
 assert.match(runtime, /panel\.hidden = model\.visible\.length === 0/, 'Panel must be result/content-aware');
-assert.match(runtime, /data-cleaner-continuity-actions/, 'Slice E must remove the retired duplicate Cleaner action row');
+assert.match(runtime, /data-cleaner-continuity-actions/, 'Shared runtime must remove the retired duplicate Cleaner action row');
+assert.match(runtime, /inPageProducesUnicode/, 'InPage shared continuation must distinguish Unicode from legacy output');
+assert.match(runtime, /watchOcrResult/, 'OCR shared continuation must handle asynchronous result completion');
 assert.doesNotMatch(css, /position\s*:\s*(?:fixed|sticky)/, 'Continue with panel must never interrupt authoring with fixed/sticky positioning');
 assert.match(css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/, 'Desktop panel should present at most three equal recommendations');
 assert.match(css, /@media\(max-width:520px\)/, 'Mobile continuation layout is missing');
 assert.match(header, /workspace-next-step\.js/, 'Shared shell must load contextual next steps on supported workspaces');
-assert.match(header, /\['\/', '\/urdu-editor', '\/urdu-keyboard', '\/urdu-text-cleaner'\]/, 'Slice E loader must remain scoped to the four v2-ready sources');
+['/urdu-ocr', '/tools/urdu-voice-typing', '/tools/inpage-unicode-converter'].forEach(route => assert.ok(header.includes(`'${route}'`), `${route} must load Slice F continuation dependencies`));
 
 const registryPos = header.indexOf("/js/workspace-journey-registry.js");
 const handoffPos = header.indexOf("/js/workspace-handoff.js");
 const continuityPos = header.indexOf("/js/core-continuity.js");
 const nextStepPos = header.indexOf("/js/workspace-next-step.js");
-assert.ok(registryPos >= 0 && handoffPos > registryPos && continuityPos > handoffPos && nextStepPos > continuityPos, 'Slice E dependencies must load registry → handoff → continuity → renderer');
+assert.ok(registryPos >= 0 && handoffPos > registryPos && continuityPos > handoffPos && nextStepPos > continuityPos, 'Shared dependencies must load registry → handoff → continuity → renderer');
 assert.match(playwright, /outcome-navigation\.spec\.js/, 'Slice D browser acceptance must be discoverable by Playwright');
 assert.match(playwright, /workspace-next-step\.spec\.js/, 'Slice E browser acceptance must be discoverable by Playwright');
-assert.match(sw, /js\/workspace-handoff\.js/, 'PWA shell must cache the v2 handoff dependency loaded by Slice E');
-assert.match(sw, /js\/core-continuity\.js/, 'PWA shell must cache the continuity dependency loaded by Slice E');
+assert.match(playwright, /capture-continuity\.spec\.js/, 'Slice F browser acceptance must be discoverable by Playwright');
+assert.match(sw, /js\/workspace-handoff\.js/, 'PWA shell must cache the v2 handoff dependency');
+assert.match(sw, /js\/core-continuity\.js/, 'PWA shell must cache the continuity dependency');
 
 console.log('Contextual workspace next-step contract passed.');
