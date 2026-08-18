@@ -258,6 +258,7 @@
         document.querySelectorAll('[data-write-urdu-share]').forEach(function (button) {
             if (button.dataset.wuShareTextOnlyLabelled) return;
             button.dataset.wuShareTextOnlyLabelled = 'true';
+            button.removeAttribute('data-wu-i18n-control');
             button.title = 'Share the Urdu text only without creating a public Write Urdu link';
             setActionLabel(button, 'Share text only', 'fas fa-share-alt');
         });
