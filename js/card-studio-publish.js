@@ -11,6 +11,7 @@
   var REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
   var telemetry = null;
   var publishButton = null;
+  var stepPublishButton = null;
   var manageButton = null;
   var dialog = null;
   var busy = false;
@@ -170,7 +171,7 @@
   }
 
   function confirmationDialog() {
-    var node = openDialog('<div class="wu-share-dialog-shell"><div class="wu-share-dialog-head"><div><h2>Publish this card as a public link?</h2><p>This creates a new Write-Urdu.com share page for this snapshot.</p></div><button class="wu-share-dialog-close" type="button" aria-label="Close" data-wu-share-close>×</button></div><div class="wu-share-public-card"><div class="wu-share-public-icon">WU</div><div><strong>Public to anyone with the link</strong><span>Your selected card image, Urdu text and enabled attribution are uploaded. Your other local drafts and project history stay in this browser.</span></div></div><ul class="wu-share-checks"><li>The hosted image gets a small Write-Urdu.com footer.</li><li>Download PNG and Share image only still do not create a public page.</li><li>You can delete this published link later from this browser.</li></ul><p class="wu-share-small">Do not publish confidential or private writing. Public share pages are unlisted and marked noindex, but the link can be forwarded.</p><div class="wu-share-dialog-actions"><button type="button" data-wu-share-close>Cancel</button><button class="primary" type="button" data-wu-share-confirm>Publish &amp; get link</button></div></div>');
+    var node = openDialog('<div class="wu-share-dialog-shell"><div class="wu-share-dialog-head"><div><h2>Publish this card as a public link?</h2><p>This creates a new Write-Urdu.com share page for this snapshot.</p></div><button class="wu-share-dialog-close" type="button" aria-label="Close" data-wu-share-close>×</button></div><div class="wu-share-public-card"><div class="wu-share-public-icon">WU</div><div><strong>Public to anyone with the link</strong><span>Your selected card image, Urdu text and enabled attribution are uploaded. Your other local drafts and project history stay in this browser.</span></div></div><ul class="wu-share-checks"><li>The hosted image always carries one small Write-Urdu.com mark.</li><li>Download PNG and Share image only still do not create a public page.</li><li>You can delete this published link later from this browser.</li></ul><p class="wu-share-small">Do not publish confidential or private writing. Public share pages are unlisted and marked noindex, but the link can be forwarded.</p><div class="wu-share-dialog-actions"><button type="button" data-wu-share-close>Cancel</button><button class="primary" type="button" data-wu-share-confirm>Publish &amp; get link</button></div></div>');
     node.querySelectorAll('[data-wu-share-close]').forEach(function (button) { button.addEventListener('click', closeDialog); });
     node.querySelector('[data-wu-share-confirm]').addEventListener('click', function () {
       acknowledgePublishing();
@@ -205,6 +206,9 @@
     await renderWait();
     var source = app.getCanvas();
     if (!source || !source.width || !source.height) throw new Error('Card preview is not ready yet.');
+
+    var current = app.getState && app.getState();
+    if (current && current.watermark && current.watermark.enabled) return canvasToPng(source);
 
     var output = document.createElement('canvas');
     output.width = source.width;
@@ -322,6 +326,11 @@
     });
   }
 
+  function setPublishBusy(value) {
+    if (publishButton) publishButton.disabled = value;
+    if (stepPublishButton) stepPublishButton.disabled = value;
+  }
+
   async function publishCurrent() {
     if (busy) return;
     var state = app.getState && app.getState();
@@ -332,7 +341,7 @@
       return;
     }
     busy = true;
-    if (publishButton) publishButton.disabled = true;
+    setPublishBusy(true);
     markReferredCreationStarted();
     track('share_publish_started', { tool: 'card_studio' });
     loadingDialog();
@@ -366,7 +375,7 @@
       errorDialog(error && error.message ? error.message : 'Publishing is temporarily unavailable. Please try again.');
     } finally {
       busy = false;
-      if (publishButton) publishButton.disabled = false;
+      setPublishBusy(false);
     }
   }
 
@@ -399,49 +408,96 @@
     });
   }
 
-  function setupUi() {
-    var group = root.querySelector('.card-studio-action-group-export .card-studio-action-group-buttons');
-    if (!group || group.querySelector('[data-card-action="publish"]')) return;
-    var label = root.querySelector('.card-studio-action-group-export .card-studio-action-group-label');
-    if (label) label.textContent = 'Export & share';
-    var imageShare = group.querySelector('[data-card-action="share"]');
+  function bindPublishButton(button, direct) {
+    if (!button || button.dataset.wuSharePublishBound) return;
+    button.dataset.wuSharePublishBound = 'true';
+    button.addEventListener('click', function () {
+      if (direct && publishButton && publishButton !== button) {
+        publishButton.click();
+        return;
+      }
+      if (hasAcknowledgedPublishing()) publishCurrent();
+      else confirmationDialog();
+    });
+  }
+
+  function normalizeLocalExportActions(container) {
+    if (!container) return;
+    var imageShare = container.querySelector('[data-card-action="share"]');
     if (imageShare) {
       imageShare.textContent = 'Share image only';
       imageShare.classList.remove('secondary');
       imageShare.classList.add('quiet');
       imageShare.title = 'Share the image file without creating a public Write Urdu link';
     }
-    var download = group.querySelector('[data-card-action="download"]');
+    var download = container.querySelector('[data-card-action="download"]');
     if (download) {
       download.classList.remove('primary');
       download.classList.add('secondary');
     }
-    publishButton = document.createElement('button');
-    publishButton.type = 'button';
-    publishButton.className = 'card-studio-button primary wu-share-publish-button';
-    publishButton.setAttribute('data-card-action', 'publish');
-    publishButton.textContent = 'Publish & Share';
-    group.appendChild(publishButton);
-    publishButton.addEventListener('click', function () {
-      if (hasAcknowledgedPublishing()) publishCurrent();
-      else confirmationDialog();
-    });
+  }
 
-    var help = document.createElement('div');
-    help.className = 'wu-share-help-row';
-    var note = document.createElement('span');
-    note.className = 'wu-share-publish-note';
-    note.textContent = 'Publishing uploads this card snapshot. Download and Share image only do not create a public page.';
-    var guide = document.createElement('a');
-    guide.href = '/how-to-share-urdu-writing-online';
-    guide.textContent = 'How public sharing works';
-    manageButton = document.createElement('button');
-    manageButton.type = 'button';
-    manageButton.className = 'wu-share-manage-trigger';
-    manageButton.textContent = 'Manage published links';
-    manageButton.addEventListener('click', manageDialog);
-    help.appendChild(note); help.appendChild(guide); help.appendChild(manageButton);
-    group.parentElement.appendChild(help);
+  function setupUi() {
+    var group = root.querySelector('.card-studio-action-group-export .card-studio-action-group-buttons');
+    if (!group) return;
+    var label = root.querySelector('.card-studio-action-group-export .card-studio-action-group-label');
+    if (label) label.textContent = 'Export & share';
+    normalizeLocalExportActions(group);
+
+    publishButton = group.querySelector('[data-card-action="publish"]');
+    if (!publishButton) {
+      publishButton = document.createElement('button');
+      publishButton.type = 'button';
+      publishButton.className = 'card-studio-button primary wu-share-publish-button';
+      publishButton.setAttribute('data-card-action', 'publish');
+      publishButton.textContent = 'Publish & Share';
+      group.appendChild(publishButton);
+    }
+    bindPublishButton(publishButton, false);
+
+    var help = group.parentElement.querySelector('.wu-share-help-row');
+    if (!help) {
+      help = document.createElement('div');
+      help.className = 'wu-share-help-row';
+      var note = document.createElement('span');
+      note.className = 'wu-share-publish-note';
+      note.textContent = 'Publishing creates a public Write-Urdu.com link. Download and Share image only stay local.';
+      var guide = document.createElement('a');
+      guide.href = '/how-to-share-urdu-writing-online';
+      guide.textContent = 'How public sharing works';
+      manageButton = document.createElement('button');
+      manageButton.type = 'button';
+      manageButton.className = 'wu-share-manage-trigger';
+      manageButton.textContent = 'Manage published links';
+      manageButton.addEventListener('click', manageDialog);
+      help.appendChild(note); help.appendChild(guide); help.appendChild(manageButton);
+      group.parentElement.appendChild(help);
+    } else {
+      manageButton = help.querySelector('.wu-share-manage-trigger');
+    }
+
+    var exportSection = root.querySelector('.card-studio-export-section');
+    var exportActions = exportSection && exportSection.querySelector('.card-studio-export-actions');
+    if (exportActions) {
+      normalizeLocalExportActions(exportActions);
+      stepPublishButton = exportActions.querySelector('[data-wu-share-step-publish]');
+      if (!stepPublishButton) {
+        stepPublishButton = document.createElement('button');
+        stepPublishButton.type = 'button';
+        stepPublishButton.className = 'card-studio-button primary wu-share-step-publish';
+        stepPublishButton.setAttribute('data-wu-share-step-publish', '');
+        stepPublishButton.innerHTML = '<span>Publish &amp; Share</span><small>Create a public Write-Urdu.com link</small>';
+        exportActions.insertBefore(stepPublishButton, exportActions.firstChild);
+      }
+      bindPublishButton(stepPublishButton, true);
+      var sectionNote = exportSection.querySelector('.wu-share-step-note');
+      if (!sectionNote) {
+        sectionNote = document.createElement('p');
+        sectionNote.className = 'wu-share-step-note';
+        sectionNote.innerHTML = '<strong>Best for social sharing:</strong> publish this snapshot to get a short link with the Urdu artwork as its social preview. <a href="/how-to-share-urdu-writing-online">How it works</a>';
+        exportActions.insertAdjacentElement('afterend', sectionNote);
+      }
+    }
     syncManageButton();
   }
 
