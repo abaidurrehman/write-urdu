@@ -47,19 +47,20 @@ html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-gr
 
 /* Footer follows the same outcome taxonomy while About remains a utility
    group rather than a fifth product category. Keep the shared footer dark:
-   several legacy pages still carry light-footer assumptions, so the taxonomy
-   layer owns explicit contrast until those source styles are retired. */
-body footer.wu-footer{color:#b9ccc1!important;background:#10281c!important;border-top-color:rgba(255,255,255,.14)!important}
-body footer.wu-footer .wu-footer-inner,body footer.wu-footer .wu-footer-nav{background:transparent!important}
-body footer.wu-footer .wu-footer-brand,body footer.wu-footer .wu-footer-group h2,body footer.wu-footer strong{color:#f4faf6!important}
-body footer.wu-footer p,body footer.wu-footer span,body footer.wu-footer .wu-v2-footer-status{color:#b9ccc1!important}
-body footer.wu-footer a,body footer.wu-footer .wu-footer-group a{color:#dce9e1!important}
-body footer.wu-footer a:hover,body footer.wu-footer a:focus-visible,body footer.wu-footer .wu-footer-group a:hover,body footer.wu-footer .wu-footer-group a:focus-visible{color:#fff!important}
-body footer.wu-footer .wu-v2-footer-status{border-top-color:rgba(255,255,255,.14)!important}
-body footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:repeat(5,minmax(0,1fr));gap:28px 26px}
-body footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"] .wu-footer-group a{line-height:1.4}
-@media(max-width:1100px){body footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:620px){body footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:420px){body footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:1fr}}
+   several legacy pages still carry light-footer assumptions, so this more
+   specific shell selector intentionally outranks the older V3 light-footer
+   rule while those source styles are retired. */
+body.wu-v2-shell footer.wu-footer{color:#b9ccc1!important;background:#10281c!important;border-top-color:rgba(255,255,255,.14)!important}
+body.wu-v2-shell footer.wu-footer .wu-footer-inner,body.wu-v2-shell footer.wu-footer .wu-footer-nav{background:transparent!important}
+body.wu-v2-shell footer.wu-footer .wu-footer-brand,body.wu-v2-shell footer.wu-footer .wu-footer-group h2,body.wu-v2-shell footer.wu-footer strong{color:#f4faf6!important}
+body.wu-v2-shell footer.wu-footer p,body.wu-v2-shell footer.wu-footer span,body.wu-v2-shell footer.wu-footer .wu-v2-footer-status{color:#b9ccc1!important}
+body.wu-v2-shell footer.wu-footer a,body.wu-v2-shell footer.wu-footer .wu-footer-group a{color:#dce9e1!important}
+body.wu-v2-shell footer.wu-footer a:hover,body.wu-v2-shell footer.wu-footer a:focus-visible,body.wu-v2-shell footer.wu-footer .wu-footer-group a:hover,body.wu-v2-shell footer.wu-footer .wu-footer-group a:focus-visible{color:#fff!important}
+body.wu-v2-shell footer.wu-footer .wu-v2-footer-status{border-top-color:rgba(255,255,255,.14)!important}
+body.wu-v2-shell footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:repeat(5,minmax(0,1fr));gap:28px 26px}
+body.wu-v2-shell footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"] .wu-footer-group a{line-height:1.4}
+@media(max-width:1100px){body.wu-v2-shell footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){body.wu-v2-shell footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){body.wu-v2-shell footer.wu-footer .wu-footer-nav[data-wu-outcome-footer="v2"]{grid-template-columns:1fr}}
 
 @media(prefers-reduced-motion:reduce){.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-icon{transition:none}}
