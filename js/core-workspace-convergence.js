@@ -112,13 +112,62 @@
         return Boolean(editor && String(editor.value || '').trim());
     }
 
+    function convertBasicMoreMenu(secondary) {
+        if (!secondary) return null;
+        var existing = secondary.querySelector('[data-wu-basic-more]');
+        if (existing) return existing;
+
+        var legacy = secondary.querySelector('details.action-menu');
+        if (!legacy) return null;
+        var legacyPanel = legacy.querySelector('.action-menu-panel.settings-panel');
+        if (!legacyPanel) return null;
+
+        var wrapper = root.document.createElement('div');
+        wrapper.className = 'wu-basic-more';
+        wrapper.setAttribute('data-wu-basic-more', '');
+
+        var toggle = root.document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'btn btn-quiet wu-basic-more-toggle';
+        toggle.setAttribute('data-wu-basic-more-toggle', '');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-controls', 'wuBasicMorePanel');
+        toggle.innerHTML = '<i class="fas fa-sliders-h" aria-hidden="true"></i> More';
+
+        var panel = root.document.createElement('div');
+        panel.id = 'wuBasicMorePanel';
+        panel.className = 'wu-basic-more-panel';
+        panel.setAttribute('data-wu-basic-more-panel', '');
+        panel.hidden = true;
+        while (legacyPanel.firstChild) panel.appendChild(legacyPanel.firstChild);
+
+        wrapper.appendChild(toggle);
+        wrapper.appendChild(panel);
+        legacy.replaceWith(wrapper);
+
+        toggle.addEventListener('click', function () {
+            var opening = panel.hidden;
+            panel.hidden = !opening;
+            toggle.setAttribute('aria-expanded', String(opening));
+            wrapper.classList.toggle('is-open', opening);
+        });
+        panel.addEventListener('click', function (event) {
+            if (!event.target.closest('[data-write-urdu-share]')) return;
+            panel.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+            wrapper.classList.remove('is-open');
+        });
+        return wrapper;
+    }
+
     function organizeBasicCompletionActions(actions) {
         if (!actions) return false;
         var secondary = actions.querySelector('.home-actions-group-secondary');
+        if (!secondary) return false;
+        var menu = convertBasicMoreMenu(secondary);
+        var panel = menu && menu.querySelector('[data-wu-basic-more-panel]');
         var share = actions.querySelector('[data-write-urdu-share]');
-        var menu = secondary && secondary.querySelector('details.action-menu');
-        var panel = menu && menu.querySelector('.action-menu-panel.settings-panel');
-        if (!secondary || !share || !menu || !panel) return false;
+        if (!menu || !panel || !share) return false;
 
         secondary.hidden = false;
         secondary.removeAttribute('hidden');
@@ -245,7 +294,6 @@
         var writeEyebrow = write.querySelector('.sitemap-directory-eyebrow');
         if (writeEyebrow) writeEyebrow.textContent = 'Write';
 
-        // Work becomes step 03; Learn moves to 04. About/support remains utility rather than product taxonomy.
         var learnStep = learn.querySelector('.sitemap-directory-step');
         if (learnStep) learnStep.textContent = '04';
         root.document.body.setAttribute('data-wu-taxonomy-synced', 'true');
@@ -293,7 +341,6 @@
         run();
         if (!root || !root.document) return;
         root.document.addEventListener('write-urdu:locale-changed', function () { root.setTimeout(run, 0); });
-        // Outcome navigation can be rebuilt by the shared shell during startup.
         root.setTimeout(enhanceGlobalLabels, 100);
         root.setTimeout(enhanceGlobalLabels, 800);
     }
@@ -315,6 +362,7 @@
         convergeSitemap: convergeSitemap,
         convergeDocumentation: convergeDocumentation,
         enhanceGlobalLabels: enhanceGlobalLabels,
+        convertBasicMoreMenu: convertBasicMoreMenu,
         organizeBasicCompletionActions: organizeBasicCompletionActions,
         removeLegacyTrustChrome: removeLegacyTrustChrome,
         removePrematureCoreChrome: removePrematureCoreChrome
