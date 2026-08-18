@@ -126,7 +126,8 @@
 
     function renderItem(item, lang) {
         var isActive = active(item);
-        return '<a class="wu-outcome-link" href="' + item.href + '"' + (isActive ? ' aria-current="page" class="wu-outcome-link is-active"' : '') + '>' +
+        var className = 'wu-outcome-link' + (isActive ? ' is-active' : '');
+        return '<a class="' + className + '" href="' + item.href + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
             icon(item.icon) +
             '<span class="wu-outcome-link-copy"><strong>' + item.label[lang] + '</strong><small>' + item.tool[lang] + '</small></span>' +
         '</a>';
