@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v16';
+const CACHE_NAME = 'write-urdu-shell-v17';
 const APP_SHELL = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const APP_SHELL = [
   './roman-urdu-transliteration.html',
   './urdu-fonts-nastaliq-vs-naskh.html',
   './css/site-header.css',
+  './css/outcome-navigation.css',
   './css/editor-tools.css',
   './css/input-mode.css',
   './css/modern-home.css',
@@ -49,6 +50,8 @@ const APP_SHELL = [
   './assets/templates/business.svg',
   './assets/templates/events.svg',
   './site-header.js',
+  './js/site-header-core.js',
+  './js/outcome-navigation.js',
   './js/site-runtime.js',
   './js/editor-tools.js',
   './js/input-mode.js',
