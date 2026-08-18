@@ -220,34 +220,41 @@
         control.innerHTML = (iconClass ? '<i class="' + iconClass + '" aria-hidden="true"></i> ' : '') + label;
     }
 
-    function createPrimaryShareButton(path) {
+    function createHeaderShareButton(attempt) {
         var existing = document.querySelector('[data-wu-authoring-share-primary]');
         if (existing) return existing;
-
-        var mount = path === '/' ? document.querySelector('.home-actions') : document.querySelector('.tool-actions');
-        if (!mount) return null;
-        var before = null;
-        if (path === '/') before = mount.querySelector('.home-actions-group-export');
-        else if (path === '/urdu-editor') before = mount.querySelector('.home-actions-group-export');
-        else if (path === '/urdu-keyboard') before = mount.querySelector('[data-write-urdu-share]');
-
+        var header = document.querySelector('.wu-header-inner');
+        if (!header) {
+            if ((attempt || 0) < 20) window.setTimeout(function () { createHeaderShareButton((attempt || 0) + 1); bindCreateCardActions(); }, 50);
+            return null;
+        }
         var button = document.createElement('button');
         button.type = 'button';
-        button.className = 'btn btn-success btn-sm wu-authoring-share-primary';
+        button.className = 'wu-authoring-share-primary';
         button.setAttribute('data-wu-authoring-share-primary', '');
         button.setAttribute('data-create-card', '');
         button.setAttribute('data-editor-source', sourceName());
+        button.setAttribute('aria-label', 'Create and share this Urdu');
         button.title = 'Create a visual from this Urdu, then publish a Write-Urdu.com share link';
-        setActionLabel(button, 'Create & Share', 'fas fa-share-square');
-        mount.insertBefore(button, before || mount.firstElementChild || null);
+        button.innerHTML = '<span class="wu-authoring-share-icon" aria-hidden="true">↗</span><span class="wu-authoring-share-label">Create &amp; Share</span><span class="wu-authoring-share-label-mobile">Share</span>';
+        var language = header.querySelector('.wu-language-toggle');
+        header.insertBefore(button, language || null);
         return button;
+    }
+
+    function bindCreateCardActions() {
+        document.querySelectorAll('[data-create-card]').forEach(function (button) {
+            if (button.dataset.createCardBound) return;
+            button.dataset.createCardBound = 'true';
+            button.addEventListener('click', function () { openDestination('card', button); });
+        });
     }
 
     function promoteAuthoringShareAction() {
         var path = normalizePath();
         if (!['/', '/urdu-editor', '/urdu-keyboard'].includes(path)) return;
         ensureStylesheet();
-        createPrimaryShareButton(path);
+        createHeaderShareButton(0);
         document.querySelectorAll('[data-write-urdu-share]').forEach(function (button) {
             if (button.dataset.wuShareTextOnlyLabelled) return;
             button.dataset.wuShareTextOnlyLabelled = 'true';
@@ -284,11 +291,7 @@
         renderJourneyPanel();
         promoteAuthoringShareAction();
         bindRichEditorActions();
-        document.querySelectorAll('[data-create-card]').forEach(function (button) {
-            if (button.dataset.createCardBound) return;
-            button.dataset.createCardBound = 'true';
-            button.addEventListener('click', function () { openDestination('card', button); });
-        });
+        bindCreateCardActions();
         document.querySelectorAll('[data-create-stylish]').forEach(function (button) {
             if (button.dataset.createStylishBound) return;
             button.dataset.createStylishBound = 'true';
