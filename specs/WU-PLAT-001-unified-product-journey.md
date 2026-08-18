@@ -1,10 +1,11 @@
 # Write Urdu unified product journey
 
 **Feature ID:** `WU-PLAT-001`  
-**Version:** 1.3  
-**Status:** Implemented — P0 homepage journey  
+**Version:** 1.4  
+**Status:** Implemented — P0 homepage journey foundation  
 **Primary route:** `/`  
-**Related routes:** `/urdu-editor`, `/urdu-card-studio`, `/urdu-templates`, `/urdu-invoice-generator`
+**Related routes:** `/urdu-editor`, `/urdu-card-studio`, `/urdu-templates`, `/urdu-invoice-generator`  
+**Successor:** `WU-PLAT-002` — V2 Product Journey & Workspace Handoffs
 
 ## Objective
 
@@ -12,6 +13,10 @@ Make Roman Urdu to Urdu-script conversion the obvious first task while keeping t
 Card Studio, Template Library, Invoice Generator and Rich Editor useful as
 standalone destinations. The homepage should explain the conversion flow above
 the fold and provide clear, secondary paths into the other tools.
+
+`WU-PLAT-001` remains the implemented acquisition/homepage foundation. The expanded
+sitewide outcome taxonomy, shared handoff runtime, contextual next-step system and
+new-tool continuity are governed by `WU-PLAT-002` rather than reopening this spec.
 
 ## Product contract
 
@@ -27,19 +32,27 @@ the fold and provide clear, secondary paths into the other tools.
 
 ## Scope
 
-### P0
+### P0 — implemented
 
 - Search-intent-first homepage hero and calls to action.
 - A concise “How it works” section near the editor.
 - Visible secondary links for Card Studio, Templates, Invoice and Rich Editor.
 - Preserve Roman Urdu default and existing inline/bulk transliteration behavior.
 
-### P1/P2 follow-up
+### Follow-up ownership
 
-- Align shared navigation labels to Write, Design, Invoice, Learn and Support
-  without hiding existing crawlable destinations.
-- Add richer onboarding and mobile-specific guidance after the P0 journey is
-  validated.
+The former follow-up to align shared navigation and add richer cross-tool/mobile
+journeys is superseded by `WU-PLAT-002`. Do not implement the old provisional
+`Write / Design / Invoice / Learn / Support` taxonomy from this historical spec.
+
+`WU-PLAT-002` owns the approved V2 model:
+
+- `Write / Create / Work / Learn` outcome-led information architecture;
+- contextual `Continue with…` progression;
+- shared workspace handoff/capability contracts;
+- new Capture/Fix tool integration;
+- content-preservation/recovery rules;
+- mobile and accessibility continuity.
 
 ## Acceptance criteria
 
