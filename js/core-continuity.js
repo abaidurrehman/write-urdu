@@ -8,6 +8,7 @@
 
     var DRAFT_PREFIX = 'write-urdu:draft:v1:';
     var HISTORY_PREFIX = 'write-urdu:history:v1:';
+    var LEGACY_QR_KEY = 'writeUrdu.qrGenerator.incoming';
     var MAX_HISTORY = 5;
     var CORE_SOURCES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'];
 
@@ -176,6 +177,22 @@
         node.className = 'app-notifications is-visible ' + (type === 'error' ? 'is-error' : 'is-success');
     }
 
+    function mirrorQrLegacy(envelope) {
+        if (!envelope || !envelope.payload || typeof envelope.payload.text !== 'string') return false;
+        try {
+            root.sessionStorage.setItem(LEGACY_QR_KEY, JSON.stringify({
+                version: 1,
+                type: 'text',
+                text: envelope.payload.text,
+                source: envelope.source && envelope.source.workspace || 'workspace',
+                createdAt: new Date(envelope.createdAt).toISOString()
+            }));
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
     function transfer(targetWorkspace) {
         var sourceWorkspace = workspaceId();
         if (!sourceWorkspace || CORE_SOURCES.indexOf(sourceWorkspace) < 0) return false;
@@ -201,6 +218,11 @@
         });
         if (!result || !result.ok) {
             notify('This browser could not move your text safely. Copy it before opening the next tool.', 'error');
+            return false;
+        }
+        if (targetWorkspace === 'qr-generator' && !mirrorQrLegacy(result.envelope)) {
+            if (Handoff && typeof Handoff.discard === 'function') Handoff.discard(targetWorkspace);
+            notify('This browser could not prepare the QR handoff. Copy your text before opening the QR tool.', 'error');
             return false;
         }
         return navigate(result.route || route);
@@ -286,6 +308,7 @@
         currentPlainText: currentPlainText,
         preserveSourceDraft: preserveSourceDraft,
         targetForControl: targetForControl,
+        mirrorQrLegacy: mirrorQrLegacy,
         transfer: transfer,
         installKeyboardQrAction: installKeyboardQrAction,
         installCleanerActions: installCleanerActions
