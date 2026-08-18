@@ -17,6 +17,8 @@ const events = read('functions', 'api', 'events.js');
 const cardPublish = read('js', 'card-studio-publish.js');
 const cardUi = read('js', 'card-studio-ui.js');
 const shareClient = read('js', 'share-page.js');
+const shareCss = read('css', 'share-page.css');
+const journey = read('js', 'card-studio-entry.js');
 const guide = read('how-to-share-urdu-writing-online.html');
 const privacy = read('write-urdu-privacy.html');
 const sitemap = read('sitemap.xml');
@@ -64,17 +66,29 @@ assert.match(publicPage, /Use this text/, 'Public share must expose an explicit 
 assert.match(publicPage, /Report this shared page/, 'Public share must expose an abuse-report path');
 assert.doesNotMatch(publicPage, /adsbygoogle|googlesyndication|google_ad_client/i, 'User-generated share pages must remain ad-free');
 assert.doesNotMatch(sitemap, /write-urdu\.com\/s\//, 'Individual user-generated share pages must never enter the XML sitemap');
+assert.match(publicPage, /<article class="share-card"[\s\S]*<aside class="share-panel"/, 'Shared artwork must come before continuation actions in the document flow');
+assert.match(publicPage, /share-button primary[^>]*data-share-use-text/, 'Use this text must be the primary recipient continuation action');
+assert.doesNotMatch(shareCss, /\.share-panel\{[^}]*order:-1/, 'Mobile share layout must not move actions ahead of the shared artwork');
 
 // Card Studio retains local export while adding an explicit public-publish boundary.
 assert.match(cardUi, /card-studio-publish\.js/, 'Card Studio guided UI must load the isolated publish layer');
 assert.match(cardPublish, /Publish & Share/, 'Card Studio must have an explicit public publishing action');
+assert.match(cardPublish, /data-wu-share-step-publish/, 'Card Studio Step 4 must expose its own primary Publish & Share entry point');
+assert.match(cardPublish, /Create a public Write-Urdu\.com link/, 'Step 4 publishing action must explain what it creates');
 assert.match(cardPublish, /Share image only/, 'Existing file-only sharing must remain visibly distinct from publishing');
 assert.match(cardPublish, /Download PNG/, 'Publish explanation must preserve the local download concept');
 assert.match(cardPublish, /Public to anyone with the link/, 'First publish must communicate the public boundary');
 assert.match(cardPublish, /Your other local drafts and project history stay in this browser/, 'Publish confirmation must protect the local-first contract');
+assert.match(cardPublish, /current && current\.watermark && current\.watermark\.enabled/, 'Publishing must avoid adding a second Write Urdu mark when the card already has one');
 assert.match(cardPublish, /Write-Urdu\.com/, 'Hosted publish image must carry restrained Write Urdu provenance');
 assert.match(cardPublish, /writeUrdu\.shareManagement\.v1/, 'Management tokens must be retained locally for later deletion');
 assert.match(cardPublish, /\/api\/shares/, 'Card Studio must publish through the first-party share API');
+
+// Sharing must be discoverable from the real writing workspaces, with the local handoff preserved.
+assert.match(journey, /Create &amp; share this Urdu/, 'Core writing workspaces must promote Create & Share as a primary next step');
+assert.match(journey, /class="wu-next-journey-action is-primary is-share"/, 'Create & Share must be visually primary in the writing journey');
+assert.match(journey, /data-create-card/, 'Create & Share must reuse the privacy-safe Card Studio text handoff');
+assert.match(journey, /public link is created only when you explicitly choose Publish &amp; Share/, 'Editor discovery copy must preserve the explicit-publication boundary');
 
 // Recipient continuation must not put text or share IDs in destination URLs.
 assert.match(shareClient, /writeUrdu\.shareReferral\.v1/, 'Recipient continuation must use short-lived first-party referral context');
