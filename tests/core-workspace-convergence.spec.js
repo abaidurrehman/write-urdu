@@ -24,7 +24,7 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
 
   const editor = page.locator('#transliterateTextarea');
   const surface = page.locator('[data-wu-basic-command-surface]');
-  const toolbar = page.locator('[data-wu-basic-command-toolbar]');
+  const toolbar = page.locator('.home-actions[data-wu-basic-command-toolbar]');
   const share = toolbar.locator('[data-wu-command-action="share"]');
   const copy = toolbar.locator('[data-wu-command-action="copy"]');
   const clear = toolbar.locator('[data-wu-command-action="clear"]');
