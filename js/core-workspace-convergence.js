@@ -8,6 +8,10 @@
 
     var CORE_ROUTES = ['/', '/urdu-keyboard', '/urdu-editor'];
     var LEGACY_TRUST_SELECTORS = ['#fb-root', '.fb-like', '.twitter-follow-button', '.fb-comments'];
+    var PREMATURE_CORE_SELECTORS = ['[data-wu-authoring-share-primary]'];
+    var CLEANUP_GUARD_MS = 6000;
+    var cleanupObserver = null;
+    var cleanupTimer = null;
     var USER_FIRST_LABELS = {
         cleaner: 'Fix broken or badly formatted Urdu text',
         image: 'Turn an Urdu screenshot or photo into editable text'
@@ -42,16 +46,42 @@
         root.document.head.appendChild(link);
     }
 
-    function removeLegacyTrustChrome() {
+    function removeSelectors(selectors) {
         if (!root || !root.document) return 0;
         var removed = 0;
-        LEGACY_TRUST_SELECTORS.forEach(function (selector) {
+        selectors.forEach(function (selector) {
             root.document.querySelectorAll(selector).forEach(function (node) {
                 node.remove();
                 removed += 1;
             });
         });
         return removed;
+    }
+
+    function removeLegacyTrustChrome() {
+        return removeSelectors(LEGACY_TRUST_SELECTORS);
+    }
+
+    function removePrematureCoreChrome() {
+        if (!coreWorkspace(currentRoute())) return 0;
+        return removeSelectors(PREMATURE_CORE_SELECTORS);
+    }
+
+    function cleanupCoreChrome() {
+        removeLegacyTrustChrome();
+        removePrematureCoreChrome();
+    }
+
+    function startCleanupGuard() {
+        if (!root || !root.document || !root.MutationObserver || cleanupObserver || !coreWorkspace(currentRoute())) return;
+        cleanupObserver = new root.MutationObserver(cleanupCoreChrome);
+        cleanupObserver.observe(root.document.documentElement, { childList: true, subtree: true });
+        cleanupTimer = root.setTimeout(function () {
+            if (cleanupObserver) cleanupObserver.disconnect();
+            cleanupObserver = null;
+            cleanupTimer = null;
+            cleanupCoreChrome();
+        }, CLEANUP_GUARD_MS);
     }
 
     function setOutcomeLabel(href, label, technicalLabel) {
@@ -86,17 +116,20 @@
         if (!root || !root.document || currentRoute() !== '/') return false;
         var actions = root.document.querySelector('.home-actions');
         if (!actions) return false;
-        var createGroup = actions.querySelector('.home-actions-group-create');
-        if (createGroup) {
-            createGroup.hidden = true;
-            createGroup.setAttribute('aria-hidden', 'true');
-            createGroup.setAttribute('data-wu-retired-premature-actions', 'true');
-        }
         var hasContent = basicHasContent();
         actions.hidden = !hasContent;
         actions.setAttribute('aria-hidden', hasContent ? 'false' : 'true');
         actions.setAttribute('data-wu-core-actionbar', 'post-editor');
         return hasContent;
+    }
+
+    function retireBasicCreateGroup(actions) {
+        if (!actions) return false;
+        var createGroup = actions.querySelector('.home-actions-group-create');
+        if (!createGroup) return false;
+        createGroup.setAttribute('data-wu-retired-premature-actions', 'true');
+        createGroup.remove();
+        return true;
     }
 
     function convergeBasicWriter() {
@@ -115,8 +148,7 @@
         root.document.body.setAttribute('data-wu-core-workspace', 'basic');
         root.document.body.setAttribute('data-wu-canvas-first', 'true');
 
-        var createGroup = actions.querySelector('.home-actions-group-create');
-        if (createGroup) createGroup.hidden = true;
+        retireBasicCreateGroup(actions);
         syncBasicActions();
 
         if (editor.getAttribute('data-wu-convergence-bound') !== 'true') {
@@ -132,6 +164,7 @@
         if (!kind) return;
         root.document.body.setAttribute('data-wu-core-workspace', kind);
         root.document.body.setAttribute('data-wu-legacy-social-retired', 'true');
+        root.document.body.setAttribute('data-wu-premature-header-action-retired', 'true');
     }
 
     function findCardByHref(container, href) {
@@ -222,7 +255,8 @@
         if (!root || !root.document) return false;
         ensureStyles();
         markCoreWorkspace();
-        removeLegacyTrustChrome();
+        cleanupCoreChrome();
+        startCleanupGuard();
         enhanceGlobalLabels();
         convergeBasicWriter();
         convergeSitemap();
@@ -247,6 +281,7 @@
     return {
         CORE_ROUTES: CORE_ROUTES.slice(),
         LEGACY_TRUST_SELECTORS: LEGACY_TRUST_SELECTORS.slice(),
+        PREMATURE_CORE_SELECTORS: PREMATURE_CORE_SELECTORS.slice(),
         USER_FIRST_LABELS: Object.assign({}, USER_FIRST_LABELS),
         normalizeRoute: normalizeRoute,
         coreWorkspace: coreWorkspace,
@@ -255,6 +290,7 @@
         convergeSitemap: convergeSitemap,
         convergeDocumentation: convergeDocumentation,
         enhanceGlobalLabels: enhanceGlobalLabels,
-        removeLegacyTrustChrome: removeLegacyTrustChrome
+        removeLegacyTrustChrome: removeLegacyTrustChrome,
+        removePrematureCoreChrome: removePrematureCoreChrome
     };
 }));
