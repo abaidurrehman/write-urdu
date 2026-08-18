@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Product & Spec Backlog
 
 **Status:** Active  
-**Last updated:** 2026-08-17  
+**Last updated:** 2026-08-18  
 **Purpose:** One source of truth for priority, sequence and product state.
 
 This file owns **priority and sequence**. Individual feature specs own detailed behaviour and acceptance criteria. `specs/README.md` is the feature registry. `docs/WU-I001-IMPLEMENTATION-TRACKER.md` records v2 migration execution. Supporting SEO/audit documents provide evidence but do not own roadmap priority.
@@ -171,6 +171,30 @@ Turn finished Urdu creations into short branded public links such as `write-urdu
 
 **Release gate:** do not mark the feature released if production publishing works but share-loop telemetry/Product Pulse reporting does not. Measurement is part of the feature, not a later analytics task.
 
+## P0.7 — `WU-PLAT-002` V2 Product Journey & Workspace Handoffs
+
+**Type:** Product architecture / information architecture / continuity  
+**Spec:** `specs/WU-PLAT-002-v2-product-journey-workspace-handoffs.md`  
+**Research:** `docs/WU-V2-PRODUCT-JOURNEY-UX-RESEARCH-2026-08-18.md`  
+**Status:** Active — approved P0 initiative.
+
+Turn the expanded WriteUrdu product into one continuous user journey instead of exposing a growing directory of implementation-named tools. This is the successor layer above the completed P0.5 tactical links/handoffs; it does not reopen completed renderer or role-workspace work.
+
+- [ ] Replace tool-first global navigation with stable outcome groups: **Write / Create / Work / Learn** while preserving established URLs and SEO owners.
+- [ ] Keep `My drafts` in the account/continuity utility area rather than making it a fifth content category.
+- [ ] Register every current interactive workspace with input/output, persistence, natural-next-step and conflict/recovery contracts.
+- [ ] Register approved new tools (Cleaner, OCR, Voice, InPage and later Hindi R&D) in the same journey architecture before they ship as standalone destinations.
+- [ ] Consolidate new cross-workspace transfers behind one shared handoff API/registry while preserving the current 30-minute browser-session/privacy contract.
+- [ ] Implement core continuity: Basic/Keyboard/Rich/Cleaner → relevant Rich/Card/QR destinations without manual copy/paste.
+- [ ] Make `Continue with…` contextual, capped at three visible actions and positioned after the active task/result boundary.
+- [ ] Preserve target work before compatible imports; provide consistent accessible acknowledgement/recovery feedback.
+- [ ] Keep transformations and embedded capabilities distinct from navigation handoffs — especially Invoice payment QR and Card/social completion actions.
+- [ ] Integrate Templates, public-share seeds and future My Drafts through the same workspace-ownership model without creating a universal project database.
+- [ ] Validate desktop + Pixel 5 role flows, accessibility, SEO, AdSense boundaries and privacy-safe journey telemetry.
+- [ ] Run task-finding/IA validation and end-to-end continuity usability checks before closing P0.
+
+**Decision rule:** do not add a new tool to primary navigation or another destination-specific handoff key merely because the capability exists. Every new surface must first answer which user job it owns, which stage it participates in, what it accepts/produces and what the next natural action is.
+
 ---
 
 # NEXT — P1
@@ -318,6 +342,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 | `WU-GROWTH-001` | Active | P0 commercial control plane; runtime AdSense normalization/restoration shipped, Authority Map awaits detailed exports |
 | `WU-SHARE-001` | Planned | P0.6 product-led distribution; Card Studio Phase 1 with release-blocking telemetry, then main editor expansion |
 | `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
+| `WU-PLAT-002` | Active | P0.7 outcome-led IA + shared workspace continuity; governs new-tool journey integration |
 | `WU-CS-UX-001` | Implemented | Card Studio behavior complete; v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Implemented | Card Studio empty-state behavior retained through v2 migration |
 | `WU-SM-001` | Implemented core | v2 migration P1 |
@@ -338,7 +363,8 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 ## Current queue
 
 **Completed product implementation:** P1.4 Card Studio + Templates v2 creation migration in PR #20.  
-**Next product implementation:** P0.6 `WU-SHARE-001` Phase 1 — generic share-artifact foundation + Card Studio Publish & Share with metrics from day one.  
+**Next product-architecture implementation:** P0.7 `WU-PLAT-002` Slice A/B — workspace registry + shared handoff runtime before adding more destination-specific seams.  
+**Parallel P0 distribution work:** P0.6 `WU-SHARE-001` remains approved; its public-to-local continuation should integrate with the new workspace-ownership contract rather than invent a separate journey model.  
 **Following product implementation:** continue P1.4 with Stylish Urdu Text + Name Art while preserving the complete `WU-SUA-001` acceptance contract.  
 **Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
 **Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.
