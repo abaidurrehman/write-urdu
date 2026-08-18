@@ -9,7 +9,7 @@ async function open(page, route) {
   await page.waitForFunction(() => Boolean(window.WriteUrduWorkspaceNextStep), null, { timeout: 10000 });
 }
 
-test('Basic Writer reveals three registry-priority continuations only after content exists', async ({ page }) => {
+test('Basic Writer reveals three primary continuations and keeps Templates in More options', async ({ page }) => {
   await open(page, '/');
   const panel = page.locator('[data-wu-next-step-version="2"]');
   await expect(panel).toBeAttached();
@@ -22,8 +22,15 @@ test('Basic Writer reveals three registry-priority continuations only after cont
   await expect(panel.locator('[data-wu-next-step-action="basic-to-card"] strong')).toHaveText('Create a card with this text');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-qr"] strong')).toHaveText('Make a QR code from this text');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-rich"]')).toHaveAttribute('href', '/urdu-editor');
-  await expect(panel.locator('.wu-continue-more')).toHaveCount(0);
-  await expect(panel.locator('[data-create-stylish],[data-create-name-art],[data-wu-journey="write-to-templates"]')).toHaveCount(0);
+
+  const more = panel.locator('.wu-continue-more');
+  await expect(more).toHaveCount(1);
+  await expect(more.locator('summary')).toHaveText('More options');
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeHidden();
+  await more.locator('summary').click();
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"] strong')).toHaveText('Start from a template');
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeVisible();
+  await expect(panel.locator('[data-create-stylish],[data-create-name-art]')).toHaveCount(0);
   expect(await page.evaluate(() => getComputedStyle(document.querySelector('[data-wu-next-step-version="2"]')).position)).not.toMatch(/fixed|sticky/);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
