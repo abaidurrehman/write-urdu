@@ -73,7 +73,8 @@ Examples include RTL/Unicode/OCR wording in primary selection UI.
 
 - move the generic Basic Writer action bar below the writing canvas;
 - keep it hidden while the draft is empty;
-- retain Copy / Export / Share / local editor options after text exists;
+- keep **Copy** and **Export** immediately available after text exists;
+- keep text sharing available under the compact **More** menu rather than as another equal-weight action;
 - retire the pre-writing Create group from the generic toolbar;
 - use `Continue with…` for Rich Editor / Card Studio / QR;
 - do not change transliteration, export implementation or canonical metadata.
@@ -81,7 +82,7 @@ Examples include RTL/Unicode/OCR wording in primary selection UI.
 ### Slice B — Legacy trust-chrome retirement — **user-visible portion in implementation**
 
 - remove Facebook like/comments and Twitter-follow chrome from core workspaces;
-- keep the user-owned share action;
+- keep the user-owned text share action under the Basic Writer completion menu;
 - follow with source/network cleanup of obsolete SDK/analytics-era markup in Basic/Keyboard/Rich once each page is structurally migrated.
 
 ### Slice C — Taxonomy propagation — **visible portion in implementation**
@@ -133,7 +134,7 @@ Examples include RTL/Unicode/OCR wording in primary selection UI.
 1. On `/`, the writing textarea is above the generic output action bar in document order after runtime convergence.
 2. The generic action bar is hidden for an empty Basic Writer and appears after text exists.
 3. Templates, Invoice, Card and QR are not exposed in the generic Basic Writer toolbar; Card/QR/Rich remain available through `Continue with…`.
-4. Copy, Export and Share remain available after content exists.
+4. Copy and Export are immediately available after content exists; text sharing remains reachable through `More` without becoming another primary button.
 5. The homepage canonical/title/transliteration behavior is unchanged.
 6. Facebook like/comments and Twitter follow controls are not visible on Basic Writer, Keyboard or Rich Editor.
 7. Global user-facing navigation describes Text Cleaner as fixing broken/badly formatted Urdu text, with technical identity secondary.
