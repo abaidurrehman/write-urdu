@@ -63,6 +63,7 @@ assert.match(publicPage, /\/share-media\/\$\{id\}/, 'Social metadata must use co
 assert.match(publicPage, /data-share-public-text/, 'Published Urdu must remain real selectable HTML text');
 assert.match(publicPage, /Create your own Urdu design/, 'Public share must expose a creation CTA');
 assert.match(publicPage, /Use this text/, 'Public share must expose an explicit public-text continuation action');
+assert.match(publicPage, /Make QR for this link/, 'Public share must expose a QR continuation action');
 assert.match(publicPage, /Report this shared page/, 'Public share must expose an abuse-report path');
 assert.doesNotMatch(publicPage, /adsbygoogle|googlesyndication|google_ad_client/i, 'User-generated share pages must remain ad-free');
 assert.doesNotMatch(sitemap, /write-urdu\.com\/s\//, 'Individual user-generated share pages must never enter the XML sitemap');
@@ -90,10 +91,15 @@ assert.match(journey, /class="wu-next-journey-action is-primary is-share"/, 'Cre
 assert.match(journey, /data-create-card/, 'Create & Share must reuse the privacy-safe Card Studio text handoff');
 assert.match(journey, /public link is created only when you explicitly choose Publish &amp; Share/, 'Editor discovery copy must preserve the explicit-publication boundary');
 
-// Recipient continuation must not put text or share IDs in destination URLs.
-assert.match(shareClient, /writeUrdu\.shareReferral\.v1/, 'Recipient continuation must use short-lived first-party referral context');
-assert.match(shareClient, /writeUrdu\.cardStudio\.incoming/, 'Public text handoff must use session storage');
-assert.match(shareClient, /JSON\.stringify\(\{ text: text \}\)/, 'Create/Use text must explicitly seed a fresh Card Studio handoff');
+// Recipient continuation must use the shared v2 session-local runtime and keep destination URLs clean.
+assert.match(shareClient, /writeUrdu\.shareReferral\.v1/, 'Recipient creation must retain short-lived first-party referral context');
+assert.match(shareClient, /Handoff\.transfer\(\{/, 'Recipient continuation must use the shared v2 handoff runtime');
+assert.match(shareClient, /sourceWorkspace: 'public-share'/, 'Recipient handoffs must identify the immutable public-share source');
+assert.match(shareClient, /kind: 'plain-text'/, 'Recipient continuation must carry only bounded plain text');
+assert.match(shareClient, /transfer\('basic-writer', 'share-to-basic'/, 'Use this text must continue into Basic Writer');
+assert.match(shareClient, /transfer\('card-studio', 'share-to-card'/, 'Create your own design must continue into Card Studio');
+assert.match(shareClient, /transfer\('qr-generator', 'share-to-qr'/, 'QR action must continue into QR Generator');
+assert.doesNotMatch(shareClient, /writeUrdu\.cardStudio\.incoming/, 'Public share must not couple directly to Card Studio legacy storage');
 assert.doesNotMatch(shareClient, /location\.href\s*=\s*[^;]*(?:text=|share=|origin_share_id)/, 'Recipient handoff must not leak text/share identity in the destination URL');
 
 // Anonymous telemetry normalizes the dynamic route before it reaches /api/events.
