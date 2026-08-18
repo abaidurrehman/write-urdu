@@ -43,45 +43,68 @@ body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
   margin-left: auto;
 }
 
-/* The legacy toolbar treated More as an overlay. Once the bar moves below the
-   editor that popover can be clipped by historical responsive overflow rules.
-   Expand the disclosure inline instead: secondary actions remain hidden until
-   requested, but are always reachable on desktop and mobile. */
-body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] {
-  flex: 1 1 100% !important;
-  width: min(100%, 360px) !important;
+body[data-wu-core-workspace="basic"] .wu-basic-more {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
 
-body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] > .settings-panel {
-  position: static !important;
-  inset: auto !important;
-  z-index: auto;
-  display: grid !important;
-  visibility: visible !important;
-  width: 100% !important;
-  max-height: none;
-  margin-top: 8px;
-  overflow: visible;
-  opacity: 1 !important;
-  box-shadow: none;
+body[data-wu-core-workspace="basic"] .wu-basic-more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] > .settings-panel .wu-more-share-action {
-  display: flex !important;
-  visibility: visible !important;
-  min-height: 40px;
+body[data-wu-core-workspace="basic"] .wu-basic-more.is-open {
+  flex: 1 1 100%;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel {
+  flex: 1 1 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
   width: 100%;
+  padding: 10px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: #fff;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel[hidden] {
+  display: none !important;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel label,
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel input {
+  width: 100%;
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel input {
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-sm);
+}
+
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel button,
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel a {
+  display: flex;
+  min-height: 40px;
   align-items: center;
   gap: 7px;
+  padding: 8px 10px;
   border: 0;
   border-radius: var(--wu-radius-sm);
   color: var(--wu-color-ink-soft);
   background: var(--wu-color-surface-soft);
   text-align: left;
-  opacity: 1 !important;
+  text-decoration: none;
 }
 
-body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] > .settings-panel .wu-more-share-action:hover {
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel button:hover,
+body[data-wu-core-workspace="basic"] .wu-basic-more-panel a:hover {
   background: var(--wu-color-brand-softer);
 }
 
@@ -108,7 +131,9 @@ body[data-wu-taxonomy-synced] #work {
   }
 
   body[data-wu-core-workspace="basic"] .home-actions-group-primary,
-  body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+  body[data-wu-core-workspace="basic"] .home-actions-group-secondary,
+  body[data-wu-core-workspace="basic"] .wu-basic-more,
+  body[data-wu-core-workspace="basic"] .wu-basic-more.is-open {
     width: auto;
   }
 
@@ -116,8 +141,9 @@ body[data-wu-taxonomy-synced] #work {
     margin-left: 0;
   }
 
-  body[data-wu-core-workspace="basic"] .home-actions-group-secondary details.action-menu[open] {
-    flex-basis: 100% !important;
-    width: 100% !important;
+  body[data-wu-core-workspace="basic"] .wu-basic-more.is-open,
+  body[data-wu-core-workspace="basic"] .wu-basic-more-panel {
+    flex-basis: 100%;
+    width: 100%;
   }
 }
