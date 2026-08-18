@@ -80,13 +80,13 @@ test('human sitemap follows Write Create Work Learn taxonomy', async ({ page }) 
   await expect(page.locator('main')).toContainText('Work');
   await expect(page.locator('main')).toContainText('Learn');
   await expect(page.locator('main')).toContainText('Urdu Text Cleaner');
-  await expect(page.locator('main')).toContainText('Urdu Invoice');
+  await expect(page.locator('main')).toContainText('Urdu & English Invoice Generator');
 });
 
 test('documentation includes all current ways to start with Urdu text', async ({ page }) => {
   await page.goto('/write-urdu-documentation');
   await expect(page.locator('main')).toContainText('Choose how your Urdu starts');
   await expect(page.locator('main')).toContainText('Speak Urdu');
-  await expect(page.locator('main')).toContainText('Start from an image');
-  await expect(page.locator('main')).toContainText('Convert old InPage text');
+  await expect(page.locator('main')).toContainText('Image to Urdu Text');
+  await expect(page.locator('main')).toContainText('Convert older InPage text');
 });
