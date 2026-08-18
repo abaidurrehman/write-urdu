@@ -238,6 +238,7 @@
         var spinner = editorChrome.querySelector('#spinner');
         var clear = editorChrome.querySelector('#clear');
         var shortcut = editorChrome.querySelector('.editor-shortcut');
+        if (clear) clear.classList.remove('btn-clear');
         if (!copy || !pdf || !word || !png || !preview || !print || !modeControl || !clear) return null;
 
         var surface = root.document.createElement('section');
