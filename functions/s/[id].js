@@ -98,10 +98,11 @@ export async function onRequestGet(context) {
       <aside class="share-panel" aria-label="Continue with this Urdu writing">
         <p class="share-kicker">Make it your own</p>
         <h1>Continue with this Urdu</h1>
-        <p>Use the same words in a fresh design, start a new card, or pass this link along.</p>
+        <p>Keep writing with the same words, turn them into a fresh design, or make a QR code for this public link.</p>
         <div class="share-actions">
           <button class="share-button primary" type="button" data-share-use-text>Use this text</button>
           <a class="share-button secondary" href="/urdu-card-studio" data-share-create>Create your own Urdu design</a>
+          <button class="share-button secondary" type="button" data-share-qr>Make QR for this link</button>
           <div class="share-row share-row-utilities">
             <button class="share-button quiet" type="button" data-share-copy>Copy link</button>
             <button class="share-button quiet" type="button" data-share-native>Share</button>
@@ -121,6 +122,9 @@ export async function onRequestGet(context) {
 
     <footer class="share-footer"><span>Published ${created ? `<time datetime="${created}">${created.slice(0, 10)}</time>` : 'with Write Urdu'}</span><span><a href="/write-urdu-privacy">Privacy</a> · <a href="/contact">Contact</a></span></footer>
   </main>
+  <script src="/js/workspace-journey-registry.js"></script>
+  <script src="/js/create-publish-boundaries-registry.js"></script>
+  <script src="/js/workspace-handoff.js"></script>
   <script src="/js/share-loop-telemetry.js"></script>
   <script src="/js/share-page.js"></script>
 </body>
