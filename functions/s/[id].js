@@ -54,6 +54,8 @@ export async function onRequestGet(context) {
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,follow,max-image-preview:large">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f4f7f5">
   <title>${escapeHtml(title)}</title>
   <meta name="description" content="${escapeHtml(description)}">
   <link rel="canonical" href="${escapeHtml(url)}">
@@ -94,18 +96,18 @@ export async function onRequestGet(context) {
       </article>
 
       <aside class="share-panel" aria-label="Continue with this Urdu writing">
-        <p class="share-kicker">Made with Write Urdu</p>
-        <h1>Create something from these words</h1>
-        <p>Read the Urdu, share this link, or start your own card in the browser. Nothing is republished automatically.</p>
+        <p class="share-kicker">Make it your own</p>
+        <h1>Continue with this Urdu</h1>
+        <p>Use the same words in a fresh design, start a new card, or pass this link along.</p>
         <div class="share-actions">
-          <a class="share-button primary" href="/urdu-card-studio" data-share-create>Create your own Urdu design</a>
-          <button class="share-button secondary" type="button" data-share-use-text>Use this text</button>
-          <div class="share-row">
-            <button class="share-button" type="button" data-share-copy>Copy link</button>
-            <button class="share-button" type="button" data-share-native>Share</button>
+          <button class="share-button primary" type="button" data-share-use-text>Use this text</button>
+          <a class="share-button secondary" href="/urdu-card-studio" data-share-create>Create your own Urdu design</a>
+          <div class="share-row share-row-utilities">
+            <button class="share-button quiet" type="button" data-share-copy>Copy link</button>
+            <button class="share-button quiet" type="button" data-share-native>Share</button>
           </div>
         </div>
-        <div class="share-note"><strong>A public snapshot</strong>This page is a published snapshot. The creator's other local drafts and projects are not part of this link.</div>
+        <div class="share-note"><strong>A public snapshot</strong>This link contains only this published snapshot. The creator's other local drafts and projects are not included.</div>
         <details class="share-report">
           <summary>Report this shared page</summary>
           <div class="share-report-form">

@@ -8,19 +8,44 @@ async function open(page, route) {
   await page.locator('body').waitFor({ state: 'attached' });
 }
 
-test('core writing surfaces expose a compact next-step journey below the task', async ({ page }) => {
+test('core writing surfaces expose Create & Share as a primary toolbar and next-step action', async ({ page }) => {
   for (const route of ['/', '/urdu-editor.html', '/urdu-keyboard.html']) {
     await open(page, route);
+
+    const toolbarShare = page.locator('.wu-authoring-share-primary').first();
+    await expect(toolbarShare).toBeVisible({ timeout: 10000 });
+    await expect(toolbarShare).toContainText('Create & Share');
+    await expect(page.locator('[data-write-urdu-share]').first()).toContainText('Share text only');
+
     const panel = page.locator('[data-wu-journey-panel]');
     await expect(panel).toBeVisible({ timeout: 10000 });
     await expect(panel.locator('[data-continue-rich]')).toHaveCount(route.includes('urdu-editor') ? 0 : 1);
-    await expect(panel.locator('[data-create-card]')).toHaveCount(1);
+    const shareAction = panel.locator('[data-create-card]');
+    await expect(shareAction).toHaveCount(1);
+    await expect(shareAction).toContainText('Create & share this Urdu');
+    await expect(shareAction).toHaveClass(/is-primary/);
+    await expect(shareAction).toHaveClass(/is-share/);
     await expect(panel.locator('[data-create-stylish]')).toHaveCount(1);
     await expect(panel.locator('[data-create-name-art]')).toHaveCount(1);
     await expect(panel.locator('[data-wu-journey="write-to-templates"]')).toHaveCount(1);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
   }
+});
+
+test('Create & Share carries current Urdu into Card Studio and exposes Publish & Share in Step 4', async ({ page }) => {
+  await open(page, '/');
+  await page.locator('#transliterateTextarea').fill('یہ میرا شیئر کرنے والا اردو متن ہے');
+  await page.locator('.wu-authoring-share-primary').first().click();
+  await page.waitForURL(/urdu-card-studio/, { timeout: 10000 });
+  await expect(page.locator('#cardText')).toHaveValue('یہ میرا شیئر کرنے والا اردو متن ہے', { timeout: 10000 });
+  await page.locator('button[data-card-step="export"]').first().click();
+  const publish = page.locator('[data-wu-share-step-publish]');
+  await expect(publish).toBeVisible({ timeout: 10000 });
+  await expect(publish).toContainText('Publish & Share');
+  await expect(publish).toContainText('Create a public Write-Urdu.com link');
+  await expect(page.locator('.card-studio-export-section [data-card-action="download"]')).toContainText('Download PNG');
+  await expect(page.locator('.card-studio-export-section [data-card-action="share"]')).toContainText('Share image only');
 });
 
 test('homepage assignment continues into Rich Editor without losing an older rich draft', async ({ page }) => {
