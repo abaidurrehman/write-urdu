@@ -1,6 +1,27 @@
 (function () {
     'use strict';
 
+    function ensureCoreContinuity() {
+        if (window.WriteUrduCoreContinuity) return;
+        function load(src, ready, next) {
+            if (ready()) { next(); return; }
+            var existing = document.querySelector('script[src="' + src + '"]');
+            if (existing) { existing.addEventListener('load', next, { once: true }); return; }
+            var script = document.createElement('script');
+            script.src = src;
+            script.async = false;
+            script.addEventListener('load', next, { once: true });
+            document.head.appendChild(script);
+        }
+        load('js/workspace-journey-registry.js', function () { return Boolean(window.WriteUrduWorkspaceRegistry); }, function () {
+            load('js/workspace-handoff.js', function () { return Boolean(window.WriteUrduWorkspaceHandoff); }, function () {
+                load('js/core-continuity.js', function () { return Boolean(window.WriteUrduCoreContinuity); }, function () {});
+            });
+        });
+    }
+
+    ensureCoreContinuity();
+
     var root = document.querySelector('[data-urdu-text-cleaner]');
     var Core = window.WriteUrduTextCleanerCore;
     if (!root || !Core) return;
