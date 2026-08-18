@@ -12,6 +12,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-DRAFT-001` | Cross-device cloud drafts | Core writing editors, `/my-drafts`, `/api/drafts*` | Planned — local-first account persistence; depends on `WU-AUTH-001` |
 | `WU-RW-001` | Role-owned direct workspaces | Writing + creation role routes | Active — one top-level editor/canvas per role; remove nested WriteUrdu app/iframe architecture |
 | `WU-PLAT-001` | Unified product journey and acquisition-first homepage | `/` and related tools | Implemented — foundation complete |
+| `WU-PLAT-002` | V2 Product Journey & Workspace Handoffs | Sitewide interactive journeys | Active — P0 outcome-led IA, shared handoffs, contextual next steps and new-tool continuity |
 | `WU-SEO-ETU-001` | English to Urdu Typing acquisition | `/` | Implemented — homepage owns English-letter / Roman Urdu to Urdu-script typing intent |
 | `WU-CS-UX-001` | Urdu Card Studio guided workflow | `/urdu-card-studio` | Implemented — v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Urdu Card Studio empty-state guidance | `/urdu-card-studio` | Implemented — retained through v2 creation migration |
