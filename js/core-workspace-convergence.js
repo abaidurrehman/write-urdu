@@ -112,6 +112,23 @@
         return Boolean(editor && String(editor.value || '').trim());
     }
 
+    function normalizeBasicShare(panel) {
+        var share = panel && panel.querySelector('[data-write-urdu-share]');
+        if (!share) return null;
+        share.hidden = false;
+        share.removeAttribute('hidden');
+        share.removeAttribute('aria-hidden');
+        share.style.removeProperty('display');
+        share.style.removeProperty('visibility');
+        share.style.removeProperty('opacity');
+        share.classList.remove('btn', 'btn-quiet');
+        share.classList.add('wu-more-share-action');
+        share.title = 'Share the Urdu text only without creating a public Write Urdu link';
+        share.innerHTML = '<i class="fas fa-share-alt" aria-hidden="true"></i> Share text only';
+        share.setAttribute('data-wu-share-location', 'more');
+        return share;
+    }
+
     function convertBasicMoreMenu(secondary) {
         if (!secondary) return null;
         var existing = secondary.querySelector('[data-wu-basic-more]');
@@ -147,9 +164,16 @@
 
         toggle.addEventListener('click', function () {
             var opening = panel.hidden;
+            if (opening) normalizeBasicShare(panel);
             panel.hidden = !opening;
             toggle.setAttribute('aria-expanded', String(opening));
             wrapper.classList.toggle('is-open', opening);
+            if (opening) {
+                // Older authoring startup code can relabel/reclassify the same
+                // button late in the page lifecycle. Reassert only the
+                // visibility contract after those synchronous handlers finish.
+                root.setTimeout(function () { normalizeBasicShare(panel); }, 0);
+            }
         });
         panel.addEventListener('click', function (event) {
             if (!event.target.closest('[data-write-urdu-share]')) return;
@@ -172,15 +196,8 @@
         secondary.hidden = false;
         secondary.removeAttribute('hidden');
         secondary.setAttribute('aria-label', 'More editor options');
-        share.hidden = false;
-        share.removeAttribute('hidden');
-        share.removeAttribute('aria-hidden');
-        share.classList.remove('btn', 'btn-quiet');
-        share.classList.add('wu-more-share-action');
-        share.title = 'Share the Urdu text only without creating a public Write Urdu link';
-        share.innerHTML = '<i class="fas fa-share-alt" aria-hidden="true"></i> Share text only';
-        share.setAttribute('data-wu-share-location', 'more');
         if (share.parentNode !== panel) panel.insertBefore(share, panel.firstChild);
+        normalizeBasicShare(panel);
         return true;
     }
 
@@ -362,6 +379,7 @@
         convergeSitemap: convergeSitemap,
         convergeDocumentation: convergeDocumentation,
         enhanceGlobalLabels: enhanceGlobalLabels,
+        normalizeBasicShare: normalizeBasicShare,
         convertBasicMoreMenu: convertBasicMoreMenu,
         organizeBasicCompletionActions: organizeBasicCompletionActions,
         removeLegacyTrustChrome: removeLegacyTrustChrome,
