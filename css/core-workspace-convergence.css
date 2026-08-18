@@ -1,0 +1,67 @@
+@import url("./design-tokens.css");
+
+/* P0 V2 Core Workspace Convergence
+   Keep the writing surface dominant. This layer intentionally avoids changing
+   editor engines or SEO-owned page structure. */
+
+body[data-wu-core-workspace] .fb-like,
+body[data-wu-core-workspace] .twitter-follow-button,
+body[data-wu-core-workspace] .fb-comments,
+body[data-wu-core-workspace] #fb-root {
+  display: none !important;
+}
+
+body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions {
+  width: 100%;
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: var(--wu-color-surface-soft);
+  box-shadow: none;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions[hidden],
+body[data-wu-core-workspace="basic"] .home-actions-group-create[hidden] {
+  display: none !important;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-primary,
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+  gap: 8px;
+}
+
+body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+  margin-left: auto;
+}
+
+body[data-wu-core-workspace="basic"] #UsageAlert {
+  margin-bottom: 0;
+}
+
+body[data-wu-taxonomy-synced] .docs-card-grid {
+  align-items: stretch;
+}
+
+body[data-wu-taxonomy-synced] [data-wu-capture-path] {
+  min-height: 100%;
+}
+
+body[data-wu-taxonomy-synced] #work {
+  scroll-margin-top: 96px;
+}
+
+@media (max-width: 767px) {
+  body[data-wu-core-workspace="basic"][data-wu-canvas-first="true"] .home-actions {
+    align-items: stretch;
+  }
+
+  body[data-wu-core-workspace="basic"] .home-actions-group-primary,
+  body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+    width: 100%;
+  }
+
+  body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
+    margin-left: 0;
+  }
+}
