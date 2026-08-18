@@ -13,7 +13,8 @@
     'use strict';
 
     var MAX_VISIBLE = 3;
-    var SHARED_WORKSPACES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'];
+    var CAPTURE_WORKSPACES = ['image-to-urdu-text', 'voice-typing', 'inpage-converter'];
+    var SHARED_WORKSPACES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'].concat(CAPTURE_WORKSPACES);
     var BIND_TIMEOUT_MS = 6000;
     var cleanupObserver = null;
     var cleanupTimer = null;
@@ -96,6 +97,12 @@
         return editor && editor.initialized ? String(editor.getContent({ format: 'text' }) || '').trim() : '';
     }
 
+    function inPageProducesUnicode() {
+        if (!root || !root.document) return false;
+        var unicodeMode = root.document.querySelector('[data-inpage-mode="legacy-to-unicode"]');
+        return Boolean(unicodeMode && unicodeMode.getAttribute('aria-pressed') === 'true');
+    }
+
     function currentText(workspaceId) {
         if (!root || !root.document) return '';
         if (workspaceId === 'basic-writer') {
@@ -111,6 +118,19 @@
             var cleaner = root.document.getElementById('cleanerResult');
             return cleaner ? String(cleaner.value || '').trim() : '';
         }
+        if (workspaceId === 'image-to-urdu-text') {
+            var ocr = root.document.getElementById('ocrResult');
+            return ocr ? String(ocr.value || '').trim() : '';
+        }
+        if (workspaceId === 'voice-typing') {
+            var voice = root.document.getElementById('voiceTranscript');
+            return voice ? String(voice.value || '').trim() : '';
+        }
+        if (workspaceId === 'inpage-converter') {
+            if (!inPageProducesUnicode()) return '';
+            var inpage = root.document.getElementById('inpageResult');
+            return inpage ? String(inpage.value || '').trim() : '';
+        }
         return '';
     }
 
@@ -119,7 +139,9 @@
         if (workspaceId === 'basic-writer') return root.document.querySelector('.homepage-seo');
         if (workspaceId === 'urdu-keyboard') return root.document.querySelector('.keyboard-supporting-content');
         if (workspaceId === 'rich-editor') return root.document.querySelector('.rich-editor-page .col-12.col-md-9 > .card');
-        if (workspaceId === 'text-cleaner') return root.document.querySelector('[data-wu-ad-boundary="post-workspace"]');
+        if (workspaceId === 'text-cleaner' || CAPTURE_WORKSPACES.indexOf(workspaceId) >= 0) {
+            return root.document.querySelector('[data-wu-ad-boundary="post-workspace"]');
+        }
         return null;
     }
 
@@ -162,7 +184,7 @@
             model.more.map(function (action) { return actionMarkup(action, false); }).join('') + '</div></details>' : '';
         return '<p class="wu-continue-eyebrow">Continue with…</p>' +
             '<h2 id="wu-next-step-title">What do you want to do next?</h2>' +
-            '<p class="wu-continue-copy">Choose the next workspace for the Urdu you just prepared.</p>' +
+            '<p class="wu-continue-copy">Choose the next workspace for the Urdu text you just prepared.</p>' +
             '<div class="wu-continue-actions">' + visible + '</div>' + more;
     }
 
@@ -202,13 +224,30 @@
         return !panel.hidden;
     }
 
+    function inputSelector(workspaceId) {
+        var selectors = {
+            'basic-writer': '#transliterateTextarea',
+            'urdu-keyboard': '#write',
+            'text-cleaner': '#cleanerResult',
+            'image-to-urdu-text': '#ocrResult',
+            'voice-typing': '#voiceTranscript',
+            'inpage-converter': '#inpageResult'
+        };
+        return selectors[workspaceId] || null;
+    }
+
     function bindStandardInput(workspaceId) {
         if (!root || !root.document) return;
-        var selector = workspaceId === 'basic-writer' ? '#transliterateTextarea' : workspaceId === 'urdu-keyboard' ? '#write' : workspaceId === 'text-cleaner' ? '#cleanerResult' : null;
+        var selector = inputSelector(workspaceId);
         var input = selector && root.document.querySelector(selector);
         if (!input || input.getAttribute('data-wu-next-step-bound') === 'true') return;
         input.setAttribute('data-wu-next-step-bound', 'true');
         input.addEventListener('input', render);
+        if (workspaceId === 'inpage-converter') {
+            root.document.querySelectorAll('[data-inpage-mode]').forEach(function (button) {
+                button.addEventListener('click', function () { root.setTimeout(render, 0); });
+            });
+        }
     }
 
     function bindRichEditor(attempt) {
@@ -245,6 +284,7 @@
 
     return {
         MAX_VISIBLE: MAX_VISIBLE,
+        CAPTURE_WORKSPACES: CAPTURE_WORKSPACES.slice(),
         SHARED_WORKSPACES: SHARED_WORKSPACES.slice(),
         normalizeRoute: normalizeRoute,
         classifyWorkspace: classifyWorkspace,
@@ -252,6 +292,7 @@
         modelSignature: modelSignature,
         currentWorkspace: currentWorkspace,
         currentText: currentText,
+        inPageProducesUnicode: inPageProducesUnicode,
         render: render,
         bind: bind
     };
