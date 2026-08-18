@@ -49,7 +49,8 @@
             note.setAttribute('data-template-staged-text', '');
             hero.appendChild(note);
         }
-        note.textContent = 'Your current Urdu is ready. Choose a template and the text will be applied in the design workspace.';
+        var message = 'Your current Urdu is ready. Choose a template and the text will be applied in the design workspace.';
+        if (note.textContent !== message) note.textContent = message;
     }
 
     function ownerWorkspace(template) {
@@ -79,7 +80,10 @@
 
         var targetWorkspace = ownerWorkspace(template);
         var route = targetRoute(targetWorkspace);
-        var text = stagedText();
+        var incoming = stagedEnvelope();
+        var text = incoming && incoming.payload && incoming.payload.kind === 'plain-text' && typeof incoming.payload.text === 'string'
+            ? incoming.payload.text
+            : '';
         var runtime = handoff();
 
         if (!runtime || typeof runtime.transfer !== 'function') {
@@ -98,7 +102,7 @@
             payload: { templateId: template.id, text: text },
             context: {
                 templateId: template.id,
-                sourceWorkspace: stagedEnvelope() && stagedEnvelope().source ? stagedEnvelope().source.workspace : null
+                sourceWorkspace: incoming && incoming.source ? incoming.source.workspace : null
             }
         });
 
@@ -115,8 +119,8 @@
 
     function enhanceButtons() {
         document.querySelectorAll('[data-template-open]').forEach(function (button) {
-            button.textContent = 'Use this template';
-            button.setAttribute('aria-label', 'Use this Urdu template');
+            if (button.textContent !== 'Use this template') button.textContent = 'Use this template';
+            if (button.getAttribute('aria-label') !== 'Use this Urdu template') button.setAttribute('aria-label', 'Use this Urdu template');
         });
     }
 
@@ -139,7 +143,14 @@
             enhanceButtons();
             showStagedTextNote();
         });
-        var observer = root.MutationObserver ? new root.MutationObserver(enhanceButtons) : null;
+        var observer = root.MutationObserver ? new root.MutationObserver(function (mutations) {
+            var needsEnhancement = mutations.some(function (mutation) {
+                return Array.prototype.some.call(mutation.addedNodes || [], function (node) {
+                    return node && node.nodeType === 1 && (node.matches && node.matches('[data-template-open]') || node.querySelector && node.querySelector('[data-template-open]'));
+                });
+            });
+            if (needsEnhancement) enhanceButtons();
+        }) : null;
         var grid = document.querySelector('[data-template-grid]');
         if (observer && grid) {
             observer.observe(grid, { childList: true, subtree: true });
