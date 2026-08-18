@@ -12,7 +12,6 @@
                 var endPos = input.selectionEnd;
                 var cursorPos = startPos;
                 var scrollTop = input.scrollTop;
-                var baselength = 0;
                 input.value = input.value.substring(0, startPos)
                     + item
                     + input.value.substring(endPos, input.value.length);
@@ -111,22 +110,42 @@
             document.head.appendChild(script);
         }());
 
-        (function loadWritingJourneys() {
+        (function loadCoreContinuity() {
             var path = String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
             if (path === '/index') path = '/';
-            if (path !== '/urdu-keyboard' || document.querySelector('script[src="js/card-studio-entry.js"]')) return;
-            var script = document.createElement('script');
-            script.src = 'js/card-studio-entry.js';
-            script.defer = true;
-            document.head.appendChild(script);
-        }());
+            if (['/', '/urdu-keyboard'].indexOf(path) < 0) return;
 
-        (function loadTextHandoff() {
-            var path = String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
-            if (path === '/index') path = '/';
-            if (path !== '/' || document.querySelector('script[src="js/text-handoff.js"]')) return;
-            var script = document.createElement('script');
-            script.src = 'js/text-handoff.js';
-            script.defer = true;
-            document.head.appendChild(script);
+            function loadScript(src, next) {
+                var existing = document.querySelector('script[src="' + src + '"]');
+                if (existing) {
+                    if (existing.getAttribute('data-wu-loaded') === 'true' || (src.indexOf('workspace-journey-registry') >= 0 && window.WriteUrduWorkspaceRegistry) || (src.indexOf('workspace-handoff') >= 0 && window.WriteUrduWorkspaceHandoff) || (src.indexOf('core-continuity') >= 0 && window.WriteUrduCoreContinuity)) {
+                        next();
+                        return;
+                    }
+                    existing.addEventListener('load', next, { once: true });
+                    return;
+                }
+                var script = document.createElement('script');
+                script.src = src;
+                script.async = false;
+                script.addEventListener('load', function () {
+                    script.setAttribute('data-wu-loaded', 'true');
+                    next();
+                }, { once: true });
+                document.head.appendChild(script);
+            }
+
+            loadScript('js/workspace-journey-registry.js', function () {
+                loadScript('js/workspace-handoff.js', function () {
+                    loadScript('js/core-continuity.js', function () {
+                        if (path === '/') {
+                            loadScript('js/text-handoff.js', function () {});
+                            return;
+                        }
+                        loadScript('js/card-studio-entry.js', function () {
+                            loadScript('js/qr-generator-entry.js', function () {});
+                        });
+                    });
+                });
+            });
         }());

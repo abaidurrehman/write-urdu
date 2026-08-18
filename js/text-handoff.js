@@ -7,6 +7,9 @@
     'use strict';
 
     var KEY = 'write-urdu:text-handoff:v1';
+    var BASIC_DRAFT_KEY = 'write-urdu:draft:v1:basic';
+    var BASIC_HISTORY_KEY = 'write-urdu:history:v1:basic';
+    var MAX_HISTORY = 5;
     var MAX_LENGTH = 100000;
     var MAX_AGE_MS = 30 * 60 * 1000;
 
@@ -69,6 +72,42 @@
         return (root && root.location && root.location.pathname || '/').replace(/\.html$/i, '').replace(/\/index$/i, '/').replace(/\/+$/, '') || '/';
     }
 
+    function snapshotSignature(snapshot) {
+        if (!snapshot) return '';
+        return String(snapshot.text || '').replace(/\s+/g, ' ').trim() + '\u0000' + String(snapshot.content || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function preserveBasicSnapshot(snapshot) {
+        if (!snapshot || !String(snapshot.text || snapshot.content || '').trim()) return false;
+        try {
+            var items = JSON.parse(root.localStorage.getItem(BASIC_HISTORY_KEY) || '[]');
+            if (!Array.isArray(items)) items = [];
+            var signature = snapshotSignature(snapshot);
+            items = items.filter(function (item) { return snapshotSignature(item) !== signature; });
+            items.unshift(snapshot);
+            root.localStorage.setItem(BASIC_HISTORY_KEY, JSON.stringify(items.slice(0, MAX_HISTORY)));
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    function preserveBasicBeforeImport(target) {
+        try {
+            var existing = JSON.parse(root.localStorage.getItem(BASIC_DRAFT_KEY) || 'null');
+            if (existing) preserveBasicSnapshot(existing);
+        } catch (error) { /* Local storage can be unavailable. */ }
+        var visible = target && String(target.value || '').trim();
+        if (visible) preserveBasicSnapshot({ content: target.value, text: target.value, savedAt: Date.now() });
+    }
+
+    function discardV2(targetWorkspace) {
+        var runtime = root && root.WriteUrduWorkspaceHandoff;
+        if (runtime && typeof runtime.discard === 'function') {
+            try { runtime.discard(targetWorkspace); } catch (error) { /* legacy import already succeeded */ }
+        }
+    }
+
     function switchBasicEditorToDirectMode() {
         if (!root || !root.document) return;
         var direct = root.document.querySelector('[data-input-mode-control][data-input-mode-storage="basic"] [data-input-mode-option="direct"]');
@@ -81,12 +120,14 @@
         if (!target) return false;
         var text = take('/');
         if (text === null) return false;
+        preserveBasicBeforeImport(target);
         switchBasicEditorToDirectMode();
         target.value = text;
         target.dispatchEvent(new Event('input', { bubbles: true }));
         target.dispatchEvent(new Event('change', { bubbles: true }));
         if (typeof target.focus === 'function') target.focus();
         try { target.setSelectionRange(target.value.length, target.value.length); } catch (error) { }
+        discardV2('basic-writer');
         var notice = root.document.getElementById('appNotifications');
         if (notice) {
             notice.textContent = 'Your imported Urdu text is ready to edit.';
@@ -106,6 +147,7 @@
         source.dispatchEvent(new Event('input', { bubbles: true }));
         analyze.click();
         if (typeof source.focus === 'function') source.focus();
+        discardV2('text-cleaner');
         return true;
     }
 
@@ -130,6 +172,7 @@
         MAX_LENGTH: MAX_LENGTH,
         store: store,
         take: take,
+        preserveBasicBeforeImport: preserveBasicBeforeImport,
         consumeBasicEditor: consumeBasicEditor,
         consumeCleaner: consumeCleaner,
         consumeForCurrentRoute: consumeForCurrentRoute
