@@ -14,6 +14,7 @@ const nextStepRuntime = fs.readFileSync(path.join(root, 'js', 'workspace-next-st
 const nextStepCss = fs.readFileSync(path.join(root, 'css', 'workspace-next-step.css'), 'utf8');
 const spec = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-003-core-workspace-convergence.md'), 'utf8');
 const toolbarSpec = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-004-basic-writer-command-toolbar.md'), 'utf8');
+const shareAddendum = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-004A-basic-writer-public-share-short-link.md'), 'utf8');
 const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 
 assert.deepStrictEqual(Convergence.CORE_ROUTES, ['/', '/urdu-keyboard', '/urdu-editor'], 'Core convergence route ownership changed unexpectedly');
@@ -95,7 +96,8 @@ assert.match(spec, /Slice D — Urdu Keyboard convergence/, 'Keyboard convergenc
 assert.match(spec, /Slice E — Rich Editor convergence/, 'Rich Editor convergence follow-up is not documented');
 assert.match(toolbarSpec, /Share → Copy → PDF → Word → PNG → Preview → Print → Input mode → More → Clear/, 'Approved command order is missing from WU-PLAT-004');
 assert.match(toolbarSpec, /remain visible before typing/i, 'Persistent empty-state toolbar decision is missing');
-assert.match(toolbarSpec, /Publish & get short link/i, 'WU-PLAT-004 must define the first-party short-link share behavior');
-assert.match(toolbarSpec, /Publishing MUST never happen automatically/i, 'Explicit-publication guardrail is missing');
+assert.match(shareAddendum, /supersedes WU-PLAT-004 §9\.1/i, 'Public-share addendum must explicitly supersede the old text-only toolbar behavior');
+assert.match(shareAddendum, /Publish & get short link/i, 'Public-share addendum must define the first-party short-link share behavior');
+assert.match(shareAddendum, /Publishing is \*\*always explicit\*\*/i, 'Explicit-publication guardrail is missing');
 
 console.log('Core workspace convergence contract passed.');
