@@ -15,6 +15,7 @@ const migration = read('migrations', '0004_share_artifacts.sql');
 const shareTelemetry = read('js', 'share-loop-telemetry.js');
 const events = read('functions', 'api', 'events.js');
 const cardPublish = read('js', 'card-studio-publish.js');
+const basicPublish = read('js', 'basic-writer-publish.js');
 const cardUi = read('js', 'card-studio-ui.js');
 const shareClient = read('js', 'share-page.js');
 const shareCss = read('css', 'share-page.css');
@@ -48,9 +49,10 @@ assert.doesNotMatch(publicPage, /manage_token|manageToken|manage_token_hash/, 'P
 // Publish endpoint only accepts bounded plain data and a validated PNG snapshot.
 assert.match(publishApi, /request\.formData\(\)/, 'Share publishing must use a bounded multipart snapshot request');
 assert.match(publishApi, /validatePng\(image\)/, 'Share publishing must validate the uploaded PNG');
-assert.match(helper, /image\/png/, 'Only the approved Phase 1 PNG share artifact should be accepted');
+assert.match(helper, /image\/png/, 'Only the approved PNG share artifact should be accepted');
 assert.match(helper, /MAX_IMAGE_BYTES/, 'Share media must have a server-side size limit');
 assert.match(helper, /cleanPlainText/, 'Public Urdu text must be normalized as plain text');
+assert.match(helper, /new Set\(\['card_studio', 'basic_editor'\]\)/, 'Share API source allowlist must include Card Studio and Basic Writer');
 assert.doesNotMatch(publishApi, /innerHTML|dangerouslySetInnerHTML/, 'Publish API must not accept/render HTML content');
 assert.match(publishApi, /origin_share_unavailable/, 'Child publication must validate its parent share');
 
@@ -85,7 +87,21 @@ assert.match(cardPublish, /Write-Urdu\.com/, 'Hosted publish image must carry re
 assert.match(cardPublish, /writeUrdu\.shareManagement\.v1/, 'Management tokens must be retained locally for later deletion');
 assert.match(cardPublish, /\/api\/shares/, 'Card Studio must publish through the first-party share API');
 
-// Sharing must be discoverable from the real writing workspaces, with the local handoff preserved.
+// Basic Writer's first-class Share command publishes through the same short-link system.
+assert.match(basicPublish, /form\.append\('source_tool', 'basic_editor'\)/, 'Basic Writer must identify itself to the shared publish endpoint');
+assert.match(basicPublish, /form\.append\('public_text', text\)/, 'Basic Writer public sharing must publish bounded plain text');
+assert.match(basicPublish, /fetch\('\/api\/shares'/, 'Basic Writer must reuse the same first-party share API as Card Studio');
+assert.match(basicPublish, /canvas\.width = 1200[\s\S]*canvas\.height = 630/, 'Basic Writer must create a social-preview PNG with a stable 1200x630 canvas');
+assert.match(basicPublish, /Shared from Write-Urdu\.com/, 'Basic Writer preview must carry restrained Write Urdu provenance');
+assert.match(basicPublish, /Public to anyone with the link/, 'Basic Writer must disclose the publication boundary before upload');
+assert.match(basicPublish, /Publish &amp; get short link/, 'Basic Writer publication must require an explicit confirm action');
+assert.match(basicPublish, /writeUrdu\.shareManagement\.v1/, 'Basic Writer management tokens must use the shared local management store');
+assert.match(basicPublish, /writeUrdu\.basicShareLast\.v1/, 'Basic Writer may reuse the same unchanged short link from this browser');
+assert.match(basicPublish, /navigator\.share\(\{[\s\S]*url: url/, 'Basic Writer native share must distribute the published short URL');
+assert.doesNotMatch(basicPublish, /navigator\.share\(\{[\s\S]*text:\s*text/, 'Basic Writer native sharing must not send the raw Urdu document as the primary share payload');
+assert.doesNotMatch(basicPublish, /location\.(?:href|search)[\s\S]*(?:text|public_text)|URLSearchParams[\s\S]*(?:text|public_text)/, 'Basic Writer must not put document text in URLs');
+
+// Sharing remains discoverable from the real writing workspaces, with local handoff preserved.
 assert.match(journey, /Create &amp; share this Urdu/, 'Core writing workspaces must promote Create & Share as a primary next step');
 assert.match(journey, /class="wu-next-journey-action is-primary is-share"/, 'Create & Share must be visually primary in the writing journey');
 assert.match(journey, /data-create-card/, 'Create & Share must reuse the privacy-safe Card Studio text handoff');
@@ -113,6 +129,7 @@ for (const event of [
 ]) {
   assert.ok(events.includes(`'${event}'`), `Telemetry event allowlist is missing ${event}`);
 }
+assert.match(events, /'basic_editor'/, 'Telemetry collector must accept Basic Writer share events');
 assert.match(events, /'public_share'/, 'Telemetry collector must accept the normalized public_share tool');
 assert.match(events, /share_hourly_metrics/, 'Share events must roll up separately from existing product metrics');
 

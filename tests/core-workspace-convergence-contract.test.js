@@ -7,12 +7,14 @@ const Convergence = require(path.join(root, 'js', 'core-workspace-convergence.js
 const Toolbar = require(path.join(root, 'js', 'basic-writer-command-toolbar.js'));
 const runtime = fs.readFileSync(path.join(root, 'js', 'core-workspace-convergence.js'), 'utf8');
 const toolbarRuntime = fs.readFileSync(path.join(root, 'js', 'basic-writer-command-toolbar.js'), 'utf8');
+const basicPublish = fs.readFileSync(path.join(root, 'js', 'basic-writer-publish.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'css', 'core-workspace-convergence.css'), 'utf8');
 const toolbarCss = fs.readFileSync(path.join(root, 'css', 'basic-writer-command-toolbar.css'), 'utf8');
 const nextStepRuntime = fs.readFileSync(path.join(root, 'js', 'workspace-next-step.js'), 'utf8');
 const nextStepCss = fs.readFileSync(path.join(root, 'css', 'workspace-next-step.css'), 'utf8');
 const spec = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-003-core-workspace-convergence.md'), 'utf8');
 const toolbarSpec = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-004-basic-writer-command-toolbar.md'), 'utf8');
+const shareAddendum = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-004A-basic-writer-public-share-short-link.md'), 'utf8');
 const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 
 assert.deepStrictEqual(Convergence.CORE_ROUTES, ['/', '/urdu-keyboard', '/urdu-editor'], 'Core convergence route ownership changed unexpectedly');
@@ -48,10 +50,24 @@ assert.match(toolbarRuntime, /data-wu-basic-mobile-outputs/, 'Mobile overflow de
 assert.match(toolbarRuntime, /compact \? mobileGroup : desktopGroup/, 'Document actions must move into More on small screens');
 assert.match(toolbarRuntime, /data-input-mode-control/, 'Existing input-mode control must be reused');
 assert.match(toolbarRuntime, /data-wu-basic-mode-helper/, 'Input-mode helper row is missing');
-assert.match(toolbarRuntime, /WriteUrduTools\.share/, 'Created Share fallback must use the existing authoring share API');
+assert.match(toolbarRuntime, /basic-writer-publish\.js/, 'Toolbar Share must load the first-party Basic Writer publisher');
+assert.match(toolbarRuntime, /WriteUrduBasicPublish/, 'Toolbar Share must delegate to the Basic Writer public-link adapter');
+assert.doesNotMatch(toolbarRuntime, /WriteUrduTools\.share/, 'First-class Basic Share must not fall back to raw text sharing');
+assert.match(toolbarRuntime, /removeAttribute\('data-wu-i18n-control'\)/, 'Toolbar ownership must clear stale legacy control labels');
 assert.match(toolbarRuntime, /basic_toolbar_action/, 'Toolbar must preserve privacy-safe action telemetry');
-assert.doesNotMatch(toolbarRuntime, /navigator\.share/, 'Toolbar must not duplicate native share implementation');
+assert.doesNotMatch(toolbarRuntime, /navigator\.share/, 'Toolbar itself must not duplicate share implementation');
 assert.doesNotMatch(toolbarRuntime, /location\.(?:href|search).*value|URLSearchParams.*transliterateTextarea/, 'Toolbar must not put user text into URLs');
+
+assert.match(basicPublish, /form\.append\('source_tool', 'basic_editor'\)/, 'Basic publisher must identify the Basic Editor source');
+assert.match(basicPublish, /form\.append\('public_text', text\)/, 'Basic publisher must send bounded plain text to the first-party share API');
+assert.match(basicPublish, /fetch\('\/api\/shares'/, 'Basic publisher must reuse the first-party share API');
+assert.match(basicPublish, /write-urdu\.com\/s\/…/, 'Confirmation must explain the Write Urdu short-link contract');
+assert.match(basicPublish, /Publish &amp; get short link/, 'Publishing must remain explicit');
+assert.match(basicPublish, /buildPreview/, 'Basic publishing must generate a controlled social-preview PNG');
+assert.match(basicPublish, /writeUrdu\.shareManagement\.v1/, 'Basic shares must use the shared local management-token store');
+assert.match(basicPublish, /writeUrdu\.basicShareLast\.v1/, 'Basic shares should reuse the current unchanged public link from this browser');
+assert.match(basicPublish, /navigator\.share\(\{[\s\S]*url: url/, 'Native share must send the Write Urdu public URL after publication');
+assert.doesNotMatch(basicPublish, /location\.(?:href|search).*text|URLSearchParams.*text/, 'Basic publisher must never place writing into a URL');
 
 assert.match(toolbarCss, /wu-basic-command--share/, 'Share-first toolbar styling is missing');
 assert.match(toolbarCss, /wu-basic-command--copy/, 'Copy secondary styling is missing');
@@ -59,9 +75,11 @@ assert.match(toolbarCss, /wu-basic-command--utility/, 'Direct utility styling is
 assert.match(toolbarCss, /wu-basic-command--clear/, 'Destructive Clear styling is missing');
 assert.match(toolbarCss, /@media \(max-width: 767px\)/, 'Pixel/mobile toolbar behavior is missing');
 assert.doesNotMatch(toolbarCss, /position\s*:\s*(?:fixed|sticky)/, 'Basic Writer toolbar must not become fixed/sticky');
-assert.match(serviceWorker, /write-urdu-shell-v22/, 'PWA cache must advance for the new command toolbar runtime');
+assert.match(serviceWorker, /write-urdu-shell-v23/, 'PWA cache must advance for Basic public-link publishing');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.css/, 'Toolbar CSS must be cached');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.js/, 'Toolbar runtime must be cached');
+assert.match(serviceWorker, /basic-writer-publish\.js/, 'Basic public-link publisher must be cached');
+assert.match(serviceWorker, /card-studio-publish\.css/, 'Shared publish-dialog styling must be cached');
 
 assert.match(runtime, /findCardByHref\(create, '\/urdu-text-cleaner'\)/, 'Text Cleaner taxonomy move is missing');
 assert.match(runtime, /findCardByHref\(create, '\/urdu-invoice-generator'\)/, 'Invoice Work taxonomy move is missing');
@@ -78,6 +96,8 @@ assert.match(spec, /Slice D — Urdu Keyboard convergence/, 'Keyboard convergenc
 assert.match(spec, /Slice E — Rich Editor convergence/, 'Rich Editor convergence follow-up is not documented');
 assert.match(toolbarSpec, /Share → Copy → PDF → Word → PNG → Preview → Print → Input mode → More → Clear/, 'Approved command order is missing from WU-PLAT-004');
 assert.match(toolbarSpec, /remain visible before typing/i, 'Persistent empty-state toolbar decision is missing');
-assert.match(toolbarSpec, /do not duplicate `navigator\.share` logic/i, 'Share adapter guardrail is missing');
+assert.match(shareAddendum, /supersedes WU-PLAT-004 §9\.1/i, 'Public-share addendum must explicitly supersede the old text-only toolbar behavior');
+assert.match(shareAddendum, /Publish & get short link/i, 'Public-share addendum must define the first-party short-link share behavior');
+assert.match(shareAddendum, /Publishing is \*\*always explicit\*\*/i, 'Explicit-publication guardrail is missing');
 
 console.log('Core workspace convergence contract passed.');

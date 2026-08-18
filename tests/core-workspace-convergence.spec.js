@@ -12,12 +12,30 @@ async function waitForBasicToolbar(page) {
 }
 
 test('Basic Writer exposes one share-first command toolbar directly above the canvas', async ({ page }) => {
+  let publishBody = '';
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'share', {
       configurable: true,
       value: async payload => { window.__writeUrduSharedPayload = payload; }
     });
   });
+  await page.route('**/api/shares', async route => {
+    const request = route.request();
+    if (request.method() !== 'POST') return route.continue();
+    publishBody = request.postDataBuffer() ? request.postDataBuffer().toString('utf8') : '';
+    const origin = new URL(request.url()).origin;
+    await route.fulfill({
+      status: 201,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        id: 'Ab12Cd34',
+        url: `${origin}/s/Ab12Cd34`,
+        manageToken: 'test-management-token'
+      })
+    });
+  });
+
   await page.goto('/');
   await waitForConvergence(page);
   await waitForBasicToolbar(page);
@@ -60,9 +78,12 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   await expect(share).toBeEnabled();
   await expect(copy).toBeEnabled();
   await expect(clear).toBeEnabled();
+  await expect(share).toHaveText('Share');
+  await expect(copy).toHaveText('Copy');
 
   const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
   const outputs = ['pdf', 'word', 'png', 'preview', 'print'];
+  const outputLabels = { pdf: 'PDF', word: 'Word', png: 'PNG', preview: 'Preview', print: 'Print' };
   if (compact) {
     await expect(toolbar.locator('[data-wu-basic-output-group]')).toBeHidden();
     const toggle = toolbar.locator('[data-wu-basic-more-toggle]');
@@ -70,12 +91,16 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
     const panel = toolbar.locator('[data-wu-basic-more-panel]');
     await expect(panel).toBeVisible();
     for (const action of outputs) {
-      await expect(panel.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
+      const control = panel.locator(`[data-wu-command-action="${action}"]`);
+      await expect(control).toBeVisible();
+      await expect(control).toHaveText(outputLabels[action]);
     }
   } else {
     await expect(toolbar.locator('[data-wu-basic-output-group]')).toBeVisible();
     for (const action of outputs) {
-      await expect(toolbar.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
+      const control = toolbar.locator(`[data-wu-command-action="${action}"]`);
+      await expect(control).toBeVisible();
+      await expect(control).toHaveText(outputLabels[action]);
     }
   }
 
@@ -85,13 +110,33 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   await expect(morePanel).toBeVisible();
   await expect(morePanel.locator('#inputFileNameToSaveAs')).toBeVisible();
   await expect(morePanel.getByText('Text file', { exact: true })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(morePanel).toBeHidden();
 
   await share.click();
+  const publishDialog = page.locator('.wu-share-dialog');
+  await expect(publishDialog).toBeVisible();
+  await expect(publishDialog).toContainText('write-urdu.com/s/');
+  await expect(publishDialog).toContainText('Publish & get short link');
+  expect(publishBody).toBe('');
+  expect(await page.evaluate(() => window.__writeUrduSharedPayload || null)).toBeNull();
+
+  await publishDialog.locator('[data-wu-basic-publish-confirm]').click();
+  const shortUrl = `${new URL(page.url()).origin}/s/Ab12Cd34`;
+  await expect(publishDialog.locator('[data-wu-share-url]')).toHaveValue(shortUrl, { timeout: 10000 });
+  expect(publishBody).toContain('name="source_tool"');
+  expect(publishBody).toContain('basic_editor');
+  expect(publishBody).toContain('name="public_text"');
+  expect(publishBody).toContain('name="image"');
+
+  await publishDialog.locator('[data-wu-share-native]').click();
   await page.waitForFunction(() => Boolean(window.__writeUrduSharedPayload));
   const payload = await page.evaluate(() => window.__writeUrduSharedPayload);
-  expect(payload.text).toBe('میرا خیال ہے');
-  expect(payload.url).toBeUndefined();
+  expect(payload.url).toBe(shortUrl);
+  expect(payload.text).toBe('Open this Urdu writing on Write Urdu.');
+  expect(payload.text).not.toContain('میرا خیال ہے');
 
+  await publishDialog.locator('[data-wu-share-close]').click();
   await clear.click();
   await expect(editor).toHaveValue('');
   await expect(share).toBeDisabled();
