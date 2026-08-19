@@ -18,6 +18,8 @@ const header = read('site-header.js');
 const serviceWorker = read('sw.js');
 const headers = read('_headers');
 const redirects = read('_redirects');
+const pageRegistry = read('docs', 'WU-PUBLIC-PAGE-REGISTRY.csv');
+const seoConfigSource = read('seo.config.js');
 
 // WriteUrdu reuses its existing D1 allocation; no new DB binding is introduced.
 assert.match(authSource, /D1Adapter\(env\.METRICS_DB\)/, 'Auth.js must use the existing METRICS_DB D1 binding');
@@ -58,10 +60,13 @@ assert.match(accountSession, /candidate\.startsWith\('\/'\)/, 'Return targets mu
 assert.match(accountSession, /candidate\.startsWith\('\/\/'\)/, 'Protocol-relative return targets must be rejected');
 assert.match(accountSession, /BLOCKED_RETURN_PREFIXES/, 'Sensitive/internal account return targets must be blocked');
 
-// Account UI stays optional and non-indexable.
-assert.match(signIn, /meta name="robots" content="noindex,nofollow,noarchive"/, 'Sign-in page must be noindex');
+// Account UI stays optional, governed and non-indexable.
+assert.match(signIn, /meta name="robots" content="noindex,follow,noarchive"/, 'Sign-in page must follow the WU noindex utility convention');
+assert.match(signIn, /meta name="googlebot" content="noindex,follow"/, 'Sign-in page must include the WU Googlebot utility directive');
 assert.match(signIn, /Continue with Google/, 'Google is the first account provider');
 assert.match(signIn, /Existing local drafts are not uploaded/, 'Sign-in page must state the local-first boundary');
+assert.match(seoConfigSource, /id: 'sign-in'[\s\S]*path: '\/sign-in'[\s\S]*indexable: false/, 'Sign-in must be registered as a noindex SEO utility');
+assert.match(pageRegistry, /sign-in\.html,\/sign-in,Utility,[^\n]*,noindex,no,/, 'Sign-in must be registered as noindex and excluded from the sitemap');
 assert.match(header, /data-wu-account-control/, 'Shared shell must reserve an optional account control');
 assert.match(header, /account-control\.mjs/, 'Shared shell must load the isolated account control module');
 assert.match(headers, /\/sign-in[\s\S]*X-Robots-Tag: noindex/, 'HTTP headers must reinforce sign-in noindex');
