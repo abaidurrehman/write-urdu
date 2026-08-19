@@ -25,11 +25,12 @@ const seoConfigSource = read('seo.config.js');
 assert.match(authSource, /D1Adapter\(env\.METRICS_DB\)/, 'Auth.js must use the existing METRICS_DB D1 binding');
 assert.match(authSource, /hasD1Binding\(env\.METRICS_DB\)/, 'Auth readiness must validate the existing D1 binding');
 assert.doesNotMatch([authSource, meRoute].join('\n'), /ACCOUNT_DB|WRITE_URDU_DB/, 'Auth runtime must not introduce a second D1 binding');
+const authTables = [...migration.matchAll(/CREATE TABLE IF NOT EXISTS\s+"([^"]+)"/gi)].map(match => match[1]).sort();
+assert.deepStrictEqual(authTables, ['accounts', 'sessions', 'users', 'verification_tokens'].sort(), 'Auth migration must create only the four Auth.js-owned tables');
 assert.match(migration, /CREATE TABLE IF NOT EXISTS "accounts"/, 'Auth.js accounts table migration is required');
 assert.match(migration, /CREATE TABLE IF NOT EXISTS "sessions"/, 'Auth.js sessions table migration is required');
 assert.match(migration, /CREATE TABLE IF NOT EXISTS "users"/, 'Auth.js users table migration is required');
 assert.match(migration, /CREATE TABLE IF NOT EXISTS "verification_tokens"/, 'Auth.js verification token table migration is required');
-assert.doesNotMatch(migration, /draft|document|public_text|product_events/i, 'Auth migration must not mix writing or telemetry payload tables into Auth.js ownership');
 
 // Keep Auth.js behind one project-owned boundary.
 assert.match(authSource, /from '@auth\/core'/, 'The project auth wrapper must import Auth.js core');
