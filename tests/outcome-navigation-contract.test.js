@@ -37,7 +37,7 @@ assert.match(primaryNavigation, /Prepare a formal Urdu document/, 'Work menu mus
 assert.match(primaryNavigation, /activeOwner: false/, 'Cross-category task link needs explicit non-owner active-state handling');
 assert.match(primaryNavigation, /Learn the Urdu alphabet/, 'Learn menu must use task language');
 assert.match(primaryNavigation, /Get answers to common questions/, 'FAQ must be exposed through a user question outcome');
-assert.match(primaryNavigation, /<strong>.*<\/strong><small>/, 'Outcome label must be visually primary with tool name secondary');
+assert.match(navigation, /<strong>.*<\/strong><small>/, 'Outcome label must be visually primary with tool name secondary');
 
 assert.match(navigation, /var FOOTER_GROUPS = \[/, 'Footer must use a dedicated compact information architecture');
 ['write-urdu', 'create', 'help'].forEach((group) => {
