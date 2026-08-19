@@ -2,335 +2,253 @@
 
 **Status:** Planned product boundary — founder direction reconciled 2026-08-19  
 **Area:** Account platform / retention / future collaboration  
-**Depends on:** existing anonymous writing product and v2 shell  
-**Implementation authority:** this document authorizes only the boundaries and sequence below; individual capabilities still require their own feature spec/slice  
+**Depends on:** existing anonymous writing product, v2 shell and existing WriteUrdu D1 database  
 **Primary child specs:** `WU-AUTH-001`, `WU-DRAFT-001`
 
 ## 1. Purpose
 
 WriteUrdu can evolve from a one-session writing utility into a persistent Urdu writing workspace without prematurely becoming a social network or enterprise collaboration suite.
 
-The product sequence is:
+The intended sequence is:
 
 ```text
 write anonymously
-→ optionally create/sign in to an account
+→ optionally sign in
 → explicitly save selected writing to My Documents
-→ reopen on another device
-→ later share/invite collaborators when evidence supports it
-→ later create team workspaces when evidence supports it
+→ reopen later / on another device
+→ later evaluate private collaboration
+→ later evaluate team workspaces
 → only then evaluate public creator/social features
 ```
 
-The account is infrastructure for continuity. **The account itself is not the product value.** The first valuable authenticated loop is:
+The account is infrastructure for continuity. The first valuable authenticated loop is:
 
 ```text
-write → save to my account → reopen later / on another device → continue writing
+write → save to my account → reopen → continue writing
 ```
 
-## 2. Why this boundary exists
-
-Current product ideas include:
-
-- create an account;
-- build a profile;
-- store documents online;
-- collaborate;
-- invite colleagues;
-- create a team;
-- follow anyone.
-
-These ideas have very different data, trust, moderation and operational costs. Implementing them as one account epic would create unnecessary architecture and risk the mature core writing experience.
-
-This spec separates them into layers so implementation agents cannot infer that authentication automatically authorizes profiles, collaboration, teams or a follower graph.
-
-## 3. Product layers and status
+## 2. Product layers
 
 | Layer | Capability | Status | Decision |
 | --- | --- | --- | --- |
 | L0 | Anonymous/local writing | Existing / protected | Must remain first-class |
 | L1 | Optional account identity | Planned via `WU-AUTH-001` | Build first |
-| L2 | Account-backed writing documents | Planned via `WU-DRAFT-001` | Build immediately after Google auth proof |
-| L3 | Minimal profile/preferences | Future | Only fields required by real product UX; no public creator profile by default |
-| L4 | Private sharing / invite collaborator | Discovery | Separate feature and authorization model |
-| L5 | Team/workspace membership | Discovery | Separate feature after real multi-user demand |
-| L6 | Public profile / follow / feed | Hold | Do not build without evidence that public publishing/discovery is a real user job |
+| L2 | Account-backed writing documents | Planned via `WU-DRAFT-001` | Build after Google auth proof |
+| L3 | Minimal profile/preferences | Future | Add only when a concrete UX needs it |
+| L4 | Private sharing / collaborator invite | Discovery | Separate authorization feature |
+| L5 | Team/workspace membership | Discovery | Only after real multi-user demand |
+| L6 | Public profile / follow / feed | Hold | Requires separate evidence and moderation design |
 
-`L1` does not imply `L2`; `L2` does not imply `L4`; and no lower layer may silently create a higher-layer behavior.
+No lower layer silently enables a higher layer.
 
-## 4. Non-negotiable product principles
+## 3. Non-negotiable product principles
 
-### 4.1 Anonymous-first forever unless a later explicit strategy changes it
+### Anonymous-first
 
-Users must continue to be able to:
+Users must continue to type, transliterate, edit, use local draft/history and use currently anonymous creation/export tools without an account.
 
-- type English letters and get Urdu;
-- use the basic writer;
-- use the Urdu keyboard;
-- use the rich editor;
-- use local draft/history behavior;
-- use creation/export tools where currently anonymous;
+An auth or database outage must not become a writing outage.
 
-without creating an account.
+### One existing D1 database, separate schema ownership
 
-An auth outage must never become a writing outage.
+WriteUrdu already has a production D1 database exposed to Pages Functions through the existing `METRICS_DB` binding. It currently stores product telemetry and share-artifact metadata. This program **must reuse that same D1 database** rather than allocate additional D1 databases.
 
-### 4.2 Identity and content are separate planes
+The binding name is historical. Do not create `ACCOUNT_DB` or `WRITE_URDU_DB` merely for conceptual cleanliness.
 
-Use two separate D1 bindings/databases:
+The physical model is:
 
 ```text
-ACCOUNT_DB
-  Auth.js-owned identity/session tables
-  + only minimal account-lifecycle metadata when explicitly required
-
-WRITE_URDU_DB
-  writing_documents
-  future product-owned document metadata
-  future sharing/collaboration metadata only when those features are approved
+existing D1 database / METRICS_DB
+│
+├── existing telemetry tables
+├── existing share-artifact tables
+│
+├── Auth.js-owned tables
+│   ├── users
+│   ├── accounts
+│   ├── sessions
+│   └── verification_tokens
+│
+└── WriteUrdu product-owned account content
+    └── writing_documents
 ```
 
-Do not store Urdu writing bodies inside Auth.js adapter tables or generic account/session records.
+Isolation is enforced through **table ownership, modules, APIs, authorization and migrations**, not separate databases.
 
-Do not use an analytics/OS database for either account identity or user writing merely because it already exists.
+### Schema ownership rules
 
-### 4.3 Stable user ID is the ownership subject
+- Auth.js owns its adapter tables. Do not customize them for WriteUrdu product fields.
+- Telemetry code must not query Auth.js or `writing_documents` tables.
+- Share-artifact code must not query Auth.js or private document tables unless a later approved feature explicitly requires a safe boundary.
+- Document APIs authorize through `session.user.id`; they do not authorize by email.
+- Product code must not query Auth.js `accounts`/`sessions` directly to infer authorization.
+- User writing must never be stored in Auth.js session/account records or telemetry rows.
+- Existing migrations remain immutable; auth/documents are added through new numbered migrations.
 
-All product-owned authenticated data is scoped by the stable Auth.js/D1 user ID exposed as:
-
-`session.user.id`
-
-Email address is profile/contact data. It is **not** an authorization key and must not be used to silently merge provider identities.
-
-Because `ACCOUNT_DB` and `WRITE_URDU_DB` are intentionally separate, product tables store the stable user ID as an opaque ownership subject. Do not require a cross-database foreign key.
-
-### 4.4 Local-first remains the safety layer
-
-Signing in must not automatically upload local drafts/history.
-
-The user explicitly opts a document into account storage. Once opted in, cloud synchronization may happen in the background according to `WU-DRAFT-001`, while browser-local save remains immediate and independent.
-
-### 4.5 Public/social behavior is never inferred from account existence
-
-Creating an account must not automatically create:
-
-- a public profile page;
-- a public username;
-- follower/following lists;
-- a discoverable content feed;
-- searchable public documents;
-- public activity history.
-
-These require separate product, privacy, abuse and moderation decisions.
-
-## 5. Data-domain ownership
-
-### ACCOUNT_DB
-
-Auth.js logically owns:
-
-- `users`;
-- `accounts`;
-- `sessions`;
-- `verification_tokens`.
-
-Project-owned account tables may be added later only for concrete identity/account lifecycle needs, for example:
+Recommended migration sequence after current `0004_share_artifacts.sql`:
 
 ```text
-account_preferences
-- user_id
-- preferred_locale nullable
-- created_at
-- updated_at
+0005_authjs_d1_foundation.sql
+0006_writing_documents.sql
 ```
 
-Do not customize Auth.js adapter tables for WriteUrdu-specific profile fields.
+Exact numbering must be reconciled against current `main` at implementation time.
 
-### WRITE_URDU_DB
+### Stable user ID is the ownership subject
 
-The first product-owned authenticated content table is defined by `WU-DRAFT-001` and should be writing-document specific rather than a generic arbitrary file drive.
+All authenticated product data is scoped by the stable Auth.js user ID exposed as `session.user.id`.
 
-Future approved features may add separate tables such as:
+Email/name/image are profile data, not authorization keys. Do not silently merge provider identities because emails match.
+
+### Local-first remains the safety layer
+
+Signing in must not automatically upload existing local drafts/history. The user explicitly opts a document into account storage. Browser-local save remains immediate and independent of D1 availability.
+
+### Public/social behavior is never inferred from account existence
+
+Creating an account must not automatically create a public username/profile, follower graph, feed, searchable documents or public activity history.
+
+## 4. Why sharing one D1 database is acceptable
+
+The physical database is shared to stay within platform database-count constraints. Security boundaries still remain explicit:
 
 ```text
-document_shares
-collaborators
-team_memberships
-team_documents
+Auth.js wrapper
+  → may access Auth.js adapter tables through D1Adapter(METRICS_DB)
+
+Document API
+  → obtains session through auth wrapper
+  → accesses writing_documents only
+
+Telemetry API
+  → accesses telemetry tables only
+
+Share API
+  → accesses share-artifact tables only
 ```
 
-Only add them when their corresponding feature is approved. Do not pre-build an ACL/team schema “for later”.
+The implementation should prefer module-level access discipline over broad generic database helper APIs that make every table available everywhere.
 
-## 6. Route and UX ownership
+No new database is required for auth, My Documents, profiles, collaboration or teams unless a later founder-approved architecture change explicitly justifies consuming another D1 allocation.
 
-Initial account surfaces should remain small:
+## 5. Initial routes and UX
 
 ```text
 /sign-in          optional account entry
 /my-documents     account-backed writing continuity
 ```
 
-The shared header may expose:
+Shared header:
 
 ```text
 Signed out: Sign in
-Signed in: avatar/name menu → My Documents / Account / Sign out
+Signed in: avatar/name → My Documents / Account / Sign out
 ```
 
 Do not add a generic authenticated dashboard full of empty modules.
 
-If a future account settings route is introduced, it owns account identity/lifecycle settings, not document content editing.
-
-## 7. Capability gates
+## 6. Capability gates
 
 ### Gate A — Auth foundation
 
 Must prove:
 
 - optional/fail-closed Auth.js runtime;
-- dedicated `ACCOUNT_DB`;
+- reuse of existing `METRICS_DB` binding/database;
+- adapter migration does not affect existing telemetry/share tables;
 - stable `session.user.id`;
 - anonymous writing unchanged;
 - real Google custom-domain callback;
-- in-progress local writing survives OAuth redirect and sign-out.
-
-Only then proceed to account-backed documents.
+- local writing survives OAuth redirect and sign-out.
 
 ### Gate B — My Documents
 
 Must prove:
 
+- `writing_documents` lives in the same existing D1 database but is product-owned;
 - explicit save-to-account;
-- no automatic upload on sign-in;
+- no automatic local-history upload;
 - second-device restore;
-- user-scoped authorization;
-- local save survives D1/network failure;
-- conflict detection rather than last-write-wins;
-- delete behavior and privacy copy.
-
-Only after this loop is useful should the product invest in richer account identity/profile work.
+- every document query is scoped by `session.user.id`;
+- database/network failure never blocks local save;
+- revision conflicts are detected;
+- delete/privacy behavior is implemented.
 
 ### Gate C — Collaboration discovery
 
-Private collaboration should be considered only when there is evidence users need another person to access/edit the same writing.
+A separate collaboration spec must define owner/collaborator roles, invitation and revocation, viewer/editor permissions, concurrent edits, deletion/ownership semantics and abuse/privacy controls.
 
-A collaboration spec must define at minimum:
-
-- owner vs collaborator roles;
-- invite mechanism;
-- viewer/editor permission model;
-- invite expiry/revocation;
-- document deletion/ownership transfer semantics;
-- concurrent edit/conflict behavior;
-- audit/privacy expectations;
-- abuse controls.
-
-Do not reinterpret `revision` conflict handling from `WU-DRAFT-001` as real-time collaboration.
+`WU-DRAFT-001` revision conflicts are not real-time collaboration.
 
 ### Gate D — Teams
 
-Team workspaces require separate proof that shared membership is materially better than per-document invitations.
-
-A team feature must not be introduced solely to make the product look SaaS-like.
+Team workspaces require evidence that shared membership is materially better than per-document invites. Do not prebuild team ACL tables.
 
 ### Gate E — Social graph
 
-`follow anyone`, public profiles and feed/discovery remain **Hold** until public WriteUrdu artifacts show repeat usage and there is evidence that users want author discovery/following rather than simply sharing links externally.
+Public profiles/follow/feed remain Hold until public artifact usage shows real demand and a separate moderation/privacy review covers usernames, reporting, blocking, spam, minors, notifications, deletion and discovery.
 
-Before this gate can move, a separate review must address:
+## 7. InvoiceCraftly reuse boundary
 
-- public/private identity;
-- username policy and squatting;
-- blocking/reporting;
-- spam and automated abuse;
-- moderation of public writing/images;
-- notification controls;
-- child/minor safety considerations;
-- deletion/de-indexing;
-- follower privacy;
-- feed ranking/discovery responsibility.
-
-## 8. Reuse decision from InvoiceCraftly
-
-The primary internal implementation precedent for L1 is the merged InvoiceCraftly Auth.js + D1 runtime from 2026-08-15, not the earlier Auth0 idea and not a fresh authentication design.
-
-Reuse the proven boundaries:
+Reuse the proven InvoiceCraftly Auth.js runtime patterns:
 
 - one project-owned Auth.js import module;
 - Pages Functions `/api/auth/*` catch-all;
-- `/api/me` product projection;
+- `/api/me` projection;
 - database sessions;
 - stable user ID;
 - `AUTH_ENABLED` fail-closed gate;
 - same-origin redirect validation;
 - sanitized logging;
-- no-store account/session responses;
+- `no-store` account/session responses;
 - identity-only provider scopes;
-- no automatic email-based linking;
-- local work preserved through OAuth.
+- no automatic email linking;
+- local work preservation through OAuth.
 
-Adapt product naming, routes and local-save integration to WriteUrdu. Do not copy InvoiceCraftly Workspace, billing or Personal Cloud behavior.
+**Adapt the database binding:** InvoiceCraftly used a dedicated `ACCOUNT_DB`; WriteUrdu must instead pass its existing `METRICS_DB` binding to the Auth.js D1 adapter.
+
+Do not copy InvoiceCraftly Workspace, billing or Personal Cloud behavior.
 
 See `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`.
 
-## 9. Success measures
+## 8. Rollback architecture
 
-The account initiative should ultimately be judged by product continuity, not sign-up count alone.
-
-Useful measures include:
-
-- share of signed-in users who save at least one document;
-- successful second-session / second-device reopen rate;
-- repeat document editing;
-- cloud-save error/conflict rate;
-- retention of anonymous writer usage after account UI ships;
-- later: collaborator invite acceptance/use, if collaboration is approved.
-
-Do not optimize sign-in prompts at the expense of anonymous task completion.
-
-## 10. Rollback architecture
-
-Independent kill switches are required:
+Independent feature gates:
 
 ```text
 AUTH_ENABLED
 DOCUMENTS_ENABLED
 ```
 
-Disabling account-backed features must not:
+Disabling either feature must not delete rows, alter existing telemetry/share behavior, remove local writing, change transliteration or break static SEO routes.
 
-- remove browser-local writing;
-- delete remote identity/document rows;
-- change transliteration behavior;
-- break static SEO routes.
+Rollback means disabling runtime use, not dropping shared-database tables.
 
-Future collaboration/team/social features require their own independent rollout gates.
-
-## 11. Explicitly out of scope for the first implementation program
+## 9. Explicitly out of scope for first implementation
 
 - public creator profiles;
-- following/followers;
-- activity feeds;
-- likes/reactions;
-- notifications;
+- followers/feed;
 - real-time co-editing;
 - comments/suggestions;
-- team workspaces;
+- teams;
 - account linking;
-- generic Google Drive/Dropbox/OneDrive integration;
+- Google Drive/Dropbox/OneDrive integration;
 - arbitrary file storage;
-- Card Studio image/project cloud sync;
+- Card Studio cloud projects/images;
 - paid storage tiers.
 
-## 12. Acceptance criteria for this boundary
+## 10. Acceptance criteria
 
-- [ ] `WU-AUTH-001` treats identity as optional infrastructure and uses `ACCOUNT_DB`.
-- [ ] `WU-DRAFT-001` stores user writing only in `WRITE_URDU_DB` and scopes ownership by stable user ID.
-- [ ] Login never implies upload, publishing, collaboration or a public profile.
+- [ ] No new D1 database is introduced by this initiative.
+- [ ] Existing `METRICS_DB` is reused by Auth.js and My Documents.
+- [ ] Existing telemetry/share tables and behavior remain intact.
+- [ ] Auth.js tables are adapter-owned and isolated behind the auth module.
+- [ ] `writing_documents` is product-owned and only accessed through document code.
+- [ ] All document ownership uses stable `session.user.id`.
+- [ ] Login never implies upload, publishing, collaboration or public profile creation.
 - [ ] My Documents is the first authenticated product-value surface.
 - [ ] Collaboration, teams and social graph remain separately gated.
-- [ ] Implementation skills route agents to the correct slice rather than expanding scope.
-- [ ] Anonymous writing remains the protected product baseline.
+- [ ] Anonymous writing remains the protected baseline.
 
 ## Related
 
