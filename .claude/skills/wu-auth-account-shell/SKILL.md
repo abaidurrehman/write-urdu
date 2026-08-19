@@ -1,157 +1,115 @@
 ---
 name: wu-auth-account-shell
-description: Implement or review WU-AUTH-001 AUTH-B: Google sign-in, the static /sign-in account shell, /api/me hydration, sign-out, same-origin return handling and preservation of in-progress local Urdu writing through OAuth. Load only after the Auth.js + ACCOUNT_DB backend foundation is stable.
+description: Implement or review WU-AUTH-001 AUTH-B for WriteUrdu: Google sign-in, noindex account shell, session-aware header, sign-out and safe return to local writing after AUTH-A is stable. Uses the existing METRICS_DB-backed Auth.js foundation; does not create databases or document persistence.
 ---
 
-# WriteUrdu AUTH-B — Google Account Shell
+# WriteUrdu AUTH-B — Google + account shell
 
-Use after `wu-auth-authjs-d1-foundation` has completed and AUTH-A is green.
+Use only after AUTH-A is merged/stable.
 
-## Read first
+Read first:
 
 1. `specs/WU-AUTH-001-social-authentication-foundation.md`
 2. `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`
 3. `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`
-4. `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
-5. current `functions/lib/auth.mjs`, `/api/auth/*`, `/api/me`
-6. current `js/editor-tools.js` and all three editor bootstrap paths
-7. current shared v2 header/navigation code
-8. current InvoiceCraftly Google account-shell implementation/tests
-9. `.claude/skills/wu-auth-add-provider/google.md`
-10. current Auth.js Google sign-in/CSRF behavior and Google OAuth configuration requirements.
+4. current `functions/lib/auth.mjs`, `/api/me`, header/runtime and `js/editor-tools.js`
+5. `.claude/skills/wu-auth-add-provider/google.md`
+6. current Auth.js Google provider documentation.
 
-## Entry gate
+## Preconditions
 
-Do not start this skill until:
+Do not start if:
 
-- Auth.js is isolated behind one WriteUrdu module;
-- `ACCOUNT_DB` migration/binding contract exists;
-- `/api/me` backend behavior is tested;
-- disabled/misconfigured/ready states are deterministic;
-- anonymous baseline remains green.
+- AUTH-A does not use the existing `METRICS_DB`;
+- Auth.js adapter migration is not proven additive;
+- `/api/me` is unstable;
+- anonymous writing regression is red;
+- existing telemetry/share behavior regressed.
 
-## Product objective
+## Scope
 
-The account shell should make sign-in available without turning WriteUrdu into a login-first product.
+Deliver:
 
-Target user journey:
+- Google provider/configuration;
+- noindex `/sign-in` page;
+- current Auth.js CSRF-safe provider sign-in flow;
+- session-aware shared header;
+- signed-in utility menu;
+- sign-out;
+- same-origin return handling;
+- local writer flush before OAuth;
+- production custom-domain callback/session proof.
+
+Do not deliver:
+
+- `writing_documents`;
+- My Documents persistence;
+- Facebook;
+- profiles/followers;
+- collaboration/teams;
+- new D1 database or binding.
+
+## Database rule
+
+AUTH-B consumes AUTH-A exactly as implemented:
 
 ```text
-write
-→ Sign in
-→ Continue with Google
-→ return to same writing context
-→ local writing still present
-→ optional My Documents value later
+Auth.js → D1Adapter(env.METRICS_DB)
 ```
 
-## Step 1 — inspect current v2 shell before markup
+Do not introduce `ACCOUNT_DB`, `WRITE_URDU_DB` or another D1 database while adding account UI.
 
-Do not copy InvoiceCraftly HTML/CSS.
+UI code never accesses D1 directly. It obtains account state from `/api/me`.
 
-Identify:
+## Google provider
 
-- current shared header mount/render path;
-- mobile header behavior;
-- account/control slot location;
-- writer top position/canvas boundary;
-- current navigation helper used for safe same-origin transitions;
-- existing noindex/static metadata patterns.
-
-The account control must not make the authoring canvas harder to notice or push it materially lower on mobile.
-
-## Step 2 — Google provider readiness
-
-Use the current Auth.js Google provider already prepared by AUTH-A or add it only inside `functions/lib/auth.mjs` if AUTH-A intentionally deferred construction.
-
-Required identity scope:
+Identity-only scope equivalent to:
 
 ```text
 openid email profile
 ```
 
-No Drive/Gmail/Calendar/Contacts/storage scopes.
+Never request Drive, Gmail, Calendar, Contacts or unrelated provider APIs.
 
-Render Google in UI only when provider readiness says it is usable.
+Provider is visible only when its configuration is ready.
 
-Do not hard-code “Google is always configured”.
+User-facing label:
 
-## Step 3 — static `/sign-in`
+```text
+Continue with Google
+```
 
-Build a noindex static route using the current WriteUrdu v2 shell.
+Do not call this “Gmail login”.
 
-Required product copy concepts:
+## Sign-in page
+
+Create a static, noindex `/sign-in` route using the current v2 shell.
+
+Required message concepts:
 
 - account is optional;
-- sign in to save selected writing to your account / continue later;
-- existing local writing is not automatically uploaded;
-- continue without an account remains visible.
+- sign in to save selected writing and continue later;
+- existing local drafts are not automatically uploaded;
+- writing still works without an account.
 
-Actions:
+Primary actions:
 
 ```text
 Continue with Google
 Continue without an account
 ```
 
-Do not introduce email/password UI placeholders.
+Do not turn the route into a generic social-login wall.
 
-Do not show Facebook until it is actually implemented/configured.
+## Session-aware header
 
-## Step 4 — use current Auth.js CSRF-safe sign-in flow
-
-Inspect the installed Auth.js behavior and InvoiceCraftly account shell before implementation.
-
-Do not assume a bare GET to `/api/auth/signin/google` is sufficient.
-
-Use the supported CSRF token + POST/provider flow for the installed version, or its current documented equivalent.
-
-Do not hand-roll OAuth state/PKCE/cookies.
-
-## Step 5 — preserve current local writing before OAuth
-
-This is the most important WriteUrdu-specific adaptation.
-
-Before navigation away from any writer/account entry:
-
-- flush pending local autosave through the current `js/editor-tools.js` / adapter mechanism;
-- do not create a parallel temporary save implementation;
-- do not put Urdu text/rich HTML in URL/query/OAuth state;
-- persist only safe local state/return context;
-- navigate after the local save path is complete/best-effort according to existing semantics.
-
-After OAuth returns, normal editor bootstrap should restore canonical local state.
-
-Test meaningful content, not an empty editor.
-
-## Step 6 — bounded return targets
-
-Allow return only to safe same-origin WriteUrdu routes.
-
-Prefer a small product-owned resolver/allowlist for relevant contexts such as:
-
-- `/`;
-- `/urdu-editor`;
-- `/urdu-keyboard`;
-- `/my-documents` when it exists;
-- `/sign-in`/account context where appropriate.
-
-Use current actual route paths; do not invent stale ones.
-
-External-origin or malformed return targets fall back safely.
-
-## Step 7 — `/api/me` hydration
-
-The static shell should query `/api/me` client-side without blocking writer initialization.
-
-Header behavior:
+Signed out:
 
 ```text
-signed out  → Sign in
-signed in   → compact avatar/name account control
+Sign in
 ```
 
-Signed-in menu:
+Signed in:
 
 ```text
 My Documents
@@ -159,135 +117,90 @@ Account
 Sign out
 ```
 
-If My Documents has not shipped yet, do not expose a dead link; hide it or route according to the current staged release decision.
+Hydrate from `/api/me` client-side.
 
-Reserve stable header space so account hydration does not create material layout shift.
+Reserve stable layout space so session lookup does not materially shift navigation or push the writer/canvas downward, especially on mobile.
 
-Missing image/name/email must degrade safely.
+Session lookup must not block transliteration/editor startup.
 
-## Step 8 — sign-out
+## Preserve local writing through OAuth
 
-Use the current supported Auth.js sign-out flow including required CSRF handling.
+Before account navigation/OAuth:
 
-Sign-out must:
+1. flush scheduled local save using the existing editor adapter/persistence path;
+2. never put Urdu text/rich HTML in query params or OAuth state;
+3. retain only a safe same-origin return route;
+4. perform Auth.js sign-in;
+5. return to the safe route;
+6. normal writer initialization restores local state.
 
-- end the account session;
-- not clear browser-local writing/history;
-- not delete account-backed documents;
-- return to a safe same-origin product context.
-
-## Step 9 — error/cancel behavior
-
-Normalize provider/account errors into small product messages.
-
-OAuth cancel, provider outage or account-not-linked behavior must always leave a clear path to:
-
-- retry;
-- use the previous sign-in method where relevant;
-- continue without an account.
-
-Never expose raw provider/Auth.js exceptions/tokens.
-
-Never imply local writing is lost because sign-in failed.
-
-## Step 10 — noindex/privacy/SEO boundary
-
-Account surfaces must be noindex.
-
-Verify adding `/api/auth/*`, `/api/me` and `/sign-in` does not alter:
-
-- public route canonical tags;
-- sitemap membership of established public pages;
-- robots behavior for public SEO owners;
-- transliteration initial HTML;
-- page titles/meta of mature acquisition routes.
-
-## Step 11 — focused tests
-
-Add/reuse tests for:
-
-- provider button shown only when Google ready;
-- no dead Google button when config incomplete;
-- CSRF token/sign-in form behavior;
-- bounded callback/return targets;
-- account page noindex;
-- `/api/me` signed-out and signed-in UI states;
-- missing profile image/name/email fallback;
-- sign-out form/action;
-- no provider/storage tokens exposed client-side;
-- shared header stable placeholder/hydration contract.
-
-## Step 12 — browser regression
-
-At minimum test:
-
-### Basic/homepage writer
+Required flow:
 
 ```text
-type Urdu
-→ local save
-→ Sign in
-→ Google
-→ return
-→ exact writing present
+write meaningful Urdu
+→ flush/save locally
+→ Continue with Google
+→ OAuth callback
+→ return to writer
+→ exact local content remains
 → sign out
-→ writing still present
+→ exact local content remains
 ```
 
-### Rich editor
+Also prove rich formatting survives this navigation round-trip.
 
-Use Urdu text with formatting; prove exact rich content survives the OAuth round trip.
+## Error behavior
 
-### Urdu keyboard
+Normalize errors rather than expose raw Auth.js/provider responses.
 
-Use actual Urdu keyboard input; prove content survives.
+Useful categories:
 
-### Failure
+```text
+auth-unavailable
+provider-unavailable
+provider-cancelled
+account-not-linked
+session-expired
+```
 
-Make `/api/me` unavailable or simulate account lookup failure; prove typing/editor initialization still works.
+All failures must preserve a clear path back to anonymous writing.
 
-### Narrow/mobile
+Do not enable automatic email account linking to avoid an account-not-linked error.
 
-Prove account UI does not cover/push the main authoring surface into a poor first viewport.
+## Security checks
 
-## Step 13 — production proof
+- exact canonical callback verified against current Auth.js behavior;
+- same-origin return target only;
+- no open redirect;
+- no secret/token/session data in static assets/logs/analytics;
+- account responses remain `no-store`;
+- no provider storage/data permissions;
+- sign-out does not clear local drafts/history;
+- UI never talks directly to D1.
 
-Do not call AUTH-B ready based only on mocks/local tests.
+## Production proof
 
-On the custom production domain:
+On canonical `write-urdu.com`:
 
-1. create meaningful local content;
-2. complete real Google sign-in;
-3. return to intended writer;
-4. verify content unchanged;
-5. verify `/api/me` authenticated projection;
-6. verify expected Auth.js `users/accounts/sessions` rows in `ACCOUNT_DB`;
-7. verify no Urdu content in auth rows;
-8. sign out;
-9. verify local content remains;
-10. cancel OAuth once and verify recovery;
-11. inspect static assets for secrets/tokens;
-12. capture desktop + narrow account shell/header evidence.
-
-Record callback/binding evidence without secret values.
-
-## Stop conditions
-
-Stop and fix if:
-
-- sign-in loses in-progress writing;
-- account state delays editor initialization;
-- session hydration causes significant header/canvas layout shift;
-- Google login requests non-identity scopes;
-- account routes become indexable accidentally;
-- sign-out clears local data;
-- external return targets are accepted;
-- raw OAuth/Auth.js errors leak to UI;
-- implementation introduces a framework migration;
-- My Documents/profile/team functionality is pulled into this slice.
+1. create meaningful local writing;
+2. complete Google sign-in;
+3. return to intended route;
+4. confirm local writing unchanged;
+5. confirm `/api/me` authenticated with stable user ID;
+6. confirm expected Auth.js rows exist in the existing D1 database;
+7. confirm no Urdu document content exists in Auth.js rows;
+8. confirm telemetry/share endpoints still work;
+9. sign out and confirm local content remains;
+10. cancel OAuth once and confirm writing remains usable;
+11. run signed-out/signed-in homepage, rich editor and keyboard smoke tests;
+12. inspect mobile header/canvas placement for regression.
 
 ## Exit gate
 
-AUTH-B is complete only when real Google production sign-in works and the local-writing preservation regression is proven.
+AUTH-B is done only when Google sign-in works end to end and the account UI creates no dependency between writing and auth availability.
 
-After AUTH-B, move to `WU-DRAFT-001` using `wu-drafts-cloud-sync`. Do not add Facebook first merely because provider wiring is easy.
+My Documents begins only after this gate is green.
+
+## Rollback
+
+Set `AUTH_ENABLED=false` to disable account behavior. Do not remove shared-database tables as rollback.
