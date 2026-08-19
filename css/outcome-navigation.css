@@ -26,19 +26,39 @@
 @media(max-width:1366px){
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-header-inner{position:relative}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-menu-toggle{display:inline-flex!important}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav{position:absolute!important;top:calc(100% + 8px)!important;right:0!important;left:0!important;display:none!important;align-items:stretch!important;padding:10px!important;border:1px solid var(--wu-shell-header-border)!important;border-radius:var(--wu-radius-lg)!important;background:var(--wu-shell-menu-bg)!important;box-shadow:var(--wu-shadow-float)!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav{position:absolute!important;top:calc(100% + 8px)!important;right:0!important;left:0!important;display:none!important;align-items:stretch!important;max-height:calc(100dvh - 84px);overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;padding:10px!important;box-sizing:border-box;border:1px solid var(--wu-shell-header-border)!important;border-radius:var(--wu-radius-lg)!important;background:var(--wu-shell-menu-bg)!important;box-shadow:var(--wu-shadow-float)!important;-webkit-overflow-scrolling:touch}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu{grid-column:auto}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>summary{height:100%;justify-content:flex-start;padding:13px}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{position:static;min-width:0;width:auto;margin-top:6px;grid-template-columns:1fr;background:var(--wu-color-surface-soft);box-shadow:none}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu{grid-column:auto;min-width:0}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>summary{height:auto!important;min-height:48px;justify-content:flex-start;padding:13px;box-sizing:border-box}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{position:static;min-width:0;width:auto;max-width:100%;margin-top:6px;box-sizing:border-box;grid-template-columns:1fr;background:var(--wu-color-surface-soft);box-shadow:none}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu[open]{grid-column:1/-1}
 }
 
 @media(max-width:560px){
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{grid-template-columns:1fr}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu[open]{grid-column:auto}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{padding:6px}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link{padding:10px!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{display:flex!important;flex-direction:column;grid-template-columns:none!important;gap:4px;width:100%;max-height:calc(100dvh - 76px)}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu[open]{width:100%;grid-column:auto!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>summary{width:100%;height:auto!important;min-height:46px}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{width:100%;max-width:100%;padding:6px;box-sizing:border-box}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link{width:100%;max-width:100%;padding:10px!important;box-sizing:border-box}
+}
+
+/* Production mobile hardening. The Basic Writer toolbar is loaded after this
+   stylesheet, so these declarations intentionally use shell-level specificity
+   and !important only where the toolbar's own flex defaults would otherwise
+   force a narrow viewport wider than the device. */
+@media(max-width:767px){
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-surface,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-helper,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel{max-width:100%;box-sizing:border-box}
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary{flex:1 1 100%!important;width:100%;min-width:0}
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy{flex:1 1 0;min-width:0;white-space:nowrap}
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode{flex:1 1 100%!important;min-width:0}
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode.input-mode-control,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-option{min-width:0;max-width:100%}
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-destructive{flex:0 0 auto}
 }
 
 html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link-copy{text-align:right}
