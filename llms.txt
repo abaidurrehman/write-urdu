@@ -16,7 +16,7 @@ Important facts:
 - Local drafts and several creation workflows use browser storage or browser-side processing. English-letter Urdu suggestions may use the typing provider described in the privacy policy.
 - Write Urdu does not require an account for the core editors.
 - Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel, while questions that need a reply have a dedicated contact route.
-- The public changelog records shipped user-facing features and improvements in customer language, with direct instructions for trying them; internal engineering work and unreleased ideas are excluded.
+- The public changelog records shipped user-facing features and improvements in customer language, with direct instructions for trying them; engineering work and unreleased ideas are excluded.
 - Last reviewed: 2026-08-19.
 
 ## Start writing
