@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, '..');
 const bootstrap = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 const core = fs.readFileSync(path.join(root, 'js', 'site-header-core.js'), 'utf8');
 const navigation = fs.readFileSync(path.join(root, 'js', 'outcome-navigation.js'), 'utf8');
+const primaryNavigation = navigation.split('var FOOTER_GROUPS = [')[0];
 const css = fs.readFileSync(path.join(root, 'css', 'outcome-navigation.css'), 'utf8');
 const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 
@@ -16,27 +17,27 @@ assert.match(core, /function renderFooter\(\)/, 'Preserved shared-shell core los
 assert.match(core, /WriteUrduLocale/, 'Preserved shared-shell core lost locale behavior');
 
 ['write', 'create', 'work', 'learn'].forEach((group) => {
-  assert.match(navigation, new RegExp("id: '" + group + "'"), `Missing ${group} outcome group`);
+  assert.match(primaryNavigation, new RegExp("id: '" + group + "'"), `Missing ${group} outcome group`);
 });
-assert.strictEqual((navigation.match(/\bid: '(?:write|create|work|learn)'/g) || []).length, 4, 'Top-level product IA must contain exactly Write / Create / Work / Learn');
-assert.doesNotMatch(navigation, /id: ['"](?:drafts|my-drafts)['"]/, 'My drafts must not become a fifth product category');
+assert.strictEqual((primaryNavigation.match(/\bid: '(?:write|create|work|learn)'/g) || []).length, 4, 'Top-level product IA must contain exactly Write / Create / Work / Learn');
+assert.doesNotMatch(primaryNavigation, /id: ['"](?:drafts|my-drafts)['"]/, 'My drafts must not become a fifth product category');
 assert.match(navigation, /data-wu-drafts-utility-slot/, 'My drafts utility/account position must remain reserved outside product categories');
 
-assert.match(navigation, /Start writing in Urdu/, 'Write menu must lead with the user outcome, not Basic Writer');
-assert.match(navigation, /English to Urdu typing/, 'Primary typing language must match observed search intent');
-assert.doesNotMatch(navigation, /Roman Urdu writer|Understand Roman Urdu transliteration/, 'User-facing navigation must avoid internal transliteration terminology');
-assert.match(navigation, /Format an assignment or document/, 'Write menu must expose document intent');
-assert.match(navigation, /Speak and turn it into Urdu text/, 'Voice Typing must be integrated as a current Write outcome');
-assert.match(navigation, /\/tools\/urdu-voice-typing/, 'Voice Typing route missing from outcome navigation');
-assert.match(navigation, /Convert legacy InPage text/, 'InPage conversion must be integrated as a current Write outcome');
-assert.match(navigation, /\/tools\/inpage-unicode-converter/, 'InPage route missing from outcome navigation');
-assert.match(navigation, /Make a poetry, quote or announcement image/, 'Create menu must lead with a recognizable creation job');
-assert.match(navigation, /Create an Urdu or English invoice/, 'Work menu must expose the invoice outcome');
-assert.match(navigation, /Prepare a formal Urdu document/, 'Work menu must expose formal-document intent without owning the Rich Editor route twice');
-assert.match(navigation, /activeOwner: false/, 'Cross-category task link needs explicit non-owner active-state handling');
-assert.match(navigation, /Learn the Urdu alphabet/, 'Learn menu must use task language');
-assert.match(navigation, /Get answers to common questions/, 'FAQ must be exposed through a user question outcome');
-assert.match(navigation, /<strong>.*<\/strong><small>/, 'Outcome label must be visually primary with tool name secondary');
+assert.match(primaryNavigation, /Start writing in Urdu/, 'Write menu must lead with the user outcome, not Basic Writer');
+assert.match(primaryNavigation, /English to Urdu typing/, 'Primary typing language must match observed search intent');
+assert.doesNotMatch(primaryNavigation, /Roman Urdu writer|Understand Roman Urdu transliteration/, 'User-facing navigation must avoid internal transliteration terminology');
+assert.match(primaryNavigation, /Format an assignment or document/, 'Write menu must expose document intent');
+assert.match(primaryNavigation, /Speak and turn it into Urdu text/, 'Voice Typing must be integrated as a current Write outcome');
+assert.match(primaryNavigation, /\/tools\/urdu-voice-typing/, 'Voice Typing route missing from outcome navigation');
+assert.match(primaryNavigation, /Convert legacy InPage text/, 'InPage conversion must be integrated as a current Write outcome');
+assert.match(primaryNavigation, /\/tools\/inpage-unicode-converter/, 'InPage route missing from outcome navigation');
+assert.match(primaryNavigation, /Make a poetry, quote or announcement image/, 'Create menu must lead with a recognizable creation job');
+assert.match(primaryNavigation, /Create an Urdu or English invoice/, 'Work menu must expose the invoice outcome');
+assert.match(primaryNavigation, /Prepare a formal Urdu document/, 'Work menu must expose formal-document intent without owning the Rich Editor route twice');
+assert.match(primaryNavigation, /activeOwner: false/, 'Cross-category task link needs explicit non-owner active-state handling');
+assert.match(primaryNavigation, /Learn the Urdu alphabet/, 'Learn menu must use task language');
+assert.match(primaryNavigation, /Get answers to common questions/, 'FAQ must be exposed through a user question outcome');
+assert.match(primaryNavigation, /<strong>.*<\/strong><small>/, 'Outcome label must be visually primary with tool name secondary');
 
 assert.match(navigation, /var FOOTER_GROUPS = \[/, 'Footer must use a dedicated compact information architecture');
 ['write-urdu', 'create', 'help'].forEach((group) => {
