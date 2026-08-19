@@ -75,7 +75,7 @@ assert.match(toolbarCss, /wu-basic-command--utility/, 'Direct utility styling is
 assert.match(toolbarCss, /wu-basic-command--clear/, 'Destructive Clear styling is missing');
 assert.match(toolbarCss, /@media \(max-width: 767px\)/, 'Pixel/mobile toolbar behavior is missing');
 assert.doesNotMatch(toolbarCss, /position\s*:\s*(?:fixed|sticky)/, 'Basic Writer toolbar must not become fixed/sticky');
-assert.match(serviceWorker, /write-urdu-shell-v24/, 'PWA cache must advance for mobile production fixes');
+assert.match(serviceWorker, /write-urdu-shell-v25/, 'PWA cache must include the latest shared-shell production fixes');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.css/, 'Toolbar CSS must be cached');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.js/, 'Toolbar runtime must be cached');
 assert.match(serviceWorker, /basic-writer-publish\.js/, 'Basic public-link publisher must be cached');

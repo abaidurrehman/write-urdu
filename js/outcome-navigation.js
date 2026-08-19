@@ -8,7 +8,7 @@
             id: 'write', icon: 'write',
             label: { en: 'Write', ur: 'لکھیں' },
             items: [
-                { href: '/', icon: 'write', label: { en: 'Start writing in Urdu', ur: 'اردو لکھنا شروع کریں' }, tool: { en: 'Roman Urdu writer', ur: 'رومن اردو رائٹر' } },
+                { href: '/', icon: 'write', label: { en: 'Start writing in Urdu', ur: 'اردو لکھنا شروع کریں' }, tool: { en: 'English to Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ' } },
                 { href: '/urdu-keyboard', icon: 'keyboard', label: { en: 'Type directly in Urdu', ur: 'اردو براہِ راست ٹائپ کریں' }, tool: { en: 'Urdu Keyboard', ur: 'اردو کی بورڈ' } },
                 { href: '/urdu-editor', icon: 'document', label: { en: 'Format an assignment or document', ur: 'اسائنمنٹ یا دستاویز فارمیٹ کریں' }, tool: { en: 'Rich Text Editor', ur: 'رچ ٹیکسٹ ایڈیٹر' } },
                 { href: '/tools/urdu-voice-typing', icon: 'voice', label: { en: 'Speak and turn it into Urdu text', ur: 'بول کر اردو متن بنائیں' }, tool: { en: 'Urdu Voice Typing', ur: 'اردو وائس ٹائپنگ' } },
@@ -44,7 +44,7 @@
             label: { en: 'Learn', ur: 'سیکھیں' },
             items: [
                 { href: '/urdu-alphabet', icon: 'alphabet', label: { en: 'Learn the Urdu alphabet', ur: 'اردو حروف تہجی سیکھیں' }, tool: { en: 'Alphabet guide', ur: 'حروف تہجی گائیڈ' } },
-                { href: '/roman-urdu-transliteration', icon: 'convert', label: { en: 'Understand Roman Urdu transliteration', ur: 'رومن اردو تحریری تبدیلی سمجھیں' }, tool: { en: 'Roman Urdu guide', ur: 'رومن اردو گائیڈ' } },
+                { href: '/roman-urdu-transliteration', icon: 'convert', label: { en: 'How English to Urdu typing works', ur: 'انگریزی سے اردو ٹائپنگ کیسے کام کرتی ہے' }, tool: { en: 'Typing guide', ur: 'ٹائپنگ گائیڈ' } },
                 { href: '/urdu-fonts-nastaliq-vs-naskh', icon: 'document', label: { en: 'Choose an Urdu font', ur: 'اردو فونٹ منتخب کریں' }, tool: { en: 'Nastaliq vs Naskh guide', ur: 'نستعلیق بمقابلہ نسخ گائیڈ' } },
                 { href: '/english-urdu-typing-tutorial', icon: 'keyboard', label: { en: 'Learn English-to-Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ سیکھیں' }, tool: { en: 'Typing tutorial', ur: 'ٹائپنگ سبق' } },
                 { href: '/how-to-write-urdu-on-photo', icon: 'image', label: { en: 'Learn to put Urdu on a photo', ur: 'تصویر پر اردو لکھنا سیکھیں' }, tool: { en: 'Photo guide', ur: 'تصویر گائیڈ' } },
@@ -55,17 +55,60 @@
         }
     ];
 
-    var FOOTER_ABOUT = {
-        label: { en: 'About', ur: 'متعلق' },
-        items: [
-            { href: '/why-write-urdu', label: { en: 'Why Write Urdu?', ur: 'رائٹ اردو کیوں؟' } },
-            { href: '/write-urdu-features', label: { en: 'Features', ur: 'خصوصیات' } },
-            { href: '/changelog', label: { en: 'What’s new', ur: 'نیا کیا ہے' } },
-            { href: '/write-urdu-feedback', label: { en: 'Feedback', ur: 'رائے' } },
-            { href: '/write-urdu-search', label: { en: 'Search', ur: 'تلاش' } },
-            { href: '/write-urdu-sitemap', label: { en: 'Sitemap', ur: 'سائٹ میپ' } },
-            { href: '/write-urdu-privacy', label: { en: 'Privacy and terms', ur: 'رازداری اور شرائط' } }
-        ]
+    var FOOTER_GROUPS = [
+        {
+            id: 'write-urdu',
+            label: { en: 'Write Urdu', ur: 'اردو لکھیں' },
+            items: [
+                { href: '/', label: { en: 'English to Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ' } },
+                { href: '/urdu-keyboard', label: { en: 'Urdu keyboard', ur: 'اردو کی بورڈ' } },
+                { href: '/urdu-editor', label: { en: 'Urdu editor', ur: 'اردو ایڈیٹر' } },
+                { href: '/tools/urdu-voice-typing', label: { en: 'Voice to Urdu', ur: 'آواز سے اردو' } },
+                { href: '/urdu-text-cleaner', label: { en: 'Fix Urdu text', ur: 'اردو متن درست کریں' } }
+            ]
+        },
+        {
+            id: 'create',
+            label: { en: 'Create', ur: 'بنائیں' },
+            items: [
+                { href: '/urdu-card-studio', label: { en: 'Urdu image maker', ur: 'اردو تصویر بنائیں' } },
+                { href: '/urdu-whatsapp-status-maker', label: { en: 'WhatsApp status', ur: 'واٹس ایپ اسٹیٹس' } },
+                { href: '/urdu-instagram-post-maker', label: { en: 'Instagram post', ur: 'انسٹاگرام پوسٹ' } },
+                { href: '/urdu-name-art-maker', label: { en: 'Urdu name art', ur: 'اردو نام آرٹ' } },
+                { href: '/qr-code-generator', label: { en: 'QR code', ur: 'QR کوڈ' } }
+            ]
+        },
+        {
+            id: 'help',
+            label: { en: 'Help', ur: 'مدد' },
+            items: [
+                { href: '/english-urdu-typing-tutorial', label: { en: 'How to type Urdu', ur: 'اردو کیسے ٹائپ کریں' } },
+                { href: '/urdu-alphabet', label: { en: 'Urdu alphabet', ur: 'اردو حروف تہجی' } },
+                { href: '/urdu-faq', label: { en: 'FAQ', ur: 'عام سوالات' } },
+                { href: '/why-write-urdu', label: { en: 'About', ur: 'تعارف' } },
+                { href: '/write-urdu-privacy', label: { en: 'Privacy', ur: 'رازداری' } }
+            ]
+        }
+    ];
+
+    var FOOTER_UTILITY_LINKS = [
+        { href: '/write-urdu-feedback', label: { en: 'Feedback', ur: 'رائے' } },
+        { href: '/changelog', label: { en: 'What’s new', ur: 'نیا کیا ہے' } },
+        { href: '/write-urdu-sitemap', label: { en: 'Sitemap', ur: 'سائٹ میپ' } },
+        { href: '/write-urdu-privacy', label: { en: 'Terms', ur: 'شرائط' } }
+    ];
+
+    var FOOTER_COPY = {
+        en: {
+            description: 'Type, format and share Urdu online.',
+            privacy: 'Your writing stays in this browser unless you choose to export or share it.',
+            copyright: '© Write Urdu'
+        },
+        ur: {
+            description: 'اردو آن لائن ٹائپ کریں، فارمیٹ کریں اور شیئر کریں۔',
+            privacy: 'آپ کی تحریر اسی براؤزر میں رہتی ہے جب تک آپ اسے ایکسپورٹ یا شیئر نہ کریں۔',
+            copyright: '© Write Urdu'
+        }
     };
 
     var ICONS = {
@@ -173,19 +216,48 @@
     }
 
     function footerGroup(group, lang) {
-        var ownerItems = group.items.filter(function (item) { return item.activeOwner !== false; });
         return '<div class="wu-footer-group" data-wu-footer-group="' + group.id + '"><h2>' + group.label[lang] + '</h2>' +
-            ownerItems.map(function (item) { return '<a href="' + item.href + '">' + item.label[lang] + '</a>'; }).join('') + '</div>';
+            group.items.map(function (item) { return '<a href="' + item.href + '">' + item.label[lang] + '</a>'; }).join('') + '</div>';
+    }
+
+    function renderFooterMeta(lang) {
+        var copy = FOOTER_COPY[lang] || FOOTER_COPY.en;
+        var brand = document.querySelector('.wu-v2-footer-brand');
+        if (brand) {
+            var description = brand.querySelector('p[data-wu-i18n-key="footer.description"], p');
+            if (description) {
+                description.textContent = copy.description;
+                description.removeAttribute('data-wu-i18n-key');
+                description.setAttribute('data-wu-footer-description', '');
+            }
+            var privacy = brand.querySelector('.wu-footer-privacy-note');
+            if (!privacy) {
+                privacy = document.createElement('p');
+                privacy.className = 'wu-footer-privacy-note';
+                privacy.setAttribute('data-wu-footer-privacy-note', '');
+                if (description && description.parentNode) description.parentNode.insertBefore(privacy, description.nextSibling);
+                else brand.appendChild(privacy);
+            }
+            privacy.textContent = copy.privacy;
+        }
+
+        var status = document.querySelector('.wu-v2-footer-status');
+        if (status) {
+            status.innerHTML =
+                '<span class="wu-footer-copyright">' + copy.copyright + '</span>' +
+                '<span class="wu-footer-utility-links">' +
+                    FOOTER_UTILITY_LINKS.map(function (item) { return '<a href="' + item.href + '">' + item.label[lang] + '</a>'; }).join('') +
+                '</span>';
+        }
     }
 
     function renderFooter() {
         var footer = document.querySelector('.wu-footer-nav');
         if (!footer) return false;
         var lang = locale();
-        footer.innerHTML = GROUPS.map(function (group) { return footerGroup(group, lang); }).join('') +
-            '<div class="wu-footer-group wu-footer-about" data-wu-footer-group="about"><h2>' + FOOTER_ABOUT.label[lang] + '</h2>' +
-            FOOTER_ABOUT.items.map(function (item) { return '<a href="' + item.href + '">' + item.label[lang] + '</a>'; }).join('') + '</div>';
+        footer.innerHTML = FOOTER_GROUPS.map(function (group) { return footerGroup(group, lang); }).join('');
         footer.setAttribute('data-wu-outcome-footer', 'v2');
+        renderFooterMeta(lang);
         return true;
     }
 
@@ -211,6 +283,7 @@
 
     root.WriteUrduOutcomeNavigation = {
         groups: GROUPS,
+        footerGroups: FOOTER_GROUPS,
         render: render,
         normalizePath: normalizePath
     };
