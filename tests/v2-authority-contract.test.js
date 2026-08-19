@@ -28,8 +28,8 @@ assert.match(roman, /css\/v2-content\.css/, 'Roman Urdu guide must load the shar
 assert.match(roman, /css\/v2-authority\.css/, 'Roman Urdu guide must load the v2 authority system');
 assert.match(roman, /https:\/\/write-urdu\.com\/roman-urdu-transliteration/, 'Roman Urdu canonical changed unexpectedly');
 assert.match(roman, /id="transliteration-title"/, 'Roman Urdu H1 contract changed');
-assert.match(roman, /Transliteration is not translation/, 'Roman Urdu guide must keep the central language distinction');
-assert.match(roman, /href="\/"[^>]*>Try Roman Urdu typing/, 'Roman Urdu guide must support the homepage writing workflow');
+assert.match(roman, /does not translate an English sentence into Urdu/i, 'Roman Urdu guide must clearly distinguish Urdu typed with English letters from English-to-Urdu translation');
+assert.match(roman, /href="\/"[^>]*>Start English to Urdu typing/, 'Roman Urdu guide must support the homepage writing workflow');
 assert.doesNotMatch(roman, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Roman Urdu guide must use extensionless internal links');
 
 assert.match(alphabet, /class="content-page guide-page v2-content-page authority-page alphabet-page"/, 'Urdu Alphabet must use the v2 authority page contract');

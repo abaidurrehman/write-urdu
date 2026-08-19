@@ -17,17 +17,27 @@ async function schemaTypes(page) {
   });
 }
 
-test('homepage keeps English to Urdu typing metadata and writing schema after shared shell initialization', async ({ page }) => {
+test('homepage keeps plain-language English to Urdu typing metadata and writing schema after shared shell initialization', async ({ page }) => {
   await open(page, '/');
-  await expect(page.locator('h1')).toHaveText('Type Roman Urdu and convert it to Urdu script');
-  await expect.poll(() => page.title()).toBe('English to Urdu Typing Online – Type Roman Urdu | WriteUrdu');
+  await expect(page.locator('h1')).toHaveText('English to Urdu Typing Online');
+  await expect.poll(() => page.title()).toBe('English to Urdu Typing Online | WriteUrdu');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://write-urdu.com/');
-  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Roman Urdu with English letters.*Urdu script.*transliteration/i);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /English to Urdu typing online.*English letters.*Urdu script/i);
+  await expect(page.locator('.page-intro')).toContainText('Type Urdu using English letters');
+  await expect(page.locator('.input-mode-option').first()).toHaveText('English letters → Urdu');
+  await expect(page.locator('body')).not.toContainText('This is transliteration');
   const types = await schemaTypes(page);
   expect(types).toContain('WebSite');
   expect(types).toContain('WebPage');
   expect(types).toContain('WebApplication');
   expect(types).toContain('Organization');
+});
+
+test('Roman Urdu support page keeps secondary intent without technical language in the title or H1', async ({ page }) => {
+  await open(page, '/roman-urdu-transliteration');
+  await expect(page.locator('h1')).toHaveText('Roman Urdu to Urdu Typing');
+  await expect.poll(() => page.title()).toBe('Roman Urdu to Urdu Typing Online | WriteUrdu');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://write-urdu.com/roman-urdu-transliteration');
 });
 
 test('Card Studio keeps its acquisition metadata and application schema after shared shell initialization', async ({ page }) => {
