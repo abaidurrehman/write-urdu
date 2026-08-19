@@ -9,6 +9,8 @@
     // Publish boundaries and adds a compatibility-safe Card Studio seed adapter.
     // WU-PLAT-003 remains the low-risk core-workspace convergence layer.
 
+    var HOME_SEARCH_INTENT_INTRO = 'Type Urdu using English letters. Press Space after each word to get Urdu script — no Urdu keyboard or account needed.';
+
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
             done();
@@ -36,6 +38,14 @@
         if (/\.html$/i.test(path)) path = path.slice(0, -5);
         if (path.length > 1) path = path.replace(/\/+$/, '');
         return path || '/';
+    }
+
+    function restoreHomepageSearchIntentCopy(event) {
+        if (normalizedPath() !== '/') return;
+        var locale = event && event.detail && event.detail.locale;
+        if (locale === 'ur') return;
+        var intro = document.querySelector('.page-intro');
+        if (intro) intro.textContent = HOME_SEARCH_INTENT_INTRO;
     }
 
     function loadJourneyFoundation(done) {
@@ -117,7 +127,10 @@
         settle();
     }
 
+    document.addEventListener('write-urdu:locale-change', restoreHomepageSearchIntentCopy);
+
     loadScript('/js/site-header-core.js', 'WriteUrduLocale', function () {
+        restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {
             if (root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
                 root.WriteUrduOutcomeNavigation.render();
@@ -127,6 +140,7 @@
                 if (root.WriteUrduCoreWorkspaceConvergence && typeof root.WriteUrduCoreWorkspaceConvergence.run === 'function') {
                     root.WriteUrduCoreWorkspaceConvergence.run();
                 }
+                restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
                 loadContextualNextSteps();
                 loadCreationDestinationAdapters();
             });
