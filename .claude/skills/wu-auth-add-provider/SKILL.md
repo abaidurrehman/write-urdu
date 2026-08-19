@@ -1,147 +1,358 @@
 ---
 name: wu-auth-add-provider
-description: Add an approved OAuth identity provider to WU-AUTH-001 after the Auth.js + D1 foundation is stable. Load for Google or Facebook provider registration/wiring, provider buttons, credential gating, callback verification, or provider regression checks. Keep identity scopes minimal and never auto-link accounts by email.
+description: Add an explicitly approved OAuth identity provider to WU-AUTH-001 after the Auth.js + ACCOUNT_DB foundation is stable. Load for Facebook or future provider wiring, provider descriptors/readiness, credential gating, callback verification and provider regressions. Keep identity scopes minimal, preserve My Documents ownership by stable user ID and never auto-link accounts by email.
 references:
   - google
   - facebook
 ---
 
-# WriteUrdu — add an OAuth provider
+# WriteUrdu — Add an OAuth Identity Provider
 
-Use only after `WU-AUTH-001`'s Auth.js/D1 foundation is present and stable.
+Use this skill only after the shared Auth.js/`ACCOUNT_DB` foundation is stable.
 
-Read:
+For Facebook, also wait until the Google + My Documents cross-device loop has passed its gate.
 
+## Read first
+
+- `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`;
 - `specs/WU-AUTH-001-social-authentication-foundation.md`;
+- `specs/WU-DRAFT-001-cross-device-cloud-drafts.md`;
+- `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`;
 - `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`;
 - current `functions/lib/auth.mjs`;
-- the matching provider reference in this directory;
-- current Auth.js provider source/docs before coding.
+- current `/sign-in` account shell;
+- matching provider reference in this skill directory;
+- current InvoiceCraftly multi-provider identity spec/runtime if available;
+- current Auth.js provider source/docs and provider developer-console requirements.
 
 ## Provider order
 
-Approved product order:
+Approved initial order:
 
-1. Google first.
-2. Facebook after Google + first cross-device cloud-draft restore is stable.
+1. Google — AUTH-B first provider.
+2. Facebook — after Google + My Documents continuity is stable.
 
-Do not add providers merely because Auth.js supports them. Each provider adds credentials, attack surface, consent UX and maintenance.
+Do not add identity providers simply because Auth.js supports them. Each provider adds credentials, consent UX, attack surface and operational maintenance.
 
-## What must remain provider-agnostic
+## Architecture invariants
 
-Adding a provider should not require:
+Adding a provider must **not** require:
 
-- a new session system;
-- a new D1 database;
-- a new `users` table;
+- a second auth/session stack;
+- a second account database;
+- provider-specific product `users` tables;
 - editor changes;
-- draft-table changes;
-- a new auth framework.
+- `writing_documents` schema changes;
+- a framework migration;
+- different ownership rules for My Documents.
 
-The existing Auth.js `accounts` model is provider-generic. Provider-specific work belongs in provider construction/configuration and sign-in UX only.
+All identity providers feed the same Auth.js `ACCOUNT_DB` model.
 
-## Implementation steps
+All product document ownership remains:
 
-### 1. Re-check current provider API
+`session.user.id`
 
-Retrieve the current Auth.js provider export/config and provider developer-console requirements. Do not assume callback/scopes from old examples.
+Never use provider email or provider account ID as document ownership.
 
-### 2. Register provider app externally
+## Provider-neutral readiness model
 
-Use the production custom-domain callback documented in the reference file. Configure preview callbacks only when deliberately supported.
+Do not make auth readiness Google-specific.
 
-Record which steps remain manual and never paste secrets into repository docs/issues/logs.
+Target conceptual state:
 
-### 3. Add Cloudflare secrets
+```text
+core
+  AUTH_ENABLED
+  AUTH_SECRET
+  ACCOUNT_DB
 
-Use the established variable names:
+providers
+  google: ready / incomplete / absent
+  facebook: ready / incomplete / absent
+```
+
+Auth core is usable when core config is valid and **at least one** provider is ready.
+
+A broken optional provider must not disable a valid provider.
+
+Example:
+
+```text
+Google ready
+Facebook missing secret
+```
+
+Expected result:
+
+```text
+Auth ready
+Google shown
+Facebook hidden/unavailable
+```
+
+not a global account outage.
+
+## Step 1 — verify current provider implementation
+
+Before coding:
+
+- inspect current Auth.js provider export/config;
+- inspect current provider default scopes/profile behavior;
+- inspect current developer-console callback/app requirements;
+- inspect current InvoiceCraftly multi-provider lessons for equivalent provider if present.
+
+Do not assume old callback/scopes from examples.
+
+## Step 2 — external app registration
+
+Configure the exact intended custom-domain callback.
+
+Preview callbacks are configured only when intentionally supported.
+
+Record:
+
+- provider app/account audience;
+- callback paths/domains;
+- required identity permissions;
+- secret rotation/expiry ownership where applicable;
+- production proof status.
+
+Never record secret values in repo docs/issues/PR text.
+
+## Step 3 — Cloudflare configuration
+
+Established names:
 
 Google:
 
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
+```text
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+```
 
 Facebook:
 
-- `FACEBOOK_CLIENT_ID`
-- `FACEBOOK_CLIENT_SECRET`
+```text
+FACEBOOK_CLIENT_ID
+FACEBOOK_CLIENT_SECRET
+```
 
-Do not commit values.
+Provider variables may change only with a documented implementation reason.
 
-### 4. Update the single auth module
+Do not expose secrets to client-side code.
 
-Only `functions/lib/auth.mjs` (or the current single project-owned auth module) imports the provider.
+## Step 4 — change only the single auth module
 
-`buildProviders(env)` includes a provider only when its complete credential pair exists.
+Provider construction belongs inside:
 
-`authEnabled(env)` means at least one complete provider exists; it must not accidentally become Google-specific once Facebook is added.
+`functions/lib/auth.mjs`
 
-### 5. Identity scopes only
+or the current single WriteUrdu-owned auth boundary.
 
-The auth feature needs identity, not provider data access.
+Do not import Auth.js providers in page scripts, document APIs or editor modules.
 
-Do not request:
+Prefer small safe provider descriptors for UI, for example:
 
-- Google Drive/Contacts/Calendar;
-- Facebook posting/page-management/friends permissions;
-- any scope unrelated to basic identity/session creation.
+```js
+{
+  id: 'facebook',
+  label: 'Facebook',
+  signInPath: '/api/auth/signin/facebook',
+  available: true,
+  brandKey: 'facebook'
+}
+```
 
-Any scope expansion requires a separate documented product need.
+Never include client secret, access token, refresh token, provider account ID, user email or raw configuration error in a descriptor.
 
-### 6. Sign-in UI
+## Step 5 — identity scopes only
 
-Render a provider button only when that provider is actually configured. Use the same Auth.js CSRF-safe POST flow and same-origin callback rules as the first provider.
+Provider sign-in exists to identify the user.
 
-Do not show a disabled-looking provider button that cannot work.
+### Google
 
-### 7. Account linking safety
+Keep identity scopes equivalent to:
 
-Do not enable automatic account merging just because two providers return the same email.
+```text
+openid email profile
+```
 
-For v1:
+No Drive/Gmail/Calendar/Contacts.
 
-- Google identity and Facebook identity may remain separate Auth.js accounts/users according to safe adapter behavior;
-- email absence from Facebook must be handled;
-- user-owned cloud drafts remain scoped to stable database user ID;
-- any future connected-provider feature requires authenticated explicit linking and its own review.
+### Facebook
 
-### 8. Regression tests
+Use only current basic identity permissions required by Auth.js/profile handling.
 
-For each provider:
+Do not add:
 
-- complete pair => provider included;
-- missing ID or secret => excluded;
-- provider-only configuration can enable auth;
-- existing provider still works after new one is added;
-- `/api/me` still exposes stable user ID;
-- cloud draft authorization remains by user ID, not provider/email.
+- friends/social graph;
+- posting permissions;
+- Page/business management;
+- Messenger;
+- ads;
+- Instagram.
 
-Production smoke:
+A provider API integration is a separate feature.
 
-- complete OAuth consent/callback;
-- inspect provider row in D1 `accounts`;
-- verify session;
-- verify sign-out;
-- verify existing provider;
-- verify anonymous editor.
+## Step 6 — account-linking safety
 
-## Facebook-specific gate
+Do not enable automatic account merge based on matching email.
 
-Before Facebook ships, the Google + cloud-draft path must already prove:
+Preserve safe Auth.js behavior equivalent to:
 
-`write locally -> Google sign in -> Save to my account -> second device -> restore/edit`
+`allowDangerousEmailAccountLinking: false`
 
-This keeps provider work from masking persistence bugs.
+Typical collision:
 
-## Not in scope
+```text
+user first signs in with Google person@example.com
+later tries Facebook with person@example.com
+provider identity is not linked
+```
 
-- email/password;
-- provider API integrations;
-- automatic provider linking;
-- social posting;
-- changing the draft schema;
-- changing transliteration/editor behavior.
+Desired v1 behavior:
+
+- do not merge automatically;
+- do not reassign My Documents;
+- do not overwrite local writing;
+- surface a controlled sign-in/account-not-linked message;
+- allow user to retry the method previously used;
+- allow continue without an account.
+
+Do not disclose unnecessary provider/account linkage metadata to a signed-out user.
+
+A future Connected Accounts feature requires its own authenticated proof-of-control and security/recovery spec.
+
+## Step 7 — missing profile data
+
+Account UX must tolerate:
+
+- missing email;
+- missing image;
+- missing/empty display name;
+- provider-specific claim differences.
+
+Stable `session.user.id` remains authorization identity regardless of profile fields.
+
+Safe display fallback concept:
+
+```text
+name
+→ email when present/useful
+→ "WriteUrdu account"
+```
+
+Provider-specific reference files may define a better safe label.
+
+Never fail authentication solely because Facebook returns no email if the Auth.js session/user identity is otherwise valid.
+
+## Step 8 — account shell UI
+
+Render a provider button only when that provider is ready.
+
+Each button must:
+
+- show provider name visibly;
+- use current supported CSRF-safe Auth.js sign-in flow;
+- be keyboard accessible;
+- have deterministic loading/disabled behavior;
+- preserve the same local-writing-before-OAuth flow;
+- return only to safe same-origin routes.
+
+Do not turn `/sign-in` into a mandatory wall.
+
+`Continue without an account` remains available.
+
+## Step 9 — preserve local writing
+
+Every provider must reuse the same pre-OAuth local-save path proven by Google.
+
+Do not create provider-specific editor save behavior.
+
+Regression:
+
+```text
+write locally
+→ provider sign in
+→ return
+→ local content unchanged
+```
+
+Provider cancel/error must also preserve local content.
+
+## Step 10 — provider-specific tests
+
+For each new provider:
+
+- complete config => provider included;
+- missing ID => provider excluded;
+- missing secret => provider excluded;
+- valid provider can enable auth when core is ready;
+- incomplete provider does not disable existing valid provider;
+- descriptor exposes no secret/user/token data;
+- identity-only scope contract;
+- same-origin return behavior;
+- `/api/me` stable user ID;
+- missing email/image/name safe fallback;
+- no automatic email linking;
+- My Documents authorization remains stable user ID only;
+- anonymous writer still works.
+
+## Step 11 — production proof
+
+For the new provider on the custom production domain:
+
+1. create meaningful local writing;
+2. complete provider OAuth;
+3. return to intended route;
+4. verify local writing unchanged;
+5. verify session and `/api/me` stable ID;
+6. inspect expected Auth.js provider-account row in `ACCOUNT_DB`;
+7. verify no provider token leaks to browser product state;
+8. verify sign-out;
+9. verify Google/current existing provider still works;
+10. verify My Documents ownership/isolation still works;
+11. verify anonymous writing;
+12. cancel provider OAuth once and verify safe recovery.
+
+## Facebook entry gate
+
+Do not ship Facebook before this real product loop already works through Google:
+
+```text
+write locally
+→ Google sign in
+→ Save to my account
+→ My Documents / second device
+→ reopen and edit
+```
+
+This prevents provider expansion from hiding persistence/identity bugs.
+
+## Stop conditions
+
+Stop and fix if:
+
+- new provider requires a new account/session database;
+- existing Google auth regresses;
+- provider readiness becomes global all-or-nothing;
+- provider requests non-identity permissions;
+- email becomes required ownership identity;
+- same-email identities are silently merged;
+- local writing is lost during provider flow;
+- My Documents schema is modified for provider-specific IDs;
+- provider tokens are exposed to document/editor code;
+- task expands into social graph/provider API access.
 
 ## Governance after provider addition
 
-Update `WU-AUTH-001`, the implementation plan, registry/backlog status if needed, and record the exact provider/callback/environment verification performed.
+Record:
+
+- provider/config variables (names only, no secret values);
+- current package/provider version;
+- callback/environment proof;
+- focused + regression test evidence;
+- production sign-in proof;
+- branch/PR/commit.
+
+Update `WU-AUTH-001` status only for provider behavior actually proven.
