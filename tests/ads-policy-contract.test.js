@@ -12,6 +12,7 @@ const inputModeSource = fs.readFileSync(path.join(root, 'js', 'input-mode.js'), 
 const v2ShellCss = fs.readFileSync(path.join(root, 'css', 'v2-shell.css'), 'utf8');
 const v3DesignCss = fs.readFileSync(path.join(root, 'css', 'v3-design-system.css'), 'utf8');
 const designTokens = fs.readFileSync(path.join(root, 'css', 'design-tokens.css'), 'utf8');
+const coreWriteAutoAdsPolicy = fs.readFileSync(path.join(root, 'docs', 'WU-MOBILE-ADSENSE-CORE-WRITE-PAGE-EXCLUSIONS-2026-08-19.md'), 'utf8');
 
 assert.strictEqual(ads.ADSENSE_CLIENT, 'ca-pub-4727847909946286', 'AdSense publisher client changed unexpectedly');
 assert.strictEqual(ads.SHARED_SLOT, '8323789671', 'Shared responsive ad slot changed unexpectedly');
@@ -60,6 +61,17 @@ assert.match(writeMonetization, /js\/ads\.js/, 'Core Write restoration must dele
 assert.doesNotMatch(writeMonetization, /enable_page_level_ads|3607727011|6402857400|7272007417/, 'Do not restore legacy page-level, sidebar, green or link-ad stacks');
 assert.match(mainSource, /js\/write-monetization\.js/, 'Homepage/keyboard runtime must load the core Write monetization module');
 assert.match(inputModeSource, /js\/write-monetization\.js/, 'Rich editor runtime must load the core Write monetization module');
+
+// Auto Ads are account-level behavior and must be explicitly excluded from the
+// three core writing URLs. The application keeps the intentional manual unit;
+// it must not hide Google-injected ads after rendering as a workaround.
+['https://write-urdu.com/', 'https://write-urdu.com/urdu-editor', 'https://write-urdu.com/urdu-keyboard'].forEach(url => {
+  assert.ok(coreWriteAutoAdsPolicy.includes(url), `Core Write Auto Ads exclusion policy is missing ${url}`);
+});
+assert.match(coreWriteAutoAdsPolicy, /Page exclusions/, 'Operational AdSense page-exclusion steps are missing');
+assert.match(coreWriteAutoAdsPolicy, /This page only/, 'Core Write exclusions must be exact-page rules');
+assert.match(coreWriteAutoAdsPolicy, /manual responsive unit|manual ad unit/i, 'Policy must preserve the intentional post-workspace manual ad');
+assert.match(coreWriteAutoAdsPolicy, /Do not attempt to solve this by hiding already-rendered Google ad iframes or containers with CSS\/JavaScript/, 'Policy must forbid brittle client-side hiding of Auto Ads');
 
 // V3 design-system contract: every route gets the visual layer through the
 // already-global V2 shell, so individual HTML files do not need duplicate CSS

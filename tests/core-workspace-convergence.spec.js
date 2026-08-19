@@ -151,6 +151,96 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
 });
 
+test('phone outcome navigation and Basic Writer toolbar stay inside the viewport', async ({ page }) => {
+  await page.goto('/');
+  await waitForConvergence(page);
+  await waitForBasicToolbar(page);
+
+  const phone = await page.evaluate(() => window.matchMedia('(max-width: 560px)').matches);
+  if (!phone) return;
+
+  const menuToggle = page.locator('.wu-menu-toggle');
+  const nav = page.locator('[data-wu-outcome-nav="v2"]');
+  await menuToggle.click();
+  await expect(nav).toBeVisible();
+
+  const create = nav.locator('[data-wu-nav-group="create"]');
+  const createSummary = create.locator('summary');
+  const createPanel = create.locator('.wu-outcome-menu-panel');
+  const workSummary = nav.locator('[data-wu-nav-group="work"] > summary');
+  await createSummary.click();
+  await expect(create).toHaveAttribute('open', '');
+  await expect(createPanel).toBeVisible();
+
+  const geometry = await page.evaluate(() => {
+    const navNode = document.querySelector('[data-wu-outcome-nav="v2"]');
+    const createNode = document.querySelector('[data-wu-nav-group="create"]');
+    const summary = createNode && createNode.querySelector('summary');
+    const panel = createNode && createNode.querySelector('.wu-outcome-menu-panel');
+    const work = document.querySelector('[data-wu-nav-group="work"] > summary');
+    const navRect = navNode.getBoundingClientRect();
+    const summaryRect = summary.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const workRect = work.getBoundingClientRect();
+    const navStyle = getComputedStyle(navNode);
+    return {
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      pageScrollWidth: document.documentElement.scrollWidth,
+      navLeft: navRect.left,
+      navRight: navRect.right,
+      navHeight: navRect.height,
+      navClientHeight: navNode.clientHeight,
+      navScrollHeight: navNode.scrollHeight,
+      navOverflowY: navStyle.overflowY,
+      summaryHeight: summaryRect.height,
+      summaryBottom: summaryRect.bottom,
+      panelTop: panelRect.top,
+      panelBottom: panelRect.bottom,
+      workTop: workRect.top
+    };
+  });
+
+  expect(geometry.pageScrollWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+  expect(geometry.navLeft).toBeGreaterThanOrEqual(-1);
+  expect(geometry.navRight).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+  expect(geometry.navHeight).toBeLessThanOrEqual(geometry.viewportHeight);
+  expect(geometry.navOverflowY).toBe('auto');
+  expect(geometry.summaryHeight).toBeLessThan(70);
+  expect(geometry.panelTop).toBeGreaterThanOrEqual(geometry.summaryBottom - 1);
+  expect(geometry.workTop).toBeGreaterThanOrEqual(geometry.panelBottom - 1);
+  expect(geometry.navScrollHeight).toBeGreaterThanOrEqual(geometry.navClientHeight);
+
+  await menuToggle.click();
+  await expect(nav).toBeHidden();
+
+  const editor = page.locator('#transliterateTextarea');
+  await editor.fill('ایک موبائل تحریر');
+  const toolbarGeometry = await page.evaluate(() => {
+    const surface = document.querySelector('[data-wu-basic-command-surface]');
+    const share = document.querySelector('[data-wu-command-action="share"]');
+    const copy = document.querySelector('[data-wu-command-action="copy"]');
+    const surfaceRect = surface.getBoundingClientRect();
+    const shareRect = share.getBoundingClientRect();
+    const copyRect = copy.getBoundingClientRect();
+    return {
+      width: window.innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      surfaceLeft: surfaceRect.left,
+      surfaceRight: surfaceRect.right,
+      shareLeft: shareRect.left,
+      copyRight: copyRect.right
+    };
+  });
+  expect(toolbarGeometry.scrollWidth).toBeLessThanOrEqual(toolbarGeometry.width + 1);
+  expect(toolbarGeometry.surfaceLeft).toBeGreaterThanOrEqual(-1);
+  expect(toolbarGeometry.surfaceRight).toBeLessThanOrEqual(toolbarGeometry.width + 1);
+  expect(toolbarGeometry.shareLeft).toBeGreaterThanOrEqual(-1);
+  expect(toolbarGeometry.copyRight).toBeLessThanOrEqual(toolbarGeometry.width + 1);
+  await expect(page.locator('[data-wu-command-action="share"]')).toBeVisible();
+  await expect(page.locator('[data-wu-command-action="copy"]')).toBeVisible();
+});
+
 test('legacy follow/comment chrome and premature header creation are retired from core workspaces', async ({ page }) => {
   for (const route of ['/', '/urdu-keyboard', '/urdu-editor']) {
     await page.goto(route);
