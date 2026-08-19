@@ -39,12 +39,18 @@ assert.match(navigation, /FOOTER_ABOUT/, 'Footer utility links must remain separ
 
 assert.match(css, /@media\(min-width:1367px\)/, 'Expanded outcome navigation must only appear above the proven laptop safety breakpoint');
 assert.match(css, /@media\(max-width:1366px\)/, 'Outcome navigation must collapse safely at common 1366px laptop widths');
+assert.match(css, /max-height:calc\(100dvh - 84px\)/, 'Compact navigation must be bounded to the visible viewport');
+assert.match(css, /overflow-y:auto!important/, 'Compact navigation must scroll internally instead of stretching the page');
+assert.match(css, /\.wu-outcome-menu>summary\{height:auto!important;min-height:48px/, 'Compact outcome summaries must keep intrinsic height');
+assert.doesNotMatch(css, /\.wu-outcome-menu>summary\{height:100%/, 'Outcome summaries must never stretch across an expanded details panel');
+assert.match(css, /@media\(max-width:560px\)[\s\S]*display:flex!important;flex-direction:column/, 'Phone navigation must use a single normal-flow column');
+assert.match(css, /body\[data-wu-basic-command-toolbar="true"\] \.wu-basic-command-primary\{flex:1 1 100%!important;width:100%/, 'Phone toolbar must keep Share and Copy on a stable full-width row');
 assert.match(css, /repeat\(5,minmax\(0,1fr\)\)/, 'Footer must support Write/Create/Work/Learn plus a separate About utility group');
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer\{color:#b9ccc1!important;background:#10281c!important/, 'Shared footer must retain a dark readable surface with shell-level specificity');
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer a,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group a\{color:#dce9e1!important\}/, 'Footer links must retain explicit light contrast');
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer \.wu-footer-brand,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group h2,body\.wu-v2-shell footer\.wu-footer strong\{color:#f4faf6!important\}/, 'Footer headings/brand must retain explicit high contrast');
 assert.match(css, /prefers-reduced-motion:reduce/, 'Outcome navigation must respect reduced-motion preferences');
-assert.match(sw, /write-urdu-shell-v23/, 'PWA cache version must include Basic public sharing while retaining prior journey assets');
+assert.match(sw, /write-urdu-shell-v24/, 'PWA cache version must include mobile production geometry fixes');
 assert.match(sw, /js\/site-header-core\.js/, 'Preserved shell core must be cached for offline use');
 assert.match(sw, /js\/outcome-navigation\.js/, 'Outcome navigation runtime must be cached for offline use');
 assert.match(sw, /js\/core-workspace-convergence\.js/, 'Core workspace convergence runtime must be cached for offline use');
