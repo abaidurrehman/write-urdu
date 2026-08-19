@@ -1,196 +1,162 @@
 ---
 name: wu-account-platform
-description: Route and govern WriteUrdu account, identity, My Documents and future collaboration work. Load when a task mentions accounts, sign-in, profiles, saved documents, cross-device continuity, collaborators, invitations, teams, followers or account-backed storage. Use this skill to choose the correct child spec/skill and prevent scope expansion from auth into social/collaboration features.
+description: Orchestrate WriteUrdu account, My Documents and future collaboration work. Use the existing METRICS_DB D1 database, preserve anonymous/local writing, and route each implementation request to the smallest approved child slice. Do not infer profiles, teams or social graph from authentication.
 ---
 
-# WriteUrdu Account Platform — Orchestration Skill
+# WriteUrdu account platform orchestrator
 
-Use this skill before implementing any account-adjacent feature.
-
-## Read first
+Read first:
 
 1. `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`
 2. `specs/WU-AUTH-001-social-authentication-foundation.md`
 3. `specs/WU-DRAFT-001-cross-device-cloud-drafts.md`
-4. `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`
-5. `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
-6. current `specs/BACKLOG.md`
-7. current repository implementation/status before assuming any slice is still pending.
+4. `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
+5. `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`
 
-## Primary rule
+## Platform invariant
 
-**Account is a platform boundary, not permission to build every account idea.**
+WriteUrdu remains an anonymous-first Urdu writing product.
 
-Route work to the narrowest approved layer:
+Account work is introduced in layers:
 
 ```text
-L0 anonymous/local writing      existing/protected
-L1 identity/auth                WU-AUTH-001
-L2 My Documents                 WU-DRAFT-001
-L3 minimal account/profile      future spec only
-L4 collaboration/invites        future spec only
-L5 teams                        future spec only
-L6 profiles/follow/feed         Hold until evidence + separate spec
+L0 anonymous/local writing
+L1 optional identity
+L2 My Documents
+L3 minimal account preferences when needed
+L4 private collaboration — separate discovery/spec
+L5 teams — separate discovery/spec
+L6 public profile/follow/feed — Hold
 ```
 
-Do not infer that an account implementation should also add profiles, collaborators, teams or followers.
+Never jump layers because the underlying database could support them.
 
-## Task routing
+## Database invariant
 
-### Auth.js / D1 / sessions / `/api/me`
+The initiative reuses the existing WriteUrdu D1 database:
+
+```text
+env.METRICS_DB
+```
+
+Do not create `ACCOUNT_DB`, `WRITE_URDU_DB` or another D1 database.
+
+Logical domains inside the shared physical database:
+
+```text
+existing telemetry tables
+existing share-artifact tables
+Auth.js adapter tables
+writing_documents
+future approved tables only when corresponding features are approved
+```
+
+Isolation is through migrations, modules, APIs and authorization.
+
+## Routing
+
+### Authentication backend foundation
 
 Use:
 
 `.claude/skills/wu-auth-authjs-d1-foundation/SKILL.md`
 
-This is AUTH-A only.
+when the task is about Auth.js packages, D1 adapter schema, `/api/auth/*`, `/api/me`, readiness, sessions or backend auth tests.
 
-### Google sign-in / account page / header / OAuth preservation
+### Google/account shell
 
 Use:
 
 `.claude/skills/wu-auth-account-shell/SKILL.md`
 
-This is AUTH-B.
+when the task is about `/sign-in`, Google OAuth production callback, header account state, sign-out or preserving local writing through OAuth.
 
-### Saved Urdu writing / My Documents / cross-device / revision conflicts
+### My Documents
 
 Use:
 
 `.claude/skills/wu-drafts-cloud-sync/SKILL.md`
 
-This is DOC-A onward.
+when the task is about `writing_documents`, `/api/documents*`, Save to my account, `/my-documents`, cross-device restore, sync cadence or revision conflicts.
 
-### Add Facebook or another explicitly approved identity provider
+### Additional provider
 
 Use:
 
 `.claude/skills/wu-auth-add-provider/SKILL.md`
 
-Provider expansion never creates a second auth/session stack.
+only after the existing provider and account-value loop are stable.
 
-### Profile / collaboration / invite colleague / team / follow
+### Profiles/collaboration/teams/followers
 
-Do **not** implement from this skill unless a dedicated approved feature spec now exists on current main.
+Do not implement from this skill. They require separate approved feature specs.
 
-If no spec exists:
+## Sequence gates
 
-- record/groom the idea against `WU-ACCOUNT-001`;
-- define the missing authorization/privacy/moderation/data lifecycle;
-- do not add speculative tables/routes/UI.
+### AUTH-A gate
 
-## Architecture invariants
+Must prove:
 
-### Two data planes
+- no new D1 database;
+- Auth.js uses `METRICS_DB`;
+- migration is additive;
+- existing telemetry/share behavior remains green;
+- auth off leaves anonymous product unchanged;
+- stable session user ID exists.
 
-```text
-ACCOUNT_DB
-  Auth.js identity/session data
+### AUTH-B gate
 
-WRITE_URDU_DB
-  account-backed writing documents
-```
+Must prove:
 
-Never place Urdu writing in Auth.js adapter/session tables.
+- real Google custom-domain sign-in;
+- local writing survives sign-in/sign-out;
+- `/api/me` works;
+- existing shared-D1 features remain healthy.
 
-Never place Auth.js sessions/provider credentials in `WRITE_URDU_DB` document rows.
+### DOC-A/B gate
 
-### Stable authorization subject
-
-Authenticated product ownership uses:
-
-`session.user.id`
-
-Never use email as an ownership key.
-
-Never silently merge provider identities by matching email.
-
-### Local writing is always the safety layer
-
-Auth, session, network or D1 failure must not disable typing or browser-local saving.
-
-Signing in never uploads local history automatically.
-
-### No framework migration
-
-Cloudflare Pages Functions must coexist with the current static site. Do not introduce Astro/React/Next merely to support accounts.
-
-## Reuse hierarchy
-
-For implementation details, prefer:
-
-1. current WriteUrdu behavior/specs;
-2. current InvoiceCraftly merged Auth.js implementation;
-3. current official Auth.js/Cloudflare docs/package source;
-4. WriteUrdu reuse map;
-5. older OpenForBots precedent.
-
-Do not copy stale dependency versions blindly.
-
-Do not copy InvoiceCraftly billing, invoice Workspace or Personal Cloud behavior.
-
-## Program sequence gate
-
-Default execution order:
+Must prove:
 
 ```text
-Slice 0  baseline/gates
-AUTH-A   Auth.js backend foundation
-AUTH-B   Google + account shell
-DOC-A    account document API
-DOC-B    basic writer pilot
-DOC-C    My Documents
-DOC-D    rich + keyboard
-DOC-E    conflict recovery
-DOC-F    privacy/deletion/launch closure
-AUTH-D   Facebook
+write locally
+→ explicitly Save to my account
+→ second browser/device
+→ sign in
+→ open same document
+→ continue writing
 ```
 
-Do not parallelize later product-value slices ahead of their dependency proof if doing so creates competing persistence/auth assumptions.
+before expanding to Facebook or richer account identity.
 
-## Product-language rules
+## Shared-D1 rules
 
-User-facing:
+- Existing applied migrations are immutable.
+- New auth/document schema uses new numbered migrations.
+- Auth.js adapter owns its tables.
+- Document module owns `writing_documents`.
+- Telemetry/share modules stay in their domains.
+- Product authorization is always `session.user.id`.
+- No document content enters telemetry/auth logs or rows.
+- Rollback is feature-flag based, not table dropping.
 
-- `Sign in`
-- `Continue with Google`
-- `Save to my account`
-- `My Documents`
-- `Saved on this device`
-- `Saved to your account`
+## Product guardrails
 
-Avoid exposing:
+Do not:
 
-- Auth.js;
-- D1;
-- cloud_drafts;
-- workspace binding;
-- session strategy;
-- OAuth implementation terms;
+- require login to type/write;
+- automatically upload local history on sign-in;
+- expose public profiles because a user account exists;
+- add team/ACL tables in anticipation of future work;
+- build a follower graph/feed;
+- request Google Drive/Gmail or Facebook social permissions for identity;
+- auto-link provider accounts by email;
+- introduce a framework rewrite.
 
-in normal product UI.
+## Completion behavior
 
-## Stop conditions
+After any slice:
 
-Stop implementation and reconcile scope if any task starts doing one of these without a separate approved feature contract:
-
-- public profile creation;
-- usernames/follower graph/feed;
-- collaborator ACLs;
-- team membership;
-- real-time editing;
-- comments/suggestions;
-- arbitrary file drive;
-- provider API access beyond identity;
-- storage provider integration;
-- automatic account/provider merging.
-
-## Completion discipline
-
-After each implementation slice:
-
-- record actual branch/PR/commit evidence;
-- record current dependency versions/runtime proof;
-- update spec acceptance/status only for what truly shipped;
-- rerun the full relevant WriteUrdu regression/SEO/governance/browser checks;
-- keep later slices Planned until their own exit gate passes.
+- update the owning spec with shipped evidence/status only when implementation actually exists;
+- keep unrelated future layers unchanged;
+- run the full WriteUrdu regression, including telemetry/share/product/SEO behavior;
+- record any manual Cloudflare/provider configuration still required.
