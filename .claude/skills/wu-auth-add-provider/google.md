@@ -1,47 +1,98 @@
 # Google OAuth reference for WriteUrdu
 
-Use with `.claude/skills/wu-auth-add-provider/SKILL.md`.
+Use primarily with `.claude/skills/wu-auth-account-shell/SKILL.md`; use `.claude/skills/wu-auth-add-provider/SKILL.md` for later provider-neutral regression work.
 
 ## Product role
 
-Google is the first approved provider for `WU-AUTH-001` and should be implemented before Facebook.
+Google is the first production identity provider for `WU-AUTH-001`.
 
-“Continue with Google” accepts a normal Google account; do not restrict sign-in to Gmail addresses.
+“Continue with Google” accepts a normal Google account; do not restrict sign-in to `@gmail.com` addresses.
+
+Google identity is the entry point to later **My Documents** continuity. It is not permission to access Google Drive, Gmail or other Google data.
 
 ## Required environment variables
 
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
+```text
+GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET
+```
 
 Values belong in Cloudflare encrypted/environment configuration, never source control.
 
+Core auth also requires the shared `AUTH_SECRET`, `AUTH_ENABLED=true` and dedicated `ACCOUNT_DB` binding.
+
 ## Callback
 
-Register the callback expected by the current Auth.js Google provider under WriteUrdu's production custom domain, following the project's `/api/auth` base path. At spec time the intended shape is:
+Register the callback expected by the currently installed Auth.js Google provider under WriteUrdu's canonical production custom domain and `/api/auth` base path.
+
+Intended shape:
 
 `https://write-urdu.com/api/auth/callback/google`
 
-**Verify the exact callback path against the implementation and current Auth.js provider before registering it.** The canonical host is `write-urdu.com`; do not register a non-canonical hostname accidentally.
+**Verify the exact callback path against current implementation/Auth.js before registration.**
+
+The canonical host is `write-urdu.com`; do not accidentally register only `www`, a temporary Pages hostname or a preview host unless that environment is deliberately supported.
 
 Preview callbacks are separate configuration and should be added only when a deliberate preview-OAuth workflow exists.
 
 ## Scope contract
 
-Identity only. Use the provider/Auth.js defaults or explicit minimal equivalent needed for basic profile identity.
+Identity only, equivalent to:
 
-Do not request Drive, Contacts, Calendar, Gmail mailbox, files, posting or unrelated Google API scopes.
+```text
+openid email profile
+```
+
+Do not request:
+
+- Drive;
+- Gmail/mailbox;
+- Contacts;
+- Calendar;
+- Cloud Platform;
+- files/offline-storage permissions;
+- unrelated Google API scopes.
+
+## Account-linking rule
+
+Preserve safe Auth.js behavior equivalent to:
+
+`allowDangerousEmailAccountLinking: false`
+
+Google email is profile/contact data, not a product authorization key.
+
+## Local-writing preservation
+
+Before starting Google OAuth from a writer:
+
+- flush current browser-local writing through the existing editor persistence path;
+- do not place Urdu text/rich HTML in OAuth state or query parameters;
+- return only to safe same-origin routes;
+- normal writer bootstrap must restore the exact local content.
 
 ## Verification
 
-- Google button appears only when both credentials are present.
-- Sign-in uses the current CSRF-safe Auth.js POST flow.
-- Callback returns to an accepted same-origin route.
-- Auth.js creates the expected `users`, `accounts` and `sessions` data.
-- `GET /api/me` exposes stable `session.user.id`.
-- Sign-out works.
-- In-progress local writing survives the round trip.
-- Homepage transliteration still works signed out and signed in.
+- Google provider is ready only when both credentials are complete and core auth config is valid.
+- Google button appears only when the provider is ready.
+- Sign-in uses the current supported Auth.js CSRF-safe flow.
+- Callback succeeds on the canonical custom domain.
+- Auth.js creates expected `users`, `accounts` and `sessions` records in `ACCOUNT_DB`.
+- Auth rows contain no Urdu writing content.
+- `GET /api/me` exposes stable `session.user.id` through the allowlisted product projection.
+- Sign-out works without clearing browser-local writing.
+- OAuth cancel/error leaves local writing usable.
+- In-progress basic, rich and keyboard content survives the round trip.
+- Homepage transliteration still works signed out, signed in and when `/api/me` fails.
+- Built/static assets expose no Google client secret/session/provider tokens.
 
 ## Important distinction
 
-This feature authenticates a Google identity. It does **not** access the user's Gmail inbox and should never request Gmail API scopes.
+This provider authenticates identity only.
+
+It does **not**:
+
+- access Gmail;
+- access Google Drive;
+- create provider-backed cloud storage;
+- automatically upload WriteUrdu local drafts;
+- link another provider by matching email.
