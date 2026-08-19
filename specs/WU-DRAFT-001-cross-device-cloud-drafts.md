@@ -1,131 +1,117 @@
 # WU-DRAFT-001 — My Documents: Cross-device Account-backed Writing
 
-**Status:** Planned — founder-approved 2026-08-13; implementation contract reconciled 2026-08-19  
+**Status:** Planned — founder-approved 2026-08-13; reconciled 2026-08-19  
 **Area:** Writing persistence / retention  
-**User-facing name:** **My Documents**  
-**Routes:** core writing editors, `/my-documents`, `/api/documents*`  
+**Routes:** core writers, `/my-documents`, `/api/documents*`  
 **Depends on:** `WU-AUTH-001`  
-**Parent boundary:** `WU-ACCOUNT-001`  
-**Storage:** existing browser-local persistence remains primary; optional `WRITE_URDU_DB` persistence for explicitly account-saved writing
+**Storage:** browser-local first; optional D1 persistence in the existing `METRICS_DB` database when signed in
 
 ## 1. Purpose
 
-Let a signed-in user explicitly save selected Urdu writing to their account, see it in **My Documents**, reopen it later or on another device, and continue editing without weakening WriteUrdu's current local-first behavior.
+Let a signed-in user explicitly save selected Urdu writing to an account, reopen it later or on another device, and continue editing without weakening WriteUrdu's local-first behavior.
 
-The stable feature ID remains `WU-DRAFT-001` for governance/history, but the user-facing product concept is **Documents**, not “cloud drafts”. Users should not need to understand backend storage terminology.
+User-facing name: **My Documents**.
 
-The first valuable authenticated loop is:
+The stable governance ID remains `WU-DRAFT-001` so existing references do not fragment.
 
-```text
-write
-→ local save continues automatically
-→ Save to my account
-→ My Documents
-→ open on another session/device
-→ continue writing
-```
+## 2. Existing baseline to preserve
 
-This feature extends the current local draft/editor adapter system. It does **not** replace it.
+WriteUrdu already provides local autosave/history through `js/editor-tools.js`, including editor adapters for the basic writer, Urdu keyboard and rich editor.
 
-## 2. Existing local baseline to preserve
-
-At reconciliation time WriteUrdu already has local writing persistence through `js/editor-tools.js`, including:
-
-- automatic local save after a short debounce;
-- separate persistence per editor kind;
-- recent local history;
-- restore/rename/delete/clear-history behavior;
-- adapters for basic, keyboard and TinyMCE rich editors;
-- content/signature logic used to avoid redundant saves;
-- user-visible local status such as `Saved on this device`.
-
-Earlier known constants included:
+Important baseline contracts must be re-read from current `main` before implementation. At the original spec baseline they included:
 
 ```text
-SAVE_DELAY = 650
-DRAFT_PREFIX = write-urdu:draft:v1:
-HISTORY_PREFIX = write-urdu:history:v1:
-MAX_HISTORY_ITEMS = 5
+SAVE_DELAY ≈ 650 ms
+DRAFT_PREFIX
+HISTORY_PREFIX
+recent local history
+getText()/getContent()/setContent()/hasContent()/onChange() adapter behavior
 ```
 
-These are implementation evidence, not permanent values. Re-read current `js/editor-tools.js` before coding.
+Do not replace or bypass this local persistence system.
 
-The important invariant is the adapter boundary: cloud/account persistence must not be implemented three separate times inside transliteration, keyboard and TinyMCE code.
-
-## 3. Core product rule
+## 3. Core architecture
 
 ```text
 Editor
   |
-  +--> browser-local save/history
-  |       immediate / existing / offline-safe
+  +--> local autosave/history
+  |      immediate, offline-safe, unchanged
   |
   +--> optional account persistence
-          only after explicit Save to my account
-                 |
-                 v
-           /api/documents
-                 |
-          session.user.id
-                 |
-                 v
-          WRITE_URDU_DB
+          signed-in + user explicitly opted document in
+              |
+              v
+        /api/documents*
+              |
+        session.user.id
+              |
+              v
+    existing D1 / env.METRICS_DB
+              |
+        writing_documents
 ```
 
-Local save remains the fastest and most reliable safety layer.
+No new D1 database or binding is introduced for documents.
 
-Account persistence provides continuity, not keystroke-level durability and not real-time collaboration.
+## 4. Shared-database boundary
 
-## 4. Identity/content separation
+`METRICS_DB` is the existing WriteUrdu D1 binding and already backs product telemetry/share-artifact data. `WU-AUTH-001` also adds Auth.js tables to this same physical database.
 
-`WU-AUTH-001` uses a dedicated:
+My Documents adds only product-owned document tables.
+
+Expected domain separation:
 
 ```text
-ACCOUNT_DB
+METRICS_DB
+├── existing telemetry tables
+├── existing share-artifact tables
+├── Auth.js tables
+│   ├── users
+│   ├── accounts
+│   ├── sessions
+│   └── verification_tokens
+└── writing_documents
 ```
 
-for Auth.js identity/session tables.
+Rules:
 
-This feature uses a separate:
+- document code accesses `writing_documents`, not telemetry/share internals;
+- authorization identity comes from `getSession()` / `session.user.id`, not direct Auth.js table queries;
+- telemetry code never reads document content;
+- document content is never written to telemetry or auth tables;
+- document migration is additive and cannot alter existing tables;
+- no generic “database repository” should expose all tables to all modules.
+
+At the current migration baseline, expected sequencing is conceptually:
 
 ```text
-WRITE_URDU_DB
+0005_authjs_d1_foundation.sql
+0006_writing_documents.sql
 ```
 
-for user writing.
-
-Never store writing content in Auth.js `users`, `accounts`, `sessions` or `verification_tokens` records.
-
-Because the two D1 databases are separate, store the stable Auth.js `session.user.id` as an opaque owner ID in product tables. Do not require a cross-database foreign key.
-
-Do not use email as document ownership.
+Reconcile exact numbering with current `main` when implementing.
 
 ## 5. Privacy boundary
 
-Signing in must **not automatically upload existing local writing or local history**.
+Signing in does **not** automatically upload existing local drafts/history.
 
 After sign-in:
 
-- existing local documents/history stay on the device;
-- the current editor still saves locally as before;
-- the user explicitly chooses **Save to my account** for a document;
-- only then is an account-backed document created;
-- after opt-in, later edits to that document may sync according to the throttling contract;
-- deleting an account-backed document must not silently delete unrelated local history;
-- sign-out must not erase local or remote documents.
+- old local drafts remain on-device;
+- current writing remains local until the user chooses **Save to my account**;
+- once account-backed, later edits may sync according to this spec;
+- deleting an account-backed document does not silently clear unrelated local history;
+- document text is never sent to product telemetry/logs merely because it is account-backed.
 
-This prevents an account action from becoming a hidden content-upload action.
+## 6. Data model
 
-## 6. Product-owned data model
-
-Use a writing-specific table rather than a generic arbitrary file drive.
-
-Recommended logical shape:
+Create a product-owned table:
 
 ```sql
 writing_documents
 - id TEXT PRIMARY KEY
-- owner_user_id TEXT NOT NULL
+- user_id TEXT NOT NULL
 - editor_kind TEXT NOT NULL
 - title TEXT
 - content TEXT NOT NULL
@@ -139,25 +125,15 @@ writing_documents
 Recommended indexes:
 
 ```text
-(owner_user_id, updated_at DESC)
-(owner_user_id, id)
+(user_id, updated_at DESC)
+(user_id, id)
 ```
 
-If current D1 query-planner/index behavior makes one index redundant, implementation may simplify it while preserving owned recent-list and owned-ID lookup performance.
+Do not customize Auth.js `users` or `accounts` tables with document fields.
 
-### 6.1 `id`
+`user_id` stores the stable Auth.js user ID as the ownership subject. Even though identity/documents share the same physical D1 database, product authorization must still come through the auth/session boundary rather than arbitrary joins to provider/account rows.
 
-Generate server-side using Web Crypto/platform-supported secure random IDs such as `crypto.randomUUID()`.
-
-IDs are unguessable convenience identifiers, **not authorization**.
-
-### 6.2 `owner_user_id`
-
-Always derive from authenticated `session.user.id` server-side.
-
-Never accept `owner_user_id` from client input.
-
-### 6.3 `editor_kind`
+### Editor kinds
 
 Initial allowed values:
 
@@ -167,513 +143,306 @@ rich
 keyboard
 ```
 
-Do not silently add Card Studio, invoice, QR, image/project or arbitrary uploaded files to this table. Those need separate content/storage decisions.
+Do not silently add Card Studio, QR, invoice, images or arbitrary files.
 
-### 6.4 `content`
+### Format version
 
-- `basic` / `keyboard`: canonical text content;
-- `rich`: canonical sanitized/accepted rich-editor HTML according to the current editor contract.
+Start at `1` and persist it so future rich-editor markup changes can be migrated deliberately.
 
-Do not flatten rich content into plain text for storage.
+### Initial limits
 
-### 6.5 `plain_text`
+Server-side guards:
 
-Optional normalized text used for safe list previews/search later. It is not the canonical rich document body.
+- title <= 160 characters;
+- content <= 750 KB UTF-8 per document;
+- max 100 active account-backed documents/user unless product evidence changes the limit.
 
-### 6.6 `format_version`
+These are cost/abuse guards, not marketing promises.
 
-Start at `1` unless implementation evidence requires another value.
+## 7. API contract
 
-Persist a version with every row so future editor markup/schema changes can be migrated deliberately.
+All routes require a valid `WU-AUTH-001` session and `DOCUMENTS_ENABLED=true`.
 
-### 6.7 `revision`
+All responses are `Cache-Control: no-store`.
 
-Start at `1` and increment on every successful content/title update.
+### `GET /api/documents`
 
-Revision is the v1 conflict-detection mechanism. It is not full version history.
+Returns metadata for the authenticated user's documents ordered by recent activity.
 
-## 7. Initial limits and abuse/cost guards
+Do not return every full body in the list response.
 
-Enforce server-side limits below platform maxima.
-
-Initial contract:
-
-- maximum title length: 160 Unicode characters;
-- maximum content payload: 750 KB UTF-8 per document;
-- maximum active account-backed writing documents: 100 per user;
-- allowed editor kinds only;
-- bounded request body size before parsing/writing where practical.
-
-These are operational guards, not marketing promises. They may be tuned later with product evidence.
-
-Do not introduce Queues, Durable Objects or complex rate infrastructure preemptively. Add bounded per-user/IP write protection only when evidence/abuse requires it.
-
-## 8. API contract
-
-All account-document routes require `WU-AUTH-001` session authorization and return `Cache-Control: no-store`.
-
-Use product-facing route names:
+Suggested fields:
 
 ```text
-GET    /api/documents
-POST   /api/documents
-GET    /api/documents/:id
-PATCH  /api/documents/:id
-DELETE /api/documents/:id
+id
+title
+editorKind
+preview
+revision
+createdAt
+updatedAt
 ```
 
-If Pages Functions routing requires another physical file layout, preserve these logical HTTP contracts.
+### `POST /api/documents`
 
-### 8.1 `GET /api/documents`
+Creates an account-backed document from a validated editor snapshot.
 
-Returns only documents owned by `session.user.id`, most-recently-updated first.
+Server generates ID using Web Crypto and assigns `user_id` from `session.user.id`.
 
-List payload should contain metadata/preview, not every full document body.
+Never trust a client-supplied owner ID.
 
-Suggested response item:
+### `GET /api/documents/:id`
 
-```json
-{
-  "id": "...",
-  "title": "...",
-  "editorKind": "basic",
-  "preview": "...",
-  "revision": 4,
-  "createdAt": "...",
-  "updatedAt": "..."
-}
-```
+Returns a full document only where both `id` and authenticated `user_id` match.
 
-### 8.2 `POST /api/documents`
+Knowing a UUID is not authorization.
 
-Creates one account-backed document from the current editor snapshot.
+### `PATCH /api/documents/:id`
 
-Server must:
+Requires the caller's last known `revision`.
 
-- authenticate;
-- derive owner from session;
-- validate kind/title/content/size/quota;
-- generate ID server-side;
-- set format version/revision/timestamps;
-- return the created metadata including revision.
-
-Do not upload all local history in a batch during sign-in.
-
-### 8.3 `GET /api/documents/:id`
-
-Returns the full owned document.
-
-Every lookup is scoped by both:
-
-```text
-id + owner_user_id
-```
-
-A caller who knows another user's ID receives no content. Prefer generic not-found semantics that do not make ownership enumerable.
-
-### 8.4 `PATCH /api/documents/:id`
-
-Updates owned title/content using optimistic concurrency.
-
-The request includes the client's last known `revision`.
-
-Equivalent SQL contract:
+Equivalent conditional update:
 
 ```sql
 UPDATE writing_documents
-SET
-  title = ?,
-  content = ?,
-  plain_text = ?,
-  revision = revision + 1,
-  updated_at = ?
-WHERE id = ?
-  AND owner_user_id = ?
-  AND revision = ?
+SET title = ?, content = ?, plain_text = ?, revision = revision + 1, updated_at = ?
+WHERE id = ? AND user_id = ? AND revision = ?
 ```
 
-If no row is updated because the stored revision changed, return:
+If the stored revision has moved, return `409 Conflict`. Never silently last-write-wins over a newer remote version.
 
-```text
-409 Conflict
-```
-
-with safe current metadata/revision needed for recovery.
-
-Never silently last-write-wins over a newer remote edit.
-
-### 8.5 `DELETE /api/documents/:id`
+### `DELETE /api/documents/:id`
 
 Hard-delete only the authenticated owner's row in v1.
 
-A later recycle-bin/version-retention feature requires its own spec. Do not keep deleted user content indefinitely by default.
+## 8. Sync behavior
 
-## 9. Cloud/account sync behavior
+### Local save stays unchanged
 
-### 9.1 Existing local save remains unchanged
+Do not map the existing ~650 ms local debounce to D1 writes.
 
-Do not map the existing ~650ms local-save debounce to D1 writes.
-
-Typing must not become backend traffic on every pause/keystroke.
-
-### 9.2 First account save is explicit
-
-A local document becomes account-backed only after an explicit action such as:
-
-**Save to my account**
-
-That action may create the remote row immediately.
-
-### 9.3 Continued account sync cadence
+### Remote cadence
 
 For a document already opted into account storage:
 
-- local save continues on the existing cadence;
-- a local content signature change marks remote state dirty;
-- sync after roughly 20–30 seconds of dirty activity;
-- manual save may sync immediately;
-- a best-effort visibility/page-hide flush may be used only if it can complete safely;
-- remote failure never blocks or rolls back local save;
-- multiple dirty changes should coalesce rather than enqueue one request per local save.
+- local save remains immediate;
+- changed local signature marks remote state dirty;
+- sync approximately 20–30 seconds after dirty activity;
+- explicit **Save to my account** may write immediately;
+- safe best-effort page-hidden sync is acceptable;
+- remote failure changes cloud/account status only and never blocks local saving.
 
-Exact timing can be tuned, but the contract is **seconds/tens of seconds, not hundreds of milliseconds**.
+## 9. Client state
 
-## 10. Client metadata
-
-Keep account-sync metadata separate from the existing canonical local draft body.
+Keep account-persistence metadata separate from the existing local draft payload.
 
 A locally open account-backed document needs at least:
 
 ```text
-remoteDocumentId
+documentId
 lastSyncedRevision
 lastSyncedSignature
-syncState
-lastSyncErrorCategory nullable
+syncState/error
 ```
 
-Do not store:
+Do not store provider tokens, session cookies, email or provider account IDs in localStorage.
 
-- provider access/refresh tokens;
-- Auth.js session tokens/cookies;
-- provider account IDs;
-- user email as ownership identity.
+## 10. Conflict handling
 
-## 11. Truthful save-status UX
+V1 detects conflicts; it does not implement collaborative merging.
 
-Never collapse local and account persistence into one ambiguous `Saved` state.
+On `409` show:
 
-Show independent truths, for example:
+**This document changed on another device.**
+
+Recovery choices:
+
+1. **Open account version** — after warning about unsynced local work.
+2. **Keep this device as a copy** — create a new account-backed document.
+3. **Replace account version** — optional only after explicit confirmation and a fresh revision read.
+
+Default behavior preserves data rather than choosing a winner silently.
+
+## 11. Truthful save status
+
+Local and account persistence are separate truths.
+
+Examples:
 
 ```text
 Saved on this device
 Saved to your account
 Saving to your account…
-Account save paused — your writing is safe on this device
+Account save paused — your local draft is safe
 This document changed on another device
 ```
 
-If local save succeeds and account sync fails, the UI must reassure accurately without claiming remote success.
+Never display “Saved to your account” when only localStorage succeeded.
 
 ## 12. My Documents
 
-Create a focused, noindex `/my-documents` account surface using the v2 shell.
+Create a noindex `/my-documents` route.
 
 Minimum behavior:
 
-- recent documents ordered by updated time;
-- title;
-- short safe preview;
-- editor type only when useful for orientation;
-- modified time;
-- open in the correct existing writer;
+- recent document list;
+- title/preview/editor type/modified time;
+- open in correct editor;
 - rename;
 - delete with confirmation;
-- duplicate/create-copy where needed for conflict recovery;
-- useful empty state leading into writing.
+- copy for conflict recovery;
+- useful empty state linking to writing.
 
-Do not build a generic dashboard full of unrelated account, team or analytics widgets.
+Do not build a generic dashboard.
 
-Do not expose the internal term `cloud_drafts` or `writing_documents` in user-facing UI.
+## 13. Safe open/restore
 
-## 13. Safe open/restore behavior
-
-Opening a remote document must use the existing editor adapter/handoff model.
+Opening an account document must use the existing editor adapter/handoff model.
 
 Rules:
 
-- never put document content in query strings/public URLs;
-- resolve the owning editor kind from server metadata;
-- restore through the current safe `setContent()`/initialization adapter path;
-- rich content remains rich;
-- Urdu/RTL text must round-trip exactly;
-- opening one remote document must not silently destroy a different unsaved/current local document;
-- preserve the current local document into history or ask/offer a safe choice before replacement;
-- update local remote-document metadata only after the open/import succeeds.
+- never put document text in query strings/public URLs;
+- rich content restores as rich content;
+- existing non-empty local work is not silently replaced;
+- preserve current local work/history or ask before replacement;
+- loaded remote revision updates local account metadata correctly.
 
-## 14. Cross-device conflict handling
+## 14. Authorization and abuse controls
 
-V1 is not collaborative editing, but it must detect concurrent edits.
+Every query is scoped by `session.user.id`.
 
-When an update returns `409`, show a recovery surface such as:
+Required rules:
 
-**This document changed on another device.**
+- unauthenticated => 401;
+- disabled document feature => safe unavailable response;
+- parameterized D1 statements only;
+- validate size/title/editor kind server-side;
+- no content in logs/telemetry;
+- not-found/forbidden responses do not make ownership enumerable;
+- add rate protection only when evidence justifies it.
 
-Actions:
+### Shared D1 safety
 
-1. **Open account version** — fetch/open the newer remote version after protecting unsynced local work.
-2. **Keep this device as a copy** — create a new account document from local content.
-3. **Replace account version** — optional only after fetching a fresh revision and explicit confirmation; never the default.
+Document handlers must not mutate existing telemetry/share/Auth.js tables.
 
-Do not implement automatic text/HTML merging in this feature.
+The `0006_writing_documents.sql` migration must be additive. Verification must capture the table list before/after and prove existing product endpoints still work.
 
-## 15. Authorization and security
+## 15. Implementation slices
 
-Every handler must:
+### DOC-A — schema + API
 
-- authenticate through `getSession()` from the project auth wrapper;
-- derive owner from `session.user.id`;
-- scope every SQL statement by owner;
-- use parameterized D1 statements;
-- validate payload limits server-side;
-- return non-cacheable private responses;
-- never log document content;
-- avoid returning another user's existence/metadata;
-- use secure generated IDs;
-- normalize operational errors without leaking SQL/auth internals.
+- add `writing_documents` migration to existing migration sequence;
+- implement authenticated CRUD against `env.METRICS_DB`;
+- enforce owner/validation/quota rules;
+- implement revision conflict contract;
+- verify existing telemetry/share/Auth.js tables remain intact.
 
-A UUID is not authorization. Email is not authorization. Editor kind from the client is not trusted until validated.
-
-## 16. Failure behavior
-
-### Auth unavailable/expired
-
-- local writing remains fully usable;
-- local save/history continues;
-- account-save controls prompt safe re-authentication when appropriate;
-- do not clear remote metadata blindly;
-- do not replace local content.
-
-### `WRITE_URDU_DB` unavailable
-
-- local save continues;
-- show account-sync unavailable/paused state;
-- retain dirty status for a later explicit/scheduled retry;
-- avoid aggressive retry loops.
-
-### Network failure
-
-Same as database failure: protect local work first.
-
-### Oversize/quota
-
-Return a clear bounded error without truncating content silently. Local copy remains intact.
-
-## 17. Account deletion interaction
-
-Before account-backed documents are broadly promoted, account deletion behavior must be defined with `WU-AUTH-001`.
-
-Deletion design must explicitly decide what happens to all rows whose:
-
-```text
-owner_user_id = deleted account user ID
-```
-
-Do not orphan indefinitely retained writing by deleting identity rows while leaving product content inaccessible with no policy.
-
-Local browser drafts are separate and cannot be assumed deleted by remote account deletion.
-
-## 18. Implementation slices
-
-### DOC-A — schema + authenticated API
-
-Use `.claude/skills/wu-drafts-cloud-sync/SKILL.md`.
-
-Deliver:
-
-- `WRITE_URDU_DB` binding/config contract;
-- `writing_documents` migration/indexes;
-- authenticated CRUD;
-- server validation/limits;
-- optimistic revision conflict behavior;
-- user-isolation tests;
-- disabled/unavailable behavior behind `DOCUMENTS_ENABLED`.
-
-**Exit:** no editor depends on the API yet; user A cannot read or mutate user B; stale revision deterministically returns 409.
+**Exit:** user A cannot read/mutate user B; stale revision deterministically returns 409.
 
 ### DOC-B — basic writer pilot
 
-Integrate through one shared account-persistence client module and the existing basic/homepage adapter.
+Integrate one common adapter path first.
 
 Deliver:
 
-- explicit `Save to my account`;
-- separate local/account status;
-- remote metadata;
-- throttled sync;
-- safe restore/reload;
-- no automatic import of historical local history.
+- explicit **Save to my account**;
+- independent local/account status;
+- throttled account sync;
+- no automatic historical upload;
+- local save survives database/API failure.
 
-**Exit:** signed-in user can write → save → reopen the same document from a second browser/device.
+**Exit:** Google-authenticated user saves on browser A and reopens on browser B.
 
 ### DOC-C — My Documents
 
-Build `/my-documents` list/open/rename/delete/copy and safe empty state.
-
-**Exit:** product has a coherent return journey, not just a hidden API.
+Ship list/open/rename/delete/copy on `/my-documents`.
 
 ### DOC-D — rich + keyboard
 
-Extend the same module through the existing adapters.
+Extend the same client persistence module through existing adapters.
 
-**Exit:** all three writing modes use one account-document persistence boundary and preserve their formats exactly.
+Verify exact Urdu/RTL/rich HTML round-trip.
 
-### DOC-E — conflict recovery UX
+### DOC-E — conflict UX
 
-Wire the 409 contract into the three recovery actions.
+Ship user-visible 409 recovery choices.
 
-### DOC-F — launch/privacy/deletion closure
+### DOC-F — privacy/deletion/launch closure
 
-Prove privacy copy, deletion semantics, production storage, regressions and rollout/rollback behavior before broad promotion.
+- privacy copy matches actual storage;
+- document deletion works;
+- account deletion policy covers owned documents;
+- full regression and production proof completed.
 
-## 19. Feature gates
+## 16. Tests
 
-Use independent rollout flags:
+Server contract:
 
-```text
-AUTH_ENABLED
-DOCUMENTS_ENABLED
-```
-
-If `DOCUMENTS_ENABLED=false`:
-
-- `/api/documents*` fails closed/unavailable safely;
-- My Documents/account-save UI is hidden/safe-disabled;
-- local drafts/history continue exactly as before;
-- existing remote rows remain retained until normal deletion policy/action.
-
-Do not couple the flag to transliteration/editor initialization.
-
-## 20. Tests
-
-### 20.1 Server contract
-
-- unauthenticated document CRUD => 401/safe auth-required response;
-- disabled documents feature => safe disabled behavior;
-- user A cannot list/get/update/delete user B content;
-- create derives owner from session, not request body;
+- unauthenticated CRUD rejected;
+- user isolation on list/get/update/delete;
 - invalid editor kind rejected;
-- oversize title/content rejected;
+- oversized document rejected;
 - quota enforced;
 - list omits full bodies;
 - stale revision => 409;
-- successful update increments revision exactly once;
-- hard delete removes the owned row;
-- unknown/foreign ID does not leak ownership/existence;
-- responses are `no-store`;
-- no API logs content.
+- hard delete removes row;
+- no API logs document content;
+- existing telemetry/share/Auth.js tables survive migration.
 
-### 20.2 Browser/product
+Browser/product:
 
-- signed-out local autosave/history still works;
-- sign-in does not upload previous local history;
-- explicit save creates one remote document;
-- continued typing saves locally immediately and remotely only on throttled cadence;
-- auth/network/D1 failure never blocks local save;
-- second browser/device opens and edits the document;
-- a stale second-device update is detected rather than overwritten;
-- remote open does not silently destroy a different local document;
-- TinyMCE formatting survives exact round trip;
-- Urdu characters, punctuation and RTL direction survive round trip;
-- keyboard editor content survives round trip;
-- sign-out leaves local work intact;
-- My Documents works on narrow/mobile layouts without becoming the primary writing UI.
+- signed-out local autosave works;
+- sign-in does not upload existing local history;
+- explicit save creates one account document;
+- local save remains immediate while D1/API is unavailable;
+- remote sync is throttled;
+- second browser/device can restore;
+- rich formatting survives;
+- Urdu/RTL survives exactly;
+- conflict is surfaced;
+- remote open never silently destroys different local work.
 
-## 21. Production proof
+## 17. Rollback
 
-Before declaring account-backed documents ready:
+`DOCUMENTS_ENABLED=false` disables account-backed document UI/API behavior while:
 
-1. authenticate with real production Google account;
-2. create meaningful Urdu document on device/browser A;
-3. confirm local save;
-4. explicitly save to account;
-5. verify owned row in `WRITE_URDU_DB` without logging/document exposure;
-6. open My Documents on device/browser B;
-7. open and edit the document;
-8. verify revision increments;
-9. force a two-device stale revision and verify 409/recovery;
-10. simulate network/API failure and verify local safety/status;
-11. delete a test document and verify hard deletion;
-12. confirm anonymous homepage/rich/keyboard behavior remains unchanged;
-13. confirm static SEO/canonical routes are unaffected by Functions routing.
+- local autosave/history continues;
+- existing remote rows remain retained;
+- shared `METRICS_DB` and its telemetry/share/Auth.js tables are untouched.
 
-## 22. Rollback
+Do not drop `writing_documents` as normal rollback.
 
-Disabling `DOCUMENTS_ENABLED` must leave:
+## 18. Out of scope
 
-- browser-local save/history working;
-- editors usable;
-- remote stored rows intact;
-- account identity/session behavior independently controllable;
-- SEO/static routes unchanged.
+- real-time collaboration;
+- automatic merging;
+- remote revision history beyond conflict revision;
+- public/shared documents;
+- comments;
+- teams;
+- profiles/followers;
+- arbitrary file/image storage;
+- historical local-draft bulk upload.
 
-Do not implement rollback by deleting data or clearing local storage.
+## 19. Acceptance criteria
 
-## 23. Stop conditions
-
-Stop and fix if:
-
-- account API becomes required for typing;
-- sign-in uploads historical local writing without explicit action;
-- content is written into `ACCOUNT_DB` Auth.js tables;
-- any SQL query is not scoped by stable owner ID;
-- cloud/account writes occur on the local ~650ms debounce;
-- rich formatting/Urdu text is lost;
-- conflict handling retries into last-write-wins;
-- remote open destroys different local work without recovery;
-- document content appears in logs/analytics/query strings;
-- implementation starts adding collaboration/team/social behavior not authorized here.
-
-## 24. Out of scope
-
-- real-time collaborative editing;
-- comments/suggestions;
-- per-document collaborator ACLs;
-- team workspaces;
-- public profiles/following;
-- public document URLs;
-- generic arbitrary file storage;
-- Google Drive/Dropbox/OneDrive sync;
-- Card Studio image/project storage;
-- unlimited storage;
-- automatic merge algorithms;
-- full remote revision history/recycle bin;
-- automatically uploading historical local drafts.
-
-Public sharing already has its own `WU-SHARE-001` product path and must not be conflated with private account-document storage.
-
-## 25. Acceptance criteria
-
-- [ ] Existing browser-local save/history remains the default and works signed out.
-- [ ] Auth identity lives in `ACCOUNT_DB`; writing lives in `WRITE_URDU_DB`.
-- [ ] No historical local writing uploads merely because the user signs in.
-- [ ] User can explicitly save the current writing document to the account.
-- [ ] Account writes are throttled and never mirror the local autosave debounce.
-- [ ] CRUD authorization is strictly scoped by `session.user.id`.
-- [ ] Cross-device reopen/edit works for basic, rich and keyboard writing.
-- [ ] Rich HTML and Urdu/RTL text survive round trip exactly.
-- [ ] Revision conflict returns 409 and has user-visible recovery choices.
-- [ ] Network/auth/database failure never blocks local saving.
-- [ ] `/my-documents` supports open, rename, delete and safe copy/recovery behavior.
-- [ ] UI distinguishes local save from account save truthfully.
-- [ ] Deletion/privacy behavior matches actual remote storage.
-- [ ] Collaboration/teams/social graph are not introduced by this implementation.
+- [ ] No new D1 database is created for My Documents.
+- [ ] `writing_documents` is added to existing `METRICS_DB` through an additive migration.
+- [ ] Existing telemetry/share/Auth.js tables remain intact.
+- [ ] Local autosave/history remains default and works signed out.
+- [ ] Sign-in alone uploads nothing.
+- [ ] Explicit Save to my account works.
+- [ ] All document authorization uses `session.user.id`.
+- [ ] Remote writes are throttled, not tied to local debounce.
+- [ ] Cross-device restore works for basic/rich/keyboard.
+- [ ] Rich HTML and Urdu/RTL survive round-trip.
+- [ ] Revision conflict returns 409 and gets recovery UX.
+- [ ] Network/D1 failure never blocks local writing.
+- [ ] `/my-documents` supports open/rename/delete.
+- [ ] Privacy copy explains account-backed writing and deletion.
 
 ## Related
 
-- `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`
 - `specs/WU-AUTH-001-social-authentication-foundation.md`
-- `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`
+- `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`
 - `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
-- `js/editor-tools.js`
-- `.claude/skills/wu-drafts-cloud-sync/SKILL.md`
