@@ -6,20 +6,20 @@
     var copy = {
         en: {
             title: 'Input mode',
-            roman: 'Roman Urdu → Urdu',
-            direct: 'Direct Urdu / English',
-            romanNote: 'Type Roman Urdu and press Space to convert each word.',
-            directNote: 'Transliteration is off in this mode. Type or paste Urdu or English directly; existing text is kept unchanged.',
-            directAlert: 'Roman Urdu conversion is off. Switch back to Roman Urdu → Urdu to convert as you type.',
+            roman: 'English letters → Urdu',
+            direct: 'Type Urdu directly',
+            romanNote: 'Type Urdu words using English letters and press Space after each word.',
+            directNote: 'Conversion is off in this mode. Type or paste Urdu or English directly; existing text is kept unchanged.',
+            directAlert: 'English-letter conversion is off. Switch back to English letters → Urdu to convert as you type.',
             switchToRoman: 'Turn conversion on'
         },
         ur: {
             title: 'تحریر کا طریقہ',
-            roman: 'رومن اردو → اردو',
-            direct: 'براہِ راست اردو / انگریزی',
-            romanNote: 'رومن اردو لکھیں اور ہر لفظ کو تبدیل کرنے کے لیے Space دبائیں۔',
-            directNote: 'اس طریقے میں تحریری تبدیلی بند ہے۔ اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں؛ موجودہ متن تبدیل نہیں ہوگا۔',
-            directAlert: 'رومن اردو کی تبدیلی بند ہے۔ لکھتے وقت تبدیلی کے لیے رومن اردو → اردو منتخب کریں۔',
+            roman: 'انگریزی حروف → اردو',
+            direct: 'اردو یا انگریزی براہِ راست لکھیں',
+            romanNote: 'اردو الفاظ انگریزی حروف میں لکھیں اور ہر لفظ کے بعد Space دبائیں۔',
+            directNote: 'اس طریقے میں تبدیلی بند ہے۔ اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں؛ موجودہ متن تبدیل نہیں ہوگا۔',
+            directAlert: 'انگریزی حروف سے اردو میں تبدیلی بند ہے۔ لکھتے وقت تبدیلی کے لیے انگریزی حروف → اردو منتخب کریں۔',
             switchToRoman: 'تبدیلی آن کریں'
         }
     };
@@ -76,7 +76,7 @@
         target.dataset.inputMode = mode;
         if (mode === 'roman') {
             target.setAttribute('data-input-mode-placeholder', target.getAttribute('placeholder') || '');
-            if (target.id === 'transliterateTextarea' || target.id === 'cardText' || target.id === 'cardCanvasEditor') target.setAttribute('placeholder', locale() === 'ur' ? 'رومن اردو لکھیں…' : 'Type Roman Urdu…');
+            if (target.id === 'transliterateTextarea' || target.id === 'cardText' || target.id === 'cardCanvasEditor') target.setAttribute('placeholder', locale() === 'ur' ? 'اردو الفاظ انگریزی حروف میں لکھیں…' : 'Type Urdu using English letters…');
         } else if (target.id === 'transliterateTextarea' || target.id === 'cardText' || target.id === 'cardCanvasEditor') {
             target.setAttribute('placeholder', locale() === 'ur' ? 'اردو یا انگریزی براہِ راست لکھیں…' : 'Type Urdu or English directly…');
         }
