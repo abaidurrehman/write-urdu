@@ -1,61 +1,41 @@
 # WU-AUTH-001 — Optional Social Authentication Foundation
 
-**Status:** Planned — founder-approved 2026-08-13; implementation contract reconciled 2026-08-19  
+**Status:** Planned — founder-approved 2026-08-13; reconciled 2026-08-19  
 **Area:** Account / identity  
 **Routes:** `/sign-in`, `/api/auth/*`, `/api/me`, shared account controls  
-**Depends on:** existing Cloudflare Pages deployment and protected anonymous writing baseline  
+**Depends on:** existing Cloudflare Pages deployment, existing `METRICS_DB` D1 binding, anonymous-writing baseline  
 **Unblocks:** `WU-DRAFT-001` / My Documents  
-**Parent boundary:** `WU-ACCOUNT-001`
+**Parent:** `WU-ACCOUNT-001`
 
 ## 1. Purpose
 
-Add optional social identity so a user can later save selected Urdu writing to an account and continue it across sessions/devices.
+Add optional identity so a user can save selected Urdu writing to an account and continue later or on another device.
 
-Authentication is infrastructure, not the end feature. The first valuable authenticated product loop is:
+Authentication is infrastructure. The first valuable authenticated loop is:
 
 ```text
 write anonymously
 → sign in when useful
 → Save to my account
 → My Documents
-→ reopen later / on another device
+→ reopen
 → continue writing
 ```
 
-Accounts remain optional. Transliteration, the basic writer, Urdu keyboard, rich editor, local drafts/history, imports/exports and currently anonymous creation tools must continue to work without authentication.
+Accounts remain optional. Transliteration, basic writer, Urdu keyboard, rich editor, local drafts/history and existing anonymous creation/export tools must continue working without authentication.
 
-Approved provider order:
+Provider order:
 
-1. **Google** — first production provider.
-2. **Facebook** — fast-follow only after Google + My Documents cross-device restore is stable.
+1. Google first.
+2. Facebook only after Google + My Documents cross-device restore is stable.
 
 No email/password, magic-link or passkey flow is in the first program.
 
-## 2. Reconciled implementation decision
+## 2. Implementation decision
 
-The authentication stack to reuse is **Auth.js + Cloudflare D1**, not Auth0.
+Reuse the proven **Auth.js + Cloudflare D1** pattern from InvoiceCraftly, not Auth0 and not a new auth architecture.
 
-The primary implementation precedent is now InvoiceCraftly's merged 2026-08-15 Auth.js/D1 runtime rather than only the earlier OpenForBots research.
-
-InvoiceCraftly demonstrated the target pattern on a static Cloudflare Pages product:
-
-```text
-static pages
-   |
-   +-- account shell
-   +-- /api/me
-   +-- /api/auth/*
-            |
-     project-owned auth wrapper
-            |
-         Auth.js
-            |
-       D1 adapter
-            |
-        ACCOUNT_DB
-```
-
-Reference first:
+Primary reference implementation:
 
 ```text
 abaidurrehman/invoicecraftly
@@ -65,79 +45,82 @@ abaidurrehman/invoicecraftly
   migrations/feature-88-account/0001_authjs_d1_foundation.sql
   test/feature-82-88-authjs-d1-foundation.test.js
   test/feature-82-88-google-account-shell.test.js
-  context/implementation/feature-82-88-authjs-d1-foundation-implementation-2026-08-15.md
-  context/implementation/feature-82-88-google-account-shell-implementation-2026-08-15.md
-  context/specs/feature-82-88-authjs-account-foundation.md
-  context/specs/feature-88-multi-provider-identity-phase-1.md
 ```
 
-See `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md` for the exact port/adapt/do-not-copy matrix.
+InvoiceCraftly proved the Pages Functions/Auth.js/D1 pattern. WriteUrdu must reuse the pattern but **not its dedicated-database decision**.
 
-InvoiceCraftly recorded compatibility on 2026-08-15 with Auth.js core `0.41.3` and `@auth/d1-adapter` `1.11.3`. These are implementation evidence, **not permanent WriteUrdu pins**. Re-check current Auth.js, adapter and Cloudflare runtime behavior when the implementation slice starts.
+WriteUrdu already has one production D1 database exposed as `METRICS_DB`, currently used by telemetry and share-artifact functionality. Because D1 database count is constrained, this feature must reuse that database.
 
-Cloudflare Pages Functions must be added beside the static site. **Do not migrate WriteUrdu to Astro, React, Next or another framework to add accounts.**
+Do not migrate WriteUrdu to Astro/React/Next or another framework for auth.
 
-## 3. Non-negotiable product invariants
+## 3. Non-negotiable invariants
 
 1. Authentication is optional.
 2. Anonymous writing remains first-class.
-3. Auth failure/misconfiguration never disables local writing.
-4. Signing in does not automatically upload local drafts/history.
-5. Signing out does not delete local writing or account-backed documents.
-6. OAuth navigation must preserve in-progress local writing.
-7. Product authorization uses stable `session.user.id`, never email.
-8. Identity scopes remain separate from storage/provider API scopes.
-9. Provider access/refresh tokens never become generic browser product state.
-10. No provider identities are silently merged merely because email strings match.
-11. Auth.js imports/cookie/session implementation details stay behind one project-owned module.
-12. Public profile, follower, team and collaboration behavior is not created by account existence.
+3. Auth failure never disables local writing.
+4. Sign-in does not automatically upload local drafts/history.
+5. Sign-out does not delete local writing or remote documents.
+6. OAuth navigation preserves in-progress local writing.
+7. Authorization uses stable `session.user.id`, never email.
+8. Identity permissions stay separate from provider storage/data permissions.
+9. Auth/session/provider tokens never become generic browser product state.
+10. No automatic provider merge by matching email.
+11. Only one WriteUrdu module imports Auth.js directly.
+12. Account existence does not create public profile/follower/team/collaboration behavior.
+13. No new D1 database is introduced for auth.
 
-## 4. Data-plane separation
+## 4. Shared D1 architecture
 
-The earlier WriteUrdu design used one application database for both Auth.js and writing content. This is superseded by the reconciled two-database boundary.
+### Existing physical database
 
-### Identity/session database
-
-Use a dedicated D1 binding:
-
-```text
-ACCOUNT_DB
-```
-
-Auth.js owns its adapter tables, logically:
+Use the existing Pages Functions binding:
 
 ```text
-users
-accounts
-sessions
-verification_tokens
+METRICS_DB
 ```
 
-Use the schema required by the **currently installed** `@auth/d1-adapter` version. Do not customize adapter columns to fit WriteUrdu terminology.
+The binding name is historical and must not drive schema design. It now represents the existing WriteUrdu application D1 database.
 
-Minimal product-owned account metadata may later live beside identity data only when there is a concrete account-lifecycle need. It must use separate migrations/tables and never alter Auth.js tables.
-
-### Writing/product database
-
-`WU-DRAFT-001` owns a separate binding:
+Expected table domains after auth is added:
 
 ```text
-WRITE_URDU_DB
+METRICS_DB
+│
+├── existing telemetry tables
+├── existing share-artifact tables
+│
+└── Auth.js adapter tables
+    ├── users
+    ├── accounts
+    ├── sessions
+    └── verification_tokens
 ```
 
-Urdu document bodies must never be stored in Auth.js adapter/session records.
+Use the schema required by the installed `@auth/d1-adapter` version at implementation time.
 
-Because the databases are separate, WriteUrdu product tables store the stable Auth.js user ID as an opaque ownership subject. Do not depend on a cross-D1 foreign key.
+### Logical isolation rules
 
-Do not reuse analytics/Product Pulse/OS storage for either auth or user writing.
+- Auth.js tables are adapter-owned.
+- Existing telemetry/share tables are not modified by auth migrations.
+- Auth code receives `env.METRICS_DB` and passes it to `D1Adapter(...)`.
+- Product APIs obtain identity through the project auth wrapper; they do not query Auth.js session/account tables directly.
+- Urdu document content never appears in Auth.js tables or telemetry rows.
+- Existing migrations are immutable; auth uses a new numbered migration after current migrations.
 
-## 5. Target runtime shape
+At the current baseline, the expected next migration is conceptually:
+
+```text
+migrations/0005_authjs_d1_foundation.sql
+```
+
+Reconcile numbering with current `main` before implementation.
+
+## 5. Target runtime
 
 ```text
 Static WriteUrdu pages
    |
-   +-- anonymous/local writing (unchanged)
-   |
+   +-- anonymous/local writing
    +-- /sign-in
    +-- /api/me
    +-- /api/auth/*
@@ -146,12 +129,10 @@ Static WriteUrdu pages
             |
          Auth.js
             |
-       D1Adapter
-            |
-        ACCOUNT_DB
+       D1Adapter(env.METRICS_DB)
 ```
 
-Only one WriteUrdu-owned module may directly import `@auth/core`, provider modules or `@auth/d1-adapter`.
+Only one WriteUrdu-owned module may import `@auth/core`, provider modules or `@auth/d1-adapter`.
 
 Expected project-facing interface:
 
@@ -163,27 +144,23 @@ handleAuthRequest(request, env)
 getSession(request, env)
 ```
 
-A helper such as `getCurrentUser()` may be added if it genuinely simplifies product APIs, but product code must not depend on Auth.js cookies or adapter internals.
+## 6. Configuration/readiness contract
 
-## 6. Configuration and readiness contract
-
-Expected environment/bindings:
+Expected environment:
 
 ```text
 AUTH_ENABLED
 AUTH_SECRET
-ACCOUNT_DB
+METRICS_DB                 # existing D1 binding
 GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
-FACEBOOK_CLIENT_ID       // later
-FACEBOOK_CLIENT_SECRET   // later
+FACEBOOK_CLIENT_ID         # later
+FACEBOOK_CLIENT_SECRET     # later
 ```
 
-Secrets stay in Cloudflare configuration and never in source/static build output.
+Do not create `ACCOUNT_DB` or a second auth D1 binding.
 
-### Readiness states
-
-Use explicit states equivalent to:
+Readiness states:
 
 ```text
 disabled
@@ -191,95 +168,58 @@ misconfigured
 ready
 ```
 
-`AUTH_ENABLED !== 'true'` means disabled.
-
 Auth core is ready only when:
 
 - `AUTH_ENABLED === 'true'`;
-- `AUTH_SECRET` is present;
-- `ACCOUNT_DB` is a valid D1 binding;
-- at least one identity provider has a complete credential/config pair.
+- `AUTH_SECRET` exists;
+- `METRICS_DB` is a valid D1 binding;
+- at least one provider has a complete configuration.
 
-Provider readiness must be data-driven from the start. Google is the first provider, but the long-term auth readiness check must not require Google specifically once Facebook exists.
+A broken optional provider fails itself closed without disabling another valid provider.
 
-A partially configured optional provider fails **that provider** closed; it must not disable another correctly configured provider.
-
-### Operational behavior
-
-When disabled:
-
-- `/api/auth/*` returns a safe disabled/not-enabled response;
-- `/api/me` resolves safely as unauthenticated/not-enabled;
-- account controls are hidden or safe-disabled;
-- writing behaves exactly as before.
-
-When misconfigured:
-
-- account routes fail safely;
-- operational logs expose normalized missing configuration identifiers only, never values;
-- anonymous/local product remains available.
+When disabled/misconfigured, `/api/auth/*` and `/api/me` fail safely while writing continues normally.
 
 ## 7. Provider contract
 
-### 7.1 Google — first provider
+### Google
 
-Use the current Auth.js Google provider.
-
-Identity permissions must remain equivalent to:
+Use current Auth.js Google provider with identity-only permissions equivalent to:
 
 ```text
 openid email profile
 ```
 
-Do not request:
+Do not request Drive, Gmail, Calendar, Contacts, Cloud Platform or unrelated offline/storage permissions.
 
-- Google Drive;
-- Gmail;
-- Calendar;
-- Contacts;
-- Cloud Platform;
-- storage/offline scopes unrelated to basic identity.
+User-facing copy says **Continue with Google**; it is not Gmail-only.
 
-The provider appears in UI only when its complete required configuration is ready.
+### Facebook
 
-Google account addresses are not limited to `@gmail.com`; user-facing copy should say **Continue with Google**, not “Gmail-only”.
-
-### 7.2 Facebook — later provider
-
-Facebook is implemented only after the Google + My Documents cross-device loop is stable.
+Implement only after the Google + My Documents flow is stable.
 
 Requirements:
 
-- current Auth.js Facebook provider at implementation time;
+- current Auth.js Facebook provider;
 - identity-only permissions;
-- tolerate missing email;
-- missing profile image/name must degrade safely;
-- Facebook configuration errors must not regress Google;
-- no friends, Page, posting, Messenger, ads or Instagram permissions.
+- tolerate missing email/image/name;
+- Facebook failure must not regress Google;
+- no friends/Page/posting/Messenger/ads/Instagram permissions.
 
-### 7.3 No automatic provider linking
+### No automatic account linking
 
-Do not automatically merge Google/Facebook users because their email strings match.
-
-Keep safe Auth.js behavior equivalent to:
+Keep safe behavior equivalent to:
 
 ```text
 allowDangerousEmailAccountLinking: false
 ```
 
-If a future explicit `Connected accounts` feature is wanted, it must prove control of both identities while already authenticated and receive its own security/account-recovery review.
+A future explicit connected-accounts flow requires separate security and recovery design.
 
-## 8. Session and `/api/me` contract
+## 8. Session and `/api/me`
 
-Use database sessions and expose stable adapter user identity to product code as:
+Use database sessions and expose stable adapter identity as `session.user.id`.
 
-```text
-session.user.id
-```
-
-`/api/me` is the only small product-facing account projection needed by the static shell.
-
-Authenticated response may be equivalent to:
+Authenticated projection may be:
 
 ```json
 {
@@ -293,82 +233,55 @@ Authenticated response may be equivalent to:
 }
 ```
 
-Unauthenticated response must be deterministic and safe.
-
 Rules:
 
-- return only fields needed by product UI;
-- never expose access/refresh tokens;
-- never expose OAuth state/code;
-- account/session responses use `Cache-Control: no-store`;
-- add `X-Content-Type-Options: nosniff` and appropriate referrer protection where practical;
-- email/image/name are optional profile data; stable `id` is the authorization subject.
+- only UI-required fields;
+- never expose provider/session tokens;
+- `Cache-Control: no-store`;
+- `X-Content-Type-Options: nosniff`;
+- stable `id` is the authorization subject;
+- name/email/image are optional profile fields.
 
 ## 9. Redirect and local-writing preservation
 
-This is a release-critical WriteUrdu behavior.
+Before OAuth:
 
-Before leaving the writer for OAuth:
-
-1. flush/save current editor state using the existing `js/editor-tools.js` / editor adapter path;
-2. do not place Urdu text/rich HTML in OAuth state, callback or return-target query parameters;
-3. persist only a safe same-origin return location/context;
+1. flush/save current writer through existing `js/editor-tools.js` / adapter behavior;
+2. never serialize Urdu text/rich HTML into OAuth state or query strings;
+3. retain only a safe same-origin return route;
 4. complete OAuth;
 5. return only to allowlisted same-origin WriteUrdu routes;
-6. normal writer bootstrap restores canonical browser-local state;
-7. signing out must leave local content/history untouched.
+6. normal writer startup rehydrates local content;
+7. sign-out leaves local content/history untouched.
 
-Expected proof flow:
-
-```text
-type meaningful Urdu content
-→ wait/flush local save
-→ Sign in
-→ Google OAuth
-→ return to writer
-→ exact local content still present
-→ Sign out
-→ content still present
-```
-
-Test the rich editor with formatting as well as plain Urdu text.
-
-## 10. Account UX contract
-
-### Signed out
-
-Shared account control:
+Required proof:
 
 ```text
-Sign in
+type Urdu content
+→ save/flush locally
+→ Google sign-in
+→ return
+→ same content present
+→ sign out
+→ same content present
 ```
 
-It must not dominate the primary writing action.
+Include rich-editor formatting in regression proof.
 
-### Sign-in page
+## 10. Account UX
 
-Create a static, noindex `/sign-in` page using the current v2 shell.
+Signed out: `Sign in`.
 
-Core message should explain the value in simple language:
-
-- sign in to save selected writing to your account and continue later;
-- existing local drafts are not uploaded automatically;
-- writing still works without an account.
-
-Primary actions:
+Create a static noindex `/sign-in` page using the v2 shell with:
 
 ```text
 Continue with Google
 Continue without an account
 ```
 
-Facebook appears only after it is implemented/configured.
+The page must say that existing local writing is not automatically uploaded and that writing remains available without an account.
 
-Do not make the page a generic social-login wall.
-
-### Signed in
-
-Compact menu may expose:
+Signed-in menu:
 
 ```text
 My Documents
@@ -376,217 +289,133 @@ Account
 Sign out
 ```
 
-Do not expose backend language such as D1, session, cloud binding or provider tokens.
-
-### Static-shell hydration
-
-Hydrate account state client-side from `/api/me`.
-
-Reserve a stable account-control footprint so session lookup does not materially shift the header or push the authoring canvas lower on mobile.
-
-Auth/session lookup must never block transliteration/editor initialization.
+Hydrate account state client-side from `/api/me` without blocking transliteration/editor initialization or materially shifting the header/canvas.
 
 ## 11. Security requirements
 
-- current official Auth.js/Cloudflare behavior must be checked at implementation time;
-- Auth.js handles supported CSRF/state/OAuth mechanics; do not hand-roll OAuth;
-- same-origin/allowlisted callback/return targets only;
-- no open redirects;
-- no auth/session/provider tokens in analytics or logs;
-- no Urdu document content in auth logs;
-- sanitized normalized auth logger;
-- no request-scoped mutable module globals;
-- account responses `no-store`;
-- secrets never shipped to client build;
-- stable secure IDs from supported platform/adapter behavior;
-- no automatic email-based provider linking;
-- product APIs authorize only by stable session user ID;
-- do not broaden CSP/third-party allowances more than required for OAuth navigation.
+- verify current Auth.js/Cloudflare behavior before implementation;
+- do not hand-roll OAuth/CSRF/session cookies;
+- same-origin/allowlisted return targets only;
+- no tokens/secrets/writing content in logs or analytics;
+- sanitized auth logger;
+- no request-scoped mutable globals;
+- account/session responses `no-store`;
+- secrets absent from static assets;
+- stable user ID for authorization;
+- no automatic email linking;
+- auth module is the only code allowed to depend on Auth.js internals.
 
-## 12. Privacy and account lifecycle
+### Shared-database safety
 
-Before accounts are broadly promoted, Privacy must explain that WriteUrdu stores identity/session data when a user creates an account.
+Because auth shares `METRICS_DB` with existing product data:
 
-Before account-backed documents are broadly enabled, Privacy must also explain what writing is stored, how it is deleted and the distinction between local browser data and account-backed data.
+- auth migrations must be additive only;
+- never drop/rename existing telemetry/share tables;
+- migration verification must inspect existing tables before and after;
+- rollback disables auth through `AUTH_ENABLED=false`; it does not drop tables;
+- auth runtime must not run telemetry/share schema maintenance;
+- telemetry/share runtime must not inspect Auth.js tables.
 
-A public account product must have a documented deletion lifecycle. At minimum the implementation program must decide:
+## 12. Account lifecycle/privacy
 
-- how the user requests account deletion;
-- what happens to Auth.js identity/session rows;
-- what happens to `WRITE_URDU_DB` documents owned by that user;
-- whether deletion is immediate or queued;
-- what happens to local browser drafts (they cannot be remotely deleted reliably);
-- what audit/retention metadata, if any, is legally/operationally required.
+Before public account promotion, Privacy must explain identity/session storage.
 
-Do not market “delete your account/data” until the implemented behavior matches the claim.
+Before My Documents launch, Privacy must also explain stored writing, deletion and the distinction between local and account-backed content.
 
-## 13. Error normalization
+Account deletion design must define:
 
-Do not expose raw Auth.js/provider errors directly to users.
+- Auth.js user/account/session deletion;
+- deletion of product-owned documents for that `user_id`;
+- local browser drafts remain outside remote deletion control;
+- any required operational retention.
 
-Product-facing categories may include:
+Sharing one D1 database does not mean sharing retention policies: deletion is table/domain-specific.
 
-```text
-auth-disabled
-auth-unavailable
-provider-unavailable
-provider-cancelled
-account-not-linked
-session-expired
-```
+## 13. Implementation slices
 
-Messages must remain non-destructive and always preserve a path back to anonymous writing.
-
-For a same-email provider collision, do not reveal unnecessary provider/account metadata. Guide the user to the sign-in method previously used or allow them to continue without an account.
-
-## 14. Implementation slices
-
-### AUTH-A — foundation only
+### AUTH-A — backend foundation
 
 Use `.claude/skills/wu-auth-authjs-d1-foundation/SKILL.md`.
 
 Deliver:
 
-- Auth.js dependencies compatible with current Cloudflare runtime;
-- dedicated `ACCOUNT_DB` binding contract;
-- adapter-compatible migration;
-- `functions/lib/auth.mjs` single import boundary;
-- `/api/auth/*` catch-all;
+- Auth.js dependencies;
+- adapter migration in the existing migration sequence;
+- reuse `METRICS_DB`;
+- `functions/lib/auth.mjs`;
+- `/api/auth/*`;
 - `/api/me`;
-- disabled/misconfigured/ready behavior;
-- no-store/sanitized logging/same-origin redirect contract;
-- focused tests.
+- readiness/fail-closed behavior;
+- safe headers/logging/redirects;
+- tests proving existing database tables remain untouched.
 
-**Do not add account shell UI in this slice.**
-
-**Exit:** auth disabled by default leaves the anonymous site unchanged, and the backend foundation is deterministic under local/test configuration.
+**Do not add account UI or documents in AUTH-A.**
 
 ### AUTH-B — Google + account shell
 
-Use `.claude/skills/wu-auth-account-shell/SKILL.md` plus the Google provider reference.
+Use `.claude/skills/wu-auth-account-shell/SKILL.md`.
 
-Deliver:
+Deliver Google provider, `/sign-in`, session-aware header, sign-out, local-writing preservation and real production callback/session proof.
 
-- Google provider/config;
-- `/sign-in` UI;
-- CSRF-safe sign-in flow required by the installed Auth.js version;
-- account-state hydration;
-- sign-out;
-- local-writing preservation before OAuth;
-- real custom-domain callback/session proof.
+### AUTH-C — My Documents
 
-**Exit:** Google sign-in, `/api/me`, return-to-writer and sign-out work end to end without losing local writing.
-
-### AUTH-C — product value
-
-Implement `WU-DRAFT-001` / My Documents. Login alone is not considered the completed user-value initiative.
+Implement `WU-DRAFT-001` using the same existing `METRICS_DB` database with a separate product-owned table.
 
 ### AUTH-D — Facebook
 
-Use `.claude/skills/wu-auth-add-provider/SKILL.md` after the Google + My Documents cross-device loop is stable.
+Only after Google + My Documents cross-device continuity is stable.
 
-## 15. Contract tests
+## 14. Required tests
 
-Required backend/auth coverage:
+Backend:
 
-- `AUTH_ENABLED` off => safe disabled behavior;
-- missing `AUTH_SECRET` => misconfigured/fail closed;
-- missing/invalid `ACCOUNT_DB` => misconfigured/fail closed;
-- no complete providers => unavailable;
-- complete Google credentials => provider ready;
-- incomplete Google pair => provider excluded/unavailable;
-- future Facebook partial config does not disable valid Google;
-- `/api/me` signed out => deterministic unauthenticated response;
-- authenticated session exposes stable user ID;
-- direct Auth.js imports confined to the auth wrapper;
-- same-origin redirect accepted;
-- external-origin redirect rejected/falls back safely;
-- account/session responses are `no-store`;
-- no storage/provider-data scope appears in Google identity login.
+- auth off => safe disabled behavior;
+- missing `AUTH_SECRET` => fail closed;
+- missing/invalid `METRICS_DB` => fail closed;
+- complete Google config => ready;
+- incomplete provider => excluded;
+- `/api/me` signed out => deterministic unauthenticated result;
+- authenticated session exposes stable ID;
+- Auth.js imports confined to one module;
+- same-origin redirect accepted and external redirect rejected;
+- account/session responses `no-store`;
+- Google scopes are identity-only;
+- existing telemetry/share tables still exist after auth migration;
+- no auth migration modifies/drops existing table definitions unexpectedly.
 
-## 16. Browser and production proof
+Production proof:
 
-Before calling Google auth ready on production:
+1. meaningful local Urdu content exists;
+2. Google sign-in completes on canonical custom domain;
+3. content survives return;
+4. `/api/me` exposes stable user ID;
+5. expected Auth.js rows exist in the existing D1 database;
+6. no Urdu writing exists in auth rows;
+7. existing telemetry/share endpoints still work;
+8. sign-out preserves local work;
+9. OAuth cancellation is non-destructive;
+10. anonymous basic/rich/keyboard flows still pass.
 
-1. create meaningful local Urdu content in the homepage/basic writer;
-2. enter sign-in through the real product control;
-3. complete Google OAuth on the custom production domain;
-4. return to the intended WriteUrdu route;
-5. confirm local content is unchanged;
-6. confirm `/api/me` returns the allowlisted authenticated projection with stable ID;
-7. confirm expected Auth.js `users`, `accounts` and `sessions` rows exist in `ACCOUNT_DB`;
-8. confirm no writing content exists in auth rows;
-9. sign out and confirm local content/history remains;
-10. cancel OAuth once and confirm local writing remains usable;
-11. verify homepage transliteration, Urdu keyboard and rich editor still work signed out;
-12. inspect built/static assets for secrets/tokens;
-13. verify narrow/mobile account UI does not cover or materially displace the writer.
+## 15. Rollback
 
-## 17. Rollback
+`AUTH_ENABLED=false` disables account behavior without database deletion or migration rollback.
 
-`AUTH_ENABLED=false` must cleanly remove/disable account behavior without changing browser-local writing persistence.
+Do not drop shared-database Auth.js tables as a normal rollback because the physical database also serves unrelated production features.
 
-Disabling auth must not:
+## 16. Acceptance criteria
 
-- delete `ACCOUNT_DB` data;
-- delete `WRITE_URDU_DB` data;
-- clear local drafts/history;
-- alter transliteration;
-- alter static SEO/canonical behavior.
-
-Provider-specific failure should be recoverable by disabling/removing that provider configuration without affecting another valid provider.
-
-## 18. Stop conditions
-
-Stop and fix before moving to account-backed documents if:
-
-- anonymous writing waits on `/api/me` or auth availability;
-- implementation requires a framework migration;
-- Auth.js imports spread into product/editor modules;
-- secrets appear in source/build output;
-- stable user ID is missing from sessions;
-- OAuth navigation loses local work;
-- external return URLs are accepted;
-- Pages Functions routing captures/breaks public static SEO routes;
-- identity login requests provider storage/social permissions;
-- auth runtime cost/compatibility cannot be kept within an acceptable Cloudflare posture.
-
-## 19. Out of scope
-
-- mandatory accounts;
-- email/password;
-- magic links;
-- passkeys;
-- automatic provider linking;
-- Google Drive/Dropbox/OneDrive authorization;
-- Gmail/Calendar/Contacts access;
-- generic file storage;
-- public creator profiles;
-- following/followers;
-- teams/workspaces;
-- collaboration/comments;
-- billing/subscriptions;
-- Card Studio image/project cloud storage;
-- framework migration.
-
-## 20. Acceptance criteria
-
-- [ ] Anonymous writing/local drafts remain unchanged when signed out or auth is unavailable.
-- [ ] Auth.js is isolated behind one WriteUrdu-owned module.
-- [ ] Dedicated `ACCOUNT_DB` is used for Auth.js identity/session data.
-- [ ] Writing content is not stored in Auth.js tables.
-- [ ] Provider readiness is data-driven and fail-closed.
-- [ ] Google works end to end on the production custom domain.
-- [ ] `session.user.id` is stable and used for authorization.
-- [ ] `/api/me` exposes only the allowlisted product account projection.
-- [ ] OAuth return preserves in-progress local Urdu writing and rich formatting.
-- [ ] Sign-out does not delete local writing.
-- [ ] Provider scopes are identity-only.
-- [ ] No automatic Google/Facebook email merge exists.
-- [ ] Account/session responses are non-cacheable.
-- [ ] Secrets/tokens are absent from logs/static build output.
-- [ ] Facebook is added only after My Documents cross-device continuity is stable.
-- [ ] Privacy/account-deletion behavior is documented before broad account promotion.
+- [ ] No new D1 database is created for auth.
+- [ ] Existing `METRICS_DB` is passed to Auth.js D1 adapter.
+- [ ] Auth migration is additive and preserves existing telemetry/share tables.
+- [ ] Anonymous writing remains unchanged.
+- [ ] Auth.js is isolated behind one WriteUrdu module.
+- [ ] Google works end to end on production domain.
+- [ ] Stable `session.user.id` is used for product authorization.
+- [ ] OAuth return and sign-out preserve local writing.
+- [ ] Identity scopes are minimal.
+- [ ] No automatic provider linking exists.
+- [ ] Account UI is noindex and non-blocking.
+- [ ] Privacy/account-deletion lifecycle is addressed before broad launch.
 
 ## Related
 
@@ -594,6 +423,3 @@ Stop and fix before moving to account-backed documents if:
 - `specs/WU-DRAFT-001-cross-device-cloud-drafts.md`
 - `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`
 - `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
-- `.claude/skills/wu-auth-authjs-d1-foundation/SKILL.md`
-- `.claude/skills/wu-auth-account-shell/SKILL.md`
-- `.claude/skills/wu-auth-add-provider/SKILL.md`
