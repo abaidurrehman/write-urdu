@@ -63,7 +63,7 @@ const invoiceCore = require(path.join(root, 'js', 'invoice-generator-core.js'));
 const invoice = invoiceCore.createDefaultInvoiceDocument(new Date('2026-07-17T00:00:00Z'));
 assert.strictEqual(invoice.schemaVersion, 2, 'Invoice schema should include v1.2 presentation migration');
 assert.strictEqual(invoice.preferences.densityMode, 'automatic', 'Invoice density should default to automatic');
-assert.strictEqual(invoice.preferences.sellerHeaderMode, 'identity-only', 'Seller header should default to identity-only');
+assert.strictEqual(invoice.preferences.sellerHeaderMode, 'identity-only', 'Invoice seller header should default to identity-only');
 invoice.seller.name = 'Seller'; invoice.buyer.name = 'Buyer'; invoice.items[0].description = 'Service'; invoice.items[0].quantity = '2'; invoice.items[0].unitPrice = '125.50';
 assert.strictEqual(invoiceCore.calculateInvoiceTotals(invoice).grandTotalMinor, 25100, 'Invoice totals calculation is incorrect');
 assert.strictEqual(invoiceCore.validateInvoice(invoice).valid, true, 'Valid invoice failed validation');
@@ -265,7 +265,7 @@ assert.match(qrCore.buildWifiPayload({ ssid: 'a;b', security: 'WPA', password: '
 assert.match(qrCore.buildVCardPayload({ fullName: 'A;B' }).payload, /N:;A\\;B/, 'vCard escaping failed');
 assert.strictEqual(qrCore.buildLocationPayload({ latitude: 91, longitude: 0 }).valid, false, 'Location bounds are not enforced');
 assert.strictEqual(qrCore.normalizeQrProject({ design: { foregroundColor: '#fff', margin: 9 }, logo: { sizeRatio: 1 } }).design.margin, 4, 'QR state normalization failed');
-assert.strictEqual(qrCore.calculateLogoPlacement(1000, { width: 2000, height: 1000 }, { width: 1080, height: 1080 }, 'cover', .5, .5).width >= 1080, true, 'QR logo contain placement failed');
+assert.strictEqual(qrCore.calculateLogoPlacement(1000, { width: 2000, height: 1000 }, { sizeRatio: .18 }).imageWidth <= 180, true, 'QR logo contain placement failed');
 assert.strictEqual(qrCore.safeFilename('a/b:c', 'fallback'), 'a b c', 'QR filename sanitisation is incomplete');
 assert.ok(fs.existsSync(path.join(root, '.htaccess')), 'Clean-route Apache configuration is missing');
 assert.match(fs.readFileSync(path.join(root, '.htaccess'), 'utf8'), /REQUEST_FILENAME\.html|RewriteRule/, 'Clean-route rewrite is incomplete');
