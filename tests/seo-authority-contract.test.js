@@ -9,12 +9,12 @@ const config = require(path.join(root, 'seo.config.js'));
 const home = config.pages.find(page => page.id === 'home');
 assert.ok(home, 'homepage SEO registry entry is missing');
 assert.match(home.title || '', /^Urdu Typing Online\b/i, 'homepage title must lead with the existing Urdu typing opportunity');
-assert.match(home.title || '', /English Letters/i, 'homepage title must explain the real Roman Urdu input method');
-assert.match(home.description || '', /Roman Urdu/i, 'homepage description must describe Roman Urdu input');
+assert.match(home.title || '', /English Letters/i, 'homepage title must explain the English-letter Urdu input method');
+assert.match(home.description || '', /English letters/i, 'homepage description must describe English-letter Urdu input');
 assert.match(home.description || '', /Urdu script/i, 'homepage description must describe Urdu-script output');
 assert.match(home.description || '', /no account/i, 'homepage description must preserve the accurate no-account benefit');
 assert.ok(home.description.length <= 165, 'homepage description should stay concise enough for a useful mobile snippet');
-assert.strictEqual(home.h1, 'Type Roman Urdu and convert it to Urdu script', 'homepage H1 ownership contract changed');
+assert.strictEqual(home.h1, 'English to Urdu Typing Online', 'homepage H1 must preserve the Search Console language contract');
 const homeHtml = read('index.html');
 const resolvedHomeTitle = home.searchTitle || home.title;
 const resolvedHomeDescription = home.searchDescription || home.description;
@@ -42,7 +42,7 @@ assert.ok(contactConfig && contactConfig.indexable === true && contactConfig.pat
 assert.ok(feedbackConfig && feedbackConfig.indexable === false && feedbackConfig.path === '/feedback', 'Feedback must remain a noindex product utility');
 const romanConfig = config.pages.find(page => page.id === 'roman-urdu-transliteration');
 assert.strictEqual(romanConfig.datePublished, '2026-07-16', 'Roman Urdu publication date must match the visible published date');
-assert.strictEqual(romanConfig.lastmod, '2026-08-07', 'Roman Urdu revision date must remain distinct from its publication date');
+assert.strictEqual(romanConfig.lastmod, '2026-08-19', 'Roman Urdu revision date must reflect the plain-language update');
 
 const seo = read('js/seo.js');
 assert.match(seo, /page\.searchTitle \|\| page\.title/, 'runtime SEO must support a search-facing title override when explicitly needed');
@@ -65,8 +65,8 @@ assert.doesNotMatch(seo, /SearchAction|query-input|search_term_string/, 'retired
 const llms = read('llms.txt');
 assert.match(llms, /^# Write Urdu\n\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
 assert.match(llms, /Canonical site: https:\/\/write-urdu\.com\//, 'llms.txt canonical site statement is missing');
-assert.match(llms, /transliteration, not translation/i, 'llms.txt must preserve the central transliteration distinction');
-assert.match(llms, /Last reviewed: 2026-08-15/, 'llms.txt review date is missing');
+assert.match(llms, /does not translate an English sentence into Urdu/i, 'llms.txt must preserve the English-letter typing versus translation distinction in plain language');
+assert.match(llms, /Last reviewed: 2026-08-19/, 'llms.txt review date is stale');
 assert.match(llms, /## Start writing/, 'llms.txt must prioritize core writing workflows');
 assert.match(llms, /## Trust, policies and corrections/, 'llms.txt trust resource section is missing');
 assert.match(llms, /https:\/\/write-urdu\.com\/why-write-urdu/, 'llms.txt must link to About');
@@ -84,13 +84,13 @@ assert.match(robots, /User-agent:\s*GPTBot[\s\S]*?Disallow:\s*\//i, 'GPTBot trai
 
 const sitemap = read('sitemap.xml');
 const revisionDates = {
-  '/': '2026-08-12',
+  '/': '2026-08-19',
   '/urdu-editor': '2026-08-07',
   '/urdu-keyboard': '2026-08-07',
   '/urdu-alphabet': '2026-08-07',
   '/write-urdu-documentation': '2026-08-07',
   '/urdu-faq': '2026-08-07',
-  '/roman-urdu-transliteration': '2026-08-07',
+  '/roman-urdu-transliteration': '2026-08-19',
   '/urdu-name-art-maker': '2026-08-13',
   '/urdu-card-studio': '2026-08-17',
   '/how-to-share-urdu-writing-online': '2026-08-17',
