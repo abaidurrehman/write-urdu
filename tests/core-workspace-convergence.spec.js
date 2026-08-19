@@ -72,7 +72,7 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   await expect(clear).toBeDisabled();
   await expect(mode.locator('[data-input-mode-option="roman"]')).toBeEnabled();
   await expect(toolbar.locator('[data-wu-basic-more-toggle]')).toBeEnabled();
-  await expect(page.locator('[data-wu-basic-mode-helper]')).toContainText('Type Roman Urdu');
+  await expect(page.locator('[data-wu-basic-mode-helper]')).toContainText('Type Urdu words using English letters');
 
   await editor.fill('میرا خیال ہے');
   await expect(share).toBeEnabled();
