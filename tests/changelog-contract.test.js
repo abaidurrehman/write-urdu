@@ -58,7 +58,7 @@ assert.match(spec, /What changed\?/i, 'Changelog policy must require what change
 assert.match(spec, /Why does it help\?/i, 'Changelog policy must require customer benefit');
 assert.match(spec, /How do I use it\?/i, 'Changelog policy must require usage instructions');
 assert.match(spec, /internal architecture/i, 'Changelog policy must explicitly exclude internal architecture');
-assert.match(spec, /unreleased/i, 'Changelog policy must exclude unreleased work');
+assert.match(spec, /has not shipped|unreleased/i, 'Changelog policy must exclude work that has not shipped');
 assert.match(css, /@media \(max-width: 560px\)/, 'Changelog must include phone-responsive layout');
 
 console.log('Customer-facing changelog contract passed.');
