@@ -23,7 +23,7 @@ for (const route of [
   '/roman-urdu-transliteration', '/english-urdu-typing-tutorial', '/urdu-alphabet',
   '/urdu-fonts-nastaliq-vs-naskh', '/how-to-write-urdu-on-photo', '/write-urdu-documentation',
   '/write-urdu-features', '/urdu-editor-features', '/urdu-faq', '/why-write-urdu',
-  '/write-urdu-privacy', '/contact', '/feedback', '/write-urdu-search', '/write-urdu-sitemap'
+  '/write-urdu-privacy', '/contact', '/changelog', '/feedback', '/write-urdu-search', '/write-urdu-sitemap'
 ]) {
   assert.ok(html.includes(`href="${route}"`), `Sitemap directory is missing ${route}`);
 }
