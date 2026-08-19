@@ -55,6 +55,7 @@
             var control = document.createElement('div');
             control.className = 'wu-account-control';
             control.setAttribute('data-wu-account-control', '');
+            control.innerHTML = '<a class="wu-account-sign-in" href="/sign-in" aria-hidden="true" tabindex="-1">Sign in</a>';
             control.hidden = true;
             var languageToggle = headerInner.querySelector('[data-wu-language-toggle]');
             headerInner.insertBefore(control, languageToggle || null);
