@@ -28,6 +28,7 @@ why-write-urdu.html,/why-write-urdu,About,why use WriteUrdu,index,yes,keep-refra
 contact.html,/contact,About,public contact support privacy and corrections,index,yes,keep,migrated,P1,Indexable ad-free organisational contact surface with direct email fallback and protected Cloudflare form
 changelog.html,/changelog,About,shipped WriteUrdu product updates and how to use them,index,yes,keep,migrated,P2,Customer-facing ad-free release history with newest-first usable updates direct tool links and no engineering log content
 feedback.html,/feedback,About,product feedback ideas and corrections,noindex,no,keep,migrated,P2,Ad-free product feedback utility with optional identity rating and protected Cloudflare form
+sign-in.html,/sign-in,Utility,optional account sign-in,noindex,no,planned,migrated,P1,Ad-free noindex account utility; Google identity first; signing in does not upload existing local drafts
 write-urdu-privacy.html,/write-urdu-privacy,About,privacy policy,index,yes,keep,migrated,P1,V3 ad-free privacy and terms surface with public-share disclosure contact-form disclosure local-data guidance and preserved legal terms
 write-urdu-search.html,/write-urdu-search,Utility,internal site search,noindex,no,review,migrated,P2,V3 ad-free noindex search utility with Google Custom Search disclosure and curated quick links
 write-urdu-sitemap.html,/write-urdu-sitemap,Utility,human-readable sitemap,index,yes,keep-if-generated,migrated,P2,Task-first professional directory grouped by Write Create Learn and About while staying aligned with the public route registry

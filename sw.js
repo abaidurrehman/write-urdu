@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v25';
+const CACHE_NAME = 'write-urdu-shell-v26';
 const APP_SHELL = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const APP_SHELL = [
   './roman-urdu-transliteration.html',
   './urdu-fonts-nastaliq-vs-naskh.html',
   './css/site-header.css',
+  './css/account.css',
   './css/outcome-navigation.css',
   './css/workspace-next-step.css',
   './css/core-workspace-convergence.css',
@@ -55,6 +56,8 @@ const APP_SHELL = [
   './assets/templates/events.svg',
   './site-header.js',
   './js/site-header-core.js',
+  './js/account-session.mjs',
+  './js/account-control.mjs',
   './js/outcome-navigation.js',
   './js/core-workspace-convergence.js',
   './js/basic-writer-command-toolbar.js',
@@ -115,7 +118,14 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+
+  // Auth.js callbacks, session endpoints and /api/me are request-specific and
+  // must never be stored or served by the application Cache API. The sign-in
+  // shell also remains network-owned so account-state UX cannot become stale.
+  if (url.pathname.startsWith('/api/') || url.pathname === '/sign-in' || url.pathname === '/sign-in.html') return;
+
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
@@ -126,7 +136,6 @@ self.addEventListener('fetch', event => {
         }
         return response;
       }).catch(() => {
-        const url = new URL(event.request.url);
         const extensionless = url.pathname !== '/' && !url.pathname.endsWith('/') && !url.pathname.includes('.');
         if (extensionless) {
           const fallback = new Request(url.origin + url.pathname + '.html', event.request);

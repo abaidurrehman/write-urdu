@@ -1,240 +1,345 @@
-# WriteUrdu — Authentication + Cloud Drafts Implementation Plan
+# WriteUrdu — Authentication + My Documents Implementation Plan
 
-**Date:** 2026-08-13  
+**Original activation:** 2026-08-13  
+**Reconciled:** 2026-08-19  
 **Status:** Planned execution record  
-**Feature specs:** `WU-AUTH-001`, `WU-DRAFT-001`  
-**Goal:** Optional Google/Facebook sign-in plus cross-device writing drafts, with zero regression to anonymous writing/local drafts.
+**Feature specs:** `WU-ACCOUNT-001`, `WU-AUTH-001`, `WU-DRAFT-001`
 
-## 1. Why this is now activated
+## 1. Goal
 
-The canonical backlog previously held accounts/cloud documents because there was no demonstrated demand and the architecture could distract from mature-domain growth work. The founder has now explicitly requested account-backed draft saving/restoration with Google and Facebook sign-in.
+Ship optional social sign-in and cross-device Urdu writing continuity while preserving anonymous/local writing and **without creating another Cloudflare D1 database**.
 
-This is therefore a deliberate activation, not an accidental infrastructure project.
+The implementation reuses two proven foundations:
 
-The feature remains bounded:
+1. InvoiceCraftly's merged Auth.js + Cloudflare Pages Functions pattern.
+2. WriteUrdu's existing D1 database exposed as `METRICS_DB` plus its current migration sequence.
 
-- accounts are optional;
-- only writing drafts are persisted initially;
-- the existing local draft system remains primary;
-- no generic dashboard, team system or cloud file drive is introduced;
-- no framework rewrite is permitted.
+## 2. Physical database decision
 
-## 2. Findings carried into implementation
+WriteUrdu already has one production D1 database used by telemetry and share artifacts. Database-count limits make an additional account/document database undesirable.
 
-1. OpenForBots uses **Auth.js**, not Auth0.
-2. The proven stack is `@auth/core` + `@auth/d1-adapter` + Cloudflare D1.
-3. OpenForBots already solved provider building, CSRF-safe provider POST login, `session.user.id`, D1 adapter schema and fail-closed feature gating.
-4. Google is already active in that implementation and is the lowest-risk first provider to reuse.
-5. Facebook should be added through the same provider builder after the first end-to-end draft flow is stable.
-6. WriteUrdu already has local autosave, history, restore/rename/delete and editor adapters. The cloud feature should extend that abstraction rather than replace it.
-7. Cloudflare Pages Functions can be added beside the static site; no Astro/React migration is needed.
-8. D1 Free limits are sufficient for a bounded draft feature if cloud writes are throttled rather than tied to the existing 650 ms local autosave loop.
+Therefore:
 
-## 3. Implementation order
+```text
+existing D1 / env.METRICS_DB
+├── existing telemetry tables
+├── existing share-artifact tables
+├── Auth.js tables (new)
+│   ├── users
+│   ├── accounts
+│   ├── sessions
+│   └── verification_tokens
+└── writing_documents (new)
+```
 
-### Slice 0 — governance and regression baseline
+Do **not** create:
 
-Before backend code:
+```text
+ACCOUNT_DB
+WRITE_URDU_DB
+another D1 database
+```
 
-- mark `WU-AUTH-001` and `WU-DRAFT-001` Planned in the registry/backlog;
-- capture current `npm test`, `npm run seo:check` and browser-test baseline;
-- identify the exact three editor adapter initialization paths;
-- confirm the current Cloudflare Pages build/deploy configuration;
-- add feature flags with defaults that leave production behavior unchanged.
+The legacy binding name `METRICS_DB` is retained to avoid risky production rebinding/renaming. Logical isolation is by table ownership, module/API boundaries and migrations.
 
-**Gate:** no auth/cloud implementation proceeds if the current editor/transliteration suite is red for unrelated reasons.
+At the 2026-08-19 baseline the existing migrations are:
 
-### Slice 1 — Cloudflare/D1 + Auth.js foundation
+```text
+0001_product_telemetry.sql
+0002_product_telemetry_rollups.sql
+0003_acquisition_telemetry.sql
+0004_share_artifacts.sql
+```
 
-Use `.claude/skills/wu-auth-authjs-d1-foundation/SKILL.md`.
+Expected additions:
+
+```text
+0005_authjs_d1_foundation.sql
+0006_writing_documents.sql
+```
+
+Reconcile exact numbering against current `main` at implementation time.
+
+## 3. Program invariants
+
+- anonymous writing remains first-class;
+- auth/document failures never block local save or transliteration;
+- signing in uploads nothing automatically;
+- stable `session.user.id` owns account-backed documents;
+- email is never an authorization key;
+- Auth.js is isolated behind one project-owned module;
+- Google identity requests identity-only scopes;
+- no automatic account linking;
+- existing telemetry/share tables and APIs must not regress;
+- no framework migration;
+- no new D1 allocation;
+- collaboration/teams/profiles/followers remain out of this implementation.
+
+## 4. Implementation order
+
+### Slice 0 — baseline and shared-D1 inventory
+
+Before auth code:
+
+- capture `npm test`, SEO/governance/browser baseline;
+- inspect current Pages Functions routing and deployment config;
+- inspect current `METRICS_DB` consumers;
+- capture the current D1 table/migration inventory;
+- verify `METRICS_DB` is the production binding used by telemetry/share routes;
+- add/confirm `AUTH_ENABLED=false` and `DOCUMENTS_ENABLED=false` rollout defaults.
+
+**Gate:** do not proceed on an unexplained red baseline.
+
+### AUTH-A — Auth.js backend foundation
+
+Skill: `.claude/skills/wu-auth-authjs-d1-foundation/SKILL.md`
 
 Deliver:
 
-- Auth.js dependencies;
-- dedicated D1 binding/database contract (`WRITE_URDU_DB`);
-- Auth.js migration copied/generated from the installed adapter version;
-- `functions/lib/auth.mjs` thin interface;
+- current compatible `@auth/core` + `@auth/d1-adapter`;
+- adapter-compatible `0005_authjs_d1_foundation.sql` or reconciled equivalent;
+- `functions/lib/auth.mjs`;
 - `/api/auth/*` Pages Function;
 - `/api/me`;
-- `AUTH_ENABLED` fail-closed behavior;
-- tests for config gating and unauthenticated session behavior.
+- `D1Adapter(env.METRICS_DB)`;
+- fail-closed readiness;
+- sanitized/no-store/same-origin behavior;
+- focused tests.
 
-**Do not add account UI yet if the backend proof is not stable.**
+**Shared-D1 proof:** capture table list before/after migration and verify existing telemetry/share endpoints still pass.
 
-**Exit proof:** with auth off, production behaves exactly as before. With auth on in the intended environment, the auth routes load correctly and `/api/me` is safely unauthenticated before login.
+**Do not add account UI or documents.**
 
-### Slice 2 — Google sign-in + account shell
+### AUTH-B — Google + account shell
 
-Reuse the current OpenForBots Google Auth.js provider pattern, adapting branding/routes only.
+Skill: `.claude/skills/wu-auth-account-shell/SKILL.md`
 
 Deliver:
 
-- Google OAuth app registration/callback configuration;
+- Google OAuth app/callback configuration;
 - conditional Google provider;
 - static noindex `/sign-in` page;
-- CSRF-safe POST sign-in;
-- same-origin callback validation;
-- session-aware header with stable non-shifting anonymous fallback;
+- current Auth.js CSRF-safe sign-in flow;
+- session-aware header;
 - sign-out;
-- production proof via `/api/me` and D1 account/session rows.
+- safe same-origin return targets;
+- local-writing flush before OAuth;
+- production callback/session proof.
 
-**Regression gate:** homepage transliteration, rich editor and Urdu keyboard work before sign-in, after sign-in and after sign-out.
+**Exit proof:**
 
-### Slice 3 — cloud draft schema + API
+```text
+write locally
+→ Google sign in
+→ return
+→ exact local content remains
+→ /api/me authenticated
+→ sign out
+→ local content remains
+```
 
-Use `.claude/skills/wu-drafts-cloud-sync/SKILL.md`.
+### DOC-A — `writing_documents` schema + API
+
+Skill: `.claude/skills/wu-drafts-cloud-sync/SKILL.md`
 
 Deliver:
 
-- `cloud_drafts` migration + indexes;
-- user-scoped list/create/get/update/delete endpoints;
-- payload/title/editor-kind validation;
-- product quota/size guards;
-- `revision` optimistic concurrency;
-- `409` conflict contract;
+- additive document migration in the same existing D1 database;
+- `GET/POST /api/documents`;
+- `GET/PATCH/DELETE /api/documents/:id`;
+- ownership by `session.user.id`;
+- validation/quota/size guards;
+- optimistic `revision` contract;
+- deterministic `409` conflict;
 - no-store responses;
-- authorization tests proving one user cannot read/write another user's draft.
+- no content logging.
 
-**Exit proof:** API is secure and deterministic before an editor starts depending on it.
+**Shared-D1 proof:** document migration cannot modify/drop telemetry/share/Auth.js tables.
 
-### Slice 4 — basic editor cloud pilot
-
-Integrate one adapter path first, preferably the homepage/basic editor.
+### DOC-B — basic writer pilot
 
 Deliver:
 
 - explicit **Save to my account**;
-- no automatic upload of previous local history;
-- separate local/cloud status;
-- cloud metadata stored separately from existing local draft payload;
-- throttled cloud synchronization (roughly 20–30 seconds while dirty, adjustable);
-- network/API failure that falls back to local safety without interrupting writing.
+- no automatic historical upload;
+- local/account save statuses kept separate;
+- document metadata separate from local payload;
+- 20–30 second remote dirty-sync cadence;
+- local save remains safe when API/D1 fails.
 
-**Cross-device proof:** browser/device A creates a draft, browser/device B signs in and opens the same draft successfully.
+**Exit:** browser A saves; browser B signs in and restores the same document.
 
-### Slice 5 — My Drafts + restore journey
+### DOC-C — My Documents
 
-Deliver a focused noindex `/my-drafts` route:
+Create noindex `/my-documents` with:
 
-- recent cloud drafts;
-- preview/title/editor type/modified time;
-- open in owning editor;
+- recent list;
+- title/preview/editor type/modified time;
+- open;
 - rename;
 - delete;
+- copy/recovery path;
 - useful empty state.
 
-Opening a remote draft must not silently destroy a different local current draft.
+### DOC-D — rich editor + Urdu keyboard
 
-This slice is the first point where the product can credibly message “your Urdu writing follows you across devices.”
-
-### Slice 6 — rich editor + Urdu keyboard
-
-Extend the **same cloud persistence module** through the existing adapter contract.
-
-Do not create separate rich-editor and keyboard backends.
+Reuse one account-persistence client through existing adapter contracts.
 
 Verify:
 
-- TinyMCE HTML survives round-trip;
-- Urdu/RTL text is unchanged;
-- keyboard editor text survives round-trip;
-- local history remains independent and functional.
+- TinyMCE/rich HTML round-trip;
+- Urdu/RTL exactness;
+- keyboard text round-trip;
+- local history remains independent.
 
-### Slice 7 — conflict recovery
+### DOC-E — conflict UX
 
-Turn the API's existing 409 contract into user-visible recovery:
+On 409 offer:
 
-- Open cloud version;
-- Keep this device as a copy;
-- optionally Replace cloud version only after explicit confirmation/fresh revision.
+1. Open account version.
+2. Keep this device as a copy.
+3. Optional explicit Replace account version after fresh revision + confirmation.
 
-No automatic merge/collaboration engine.
+No automatic merge/co-editing engine.
 
-### Slice 8 — Facebook provider
-
-Use `.claude/skills/wu-auth-add-provider/SKILL.md` and its Facebook reference.
-
-Deliver:
-
-- Facebook app registration/callback;
-- conditional provider wiring;
-- identity-only permissions;
-- behavior when Facebook returns no email;
-- provider button on `/sign-in` only when configured;
-- Google regression.
-
-Do not silently merge Google/Facebook identities by email.
-
-### Slice 9 — privacy, account controls and launch closure
+### DOC-F — privacy/deletion/launch closure
 
 Before broad promotion:
 
-- update Privacy with cloud-draft data/storage/deletion behavior;
-- ensure users can delete individual cloud drafts;
-- document account/provider behavior;
-- validate noindex for sign-in/account pages;
-- verify static SEO/canonicals were not altered by backend routing;
-- run full regression suite and production smoke tests;
-- update feature statuses and backlog after acceptance.
+- Privacy explains identity/session storage;
+- Privacy explains account-backed writing;
+- individual document deletion works;
+- account deletion policy covers Auth.js rows + owned documents;
+- local browser data distinction is clear;
+- static SEO/noindex rules verified;
+- full regression and production smoke completed.
 
-A full account-deletion/export feature can be a follow-up if required, but the privacy policy must not promise capabilities that do not yet exist.
+### AUTH-D — Facebook fast-follow
 
-## 4. External/manual configuration checklist
+Skill: `.claude/skills/wu-auth-add-provider/SKILL.md`
 
-These steps cannot be solved by repository code alone:
+Only after the Google + My Documents second-device loop is stable.
 
-- create/bind the production D1 database;
-- configure preview/production binding strategy;
+Deliver identity-only Facebook auth, missing-email handling, provider gating and Google regression. No silent email-based merge.
+
+## 5. Shared-database guardrails
+
+These are mandatory because one D1 database serves multiple product domains.
+
+### Migration discipline
+
+- never edit already-applied migrations;
+- every new schema change gets a new migration;
+- auth/document migrations are additive;
+- no auth/document migration may drop/rename telemetry/share tables;
+- verify migration against a representative local copy/schema before remote apply;
+- capture before/after table inventory for AUTH-A and DOC-A.
+
+### Module discipline
+
+```text
+functions/lib/auth.mjs
+  → Auth.js/D1 adapter tables via env.METRICS_DB
+
+functions/api/documents*
+  → writing_documents via env.METRICS_DB
+  → identity only through getSession()
+
+telemetry functions
+  → telemetry tables only
+
+share functions
+  → share tables only
+```
+
+Do not introduce a generic DAO that encourages cross-domain table access.
+
+### Rollback discipline
+
+Feature rollback is through flags:
+
+```text
+AUTH_ENABLED=false
+DOCUMENTS_ENABLED=false
+```
+
+Do not drop shared-database tables as normal rollback.
+
+## 6. External configuration checklist
+
+- create no additional D1 database;
+- continue using the existing production `METRICS_DB` binding;
 - generate/store `AUTH_SECRET` securely;
-- create Google OAuth client and registered callback;
-- create Facebook/Meta app and registered callback;
-- set provider credentials in Cloudflare encrypted environment configuration;
-- redeploy after binding/secret changes when required by Cloudflare.
+- create Google OAuth client and production callback;
+- later create Facebook/Meta app/callback;
+- store provider secrets in Cloudflare environment configuration;
+- verify preview strategy deliberately rather than registering arbitrary callbacks.
 
-The implementation agent should automate only what the connected tooling safely supports and leave exact manual console items clearly recorded.
+## 7. Cost/write-amplification guardrail
 
-## 5. Cost and write-amplification guardrail
+Remote document writes must not mirror the existing local ~650 ms save debounce.
 
-As of the investigation on 2026-08-13, Cloudflare documents Workers Free D1 allowances including 5 million rows read/day, 100,000 rows written/day, 5 GB account storage and a 500 MB maximum database size on Free. These limits can change; verify them again before implementation/launch.
+Use local save for typing safety and a slower remote cadence for account continuity.
 
-The design protects those limits by keeping the existing local 650 ms save and using a much slower cloud sync cadence. **Never map each local autosave to a D1 update.**
+Before launch, re-check current Cloudflare D1 quotas/limits and current database size/write activity. The benefit of the shared database decision is conserving database allocations; it does not remove row/write/storage limits.
 
-## 6. Rollout flags
+## 8. Verification matrix
 
-Recommended independent gates:
+### Existing product regression
 
-- `AUTH_ENABLED` — auth routes/session UI;
-- `CLOUD_DRAFTS_ENABLED` — draft APIs/cloud UI;
-- optional provider activation implicitly controlled by whether each provider's credentials exist.
+- homepage transliteration;
+- basic writer local save;
+- Urdu keyboard;
+- rich editor;
+- telemetry ingestion/rollups;
+- share artifact publishing/view paths;
+- SEO/governance tests.
 
-If `CLOUD_DRAFTS_ENABLED=false`, local drafts continue exactly as before even for a signed-in user.
+### Auth
 
-## 7. Definition of done
+- disabled/misconfigured/ready states;
+- existing `METRICS_DB` valid binding;
+- stable session user ID;
+- no-store responses;
+- safe redirects;
+- Google production callback;
+- local work preserved through sign-in/sign-out;
+- existing database domains unaffected.
+
+### Documents
+
+- user isolation;
+- size/quota validation;
+- 409 conflict;
+- cross-device restore;
+- throttled writes;
+- exact Urdu/RTL/rich content;
+- database failure leaves local save safe;
+- existing database domains unaffected.
+
+## 9. Definition of done
 
 The initiative is complete when:
 
-- anonymous writing remains unaffected;
-- Google and Facebook sign-in both work on the production custom domain;
-- account sessions authorize by stable database user ID;
-- local drafts remain local by default;
-- a user can opt a draft into account storage;
-- the same draft can be opened and continued from another device;
-- basic, rich and keyboard editor formats survive round-trip;
-- cloud failure never blocks local saving;
-- stale-revision conflicts are detected instead of overwritten;
-- My Drafts supports open/rename/delete;
-- no provider is auto-linked by email;
-- privacy copy matches actual storage/deletion behavior;
-- full product/SEO/transliteration regression suite passes.
+- no new D1 database was introduced;
+- Auth.js and `writing_documents` coexist safely with existing telemetry/share tables in `METRICS_DB`;
+- Google and later Facebook work on production custom domain;
+- local writing remains default and anonymous;
+- user explicitly saves selected writing to account;
+- same document can be continued on another device;
+- basic/rich/keyboard formats survive round-trip;
+- stale revisions are detected;
+- My Documents supports open/rename/delete;
+- privacy/deletion behavior matches product claims;
+- existing telemetry/share/SEO/product regressions pass.
 
-## 8. Explicit future ideas — not part of this implementation
+## 10. Explicit future ideas — not part of this program
 
-- connected-account linking UI;
-- account-wide data export/delete workflow;
-- remote revision history;
-- Card Studio/cloud image storage;
-- public/shared documents;
-- collaborative editing;
-- paid storage tiers;
-- teams/workspaces;
-- email/password authentication.
+- public profiles;
+- followers/feed;
+- collaboration/co-editing;
+- teams;
+- connected-account linking;
+- arbitrary cloud file storage;
+- Card Studio cloud images/projects;
+- paid storage tiers.

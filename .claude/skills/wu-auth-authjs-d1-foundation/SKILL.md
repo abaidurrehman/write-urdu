@@ -1,183 +1,293 @@
 ---
 name: wu-auth-authjs-d1-foundation
-description: Implement or review WU-AUTH-001's optional Auth.js + Cloudflare D1 authentication foundation for WriteUrdu. Load when adding Pages Functions auth, Google sign-in foundation, sessions, /api/me, D1 Auth.js migrations, or account-aware header behavior. Preserve anonymous writing and keep Auth.js behind a thin project-owned interface.
+description: Implement or review WU-AUTH-001 AUTH-A for WriteUrdu: optional Auth.js + Cloudflare D1 backend foundation using the existing METRICS_DB database. Preserve anonymous writing, keep Auth.js behind one project-owned module, and do not create another D1 database.
 ---
 
-# WriteUrdu Auth.js + D1 foundation
+# WriteUrdu AUTH-A — Auth.js foundation on existing D1
 
-Use this skill for `WU-AUTH-001` implementation. Read these first:
+Use only for the backend authentication foundation.
 
-1. `specs/WU-AUTH-001-social-authentication-foundation.md`
-2. `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
-3. current `js/editor-tools.js`, `site-header.js`, `package.json` and deployment config
-4. current OpenForBots reference implementation:
-   - `functions/lib/auth.mjs`
-   - `functions/api/auth/[[path]].ts`
-   - `functions/api/me.ts`
-   - Auth.js migration
-   - sign-in page/provider POST logic
-5. latest Cloudflare Pages Functions/D1 guidance and the currently installed Auth.js adapter source.
+Read first:
 
-Do not implement from memory when current library/runtime behavior can be checked.
+1. `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`
+2. `specs/WU-AUTH-001-social-authentication-foundation.md`
+3. `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`
+4. `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
+5. current WriteUrdu migrations and every current `env.METRICS_DB` consumer
+6. InvoiceCraftly's current `functions/lib/auth.mjs`, auth routes, migration and tests
+7. current official Auth.js/Cloudflare documentation.
+
+## Scope
+
+AUTH-A delivers:
+
+```text
+Auth.js dependencies
++ additive Auth.js migration
++ existing METRICS_DB binding
++ functions/lib/auth.mjs
++ /api/auth/*
++ /api/me
++ tests
+```
+
+It does **not** deliver:
+
+- sign-in UI;
+- Google production OAuth proof;
+- My Documents;
+- profiles;
+- collaboration;
+- teams;
+- Facebook.
+
+## Critical database decision
+
+WriteUrdu already has a D1 database exposed as:
+
+```text
+METRICS_DB
+```
+
+Reuse it.
+
+Do not create:
+
+```text
+ACCOUNT_DB
+WRITE_URDU_DB
+any additional D1 database
+```
+
+The existing database currently contains telemetry/share-artifact tables. Add Auth.js tables through the next additive migration.
+
+Expected current sequence at spec time:
+
+```text
+0001_product_telemetry.sql
+0002_product_telemetry_rollups.sql
+0003_acquisition_telemetry.sql
+0004_share_artifacts.sql
+0005_authjs_d1_foundation.sql   # expected next, verify first
+```
 
 ## Guardrails
 
 - Accounts remain optional.
-- Do not convert the site to Astro/React/Next.
-- Do not touch transliteration initialization to add auth.
-- Existing local drafts must work whether auth succeeds, fails or is disabled.
-- Only one WriteUrdu module may directly import `@auth/core` / `@auth/d1-adapter`.
-- Auth must fail closed; the anonymous product must fail open to its existing local behavior.
-- Do not hand-roll OAuth/PKCE/session cookies.
+- Anonymous writing must work if auth is off, broken or unavailable.
+- Do not migrate frameworks.
+- Do not touch transliteration/editor behavior except tests needed to prove no regression.
+- Only one WriteUrdu module may directly import Auth.js/D1 adapter/provider modules.
+- Do not hand-roll OAuth/session cookies.
 - Do not add email/password auth.
-- Do not auto-link providers by matching email.
-- Never commit OAuth/client secrets.
+- Do not auto-link identities by email.
+- Never commit secrets.
+- Auth migrations are additive only.
+- Never drop/rename/modify existing telemetry/share tables.
 
-## Step 1 — establish the current runtime contract
+## Step 1 — establish current state
 
-Before changing code:
+Before coding:
 
-- inspect how Cloudflare Pages currently builds/deploys this repo;
-- confirm whether a Wrangler config already exists;
-- retrieve current Cloudflare Pages Functions, bindings and D1 docs;
-- retrieve current Auth.js D1 adapter migration/schema;
-- run the existing test/SEO/browser baseline;
-- identify a feature-flag path that leaves production behavior unchanged by default.
+- inspect current branch/main and migration list;
+- identify all `env.METRICS_DB` consumers;
+- capture current D1 table inventory/schema;
+- run existing test/SEO/governance/browser baseline;
+- inspect Pages Functions routing/build conventions;
+- check current Auth.js core, D1 adapter and Cloudflare compatibility;
+- verify InvoiceCraftly's reference code against current package APIs.
 
-If current repo/deployment facts conflict with the spec's suggested filenames, adapt filenames while preserving the contracts.
+Do not treat the 2026-08-15 InvoiceCraftly package versions as permanent pins.
 
-## Step 2 — add backend foundation only
+## Step 2 — migration
 
-Expected shape:
+Use the installed Auth.js D1 adapter's required schema for adapter-owned tables:
+
+```text
+users
+accounts
+sessions
+verification_tokens
+```
+
+Add them through the next migration in WriteUrdu's existing sequence.
+
+Before remote apply:
+
+1. record existing tables;
+2. apply migration locally/representatively;
+3. verify expected Auth.js tables were added;
+4. verify every pre-existing table remains;
+5. run telemetry/share regression tests.
+
+Never edit `0001`–`0004` to inject auth schema.
+
+## Step 3 — auth wrapper
+
+Expected module:
 
 ```text
 functions/lib/auth.mjs
-functions/api/auth/[[path]].ts
-functions/api/me.ts
-migrations/...auth...
 ```
 
-Recommended D1 binding: `WRITE_URDU_DB`.
+Only this module imports Auth.js directly.
 
-Use the adapter's current schema verbatim for Auth.js-owned tables. Do not customize those columns to fit product naming conventions.
+Expected helpers:
 
-Implement a thin interface such as:
+```js
+getAuthReadiness(env)
+authEnabled(env)
+buildIdentityProviders(env)
+resolveAuthRedirect(url, baseUrl)
+createAuthConfig(env)
+handleAuthRequest(request, env)
+getSession(request, env)
+```
 
-- `buildProviders(env)`
-- `authConfig(env)`
-- `authEnabled(env)`
-- `handleAuthRequest(request, env)`
-- `getSession(request, env)`
+The D1 adapter must use the existing binding:
 
-Downstream routes use these helpers rather than Auth.js directly.
+```js
+D1Adapter(env.METRICS_DB)
+```
 
-## Step 3 — gating
+Do not introduce a new binding alias solely for auth unless it points to the exact same database and there is an explicit operational reason; the default implementation should simply reuse `METRICS_DB`.
 
-`authEnabled(env)` must require:
+## Step 4 — readiness
 
-- `AUTH_ENABLED === 'true'`;
-- D1 binding exists;
-- `AUTH_SECRET` exists;
-- at least one complete provider credential pair exists.
+Require:
 
-A provider is included only if **both** its client ID and secret are present. An incomplete provider configuration must not render a dead button.
+```text
+AUTH_ENABLED === 'true'
+AUTH_SECRET
+valid env.METRICS_DB
+at least one complete provider
+```
 
-When disabled/misconfigured:
+States:
 
-- auth endpoints return safe disabled responses;
-- `/api/me` is unauthenticated/not enabled;
-- account UI is hidden/unavailable;
-- writing pages behave as before.
+```text
+disabled
+misconfigured
+ready
+```
 
-## Step 4 — Google provider first
+A partial provider config fails that provider closed without leaking secrets.
 
-Use `.claude/skills/wu-auth-add-provider/google.md` for provider-specific setup.
+When auth is disabled/misconfigured, the anonymous product remains usable.
 
-Requirements:
+## Step 5 — provider-neutral foundation
 
-- identity-only scopes;
-- CSRF-safe provider POST flow matching current Auth.js behavior;
-- same-origin callback URL handling;
-- no unrelated Google APIs/scopes;
-- session callback copies stable adapter user ID to `session.user.id` if the current Auth.js default does not do so.
+Google is first, but readiness/provider construction should not permanently hard-code Google as the only possible provider.
 
-Do not assume a bare GET to `/api/auth/signin/google` starts OAuth; OpenForBots already found the CSRF-protected POST requirement.
+For Google, identity scope is equivalent to:
 
-## Step 5 — static sign-in/account shell
+```text
+openid email profile
+```
 
-Create a static, noindex sign-in route using WriteUrdu's v2 shell. Hydrate the session client-side from `/api/me`; do not server-render the entire site.
+No Drive/Gmail/Calendar/Contacts/storage scopes.
 
-Header rules:
+Keep safe account linking behavior; do not enable dangerous automatic email linking.
 
-- anonymous layout stays stable during session lookup;
-- signed out shows `Sign in`;
-- signed in shows a compact user/account menu;
-- no account modal may cover or delay the writing workspace on first load.
+## Step 6 — `/api/auth/*` and `/api/me`
 
-OAuth return must preserve the browser-local in-progress draft.
+Add the Pages Functions catch-all using current repo conventions.
 
-## Step 6 — security review
+`/api/me` exposes only the product-facing projection needed by the static UI:
 
-Check:
+```text
+id
+name
+email
+image
+```
 
-- no secret values in source/build artifacts;
-- no token/session/draft-content logs;
-- account API responses are `no-store`;
-- user authorization uses `session.user.id`, not email;
-- no request-specific mutable module globals;
-- Web Crypto for IDs/tokens where project code creates them;
-- parameterized D1 statements;
-- callback URLs cannot become open redirects.
+`id` is stable authorization identity. Other fields are optional profile data.
 
-## Step 7 — tests
+Account/session responses:
 
-Add contract tests for:
+- `Cache-Control: no-store`;
+- `X-Content-Type-Options: nosniff`;
+- safe referrer policy where appropriate;
+- no raw Auth.js/provider errors;
+- no token/cookie/request dumps.
 
-- flag off;
-- missing DB;
-- missing `AUTH_SECRET`;
-- no complete providers;
-- Google complete/incomplete credentials;
-- unauthenticated `/api/me`;
-- stable `session.user.id`;
-- direct Auth.js imports confined to the auth module.
+## Step 7 — same-origin redirect
 
-Browser/regression proof:
+Port InvoiceCraftly's safe same-origin redirect concept.
 
-- homepage transliteration signed out;
-- rich editor signed out;
-- keyboard signed out;
-- real Google sign-in on intended environment;
-- return to editor retains local draft;
-- sign out retains local draft;
-- session-aware header does not cause material layout shift.
+Never allow OAuth callback return parameters to become an open redirect.
 
-Run the repository's existing full regression commands, not a reduced auth-only suite.
+Do not serialize Urdu writing into OAuth state/query parameters.
 
-## Step 8 — production proof and documentation
+The actual local-work flush is completed/proven in AUTH-B, but AUTH-A's redirect helper must already be safe.
 
-Verify on the custom production domain, not only `*.pages.dev`:
+## Step 8 — shared-D1 access discipline
 
-- OAuth callback succeeds;
-- Auth.js `users/accounts/sessions` rows are created;
-- `/api/me` returns the user with stable ID;
-- sign-out works;
-- anonymous editor flow still works.
+Auth code may use `METRICS_DB` for Auth.js adapter tables.
 
-Update `WU-AUTH-001`, `specs/README.md`, `specs/BACKLOG.md` and the implementation plan with actual shipped status/commit/PR evidence.
+It must not:
+
+- run telemetry maintenance;
+- query product event/rollup tables;
+- query share-artifact tables;
+- query future `writing_documents` for session handling.
+
+Similarly, existing telemetry/share code must not begin reading Auth.js tables.
+
+The physical database is shared; module ownership is not.
+
+## Step 9 — tests
+
+Required focused tests:
+
+- auth off => disabled;
+- missing `AUTH_SECRET` => misconfigured;
+- missing/invalid `METRICS_DB` => misconfigured;
+- complete Google pair => provider ready;
+- incomplete pair => provider excluded;
+- unauthenticated `/api/me` deterministic;
+- authenticated session exposes stable ID;
+- direct Auth.js imports exist only in the auth wrapper;
+- same-origin redirect accepted;
+- external redirect rejected/fallback;
+- account/session responses `no-store`;
+- Google identity scope has no storage/data permissions;
+- migration adds Auth.js tables without removing/changing existing table inventory.
+
+Run full WriteUrdu regression after focused tests, including telemetry/share tests.
+
+## Exit proof
+
+AUTH-A is complete only when:
+
+- no new D1 database was created;
+- Auth.js uses existing `METRICS_DB`;
+- adapter tables exist in the existing database;
+- existing telemetry/share tables/endpoints still work;
+- `AUTH_ENABLED=false` leaves production behavior unchanged;
+- auth wrapper is the only direct Auth.js boundary;
+- `/api/me` is safe/deterministic;
+- full regression passes.
+
+## Rollback
+
+Rollback AUTH-A by setting:
+
+```text
+AUTH_ENABLED=false
+```
+
+Do not drop Auth.js tables from the shared production database as normal rollback.
 
 ## Stop conditions
 
-Stop and fix before expanding to cloud drafts if:
+Stop and fix before AUTH-B if:
 
-- anonymous writing depends on session availability;
-- auth requires a framework migration;
-- secrets appear in source;
-- user ID is missing from session;
-- login loses the local draft;
-- Pages Functions routing captures or breaks static SEO routes;
-- the runtime cannot stay within acceptable Cloudflare cost/limits.
-
-## Not this skill
-
-Use `wu-drafts-cloud-sync` for draft persistence and conflict behavior. Use `wu-auth-add-provider` to add Facebook or another explicitly approved OAuth provider after the foundation is stable.
+- implementation requires another D1 database;
+- auth migration alters/drops existing tables;
+- anonymous writing depends on auth availability;
+- secrets appear in source/build output;
+- session user ID is unstable/missing;
+- Pages Functions routing breaks static routes;
+- auth code starts depending on telemetry/share internals.

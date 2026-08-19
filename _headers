@@ -8,3 +8,11 @@ https://:project.pages.dev/*
 
 https://:version.:project.pages.dev/*
   X-Robots-Tag: noindex
+
+/sign-in
+  X-Robots-Tag: noindex, follow, noarchive
+  Cache-Control: no-store
+
+/sign-in.html
+  X-Robots-Tag: noindex, follow, noarchive
+  Cache-Control: no-store

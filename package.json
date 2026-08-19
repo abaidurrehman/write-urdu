@@ -17,6 +17,12 @@
     "lighthouse:seo": "node scripts/run-lighthouse.js",
     "templates:check": "node scripts/validate-template-library.js"
   },
-  "devDependencies": {"@playwright/test": "^1.52.0"},
-  "dependencies": {"qrcode": "^1.5.4"}
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
+  },
+  "dependencies": {
+    "@auth/core": "0.41.3",
+    "@auth/d1-adapter": "1.11.3",
+    "qrcode": "^1.5.4"
+  }
 }

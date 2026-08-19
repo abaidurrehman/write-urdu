@@ -8,8 +8,9 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | --- | --- | --- | --- |
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Active — mature-domain authority/growth control plane |
 | `WU-SHARE-001` | Public Share Pages & Viral Publishing Loop | `/urdu-card-studio`, `/`, `/s/:id`, `/api/shares*` | Active — first-party short-link loop proven in Card Studio and extending to Basic Writer |
-| `WU-AUTH-001` | Optional social authentication foundation | `/sign-in`, `/api/auth/*`, `/api/me`, shared header | Planned — founder-approved Google first; Facebook fast-follow |
-| `WU-DRAFT-001` | Cross-device cloud drafts | Core writing editors, `/my-drafts`, `/api/drafts*` | Planned — local-first account persistence; depends on `WU-AUTH-001` |
+| `WU-ACCOUNT-001` | Account, Documents & Collaboration Platform Boundary | Account/document platform | Planned boundary — identity + My Documents first; collaboration/teams/social separately gated |
+| `WU-AUTH-001` | Optional social authentication foundation | `/sign-in`, `/api/auth/*`, `/api/me`, shared header | Planned — reconciled to proven InvoiceCraftly Auth.js + `ACCOUNT_DB`; Google first |
+| `WU-DRAFT-001` | My Documents: cross-device account-backed writing | Core writing editors, `/my-documents`, `/api/documents*` | Planned — browser-local first; explicit account save in separate `WRITE_URDU_DB` |
 | `WU-RW-001` | Role-owned direct workspaces | Writing + creation role routes | Active — one top-level editor/canvas per role; remove nested WriteUrdu app/iframe architecture |
 | `WU-PLAT-001` | Unified product journey and acquisition-first homepage | `/` and related tools | Implemented — foundation complete |
 | `WU-PLAT-002` | V2 Product Journey & Workspace Handoffs | Sitewide interactive journeys | Active — P0 outcome-led IA, shared handoffs, contextual next steps and new-tool continuity |

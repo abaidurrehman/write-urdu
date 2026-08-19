@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in — Write Urdu</title>
+  <meta name="description" content="Optionally sign in to Write Urdu while keeping existing local writing on your device.">
+  <meta name="robots" content="noindex,follow,noarchive">
+  <meta name="googlebot" content="noindex,follow">
+  <link rel="canonical" href="https://write-urdu.com/sign-in">
+  <meta property="og:title" content="Sign in — Write Urdu">
+  <meta property="og:description" content="Optionally sign in to Write Urdu while keeping existing local writing on your device.">
+  <meta property="og:url" content="https://write-urdu.com/sign-in">
+  <meta property="og:image" content="https://write-urdu.com/assets/social/write-urdu-home.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0a2a1b">
+  <link rel="stylesheet" href="/layout-styles.css">
+  <link rel="stylesheet" href="/css/account.css">
+</head>
+<body class="account-page">
+  <div><nav class="navbar" aria-label="Write Urdu navigation"></nav></div>
+
+  <main class="account-page-main" id="main-content">
+    <div class="account-layout">
+      <section class="account-card" aria-labelledby="account-title">
+        <span class="account-kicker">Optional account</span>
+        <h1 id="account-title">Keep your Urdu writing connected to you</h1>
+        <p class="account-lede">Sign in when you want account features. Existing local drafts are not uploaded just because you sign in, and Write Urdu continues to work without an account.</p>
+
+        <div class="account-message" role="alert" data-account-error hidden></div>
+        <div class="account-loading" data-account-loading role="status">Checking account availability…</div>
+
+        <section class="account-state" data-account-signed-out hidden aria-labelledby="sign-in-title">
+          <h2 id="sign-in-title">Continue with Google</h2>
+          <form method="post" action="/api/auth/signin/google" data-google-sign-in>
+            <input type="hidden" name="csrfToken" value="">
+            <input type="hidden" name="callbackUrl" value="/">
+            <button class="account-google-button" type="submit" disabled>
+              <svg viewBox="0 0 18 18" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.68-3.87 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.7V4.97H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.97l2.99 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+              <span>Continue with Google</span>
+            </button>
+          </form>
+          <p class="account-form-status" data-sign-in-status>Preparing secure sign-in…</p>
+        </section>
+
+        <section class="account-state" data-account-signed-in hidden aria-labelledby="signed-in-title">
+          <span class="account-avatar-large" data-account-page-avatar aria-hidden="true"></span>
+          <div>
+            <h2 id="signed-in-title">Signed in as <span data-account-page-name>Account</span></h2>
+            <p class="account-form-status" data-account-page-email></p>
+          </div>
+          <div class="account-actions">
+            <a class="account-button" href="/" data-continue-without-account>Continue writing</a>
+          </div>
+          <form class="account-signout" method="post" action="/api/auth/signout" data-account-page-signout>
+            <input type="hidden" name="csrfToken" value="">
+            <input type="hidden" name="callbackUrl" value="/">
+            <button type="submit" disabled>Sign out</button>
+          </form>
+        </section>
+
+        <section class="account-state" data-account-disabled hidden aria-labelledby="account-disabled-title">
+          <h2 id="account-disabled-title">Accounts are not enabled here</h2>
+          <p class="account-form-status">You can keep typing, editing, creating, exporting and using local drafts without an account.</p>
+        </section>
+
+        <a class="account-continue-local" href="/" data-continue-without-account>Continue without an account</a>
+      </section>
+
+      <aside class="account-card account-boundaries" aria-labelledby="account-boundaries-title">
+        <span class="account-kicker">What sign-in changes</span>
+        <h2 id="account-boundaries-title">Your local writing stays local by default</h2>
+        <ul>
+          <li>Google sign-in asks only for basic identity information.</li>
+          <li>Signing in does not automatically upload existing local drafts or history.</li>
+          <li>Account identity is kept separate from private Urdu document content.</li>
+          <li>Signing out does not delete writing already saved in this browser.</li>
+        </ul>
+        <p>Write Urdu’s normal anonymous writing experience remains available even if account services are unavailable.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer></footer>
+  <noscript><p class="account-noscript">JavaScript is required for account sign-in. Write Urdu’s normal writing tools remain available without an account.</p></noscript>
+  <script src="/site-header.js" defer></script>
+  <script type="module" src="/js/account-page.mjs"></script>
+</body>
+</html>

@@ -32,6 +32,38 @@
         document.head.appendChild(script);
     }
 
+    function loadModule(src) {
+        if (document.querySelector('script[src="' + src + '"]')) return;
+        var script = document.createElement('script');
+        script.type = 'module';
+        script.src = src;
+        document.head.appendChild(script);
+    }
+
+    function ensureStylesheet(href) {
+        if (document.querySelector('link[href="' + href + '"]')) return;
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        document.head.appendChild(link);
+    }
+
+    function installAccountControl() {
+        var headerInner = document.querySelector('.wu-header-inner');
+        if (!headerInner) return;
+        if (!headerInner.querySelector('[data-wu-account-control]')) {
+            var control = document.createElement('div');
+            control.className = 'wu-account-control';
+            control.setAttribute('data-wu-account-control', '');
+            control.innerHTML = '<a class="wu-account-sign-in" href="/sign-in" aria-hidden="true" tabindex="-1">Sign in</a>';
+            control.hidden = true;
+            var languageToggle = headerInner.querySelector('[data-wu-language-toggle]');
+            headerInner.insertBefore(control, languageToggle || null);
+        }
+        ensureStylesheet('/css/account.css');
+        loadModule('/js/account-control.mjs');
+    }
+
     function normalizedPath() {
         var path = String(root.location && root.location.pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path === '/index' || path === '/index.html') return '/';
@@ -130,6 +162,7 @@
     document.addEventListener('write-urdu:locale-change', restoreHomepageSearchIntentCopy);
 
     loadScript('/js/site-header-core.js', 'WriteUrduLocale', function () {
+        installAccountControl();
         restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {
             if (root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
