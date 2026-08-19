@@ -46,7 +46,7 @@ assert.ok(fs.existsSync(path.join(root, 'scripts', 'run-lighthouse.js')), 'Repea
 assert.ok(fs.existsSync(path.join(root, 'scripts', 'validate-template-library.js')), 'Template registry validation script is missing');
 assert.ok(fs.existsSync(path.join(root, 'js', 'input-mode.js')), 'Input mode controller is missing');
 assert.ok(fs.existsSync(path.join(root, 'css', 'input-mode.css')), 'Input mode styles are missing');
-assert.match(fs.readFileSync(path.join(root, 'js', 'input-mode.js'), 'utf8'), /data-input-mode-alert|directAlert/, 'Input mode must clearly warn when transliteration is off');
+assert.match(fs.readFileSync(path.join(root, 'js', 'input-mode.js'), 'utf8'), /data-input-mode-alert|directAlert/, 'Input mode must clearly warn when conversion is off');
 assert.match(fs.readFileSync(path.join(root, 'css', 'input-mode.css'), 'utf8'), /input-mode-alert-action/, 'Input mode warning action styling is missing');
 assert.ok(fs.existsSync(path.join(root, 'js', 'batch-transliteration.js')), 'Whole-text transliteration controller is missing');
 const invoicePage = read('urdu-invoice-generator.html');
@@ -125,14 +125,14 @@ assert.match(read('urdu-editor.html'), /data-create-qr/, 'Rich editor is missing
 
 const home = read('index.html');
 assert.match(home, /<title>English to Urdu Typing Online[^<]*Urdu[^<]*<\/title>/i, 'Homepage source title must expose the English-to-Urdu acquisition owner while retaining Urdu typing relevance');
-assert.match(home, /<h1>Type Roman Urdu and convert it to Urdu script<\/h1>/, 'Homepage must lead with the Roman Urdu conversion intent');
+assert.match(home, /<h1>English to Urdu Typing Online<\/h1>/, 'Homepage must lead with plain-language English to Urdu typing intent');
 assert.match(home, /data-start-typing/, 'Homepage is missing the Start typing action');
 assert.match(home, /href="#home-tools-title"[^>]*>Explore more tools/, 'Homepage is missing the Explore more tools action');
 assert.match(home, /href="#home-how-it-works"[^>]*>Learn how it works/, 'Homepage is missing the How it works action');
 assert.match(home, /id="home-how-it-works"/, 'Homepage is missing the visible How it works section');
 assert.match(home, /id="home-new-tools"/, 'Homepage is missing the new tools promo section');
 assert.match(home, /href="\/urdu-keyboard"[^>]*>Urdu Keyboard/i, 'Homepage is missing the canonical Urdu Keyboard promo card');
-assert.match(home, /href="\/roman-urdu-transliteration"[^>]*>Roman Urdu guide/i, 'Homepage is missing the canonical Roman Urdu guide promo card');
+assert.match(home, /href="\/roman-urdu-transliteration"[^>]*>English to Urdu typing guide/i, 'Homepage is missing the supporting English-to-Urdu typing guide card');
 assert.match(home, /href="\/urdu-templates"/, 'Homepage is missing the canonical Templates handoff link');
 assert.match(home, /href="\/urdu-invoice-generator"/, 'Homepage is missing the canonical Invoice handoff link');
 assert.doesNotMatch(home, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Homepage must use extensionless internal links');
@@ -265,7 +265,7 @@ assert.match(qrCore.buildWifiPayload({ ssid: 'a;b', security: 'WPA', password: '
 assert.match(qrCore.buildVCardPayload({ fullName: 'A;B' }).payload, /N:;A\\;B/, 'vCard escaping failed');
 assert.strictEqual(qrCore.buildLocationPayload({ latitude: 91, longitude: 0 }).valid, false, 'Location bounds are not enforced');
 assert.strictEqual(qrCore.normalizeQrProject({ design: { foregroundColor: '#fff', margin: 9 }, logo: { sizeRatio: 1 } }).design.margin, 4, 'QR state normalization failed');
-assert.strictEqual(qrCore.calculateLogoPlacement(1000, { width: 2000, height: 1000 }, { sizeRatio: .18 }).imageWidth <= 180, true, 'QR logo contain placement failed');
+assert.strictEqual(qrCore.calculateLogoPlacement(1000, { width: 2000, height: 1000 }, { width: 1080, height: 1080 }, 'cover', .5, .5).width >= 1080, true, 'QR logo contain placement failed');
 assert.strictEqual(qrCore.safeFilename('a/b:c', 'fallback'), 'a b c', 'QR filename sanitisation is incomplete');
 assert.ok(fs.existsSync(path.join(root, '.htaccess')), 'Clean-route Apache configuration is missing');
 assert.match(fs.readFileSync(path.join(root, '.htaccess'), 'utf8'), /REQUEST_FILENAME\.html|RewriteRule/, 'Clean-route rewrite is incomplete');
@@ -330,11 +330,11 @@ assert.match(sharedHeader, /header\.free|Free to use/, 'Shared free-to-use messa
 assert.match(sharedHeader, /roman-urdu-transliteration|footer\.transliteration/, 'Transliteration guide is not linked from shared navigation/footer');
 assert.match(sharedHeader, /urdu-fonts-nastaliq-vs-naskh|footer\.fonts/, 'Font comparison guide is not linked from shared navigation/footer');
 assert.match(sharedHeader, /wu-footer-main|footer\.privacyNote/, 'Shared footer structure is missing');
-assert.match(read('index.html'), /data-input-mode-control|Roman Urdu → Urdu/, 'Basic editor is missing the input mode switch');
-assert.match(read('urdu-editor.html'), /data-input-mode-control|Roman Urdu → Urdu/, 'Rich editor is missing the input mode switch');
+assert.match(read('index.html'), /data-input-mode-control|English letters → Urdu/, 'Basic editor is missing the input mode switch');
+assert.match(read('urdu-editor.html'), /data-input-mode-control|English letters → Urdu/, 'Rich editor is missing the input mode switch');
 assert.match(read('index.html'), /data-batch-transliteration|Convert all text/, 'Basic editor is missing the whole-text transliteration action');
 assert.match(read('urdu-editor.html'), /data-batch-transliteration|Convert all text/, 'Rich editor is missing the whole-text transliteration action');
-assert.match(read('index.html'), /Two ways to write Urdu|not English meaning/, 'Basic editor is missing the transliteration workflow guidance');
+assert.match(read('index.html'), /Two ways to write Urdu|Type Urdu words using English letters/, 'Basic editor is missing the English-letter Urdu typing workflow guidance');
 assert.match(sharedStyles, /h1\.wu-page-title|wu-page-subtitle/, 'Shared page-title typography is missing');
 assert.match(sharedStyles, /\.wu-language-toggle|html\[dir=["']rtl["']\]/, 'Shared language-toggle styles are missing');
 const contentLocale = fs.readFileSync(path.join(root, 'js', 'content-locale.js'), 'utf8');
@@ -345,7 +345,7 @@ assert.match(adsScript, /crossOrigin\s*=\s*["']anonymous["']/, 'AdSense loader m
 assert.match(read('write-urdu-search.html'), /googlebot["']\s+content=["']noindex,follow/i, 'Search utility must explicitly noindex Googlebot');
 assert.match(read('write-urdu-feedback.html'), /googlebot["']\s+content=["']noindex,follow/i, 'Feedback utility must explicitly noindex Googlebot');
 assert.match(read('why-write-urdu.html'), /Who maintains Write Urdu|Editorial and correction policy/, 'About page is missing publisher and correction policy content');
-assert.match(read('roman-urdu-transliteration.html'), /transliteration, not translation/i, 'Transliteration guide is missing');
+assert.match(read('roman-urdu-transliteration.html'), /Roman Urdu to Urdu Typing/i, 'Roman Urdu support guide is missing');
 assert.match(read('urdu-fonts-nastaliq-vs-naskh.html'), /Nastaliq versus Naskh/i, 'Font comparison guide is missing');
 for (const file of htmlFiles) {
   const slug = file === 'index.html' ? '/' : '/' + file.replace(/\.html$/i, '');
