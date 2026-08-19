@@ -1,23 +1,31 @@
 # WriteUrdu — InvoiceCraftly Auth Reuse Map
 
-**Prepared:** 2026-08-19  
-**Purpose:** implementation evidence and reuse contract for `WU-AUTH-001`  
-**Primary source repo:** `abaidurrehman/invoicecraftly`  
-**Reference state:** InvoiceCraftly main inspected 2026-08-19; Auth.js foundation/account shell were implemented and reconciled on 2026-08-15
+**Date:** 2026-08-19  
+**Purpose:** Tell implementation agents exactly what to reuse from InvoiceCraftly, what to adapt for WriteUrdu, and what not to copy.
 
 ## 1. Decision
 
-WriteUrdu must not redesign authentication from first principles.
+InvoiceCraftly is the primary internal implementation precedent for WriteUrdu authentication because it already shipped the same essential runtime pattern:
 
-The primary implementation precedent is InvoiceCraftly's merged Auth.js + Cloudflare D1 account runtime. OpenForBots remains useful historical evidence for the original Auth.js decision and CPU investigation, but InvoiceCraftly is now the closer code precedent because it uses the same broad deployment shape WriteUrdu needs: static product pages plus Cloudflare Pages Functions.
+```text
+static Cloudflare Pages
++ Pages Functions
++ Auth.js
++ D1 adapter
++ Google identity
++ /api/me
++ local-work preservation through OAuth
+```
 
-The implementation rule is:
+WriteUrdu should **port the proven auth boundary, not redesign authentication**.
 
-> **Port the proven boundaries and tests; adapt product-specific code. Do not blindly copy Workspace/invoice behavior.**
+One deliberate difference is required by WriteUrdu's platform constraints:
 
-## 2. InvoiceCraftly files to inspect first
+> InvoiceCraftly uses a dedicated `ACCOUNT_DB`; WriteUrdu must reuse its existing D1 database exposed as `METRICS_DB` because we want to preserve limited D1 database allocations.
 
-Agents implementing WriteUrdu auth should inspect these current InvoiceCraftly files before writing equivalent code:
+## 2. Primary InvoiceCraftly references
+
+Inspect current `main` before implementation, especially:
 
 ```text
 functions/lib/auth.mjs
@@ -32,291 +40,233 @@ context/specs/feature-82-88-authjs-account-foundation.md
 context/specs/feature-88-multi-provider-identity-phase-1.md
 ```
 
-If those paths have moved, search current InvoiceCraftly main rather than assuming the old path is authoritative.
+Treat versions recorded there as compatibility evidence, not permanent pins. Re-check current packages and Cloudflare behavior at implementation time.
 
-## 3. What InvoiceCraftly actually proved
+## 3. Port / adapt / reject matrix
 
-The implementation record documents a working Pages Functions approach with:
-
-- Auth.js core;
-- `@auth/d1-adapter`;
-- a Pages Functions catch-all at `/api/auth/*`;
-- a product-facing `/api/me`;
-- a dedicated `ACCOUNT_DB` binding;
-- database sessions;
-- stable `session.user.id`;
-- an `AUTH_ENABLED` gate;
-- safe behavior when auth is disabled or misconfigured;
-- Google identity-only OAuth;
-- same-origin redirect protection;
-- sanitized auth logging;
-- `Cache-Control: no-store` on account/session responses;
-- no automatic email-based account linking;
-- local editor state preserved through account navigation/sign-in;
-- no invoice payload stored in the auth database.
-
-On 2026-08-15 InvoiceCraftly recorded compatibility with Auth.js core `0.41.3` and `@auth/d1-adapter` `1.11.3`, plus successful Pages Functions compilation and D1 migration verification. **Those versions are evidence, not a permanent pin for WriteUrdu.** Re-check current package/runtime compatibility when implementation begins.
-
-## 4. Direct reuse matrix
-
-| InvoiceCraftly pattern | WriteUrdu decision | Reuse level |
+| InvoiceCraftly pattern | WriteUrdu decision | Notes |
 | --- | --- | --- |
-| `functions/lib/auth.mjs` as only direct Auth.js import boundary | Same architecture | High — adapt names/routes only |
-| `AUTH_ENABLED` + strict config readiness | Same | High |
-| `ACCOUNT_DB` dedicated to identity/session storage | Same | High |
-| Auth.js adapter migration | Recreate from currently installed adapter version | Contract reuse, not stale copy |
-| `/api/auth/*` multipath Pages Function | Same route shape unless current Pages routing requires otherwise | High |
-| `/api/me` allowlisted product projection | Same | High |
-| database session + stable `session.user.id` | Same | High |
-| Google `openid email profile` identity scope | Same | High |
-| `allowDangerousEmailAccountLinking: false` | Preserve safe behavior | High |
-| same-origin redirect callback | Same | High |
-| normalized/sanitized logger | Same principle | High |
-| account/session `no-store` headers | Same | High |
-| static account shell hydrated from `/api/me` | Same product pattern | Medium — WriteUrdu shell/UI differs |
-| save local editor state before OAuth navigation | Same invariant | Medium — integrate with `js/editor-tools.js` rather than InvoiceCraftly save controller |
-| Workspace/Document Library account menu | Translate to `My Documents` | Low/medium |
-| Personal Cloud / Dropbox/Drive behavior | Do not copy | None |
-| Invoice data/storage boundaries | Replace with Urdu writing-document boundaries | Concept only |
-| billing/entitlement/commercial auth coupling | Do not copy | None |
+| `@auth/core` + `@auth/d1-adapter` | **Port** | Revalidate current compatible versions |
+| one `functions/lib/auth.mjs` import boundary | **Port** | Strong architecture boundary |
+| `/api/auth/*` Pages Functions catch-all | **Port** | Adapt extension/style to repo conventions |
+| `/api/me` allowlisted identity projection | **Port** | Stable ID + optional name/email/image only |
+| database session strategy | **Port** | Required for stable product user identity |
+| `AUTH_ENABLED` fail-closed gate | **Port** | Anonymous site must remain usable |
+| readiness state disabled/misconfigured/ready | **Port** | Generalize for future providers |
+| Google `openid email profile` identity scope | **Port** | Never add Drive/Gmail/etc. here |
+| same-origin redirect callback | **Port** | Adapt allowed WriteUrdu routes |
+| sanitized auth logging | **Port** | No tokens or Urdu content |
+| `Cache-Control: no-store` | **Port** | `/api/me` and auth/account responses |
+| `allowDangerousEmailAccountLinking: false` | **Port** | No silent provider merge |
+| local save before OAuth navigation | **Port concept** | Use WriteUrdu `editor-tools.js` adapters |
+| dedicated `ACCOUNT_DB` | **Do not port** | Use existing `env.METRICS_DB` instead |
+| invoice Workspace persistence | **Reject** | WriteUrdu has its own local draft/document model |
+| Personal Cloud / Dropbox / Drive logic | **Reject** | Not part of account identity or My Documents v1 |
+| billing/entitlement logic | **Reject** | WriteUrdu AdSense product, not InvoiceCraftly billing |
+| invoice-specific trust/commercial registry logic | **Reject** | Use WriteUrdu governance instead |
 
-## 5. Target WriteUrdu architecture
+## 4. WriteUrdu database adaptation
+
+### InvoiceCraftly
+
+```js
+adapter: D1Adapter(env.ACCOUNT_DB)
+```
+
+### WriteUrdu
+
+Target concept:
+
+```js
+adapter: D1Adapter(env.METRICS_DB)
+```
+
+`METRICS_DB` is the existing WriteUrdu production D1 binding. It already backs telemetry and share-artifact metadata. The name is historical; do not allocate or rename a database solely to make auth naming prettier.
+
+Auth.js adds only its adapter-owned tables:
 
 ```text
-Static WriteUrdu pages
-        |
-        +-- anonymous writing/localStorage (unchanged)
-        |
-        +-- /sign-in
-        +-- /api/me
-        +-- /api/auth/*
-                  |
-          functions/lib/auth.mjs
-                  |
-               Auth.js
-                  |
-             ACCOUNT_DB
-
-Account-backed writing (separate feature):
-
-editor/localStorage
-        |
- explicit Save to my account
-        |
- /api/documents/*
-        |
- session.user.id
-        |
- WRITE_URDU_DB
+users
+accounts
+sessions
+verification_tokens
 ```
 
-This is intentionally two data planes.
-
-## 6. What to copy structurally
-
-### 6.1 Readiness state
-
-InvoiceCraftly uses explicit states equivalent to:
+My Documents later adds:
 
 ```text
-disabled
-misconfigured
-ready
+writing_documents
 ```
 
-WriteUrdu should preserve this distinction so operational configuration problems do not look like user/session problems.
+Existing telemetry/share tables remain untouched.
 
-Auth core readiness should eventually be provider-neutral:
+## 5. Migration adaptation
+
+InvoiceCraftly's Auth.js migration is a useful source for the adapter schema **only after verifying it matches the Auth.js/D1 adapter version installed in WriteUrdu**.
+
+WriteUrdu already has a sequential migration set. At the current baseline:
 
 ```text
-AUTH_ENABLED=true
-+ AUTH_SECRET present
-+ ACCOUNT_DB valid
-+ at least one complete configured provider
+0001_product_telemetry.sql
+0002_product_telemetry_rollups.sql
+0003_acquisition_telemetry.sql
+0004_share_artifacts.sql
 ```
 
-Do not bake “Google must exist” into the long-term readiness contract even though Google is the first shipped provider.
-
-### 6.2 Product-facing session boundary
-
-`/api/me` should expose only fields the static shell needs, for example:
-
-```json
-{
-  "authenticated": true,
-  "user": {
-    "id": "stable-user-id",
-    "name": "...",
-    "email": "...",
-    "image": "..."
-  }
-}
-```
-
-The browser should never receive provider access/refresh tokens through this projection.
-
-### 6.3 Redirect boundary
-
-OAuth callback/return targets must stay same-origin/allowlisted. Do not permit arbitrary return URLs from query input.
-
-WriteUrdu should return users only to safe product contexts such as writing routes or the account/My Documents surfaces.
-
-### 6.4 Logging boundary
-
-Log normalized error category/type only. Never log:
-
-- cookies;
-- session tokens;
-- OAuth state/code;
-- provider access/refresh tokens;
-- user document content;
-- raw provider responses.
-
-## 7. WriteUrdu-specific adaptation points
-
-### 7.1 Preserve the current draft before OAuth
-
-InvoiceCraftly already proved the principle of flushing local work before account navigation.
-
-WriteUrdu must implement the equivalent through its existing `js/editor-tools.js` save/adapter boundary. Do not serialize Urdu text into OAuth state or callback query parameters.
-
-Expected flow:
+Expected new migrations:
 
 ```text
-user selects Sign in
-→ flush current editor/local autosave through existing WriteUrdu path
-→ navigate to sign-in / Auth.js
-→ complete OAuth
-→ return to safe same-origin route
-→ normal editor bootstrap restores browser-local state
+0005_authjs_d1_foundation.sql
+0006_writing_documents.sql
 ```
 
-Test with meaningful Urdu text and rich formatting, not an empty editor.
+Before applying either migration:
 
-### 7.2 Static v2 shell
+1. inspect current `main` migration list;
+2. inspect existing D1 tables;
+3. verify migration is additive;
+4. run locally/against representative schema;
+5. capture table list before/after;
+6. verify telemetry/share behavior remains green.
 
-InvoiceCraftly UI code should not be copied wholesale. WriteUrdu needs its own v2 visual shell, account label and mobile behavior.
+Never edit already-applied migration files to insert auth tables retroactively.
 
-The session hydration pattern is reusable: render a stable anonymous account-control footprint, query `/api/me` client-side, then swap to the signed-in menu without shifting the writing canvas materially.
+## 6. Auth wrapper adaptation
 
-### 7.3 My Documents rather than Workspace
-
-InvoiceCraftly's Workspace terminology is not WriteUrdu's product model.
-
-WriteUrdu's first authenticated value surface is **My Documents**. Account menu labels should not expose backend concepts like D1, sessions, cloud sync or “workspace binding”.
-
-## 8. Database separation lesson
-
-The earlier WriteUrdu draft used one `WRITE_URDU_DB` for Auth.js and content. The InvoiceCraftly implementation demonstrated a cleaner separation with a dedicated account database.
-
-Reconciled WriteUrdu decision:
+Start from the InvoiceCraftly wrapper's concepts:
 
 ```text
-ACCOUNT_DB
-  users
-  accounts
-  sessions
-  verification_tokens
-
-WRITE_URDU_DB
-  writing_documents
-  future product-owned document metadata
+AUTH_CONFIGURATION_STATE
+getAuthReadiness(env)
+authEnabled(env)
+buildIdentityProviders(env)
+resolveAuthRedirect(...)
+createAuthConfig(env)
+handleAuthRequest(...)
+getSession(...)
 ```
 
-Benefits:
+Adapt:
 
-- identity/session schema can follow Auth.js adapter requirements independently;
-- user writing lifecycle is not coupled to auth adapter migrations;
-- document storage can evolve toward sharing/collaboration without altering Auth.js tables;
-- account failures can be isolated from local writing;
-- privacy/deletion responsibilities are clearer.
+- database source: `env.METRICS_DB`;
+- sign-in page: WriteUrdu `/sign-in`;
+- redirect allowlist: WriteUrdu writer/account routes;
+- provider readiness: provider-neutral from the start;
+- product copy/branding.
 
-Do not attempt cross-D1 foreign keys. Store `session.user.id` as the opaque owner subject in `WRITE_URDU_DB`.
+Do not change:
 
-## 9. Provider lessons carried forward
+- stable `session.user.id` principle;
+- identity-only scopes;
+- no automatic email linking;
+- sanitized logging;
+- no-store session/account responses;
+- safe same-origin redirect behavior.
 
-### Google
+## 7. Local-work preservation adaptation
 
-Ship first with identity-only permissions equivalent to:
+InvoiceCraftly used its established invoice Workspace save path before OAuth.
+
+WriteUrdu must instead use its existing writer persistence abstraction:
 
 ```text
-openid email profile
+current editor state
+→ flush existing local save through editor adapter
+→ OAuth navigation
+→ callback to safe route
+→ normal editor bootstrap restores local state
 ```
 
-Do not request Drive, Gmail, Calendar or Contacts permissions as part of sign-in.
+Do not put Urdu text, rich HTML or document contents into OAuth state/query parameters.
 
-### Facebook
+Regression must include basic writer and rich editor.
 
-InvoiceCraftly's multi-provider design work established useful requirements even if WriteUrdu ships it later:
+## 8. Account shell adaptation
 
-- provider readiness must be data-driven;
-- one broken optional provider must not disable a working provider;
-- email may be absent;
-- account authorization still uses stable user ID;
-- do not silently merge accounts because email strings match.
+Reuse the behavior, not InvoiceCraftly wording/layout.
 
-Facebook remains after the Google + My Documents cross-device loop is stable.
+WriteUrdu signed-out account page:
 
-## 10. Test reuse map
+```text
+Continue with Google
+Continue without an account
+```
 
-WriteUrdu should recreate equivalent contract coverage for:
+It should explain:
 
-- auth flag off;
-- missing secret;
-- missing/invalid account DB binding;
-- incomplete provider pair;
-- complete provider pair;
-- `/api/me` signed out;
-- signed-in session with stable user ID;
-- direct Auth.js imports confined to one module;
-- same-origin redirect acceptance and external-origin rejection;
-- auth/session responses `no-store`;
-- sign-out leaves local writing intact;
-- OAuth cancel/error leaves local writing intact;
-- auth API outage leaves anonymous writing usable.
+- account is optional;
+- sign-in lets the user save selected writing and continue later;
+- existing local drafts are not uploaded automatically.
 
-Add WriteUrdu-specific browser proof:
+Signed-in utility menu:
 
-- homepage English-to-Urdu typing before/after sign-in;
-- Urdu keyboard before/after sign-in;
-- rich editor formatting survives OAuth round trip;
-- mobile account control does not cover or push the authoring canvas below the useful viewport.
+```text
+My Documents
+Account
+Sign out
+```
 
-## 11. What not to reuse
+No billing, Workspace Overview, Storage & Protection or InvoiceCraftly-specific navigation.
 
-Do not bring these InvoiceCraftly concepts into WriteUrdu merely because they sit near auth code:
+## 9. Shared-D1 safety rules
 
-- invoice Workspace binding;
-- Personal Cloud provider storage;
-- Dropbox/Google Drive connection state;
-- paid entitlement checks;
-- checkout state;
-- invoice-specific document library behavior;
-- business/account language;
-- invoice privacy promises.
+The biggest WriteUrdu-specific risk is not Auth.js itself; it is accidentally coupling unrelated domains inside the shared physical database.
 
-WriteUrdu is allowed to host selected writing documents under `WU-DRAFT-001`; this differs from InvoiceCraftly's browser-local invoice-content boundary.
+Required boundaries:
 
-## 12. Implementation-time verification checklist
+```text
+auth module
+  → Auth.js adapter tables through METRICS_DB
 
-Before coding:
+documents module
+  → writing_documents through METRICS_DB
+  → obtains identity from auth wrapper only
 
-- inspect current InvoiceCraftly main implementation, not only this map;
-- inspect current WriteUrdu main and local draft adapter behavior;
-- verify current Auth.js core + D1 adapter package compatibility;
-- verify current Cloudflare Pages Functions multipath routing and D1 binding behavior;
-- obtain the current adapter schema rather than copying a stale migration blindly;
-- run the current WriteUrdu regression/SEO/browser baseline;
-- keep auth disabled by default until the production configuration/proof slice.
+telemetry module
+  → telemetry tables only
 
-## 13. Source-of-truth order for an implementation agent
+share module
+  → share-artifact tables only
+```
 
-When sources disagree, use this order:
+Do not create a generic database abstraction that encourages arbitrary cross-table access.
 
-1. current WriteUrdu repository behavior and feature specs;
-2. current InvoiceCraftly merged auth runtime as implementation precedent;
-3. current official Auth.js and Cloudflare documentation/package source;
-4. this reuse map;
-5. older OpenForBots research/history.
+Auth/document migrations must not drop, rename or modify existing telemetry/share tables.
 
-Never preserve an old example merely because it appears in a prior spec if the current dependency/runtime contract has changed.
+Rollback is feature-flag based, never “drop the auth tables from the shared production database”.
+
+## 10. What agents must verify instead of copying
+
+Before coding, verify current:
+
+- `@auth/core` version;
+- `@auth/d1-adapter` version/schema;
+- Google provider API and CSRF-safe sign-in flow;
+- Facebook provider behavior when later added;
+- Cloudflare Pages Functions catch-all routing;
+- D1 binding/runtime API;
+- existing WriteUrdu `METRICS_DB` schema/migration state;
+- current canonical host/callback URL;
+- current editor save/handoff behavior.
+
+The reference implementation reduces design work. It does not remove implementation-time verification.
+
+## 11. Reuse acceptance checklist
+
+- [ ] Auth.js architecture is adapted from InvoiceCraftly rather than redesigned.
+- [ ] No `ACCOUNT_DB` or additional D1 database is created for WriteUrdu.
+- [ ] Auth.js uses `D1Adapter(env.METRICS_DB)` or the current equivalent existing binding.
+- [ ] Existing telemetry/share tables survive migration unchanged.
+- [ ] Only one WriteUrdu module imports Auth.js directly.
+- [ ] `/api/me` exposes stable ID and only needed profile fields.
+- [ ] Google scopes remain identity-only.
+- [ ] External redirects are rejected.
+- [ ] Local Urdu writing survives OAuth/sign-out.
+- [ ] InvoiceCraftly billing/Workspace/Personal Cloud concepts are not copied.
+
+## Related
+
+- `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`
+- `specs/WU-AUTH-001-social-authentication-foundation.md`
+- `specs/WU-DRAFT-001-cross-device-cloud-drafts.md`
+- `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
