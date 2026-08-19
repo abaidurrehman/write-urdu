@@ -1,38 +1,38 @@
 # Write Urdu
 
-> Write Urdu is an independently maintained browser-based Urdu writing platform for Roman Urdu transliteration, direct Urdu typing, document formatting and practical creative tools. No account or installation is required for the core writing experience.
+> Write Urdu is an independently maintained browser-based Urdu writing platform for English to Urdu typing, direct Urdu typing, document formatting and practical creative tools. No account or installation is required for the core writing experience.
 
 Canonical site: https://write-urdu.com/
 
 Important facts:
 
-- The homepage is the main English to Urdu typing and Urdu typing online surface: type Roman Urdu with English letters and convert it into Urdu script.
-- Roman Urdu conversion is transliteration, not translation. Writers should review ambiguous names, spellings and important text before sharing it.
+- The homepage is the main English to Urdu typing and Urdu typing online surface: type Urdu words using English letters, press Space, and get Urdu script.
+- English-letter Urdu typing changes how the Urdu words are written; it does not translate an English sentence into Urdu. Writers should review ambiguous names, spellings and important text before sharing it.
 - The Urdu Keyboard supports direct Urdu-character input when exact spelling or punctuation matters.
 - The Rich Text Editor is intended for formatted Urdu documents, headings, lists, fonts, alignment and export.
 - Urdu Card Studio is the primary image-creation surface for putting Urdu text, poetry, quotes and announcements on a background or photo and exporting the finished design.
 - Stylish Urdu Text Generator is the primary copy/paste surface for decorated Urdu names and short phrases; exact Nastaliq/Naskh image appearance belongs to Urdu Name Art.
 - Urdu Name Art Maker is the focused image-rendering surface for Urdu name art, name images and DP/profile designs, with 24 original templates across 12 packs, six output presets and transparent PNG export.
-- Local drafts and several creation workflows use browser storage or browser-side processing. Roman Urdu suggestions may use the transliteration provider described in the privacy policy.
+- Local drafts and several creation workflows use browser storage or browser-side processing. English-letter Urdu suggestions may use the typing provider described in the privacy policy.
 - Write Urdu does not require an account for the core editors.
 - Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel, while questions that need a reply have a dedicated contact route.
-- Last reviewed: 2026-08-15.
+- Last reviewed: 2026-08-19.
 
 ## Start writing
 
-- [English to Urdu typing / Urdu typing online](https://write-urdu.com/): Type Roman Urdu with English letters, press Space to convert words into Urdu script, review suggestions, copy text and continue into other writing tools. This is transliteration, not English-language translation.
+- [English to Urdu typing / Urdu typing online](https://write-urdu.com/): Type Urdu words using English letters, press Space to get Urdu script, review suggestions, copy text and continue into other writing tools.
 - [Urdu Rich Text Editor](https://write-urdu.com/urdu-editor): Format Urdu with headings, fonts, colours, lists and alignment, then export a document.
 - [Online Urdu Keyboard](https://write-urdu.com/urdu-keyboard): Type Urdu characters directly with an on-screen or physical keyboard.
 
 ## Learn Urdu writing
 
-- [Roman Urdu transliteration guide](https://write-urdu.com/roman-urdu-transliteration): Explains how Roman Urdu becomes Urdu script, why spellings can be ambiguous and why transliteration is not translation.
+- [Roman Urdu to Urdu typing guide](https://write-urdu.com/roman-urdu-transliteration): Shows how Urdu words written with English letters become Urdu script, why spellings can vary and how to review suggestions.
 - [Urdu alphabet guide](https://write-urdu.com/urdu-alphabet): Common standalone Urdu characters, names, right-to-left direction and joining behavior.
-- [Complete Write Urdu documentation](https://write-urdu.com/write-urdu-documentation): Editor modes, transliteration, direct input, formatting, drafts, exports and related creation tools.
-- [Write Urdu FAQ](https://write-urdu.com/urdu-faq): Product, privacy, export, transliteration and Urdu-script questions.
+- [Complete Write Urdu documentation](https://write-urdu.com/write-urdu-documentation): English-letter Urdu typing, direct input, formatting, drafts, exports and related creation tools.
+- [Write Urdu FAQ](https://write-urdu.com/urdu-faq): Product, privacy, export, typing and Urdu-script questions.
 - [Urdu fonts: Nastaliq vs Naskh](https://write-urdu.com/urdu-fonts-nastaliq-vs-naskh): Practical comparison of Urdu font styles for documents, interfaces and designs.
 - [How to write Urdu on a photo](https://write-urdu.com/how-to-write-urdu-on-photo): Practical steps for adding Urdu text, poetry or quotes to a local photo, choosing readable Urdu fonts and exporting the image in Card Studio.
-- [Roman Urdu typing tutorial](https://write-urdu.com/english-urdu-typing-tutorial): Step-by-step typing, suggestion and formatting guidance.
+- [English to Urdu typing tutorial](https://write-urdu.com/english-urdu-typing-tutorial): Step-by-step typing, suggestion and formatting guidance.
 
 ## Create and export
 
@@ -46,9 +46,9 @@ Important facts:
 ## Trust, policies and corrections
 
 - [About Write Urdu](https://write-urdu.com/why-write-urdu): Product purpose, who the project helps, known limitations, maintenance approach and editorial/correction policy.
-- [Contact Write Urdu](https://write-urdu.com/contact): Direct route for product and technical questions, transliteration corrections, privacy requests, accessibility issues and general enquiries.
+- [Contact Write Urdu](https://write-urdu.com/contact): Direct route for product and technical questions, typing corrections, privacy requests, accessibility issues and general enquiries.
 - [Feedback and improvements](https://write-urdu.com/feedback): Product-feedback channel for ideas, workflow friction, bugs and corrections; identity and reply email are optional.
-- [Privacy policy](https://write-urdu.com/write-urdu-privacy): Local storage, uploaded images, transliteration, analytics, ads, QR content and contact/feedback handling.
+- [Privacy policy](https://write-urdu.com/write-urdu-privacy): Local storage, uploaded images, English-letter Urdu suggestions, analytics, ads, QR content and contact/feedback handling.
 - [Security contact](https://write-urdu.com/.well-known/security.txt): Standard security-reporting contact and canonical policy file.
 - [Human-readable sitemap](https://write-urdu.com/write-urdu-sitemap): Index of public editors, tools, guides and policy pages.
 
