@@ -60,6 +60,7 @@
         items: [
             { href: '/why-write-urdu', label: { en: 'Why Write Urdu?', ur: 'رائٹ اردو کیوں؟' } },
             { href: '/write-urdu-features', label: { en: 'Features', ur: 'خصوصیات' } },
+            { href: '/changelog', label: { en: 'What’s new', ur: 'نیا کیا ہے' } },
             { href: '/write-urdu-feedback', label: { en: 'Feedback', ur: 'رائے' } },
             { href: '/write-urdu-search', label: { en: 'Search', ur: 'تلاش' } },
             { href: '/write-urdu-sitemap', label: { en: 'Sitemap', ur: 'سائٹ میپ' } },

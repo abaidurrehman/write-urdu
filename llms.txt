@@ -16,6 +16,7 @@ Important facts:
 - Local drafts and several creation workflows use browser storage or browser-side processing. English-letter Urdu suggestions may use the typing provider described in the privacy policy.
 - Write Urdu does not require an account for the core editors.
 - Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel, while questions that need a reply have a dedicated contact route.
+- The public changelog records shipped user-facing features and improvements in customer language, with direct instructions for trying them; engineering work and unreleased ideas are excluded.
 - Last reviewed: 2026-08-19.
 
 ## Start writing
@@ -46,6 +47,7 @@ Important facts:
 ## Trust, policies and corrections
 
 - [About Write Urdu](https://write-urdu.com/why-write-urdu): Product purpose, who the project helps, known limitations, maintenance approach and editorial/correction policy.
+- [What’s new in Write Urdu](https://write-urdu.com/changelog): Dated customer-facing product updates that explain what changed, why it helps and how to use each shipped feature or improvement.
 - [Contact Write Urdu](https://write-urdu.com/contact): Direct route for product and technical questions, typing corrections, privacy requests, accessibility issues and general enquiries.
 - [Feedback and improvements](https://write-urdu.com/feedback): Product-feedback channel for ideas, workflow friction, bugs and corrections; identity and reply email are optional.
 - [Privacy policy](https://write-urdu.com/write-urdu-privacy): Local storage, uploaded images, English-letter Urdu suggestions, analytics, ads, QR content and contact/feedback handling.
