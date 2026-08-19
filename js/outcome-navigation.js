@@ -91,22 +91,23 @@
         }
     ];
 
+    var FOOTER_UTILITY_LINKS = [
+        { href: '/write-urdu-feedback', label: { en: 'Feedback', ur: 'رائے' } },
+        { href: '/changelog', label: { en: 'What’s new', ur: 'نیا کیا ہے' } },
+        { href: '/write-urdu-sitemap', label: { en: 'Sitemap', ur: 'سائٹ میپ' } },
+        { href: '/write-urdu-privacy', label: { en: 'Terms', ur: 'شرائط' } }
+    ];
+
     var FOOTER_COPY = {
         en: {
             description: 'Type, format and share Urdu online.',
             privacy: 'Your writing stays in this browser unless you choose to export or share it.',
-            copyright: '© Write Urdu',
-            feedback: 'Feedback',
-            sitemap: 'Sitemap',
-            terms: 'Terms'
+            copyright: '© Write Urdu'
         },
         ur: {
             description: 'اردو آن لائن ٹائپ کریں، فارمیٹ کریں اور شیئر کریں۔',
             privacy: 'آپ کی تحریر اسی براؤزر میں رہتی ہے جب تک آپ اسے ایکسپورٹ یا شیئر نہ کریں۔',
-            copyright: '© Write Urdu',
-            feedback: 'رائے',
-            sitemap: 'سائٹ میپ',
-            terms: 'شرائط'
+            copyright: '© Write Urdu'
         }
     };
 
@@ -245,9 +246,7 @@
             status.innerHTML =
                 '<span class="wu-footer-copyright">' + copy.copyright + '</span>' +
                 '<span class="wu-footer-utility-links">' +
-                    '<a href="/write-urdu-feedback">' + copy.feedback + '</a>' +
-                    '<a href="/write-urdu-sitemap">' + copy.sitemap + '</a>' +
-                    '<a href="/write-urdu-privacy">' + copy.terms + '</a>' +
+                    FOOTER_UTILITY_LINKS.map(function (item) { return '<a href="' + item.href + '">' + item.label[lang] + '</a>'; }).join('') +
                 '</span>';
         }
     }
