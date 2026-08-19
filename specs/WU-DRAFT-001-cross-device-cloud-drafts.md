@@ -1,80 +1,131 @@
-# WU-DRAFT-001 — Cross-device Cloud Drafts
+# WU-DRAFT-001 — My Documents: Cross-device Account-backed Writing
 
-**Status:** Planned — founder-approved 2026-08-13  
+**Status:** Planned — founder-approved 2026-08-13; implementation contract reconciled 2026-08-19  
 **Area:** Writing persistence / retention  
-**Routes:** core writing editors, `/my-drafts`, `/api/drafts*`  
+**User-facing name:** **My Documents**  
+**Routes:** core writing editors, `/my-documents`, `/api/documents*`  
 **Depends on:** `WU-AUTH-001`  
-**Storage:** existing localStorage first; optional Cloudflare D1 sync when signed in
+**Parent boundary:** `WU-ACCOUNT-001`  
+**Storage:** existing browser-local persistence remains primary; optional `WRITE_URDU_DB` persistence for explicitly account-saved writing
 
-## Purpose
+## 1. Purpose
 
-Let a signed-in user save selected Urdu writing drafts to an account, see them later, and restore/edit them from another device without weakening WriteUrdu's current local-first behavior.
+Let a signed-in user explicitly save selected Urdu writing to their account, see it in **My Documents**, reopen it later or on another device, and continue editing without weakening WriteUrdu's current local-first behavior.
 
-This feature extends the draft system already present in `js/editor-tools.js`. It does **not** replace it.
+The stable feature ID remains `WU-DRAFT-001` for governance/history, but the user-facing product concept is **Documents**, not “cloud drafts”. Users should not need to understand backend storage terminology.
 
-## Existing baseline to preserve
+The first valuable authenticated loop is:
 
-WriteUrdu already provides:
+```text
+write
+→ local save continues automatically
+→ Save to my account
+→ My Documents
+→ open on another session/device
+→ continue writing
+```
+
+This feature extends the current local draft/editor adapter system. It does **not** replace it.
+
+## 2. Existing local baseline to preserve
+
+At reconciliation time WriteUrdu already has local writing persistence through `js/editor-tools.js`, including:
 
 - automatic local save after a short debounce;
-- separate draft keys per editor kind;
+- separate persistence per editor kind;
 - recent local history;
-- restore, rename, delete and clear-history actions;
+- restore/rename/delete/clear-history behavior;
 - adapters for basic, keyboard and TinyMCE rich editors;
-- a current-draft signature used to avoid duplicate saves;
-- user-facing status such as “Saved on this device”.
+- content/signature logic used to avoid redundant saves;
+- user-visible local status such as `Saved on this device`.
 
-At approval time the important constants/contracts include:
+Earlier known constants included:
 
-- `SAVE_DELAY = 650`;
-- `DRAFT_PREFIX = 'write-urdu:draft:v1:'`;
-- `HISTORY_PREFIX = 'write-urdu:history:v1:'`;
-- `MAX_HISTORY_ITEMS = 5`;
-- adapter methods including `getText()`, `getContent()`, `setContent()`, `hasContent()` and `onChange()`.
+```text
+SAVE_DELAY = 650
+DRAFT_PREFIX = write-urdu:draft:v1:
+HISTORY_PREFIX = write-urdu:history:v1:
+MAX_HISTORY_ITEMS = 5
+```
 
-Implementation must build on this adapter boundary instead of adding editor-specific cloud code to each writing page.
+These are implementation evidence, not permanent values. Re-read current `js/editor-tools.js` before coding.
 
-## Core product rule
+The important invariant is the adapter boundary: cloud/account persistence must not be implemented three separate times inside transliteration, keyboard and TinyMCE code.
+
+## 3. Core product rule
 
 ```text
 Editor
   |
-  +--> local autosave (existing, immediate, offline-safe)
+  +--> browser-local save/history
+  |       immediate / existing / offline-safe
   |
-  +--> optional account sync (signed-in + user opted this draft into cloud saving)
-             |
-             v
-          /api/drafts
-             |
-        session.user.id
-             |
-             v
-       WRITE_URDU_DB
+  +--> optional account persistence
+          only after explicit Save to my account
+                 |
+                 v
+           /api/documents
+                 |
+          session.user.id
+                 |
+                 v
+          WRITE_URDU_DB
 ```
 
-Local save remains the fastest and most reliable safety layer. Cloud sync provides cross-device continuity, not keystroke-level persistence.
+Local save remains the fastest and most reliable safety layer.
 
-## Privacy boundary
+Account persistence provides continuity, not keystroke-level durability and not real-time collaboration.
 
-Signing in must **not automatically upload existing local drafts or local history**.
+## 4. Identity/content separation
+
+`WU-AUTH-001` uses a dedicated:
+
+```text
+ACCOUNT_DB
+```
+
+for Auth.js identity/session tables.
+
+This feature uses a separate:
+
+```text
+WRITE_URDU_DB
+```
+
+for user writing.
+
+Never store writing content in Auth.js `users`, `accounts`, `sessions` or `verification_tokens` records.
+
+Because the two D1 databases are separate, store the stable Auth.js `session.user.id` as an opaque owner ID in product tables. Do not require a cross-database foreign key.
+
+Do not use email as document ownership.
+
+## 5. Privacy boundary
+
+Signing in must **not automatically upload existing local writing or local history**.
 
 After sign-in:
 
-- historical local drafts stay on the device;
-- the user explicitly chooses **Save to my account** for a draft;
-- once a draft is cloud-enabled, later edits may sync automatically according to the throttling contract below;
-- deleting a cloud draft must not silently delete unrelated local history unless the UI explicitly says so.
+- existing local documents/history stay on the device;
+- the current editor still saves locally as before;
+- the user explicitly chooses **Save to my account** for a document;
+- only then is an account-backed document created;
+- after opt-in, later edits to that document may sync according to the throttling contract;
+- deleting an account-backed document must not silently delete unrelated local history;
+- sign-out must not erase local or remote documents.
 
-This preserves the trust promise that writing is local by default.
+This prevents an account action from becoming a hidden content-upload action.
 
-## Data model
+## 6. Product-owned data model
 
-Create a product-owned table separate from Auth.js tables. Suggested logical shape:
+Use a writing-specific table rather than a generic arbitrary file drive.
+
+Recommended logical shape:
 
 ```sql
-cloud_drafts
+writing_documents
 - id TEXT PRIMARY KEY
-- user_id TEXT NOT NULL
+- owner_user_id TEXT NOT NULL
 - editor_kind TEXT NOT NULL
 - title TEXT
 - content TEXT NOT NULL
@@ -87,278 +138,542 @@ cloud_drafts
 
 Recommended indexes:
 
-- `(user_id, updated_at DESC)` for My Drafts;
-- `(user_id, id)` or equivalent ownership lookup where useful.
+```text
+(owner_user_id, updated_at DESC)
+(owner_user_id, id)
+```
 
-Use hard delete in v1 unless a later retention requirement justifies soft delete. A deleted cloud draft should be actually removed from the product table rather than hidden indefinitely.
+If current D1 query-planner/index behavior makes one index redundant, implementation may simplify it while preserving owned recent-list and owned-ID lookup performance.
 
-### `editor_kind`
+### 6.1 `id`
+
+Generate server-side using Web Crypto/platform-supported secure random IDs such as `crypto.randomUUID()`.
+
+IDs are unguessable convenience identifiers, **not authorization**.
+
+### 6.2 `owner_user_id`
+
+Always derive from authenticated `session.user.id` server-side.
+
+Never accept `owner_user_id` from client input.
+
+### 6.3 `editor_kind`
 
 Initial allowed values:
 
-- `basic`;
-- `rich`;
-- `keyboard`.
+```text
+basic
+rich
+keyboard
+```
 
-Do not silently add Card Studio, QR, invoice or image/project data to this table. Those require separate format/storage decisions.
+Do not silently add Card Studio, invoice, QR, image/project or arbitrary uploaded files to this table. Those need separate content/storage decisions.
 
-### `format_version`
+### 6.4 `content`
 
-Start at `1` and persist it with every cloud draft. The field exists so future editor markup changes can be migrated deliberately rather than assuming today's rich-editor HTML is permanent.
+- `basic` / `keyboard`: canonical text content;
+- `rich`: canonical sanitized/accepted rich-editor HTML according to the current editor contract.
 
-### Limits
+Do not flatten rich content into plain text for storage.
 
-The API must impose product-level limits below platform maxima. Initial contract:
+### 6.5 `plain_text`
 
-- maximum title length: 160 characters;
-- maximum content payload: 750 KB UTF-8 per draft;
-- maximum active cloud drafts per user: 100 unless product evidence supports a different number.
+Optional normalized text used for safe list previews/search later. It is not the canonical rich document body.
 
-These limits are abuse/cost guards, not marketing promises. They may be tuned later without changing the local-draft contract.
+### 6.6 `format_version`
 
-## API contract
+Start at `1` unless implementation evidence requires another value.
 
-All routes require `WU-AUTH-001` session authorization and `Cache-Control: no-store`.
+Persist a version with every row so future editor markup/schema changes can be migrated deliberately.
 
-### `GET /api/drafts`
+### 6.7 `revision`
 
-Returns only drafts owned by `session.user.id`, ordered by most recently updated. The list response should use metadata/preview rather than sending every full document body.
+Start at `1` and increment on every successful content/title update.
 
-Suggested fields:
+Revision is the v1 conflict-detection mechanism. It is not full version history.
 
-- `id`;
-- `title`;
-- `editorKind`;
-- short plain-text preview;
-- `revision`;
-- `createdAt`;
-- `updatedAt`.
+## 7. Initial limits and abuse/cost guards
 
-### `POST /api/drafts`
+Enforce server-side limits below platform maxima.
 
-Creates a cloud draft from the current editor snapshot. Validate kind, size and quota server-side. Generate ID server-side with Web Crypto.
+Initial contract:
 
-### `GET /api/drafts/:id`
+- maximum title length: 160 Unicode characters;
+- maximum content payload: 750 KB UTF-8 per document;
+- maximum active account-backed writing documents: 100 per user;
+- allowed editor kinds only;
+- bounded request body size before parsing/writing where practical.
 
-Returns the full owned draft. A caller knowing another user's draft ID must receive no data.
+These are operational guards, not marketing promises. They may be tuned later with product evidence.
 
-### `PATCH /api/drafts/:id`
+Do not introduce Queues, Durable Objects or complex rate infrastructure preemptively. Add bounded per-user/IP write protection only when evidence/abuse requires it.
 
-Updates title/content only for the authenticated owner. Require the caller's last known `revision` and perform optimistic concurrency.
+## 8. API contract
 
-Example behavior:
+All account-document routes require `WU-AUTH-001` session authorization and return `Cache-Control: no-store`.
 
-`UPDATE ... SET ..., revision = revision + 1 WHERE id = ? AND user_id = ? AND revision = ?`
+Use product-facing route names:
 
-If no row is updated because the revision changed, return `409 Conflict` with enough metadata for the client to offer recovery choices. Never silently overwrite a newer remote revision.
+```text
+GET    /api/documents
+POST   /api/documents
+GET    /api/documents/:id
+PATCH  /api/documents/:id
+DELETE /api/documents/:id
+```
 
-### `DELETE /api/drafts/:id`
+If Pages Functions routing requires another physical file layout, preserve these logical HTTP contracts.
 
-Hard-deletes only the authenticated user's draft.
+### 8.1 `GET /api/documents`
 
-## Sync behavior
+Returns only documents owned by `session.user.id`, most-recently-updated first.
 
-### Local autosave remains unchanged
+List payload should contain metadata/preview, not every full document body.
 
-Do not send a D1 write on every existing 650 ms local autosave. That would convert typing into backend traffic and make cloud availability part of the editor's critical path.
+Suggested response item:
 
-### Cloud sync cadence
+```json
+{
+  "id": "...",
+  "title": "...",
+  "editorKind": "basic",
+  "preview": "...",
+  "revision": 4,
+  "createdAt": "...",
+  "updatedAt": "..."
+}
+```
 
-For a cloud-enabled draft:
+### 8.2 `POST /api/documents`
 
-- local autosave still happens normally;
-- mark cloud state dirty when the local draft signature changes;
-- sync after approximately 20–30 seconds of dirty activity, not every keystroke;
-- explicit `Save to my account` / manual save may sync immediately;
-- a best-effort sync may run when the page becomes hidden if a request can safely complete;
-- failed cloud sync never prevents local save.
+Creates one account-backed document from the current editor snapshot.
 
-Exact timing can be tuned, but the contract is **seconds/tens of seconds, not the 650 ms local debounce**.
+Server must:
 
-## Client state
+- authenticate;
+- derive owner from session;
+- validate kind/title/content/size/quota;
+- generate ID server-side;
+- set format version/revision/timestamps;
+- return the created metadata including revision.
 
-Keep cloud metadata separate from the existing draft payload. A cloud-enabled local document needs at least:
+Do not upload all local history in a batch during sign-in.
 
-- `cloudDraftId`;
-- `lastSyncedRevision`;
-- `lastSyncedSignature`;
-- latest cloud sync status/error.
+### 8.3 `GET /api/documents/:id`
 
-Do not put provider identity, email or OAuth tokens in localStorage.
+Returns the full owned document.
 
-## Conflict handling
+Every lookup is scoped by both:
 
-Cross-device editing makes last-write-wins unsafe. V1 does not need collaborative merging, but it must detect conflicts.
+```text
+id + owner_user_id
+```
 
-On `409` show a clear recovery surface such as:
+A caller who knows another user's ID receives no content. Prefer generic not-found semantics that do not make ownership enumerable.
 
-**This draft changed on another device.**
+### 8.4 `PATCH /api/documents/:id`
 
-Actions:
+Updates owned title/content using optimistic concurrency.
 
-1. **Open cloud version** — load the newer remote revision after warning about unsynced local changes.
-2. **Keep this device as a copy** — create a new cloud draft from local content.
-3. **Replace cloud version** — optional only after explicit confirmation and a fresh revision read; never the default.
+The request includes the client's last known `revision`.
 
-Do not attempt automatic HTML/text merging in v1.
+Equivalent SQL contract:
 
-## Editor UX
+```sql
+UPDATE writing_documents
+SET
+  title = ?,
+  content = ?,
+  plain_text = ?,
+  revision = revision + 1,
+  updated_at = ?
+WHERE id = ?
+  AND owner_user_id = ?
+  AND revision = ?
+```
 
-Existing status:
+If no row is updated because the stored revision changed, return:
 
-`Saved on this device`
+```text
+409 Conflict
+```
 
-Signed-in cloud-enabled state can show two independent truths:
+with safe current metadata/revision needed for recovery.
 
-- `✓ Saved on this device`
-- `☁ Saved to your account`
+Never silently last-write-wins over a newer remote edit.
 
-Other states:
+### 8.5 `DELETE /api/documents/:id`
 
-- `Saving to your account…`
-- `Cloud save paused — your local draft is safe`
-- `Sign in to save across devices`
-- `Cloud version changed on another device`
+Hard-delete only the authenticated owner's row in v1.
 
-Never imply cloud success when only localStorage succeeded.
+A later recycle-bin/version-retention feature requires its own spec. Do not keep deleted user content indefinitely by default.
 
-## My Drafts
+## 9. Cloud/account sync behavior
 
-Create a noindex `/my-drafts` account page or equivalent v2-shell route.
+### 9.1 Existing local save remains unchanged
+
+Do not map the existing ~650ms local-save debounce to D1 writes.
+
+Typing must not become backend traffic on every pause/keystroke.
+
+### 9.2 First account save is explicit
+
+A local document becomes account-backed only after an explicit action such as:
+
+**Save to my account**
+
+That action may create the remote row immediately.
+
+### 9.3 Continued account sync cadence
+
+For a document already opted into account storage:
+
+- local save continues on the existing cadence;
+- a local content signature change marks remote state dirty;
+- sync after roughly 20–30 seconds of dirty activity;
+- manual save may sync immediately;
+- a best-effort visibility/page-hide flush may be used only if it can complete safely;
+- remote failure never blocks or rolls back local save;
+- multiple dirty changes should coalesce rather than enqueue one request per local save.
+
+Exact timing can be tuned, but the contract is **seconds/tens of seconds, not hundreds of milliseconds**.
+
+## 10. Client metadata
+
+Keep account-sync metadata separate from the existing canonical local draft body.
+
+A locally open account-backed document needs at least:
+
+```text
+remoteDocumentId
+lastSyncedRevision
+lastSyncedSignature
+syncState
+lastSyncErrorCategory nullable
+```
+
+Do not store:
+
+- provider access/refresh tokens;
+- Auth.js session tokens/cookies;
+- provider account IDs;
+- user email as ownership identity.
+
+## 11. Truthful save-status UX
+
+Never collapse local and account persistence into one ambiguous `Saved` state.
+
+Show independent truths, for example:
+
+```text
+Saved on this device
+Saved to your account
+Saving to your account…
+Account save paused — your writing is safe on this device
+This document changed on another device
+```
+
+If local save succeeds and account sync fails, the UI must reassure accurately without claiming remote success.
+
+## 12. My Documents
+
+Create a focused, noindex `/my-documents` account surface using the v2 shell.
 
 Minimum behavior:
 
-- list cloud drafts by recent activity;
-- title + preview + editor type + modified time;
-- open in the correct existing editor;
+- recent documents ordered by updated time;
+- title;
+- short safe preview;
+- editor type only when useful for orientation;
+- modified time;
+- open in the correct existing writer;
 - rename;
 - delete with confirmation;
-- create a copy where needed for conflict recovery;
-- useful empty state that sends the user to a writing editor.
+- duplicate/create-copy where needed for conflict recovery;
+- useful empty state leading into writing.
 
-Do not build a generic dashboard with unrelated widgets.
+Do not build a generic dashboard full of unrelated account, team or analytics widgets.
 
-## Restore/open behavior
+Do not expose the internal term `cloud_drafts` or `writing_documents` in user-facing UI.
 
-Opening a cloud draft must use the existing editor adapter/handoff model. The route should know which editor kind owns the draft and restore through `setContent()` or the existing safe initialization path.
+## 13. Safe open/restore behavior
 
-Never place draft text in query strings or public URLs.
+Opening a remote document must use the existing editor adapter/handoff model.
 
-If a local unsaved/current draft already exists in the target editor, do not silently replace it. Offer a choice or preserve it as local history before opening the cloud draft.
+Rules:
 
-## Authorization and abuse controls
+- never put document content in query strings/public URLs;
+- resolve the owning editor kind from server metadata;
+- restore through the current safe `setContent()`/initialization adapter path;
+- rich content remains rich;
+- Urdu/RTL text must round-trip exactly;
+- opening one remote document must not silently destroy a different unsaved/current local document;
+- preserve the current local document into history or ask/offer a safe choice before replacement;
+- update local remote-document metadata only after the open/import succeeds.
 
-- Every query is scoped by `session.user.id`.
-- Never authorize by email.
-- Validate body size before D1 write.
-- Enforce allowed editor kinds.
-- Use parameterized statements only.
-- Do not expose full document content in logs or error telemetry.
-- Return generic not-found/forbidden behavior that does not make user-owned IDs enumerable.
-- Add basic write-rate protection if production usage shows abuse; do not add complex infrastructure preemptively.
+## 14. Cross-device conflict handling
 
-## Implementation slices
+V1 is not collaborative editing, but it must detect concurrent edits.
 
-### A — schema + draft API
+When an update returns `409`, show a recovery surface such as:
 
-- create migration and indexes;
-- implement authenticated CRUD;
-- implement revision conflict contract;
-- add unit/contract tests with fake/local D1.
+**This document changed on another device.**
 
-**Exit:** API cannot read or mutate another user's draft and 409 conflict behavior is deterministic.
+Actions:
 
-### B — basic editor pilot
+1. **Open account version** — fetch/open the newer remote version after protecting unsynced local work.
+2. **Keep this device as a copy** — create a new account document from local content.
+3. **Replace account version** — optional only after fetching a fresh revision and explicit confirmation; never the default.
 
-Integrate cloud save with one existing adapter path first, preferably the homepage/basic editor, while keeping local save untouched.
+Do not implement automatic text/HTML merging in this feature.
 
-- explicit Save to my account;
-- cloud status;
+## 15. Authorization and security
+
+Every handler must:
+
+- authenticate through `getSession()` from the project auth wrapper;
+- derive owner from `session.user.id`;
+- scope every SQL statement by owner;
+- use parameterized D1 statements;
+- validate payload limits server-side;
+- return non-cacheable private responses;
+- never log document content;
+- avoid returning another user's existence/metadata;
+- use secure generated IDs;
+- normalize operational errors without leaking SQL/auth internals.
+
+A UUID is not authorization. Email is not authorization. Editor kind from the client is not trusted until validated.
+
+## 16. Failure behavior
+
+### Auth unavailable/expired
+
+- local writing remains fully usable;
+- local save/history continues;
+- account-save controls prompt safe re-authentication when appropriate;
+- do not clear remote metadata blindly;
+- do not replace local content.
+
+### `WRITE_URDU_DB` unavailable
+
+- local save continues;
+- show account-sync unavailable/paused state;
+- retain dirty status for a later explicit/scheduled retry;
+- avoid aggressive retry loops.
+
+### Network failure
+
+Same as database failure: protect local work first.
+
+### Oversize/quota
+
+Return a clear bounded error without truncating content silently. Local copy remains intact.
+
+## 17. Account deletion interaction
+
+Before account-backed documents are broadly promoted, account deletion behavior must be defined with `WU-AUTH-001`.
+
+Deletion design must explicitly decide what happens to all rows whose:
+
+```text
+owner_user_id = deleted account user ID
+```
+
+Do not orphan indefinitely retained writing by deleting identity rows while leaving product content inaccessible with no policy.
+
+Local browser drafts are separate and cannot be assumed deleted by remote account deletion.
+
+## 18. Implementation slices
+
+### DOC-A — schema + authenticated API
+
+Use `.claude/skills/wu-drafts-cloud-sync/SKILL.md`.
+
+Deliver:
+
+- `WRITE_URDU_DB` binding/config contract;
+- `writing_documents` migration/indexes;
+- authenticated CRUD;
+- server validation/limits;
+- optimistic revision conflict behavior;
+- user-isolation tests;
+- disabled/unavailable behavior behind `DOCUMENTS_ENABLED`.
+
+**Exit:** no editor depends on the API yet; user A cannot read or mutate user B; stale revision deterministically returns 409.
+
+### DOC-B — basic writer pilot
+
+Integrate through one shared account-persistence client module and the existing basic/homepage adapter.
+
+Deliver:
+
+- explicit `Save to my account`;
+- separate local/account status;
+- remote metadata;
 - throttled sync;
-- restore after reload;
-- no automatic migration of older local history.
+- safe restore/reload;
+- no automatic import of historical local history.
 
-**Exit:** a Google-authenticated user can write, save to account, open on a second browser/device and continue.
+**Exit:** signed-in user can write → save → reopen the same document from a second browser/device.
 
-### C — rich + keyboard editors
+### DOC-C — My Documents
 
-Extend the same cloud client through the adapter abstraction. Do not fork independent persistence implementations.
+Build `/my-documents` list/open/rename/delete/copy and safe empty state.
 
-**Exit:** all three writing editor kinds use one cloud persistence module and existing local behavior is unchanged.
+**Exit:** product has a coherent return journey, not just a hidden API.
 
-### D — My Drafts + conflict UX
+### DOC-D — rich + keyboard
 
-Ship list/rename/delete/open/copy and 409 recovery.
+Extend the same module through the existing adapters.
 
-### E — Facebook regression
+**Exit:** all three writing modes use one account-document persistence boundary and preserve their formats exactly.
 
-Once `WU-AUTH-001` Facebook support is added, prove that drafts created under either independently authenticated account remain correctly isolated. Do not merge identities automatically.
+### DOC-E — conflict recovery UX
 
-## Testing
+Wire the 409 contract into the three recovery actions.
 
-### Contract
+### DOC-F — launch/privacy/deletion closure
 
-- unauthenticated CRUD => 401;
-- create/list/get/update/delete only affect session user;
-- oversized draft rejected;
+Prove privacy copy, deletion semantics, production storage, regressions and rollout/rollback behavior before broad promotion.
+
+## 19. Feature gates
+
+Use independent rollout flags:
+
+```text
+AUTH_ENABLED
+DOCUMENTS_ENABLED
+```
+
+If `DOCUMENTS_ENABLED=false`:
+
+- `/api/documents*` fails closed/unavailable safely;
+- My Documents/account-save UI is hidden/safe-disabled;
+- local drafts/history continue exactly as before;
+- existing remote rows remain retained until normal deletion policy/action.
+
+Do not couple the flag to transliteration/editor initialization.
+
+## 20. Tests
+
+### 20.1 Server contract
+
+- unauthenticated document CRUD => 401/safe auth-required response;
+- disabled documents feature => safe disabled behavior;
+- user A cannot list/get/update/delete user B content;
+- create derives owner from session, not request body;
 - invalid editor kind rejected;
+- oversize title/content rejected;
 - quota enforced;
-- stale revision update => 409;
-- list does not return full bodies unnecessarily;
-- delete is hard delete;
+- list omits full bodies;
+- stale revision => 409;
+- successful update increments revision exactly once;
+- hard delete removes the owned row;
+- unknown/foreign ID does not leak ownership/existence;
+- responses are `no-store`;
 - no API logs content.
 
-### Browser
+### 20.2 Browser/product
 
-- local autosave still works while signed out;
-- sign-in does not upload existing local history;
-- explicit Save to my account creates one remote draft;
-- continued typing updates local immediately and cloud on throttled cadence;
-- network/D1 failure leaves local draft safe;
-- second browser/device can open and edit the draft;
-- conflict is detected, not overwritten;
-- opening remote content does not silently destroy a different local draft;
-- rich formatting survives cloud round-trip;
-- Urdu text and RTL content survive round-trip exactly.
+- signed-out local autosave/history still works;
+- sign-in does not upload previous local history;
+- explicit save creates one remote document;
+- continued typing saves locally immediately and remotely only on throttled cadence;
+- auth/network/D1 failure never blocks local save;
+- second browser/device opens and edits the document;
+- a stale second-device update is detected rather than overwritten;
+- remote open does not silently destroy a different local document;
+- TinyMCE formatting survives exact round trip;
+- Urdu characters, punctuation and RTL direction survive round trip;
+- keyboard editor content survives round trip;
+- sign-out leaves local work intact;
+- My Documents works on narrow/mobile layouts without becoming the primary writing UI.
 
-## Rollback
+## 21. Production proof
 
-Cloud draft UI must be disableable independently from core local drafts. If cloud sync is disabled or the API is unavailable:
+Before declaring account-backed documents ready:
 
-- local autosave/history continues;
-- editors remain usable;
-- existing cloud data is retained;
-- the UI states that account sync is unavailable rather than pretending success.
+1. authenticate with real production Google account;
+2. create meaningful Urdu document on device/browser A;
+3. confirm local save;
+4. explicitly save to account;
+5. verify owned row in `WRITE_URDU_DB` without logging/document exposure;
+6. open My Documents on device/browser B;
+7. open and edit the document;
+8. verify revision increments;
+9. force a two-device stale revision and verify 409/recovery;
+10. simulate network/API failure and verify local safety/status;
+11. delete a test document and verify hard deletion;
+12. confirm anonymous homepage/rich/keyboard behavior remains unchanged;
+13. confirm static SEO/canonical routes are unaffected by Functions routing.
 
-## Out of scope
+## 22. Rollback
+
+Disabling `DOCUMENTS_ENABLED` must leave:
+
+- browser-local save/history working;
+- editors usable;
+- remote stored rows intact;
+- account identity/session behavior independently controllable;
+- SEO/static routes unchanged.
+
+Do not implement rollback by deleting data or clearing local storage.
+
+## 23. Stop conditions
+
+Stop and fix if:
+
+- account API becomes required for typing;
+- sign-in uploads historical local writing without explicit action;
+- content is written into `ACCOUNT_DB` Auth.js tables;
+- any SQL query is not scoped by stable owner ID;
+- cloud/account writes occur on the local ~650ms debounce;
+- rich formatting/Urdu text is lost;
+- conflict handling retries into last-write-wins;
+- remote open destroys different local work without recovery;
+- document content appears in logs/analytics/query strings;
+- implementation starts adding collaboration/team/social behavior not authorized here.
+
+## 24. Out of scope
 
 - real-time collaborative editing;
+- comments/suggestions;
+- per-document collaborator ACLs;
+- team workspaces;
+- public profiles/following;
+- public document URLs;
+- generic arbitrary file storage;
+- Google Drive/Dropbox/OneDrive sync;
+- Card Studio image/project storage;
+- unlimited storage;
 - automatic merge algorithms;
-- unlimited document storage;
-- cloud image/blob/project storage;
-- document sharing/public links;
-- teams;
-- comments;
-- versioned remote history beyond the current revision/conflict mechanism;
-- automatically uploading all historical local drafts.
+- full remote revision history/recycle bin;
+- automatically uploading historical local drafts.
 
-## Acceptance criteria
+Public sharing already has its own `WU-SHARE-001` product path and must not be conflated with private account-document storage.
 
-- [ ] Existing local autosave/history remains the default and works signed out.
-- [ ] No historical local draft is uploaded merely because the user signs in.
-- [ ] User can explicitly save a current writing draft to the account.
-- [ ] Cloud writes are throttled and never mirror the 650 ms local debounce.
-- [ ] Draft CRUD is authorized strictly by `session.user.id`.
-- [ ] Cross-device restore works for basic, rich and keyboard editor kinds.
-- [ ] Rich HTML/Urdu text survives round-trip.
-- [ ] Revision conflict returns 409 and receives user-visible recovery choices.
-- [ ] Network/cloud failure never blocks local saving.
-- [ ] `/my-drafts` supports open, rename and delete.
-- [ ] Cloud status distinguishes local save from account save.
-- [ ] Privacy policy explains what is stored and how to delete it.
+## 25. Acceptance criteria
+
+- [ ] Existing browser-local save/history remains the default and works signed out.
+- [ ] Auth identity lives in `ACCOUNT_DB`; writing lives in `WRITE_URDU_DB`.
+- [ ] No historical local writing uploads merely because the user signs in.
+- [ ] User can explicitly save the current writing document to the account.
+- [ ] Account writes are throttled and never mirror the local autosave debounce.
+- [ ] CRUD authorization is strictly scoped by `session.user.id`.
+- [ ] Cross-device reopen/edit works for basic, rich and keyboard writing.
+- [ ] Rich HTML and Urdu/RTL text survive round trip exactly.
+- [ ] Revision conflict returns 409 and has user-visible recovery choices.
+- [ ] Network/auth/database failure never blocks local saving.
+- [ ] `/my-documents` supports open, rename, delete and safe copy/recovery behavior.
+- [ ] UI distinguishes local save from account save truthfully.
+- [ ] Deletion/privacy behavior matches actual remote storage.
+- [ ] Collaboration/teams/social graph are not introduced by this implementation.
 
 ## Related
 
-- `WU-AUTH-001` — authentication/session dependency.
-- `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md` — execution plan.
-- `js/editor-tools.js` — existing local draft/editor adapter implementation to preserve.
+- `specs/WU-ACCOUNT-001-account-document-platform-boundary.md`
+- `specs/WU-AUTH-001-social-authentication-foundation.md`
+- `docs/WU-AUTH-INVOICECRAFTLY-REUSE-MAP-2026-08-19.md`
+- `docs/WU-AUTH-DRAFTS-IMPLEMENTATION-PLAN-2026-08-13.md`
+- `js/editor-tools.js`
+- `.claude/skills/wu-drafts-cloud-sync/SKILL.md`
