@@ -29,6 +29,7 @@ assert.strictEqual(ads.resolvePageType('/urdu-alphabet'), 'learn', 'Urdu Alphabe
 assert.strictEqual(ads.resolvePageType('/urdu-card-studio'), 'create', 'Card Studio must be a Create surface');
 assert.strictEqual(ads.resolvePageType('/urdu-invoice-generator'), 'create', 'Invoice Generator must be a Create surface');
 assert.strictEqual(ads.resolvePageType('/write-urdu-privacy'), 'trust', 'Privacy must not be monetized as a content page');
+assert.strictEqual(ads.resolvePageType('/changelog'), 'trust', 'Customer changelog must remain an ad-free trust/product-information surface');
 assert.strictEqual(ads.resolvePageType('/write-urdu-feedback'), 'trust', 'Feedback must not be monetized as a content page');
 
 assert.strictEqual(ads.placementName('learn'), 'guide_after_answer', 'Learn placement family changed');
