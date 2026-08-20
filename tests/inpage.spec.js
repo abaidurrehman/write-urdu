@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 test('InPage converter runs both directions in the browser', async ({ page }) => {
-  const response = await page.goto('/tools/inpage-unicode-converter/');
+  const response = await page.goto('/tools/inpage-unicode-converter');
   expect(response && response.status()).toBe(200);
 
   const heading = page.locator('h1');
@@ -26,7 +26,7 @@ test('InPage converter runs both directions in the browser', async ({ page }) =>
 });
 
 test('nested Urdu tools preserve their own shared-shell page identity', async ({ page }) => {
-  const response = await page.goto('/tools/urdu-voice-typing/');
+  const response = await page.goto('/tools/urdu-voice-typing');
   expect(response && response.status()).toBe(200);
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('h1')).toHaveText('Urdu Voice Typing');
