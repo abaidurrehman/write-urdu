@@ -251,12 +251,16 @@ Evaluate revenue together with task/navigation behavior and Core Web Vitals; do 
 - [x] Migrate Templates into the same creation journey and strengthen handoff into Card Studio.
 
 ### Stylish Urdu Text + Name Art
-- [ ] Apply the v2 creation shell now that `WU-SUA-001` acceptance is closed.
-- [ ] Preserve copy/favourite/collection/share/handoff/template/preset/export behavior and the focused acceptance suite.
+**Status:** already shipped — found implemented in `css/v2-creation-tools.css` + `css/name-art-task-first.css` and verified live on 2026-08-20 (this checklist was stale, not the actual code state).
+
+- [x] Apply the v2 creation shell now that `WU-SUA-001` acceptance is closed.
+- [x] Preserve copy/favourite/collection/share/handoff/template/preset/export behavior and the focused acceptance suite.
 
 ### Social makers + QR
-- [ ] Migrate WhatsApp Status Maker and Instagram Post Maker.
-- [ ] Migrate QR Generator.
+**Status:** already shipped — found implemented in `css/v2-publish-tools.css` and verified live on 2026-08-20 (this checklist was stale, not the actual code state).
+
+- [x] Migrate WhatsApp Status Maker and Instagram Post Maker.
+- [x] Migrate QR Generator.
 - [ ] Preserve local processing, safe-area logic, payload validation and export contracts.
 
 For all Create routes, ads stay outside the active workspace/result/action region.
@@ -363,9 +367,8 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 
 ## Current queue
 
-**Completed product implementation:** P1.4 Card Studio + Templates v2 creation migration in PR #20.  
+**Completed product implementation:** P1.4 V2 creation-workspace migration is fully shipped — Card Studio + Templates (PR #20), and Stylish Urdu Text + Name Art + Social makers + QR (implemented in `css/v2-creation-tools.css`, `css/name-art-task-first.css` and `css/v2-publish-tools.css`; confirmed live 2026-08-20 after this checklist was found stale).  
 **Next product-architecture implementation:** P0.7 `WU-PLAT-002` Slice A/B — workspace registry + shared handoff runtime before adding more destination-specific seams.  
 **Parallel P0 distribution work:** P0.6 `WU-SHARE-001` remains approved; its public-to-local continuation should integrate with the new workspace-ownership contract rather than invent a separate journey model.  
-**Following product implementation:** continue P1.4 with Stylish Urdu Text + Name Art while preserving the complete `WU-SUA-001` acceptance contract.  
 **Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
 **Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.

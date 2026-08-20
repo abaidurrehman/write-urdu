@@ -128,11 +128,11 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 - [x] Card Studio — v2 creation workspace
 - [x] Templates — v2 creation catalogue
 - [ ] Invoice Generator
-- [ ] Stylish Urdu Text
-- [ ] Name Art
-- [ ] WhatsApp Status Maker
-- [ ] Instagram Post Maker
-- [ ] QR Generator
+- [x] Stylish Urdu Text — v2 creation workspace (`css/v2-creation-tools.css`; found shipped and undocumented, confirmed live 2026-08-20)
+- [x] Name Art — v2 creation workspace (`css/v2-creation-tools.css` + `css/name-art-task-first.css`; found shipped and undocumented, confirmed live 2026-08-20)
+- [x] WhatsApp Status Maker — v2 publish workspace (`css/v2-publish-tools.css`; found shipped and undocumented, confirmed live 2026-08-20)
+- [x] Instagram Post Maker — v2 publish workspace (`css/v2-publish-tools.css`; found shipped and undocumented, confirmed live 2026-08-20)
+- [x] QR Generator — v2 publish workspace (`css/v2-publish-tools.css`; found shipped and undocumented, confirmed live 2026-08-20)
 - [ ] About / Why WriteUrdu
 - [ ] Privacy
 - [ ] Feedback
@@ -156,10 +156,12 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ### Next creation batch
 
-- [ ] Migrate Stylish Urdu Text to the shared v2 creation hierarchy.
-- [ ] Migrate Urdu Name Art to the shared v2 creation hierarchy.
-- [ ] Preserve the complete `WU-SUA-001` acceptance contract during visual migration.
-- [ ] Then migrate WhatsApp Status Maker, Instagram Post Maker and QR Generator.
+**Status:** completed — found already shipped and undocumented, confirmed live 2026-08-20.
+
+- [x] Migrate Stylish Urdu Text to the shared v2 creation hierarchy.
+- [x] Migrate Urdu Name Art to the shared v2 creation hierarchy.
+- [x] Preserve the complete `WU-SUA-001` acceptance contract during visual migration.
+- [x] Then migrate WhatsApp Status Maker, Instagram Post Maker and QR Generator.
 
 ## SEO-A1 — Existing-demand authority and citation hardening
 
@@ -232,4 +234,4 @@ WriteUrdu v2 follows the execution model in `docs/WU-V2-EXECUTION.md`: product s
 
 ## Current next action
 
-Follow `specs/BACKLOG.md`. After the Card Studio + Templates v2 creation batch, continue P1.4 with Stylish Urdu Text + Name Art while preserving the completed `WU-SUA-001` behavioral contract. In parallel, continue P0.2 production SEO verification and complete the Search Console + AdSense Authority Opportunity Map when detailed exports are available.
+Follow `specs/BACKLOG.md`. P1.4 (the full V2 creation-workspace migration, including Stylish Urdu Text, Name Art, WhatsApp Status Maker, Instagram Post Maker and QR Generator) is complete. Next up is P0.7 `WU-PLAT-002` Slice A/B — workspace registry + shared handoff runtime. In parallel, continue P0.2 production SEO verification and complete the Search Console + AdSense Authority Opportunity Map when detailed exports are available.
