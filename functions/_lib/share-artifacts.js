@@ -1,5 +1,5 @@
 const SHARE_ID_PATTERN = /^[A-Za-z0-9]{8,12}$/;
-const SOURCE_TOOLS = new Set(['card_studio', 'basic_editor']);
+const SOURCE_TOOLS = new Set(['card_studio', 'basic_editor', 'rich_editor', 'urdu_keyboard']);
 const REPORT_REASONS = new Set(['spam', 'abuse', 'privacy', 'copyright', 'other']);
 const MAX_TEXT_LENGTH = 8000;
 const MAX_ATTRIBUTION_LENGTH = 240;

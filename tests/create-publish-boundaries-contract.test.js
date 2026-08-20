@@ -64,7 +64,7 @@ assert.doesNotMatch(sharePage, /payload:\s*\{\s*text:\s*[^}]*window\.location\.h
 assert.match(shareFunction, /data-share-qr/, 'Public share page must expose the QR continuation action');
 assert.match(shareFunction, /workspace-journey-registry\.js[\s\S]*create-publish-boundaries-registry\.js[\s\S]*workspace-handoff\.js/, 'Public share page must load the governed v2 runtime before its action script');
 
-assert.match(sw, /write-urdu-shell-v26/, 'PWA cache must retain Slice G assets with the account-aware shared shell');
+assert.match(sw, /write-urdu-shell-v27/, 'PWA cache must retain Slice G assets with the account-aware shared shell');
 ['create-publish-boundaries-registry.js', 'card-studio-handoff-adapter.js', 'qr-handoff-adapter.js', 'template-library-boundary.js', 'share-page.js'].forEach(asset => {
   assert.ok(sw.includes(asset), `${asset} must be cached with the current shell`);
 });

@@ -43,6 +43,9 @@ assert.match(clientSource, /cache: 'no-store'/, 'Private document requests must 
 ['open', 'rename', 'copy', 'share', 'delete'].forEach((action) => {
   assert.match(uiSource, new RegExp(`actionButton\\('${action}'`), `My Documents must expose ${action} as an explicit user action`);
 });
+assert.match(controllerSource, /basic: '\/'/, 'Basic account documents must reopen in the Basic Writer');
+assert.match(controllerSource, /rich: '\/urdu-editor'/, 'Rich account documents must reopen in the Rich Editor');
+assert.match(controllerSource, /keyboard: '\/urdu-keyboard'/, 'Keyboard account documents must reopen in the Urdu Keyboard');
 assert.match(controllerSource, /confirmAction\(dialog,[\s\S]*Delete this account copy\?/, 'Delete must require confirmation');
 assert.match(controllerSource, /Browser-local drafts and history are not deleted/, 'Delete copy must distinguish account storage from local drafts');
 assert.match(controllerSource, /document_revision_conflict/, 'Document library must surface optimistic-concurrency conflicts');
@@ -59,16 +62,21 @@ assert.match(basicSource, /href="\/my-documents"/, 'Signed-in homepage card must
 assert.match(accountControlSource, /href="\/my-documents">My Documents/, 'Signed-in account menu must expose My Documents');
 
 assert.match(shareSource, /MAX_DOCUMENT_SHARE_TEXT = 8000/, 'Document share must honor the existing public text limit');
-assert.match(shareSource, /form\.set\('source_tool', 'basic_editor'\)/, 'DOC-C must reuse the existing Basic Writer share-artifact source contract');
+assert.match(shareSource, /basic: 'basic_editor'/, 'Document sharing must retain the Basic Writer source label');
+assert.match(shareSource, /rich: 'rich_editor'/, 'Document sharing must identify Rich Editor snapshots without publishing rich HTML');
+assert.match(shareSource, /keyboard: 'urdu_keyboard'/, 'Document sharing must identify Urdu Keyboard snapshots');
+assert.match(shareSource, /form\.set\('source_tool', shareSourceForDocument\(document\)\)/, 'My Documents must derive the share source from the saved editor kind');
+assert.match(shareSource, /form\.set\('public_text', text\)/, 'Saved-document publishing must send only plain public text');
 assert.match(shareSource, /form\.set\('preset', 'document_snapshot'\)/, 'Saved-document publishing must identify the snapshot presentation');
 assert.match(shareSource, /form\.set\('image', image, 'write-urdu-document\.png'\)/, 'Share service must receive the required generated PNG preview');
 assert.match(shareSource, /fetch\('\/api\/shares'/, 'My Documents must reuse the existing share-artifact backend');
 assert.match(shareSource, /credentials: 'same-origin'/, 'Share publication must stay same-origin');
 assert.match(shareSource, /cache: 'no-store'/, 'Share publication response must not be cached');
 assert.match(controllerSource, /Create a public share link\?/, 'Publishing must be an explicit confirmed action');
-assert.match(controllerSource, /saved account document stays private/, 'Share confirmation must explain private-document/public-snapshot boundary');
+assert.match(controllerSource, /plain-text snapshot/, 'Share confirmation must state that the public artifact is plain text');
+assert.match(controllerSource, /saved account document and any rich formatting stay private/, 'Share confirmation must protect private rich formatting');
 assert.match(controllerSource, /later edits do not silently change this snapshot/, 'Share must be snapshot-based rather than live public document access');
-assert.doesNotMatch(shareSource + controllerSource, /collaborat|followers|comments|team permissions/i, 'DOC-C must not introduce social or collaboration semantics');
+assert.doesNotMatch(shareSource + controllerSource, /collaborat|followers|comments|team permissions/i, 'DOC-C/DOC-D must not introduce social or collaboration semantics');
 
 assert.match(serviceWorker, /url\.pathname === '\/my-documents'/, 'Private workspace shell must bypass the service-worker Cache API');
 assert.match(serviceWorker, /\.\/js\/my-documents\.mjs/, 'PWA install should refresh My Documents static assets without caching the account page response');
@@ -133,7 +141,7 @@ assert.match(editorTools, /SAVE_DELAY = 650/, 'Local autosave behavior must rema
   assert.strictEqual(handoff.content, full.content);
   assert.strictEqual(docs.readDocumentOpenHandoff(handoffStorage), null, 'Open handoff must be consume-once');
 
-  console.log('My Documents DOC-C contracts passed.');
+  console.log('My Documents DOC-C/DOC-D contracts passed.');
 })().catch((error) => {
   console.error(error);
   process.exit(1);

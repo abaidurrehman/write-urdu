@@ -1,6 +1,16 @@
 const MANAGEMENT_KEY = 'writeUrdu.shareManagement.v1';
 export const MAX_DOCUMENT_SHARE_TEXT = 8000;
 
+const SHARE_SOURCE_BY_EDITOR = Object.freeze({
+  basic: 'basic_editor',
+  rich: 'rich_editor',
+  keyboard: 'urdu_keyboard'
+});
+
+export function shareSourceForDocument(document) {
+  return SHARE_SOURCE_BY_EDITOR[String(document?.editorKind || '').trim()] || 'basic_editor';
+}
+
 function publicText(document) {
   return String(document?.plainText || '').replace(/\r\n?/g, '\n').trim();
 }
@@ -111,10 +121,10 @@ function rememberShare(result) {
 export async function publishDocumentShare(document) {
   const text = publicText(document);
   if (!text) throw new Error('share_text_required');
-  if (text.length > MAX_DOCUMENT_SHARE_TEXT) throw new Error('share_text_too_long');
+  if (Array.from(text).length > MAX_DOCUMENT_SHARE_TEXT) throw new Error('share_text_too_long');
   const image = await buildPreview(text, document?.title);
   const form = new FormData();
-  form.set('source_tool', 'basic_editor');
+  form.set('source_tool', shareSourceForDocument(document));
   form.set('public_text', text);
   form.set('preset', 'document_snapshot');
   form.set('image', image, 'write-urdu-document.png');
