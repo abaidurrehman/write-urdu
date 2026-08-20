@@ -17,6 +17,7 @@ const tests = [
   'tests/account-documents-basic-contract.test.js',
   'tests/my-documents-contract.test.js',
   'tests/account-documents-editors-contract.test.js',
+  'tests/account-growth-entry-contract.test.js',
   'tests/v3-reference-pages-contract.test.js',
   'tests/v3-trust-pages-contract.test.js',
   'tests/v3-utility-pages-contract.test.js',
