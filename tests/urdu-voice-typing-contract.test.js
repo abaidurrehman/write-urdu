@@ -7,6 +7,7 @@ const html = fs.readFileSync(path.join(root, 'tools', 'urdu-voice-typing.html'),
 const js = fs.readFileSync(path.join(root, 'js', 'urdu-voice-typing.js'), 'utf8');
 const privacy = fs.readFileSync(path.join(root, 'write-urdu-privacy.html'), 'utf8');
 const shell = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
+const myDocuments = fs.readFileSync(path.join(root, 'functions', 'my-documents.js'), 'utf8');
 const discoveryCss = fs.readFileSync(path.join(root, 'css', 'voice-discovery.css'), 'utf8');
 
 assert.match(html, /<h1>Urdu Voice Typing<\/h1>/, 'voice page should expose a focused H1');
@@ -31,6 +32,7 @@ assert.match(shell, /document\.querySelector\('\.tool-promo-grid'\)/, 'homepage 
 assert.match(shell, /document\.querySelector\('\.my-documents-hero'\)/, 'My Documents should surface the same voice entry');
 assert.match(shell, /entry\.href = '\/tools\/urdu-voice-typing'/, 'voice discovery entry must route to the canonical tool');
 assert.match(shell, /السلام علیکم، آج میں آواز سے اردو لکھ رہا ہوں۔/, 'discovery card should show the Urdu output users can expect');
+assert.match(myDocuments, /<script src="\/site-header\.js" defer><\/script>/, 'My Documents must load the shared shell that installs voice discovery');
 assert.match(discoveryCss, /\.wu-voice-entry-icon[\s\S]*width: 4\.5rem/, 'voice entry microphone should be visually prominent rather than tiny');
 
 assert.match(js, /window\.SpeechRecognition \|\| window\.webkitSpeechRecognition/, 'voice typing should use feature detection');
@@ -45,4 +47,4 @@ assert.match(js, /visibilitychange/, 'recognition should stop when the page beco
 assert.match(js, /handoff\('\/urdu-text-cleaner'\)/, 'voice transcript should hand off to the cleaner');
 assert.match(js, /handoff\('\/'\)/, 'voice transcript should hand off to the core editor');
 
-console.log('Urdu voice typing product and privacy contract passed.');
+console.log('Urdu voice typing product, discoverability and privacy contract passed.');
