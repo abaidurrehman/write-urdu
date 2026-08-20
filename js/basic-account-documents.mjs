@@ -10,6 +10,7 @@ import {
   createDocumentsClient,
   documentSnapshotSignature,
   readAccountDocumentMetadata,
+  readDocumentOpenHandoff,
   writeAccountDocumentMetadata
 } from './account-documents.mjs';
 
@@ -25,6 +26,7 @@ let card = null;
 let cardStatus = null;
 let saveButton = null;
 let signInLink = null;
+let documentsLink = null;
 let remoteStatus = null;
 
 function notify(message, type) {
@@ -108,14 +110,16 @@ function createContinuityCard() {
     <div class="home-account-continuity-copy">
       <p class="home-account-continuity-eyebrow">Optional account</p>
       <h2>Keep your writing</h2>
-      <p>Save this Urdu writing for later and continue on another device. Your saved copy stays private.</p>
+      <p>Save this Urdu writing for later, continue on another device, and share a selected snapshot when you are ready. Account-saved documents stay private by default.</p>
       <div class="home-account-benefits" aria-label="Account benefits">
         <span>Save for later</span>
         <span>Continue on another device</span>
+        <span>Share with a link</span>
       </div>
       <div class="home-account-continuity-actions">
         <a href="/sign-in?returnTo=%2F" class="home-account-continuity-button" data-account-continuity-signin>Sign in to save</a>
         <button type="button" class="home-account-continuity-button" data-account-continuity-save hidden>Save to my account</button>
+        <a href="/my-documents" class="home-account-continuity-button is-secondary" data-account-continuity-documents hidden>My Documents</a>
       </div>
       <p class="home-account-continuity-status" data-account-continuity-status aria-live="polite"></p>
     </div>`;
@@ -134,6 +138,7 @@ function revealCard() {
   cardStatus = card.querySelector('[data-account-continuity-status]');
   saveButton = card.querySelector('[data-account-continuity-save]');
   signInLink = card.querySelector('[data-account-continuity-signin]');
+  documentsLink = card.querySelector('[data-account-continuity-documents]');
 }
 
 function persistMetadata(document) {
@@ -226,20 +231,14 @@ function bindEditor() {
   if (clearButton) {
     clearButton.addEventListener('click', () => {
       runtime.setTimeout(() => {
-        if (adapter && !adapter.hasContent()) {
-          resetAssociation('Not saved to your account');
-        }
+        if (adapter && !adapter.hasContent()) resetAssociation('Not saved to your account');
       }, 0);
     });
   }
 }
 
 function bindCard() {
-  if (signInLink) {
-    signInLink.addEventListener('click', () => {
-      flushLocalWriting(runtime);
-    });
-  }
+  if (signInLink) signInLink.addEventListener('click', () => flushLocalWriting(runtime));
   if (saveButton) {
     saveButton.addEventListener('click', () => {
       conflictPaused = false;
@@ -265,25 +264,45 @@ function waitForBasicAdapter() {
   });
 }
 
+function applyOpenHandoff() {
+  const handoff = readDocumentOpenHandoff(runtime.sessionStorage);
+  if (!handoff || handoff.editorKind !== 'basic') return false;
+  const incoming = { content: handoff.content, text: handoff.plainText };
+  const current = currentSnapshot();
+  const different = hasWriting(current) && documentSnapshotSignature(current) !== documentSnapshotSignature(incoming);
+
+  if (different) {
+    flushLocalWriting(runtime);
+    const confirmed = runtime.confirm('Open the saved document from My Documents? Your current writing is kept in local drafts/history before this editor is replaced.');
+    if (!confirmed) {
+      setStatus('Saved document was not opened. Your current writing is unchanged.', 'idle');
+      return false;
+    }
+  } else if (hasWriting(current)) {
+    flushLocalWriting(runtime);
+  }
+
+  clearAccountDocumentMetadata(storage());
+  metadata = null;
+  conflictPaused = false;
+  adapter.setContent(handoff.content || handoff.plainText || '');
+  persistMetadata(handoff);
+  setStatus('Opened from My Documents · Saved to your account', 'saved');
+  notify('Saved document opened. Your browser-local history remains available.', 'success');
+  return true;
+}
+
 async function start() {
   if (location.pathname !== '/' && location.pathname !== '/index.html') return;
 
   let feature;
-  try {
-    feature = await client.probe();
-  } catch {
-    return;
-  }
+  try { feature = await client.probe(); } catch { return; }
   if (!feature.available) return;
 
   adapter = await waitForBasicAdapter();
   if (!adapter) return;
 
-  try {
-    account = await fetchAccountState();
-  } catch {
-    return;
-  }
+  try { account = await fetchAccountState(); } catch { return; }
 
   revealCard();
   ensureRemoteStatus();
@@ -292,13 +311,17 @@ async function start() {
 
   if (account.state !== ACCOUNT_STATE.SIGNED_IN) {
     if (saveButton) saveButton.hidden = true;
+    if (documentsLink) documentsLink.hidden = true;
     if (signInLink) signInLink.hidden = false;
     setStatus('Sign in to save across devices', 'signed-out');
     return;
   }
 
   if (saveButton) saveButton.hidden = false;
+  if (documentsLink) documentsLink.hidden = false;
   if (signInLink) signInLink.hidden = true;
+
+  if (applyOpenHandoff()) return;
 
   metadata = readAccountDocumentMetadata(storage());
   if (metadata && metadata.ownerUserId !== account.user.id) {
@@ -312,13 +335,9 @@ async function start() {
   }
 
   const signature = documentSnapshotSignature(currentSnapshot());
-  if (signature === metadata.lastSyncedSignature) {
-    setStatus('Saved to your account', 'saved');
-  } else if (hasWriting(currentSnapshot())) {
-    scheduleRemoteSync();
-  } else {
-    resetAssociation('Not saved to your account');
-  }
+  if (signature === metadata.lastSyncedSignature) setStatus('Saved to your account', 'saved');
+  else if (hasWriting(currentSnapshot())) scheduleRemoteSync();
+  else resetAssociation('Not saved to your account');
 }
 
 void start();
