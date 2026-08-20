@@ -22,9 +22,7 @@ test('Facebook role exports a direct 1200x630 JPEG', async ({ page, isMobile }) 
     return s && c ? [s.socialMode, s.presetId, c.width, c.height] : null;
   }), { timeout:20000 }).toEqual(['facebook','facebook',1200,630]);
   expect(await page.evaluate(() => window.WriteUrduSocialMaker.getSafeArea('facebook', { id:'facebook', width:1200, height:630 }))).toEqual({ top:70, right:96, bottom:70, left:96 });
-  // Current Facebook role intentionally hides social-only chrome while retaining
-  // the safe-area geometry in the social-maker contract for rendering/export.
-  await expect(page.locator('[data-card-safe-area]')).toBeHidden();
+  await expect(page.locator('[data-card-safe-area]')).toBeVisible();
 
   const postText = 'آج ہماری نئی پیشکش دیکھیں';
   await page.locator('#cardText').fill(postText);
