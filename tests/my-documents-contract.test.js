@@ -13,6 +13,7 @@ const uiSource = read('js', 'my-documents-ui.mjs');
 const shareSource = read('js', 'document-share.mjs');
 const basicSource = read('js', 'basic-account-documents.mjs');
 const accountControlSource = read('js', 'account-control.mjs');
+const registrySource = read('js', 'workspace-journey-registry.js');
 const serviceWorker = read('sw.js');
 const adsSource = read('js', 'ads.js');
 const editorTools = read('js', 'editor-tools.js');
@@ -23,6 +24,11 @@ assert.match(routeSource, /X-Robots-Tag[^\n]*noindex, follow, noarchive/, 'My Do
 assert.match(routeSource, /Cache-Control[^\n]*private, no-store, max-age=0/, 'Private account workspace shell must never be cached');
 assert.doesNotMatch(routeSource, /adsbygoogle|pagead2\.googlesyndication|data-wu-ad/, 'My Documents shell must not contain advertising markup');
 assert.match(routeSource, /\/js\/my-documents\.mjs/, 'My Documents function shell must load the document controller');
+
+assert.match(registrySource, /id: 'my-documents', routes: \['\/my-documents'\], status: 'current'/, 'Product registry must expose the shipped My Documents workspace');
+assert.match(registrySource, /label: 'My Documents', technicalLabel: 'Account-backed documents'/, 'Registry must use simple public language and precise internal terminology');
+assert.match(registrySource, /id: 'documents-share'[\s\S]*label: 'Share with a link'/, 'Registry must model the explicit snapshot-sharing outcome');
+assert.doesNotMatch(registrySource, /id: 'my-drafts'|routes: \['\/my-drafts'\]|technicalLabel: 'Cloud Drafts'/, 'Retired planned My drafts terminology must not remain in the workspace registry');
 
 assert.match(clientSource, /async list\(\)/, 'Client must list account-owned documents');
 assert.match(clientSource, /async get\(documentId\)/, 'Client must fetch a full account-owned document only on demand');
