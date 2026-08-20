@@ -44,6 +44,14 @@ async function refresh() {
   render();
 }
 
+function sessionStore() {
+  try {
+    return sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
 async function openDocument(item) {
   if (item.editorKind !== 'basic') {
     setMessage(`${editorKindLabel(item.editorKind)} account restore is coming in the next editor-integration slice.`, 'notice');
@@ -51,7 +59,8 @@ async function openDocument(item) {
   }
   setMessage('Opening your saved writing…', 'working');
   const full = await client.get(item.id);
-  if (!writeDocumentOpenHandoff(sessionStorage, full)) throw new Error('handoff_unavailable');
+  const target = sessionStore();
+  if (!target || !writeDocumentOpenHandoff(target, full)) throw new Error('handoff_unavailable');
   location.assign('/');
 }
 
@@ -94,7 +103,7 @@ async function publishShare(item, card) {
     setMessage('This document has no plain Urdu text to share.', 'error');
     return;
   }
-  if (Array.from(text).length > MAX_DOCUMENT_SHARE_TEXT) {
+  if (text.length > MAX_DOCUMENT_SHARE_TEXT) {
     setMessage(`Share links currently support up to ${MAX_DOCUMENT_SHARE_TEXT.toLocaleString()} characters. Your private document was not changed.`, 'error');
     return;
   }
