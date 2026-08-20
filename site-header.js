@@ -121,6 +121,13 @@
         loadModule('/js/editor-account-documents.mjs');
     }
 
+    function installAccountGrowthEntryPoints() {
+        var path = normalizedPath();
+        if (['/', '/urdu-editor', '/urdu-keyboard', '/tools/urdu-voice-typing'].indexOf(path) < 0) return;
+        ensureStylesheet('/css/account-documents.css');
+        loadModule('/js/account-growth-entry.mjs');
+    }
+
     function restoreHomepageSearchIntentCopy(event) {
         if (normalizedPath() !== '/') return;
         var locale = event && event.detail && event.detail.locale;
@@ -214,6 +221,7 @@
         installAccountControl();
         installHomeAccountDocuments();
         installEditorAccountDocuments();
+        installAccountGrowthEntryPoints();
         installVoiceDiscovery();
         restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {
