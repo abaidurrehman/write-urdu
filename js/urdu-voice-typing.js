@@ -25,11 +25,9 @@
         var urdu = document.documentElement.lang === 'ur';
         var heading = root.querySelector('h1');
         if (heading) heading.textContent = urdu ? 'اردو آواز سے ٹائپنگ' : 'Urdu Voice Typing';
-        document.title = urdu ? 'اردو آواز سے ٹائپنگ | رائٹ اردو' : 'Urdu Voice Typing — Speak to Type Urdu Online | WriteUrdu';
+        document.title = urdu ? 'اردو آواز سے ٹائپنگ | رائٹ اردو' : 'Urdu Voice Typing — Speak Urdu to Text Online | WriteUrdu';
     }
 
-    // Nested tool routes retain their own title after the shared shell applies
-    // locale copy. Unknown shared-shell routes otherwise inherit homepage copy.
     document.addEventListener('write-urdu:locale-change', restorePageIdentity);
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
     else restorePageIdentity();
@@ -66,13 +64,13 @@
     }
 
     function friendlyError(code) {
-        if (code === 'not-allowed' || code === 'service-not-allowed') return 'Microphone or speech recognition permission was not allowed. Check your browser permissions and try again.';
-        if (code === 'audio-capture') return 'No usable microphone was available to the browser.';
-        if (code === 'no-speech') return 'No speech was detected. Try again and speak clearly after the listening indicator appears.';
-        if (code === 'network') return 'The browser speech-recognition service could not be reached. Your browser may require an internet connection for recognition.';
-        if (code === 'language-not-supported') return 'This browser does not appear to support Urdu speech recognition.';
+        if (code === 'not-allowed' || code === 'service-not-allowed') return 'Microphone access was blocked. Allow it in your browser settings and try again.';
+        if (code === 'audio-capture') return 'No microphone was available. Check your microphone and try again.';
+        if (code === 'no-speech') return 'I did not hear any speech. Try again and start speaking after Listening appears.';
+        if (code === 'network') return 'Voice typing could not connect. Check your internet connection and try again.';
+        if (code === 'language-not-supported') return 'Urdu voice typing is not available in this browser.';
         if (code === 'aborted') return 'Voice typing stopped.';
-        return 'Voice typing could not continue in this browser. You can still type Urdu normally in WriteUrdu.';
+        return 'Voice typing could not continue. You can still type Urdu normally in WriteUrdu.';
     }
 
     function configureRecognition() {
@@ -90,7 +88,7 @@
             stopButton.hidden = false;
             interim.textContent = 'Listening…';
             setStatus('Listening');
-            setNotice('Speak naturally in Urdu. Final recognized phrases will be added to the editable transcript.', 'success');
+            setNotice('Speak naturally in Urdu. Your words will appear in the text box.', 'success');
             refreshActions();
         };
 
@@ -121,7 +119,7 @@
             if (code !== 'aborted') setNotice(friendlyError(code), 'error');
             if (code === 'not-allowed' || code === 'service-not-allowed') setStatus('Permission blocked');
             else if (code === 'no-speech') setStatus('No speech detected');
-            else setStatus('Recognition error');
+            else setStatus('Voice typing error');
         };
 
         instance.onend = function () {
@@ -130,8 +128,8 @@
             stopButton.hidden = true;
             interim.textContent = '';
             if (!/blocked|error|detected/i.test(statusPill.textContent)) {
-                setStatus(hasText() ? 'Transcript ready' : 'Ready');
-                if (startedAt && hasText()) setNotice('Voice typing stopped. Review the transcript before copying or continuing.', 'success');
+                setStatus(hasText() ? 'Text ready' : 'Ready');
+                if (startedAt && hasText()) setNotice('Done. Edit anything you want, then copy or keep writing.', 'success');
             }
             refreshActions();
         };
@@ -147,7 +145,7 @@
             recognition.start();
         } catch (error) {
             setStatus('Could not start');
-            setNotice('The browser could not start a new recognition session yet. Wait a moment and try again.', 'error');
+            setNotice('Voice typing could not start yet. Wait a moment and try again.', 'error');
         }
     }
 
@@ -172,8 +170,8 @@
             transcript.select();
             promise = document.execCommand('copy') ? Promise.resolve() : Promise.reject(new Error('copy'));
         }
-        promise.then(function () { setNotice('Urdu transcript copied to the clipboard.', 'success'); })
-            .catch(function () { setNotice('Copy was blocked. Select the transcript and copy it manually.', 'error'); });
+        promise.then(function () { setNotice('Urdu text copied.', 'success'); })
+            .catch(function () { setNotice('Copy was blocked. Select the text and copy it manually.', 'error'); });
     }
 
     function handoff(target) {
@@ -189,19 +187,19 @@
             navigator.clipboard.writeText(text).then(function () {
                 abortRecognition();
                 window.location.assign(target);
-            }).catch(function () { setNotice('Your browser blocked the session handoff. Copy the transcript first, then open the next tool.', 'error'); });
-        } else setNotice('Your browser blocked the session handoff. Copy the transcript first, then open the next tool.', 'error');
+            }).catch(function () { setNotice('Copy the text first, then open the next tool.', 'error'); });
+        } else setNotice('Copy the text first, then open the next tool.', 'error');
     }
 
     if (!Recognition) {
         setStatus('Not supported');
         startButton.disabled = true;
         startButton.textContent = 'Voice typing unavailable';
-        supportNote.textContent = 'This browser does not expose the Web Speech Recognition interface used by this tool. You can still use Roman Urdu typing, the Urdu keyboard, or try a browser that supports speech recognition.';
+        supportNote.textContent = 'Voice typing is not available in this browser. Try another supported browser or continue with normal Urdu typing.';
         supportNote.classList.add('is-warning');
     } else {
         setStatus('Ready');
-        supportNote.textContent = 'Speech recognition is provided by your browser or operating platform. Depending on the browser, audio may be processed by a vendor service and an internet connection may be required.';
+        supportNote.textContent = 'Ready when you are. Press Start voice typing and speak Urdu.';
     }
 
     startButton.addEventListener('click', startRecognition);
