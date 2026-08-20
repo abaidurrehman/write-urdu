@@ -1,5 +1,6 @@
 export const DOCUMENT_SYNC_DELAY_MS = 25_000;
 export const BASIC_DOCUMENT_METADATA_KEY = 'write-urdu:account-document:v1:basic';
+export const DOCUMENT_OPEN_HANDOFF_KEY = 'write-urdu:account-document-open:v1';
 
 function stringValue(value) {
   return typeof value === 'string' ? value : '';
@@ -55,9 +56,7 @@ function requestOptions(method, body) {
     method,
     credentials: 'same-origin',
     cache: 'no-store',
-    headers: {
-      accept: 'application/json'
-    }
+    headers: { accept: 'application/json' }
   };
   if (body !== undefined) {
     options.headers['content-type'] = 'application/json';
@@ -90,14 +89,24 @@ export function createDocumentsClient(fetchImpl = globalThis.fetch) {
       throw await errorFromResponse(response);
     },
 
-    async create(snapshot) {
+    async list() {
+      const payload = await request('/api/documents', 'GET');
+      return Array.isArray(payload.documents) ? payload.documents : [];
+    },
+
+    async get(documentId) {
+      const payload = await request(`/api/documents/${encodeURIComponent(documentId)}`, 'GET');
+      return payload.document;
+    },
+
+    async create(snapshot, options = {}) {
       const clean = documentSnapshot(snapshot);
       const payload = await request('/api/documents', 'POST', {
-        editorKind: 'basic',
-        title: deriveDocumentTitle(clean.text),
+        editorKind: options.editorKind || 'basic',
+        title: options.title === undefined ? deriveDocumentTitle(clean.text) : options.title,
         content: clean.content,
         plainText: clean.text,
-        formatVersion: 1
+        formatVersion: Number(options.formatVersion) || 1
       });
       return payload.document;
     },
@@ -111,6 +120,29 @@ export function createDocumentsClient(fetchImpl = globalThis.fetch) {
         formatVersion: 1
       });
       return payload.document;
+    },
+
+    async rename(documentId, revision, title) {
+      const payload = await request(`/api/documents/${encodeURIComponent(documentId)}`, 'PATCH', {
+        revision,
+        title: stringValue(title).trim()
+      });
+      return payload.document;
+    },
+
+    async remove(documentId) {
+      await request(`/api/documents/${encodeURIComponent(documentId)}`, 'DELETE');
+      return true;
+    },
+
+    async copy(documentId, title) {
+      const source = await this.get(documentId);
+      if (!source) throw new DocumentApiError(404, 'document_not_found');
+      return this.create({ content: source.content, text: source.plainText }, {
+        editorKind: source.editorKind || 'basic',
+        title: title || `Copy of ${source.title || deriveDocumentTitle(source.plainText)}`,
+        formatVersion: source.formatVersion || 1
+      });
     }
   });
 }
@@ -155,5 +187,39 @@ export function clearAccountDocumentMetadata(storage, key = BASIC_DOCUMENT_METAD
     return true;
   } catch {
     return false;
+  }
+}
+
+export function writeDocumentOpenHandoff(storage, document, key = DOCUMENT_OPEN_HANDOFF_KEY) {
+  if (!storage || typeof storage.setItem !== 'function' || !document) return false;
+  try {
+    storage.setItem(key, JSON.stringify({
+      id: stringValue(document.id),
+      editorKind: stringValue(document.editorKind) || 'basic',
+      title: document.title === null ? null : stringValue(document.title),
+      content: stringValue(document.content),
+      plainText: stringValue(document.plainText),
+      formatVersion: Number(document.formatVersion) || 1,
+      revision: Number(document.revision) || 1,
+      queuedAt: Date.now()
+    }));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function readDocumentOpenHandoff(storage, key = DOCUMENT_OPEN_HANDOFF_KEY) {
+  if (!storage || typeof storage.getItem !== 'function') return null;
+  try {
+    const raw = storage.getItem(key);
+    if (!raw) return null;
+    storage.removeItem(key);
+    const value = JSON.parse(raw);
+    if (!value || !stringValue(value.id) || !stringValue(value.editorKind)) return null;
+    if (Date.now() - Number(value.queuedAt || 0) > 5 * 60 * 1000) return null;
+    return value;
+  } catch {
+    return null;
   }
 }
