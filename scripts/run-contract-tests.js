@@ -13,6 +13,7 @@ const tests = [
   'tests/product-pulse-contract.test.js',
   'tests/share-loop-contract.test.js',
   'tests/auth-foundation-contract.test.js',
+  'tests/documents-contract.test.js',
   'tests/v3-reference-pages-contract.test.js',
   'tests/v3-trust-pages-contract.test.js',
   'tests/v3-utility-pages-contract.test.js',
