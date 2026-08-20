@@ -38,6 +38,7 @@ function signedInMarkup(returnTarget) {
           <strong data-wu-account-name></strong>
           <span data-wu-account-email></span>
         </div>
+        <a href="/my-documents">My Documents</a>
         <a href="/sign-in">Account</a>
         <form method="post" action="/api/auth/signout" data-wu-account-signout>
           <input type="hidden" name="csrfToken" value="">

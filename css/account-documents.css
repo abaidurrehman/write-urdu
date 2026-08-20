@@ -30,9 +30,7 @@
   box-shadow: 0 16px 38px rgb(20 67 43 / 8%);
 }
 
-.home-account-continuity[hidden] {
-  display: none !important;
-}
+.home-account-continuity[hidden] { display: none !important; }
 
 .home-account-continuity-icon {
   display: grid;
@@ -47,9 +45,7 @@
   box-shadow: 0 8px 20px rgb(23 114 69 / 18%);
 }
 
-.home-account-continuity-copy {
-  min-width: 0;
-}
+.home-account-continuity-copy { min-width: 0; }
 
 .home-account-continuity-eyebrow {
   margin: 0 0 4px;
@@ -121,10 +117,18 @@
   text-decoration: none;
 }
 
-.home-account-continuity-button:disabled {
-  cursor: wait;
-  opacity: .68;
+.home-account-continuity-button.is-secondary {
+  color: var(--wu-color-brand-strong);
+  border-color: #bedcca;
+  background: #fff;
 }
+
+.home-account-continuity-button.is-secondary:hover {
+  color: var(--wu-color-brand-strong);
+  background: var(--wu-color-brand-soft);
+}
+
+.home-account-continuity-button:disabled { cursor: wait; opacity: .68; }
 
 .home-account-continuity-status {
   min-height: 1.35em;
@@ -135,49 +139,23 @@
 }
 
 .home-account-continuity-status[data-state="saved"],
-.editor-account-save-status[data-state="saved"] {
-  color: var(--wu-color-brand-strong);
-}
+.editor-account-save-status[data-state="saved"] { color: var(--wu-color-brand-strong); }
 
 .home-account-continuity-status[data-state="conflict"],
-.editor-account-save-status[data-state="conflict"] {
-  color: #9a3b32;
-}
+.editor-account-save-status[data-state="conflict"] { color: #9a3b32; }
 
 .home-account-continuity-status[data-state="paused"],
-.editor-account-save-status[data-state="paused"] {
-  color: #7c5b1d;
-}
+.editor-account-save-status[data-state="paused"] { color: #7c5b1d; }
 
-.editor-account-save-status {
-  color: var(--wu-color-muted);
-}
+.editor-account-save-status { color: var(--wu-color-muted); }
 
 @media (max-width: 960px) {
-  .home-account-hero-layout {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 22px;
-  }
-
-  .home-account-continuity {
-    max-width: 720px;
-  }
+  .home-account-hero-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .home-account-continuity { max-width: 720px; }
 }
 
 @media (max-width: 560px) {
-  .home-account-continuity {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-    padding: 18px;
-  }
-
-  .home-account-continuity-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 11px;
-  }
-
-  .home-account-continuity-button {
-    width: 100%;
-  }
+  .home-account-continuity { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 18px; }
+  .home-account-continuity-icon { width: 36px; height: 36px; border-radius: 11px; }
+  .home-account-continuity-button { width: 100%; }
 }
