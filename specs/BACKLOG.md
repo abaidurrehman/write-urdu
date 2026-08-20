@@ -70,8 +70,9 @@ The detailed commercial execution plan is `docs/WU-SEO-ADSENSE-AUTHORITY-PLAN-20
 - [ ] Create the documented custom/URL channels in the AdSense account and then add only real IDs where useful.
 - [ ] Configure the documented Auto-ads page exclusions/excluded areas in AdSense.
 - [ ] Capture a comparable post-restoration AdSense baseline by top pages, page RPM, country, platform/device and format/placement where available.
+- [x] Card Studio and QR Generator ad enablement (2026-08-20): removed the `card-studio-page`/`qr-generator-page` header-ad exclusion in `js/site-header-core.js`. Both routes already had valid `create`-type `CREATE_ANCHORS` boundaries in `js/ads.js` (Card Studio: after `.card-studio-shell`; QR: the existing `data-wu-ad-boundary="post-workspace"` attribute, previously dead code) — placement verified in-browser to land after the workspace/canvas, never inside `CREATE_PROTECTED_AREAS`. **This was a deliberate, founder-approved exception shipped ahead of the account-side baseline/exclusion checklist below**, not an oversight — do not treat it as governance drift.
 
-**Decision rule:** do not increase site-wide ad density until the account-side baseline/exclusions exist and the normalized placement has been observed. Do not interpret the July 12 discontinuity in AdSense pageviews as a traffic collapse without reconciling it against Search Console/site traffic evidence.
+**Decision rule:** do not increase site-wide ad density until the account-side baseline/exclusions exist and the normalized placement has been observed. Do not interpret the July 12 discontinuity in AdSense pageviews as a traffic collapse without reconciling it against Search Console/site traffic evidence. (Card Studio/QR enablement above is a scoped, explicitly approved exception to this rule, not a precedent for further pre-baseline density increases.)
 
 ### P0.1B — Authority Opportunity Map
 

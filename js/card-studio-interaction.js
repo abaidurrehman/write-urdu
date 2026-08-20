@@ -43,6 +43,14 @@
         for (var i = 0; i < candidates.length; i += 1) { var id = candidates[i]; if (objectVisible(id) && interaction.pointInExpandedRect(point, objectRect(id), 16 / Math.max(.01, transform().scaleX))) return id; }
         return null;
     }
+    function clampToolbarPosition() {
+        var siteHeader = document.querySelector('.wu-site-header');
+        if (toolbar.hidden || !siteHeader) { toolbar.style.top = ''; return; }
+        var headerBottom = siteHeader.getBoundingClientRect().bottom;
+        var wrapTop = artboard.getBoundingClientRect().top;
+        var minTop = headerBottom + 8 - wrapTop;
+        toolbar.style.top = minTop > -56 ? minTop + 'px' : '';
+    }
     function refreshSelection() {
         syncLayerToCanvas();
         if (!selected || !objectVisible(selected)) { selected = null; selectionBox.hidden = true; toolbar.hidden = true; return; }
@@ -55,6 +63,7 @@
         var edit = toolbar.querySelector('[data-card-object-action="edit"]'); if (edit) edit.hidden = mode === 'editing';
         syncLayoutControls();
         if (mode === 'editing') positionEditor();
+        clampToolbarPosition();
     }
     function syncLayoutControls() {
         var objectSelect = root.querySelector('[data-card-layout-object]'); if (!objectSelect) return;
@@ -201,6 +210,12 @@
         root.querySelectorAll('[data-card-layout-action]').forEach(function (button) { button.addEventListener('click', layoutAction); });
         if (window.ResizeObserver) { resizeObserver = new ResizeObserver(function () { refreshSelection(); }); resizeObserver.observe(artboard); }
         window.addEventListener('resize', refreshSelection);
+        var scrollQueued = false;
+        window.addEventListener('scroll', function () {
+            if (scrollQueued || toolbar.hidden) return;
+            scrollQueued = true;
+            requestAnimationFrame(function () { scrollQueued = false; clampToolbarPosition(); });
+        }, { passive: true });
         document.addEventListener('write-urdu:locale-change', refreshSelection);
         window.WriteUrduCardStudioInteractionApi = { commit: commitEdit, cancel: cancelEdit, refresh: refreshSelection, select: select, undo: undo, redo: redo, getHistoryState: historyState, recordHistory: recordHistory };
         syncHistoryButtons();
