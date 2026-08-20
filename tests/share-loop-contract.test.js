@@ -52,7 +52,7 @@ assert.match(publishApi, /validatePng\(image\)/, 'Share publishing must validate
 assert.match(helper, /image\/png/, 'Only the approved PNG share artifact should be accepted');
 assert.match(helper, /MAX_IMAGE_BYTES/, 'Share media must have a server-side size limit');
 assert.match(helper, /cleanPlainText/, 'Public Urdu text must be normalized as plain text');
-assert.match(helper, /new Set\(\['card_studio', 'basic_editor'\]\)/, 'Share API source allowlist must include Card Studio and Basic Writer');
+assert.match(helper, /new Set\(\['card_studio', 'basic_editor', 'rich_editor', 'urdu_keyboard'\]\)/, 'Share API source allowlist must cover all current writing publishers');
 assert.doesNotMatch(publishApi, /innerHTML|dangerouslySetInnerHTML/, 'Publish API must not accept/render HTML content');
 assert.match(publishApi, /origin_share_unavailable/, 'Child publication must validate its parent share');
 
