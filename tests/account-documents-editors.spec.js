@@ -6,6 +6,19 @@ const signedInUser = {
   user: { id: 'user-doc-d', name: 'DOC D User', email: 'docd@example.test', image: '' }
 };
 
+async function serveDocDModules(page) {
+  await page.route('**/*.mjs', async route => {
+    const response = await route.fetch();
+    await route.fulfill({
+      response,
+      headers: {
+        ...response.headers(),
+        'content-type': 'text/javascript; charset=utf-8'
+      }
+    });
+  });
+}
+
 async function mockAccount(page, onWrite) {
   await page.route('**/api/me', route => route.fulfill({
     status: 200,
@@ -51,6 +64,7 @@ async function blockExternalServices(page) {
 test('Urdu Keyboard keeps local-first behavior and saves to account only after explicit opt-in', async ({ page }) => {
   const writes = [];
   await blockExternalServices(page);
+  await serveDocDModules(page);
   await mockAccount(page, body => writes.push(body));
 
   await page.goto('/urdu-keyboard', { waitUntil: 'domcontentloaded' });
@@ -83,6 +97,7 @@ test('Rich Editor account save uses the shared adapter and preserves exact HTML'
   const richText = 'میری تحریر — اردو ۱۲۳\nپہلا نکتہ';
 
   await blockExternalServices(page);
+  await serveDocDModules(page);
   await mockAccount(page, body => writes.push(body));
   await page.addInitScript(({ html, text }) => {
     document.addEventListener('DOMContentLoaded', () => {
