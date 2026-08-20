@@ -43,6 +43,14 @@ function storage() {
   }
 }
 
+function sessionStorageSafe() {
+  try {
+    return runtime.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
 function currentSnapshot() {
   return {
     content: adapter ? adapter.getContent() : '',
@@ -265,7 +273,7 @@ function waitForBasicAdapter() {
 }
 
 function applyOpenHandoff() {
-  const handoff = readDocumentOpenHandoff(runtime.sessionStorage);
+  const handoff = readDocumentOpenHandoff(sessionStorageSafe());
   if (!handoff || handoff.editorKind !== 'basic') return false;
   const incoming = { content: handoff.content, text: handoff.plainText };
   const current = currentSnapshot();
