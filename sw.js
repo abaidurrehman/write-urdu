@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v26';
+const CACHE_NAME = 'write-urdu-shell-v27';
 const APP_SHELL = [
   './',
   './index.html',
@@ -62,6 +62,7 @@ const APP_SHELL = [
   './js/account-control.mjs',
   './js/account-documents.mjs',
   './js/basic-account-documents.mjs',
+  './js/editor-account-documents.mjs',
   './js/document-share.mjs',
   './js/my-documents-ui.mjs',
   './js/my-documents.mjs',
