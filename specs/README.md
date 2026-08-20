@@ -7,6 +7,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | ID | Feature | Route | Status |
 | --- | --- | --- | --- |
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Active — mature-domain authority/growth control plane |
+| `WU-GROWTH-002` | Account Save + Share Entry Points | `/`, `/urdu-editor`, `/urdu-keyboard`, `/tools/urdu-voice-typing` | Active — compact account conversion + ungated share loop implementation |
 | `WU-SHARE-001` | Public Share Pages & Viral Publishing Loop | `/urdu-card-studio`, `/`, `/s/:id`, `/api/shares*` | Active — first-party short-link loop proven in Card Studio and extending to Basic Writer |
 | `WU-ACCOUNT-001` | Account, Documents & Collaboration Platform Boundary | Account/document platform | Planned boundary — identity + My Documents first; collaboration/teams/social separately gated |
 | `WU-AUTH-001` | Optional social authentication foundation | `/sign-in`, `/api/auth/*`, `/api/me`, shared header | Planned — reconciled to proven InvoiceCraftly Auth.js + `ACCOUNT_DB`; Google first |
