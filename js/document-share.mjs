@@ -111,7 +111,7 @@ function rememberShare(result) {
 export async function publishDocumentShare(document) {
   const text = publicText(document);
   if (!text) throw new Error('share_text_required');
-  if (Array.from(text).length > MAX_DOCUMENT_SHARE_TEXT) throw new Error('share_text_too_long');
+  if (text.length > MAX_DOCUMENT_SHARE_TEXT) throw new Error('share_text_too_long');
   const image = await buildPreview(text, document?.title);
   const form = new FormData();
   form.set('source_tool', 'basic_editor');
