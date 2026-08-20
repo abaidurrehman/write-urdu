@@ -152,7 +152,8 @@
         if (role !== 'facebook') return;
         document.body.classList.remove('social-maker-embedded');
         document.body.classList.add('card-facebook-role');
-        root.querySelectorAll('[data-social-only]').forEach(function (element) { element.hidden = true; });
+        var socialBadge = root.querySelector('.card-studio-social-badge');
+        if (socialBadge) socialBadge.hidden = true;
         root.dataset.cardRoleMode = 'facebook';
         ensureFacebookEntry();
         var preset = root.querySelector('#cardPreset');
