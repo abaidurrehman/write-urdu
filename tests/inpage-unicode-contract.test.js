@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.join(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'tools', 'inpage-unicode-converter', 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'tools', 'inpage-unicode-converter.html'), 'utf8');
 const core = fs.readFileSync(path.join(root, 'js', 'inpage-unicode-core.js'), 'utf8');
 const ui = fs.readFileSync(path.join(root, 'js', 'inpage-unicode-converter.js'), 'utf8');
 

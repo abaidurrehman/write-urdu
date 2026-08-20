@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.join(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'tools', 'urdu-voice-typing', 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'tools', 'urdu-voice-typing.html'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'js', 'urdu-voice-typing.js'), 'utf8');
 
 assert.match(html, /<h1>Urdu Voice Typing<\/h1>/, 'voice page should expose a focused H1');
