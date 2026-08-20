@@ -23,6 +23,7 @@ const tests = [
   'tests/contact-feedback-routing-contract.test.js',
   'tests/changelog-contract.test.js',
   'tests/static.test.js',
+  'tests/pages-routing-contract.test.js',
   'tests/invoice-preview-footer-contract.test.js',
   'tests/sitemap-directory-contract.test.js',
   'tests/stylish-urdu-core.test.js',
