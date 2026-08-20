@@ -177,11 +177,16 @@
             ]
         },
         {
-            id: 'my-drafts', routes: ['/my-drafts'], status: 'planned', category: 'Utility', stages: ['Resume'],
-            label: 'My drafts', technicalLabel: 'Cloud Drafts',
-            jobs: ['resume writing on another device'], accepts: ['draft-reference'], produces: ['draft-reference'],
-            persistence: 'account cloud drafts plus local safety layer', conflictPolicy: 'open in owning editor with revision conflict recovery',
-            next: []
+            id: 'my-documents', routes: ['/my-documents'], status: 'current', category: 'Utility', stages: ['Resume', 'Publish'],
+            label: 'My Documents', technicalLabel: 'Account-backed documents',
+            jobs: ['resume writing on another device', 'manage saved writing', 'share a saved snapshot'],
+            accepts: ['document-reference'], produces: ['document-reference', 'share-artifact'],
+            persistence: 'account documents plus local safety layer',
+            conflictPolicy: 'preserve current local draft/history before replacement and surface revision conflicts',
+            next: [
+                { id: 'documents-to-basic', target: 'basic-writer', type: 'handoff', label: 'Open in Basic Writer', payloadKind: 'document-reference' },
+                { id: 'documents-share', target: null, type: 'embedded', label: 'Share with a link', payloadKind: null }
+            ]
         },
         {
             id: 'urdu-hindi-script-converter', routes: [], status: 'research', category: 'Write', stages: ['Capture', 'Fix'],
