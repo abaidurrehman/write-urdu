@@ -1,6 +1,6 @@
 export const DOCUMENT_SYNC_DELAY_MS = 25_000;
 export const DOCUMENT_METADATA_PREFIX = 'write-urdu:account-document:v1:';
-export const BASIC_DOCUMENT_METADATA_KEY = `${DOCUMENT_METADATA_PREFIX}basic`;
+export const BASIC_DOCUMENT_METADATA_KEY = 'write-urdu:account-document:v1:basic';
 export const DOCUMENT_OPEN_HANDOFF_KEY = 'write-urdu:account-document-open:v1';
 export const ACCOUNT_DOCUMENT_EDITOR_KINDS = Object.freeze(['basic', 'rich', 'keyboard']);
 
