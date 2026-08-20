@@ -1,9 +1,20 @@
 export const DOCUMENT_SYNC_DELAY_MS = 25_000;
-export const BASIC_DOCUMENT_METADATA_KEY = 'write-urdu:account-document:v1:basic';
+export const DOCUMENT_METADATA_PREFIX = 'write-urdu:account-document:v1:';
+export const BASIC_DOCUMENT_METADATA_KEY = `${DOCUMENT_METADATA_PREFIX}basic`;
 export const DOCUMENT_OPEN_HANDOFF_KEY = 'write-urdu:account-document-open:v1';
+export const ACCOUNT_DOCUMENT_EDITOR_KINDS = Object.freeze(['basic', 'rich', 'keyboard']);
 
 function stringValue(value) {
   return typeof value === 'string' ? value : '';
+}
+
+export function normaliseAccountDocumentEditorKind(value, fallback = 'basic') {
+  const kind = stringValue(value).trim().toLowerCase();
+  return ACCOUNT_DOCUMENT_EDITOR_KINDS.includes(kind) ? kind : fallback;
+}
+
+export function documentMetadataKey(editorKind = 'basic') {
+  return `${DOCUMENT_METADATA_PREFIX}${normaliseAccountDocumentEditorKind(editorKind)}`;
 }
 
 function hashString(value) {
@@ -102,7 +113,7 @@ export function createDocumentsClient(fetchImpl = globalThis.fetch) {
     async create(snapshot, options = {}) {
       const clean = documentSnapshot(snapshot);
       const payload = await request('/api/documents', 'POST', {
-        editorKind: options.editorKind || 'basic',
+        editorKind: normaliseAccountDocumentEditorKind(options.editorKind),
         title: options.title === undefined ? deriveDocumentTitle(clean.text) : options.title,
         content: clean.content,
         plainText: clean.text,
@@ -111,13 +122,13 @@ export function createDocumentsClient(fetchImpl = globalThis.fetch) {
       return payload.document;
     },
 
-    async update(documentId, revision, snapshot) {
+    async update(documentId, revision, snapshot, options = {}) {
       const clean = documentSnapshot(snapshot);
       const payload = await request(`/api/documents/${encodeURIComponent(documentId)}`, 'PATCH', {
         revision,
         content: clean.content,
         plainText: clean.text,
-        formatVersion: 1
+        formatVersion: Number(options.formatVersion) || 1
       });
       return payload.document;
     },
@@ -195,7 +206,7 @@ export function writeDocumentOpenHandoff(storage, document, key = DOCUMENT_OPEN_
   try {
     storage.setItem(key, JSON.stringify({
       id: stringValue(document.id),
-      editorKind: stringValue(document.editorKind) || 'basic',
+      editorKind: normaliseAccountDocumentEditorKind(document.editorKind),
       title: document.title === null ? null : stringValue(document.title),
       content: stringValue(document.content),
       plainText: stringValue(document.plainText),
@@ -218,6 +229,7 @@ export function readDocumentOpenHandoff(storage, key = DOCUMENT_OPEN_HANDOFF_KEY
     const value = JSON.parse(raw);
     if (!value || !stringValue(value.id) || !stringValue(value.editorKind)) return null;
     if (Date.now() - Number(value.queuedAt || 0) > 5 * 60 * 1000) return null;
+    value.editorKind = normaliseAccountDocumentEditorKind(value.editorKind);
     return value;
   } catch {
     return null;
