@@ -72,6 +72,48 @@
         return path || '/';
     }
 
+    function voiceEntryMarkup() {
+        return '<span class="wu-voice-entry-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+            '<rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M6.5 10.5v.5a5.5 5.5 0 0 0 11 0v-.5"></path><path d="M12 16.5V21"></path><path d="M9 21h6"></path></svg></span>' +
+            '<span class="wu-voice-entry-copy"><span class="wu-voice-entry-kicker">New · Speak Urdu</span>' +
+            '<strong>Talk. Get Urdu text.</strong><small>Tap the mic, speak naturally, then edit or copy your words.</small></span>' +
+            '<span class="wu-voice-entry-output" dir="rtl" lang="ur">السلام علیکم، آج میں آواز سے اردو لکھ رہا ہوں۔</span>' +
+            '<span class="wu-voice-entry-arrow" aria-hidden="true">→</span>';
+    }
+
+    function installVoiceDiscovery() {
+        var path = normalizedPath();
+        if (path !== '/' && path !== '/my-documents') return;
+        if (document.querySelector('[data-wu-voice-entry]')) return;
+
+        var target;
+        var placement;
+        if (path === '/') {
+            target = document.querySelector('.tool-promo-grid');
+            placement = 'home';
+        } else {
+            target = document.querySelector('.my-documents-hero');
+            placement = 'documents';
+        }
+        if (!target) return;
+
+        ensureStylesheet('/css/voice-discovery.css');
+        var entry = document.createElement('a');
+        entry.href = '/tools/urdu-voice-typing';
+        entry.className = 'wu-voice-entry wu-voice-entry-' + placement;
+        entry.setAttribute('data-wu-voice-entry', placement);
+        entry.setAttribute('aria-label', 'Try Urdu Voice Typing');
+        entry.innerHTML = voiceEntryMarkup();
+
+        if (placement === 'home') {
+            entry.setAttribute('role', 'listitem');
+            target.insertBefore(entry, target.firstChild || null);
+        } else {
+            target.insertAdjacentElement('afterend', entry);
+        }
+    }
+
     function installHomeAccountDocuments() {
         if (normalizedPath() !== '/') return;
         ensureStylesheet('/css/account-documents.css');
@@ -178,6 +220,7 @@
         installAccountControl();
         installHomeAccountDocuments();
         installEditorAccountDocuments();
+        installVoiceDiscovery();
         restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {
             if (root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
@@ -189,6 +232,7 @@
                     root.WriteUrduCoreWorkspaceConvergence.run();
                 }
                 restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
+                installVoiceDiscovery();
                 loadContextualNextSteps();
                 loadCreationDestinationAdapters();
             });
