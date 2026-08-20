@@ -16,6 +16,7 @@ const APP_SHELL = [
   './urdu-fonts-nastaliq-vs-naskh.html',
   './css/site-header.css',
   './css/account.css',
+  './css/account-documents.css',
   './css/outcome-navigation.css',
   './css/workspace-next-step.css',
   './css/core-workspace-convergence.css',
@@ -58,6 +59,8 @@ const APP_SHELL = [
   './js/site-header-core.js',
   './js/account-session.mjs',
   './js/account-control.mjs',
+  './js/account-documents.mjs',
+  './js/basic-account-documents.mjs',
   './js/outcome-navigation.js',
   './js/core-workspace-convergence.js',
   './js/basic-writer-command-toolbar.js',
@@ -121,9 +124,10 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
 
-  // Auth.js callbacks, session endpoints and /api/me are request-specific and
-  // must never be stored or served by the application Cache API. The sign-in
-  // shell also remains network-owned so account-state UX cannot become stale.
+  // Auth.js callbacks, session endpoints, /api/me and private document APIs are
+  // request-specific and must never be stored or served by the application
+  // Cache API. The sign-in shell also remains network-owned so account-state UX
+  // cannot become stale.
   if (url.pathname.startsWith('/api/') || url.pathname === '/sign-in' || url.pathname === '/sign-in.html') return;
 
   event.respondWith(
