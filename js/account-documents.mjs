@@ -112,8 +112,9 @@ export function createDocumentsClient(fetchImpl = globalThis.fetch) {
 
     async create(snapshot, options = {}) {
       const clean = documentSnapshot(snapshot);
+      options = { ...options, editorKind: normaliseAccountDocumentEditorKind(options.editorKind) };
       const payload = await request('/api/documents', 'POST', {
-        editorKind: normaliseAccountDocumentEditorKind(options.editorKind),
+        editorKind: options.editorKind || 'basic',
         title: options.title === undefined ? deriveDocumentTitle(clean.text) : options.title,
         content: clean.content,
         plainText: clean.text,
