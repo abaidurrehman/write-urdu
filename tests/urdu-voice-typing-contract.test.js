@@ -28,7 +28,7 @@ assert.match(privacy, /provider-operated recognition service/, 'privacy page sho
 assert.match(privacy, /does not create a separate audio recording/, 'privacy page should state the Write Urdu audio-processing boundary');
 
 assert.match(shell, /function installVoiceDiscovery\(\)/, 'shared shell should install a reusable voice discovery entry');
-assert.match(shell, /document\.querySelector\('\.tool-promo-grid'\)/, 'homepage tool discovery should surface voice typing visually');
+assert.match(shell, /document\.querySelector\('\.home-hero-actions'\)/, 'homepage start area should surface voice typing before users reach the lower tool directory');
 assert.match(shell, /document\.querySelector\('\.my-documents-hero'\)/, 'My Documents should surface the same voice entry');
 assert.match(shell, /entry\.href = '\/tools\/urdu-voice-typing'/, 'voice discovery entry must route to the canonical tool');
 assert.match(shell, /السلام علیکم، آج میں آواز سے اردو لکھ رہا ہوں۔/, 'discovery card should show the Urdu output users can expect');
