@@ -63,6 +63,7 @@ const APP_SHELL = [
   './js/account-documents.mjs',
   './js/basic-account-documents.mjs',
   './js/editor-account-documents.mjs',
+  './js/account-growth-entry.mjs',
   './js/document-share.mjs',
   './js/my-documents-ui.mjs',
   './js/my-documents.mjs',
