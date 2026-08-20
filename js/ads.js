@@ -31,7 +31,7 @@
         ],
         trust: [
             '/why-write-urdu', '/contact', '/changelog', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
-            '/write-urdu-search', '/write-urdu-sitemap', '/sign-in'
+            '/write-urdu-search', '/write-urdu-sitemap', '/sign-in', '/my-documents'
         ]
     };
 
