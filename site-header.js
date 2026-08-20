@@ -72,6 +72,12 @@
         return path || '/';
     }
 
+    function installHomeAccountDocuments() {
+        if (normalizedPath() !== '/') return;
+        ensureStylesheet('/css/account-documents.css');
+        loadModule('/js/basic-account-documents.mjs');
+    }
+
     function restoreHomepageSearchIntentCopy(event) {
         if (normalizedPath() !== '/') return;
         var locale = event && event.detail && event.detail.locale;
@@ -163,6 +169,7 @@
 
     loadScript('/js/site-header-core.js', 'WriteUrduLocale', function () {
         installAccountControl();
+        installHomeAccountDocuments();
         restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {
             if (root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
