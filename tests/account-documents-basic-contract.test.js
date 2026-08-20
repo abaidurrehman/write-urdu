@@ -26,7 +26,7 @@ assert.match(coreSource, /DOCUMENT_SYNC_DELAY_MS = 25_000/, 'Remote document syn
 assert.match(coreSource, /write-urdu:account-document:v1:basic/, 'DOC-B must keep account metadata separate from local draft payloads');
 assert.match(coreSource, /credentials: 'same-origin'/, 'Private document API calls must send same-origin session cookies');
 assert.match(coreSource, /cache: 'no-store'/, 'Private document API reads/writes must bypass browser HTTP cache');
-assert.match(coreSource, /editorKind: 'basic'/, 'DOC-B must remain scoped to the Basic Writer');
+assert.match(coreSource, /editorKind: options\.editorKind \|\| 'basic'/, 'Account document creation must still default to the Basic Writer');
 assert.doesNotMatch(coreSource, /email|providerAccountId|access_token|refresh_token|sessionToken/, 'Local account-document metadata must not contain provider/session credentials');
 
 assert.match(uiSource, /WriteUrduTools/, 'DOC-B must use the established editor adapter boundary');
@@ -38,8 +38,8 @@ assert.match(uiSource, /Nothing was overwritten/, 'Conflict messaging must be da
 assert.match(uiSource, /Account save paused — your local draft is safe/, 'Remote failure must truthfully preserve the local-first contract');
 assert.match(uiSource, /Save to my account/, 'The first remote action must be explicit');
 assert.match(uiSource, /Keep your writing/, 'The highlighted homepage area must explain account continuity');
-assert.match(uiSource, /Save this Urdu writing for later and continue on another device/, 'Homepage account value must be plain-language and task-led');
-assert.doesNotMatch(uiSource, /followers|comments|team|collaborat/i, 'DOC-B must not expand into social/collaboration scope');
+assert.match(uiSource, /Save this Urdu writing for later[\s\S]*continue on another device/, 'Homepage account value must remain plain-language and task-led as later document features are added');
+assert.doesNotMatch(uiSource, /followers|comments|team|collaborat/i, 'Account documents must not expand into social/collaboration scope');
 assert.match(styles, /home-account-hero-layout/, 'Desktop hero must provide a bounded second column for the account value card');
 assert.match(styles, /@media \(max-width: 960px\)/, 'Account value card must collapse safely on smaller screens');
 assert.match(editorTools, /SAVE_DELAY = 650/, 'Existing local autosave cadence must remain unchanged');
