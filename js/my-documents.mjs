@@ -1,9 +1,14 @@
 import { ACCOUNT_STATE, fetchAccountState } from './account-session.mjs';
 import { DocumentApiError, createDocumentsClient, writeDocumentOpenHandoff } from './account-documents.mjs';
 import { MAX_DOCUMENT_SHARE_TEXT, copyShareLink, publishDocumentShare, shareLink } from './document-share.mjs';
-import { confirmAction, editorKindLabel, renderDocumentCards, showShareResult } from './my-documents-ui.mjs';
+import { confirmAction, renderDocumentCards, showShareResult } from './my-documents-ui.mjs';
 
 const client = createDocumentsClient();
+const EDITOR_ROUTES = Object.freeze({
+  basic: '/',
+  rich: '/urdu-editor',
+  keyboard: '/urdu-keyboard'
+});
 const message = document.querySelector('[data-documents-message]');
 const list = document.querySelector('[data-documents-list]');
 const signedOut = document.querySelector('[data-documents-signed-out]');
@@ -31,7 +36,7 @@ function render() {
   hideStates();
   if (!items.length) {
     if (empty) empty.hidden = false;
-    setMessage('Your account is ready. Save writing from the Basic Writer to see it here.', 'empty');
+    setMessage('Your account is ready. Save writing from a Write Urdu editor to see it here.', 'empty');
     return;
   }
   renderDocumentCards(list, items);
@@ -45,23 +50,20 @@ async function refresh() {
 }
 
 function sessionStore() {
-  try {
-    return sessionStorage;
-  } catch {
-    return null;
-  }
+  try { return sessionStorage; } catch { return null; }
 }
 
 async function openDocument(item) {
-  if (item.editorKind !== 'basic') {
-    setMessage(`${editorKindLabel(item.editorKind)} account restore is coming in the next editor-integration slice.`, 'notice');
+  const route = EDITOR_ROUTES[item.editorKind];
+  if (!route) {
+    setMessage('This saved document uses an editor type that is not available here.', 'notice');
     return;
   }
   setMessage('Opening your saved writing…', 'working');
   const full = await client.get(item.id);
   const target = sessionStore();
   if (!target || !writeDocumentOpenHandoff(target, full)) throw new Error('handoff_unavailable');
-  location.assign('/');
+  location.assign(route);
 }
 
 async function renameDocument(item) {
@@ -103,13 +105,13 @@ async function publishShare(item, card) {
     setMessage('This document has no plain Urdu text to share.', 'error');
     return;
   }
-  if (text.length > MAX_DOCUMENT_SHARE_TEXT) {
+  if (Array.from(text).length > MAX_DOCUMENT_SHARE_TEXT) {
     setMessage(`Share links currently support up to ${MAX_DOCUMENT_SHARE_TEXT.toLocaleString()} characters. Your private document was not changed.`, 'error');
     return;
   }
   const confirmed = await confirmAction(dialog, {
     title: 'Create a public share link?',
-    copy: 'This publishes a snapshot at an unlisted Write Urdu link. The saved account document stays private, and later edits do not silently change this snapshot.',
+    copy: 'This publishes a plain-text snapshot at an unlisted Write Urdu link. The saved account document and any rich formatting stay private, and later edits do not silently change this snapshot.',
     confirmLabel: 'Publish & get link'
   });
   if (!confirmed) return;
