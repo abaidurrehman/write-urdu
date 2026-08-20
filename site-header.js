@@ -90,7 +90,7 @@
         var target;
         var placement;
         if (path === '/') {
-            target = document.querySelector('.tool-promo-grid');
+            target = document.querySelector('.home-hero-actions');
             placement = 'home';
         } else {
             target = document.querySelector('.my-documents-hero');
@@ -105,13 +105,7 @@
         entry.setAttribute('data-wu-voice-entry', placement);
         entry.setAttribute('aria-label', 'Try Urdu Voice Typing');
         entry.innerHTML = voiceEntryMarkup();
-
-        if (placement === 'home') {
-            entry.setAttribute('role', 'listitem');
-            target.insertBefore(entry, target.firstChild || null);
-        } else {
-            target.insertAdjacentElement('afterend', entry);
-        }
+        target.insertAdjacentElement('afterend', entry);
     }
 
     function installHomeAccountDocuments() {
