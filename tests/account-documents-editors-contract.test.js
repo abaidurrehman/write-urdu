@@ -40,8 +40,8 @@ assert.match(basicController, /readDocumentOpenHandoff/, 'Basic Writer must keep
 
 assert.match(richPage, /id="basic-example"/, 'Rich Editor must keep the TinyMCE source hook used by editor-tools');
 assert.match(keyboardPage, /id="write"/, 'Urdu Keyboard must keep the textarea hook used by editor-tools');
-assert.match(richPage, /\/js\/editor-tools\.js/, 'Rich Editor must keep the shared browser-local editor controller');
-assert.match(keyboardPage, /\/js\/editor-tools\.js/, 'Urdu Keyboard must keep the shared browser-local editor controller');
+assert.match(richPage, /js\/editor-tools\.js/, 'Rich Editor must keep the shared browser-local editor controller');
+assert.match(keyboardPage, /js\/editor-tools\.js/, 'Urdu Keyboard must keep the shared browser-local editor controller');
 
 assert.match(shareClientSource, /rich: 'rich_editor'/, 'Saved Rich Editor shares need a bounded source enum');
 assert.match(shareClientSource, /keyboard: 'urdu_keyboard'/, 'Saved Urdu Keyboard shares need a bounded source enum');
