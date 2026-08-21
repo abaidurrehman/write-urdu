@@ -1,6 +1,7 @@
 import { Auth } from '@auth/core';
 import Google from '@auth/core/providers/google';
 import { D1Adapter } from '@auth/d1-adapter';
+import { incrementVoiceAccountMetrics } from './voice-account-metrics.mjs';
 
 export const AUTH_CONFIGURATION_STATE = Object.freeze({
   DISABLED: 'disabled',
@@ -10,6 +11,7 @@ export const AUTH_CONFIGURATION_STATE = Object.freeze({
 
 const AUTH_BASE_PATH = '/api/auth';
 const IDENTITY_SCOPE = 'openid email profile';
+const VOICE_TRY_COOKIE = 'wu_voice_tried';
 
 function stringValue(value) {
   return typeof value === 'string' ? value.trim() : '';
@@ -17,6 +19,11 @@ function stringValue(value) {
 
 function hasD1Binding(database) {
   return Boolean(database && typeof database.prepare === 'function');
+}
+
+function hasVoiceTryMarker(request) {
+  const cookie = String(request && request.headers && request.headers.get('cookie') || '');
+  return cookie.split(';').some((part) => part.trim() === `${VOICE_TRY_COOKIE}=1`);
 }
 
 export function getIdentityProviderReadiness(env = {}) {
@@ -121,7 +128,7 @@ function sanitizedLogger() {
   });
 }
 
-export function createAuthConfig(env = {}) {
+export function createAuthConfig(env = {}, options = {}) {
   if (!authEnabled(env)) {
     throw new TypeError('Authentication configuration is not ready.');
   }
@@ -138,6 +145,19 @@ export function createAuthConfig(env = {}) {
     },
     session: { strategy: 'database' },
     logger: sanitizedLogger(),
+    events: {
+      async createUser() {
+        try {
+          await incrementVoiceAccountMetrics(env.METRICS_DB, {
+            accountSignups: 1,
+            voiceAssistedSignups: options.voiceAssisted === true ? 1 : 0
+          });
+        } catch {
+          // Product analytics must never block account creation.
+          console.warn('auth-analytics-warning', { metric: 'account-signup' });
+        }
+      }
+    },
     callbacks: {
       async redirect({ url, baseUrl }) {
         return resolveAuthRedirect(url, baseUrl);
@@ -186,7 +206,8 @@ export async function handleAuthRequest(request, env = {}, { auth = Auth } = {})
   }
 
   try {
-    return withAccountResponseHeaders(await auth(request, createAuthConfig(env)));
+    const options = { voiceAssisted: hasVoiceTryMarker(request) };
+    return withAccountResponseHeaders(await auth(request, createAuthConfig(env, options)));
   } catch {
     return jsonResponse({ error: { code: 'auth_unavailable' } }, 503);
   }

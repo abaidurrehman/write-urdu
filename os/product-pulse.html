@@ -22,7 +22,7 @@
       <div>
         <p class="os-eyebrow">Product intelligence</p>
         <h1>Product Pulse</h1>
-        <p class="os-lede">See what people actually do after they arrive: writing engagement, canvas/design usage, copy/export outcomes, share-loop reproduction, devices, handoffs and coarse arrival sources — without collecting the text they write.</p>
+        <p class="os-lede">See what people actually do after they arrive: writing engagement, canvas/design usage, copy/export outcomes, voice usage, account growth, share-loop reproduction, devices, handoffs and coarse arrival sources — without collecting the text they write.</p>
       </div>
       <div class="os-controls" aria-label="Dashboard period controls">
         <div class="os-range" role="group" aria-label="Reporting period">
@@ -63,6 +63,22 @@
       <article class="os-card os-panel span-4">
         <div class="os-panel-head"><h2>Product outcomes</h2><span class="os-panel-note">Current period</span></div>
         <div class="os-bars" id="outcomeBars"></div>
+      </article>
+
+      <article class="os-card os-panel span-12" id="voiceAccountPanel">
+        <div class="os-panel-head"><h2>Voice &amp; Accounts</h2><span class="os-panel-note" id="voiceAccountNote">Anonymous voice sessions + aggregate account creation</span></div>
+        <section class="os-kpis" aria-label="Voice and account metrics">
+          <article class="os-card os-kpi"><div class="os-kpi-label">Voice visitors</div><div class="os-kpi-value" data-voice-kpi="voice_page_sessions">—</div><div class="os-kpi-meta">Anonymous browser sessions</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Tried voice typing</div><div class="os-kpi-value" data-voice-kpi="voice_try_sessions">—</div><div class="os-kpi-meta" data-voice-meta="try_rate">Pressed Start voice typing</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Produced Urdu text</div><div class="os-kpi-value" data-voice-kpi="voice_success_sessions">—</div><div class="os-kpi-meta">Recognition produced text; transcript is never sent</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Voice success rate</div><div class="os-kpi-value" data-voice-kpi="voice_success_rate">—</div><div class="os-kpi-meta">Produced text ÷ voice tries</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">New accounts</div><div class="os-kpi-value" data-voice-kpi="account_signups">—</div><div class="os-kpi-meta" data-voice-meta="total_accounts">Aggregate Auth.js creations</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Voice-assisted sign-ups</div><div class="os-kpi-value" data-voice-kpi="voice_assisted_signups">—</div><div class="os-kpi-meta" data-voice-meta="voice_signup_rate">Same-browser 24h marker</div></article>
+        </section>
+        <div class="os-grid">
+          <div class="span-8"><div class="os-panel-head"><h2>Voice funnel</h2><span class="os-panel-note">Current period</span></div><div class="os-bars" id="voiceAccountBars"></div></div>
+          <div class="span-4"><div class="os-panel-head"><h2>Privacy boundary</h2><span class="os-panel-note">Aggregate-only</span></div><div class="os-panel-note">Voice conversion uses a 24-hour boolean browser marker only. No transcript, audio, email, account ID or telemetry-to-user identity linkage is stored.</div></div>
+        </div>
       </article>
 
       <article class="os-card os-panel span-12" id="shareLoopPanel">
@@ -130,10 +146,11 @@
 
     <footer class="os-footer">
       <span id="lastUpdated">Waiting for telemetry…</span>
-      <span>Hourly aggregate metrics · no editor text, share IDs, filenames, full referrer URLs or persistent user identity</span>
+      <span>Hourly aggregate metrics · no editor/voice text, audio, account IDs, filenames, full referrer URLs or persistent telemetry identity</span>
     </footer>
   </main>
   <script src="/js/product-pulse.js" defer></script>
+  <script src="/js/voice-account-pulse.js" defer></script>
   <script src="/js/acquisition-pulse.js" defer></script>
 </body>
 </html>
