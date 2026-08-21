@@ -185,7 +185,8 @@
         if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.locale === 'function') {
             return window.WriteUrduLocaleRoute.locale(window.location.pathname || '/');
         }
-        return String(window.location.pathname || '/').indexOf('/urdu') === 0 ? 'ur' : 'en';
+        var path = String(window.location.pathname || '/').replace(/\/+$/, '') || '/';
+        return path === '/urdu' || path.indexOf('/urdu/') === 0 ? 'ur' : 'en';
     }
 
     function currentProductPath() {

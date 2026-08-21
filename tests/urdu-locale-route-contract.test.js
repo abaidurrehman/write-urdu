@@ -9,6 +9,7 @@ assert.strictEqual(config.phase1Routes.length, 8, 'Slice A must expose exactly e
 const cases = [
   ['/', 'en', '/'],
   ['/index.html', 'en', '/'],
+  ['/urdu-name-art-maker', 'en', '/urdu-name-art-maker'],
   ['/urdu', 'ur', '/'],
   ['/urdu/', 'ur', '/'],
   ['/urdu/index.html', 'ur', '/'],
