@@ -3,6 +3,7 @@
 
     var LOCALE_KEY = 'write-urdu:locale:v1';
     var currentLocale = readLocale();
+    var LOCALE_TRANSFER_KEY = 'write-urdu:locale-transfer:v1';
     var deferredInstallPrompt = null;
 
     var links = [
@@ -181,8 +182,51 @@
     });
 
     function readLocale() {
-        try { return window.localStorage.getItem(LOCALE_KEY) === 'ur' ? 'ur' : 'en'; }
-        catch (error) { return 'en'; }
+        if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.locale === 'function') {
+            return window.WriteUrduLocaleRoute.locale(window.location.pathname || '/');
+        }
+        var path = String(window.location.pathname || '/').replace(/\/+$/, '') || '/';
+        return path === '/urdu' || path.indexOf('/urdu/') === 0 ? 'ur' : 'en';
+    }
+
+    function currentProductPath() {
+        if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') {
+            return window.WriteUrduLocaleRoute.productPath(window.location.pathname || '/');
+        }
+        return normalizedPath();
+    }
+
+    function counterpartHref(targetLocale) {
+        if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.counterpart === 'function') {
+            var exact = window.WriteUrduLocaleRoute.counterpart(window.location.pathname || '/', targetLocale);
+            if (exact) return exact;
+        }
+        return targetLocale === 'ur' ? '/urdu/' : currentProductPath();
+    }
+
+    function preserveLocaleNavigationText() {
+        var path = currentProductPath();
+        var editor = path === '/' ? document.getElementById('transliterateTextarea') : path === '/urdu-keyboard' ? document.getElementById('write') : null;
+        if (!editor || !editor.value) return;
+        try {
+            window.sessionStorage.setItem(LOCALE_TRANSFER_KEY, JSON.stringify({ productPath: path, value: editor.value, at: Date.now() }));
+        } catch (error) { }
+    }
+
+    function restoreLocaleNavigationText() {
+        var raw;
+        try { raw = window.sessionStorage.getItem(LOCALE_TRANSFER_KEY); } catch (error) { return; }
+        if (!raw) return;
+        try {
+            var payload = JSON.parse(raw);
+            if (!payload || payload.productPath !== currentProductPath() || Date.now() - Number(payload.at || 0) > 5 * 60 * 1000) return;
+            var editor = payload.productPath === '/' ? document.getElementById('transliterateTextarea') : payload.productPath === '/urdu-keyboard' ? document.getElementById('write') : null;
+            if (editor && !editor.value) {
+                editor.value = String(payload.value || '');
+                editor.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            window.sessionStorage.removeItem(LOCALE_TRANSFER_KEY);
+        } catch (error) { }
     }
 
     function translation(key, fallback) {
@@ -197,8 +241,12 @@
     }
 
     function normalizedPath() {
+        if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') {
+            return window.WriteUrduLocaleRoute.productPath(window.location.pathname || '/').toLowerCase();
+        }
         var path = window.location.pathname.replace(/\/+$/, '') || '/';
         if (window.location.protocol === 'file:') path = '/' + path.split('/').pop();
+        if (/\.html$/i.test(path)) path = path.slice(0, -5);
         return path.toLowerCase();
     }
 
@@ -227,7 +275,7 @@
         if (document.querySelector('link[href$="css/site-header.css"]')) return;
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'css/site-header.css';
+        link.href = '/css/site-header.css';
         link.setAttribute('data-write-urdu-header', '');
         document.head.appendChild(link);
     }
@@ -247,7 +295,7 @@
         favicon.rel = 'icon';
         favicon.type = 'image/png';
         favicon.sizes = '192x192';
-        favicon.href = 'image/logo10.png';
+        favicon.href = '/image/logo10.png';
         favicon.setAttribute('data-write-urdu-favicon', '');
         document.head.appendChild(favicon);
     }
@@ -263,7 +311,7 @@
                 '<div class="wu-footer-main">' +
                     '<div class="wu-footer-brand-column">' +
                         '<a class="wu-footer-brand" href="/" aria-label="Write Urdu home">' +
-                            '<img src="image/logo10.png" alt="" width="44" height="44">' +
+                            '<img src="/image/logo10.png" alt="" width="44" height="44">' +
                             '<span data-wu-i18n-key="brand">Write Urdu</span>' +
                         '</a>' +
                         '<p class="wu-footer-eyebrow" data-wu-i18n-key="footer.eyebrow">WRITE URDU TOOLS</p>' +
@@ -334,7 +382,7 @@
     function loadAds() {
         if (!document.querySelector('ins.adsbygoogle') || document.querySelector('script[src="js/ads.js"]')) return;
         var ads = document.createElement('script');
-        ads.src = 'js/ads.js';
+        ads.src = '/js/ads.js';
         ads.defer = true;
         document.head.appendChild(ads);
     }
@@ -342,7 +390,7 @@
     function loadContentLocale() {
         if (document.querySelector('script[src="js/content-locale.js"]')) return;
         var script = document.createElement('script');
-        script.src = 'js/content-locale.js';
+        script.src = '/js/content-locale.js';
         script.defer = true;
         document.head.appendChild(script);
     }
@@ -351,7 +399,7 @@
         if (!document.querySelector('link[rel="manifest"]')) {
             var manifest = document.createElement('link');
             manifest.rel = 'manifest';
-            manifest.href = 'manifest.webmanifest';
+            manifest.href = '/manifest.webmanifest';
             document.head.appendChild(manifest);
         }
         if (!document.querySelector('meta[name="theme-color"]')) {
@@ -361,7 +409,7 @@
             document.head.appendChild(theme);
         }
         if (window.location.protocol !== 'file:' && 'serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () { document.body.classList.add('pwa-unavailable'); });
+            navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () { document.body.classList.add('pwa-unavailable'); });
         }
         window.addEventListener('beforeinstallprompt', function (event) {
             event.preventDefault();
@@ -414,12 +462,12 @@
     function applyPageCopy() {
         var copy = pageCopy[normalizedPath()] || pageCopy['/index.html'];
         var title = document.querySelector('h1');
-        if (title && copy.title) title.textContent = copy.title[currentLocale === 'ur' ? 1 : 0];
+        if (title && copy.title && !title.hasAttribute('data-wu-l10n')) title.textContent = copy.title[currentLocale === 'ur' ? 1 : 0];
         var subtitle = title && title.nextElementSibling;
-        if (subtitle && copy.subtitle && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) subtitle.textContent = copy.subtitle[currentLocale === 'ur' ? 1 : 0];
+        if (subtitle && copy.subtitle && !subtitle.hasAttribute('data-wu-l10n') && (subtitle.matches('h4.small') || subtitle.classList.contains('page-intro'))) subtitle.textContent = copy.subtitle[currentLocale === 'ur' ? 1 : 0];
         var lede = document.querySelector('.docs-lede');
-        if (lede && copy.lede) lede.textContent = copy.lede[currentLocale === 'ur' ? 1 : 0];
-        if (copy.documentTitle) document.title = copy.documentTitle[currentLocale === 'ur' ? 1 : 0];
+        if (lede && copy.lede && !lede.hasAttribute('data-wu-l10n')) lede.textContent = copy.lede[currentLocale === 'ur' ? 1 : 0];
+        if (copy.documentTitle && !(currentLocale === 'ur' && window.WriteUrduLocaleRoute && window.WriteUrduLocaleRoute.locale(window.location.pathname) === 'ur')) document.title = copy.documentTitle[currentLocale === 'ur' ? 1 : 0];
     }
 
     function applyControlCopy() {
@@ -475,7 +523,7 @@
         var languageButton = document.querySelector('[data-wu-language-toggle]');
         if (languageButton) {
             languageButton.setAttribute('aria-label', currentLocale === 'ur' ? 'Switch to English' : 'Switch to Urdu');
-            languageButton.setAttribute('aria-pressed', String(currentLocale === 'ur'));
+            languageButton.setAttribute('href', counterpartHref(currentLocale === 'ur' ? 'en' : 'ur'));
             var languageLabel = languageButton.querySelector('[data-wu-language-label]');
             if (languageLabel) languageLabel.textContent = currentLocale === 'ur' ? 'English' : 'اردو';
         }
@@ -491,9 +539,11 @@
     }
 
     function changeLocale(locale) {
-        currentLocale = locale === 'ur' ? 'ur' : 'en';
-        try { window.localStorage.setItem(LOCALE_KEY, currentLocale); } catch (error) { }
-        applyLocale();
+        var targetLocale = locale === 'ur' ? 'ur' : 'en';
+        var target = counterpartHref(targetLocale);
+        try { window.localStorage.setItem(LOCALE_KEY, targetLocale); } catch (error) { }
+        preserveLocaleNavigationText();
+        if (target && target !== window.location.pathname) window.location.assign(target);
     }
 
     function observeDynamicControls() {
@@ -527,14 +577,14 @@
         }
         header.innerHTML =
                 '<div class="wu-header-inner">' +
-                '<a class="wu-brand" href="/" aria-label="Write Urdu home"><img class="wu-brand-mark" src="image/logo10.png" alt="" width="42" height="42"><span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply</small></span></a>' +
+                '<a class="wu-brand" href="/" aria-label="Write Urdu home"><img class="wu-brand-mark" src="/image/logo10.png" alt="" width="42" height="42"><span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply</small></span></a>' +
                 '<button class="wu-menu-toggle" type="button" aria-expanded="false" aria-controls="wu-primary-nav"><span class="wu-menu-icon" aria-hidden="true"></span><span class="wu-menu-label">Menu</span></button>' +
                 '<nav class="wu-primary-nav" id="wu-primary-nav" aria-label="Primary navigation">' + primaryLinks.map(renderLink).join('') +
                     '<details class="wu-nav-more wu-nav-create"' + (creativeActive ? ' open' : '') + '><summary' + (creativeActive ? ' class="is-active"' : '') + '>' + navIcon('sparkle') + '<span data-wu-i18n-key="nav.create">Create</span><span aria-hidden="true">⌄</span></summary><div class="wu-nav-more-menu">' + creativeLinks.map(renderLink).join('') + '</div></details>' +
                     '<details class="wu-nav-more"' + (secondaryActive ? ' open' : '') + '><summary' + (secondaryActive ? ' class="is-active"' : '') + '>' + navIcon('book') + '<span data-wu-i18n-key="nav.more">More</span><span aria-hidden="true">⌄</span></summary><div class="wu-nav-more-menu">' + secondaryLinks.map(renderLink).join('') + '<a href="/write-urdu-feedback">' + navIcon('question') + '<span data-wu-i18n-key="nav.feedback">Feedback</span></a></div></details>' +
                 '</nav>' +
                 '<button class="wu-install-toggle" type="button" data-wu-install hidden>Install app</button>' +
-                '<button class="wu-language-toggle" type="button" data-wu-language-toggle aria-pressed="false"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></button>' +
+                '<a class="wu-language-toggle" data-wu-language-toggle href="/urdu/" aria-label="Switch to Urdu"><span aria-hidden="true">文</span><span data-wu-language-label>اردو</span></a>' +
             '</div>' +
             '<div class="wu-header-trustbar" role="note" aria-label="Privacy and access information"><div class="wu-header-trustbar-inner"><span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.local">Runs in your browser</span></span><span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.noAccount">No account required</span></span><span class="wu-header-trust-item"><span class="wu-header-trust-icon" aria-hidden="true">✓</span><span data-wu-i18n-key="header.free">Free to use</span></span><span class="wu-header-privacy" data-wu-i18n-key="header.privacy">Your writing stays in this browser unless you choose to export or share it.</span></div></div>';
 
@@ -548,6 +598,7 @@
         normalizePageTitle();
         renderFooter();
         applyLocale();
+        restoreLocaleNavigationText();
         observeDynamicControls();
 
         var toggle = header.querySelector('.wu-menu-toggle');
@@ -560,7 +611,10 @@
             toggle.setAttribute('aria-expanded', String(!open));
             nav.classList.toggle('is-open', !open);
         });
-        languageToggle.addEventListener('click', function () { changeLocale(currentLocale === 'ur' ? 'en' : 'ur'); });
+        languageToggle.addEventListener('click', function () {
+            try { window.localStorage.setItem(LOCALE_KEY, currentLocale === 'ur' ? 'en' : 'ur'); } catch (error) { }
+            preserveLocaleNavigationText();
+        });
         document.addEventListener('keydown', function (event) { if (event.key === 'Escape') closeMenu(); });
         document.addEventListener('click', function (event) { if (!header.contains(event.target)) closeMenu(); else closeSecondaryMenus(event.target); });
         window.addEventListener('resize', function () { if (window.innerWidth >= 1281) { closeMenu(); closeSecondaryMenus(null); } });

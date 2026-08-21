@@ -36,7 +36,7 @@ assert.ok(homeHtml.includes(`<title>${home.searchTitle}</title>`), 'Initial home
 assert.ok(homeHtml.includes(`<meta name="description" content="${home.searchDescription}">`), 'Initial homepage HTML must expose the acquisition description without waiting for JavaScript');
 assert.ok(homeHtml.includes(`<meta property="og:title" content="${home.searchTitle}"`), 'Initial homepage Open Graph title must match acquisition ownership');
 assert.ok(homeHtml.includes(`<meta name="twitter:title" content="${home.searchTitle}"`), 'Initial homepage Twitter title must match acquisition ownership');
-assert.match(homeHtml, /<h1>English to Urdu Typing Online<\/h1>/, 'Static homepage task heading must expose the prime acquisition phrase');
+assert.match(homeHtml, /<h1[^>]*>English to Urdu Typing Online<\/h1>/, 'Static homepage task heading must expose the prime acquisition phrase');
 assert.match(homeHtml, /How to type Urdu with English letters/i, 'Homepage must visibly explain the English-letter workflow');
 assert.match(homeHtml, /Type Urdu words using English letters[\s\S]*Press Space[\s\S]*Urdu script/i, 'Homepage must expose the real English-letter-to-Urdu workflow');
 assert.match(homeHtml, /does not translate English sentences into Urdu/i, 'Homepage must explain the typing-versus-translation distinction in plain language');

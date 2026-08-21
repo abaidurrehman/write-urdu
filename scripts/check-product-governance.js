@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const config = require('../seo.config.js');
+const localeConfig = require('../locale.config.js');
+const LocaleRoute = require('../js/locale-route.js');
 
 const root = path.resolve(__dirname, '..');
 const errors = [];
@@ -108,6 +110,7 @@ registry.forEach(page => {
 
 const incoming = new Map(registry.map(page => [page.canonical_route, new Set()]));
 const knownRoutes = new Set(registry.map(page => page.canonical_route));
+const localizedRoutes = new Set(localeConfig.phase1Routes.map(route => normalizeRoute(LocaleRoute.href(route, 'ur'))));
 const legacyLinkCounts = { html: 0, alternateHost: 0, slash: 0 };
 
 registry.forEach(page => {
@@ -125,13 +128,15 @@ registry.forEach(page => {
     if (/^https?:\/\//i.test(href) && ![canonicalHost, alternateHost].includes(url.hostname)) return;
     if (url.hostname === alternateHost) legacyLinkCounts.alternateHost += 1;
     const pathname = url.pathname;
-    if (/\.html$/i.test(pathname)) legacyLinkCounts.html += 1;
-    if (pathname !== '/' && pathname.endsWith('/')) legacyLinkCounts.slash += 1;
     const normalized = normalizeRoute(pathname);
+    const isLaunchedLocale = localizedRoutes.has(normalized);
+    if (/\.html$/i.test(pathname)) legacyLinkCounts.html += 1;
+    if (pathname !== '/' && pathname.endsWith('/') && !isLaunchedLocale) legacyLinkCounts.slash += 1;
     if (knownRoutes.has(normalized)) {
       if (normalized !== page.canonical_route) incoming.get(normalized).add(page.canonical_route);
       return;
     }
+    if (isLaunchedLocale) return;
     if (redirectSources.has(pathname)) return;
     const localPath = pathname.replace(/^\//, '');
     if (localPath && !fs.existsSync(path.join(root, localPath))) errors.push(`${page.source_file}: broken internal link ${href}`);

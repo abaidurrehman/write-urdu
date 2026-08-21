@@ -65,11 +65,21 @@
     }
 
     function normalizedPath() {
-        var path = String(root.location && root.location.pathname || '/').split('?')[0].split('#')[0] || '/';
+        var pathname = String(root.location && root.location.pathname || '/');
+        if (root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.productPath === 'function') {
+            return root.WriteUrduLocaleRoute.productPath(pathname);
+        }
+        var path = pathname.split('?')[0].split('#')[0] || '/';
         if (path === '/index' || path === '/index.html') return '/';
         if (/\.html$/i.test(path)) path = path.slice(0, -5);
         if (path.length > 1) path = path.replace(/\/+$/, '');
         return path || '/';
+    }
+
+    function localeHref(productPath) {
+        if (!root.WriteUrduLocaleRoute) return productPath;
+        var locale = root.WriteUrduLocaleRoute.locale(root.location && root.location.pathname || '/');
+        return root.WriteUrduLocaleRoute.href(productPath, locale) || productPath;
     }
 
     function voiceEntryMarkup() {
@@ -100,7 +110,7 @@
 
         ensureStylesheet('/css/voice-discovery.css');
         var entry = document.createElement('a');
-        entry.href = '/tools/urdu-voice-typing';
+        entry.href = localeHref('/tools/urdu-voice-typing');
         entry.className = 'wu-voice-entry wu-voice-entry-' + placement;
         entry.setAttribute('data-wu-voice-entry', placement);
         entry.setAttribute('aria-label', 'Try Urdu Voice Typing');

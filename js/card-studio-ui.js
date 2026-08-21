@@ -25,7 +25,7 @@
         if (document.querySelector('link[href$="css/v2-creation.css"]')) return;
         var stylesheet = document.createElement('link');
         stylesheet.rel = 'stylesheet';
-        stylesheet.href = 'css/v2-creation.css';
+        stylesheet.href = '/css/v2-creation.css';
         stylesheet.setAttribute('data-write-urdu-v2-creation', '');
         document.head.appendChild(stylesheet);
     }

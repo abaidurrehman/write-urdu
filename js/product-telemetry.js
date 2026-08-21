@@ -20,6 +20,7 @@
     var trackedOnce = Object.create(null);
 
     function normalizedPath(value) {
+        if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(value || '/');
         var path = String(value || '/').split('?')[0].split('#')[0].replace(/\.html$/i, '').replace(/\/+$/, '') || '/';
         if (path === '/index') path = '/';
         return /^\/[a-z0-9\/-]*$/i.test(path) ? path : '/';

@@ -6,6 +6,7 @@
     var CORE_ROUTES = ['/', '/urdu-editor', '/urdu-keyboard'];
 
     function normalizePath(pathname) {
+        if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(pathname || '/');
         var path = String(pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
         if (path === '/index.html') return '/';
@@ -26,7 +27,7 @@
     function ensureTelemetryRuntime() {
         if (window.WriteUrduTelemetry || document.querySelector('script[src="js/product-telemetry.js"]')) return;
         var script = document.createElement('script');
-        script.src = 'js/product-telemetry.js';
+        script.src = '/js/product-telemetry.js';
         script.defer = true;
         script.setAttribute('data-write-urdu-product-telemetry', '');
         document.head.appendChild(script);
@@ -39,7 +40,7 @@
         }
         if (document.querySelector('script[src="js/ads.js"]')) return;
         var script = document.createElement('script');
-        script.src = 'js/ads.js';
+        script.src = '/js/ads.js';
         script.defer = true;
         document.head.appendChild(script);
     }
