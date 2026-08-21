@@ -1,0 +1,45 @@
+name: Temporary finalize WU-I18N-001B
+
+on:
+  push:
+    branches:
+      - feature/urdu-locale-slice-b
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Regenerate deterministic locale and SEO artifacts
+        run: |
+          npm run locale:generate
+          npm run seo:generate
+          npm run locale:check
+          npm test
+          npm run seo:check
+          npm run governance:check
+      - name: Commit generated search artifacts and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .github/workflows/tmp-finalize-urdu-slice-b.yml
+          git add -- index.html urdu-keyboard.html urdu-editor.html tools/urdu-voice-typing.html urdu-alphabet.html urdu-faq.html urdu-card-studio.html how-to-write-urdu-on-photo.html urdu/index.html urdu/urdu-keyboard.html urdu/urdu-editor.html urdu/tools/urdu-voice-typing.html urdu/urdu-alphabet.html urdu/urdu-faq.html urdu/urdu-card-studio.html urdu/how-to-write-urdu-on-photo.html sitemap.xml robots.txt
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit"
+            exit 0
+          fi
+          git commit -m "WU-I18N-001B: regenerate Urdu SEO artifacts"
+          git push origin HEAD:feature/urdu-locale-slice-b
