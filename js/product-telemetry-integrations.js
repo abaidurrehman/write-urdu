@@ -4,7 +4,7 @@
     var telemetry = window.WriteUrduTelemetry;
     if (!telemetry) return;
 
-    var route = String(window.location.pathname || '/').replace(/\.html$/i, '').replace(/\/+$/, '') || '/';
+    var route = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(window.location.pathname || '/') : String(window.location.pathname || '/').replace(/\.html$/i, '').replace(/\/+$/, '') || '/';
 
     function outcome(eventName, detail) {
         telemetry.trackOutcome(eventName, detail || {});

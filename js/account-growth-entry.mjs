@@ -11,6 +11,7 @@ const WAIT_ATTEMPTS = 160;
 const WAIT_DELAY_MS = 50;
 
 function normalizedPath() {
+  if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(location.pathname || '/');
   let value = String(location.pathname || '/').split('?')[0].split('#')[0] || '/';
   if (value === '/index' || value === '/index.html') return '/';
   if (/\.html$/i.test(value)) value = value.slice(0, -5);

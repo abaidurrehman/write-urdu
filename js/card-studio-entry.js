@@ -2,7 +2,7 @@
     'use strict';
 
     function ensureCoreContinuityForRich() {
-        var path = String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
+        var path = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(window.location && window.location.pathname || '/') : String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
         if (path.endsWith('.html')) path = path.slice(0, -5);
         if (path !== '/urdu-editor' || window.WriteUrduCoreContinuity) return;
@@ -39,7 +39,7 @@
     };
 
     function normalizePath() {
-        var path = String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
+        var path = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(window.location && window.location.pathname || '/') : String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
         if (path === '/index.html') return '/';
         if (path.endsWith('.html')) path = path.slice(0, -5);
@@ -203,7 +203,7 @@
         if (document.querySelector('link[href="css/journey-handoffs.css"]')) return;
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'css/journey-handoffs.css';
+        link.href = '/css/journey-handoffs.css';
         document.head.appendChild(link);
     }
 

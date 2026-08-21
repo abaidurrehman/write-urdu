@@ -179,7 +179,7 @@
         try {
             creditLogo.src = new URL('image/logo10.png', document.baseURI).href;
         } catch (error) {
-            creditLogo.src = 'image/logo10.png';
+            creditLogo.src = '/image/logo10.png';
         }
         Object.assign(credit.style, {
             position: 'static',
