@@ -1,0 +1,43 @@
+name: Temporary apply WU-I18N-001A
+
+on:
+  push:
+    branches:
+      - feature/urdu-locale-slice-a
+
+permissions:
+  contents: write
+
+jobs:
+  apply-slice-a:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply verified Slice A patch
+        shell: bash
+        run: |
+          test -f .tmp-slice-a.patch.gz.b64 || exit 0
+          base64 -d .tmp-slice-a.patch.gz.b64 | gzip -d > /tmp/slice-a.patch
+          git apply --whitespace=nowarn /tmp/slice-a.patch
+          npm run locale:generate
+          npm run locale:check
+          npm run governance:check
+          node tests/locale-route-contract.test.js
+          node tests/urdu-locale-generation-contract.test.js
+          node tests/urdu-locale-runtime-contract.test.js
+
+      - name: Commit implementation and remove temporary scaffolding
+        shell: bash
+        run: |
+          test -f .tmp-slice-a.patch.gz.b64 || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f .tmp-slice-a.patch.gz.b64 .github/workflows/tmp-apply-urdu-slice-a.yml .github/workflows/tmp-urdu-slice-a-snapshot.yml
+          git add -- _redirects css/site-header.css how-to-write-urdu-on-photo.html index.html locale.config.js locale/ur.js package.json scripts/generate-urdu-locale.js scripts/run-contract-tests.js site-header.js sw.js tools/urdu-voice-typing.html urdu-alphabet.html urdu-card-studio.html urdu-editor.html urdu-faq.html urdu-keyboard.html js/account-growth-entry.mjs js/ads.js js/card-studio-handoff-adapter.js js/core-continuity.js js/core-workspace-convergence.js js/editor-account-documents.mjs js/locale-route.js js/outcome-navigation.js js/product-telemetry.js js/site-header-core.js js/v2-shell.js js/workspace-next-step.js tests/account-documents-basic-contract.test.js tests/account-documents-editors-contract.test.js tests/account-growth-entry-contract.test.js tests/capture-continuity-contract.test.js tests/core-workspace-convergence-contract.test.js tests/create-publish-boundaries-contract.test.js tests/english-urdu-typing-acquisition-contract.test.js tests/locale-route-contract.test.js tests/my-documents-contract.test.js tests/outcome-navigation-contract.test.js tests/static-regression-core.test.js tests/urdu-locale-generation-contract.test.js tests/urdu-locale-runtime-contract.test.js tests/urdu-voice-typing-contract.test.js urdu/index.html urdu/urdu-keyboard.html urdu/urdu-editor.html urdu/tools/urdu-voice-typing.html urdu/urdu-alphabet.html urdu/urdu-faq.html urdu/urdu-card-studio.html urdu/how-to-write-urdu-on-photo.html
+          git commit -m "WU-I18N-001A: add crawlable Urdu locale foundation"
+          git push origin HEAD:feature/urdu-locale-slice-a
