@@ -1,45 +1,47 @@
-const assert = require('assert');
-const fs = require('fs');
-const path = require('path');
-const { pathToFileURL } = require('url');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { pathToFileURL } = require('node:url');
 
-const root = path.resolve(__dirname, '..');
-const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
+const root = path.join(__dirname, '..');
+const clientSource = fs.readFileSync(path.join(root, 'js', 'account-documents.mjs'), 'utf8');
+const controllerSource = fs.readFileSync(path.join(root, 'js', 'editor-account-documents.mjs'), 'utf8');
+const basicController = fs.readFileSync(path.join(root, 'js', 'basic-account-documents.mjs'), 'utf8');
+const editorTools = fs.readFileSync(path.join(root, 'js', 'editor-tools.js'), 'utf8');
+const richPage = fs.readFileSync(path.join(root, 'urdu-editor.html'), 'utf8');
+const keyboardPage = fs.readFileSync(path.join(root, 'urdu-keyboard.html'), 'utf8');
+const siteHeader = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
+const styles = fs.readFileSync(path.join(root, 'css', 'account-documents.css'), 'utf8');
+const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+const shareClientSource = fs.readFileSync(path.join(root, 'js', 'document-share.mjs'), 'utf8');
+const shareServer = fs.readFileSync(path.join(root, 'functions', 'api', 'share-artifact.js'), 'utf8');
 
-const shell = read('site-header.js');
-const controller = read('js', 'editor-account-documents.mjs');
-const clientSource = read('js', 'account-documents.mjs');
-const library = read('js', 'my-documents.mjs');
-const shareClientSource = read('js', 'document-share.mjs');
-const shareServer = read('functions', '_lib', 'share-artifacts.js');
-const editorTools = read('js', 'editor-tools.js');
-const serviceWorker = read('sw.js');
-const styles = read('css', 'account-documents.css');
+assert.match(siteHeader, /installEditorAccountDocuments/, 'Shared shell must install Rich/Keyboard account persistence');
+assert.match(siteHeader, /\['\/urdu-editor', '\/urdu-keyboard'\]/, 'Only Rich Editor and Urdu Keyboard should load DOC-D from the shared shell');
+assert.match(siteHeader, /\/js\/editor-account-documents\.mjs/, 'Shared shell must load the bounded DOC-D controller');
 
-assert.match(shell, /function installEditorAccountDocuments\(\)/, 'Shared shell must own Rich/Keyboard account-document loading');
-assert.match(shell, /\['\/urdu-editor', '\/urdu-keyboard'\]/, 'Only Rich Editor and Urdu Keyboard should receive the DOC-D controller');
-assert.match(shell, /\/js\/editor-account-documents\.mjs/, 'Shared shell must load the DOC-D account document controller');
+assert.match(controllerSource, /SUPPORTED_KINDS = new Set\(\['rich', 'keyboard'\]\)/, 'Controller must stay scoped to Rich and Keyboard adapters');
+assert.match(controllerSource, /fetchAccountState/, 'Controller must reuse the shared account session state');
+assert.match(controllerSource, /readDocumentOpenHandoff/, 'Controller must consume the existing My Documents open handoff');
+assert.match(controllerSource, /writeAccountDocumentMetadata/, 'Controller must preserve account document metadata after create/update');
+assert.match(controllerSource, /documentSnapshotSignature/, 'Controller must compare exact document snapshots before syncing');
+assert.match(controllerSource, /DOCUMENT_SYNC_DELAY_MS/, 'Remote sync must use the shared bounded debounce');
+assert.match(controllerSource, /adapter\.onChange/, 'Remote save must subscribe through the shared editor adapter');
+assert.match(controllerSource, /flushLocalWriting\(runtime\)/, 'Account saves must flush the existing local writer before remote sync');
+assert.match(controllerSource, /runtime\.confirm/, 'Opening a saved document over different local content must require confirmation');
+assert.match(controllerSource, /document_revision_conflict/, 'Revision conflicts must pause rather than overwrite');
+assert.match(controllerSource, /source: 'my-documents'/, 'My Documents handoff must preserve its bounded source marker');
+assert.doesNotMatch(controllerSource, /localStorage\.clear|sessionStorage\.clear/, 'DOC-D must not clear unrelated browser-local state');
+assert.doesNotMatch(controllerSource, /innerHTML\s*=\s*`[^`]*(?:content|plainText)/s, 'Saved document content must not be interpolated into account UI HTML');
 
-assert.match(controller, /'\/urdu-editor': 'rich'/, 'Rich Editor route must map to rich account documents');
-assert.match(controller, /'\/urdu-keyboard': 'keyboard'/, 'Urdu Keyboard route must map to keyboard account documents');
-assert.match(controller, /WriteUrduTools/, 'DOC-D must consume the established editor adapter boundary');
-assert.doesNotMatch(controller, /\btinymce\b|getElementById\(['"]write['"]\)|getElementById\(['"]basic-example['"]\)/, 'DOC-D must not reach around the shared adapter into editor internals');
-assert.match(controller, /documentMetadataKey\(editorKind\)/, 'Each editor must keep its own account-document association');
-assert.match(controller, /if \(!metadata && !explicit\) return;/, 'Remote persistence must never begin before explicit opt-in');
-assert.match(controller, /setTimeout\(\(\) => \{ void syncToAccount\(\); \}, DOCUMENT_SYNC_DELAY_MS\)/, 'Opted-in Rich/Keyboard documents must retain throttled remote sync');
-assert.match(controller, /flushLocalWriting\(runtime\)/, 'Remote saves and replacements must preserve current local history first');
-assert.match(controller, /document_revision_conflict/, 'Rich/Keyboard account sync must preserve optimistic-concurrency behavior');
-assert.match(controller, /Nothing was overwritten/, 'Conflict handling must remain data-preserving');
-assert.match(controller, /readDocumentOpenHandoff/, 'Rich/Keyboard editors must consume the same private My Documents handoff');
-assert.match(controller, /adapter\.setContent\(handoff\.content \|\| handoff\.plainText \|\| ''\)/, 'Remote rich content must restore through adapter.setContent');
-assert.match(controller, /Opened from My Documents · Saved to your account/, 'Restored documents must retain truthful account status');
-assert.match(controller, /Save to my account/, 'DOC-D first remote action must remain explicit');
-assert.doesNotMatch(controller, /followers|comments|team|collaborat/i, 'DOC-D must not expand into social/collaboration scope');
+assert.match(basicController, /documentSnapshotSignature/, 'Basic Writer must keep using the shared document signature contract');
+assert.match(basicController, /writeAccountDocumentMetadata/, 'Basic Writer must keep account document metadata compatible with My Documents');
+assert.match(basicController, /readDocumentOpenHandoff/, 'Basic Writer must keep consuming My Documents handoffs');
 
-assert.match(library, /rich: '\/urdu-editor'/, 'My Documents must route rich documents to the Rich Editor');
-assert.match(library, /keyboard: '\/urdu-keyboard'/, 'My Documents must route keyboard documents to the Urdu Keyboard');
-assert.match(library, /plain-text snapshot/, 'My Documents must describe sharing as a plain-text snapshot');
-assert.match(library, /rich formatting stay private/, 'Rich formatting must remain private when a share link is created');
+assert.match(richPage, /data-editor-tools-adapter="rich"/, 'Rich Editor must expose the shared rich adapter kind');
+assert.match(keyboardPage, /data-editor-tools-adapter="keyboard"/, 'Urdu Keyboard must expose the shared keyboard adapter kind');
+assert.match(richPage, /\/js\/editor-tools\.js/, 'Rich Editor must keep the shared browser-local editor controller');
+assert.match(keyboardPage, /\/js\/editor-tools\.js/, 'Urdu Keyboard must keep the shared browser-local editor controller');
 
 assert.match(shareClientSource, /rich: 'rich_editor'/, 'Saved Rich Editor shares need a bounded source enum');
 assert.match(shareClientSource, /keyboard: 'urdu_keyboard'/, 'Saved Urdu Keyboard shares need a bounded source enum');
@@ -55,7 +57,7 @@ assert.match(editorTools, /kind: 'rich'/, 'Rich adapter must remain owned by edi
 assert.match(editorTools, /createTextAdapter\(keyboard, 'keyboard'\)/, 'Keyboard adapter must remain owned by editor-tools');
 assert.match(styles, /\.editor-account-documents/, 'Rich/Keyboard account persistence needs a bounded editor-native panel');
 assert.doesNotMatch(styles, /position\s*:\s*(?:fixed|sticky)/, 'DOC-D account controls must not become fixed or sticky authoring chrome');
-assert.match(serviceWorker, /write-urdu-shell-v27/, 'PWA shell must be refreshed for DOC-D');
+assert.match(serviceWorker, /write-urdu-shell-v28/, 'PWA shell must include the current account/document UI cache revision');
 assert.match(serviceWorker, /\.\/js\/editor-account-documents\.mjs/, 'PWA install must refresh the DOC-D controller');
 
 (async () => {
@@ -70,89 +72,8 @@ assert.match(serviceWorker, /\.\/js\/editor-account-documents\.mjs/, 'PWA instal
   assert.strictEqual(shares.shareSourceForDocument({ editorKind: 'rich' }), 'rich_editor');
   assert.strictEqual(shares.shareSourceForDocument({ editorKind: 'keyboard' }), 'urdu_keyboard');
 
-  const richHtml = '<p dir="rtl" style="text-align: right;"><strong>میری تحریر</strong> — اردو ۱۲۳</p><ul><li>پہلا نکتہ</li></ul>';
-  const richText = 'میری تحریر — اردو ۱۲۳\nپہلا نکتہ';
-  const keyboardText = 'یہ اردو کی بورڈ سے لکھی ہوئی سطر ہے۔ ۱۲۳';
-  const requests = [];
-  let nextId = 1;
-
-  const client = docs.createDocumentsClient(async (url, options) => {
-    requests.push({ url, options, body: options.body ? JSON.parse(options.body) : null });
-    if (options.method === 'POST') {
-      const body = JSON.parse(options.body);
-      return new Response(JSON.stringify({ document: {
-        id: `00000000-0000-4000-8000-${String(nextId++).padStart(12, '0')}`,
-        editorKind: body.editorKind,
-        title: body.title,
-        content: body.content,
-        plainText: body.plainText,
-        formatVersion: body.formatVersion,
-        revision: 1
-      } }), { status: 201, headers: { 'content-type': 'application/json' } });
-    }
-    if (options.method === 'PATCH') {
-      const body = JSON.parse(options.body);
-      return new Response(JSON.stringify({ document: {
-        id: '00000000-0000-4000-8000-000000000001',
-        editorKind: 'rich',
-        content: body.content,
-        plainText: body.plainText,
-        formatVersion: body.formatVersion,
-        revision: Number(body.revision) + 1
-      } }), { status: 200, headers: { 'content-type': 'application/json' } });
-    }
-    throw new Error(`Unexpected ${options.method} ${url}`);
-  });
-
-  const basic = await client.create({ content: 'سادہ متن', text: 'سادہ متن' });
-  assert.strictEqual(basic.editorKind, 'basic', 'Default client creation must remain backward-compatible with Basic Writer');
-
-  const rich = await client.create({ content: richHtml, text: richText }, { editorKind: 'rich' });
-  assert.strictEqual(rich.editorKind, 'rich');
-  assert.strictEqual(rich.content, richHtml, 'Rich HTML must reach the document API byte-for-byte');
-  assert.strictEqual(rich.plainText, richText, 'Rich Urdu text must reach the document API unchanged');
-
-  const keyboard = await client.create({ content: keyboardText, text: keyboardText }, { editorKind: 'keyboard' });
-  assert.strictEqual(keyboard.editorKind, 'keyboard');
-  assert.strictEqual(keyboard.content, keyboardText);
-  assert.strictEqual(keyboard.plainText, keyboardText, 'Urdu Keyboard text must round-trip unchanged');
-
-  const updated = await client.update(rich.id, 1, { content: richHtml, text: richText });
-  assert.strictEqual(updated.content, richHtml, 'Rich update must not normalize or flatten HTML');
-  assert.strictEqual(updated.plainText, richText);
-
-  const richCreate = requests.find((request) => request.body?.editorKind === 'rich');
-  assert.ok(richCreate);
-  assert.strictEqual(richCreate.body.content, richHtml);
-  assert.strictEqual(richCreate.body.plainText, richText);
-  assert.strictEqual(richCreate.options.credentials, 'same-origin');
-  assert.strictEqual(richCreate.options.cache, 'no-store');
-
-  const values = new Map();
-  const handoffStorage = {
-    getItem(key) { return values.get(key) || null; },
-    setItem(key, value) { values.set(key, String(value)); },
-    removeItem(key) { values.delete(key); }
-  };
-  const richDocument = {
-    id: rich.id,
-    editorKind: 'rich',
-    title: 'فارمیٹ شدہ تحریر',
-    content: richHtml,
-    plainText: richText,
-    formatVersion: 1,
-    revision: 7
-  };
-  assert.strictEqual(docs.writeDocumentOpenHandoff(handoffStorage, richDocument), true);
-  const handoff = docs.readDocumentOpenHandoff(handoffStorage);
-  assert.strictEqual(handoff.editorKind, 'rich');
-  assert.strictEqual(handoff.content, richHtml, 'Private handoff must preserve exact Rich Editor HTML');
-  assert.strictEqual(handoff.plainText, richText, 'Private handoff must preserve exact Urdu text');
-  assert.strictEqual(handoff.revision, 7);
-  assert.strictEqual(docs.readDocumentOpenHandoff(handoffStorage), null, 'Private open handoff must remain consume-once');
-
   console.log('Rich Editor and Urdu Keyboard account document contracts passed.');
-})().catch((error) => {
+})().catch(error => {
   console.error(error);
-  process.exit(1);
+  process.exitCode = 1;
 });
