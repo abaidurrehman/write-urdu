@@ -117,6 +117,15 @@
   text-decoration: none;
 }
 
+.home-account-continuity [data-account-continuity-signin],
+.home-account-continuity [data-account-continuity-signin]:visited,
+.home-account-continuity [data-account-continuity-signin]:hover,
+.home-account-continuity [data-account-continuity-signin]:focus,
+.home-account-continuity [data-account-continuity-signin]:active {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
+}
+
 .home-account-continuity-button.is-secondary {
   color: var(--wu-color-brand-strong);
   border-color: #bedcca;
