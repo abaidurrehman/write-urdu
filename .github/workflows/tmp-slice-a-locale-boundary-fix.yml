@@ -1,0 +1,62 @@
+name: Temporary Slice A locale boundary fix
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.ref == 'feature/urdu-locale-slice-a'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout Slice A branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/urdu-locale-slice-a
+
+      - name: Apply locale-boundary regression fix
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          core = Path('js/site-header-core.js')
+          text = core.read_text()
+          old = "        return String(window.location.pathname || '/').indexOf('/urdu') === 0 ? 'ur' : 'en';"
+          new = "        var path = String(window.location.pathname || '/').replace(/\\/+$/, '') || '/';\n        return path === '/urdu' || path.indexOf('/urdu/') === 0 ? 'ur' : 'en';"
+          if old in text:
+              core.write_text(text.replace(old, new, 1))
+          elif new not in text:
+              raise SystemExit('expected readLocale fallback not found')
+
+          test = Path('tests/urdu-locale-route-contract.test.js')
+          text = test.read_text()
+          marker = "  ['/index.html', 'en', '/'],\n"
+          case = "  ['/urdu-name-art-maker', 'en', '/urdu-name-art-maker'],\n"
+          if case not in text:
+              if marker not in text:
+                  raise SystemExit('route-test insertion marker not found')
+              test.write_text(text.replace(marker, marker + case, 1))
+          PY
+
+          node tests/urdu-locale-route-contract.test.js
+          git diff --check
+
+      - name: Commit and push fix
+        shell: bash
+        run: |
+          if git diff --quiet -- js/site-header-core.js tests/urdu-locale-route-contract.test.js; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- js/site-header-core.js tests/urdu-locale-route-contract.test.js
+          git commit -m "fix: respect Urdu locale path boundary"
+          git push origin HEAD:feature/urdu-locale-slice-a
