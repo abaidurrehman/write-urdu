@@ -11,7 +11,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-I18N-001` | Crawlable Urdu Locale | `/urdu/*` with eight-route Phase 1 corpus | Planned — founder-approved static-first Urdu search/product locale |
 | `WU-SHARE-001` | Public Share Pages & Viral Publishing Loop | `/urdu-card-studio`, `/`, `/s/:id`, `/api/shares*` | Active — first-party short-link loop proven in Card Studio and extending to Basic Writer |
 | `WU-ACCOUNT-001` | Account, Documents & Collaboration Platform Boundary | Account/document platform | Planned boundary — identity + My Documents first; collaboration/teams/social separately gated |
-| `WU-AUTH-001` | Optional social authentication foundation | `/sign-in`, `/api/auth/*`, `/api/me`, shared header | Planned — reconciled to proven InvoiceCraftly Auth.js + `ACCOUNT_DB`; Google first |
+| `WU-AUTH-001` | Optional social authentication foundation | `/sign-in`, `/api/auth/*`, `/api/me`, shared header | Implemented core / acceptance pending — Google + Facebook providers live in code (`functions/lib/auth.mjs`, reusing `METRICS_DB`); Facebook pending production app registration + secrets |
 | `WU-DRAFT-001` | My Documents: cross-device account-backed writing | Core writing editors, `/my-documents`, `/api/documents*` | Planned — browser-local first; explicit account save in separate `WRITE_URDU_DB` |
 | `WU-RW-001` | Role-owned direct workspaces | Writing + creation role routes | Active — one top-level editor/canvas per role; remove nested WriteUrdu app/iframe architecture |
 | `WU-PLAT-001` | Unified product journey and acquisition-first homepage | `/` and related tools | Implemented — foundation complete |

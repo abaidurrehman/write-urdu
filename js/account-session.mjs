@@ -55,7 +55,7 @@ export function projectAccountState(payload) {
 export function accountErrorMessage(code) {
   const normalized = stringValue(code).toLowerCase();
   if (normalized === 'accessdenied' || normalized === 'oauthcallback') {
-    return 'Google sign-in was not completed. Your writing on this device was not changed.';
+    return 'Sign-in was not completed. Your writing on this device was not changed.';
   }
   if (normalized === 'oauthaccountnotlinked') {
     return 'This email is already associated with another sign-in method. Try the sign-in method you used before, or continue without an account.';
@@ -91,6 +91,20 @@ export async function fetchAuthCsrfToken(fetchImpl = globalThis.fetch) {
   const token = stringValue(payload?.csrfToken);
   if (!token) throw new Error('auth_csrf_unavailable');
   return token;
+}
+
+export async function fetchReadyProviderIds(fetchImpl = globalThis.fetch) {
+  if (typeof fetchImpl !== 'function') throw new TypeError('Auth providers require fetch.');
+  const response = await fetchImpl('/api/auth/providers', {
+    method: 'GET',
+    credentials: 'same-origin',
+    cache: 'no-store',
+    headers: { accept: 'application/json' }
+  });
+  if (!response.ok) throw new Error('auth_providers_unavailable');
+  const payload = await response.json();
+  if (!payload || typeof payload !== 'object') return [];
+  return Object.keys(payload);
 }
 
 export function flushLocalWriting(root = globalThis) {

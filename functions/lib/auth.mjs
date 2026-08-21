@@ -1,5 +1,6 @@
 import { Auth } from '@auth/core';
 import Google from '@auth/core/providers/google';
+import Facebook from '@auth/core/providers/facebook';
 import { D1Adapter } from '@auth/d1-adapter';
 import { incrementVoiceAccountMetrics } from './voice-account-metrics.mjs';
 
@@ -10,7 +11,8 @@ export const AUTH_CONFIGURATION_STATE = Object.freeze({
 });
 
 const AUTH_BASE_PATH = '/api/auth';
-const IDENTITY_SCOPE = 'openid email profile';
+const GOOGLE_IDENTITY_SCOPE = 'openid email profile';
+const FACEBOOK_IDENTITY_SCOPE = 'email';
 const VOICE_TRY_COOKIE = 'wu_voice_tried';
 
 function stringValue(value) {
@@ -32,11 +34,21 @@ export function getIdentityProviderReadiness(env = {}) {
   const googleConfigured = Boolean(googleClientId && googleClientSecret);
   const googlePartial = Boolean(googleClientId || googleClientSecret) && !googleConfigured;
 
+  const facebookClientId = stringValue(env.FACEBOOK_CLIENT_ID);
+  const facebookClientSecret = stringValue(env.FACEBOOK_CLIENT_SECRET);
+  const facebookConfigured = Boolean(facebookClientId && facebookClientSecret);
+  const facebookPartial = Boolean(facebookClientId || facebookClientSecret) && !facebookConfigured;
+
   return Object.freeze([
     Object.freeze({
       id: 'google',
       ready: googleConfigured,
       partial: googlePartial
+    }),
+    Object.freeze({
+      id: 'facebook',
+      ready: facebookConfigured,
+      partial: facebookPartial
     })
   ]);
 }
@@ -79,22 +91,47 @@ export function authEnabled(env = {}) {
 }
 
 export function buildIdentityProviders(env = {}) {
-  const clientId = stringValue(env.GOOGLE_CLIENT_ID);
-  const clientSecret = stringValue(env.GOOGLE_CLIENT_SECRET);
-  if (!clientId || !clientSecret) return Object.freeze([]);
+  const providers = [];
 
-  return Object.freeze([
-    Google({
-      clientId,
-      clientSecret,
+  const googleClientId = stringValue(env.GOOGLE_CLIENT_ID);
+  const googleClientSecret = stringValue(env.GOOGLE_CLIENT_SECRET);
+  if (googleClientId && googleClientSecret) {
+    providers.push(Google({
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
       allowDangerousEmailAccountLinking: false,
       authorization: {
         params: {
-          scope: IDENTITY_SCOPE
+          scope: GOOGLE_IDENTITY_SCOPE
         }
       }
-    })
-  ]);
+    }));
+  }
+
+  const facebookClientId = stringValue(env.FACEBOOK_CLIENT_ID);
+  const facebookClientSecret = stringValue(env.FACEBOOK_CLIENT_SECRET);
+  if (facebookClientId && facebookClientSecret) {
+    providers.push(Facebook({
+      clientId: facebookClientId,
+      clientSecret: facebookClientSecret,
+      allowDangerousEmailAccountLinking: false,
+      authorization: {
+        params: {
+          scope: FACEBOOK_IDENTITY_SCOPE
+        }
+      },
+      profile(profile) {
+        return {
+          id: String(profile?.id || ''),
+          name: stringValue(profile?.name) || null,
+          email: stringValue(profile?.email) || null,
+          image: stringValue(profile?.picture?.data?.url) || null
+        };
+      }
+    }));
+  }
+
+  return Object.freeze(providers);
 }
 
 export function resolveAuthRedirect(url, baseUrl) {
