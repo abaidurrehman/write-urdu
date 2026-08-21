@@ -26,7 +26,9 @@ for (const route of config.phase1Routes) {
   assert.ok(fs.existsSync(file), `generated Urdu file missing for ${route}`);
   const html = fs.readFileSync(file, 'utf8');
   assert.match(html, /<html\s+lang="ur"\s+dir="rtl"/i, `${route} initial HTML must be Urdu RTL`);
-  assert.match(html, /data-wu-urdu-slice-a="temporary-noindex"/, `${route} must remain temporarily noindex until Slice B`);
+  assert.doesNotMatch(html, /noindex/i, `${route} launched Urdu page must be indexable after Slice B`);
+  assert.match(html, /hreflang="ur"/i, `${route} must expose Urdu hreflang in initial HTML`);
+  assert.match(html, /data-wu-urdu-schema/, `${route} must expose locale-correct structured data in initial HTML`);
   assert.ok(html.includes(ur.routes[route].h1), `${route} must contain reviewed Urdu H1`);
   assert.ok(html.includes(ur.routes[route].lede), `${route} must contain reviewed Urdu lede`);
   assert.doesNotMatch(html, /["']\/urdu\/(?:js|css|image)\//i, `${route} must not resolve shared assets inside /urdu`);

@@ -207,4 +207,4 @@ if (errors.length) {
   console.error(errors.map(error => `SEO: ${error}`).join('\n'));
   process.exit(1);
 }
-console.log(`SEO checks passed for ${files.length} HTML pages and ${config.pages.filter(page => page.indexable).length} sitemap URLs.`);
+console.log(`SEO checks passed for ${files.length} HTML pages and ${sitemapLocs.length} sitemap URLs.`);

@@ -28,6 +28,7 @@ const tests = [
   'tests/pages-routing-contract.test.js',
   'tests/urdu-locale-route-contract.test.js',
   'tests/urdu-locale-generated-contract.test.js',
+  'tests/urdu-locale-seo-contract.test.js',
   'tests/invoice-preview-footer-contract.test.js',
   'tests/sitemap-directory-contract.test.js',
   'tests/stylish-urdu-core.test.js',
