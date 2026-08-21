@@ -38,8 +38,8 @@ assert.match(basicController, /documentSnapshotSignature/, 'Basic Writer must ke
 assert.match(basicController, /writeAccountDocumentMetadata/, 'Basic Writer must keep account document metadata compatible with My Documents');
 assert.match(basicController, /readDocumentOpenHandoff/, 'Basic Writer must keep consuming My Documents handoffs');
 
-assert.match(richPage, /data-editor-tools-adapter="rich"/, 'Rich Editor must expose the shared rich adapter kind');
-assert.match(keyboardPage, /data-editor-tools-adapter="keyboard"/, 'Urdu Keyboard must expose the shared keyboard adapter kind');
+assert.match(richPage, /id="basic-example"/, 'Rich Editor must keep the TinyMCE source hook used by editor-tools');
+assert.match(keyboardPage, /id="write"/, 'Urdu Keyboard must keep the textarea hook used by editor-tools');
 assert.match(richPage, /\/js\/editor-tools\.js/, 'Rich Editor must keep the shared browser-local editor controller');
 assert.match(keyboardPage, /\/js\/editor-tools\.js/, 'Urdu Keyboard must keep the shared browser-local editor controller');
 
