@@ -1,9 +1,11 @@
 name: Temporary Slice A snapshot
 
 on:
-  push:
-    branches:
-      - feature/urdu-locale-slice-a
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
   contents: read
