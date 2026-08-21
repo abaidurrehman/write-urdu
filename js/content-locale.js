@@ -12,7 +12,9 @@
     var textOriginals = new WeakMap();
 
     function pathName() {
-        var path = window.location.pathname.replace(/\/+$/, '') || '/';
+        var path = window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function'
+            ? window.WriteUrduLocaleRoute.productPath(window.location.pathname || '/')
+            : (window.location.pathname.replace(/\/+$/, '') || '/');
         if (window.location.protocol === 'file:') path = '/' + path.split('/').pop();
         if (path !== '/' && !/\.html$/i.test(path)) path += '.html';
         return path.toLowerCase();
@@ -25,6 +27,10 @@
 
     function setMarkup(element, urdu, locale) {
         if (!element) return;
+        if (locale === 'ur' && element.hasAttribute('data-wu-l10n') && window.WriteUrduLocaleRoute && window.WriteUrduLocaleRoute.locale(window.location.pathname) === 'ur') {
+            element.setAttribute('lang', 'ur');
+            return;
+        }
         var english = remember(element);
         element.innerHTML = locale === 'ur' ? urdu : english;
         element.setAttribute('lang', locale === 'ur' ? 'ur' : 'en');

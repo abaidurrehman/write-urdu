@@ -58,6 +58,8 @@ const APP_SHELL = [
   './assets/templates/events.svg',
   './site-header.js',
   './js/site-header-core.js',
+  './locale.config.js',
+  './js/locale-route.js',
   './js/account-session.mjs',
   './js/account-control.mjs',
   './js/account-documents.mjs',

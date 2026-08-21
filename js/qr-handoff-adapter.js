@@ -5,6 +5,7 @@
     var LEGACY_KEY = 'writeUrdu.qrGenerator.incoming';
 
     function normalizePath() {
+        if (root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.productPath === 'function') return root.WriteUrduLocaleRoute.productPath(root.location && root.location.pathname || '/');
         var path = String(root.location && root.location.pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
         if (path.endsWith('.html')) path = path.slice(0, -5);

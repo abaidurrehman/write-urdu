@@ -13,6 +13,7 @@
     }
 
     function normalizedProductPath() {
+        if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(window.location.pathname || '/');
         var path = normalizedPath().replace(/\.html$/i, '');
         return path === '/index' ? '/' : path;
     }
@@ -23,7 +24,7 @@
         function loadIntegrations() {
             if (document.querySelector('script[data-write-urdu-product-telemetry-integrations]')) return;
             var integrations = document.createElement('script');
-            integrations.src = 'js/product-telemetry-integrations.js';
+            integrations.src = '/js/product-telemetry-integrations.js';
             integrations.async = false;
             integrations.setAttribute('data-write-urdu-product-telemetry-integrations', '');
             document.head.appendChild(integrations);
@@ -39,7 +40,7 @@
             return;
         }
         var telemetry = document.createElement('script');
-        telemetry.src = 'js/product-telemetry.js';
+        telemetry.src = '/js/product-telemetry.js';
         telemetry.async = false;
         telemetry.setAttribute('data-write-urdu-product-telemetry', '');
         telemetry.addEventListener('load', loadIntegrations, { once: true });
@@ -209,7 +210,7 @@
         if (document.querySelector('link[href$="css/v2-shell.css"]')) return;
         var stylesheet = document.createElement('link');
         stylesheet.rel = 'stylesheet';
-        stylesheet.href = 'css/v2-shell.css';
+        stylesheet.href = '/css/v2-shell.css';
         stylesheet.setAttribute('data-write-urdu-v2-shell', '');
         document.head.appendChild(stylesheet);
     }

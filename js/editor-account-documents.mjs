@@ -19,6 +19,7 @@ const ROUTE_KIND = Object.freeze({
 });
 
 function normalizedPath() {
+  if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(location.pathname || '/');
   let path = String(location.pathname || '/');
   if (/\.html$/i.test(path)) path = path.slice(0, -5);
   if (path.length > 1) path = path.replace(/\/+$/, '');

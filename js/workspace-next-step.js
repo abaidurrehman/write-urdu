@@ -21,6 +21,7 @@
     var cleanupTimer = null;
 
     function normalizeRoute(value) {
+        if (root && root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.productPath === 'function') return root.WriteUrduLocaleRoute.productPath(value || '/');
         if (Registry && typeof Registry.normalizeRoute === 'function') return Registry.normalizeRoute(value);
         var path = String(value || '/').split('?')[0].split('#')[0] || '/';
         if (path === '/index' || path === '/index.html') path = '/';

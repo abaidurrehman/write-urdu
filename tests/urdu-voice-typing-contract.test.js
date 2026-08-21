@@ -10,7 +10,7 @@ const shell = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 const myDocuments = fs.readFileSync(path.join(root, 'functions', 'my-documents.js'), 'utf8');
 const discoveryCss = fs.readFileSync(path.join(root, 'css', 'voice-discovery.css'), 'utf8');
 
-assert.match(html, /<h1>Urdu Voice Typing<\/h1>/, 'voice page should expose a focused H1');
+assert.match(html, /<h1[^>]*>Urdu Voice Typing<\/h1>/, 'voice page should expose a focused H1');
 assert.match(html, /rel="canonical" href="https:\/\/write-urdu\.com\/tools\/urdu-voice-typing"/, 'voice page should self-canonicalize without a trailing slash');
 assert.match(html, /Speak Urdu → Urdu text/, 'voice page should market the user outcome in plain language');
 assert.match(html, /Tap the mic, speak naturally in Urdu/, 'voice page should lead with the simple voice-to-text job');
@@ -30,7 +30,7 @@ assert.match(privacy, /does not create a separate audio recording/, 'privacy pag
 assert.match(shell, /function installVoiceDiscovery\(\)/, 'shared shell should install a reusable voice discovery entry');
 assert.match(shell, /document\.querySelector\('\.home-hero-actions'\)/, 'homepage start area should surface voice typing before users reach the lower tool directory');
 assert.match(shell, /document\.querySelector\('\.my-documents-hero'\)/, 'My Documents should surface the same voice entry');
-assert.match(shell, /entry\.href = '\/tools\/urdu-voice-typing'/, 'voice discovery entry must route to the canonical tool');
+assert.match(shell, /entry\.href = localeHref\('\/tools\/urdu-voice-typing'\)/, 'voice discovery entry must route through the locale-aware canonical tool helper');
 assert.match(shell, /السلام علیکم، آج میں آواز سے اردو لکھ رہا ہوں۔/, 'discovery card should show the Urdu output users can expect');
 assert.match(myDocuments, /<script src="\/site-header\.js" defer><\/script>/, 'My Documents must load the shared shell that installs voice discovery');
 assert.match(discoveryCss, /\.wu-voice-entry-icon[\s\S]*width: 4\.5rem/, 'voice entry microphone should be visually prominent rather than tiny');

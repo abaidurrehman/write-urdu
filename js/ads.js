@@ -57,6 +57,7 @@
     ];
 
     function normalizePath(pathname) {
+        if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(pathname || '/');
         var path = String(pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
         if (path === '/index.html') return '/';

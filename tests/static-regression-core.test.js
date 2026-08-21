@@ -125,7 +125,7 @@ assert.match(read('urdu-editor.html'), /data-create-qr/, 'Rich editor is missing
 
 const home = read('index.html');
 assert.match(home, /<title>English to Urdu Typing Online[^<]*Urdu[^<]*<\/title>/i, 'Homepage source title must expose the English-to-Urdu acquisition owner while retaining Urdu typing relevance');
-assert.match(home, /<h1>English to Urdu Typing Online<\/h1>/, 'Homepage must lead with plain-language English to Urdu typing intent');
+assert.match(home, /<h1[^>]*>English to Urdu Typing Online<\/h1>/, 'Homepage must lead with plain-language English to Urdu typing intent');
 assert.match(home, /data-start-typing/, 'Homepage is missing the Start typing action');
 assert.match(home, /href="#home-tools-title"[^>]*>Explore more tools/, 'Homepage is missing the Explore more tools action');
 assert.match(home, /href="#home-how-it-works"[^>]*>Learn how it works/, 'Homepage is missing the How it works action');

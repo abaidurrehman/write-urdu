@@ -301,7 +301,8 @@ function applyOpenHandoff() {
 }
 
 async function start() {
-  if (location.pathname !== '/' && location.pathname !== '/index.html') return;
+  const productPath = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(location.pathname || '/') : location.pathname;
+  if (productPath !== '/' && productPath !== '/index.html') return;
 
   let feature;
   try { feature = await client.probe(); } catch { return; }

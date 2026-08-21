@@ -175,11 +175,11 @@
     function bindAll() { document.querySelectorAll('[data-input-mode-control]').forEach(bind); }
 
     function loadWriteMonetization() {
-        var path = String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+        var path = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(window.location && window.location.pathname || '/') : String(window.location && window.location.pathname || '/').replace(/\.html$/, '').replace(/\/$/, '') || '/';
         if (path === '/index') path = '/';
-        if (['/', '/urdu-editor'].indexOf(path) < 0 || document.querySelector('script[src="js/write-monetization.js"]')) return;
+        if (['/', '/urdu-editor'].indexOf(path) < 0 || document.querySelector('script[src="/js/write-monetization.js"],script[src="js/write-monetization.js"]')) return;
         var script = document.createElement('script');
-        script.src = 'js/write-monetization.js';
+        script.src = '/js/write-monetization.js';
         script.defer = true;
         document.head.appendChild(script);
     }

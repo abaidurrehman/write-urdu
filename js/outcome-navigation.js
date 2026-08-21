@@ -141,6 +141,7 @@
     }
 
     function normalizePath(value) {
+        if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(value || '/');
         var path = String(value || '/').split('?')[0].split('#')[0] || '/';
         if (path === '/index' || path === '/index.html') return '/';
         if (/\/index\.html$/i.test(path)) path = path.replace(/\/index\.html$/i, '');
@@ -152,6 +153,15 @@
     function itemPath(item) {
         try { return normalizePath(new URL(item.href, root.location.href).pathname); }
         catch (error) { return normalizePath(item.href); }
+    }
+
+    function localizedHref(href) {
+        if (!root.WriteUrduLocaleRoute || locale() !== 'ur') return href;
+        try {
+            var parsed = new URL(href, root.location.href);
+            var localized = root.WriteUrduLocaleRoute.href(parsed.pathname, 'ur');
+            return localized ? localized + parsed.search + parsed.hash : href;
+        } catch (error) { return href; }
     }
 
     function active(item) {
@@ -171,7 +181,7 @@
     function renderItem(item, lang) {
         var isActive = active(item);
         var className = 'wu-outcome-link' + (isActive ? ' is-active' : '');
-        return '<a class="' + className + '" href="' + item.href + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
+        return '<a class="' + className + '" href="' + localizedHref(item.href) + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
             icon(item.icon) +
             '<span class="wu-outcome-link-copy"><strong>' + item.label[lang] + '</strong><small>' + item.tool[lang] + '</small></span>' +
         '</a>';
@@ -217,7 +227,7 @@
 
     function footerGroup(group, lang) {
         return '<div class="wu-footer-group" data-wu-footer-group="' + group.id + '"><h2>' + group.label[lang] + '</h2>' +
-            group.items.map(function (item) { return '<a href="' + item.href + '">' + item.label[lang] + '</a>'; }).join('') + '</div>';
+            group.items.map(function (item) { return '<a href="' + localizedHref(item.href) + '">' + item.label[lang] + '</a>'; }).join('') + '</div>';
     }
 
     function renderFooterMeta(lang) {
@@ -246,7 +256,7 @@
             status.innerHTML =
                 '<span class="wu-footer-copyright">' + copy.copyright + '</span>' +
                 '<span class="wu-footer-utility-links">' +
-                    FOOTER_UTILITY_LINKS.map(function (item) { return '<a href="' + item.href + '">' + item.label[lang] + '</a>'; }).join('') +
+                    FOOTER_UTILITY_LINKS.map(function (item) { return '<a href="' + localizedHref(item.href) + '">' + item.label[lang] + '</a>'; }).join('') +
                 '</span>';
         }
     }

@@ -15,7 +15,9 @@
     "governance:check": "node scripts/check-product-governance.js",
     "seo:indexnow": "node scripts/submit-indexnow.js",
     "lighthouse:seo": "node scripts/run-lighthouse.js",
-    "templates:check": "node scripts/validate-template-library.js"
+    "templates:check": "node scripts/validate-template-library.js",
+    "locale:generate": "node scripts/generate-urdu-locale.js",
+    "locale:check": "node scripts/generate-urdu-locale.js --check"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"

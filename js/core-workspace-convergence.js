@@ -19,6 +19,7 @@
     };
 
     function normalizeRoute(value) {
+        if (root && root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.productPath === 'function') return root.WriteUrduLocaleRoute.productPath(value || '/');
         var path = String(value || '/').split('?')[0].split('#')[0] || '/';
         if (path === '/index' || path === '/index.html') return '/';
         if (/\.html$/i.test(path)) path = path.slice(0, -5);
