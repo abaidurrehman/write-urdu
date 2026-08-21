@@ -19,7 +19,7 @@ GOOGLE_CLIENT_SECRET
 
 Values belong in Cloudflare encrypted/environment configuration, never source control.
 
-Core auth also requires the shared `AUTH_SECRET`, `AUTH_ENABLED=true` and dedicated `ACCOUNT_DB` binding.
+Core auth also requires the shared `AUTH_SECRET`, `AUTH_ENABLED=true` and the existing `METRICS_DB` D1 binding (WriteUrdu reuses its one production D1 database rather than a dedicated auth database).
 
 ## Callback
 
@@ -76,7 +76,7 @@ Before starting Google OAuth from a writer:
 - Google button appears only when the provider is ready.
 - Sign-in uses the current supported Auth.js CSRF-safe flow.
 - Callback succeeds on the canonical custom domain.
-- Auth.js creates expected `users`, `accounts` and `sessions` records in `ACCOUNT_DB`.
+- Auth.js creates expected `users`, `accounts` and `sessions` records in the shared `METRICS_DB`.
 - Auth rows contain no Urdu writing content.
 - `GET /api/me` exposes stable `session.user.id` through the allowlisted product projection.
 - Sign-out works without clearing browser-local writing.

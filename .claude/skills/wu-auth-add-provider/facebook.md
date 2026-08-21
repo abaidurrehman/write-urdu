@@ -17,7 +17,7 @@ FACEBOOK_CLIENT_SECRET
 
 Store values in Cloudflare encrypted/environment configuration, never source control.
 
-Core auth continues to use the same `AUTH_SECRET`, `AUTH_ENABLED` and dedicated `ACCOUNT_DB` as Google. Facebook must not introduce another session/database stack.
+Core auth continues to use the same `AUTH_SECRET`, `AUTH_ENABLED` and the existing shared `METRICS_DB` D1 binding as Google (WriteUrdu reuses its one production D1 database rather than a dedicated auth database). Facebook must not introduce another session/database stack.
 
 ## Callback
 
@@ -116,7 +116,7 @@ OAuth cancel/error must leave local writing intact.
 
 - Facebook button appears only when both credentials and core auth config are ready.
 - OAuth callback succeeds on the canonical custom domain.
-- Correct Facebook provider row appears in Auth.js `accounts` in `ACCOUNT_DB`.
+- Correct Facebook provider row appears in Auth.js `accounts` in the shared `METRICS_DB`.
 - `/api/me` returns stable user ID even when email is unavailable.
 - Missing image/name/email renders a safe fallback.
 - Sign-out works without clearing browser-local writing.

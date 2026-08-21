@@ -16,7 +16,7 @@ for (const [name, source] of [['About', about], ['Privacy', privacy]]) {
   assert.match(source, /js\/seo\.js/, `${name} must retain resolved canonical/schema behavior`);
   assert.match(source, /site-header\.js/, `${name} must retain the shared product shell`);
   assert.doesNotMatch(source, /adsbygoogle|data-ad-slot|pagead2\.googlesyndication/i, `${name} must not contain advertising markup`);
-  assert.doesNotMatch(source, /bootstrap|jquery|w3\.css|facebook|twitter-wjs|fb-comments/i, `${name} must not restore legacy framework/social dependencies`);
+  assert.doesNotMatch(source, /bootstrap|jquery|w3\.css|connect\.facebook\.net|fb-root|xfbml|twitter-wjs|fb-comments/i, `${name} must not restore legacy framework/social widget embeds`);
 }
 
 assert.match(about, /<h1 id=\"about-title\">About Write Urdu<\/h1>/, 'About page must statically match SEO-owned H1');

@@ -1,6 +1,6 @@
 # WU-AUTH-001 — Optional Social Authentication Foundation
 
-**Status:** Planned — founder-approved 2026-08-13; reconciled 2026-08-19  
+**Status:** Implemented core / acceptance pending — founder-approved 2026-08-13; reconciled 2026-08-19; AUTH-A/AUTH-B/AUTH-D code complete 2026-08-21, pending production Facebook app registration + Cloudflare secrets + live proof  
 **Area:** Account / identity  
 **Routes:** `/sign-in`, `/api/auth/*`, `/api/me`, shared account controls  
 **Depends on:** existing Cloudflare Pages deployment, existing `METRICS_DB` D1 binding, anonymous-writing baseline  
@@ -364,6 +364,12 @@ Implement `WU-DRAFT-001` using the same existing `METRICS_DB` database with a se
 ### AUTH-D — Facebook
 
 Only after Google + My Documents cross-device continuity is stable.
+
+**Status: code complete 2026-08-21.** Gate condition satisfied — `WU-DRAFT-001` DOC-A through DOC-D are merged (schema/API, Basic Writer pilot, My Documents library/share links, Rich Editor + Urdu Keyboard persistence), giving Google + My Documents cross-device save/restore across all three editors.
+
+`functions/lib/auth.mjs` now builds a Facebook provider (`@auth/core/providers/facebook`) whenever `FACEBOOK_CLIENT_ID`/`FACEBOOK_CLIENT_SECRET` are both set, identity-only (`scope: 'email'`), with `allowDangerousEmailAccountLinking: false` and a defensive `profile()` mapping that tolerates a missing name/email/image. Readiness stays provider-neutral: an incomplete Facebook pair is excluded without disabling Google (`tests/auth-foundation-contract.test.js` covers this). `/sign-in` renders a "Continue with Facebook" button, hidden until `/api/auth/providers` confirms it is actually configured (same treatment now applies to the Google button, which previously rendered unconditionally).
+
+Remaining before this closes out: register the production Facebook app/callback (`https://write-urdu.com/api/auth/callback/facebook`), set `FACEBOOK_CLIENT_ID`/`FACEBOOK_CLIENT_SECRET` in Cloudflare, and run the production proof in `.claude/skills/wu-auth-add-provider/facebook.md`'s verification list (real OAuth round trip, `accounts` row, sign-out, Google regression).
 
 ## 14. Required tests
 

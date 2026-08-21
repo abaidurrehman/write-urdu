@@ -35,12 +35,15 @@ assert.match(migration, /CREATE TABLE IF NOT EXISTS "verification_tokens"/, 'Aut
 // Keep Auth.js behind one project-owned boundary.
 assert.match(authSource, /from '@auth\/core'/, 'The project auth wrapper must import Auth.js core');
 assert.match(authSource, /from '@auth\/d1-adapter'/, 'The project auth wrapper must import the D1 adapter');
+assert.match(authSource, /from '@auth\/core\/providers\/facebook'/, 'The project auth wrapper must import the Facebook provider for AUTH-D');
 assert.doesNotMatch([authRoute, meRoute].join('\n'), /from '@auth\//, 'Pages routes must use the WriteUrdu auth wrapper instead of importing Auth.js directly');
 assert.match(authRoute, /handleAuthRequest/, 'The catch-all route must delegate to the project auth wrapper');
 
 // Identity remains minimal and stable-user-ID based.
 assert.match(authSource, /openid email profile/, 'Google identity scope must remain minimal');
 assert.doesNotMatch(authSource, /drive|gmail|calendar|contacts/i, 'Identity login must not request Google product-data scopes');
+assert.match(authSource, /FACEBOOK_IDENTITY_SCOPE = 'email'/, 'Facebook identity scope must stay minimal');
+assert.doesNotMatch(authSource, /user_friends|pages_show_list|publish_actions|instagram_basic|ads_management|pages_manage/i, 'Facebook scope must stay identity-only, not social/Page/ads permissions');
 assert.match(authSource, /allowDangerousEmailAccountLinking:\s*false/, 'Automatic provider linking by matching email must remain disabled');
 assert.match(authSource, /session\.user = \{ \.\.\.session\.user, id: userId \}/, 'Stable adapter user ID must be exposed to product session code');
 assert.match(authSource, /target\.origin === base\.origin/, 'Auth redirects must remain same-origin');
@@ -57,6 +60,12 @@ assert.doesNotMatch(meRoute, /access_token|refresh_token|sessionToken|providerAc
 assert.match(accountSession, /WriteUrduTools\?\.saveDraft/, 'Account navigation must reuse the existing local draft save hook');
 assert.match(accountControl, /flushLocalWriting\(runtime\)/, 'Header sign-in must flush local writing before navigation');
 assert.match(accountPage, /flushLocalWriting\(window\)/, 'Account page must preserve local writing if entered from a writing route');
+
+// Provider-aware sign-in rendering: a provider button appears only once it is actually configured/ready.
+assert.match(accountSession, /fetchReadyProviderIds/, 'Sign-in must be able to read which providers are actually ready');
+assert.match(accountPage, /fetchReadyProviderIds/, 'Account page must gate provider buttons on readiness, not show every provider unconditionally');
+assert.match(signIn, /data-google-sign-in data-provider-id="google" hidden/, 'Google form must start hidden until confirmed ready');
+assert.match(signIn, /data-facebook-sign-in data-provider-id="facebook" hidden/, 'Facebook form must start hidden until confirmed ready');
 assert.match(accountSession, /candidate\.startsWith\('\/'\)/, 'Return targets must be local paths');
 assert.match(accountSession, /candidate\.startsWith\('\/\/'\)/, 'Protocol-relative return targets must be rejected');
 assert.match(accountSession, /BLOCKED_RETURN_PREFIXES/, 'Sensitive/internal account return targets must be blocked');
@@ -65,6 +74,9 @@ assert.match(accountSession, /BLOCKED_RETURN_PREFIXES/, 'Sensitive/internal acco
 assert.match(signIn, /meta name="robots" content="noindex,follow,noarchive"/, 'Sign-in page must follow the WU noindex utility convention');
 assert.match(signIn, /meta name="googlebot" content="noindex,follow"/, 'Sign-in page must include the WU Googlebot utility directive');
 assert.match(signIn, /Continue with Google/, 'Google is the first account provider');
+assert.match(signIn, /Continue with Facebook/, 'Facebook is available as a second account provider (AUTH-D)');
+assert.match(signIn, /data-provider-id="google"/, 'Google sign-in form must be identifiable for provider-aware rendering');
+assert.match(signIn, /data-provider-id="facebook"/, 'Facebook sign-in form must be identifiable for provider-aware rendering');
 assert.match(signIn, /Existing local drafts are not uploaded/, 'Sign-in page must state the local-first boundary');
 assert.match(seoConfigSource, /id: 'sign-in'[\s\S]*path: '\/sign-in'[\s\S]*indexable: false/, 'Sign-in must be registered as a noindex SEO utility');
 assert.match(pageRegistry, /sign-in\.html,\/sign-in,Utility,[^\n]*,noindex,no,/, 'Sign-in must be registered as noindex and excluded from the sitemap');
@@ -92,8 +104,22 @@ assert.match(serviceWorker, /url\.pathname === '\/sign-in'/, 'Service worker mus
   assert.strictEqual(auth.getAuthReadiness({ AUTH_ENABLED: 'true' }).state, auth.AUTH_CONFIGURATION_STATE.MISCONFIGURED);
   assert.deepStrictEqual(auth.getAuthReadiness(readyEnv).providers, ['google']);
   assert.strictEqual(auth.getAuthReadiness(readyEnv).ready, true);
+  assert.strictEqual(auth.buildIdentityProviders(readyEnv).length, 1);
   assert.strictEqual(auth.resolveAuthRedirect('/urdu-editor?from=account', 'https://write-urdu.com'), 'https://write-urdu.com/urdu-editor?from=account');
   assert.strictEqual(auth.resolveAuthRedirect('https://evil.example/path', 'https://write-urdu.com'), 'https://write-urdu.com/');
+
+  // Facebook (AUTH-D): a complete pair becomes available alongside Google; an incomplete pair
+  // is excluded without disabling Google (provider-neutral readiness regression).
+  const bothProvidersEnv = { ...readyEnv, FACEBOOK_CLIENT_ID: 'facebook-client-id', FACEBOOK_CLIENT_SECRET: 'facebook-client-secret' };
+  assert.deepStrictEqual(auth.getAuthReadiness(bothProvidersEnv).providers, ['google', 'facebook']);
+  assert.strictEqual(auth.buildIdentityProviders(bothProvidersEnv).length, 2);
+
+  const partialFacebookEnv = { ...readyEnv, FACEBOOK_CLIENT_ID: 'facebook-client-id-only' };
+  const partialReadiness = auth.getAuthReadiness(partialFacebookEnv);
+  assert.strictEqual(partialReadiness.ready, true, 'Google alone must remain ready when Facebook is only partially configured');
+  assert.deepStrictEqual(partialReadiness.providers, ['google']);
+  assert.deepStrictEqual(partialReadiness.partialProviders, ['facebook']);
+  assert.strictEqual(auth.buildIdentityProviders(partialFacebookEnv).length, 1, 'An incomplete Facebook credential pair must not construct a broken provider');
 
   let called = false;
   const disabledResponse = await auth.handleAuthRequest(new Request('https://write-urdu.com/api/auth/session'), {}, {

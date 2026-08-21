@@ -3,6 +3,7 @@ import {
   accountErrorMessage,
   fetchAccountState,
   fetchAuthCsrfToken,
+  fetchReadyProviderIds,
   flushLocalWriting,
   resolveAccountReturnTarget
 } from './account-session.mjs';
@@ -13,6 +14,8 @@ const signedIn = document.querySelector('[data-account-signed-in]');
 const disabled = document.querySelector('[data-account-disabled]');
 const error = document.querySelector('[data-account-error]');
 const googleForm = document.querySelector('[data-google-sign-in]');
+const facebookForm = document.querySelector('[data-facebook-sign-in]');
+const providerForms = [googleForm, facebookForm].filter(Boolean);
 const signoutForm = document.querySelector('[data-account-page-signout]');
 const continueLocal = document.querySelector('[data-continue-without-account]');
 const params = new URLSearchParams(window.location.search);
@@ -47,7 +50,7 @@ async function prepareCsrf(form) {
 
 async function start() {
   if (continueLocal) continueLocal.href = returnTarget;
-  setFormReturnTarget(googleForm);
+  providerForms.forEach(setFormReturnTarget);
   setFormReturnTarget(signoutForm);
   showError(accountErrorMessage(params.get('error')));
 
@@ -63,9 +66,14 @@ async function start() {
     if (account.state === ACCOUNT_STATE.SIGNED_OUT) {
       show(signedOut);
       try {
-        await prepareCsrf(googleForm);
+        const readyProviderIds = await fetchReadyProviderIds();
+        const visibleForms = providerForms.filter((form) => readyProviderIds.includes(form.dataset.providerId));
+        await Promise.all(visibleForms.map((form) => {
+          form.hidden = false;
+          return prepareCsrf(form);
+        }));
         const status = document.querySelector('[data-sign-in-status]');
-        if (status) status.textContent = 'Google is used only to identify your account. Your existing local drafts are not uploaded.';
+        if (status) status.textContent = 'Sign-in is used only to identify your account. Your existing local drafts are not uploaded.';
       } catch {
         showError('Sign-in is temporarily unavailable. You can keep writing without an account.');
       }
@@ -95,12 +103,16 @@ async function start() {
   }
 }
 
-googleForm?.addEventListener('submit', () => {
-  flushLocalWriting(window);
-  const button = googleForm.querySelector('button[type="submit"]');
-  if (button) button.disabled = true;
-  const status = document.querySelector('[data-sign-in-status]');
-  if (status) status.textContent = 'Leaving for Google sign-in. Writing saved on this device stays here.';
+const providerLabels = { google: 'Google', facebook: 'Facebook' };
+providerForms.forEach((form) => {
+  form.addEventListener('submit', () => {
+    flushLocalWriting(window);
+    const button = form.querySelector('button[type="submit"]');
+    if (button) button.disabled = true;
+    const status = document.querySelector('[data-sign-in-status]');
+    const label = providerLabels[form.dataset.providerId] || 'account';
+    if (status) status.textContent = `Leaving for ${label} sign-in. Writing saved on this device stays here.`;
+  });
 });
 
 void start();
