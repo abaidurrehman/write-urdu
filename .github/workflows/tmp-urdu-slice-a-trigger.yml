@@ -21,7 +21,18 @@ jobs:
         with:
           ref: feature/urdu-locale-slice-a
 
+      - name: Detect already-published tree
+        id: state
+        shell: bash
+        run: |
+          if [ -f locale.config.js ] && [ -f scripts/generate-urdu-locale.js ]; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Apply embedded validated patch
+        if: steps.state.outputs.published != 'true'
         shell: bash
         run: |
           publisher=.github/workflows/tmp-urdu-slice-a-snapshot.yml
@@ -39,20 +50,24 @@ jobs:
               current.append(line)
           if current:
               sections.append(current)
-          kept = [section for section in sections if 'tmp-urdu-slice-a-snapshot.yml' not in section[0]]
+          excluded = ('tmp-urdu-slice-a-snapshot.yml', '.github/workflows/quality.yml')
+          kept = [section for section in sections if not any(name in section[0] for name in excluded)]
           Path('/tmp/slice-a.patch').write_text(''.join(''.join(section) for section in kept))
           PY
           patch -p1 --batch < /tmp/slice-a.patch
           node scripts/generate-urdu-locale.js
           awk '/cat > \/tmp\/slice-a-files/{capture=1;next} capture && /^[[:space:]]*EOF$/{exit} capture{sub(/^          /,""); print}' "$publisher" > /tmp/slice-a-files
 
-      - name: Commit exact Slice A manifest
+      - name: Commit exact non-workflow Slice A manifest
+        if: steps.state.outputs.published != 'true'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          while IFS= read -r file; do git add -- "$file"; done < /tmp/slice-a-files
-          git rm -- .github/workflows/tmp-urdu-slice-a-snapshot.yml .github/workflows/tmp-urdu-slice-a-trigger.yml
+          while IFS= read -r file; do
+            [ "$file" = ".github/workflows/quality.yml" ] && continue
+            git add -- "$file"
+          done < /tmp/slice-a-files
           git diff --cached --check
           git commit -m "feat: implement Urdu locale foundation"
           git push origin HEAD:feature/urdu-locale-slice-a
