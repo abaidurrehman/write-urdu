@@ -14,7 +14,7 @@ const siteHeader = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 const styles = fs.readFileSync(path.join(root, 'css', 'account-documents.css'), 'utf8');
 const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 const shareClientSource = fs.readFileSync(path.join(root, 'js', 'document-share.mjs'), 'utf8');
-const shareServer = fs.readFileSync(path.join(root, 'functions', 'api', 'share-artifact.js'), 'utf8');
+const shareServer = fs.readFileSync(path.join(root, 'functions', '_lib', 'share-artifacts.js'), 'utf8');
 
 assert.match(siteHeader, /installEditorAccountDocuments/, 'Shared shell must install Rich/Keyboard account persistence');
 assert.match(siteHeader, /\['\/urdu-editor', '\/urdu-keyboard'\]/, 'Only Rich Editor and Urdu Keyboard should load DOC-D from the shared shell');
