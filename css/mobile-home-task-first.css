@@ -1,0 +1,122 @@
+/* Mobile homepage task-first corrections.
+   Keep Voice Typing discoverable without allowing its promo or the command
+   controls to push the primary Urdu writing canvas below the initial viewport. */
+
+@media (max-width: 767px) {
+  /* The shared header already carries the product mark on phones. Avoid a
+     second logo consuming vertical space before the task. */
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .col-12.col-md-9 > a[href="/"] > .logo {
+    display: none !important;
+  }
+
+  /* Preserve the requested Voice Typing discovery point, but make it a compact
+     two-line launcher: strong mic affordance + outcome + a short Urdu preview. */
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home {
+    grid-template-columns: 48px minmax(0, 1fr) 30px !important;
+    gap: 8px !important;
+    align-items: center !important;
+    margin: 0 0 4px !important;
+    padding: 10px 11px !important;
+    border-radius: 14px !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-icon {
+    width: 48px !important;
+    height: 48px !important;
+    box-shadow: 0 0 0 5px rgb(24 145 81 / 8%) !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-icon svg {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-copy {
+    gap: 1px !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-kicker {
+    font-size: .62rem !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-copy strong {
+    font-size: .96rem !important;
+    line-height: 1.15 !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-copy small {
+    display: none !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-output {
+    grid-column: 2 / 4 !important;
+    min-width: 0 !important;
+    max-height: 38px !important;
+    margin: 0 !important;
+    padding: 4px 7px !important;
+    overflow: hidden !important;
+    font-size: .88rem !important;
+    line-height: 1.7 !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-voice-entry-home .wu-voice-entry-arrow {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 1rem !important;
+  }
+
+  /* The command toolbar owns many desktop actions. On phones, keep the direct
+     Share/Copy/More/Clear row and one compact input-mode row. The explanatory
+     helper is redundant with the hero copy and was costing another full row. */
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-surface {
+    margin: 8px 0 6px !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar {
+    gap: 6px !important;
+    padding: 6px !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-helper {
+    display: none !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+    order: 10 !important;
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    margin: 0 !important;
+    padding: 6px 0 0 !important;
+    border-top: 1px solid var(--wu-color-border) !important;
+    border-left: 0 !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode.input-mode-control {
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-title {
+    display: none !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-option {
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 34px !important;
+    flex: 1 1 0 !important;
+    padding: 4px 6px !important;
+    overflow: hidden !important;
+    font-size: .68rem !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+}
