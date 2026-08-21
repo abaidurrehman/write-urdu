@@ -20,7 +20,7 @@ assert.match(siteHeader, /installEditorAccountDocuments/, 'Shared shell must ins
 assert.match(siteHeader, /\['\/urdu-editor', '\/urdu-keyboard'\]/, 'Only Rich Editor and Urdu Keyboard should load DOC-D from the shared shell');
 assert.match(siteHeader, /\/js\/editor-account-documents\.mjs/, 'Shared shell must load the bounded DOC-D controller');
 
-assert.match(controllerSource, /SUPPORTED_KINDS = new Set\(\['rich', 'keyboard'\]\)/, 'Controller must stay scoped to Rich and Keyboard adapters');
+assert.match(controllerSource, /const ROUTE_KIND = Object\.freeze\(\{[\s\S]*'\/urdu-editor': 'rich',[\s\S]*'\/urdu-keyboard': 'keyboard'/, 'Controller must stay scoped to Rich Editor and Urdu Keyboard routes');
 assert.match(controllerSource, /fetchAccountState/, 'Controller must reuse the shared account session state');
 assert.match(controllerSource, /readDocumentOpenHandoff/, 'Controller must consume the existing My Documents open handoff');
 assert.match(controllerSource, /writeAccountDocumentMetadata/, 'Controller must preserve account document metadata after create/update');
@@ -30,7 +30,7 @@ assert.match(controllerSource, /adapter\.onChange/, 'Remote save must subscribe 
 assert.match(controllerSource, /flushLocalWriting\(runtime\)/, 'Account saves must flush the existing local writer before remote sync');
 assert.match(controllerSource, /runtime\.confirm/, 'Opening a saved document over different local content must require confirmation');
 assert.match(controllerSource, /document_revision_conflict/, 'Revision conflicts must pause rather than overwrite');
-assert.match(controllerSource, /source: 'my-documents'/, 'My Documents handoff must preserve its bounded source marker');
+assert.match(controllerSource, /handoff\.editorKind !== editorKind/, 'My Documents handoff must stay bound to the active editor kind');
 assert.doesNotMatch(controllerSource, /localStorage\.clear|sessionStorage\.clear/, 'DOC-D must not clear unrelated browser-local state');
 assert.doesNotMatch(controllerSource, /innerHTML\s*=\s*`[^`]*(?:content|plainText)/s, 'Saved document content must not be interpolated into account UI HTML');
 
