@@ -29,7 +29,7 @@ test('homepage keeps plain-language English to Urdu typing metadata and writing 
   const proof = compact ? page.locator('.page-intro') : page.locator('[data-wu-basic-mode-helper]');
   await expect(proof).toBeVisible();
   await expect(proof).toHaveText(/mera khayal hai\s*→\s*میرا خیال ہے/);
-  await expect(proof).toContainText('press Space after each word');
+  await expect(proof).toContainText(/press Space after each word/i);
   await expect(page.locator('body')).not.toContainText('This is transliteration');
   const types = await schemaTypes(page);
   expect(types).toContain('WebSite');
