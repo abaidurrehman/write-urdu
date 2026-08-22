@@ -58,7 +58,7 @@ test('Phase 1 Urdu command surfaces are localized in initial product UI', async 
   await expect(page.locator('.keyboard-actions')).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
   await expect(page.locator('[data-copy-target="#write"]')).toContainText('متن کاپی کریں');
   await page.locator('input.bt[value="ا"]').click();
-  await expect(page.locator('#write')).toContainText('ا');
+  await expect(page.locator('#write')).toHaveValue(/ا/);
   await expect(page.getByText('اردو کی بورڈ کیسے استعمال کریں')).toBeVisible();
 
   await page.goto('/urdu/urdu-editor', { waitUntil: 'domcontentloaded' });
