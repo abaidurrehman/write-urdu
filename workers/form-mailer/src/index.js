@@ -1,3 +1,5 @@
+import { EmailMessage } from 'cloudflare:email';
+
 const MAX_BODY_BYTES = 12_000;
 
 const JSON_HEADERS = {
@@ -37,6 +39,22 @@ function validateMailRequest(payload) {
   return { ok, value: { formType, subject, text, replyTo } };
 }
 
+function buildRawEmail({ from, to, subject, text, replyTo, formType }) {
+  const headers = [
+    `From: Write Urdu <${from}>`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: 8bit',
+    `X-WriteUrdu-Form: ${formType}`,
+    'Auto-Submitted: auto-generated'
+  ];
+  if (replyTo) headers.push(`Reply-To: ${replyTo}`);
+  headers.push('', text);
+  return headers.join('\r\n');
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -71,18 +89,14 @@ export default {
 
     const { formType, subject, text, replyTo } = validation.value;
     try {
-      const result = await env.FORM_EMAIL.send({
-        to,
-        from,
-        subject,
-        text,
-        ...(replyTo ? { replyTo } : {}),
-        headers: {
-          'X-WriteUrdu-Form': formType,
-          'Auto-Submitted': 'auto-generated'
-        }
-      });
-      return jsonResponse({ ok: true, messageId: result.messageId });
+      // Use the legacy EmailMessage path intentionally. Cloudflare keeps this path
+      // compatible with Email Routing send_email bindings, including fixed verified
+      // destinations on the Workers Free plan. We do not need arbitrary-recipient
+      // Email Sending for the contact/feedback use case.
+      const raw = buildRawEmail({ from, to, subject, text, replyTo, formType });
+      const message = new EmailMessage(from, to, raw);
+      await env.FORM_EMAIL.send(message);
+      return jsonResponse({ ok: true });
     } catch (error) {
       console.error('Write Urdu form notification delivery failed.', error?.code || error?.message || 'unknown error');
       return jsonResponse({ ok: false, message: 'Delivery failed.' }, 502);

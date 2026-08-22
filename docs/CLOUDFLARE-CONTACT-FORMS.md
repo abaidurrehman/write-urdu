@@ -30,7 +30,7 @@ The Worker source is in:
 
 `workers/form-mailer/src/index.js`
 
-Use `workers/form-mailer/wrangler.example.jsonc` as the starting configuration. Copy it to a local `wrangler.jsonc`, choose a verified sender on the Write Urdu Email Routing domain, and replace the destination placeholder with the verified destination address.
+Use `workers/form-mailer/wrangler.example.jsonc` as the starting configuration. Copy it to a local Wrangler config, choose a sender on the Write Urdu Email Routing domain, and replace the destination placeholder with a destination address that has already been verified in Cloudflare Email Routing.
 
 Recommended worker name:
 
@@ -42,6 +42,20 @@ The worker deliberately has:
 - `preview_urls: false`
 - no public route
 - a destination-restricted `send_email` binding
+
+### Workers Free plan
+
+Write Urdu does not require arbitrary-recipient Email Sending. The form only needs to notify one fixed owner inbox. Cloudflare allows Workers on the Free plan to send to verified Email Routing destination addresses.
+
+Accordingly, the mailer uses the legacy `EmailMessage` API over the destination-restricted `send_email` binding. Do not purchase Workers Paid solely for this contact-form workflow and do not depend on the Email Sending Beta onboarding screen.
+
+Requirements for the free-plan path:
+
+- Email Routing is enabled for `write-urdu.com`.
+- the destination inbox is present and verified under Email Routing destination addresses.
+- `FORM_EMAIL.destination_address` is exactly that verified destination.
+- `FORM_TO_EMAIL` is exactly the same verified destination.
+- `FORM_FROM_EMAIL` remains on the Write Urdu routing domain, currently `forms@write-urdu.com`.
 
 Set the Worker secret:
 
