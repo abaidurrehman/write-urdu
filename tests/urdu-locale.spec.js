@@ -62,6 +62,7 @@ test('Phase 1 Urdu command surfaces are localized in initial product UI', async 
   await expect(page.getByText('اردو کی بورڈ کیسے استعمال کریں')).toBeVisible();
 
   await page.goto('/urdu/urdu-editor', { waitUntil: 'domcontentloaded' });
+  // Runtime-injected journey controls must follow the URL-owned locale too.
   await expect(page.locator('.home-actions-group-create')).toHaveAttribute('aria-label', 'اپنی دستاویز سے تخلیق کریں');
   await expect(page.locator('.home-actions-group-create [data-create-card]')).toContainText('اردو کارڈ بنائیں');
   await expect(page.locator('[data-wu-journey="write-to-card"]')).toContainText('اس اردو کو کارڈ بنا کر شیئر کریں');
