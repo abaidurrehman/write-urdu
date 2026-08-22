@@ -649,6 +649,16 @@ This epic does not include:
 
 ## 18. Decision log
 
+### 2026-08-22 — CI caught a Slice A regression: mobile fold fix broke an existing shared-shell contract
+
+PR #104's `static-and-seo` check failed on `tests/inpage.spec.js`'s `nested Urdu tools preserve their own shared-shell page identity` test (mobile-chromium/Pixel 5 project): `.urdu-voice-hero-demo` was expected visible but was hidden.
+
+Root cause: Slice A's mobile-fold fix hid `.urdu-voice-hero-demo` (and other elements) under a plain `@media (max-width: 600px)` query. That query fires on any narrow viewport regardless of height, including Pixel 5 (393×851) — a device with no fold problem at all (851px is tall), where the pre-existing test's expectation that the hero-demo stays visible was correct all along. My original manual verification only checked a short 375×667 viewport and never ran `tests/inpage.spec.js`, so the conflict wasn't caught locally.
+
+Fix: split the mobile block — layout-only rules (`urdu-tool-main` width, textarea min-height, help-grid padding) stay at `max-width: 600px`; the fold-rescue rules (hiding hero-demo/benefits/paragraphs, shrinking the mic) moved to `@media (max-width: 600px) and (max-height: 700px)`, so they only apply to genuinely short viewports. Re-verified: 375×667 still keeps the mic above the fold (bottom 601.8px, hero-demo hidden); Pixel 5 keeps the hero-demo visible. `tests/inpage.spec.js` (4/4), `voice-mobile-acceptance.spec.js` (4/4), and `seo:check` all pass.
+
+Lesson: a targeted manual Playwright check on one viewport is not a substitute for running the existing suite before pushing.
+
 ### 2026-08-22 — Slice E: closed the continuation-measurement gap, rest stays blocked on baseline traffic
 
 Reviewed §13E's six implementation bullets against current state:

@@ -259,6 +259,13 @@
 
 @media (max-width: 600px) {
   .urdu-voice-typing-page .urdu-tool-main { width: min(100% - 1rem, 1180px); }
+  .urdu-voice-transcript .urdu-tool-textarea { min-height: 17rem; }
+  .urdu-voice-help-grid > * { padding: 1.05rem; }
+}
+
+/* Short mobile viewports only: a narrow-but-tall device (e.g. Pixel 5, 851px
+   tall) has no mic-below-fold problem and keeps the full hero/demo layout. */
+@media (max-width: 600px) and (max-height: 700px) {
   .urdu-voice-hero { margin-bottom: .5rem; }
   .urdu-voice-hero-demo { display: none; }
   .urdu-voice-benefits { display: none; }
@@ -267,6 +274,4 @@
   .urdu-voice-mic { width: 3.75rem; height: 3.75rem; margin-bottom: .5rem; }
   .urdu-voice-mic svg { width: 1.8rem; height: 1.8rem; }
   .urdu-voice-control p { display: none; }
-  .urdu-voice-transcript .urdu-tool-textarea { min-height: 17rem; }
-  .urdu-voice-help-grid > * { padding: 1.05rem; }
 }
