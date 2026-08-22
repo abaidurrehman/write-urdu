@@ -1,0 +1,82 @@
+name: Temporary Urdu runtime localization
+
+on:
+  push:
+    branches:
+      - feature/wu-i18n-001c-closeout
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/wu-i18n-001c-closeout
+          fetch-depth: 0
+      - name: Localize dynamic Urdu journey controls
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('js/card-studio-entry.js')
+          s = path.read_text()
+
+          anchor = """    function sourceName() {\n        var path = normalizePath();\n"""
+          replacement = """    function isUrduLocale() {\n        if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.locale === 'function') {\n            return window.WriteUrduLocaleRoute.locale(window.location && window.location.pathname || '/') === 'ur';\n        }\n        return /^\\/urdu(?:\\/|$)/.test(String(window.location && window.location.pathname || '/'));\n    }\n\n    function sourceName() {\n        var path = normalizePath();\n"""
+          if 'function isUrduLocale()' not in s:
+              if anchor not in s:
+                  raise SystemExit('sourceName anchor missing')
+              s = s.replace(anchor, replacement, 1)
+
+          old = "window.WriteUrduUI.notify('Your Urdu text is ready to format.', 'success');"
+          new = "window.WriteUrduUI.notify(isUrduLocale() ? 'آپ کا اردو متن فارمیٹنگ کے لیے تیار ہے۔' : 'Your Urdu text is ready to format.', 'success');"
+          if old in s:
+              s = s.replace(old, new, 1)
+
+          anchor = """            '</div>';\n        mount.parentNode.insertBefore(section, mount);\n"""
+          localized = """            '</div>';\n        if (isUrduLocale()) {\n            var eyebrow = section.querySelector('.wu-next-journey-eyebrow');\n            var title = section.querySelector('#wu-next-journey-title');\n            var copy = section.querySelector('.wu-next-journey-copy');\n            if (eyebrow) eyebrow.textContent = 'اگلا مرحلہ';\n            if (title) title.textContent = 'اب اپنی لکھی ہوئی اردو استعمال کریں';\n            if (copy) copy.textContent = 'اپنے موجودہ متن کو اگلے کام کے مطابق کسی دوسرے ٹول میں لے جائیں۔ متن اسی براؤزر میں منتقل ہوتا ہے؛ عوامی لنک صرف اس وقت بنتا ہے جب آپ خود شیئر کرنے کا انتخاب کریں۔';\n            var labels = {\n                'write-to-card': ['اس اردو کو کارڈ بنا کر شیئر کریں', 'متن کو کارڈ اسٹوڈیو میں کھولیں، خوبصورت بنائیں اور پھر Write-Urdu.com کا لنک شیئر کریں۔'],\n                'write-to-rich': ['رچ ایڈیٹر میں جاری رکھیں', 'دستاویز کو فارمیٹ کریں، پھر Word یا PDF میں محفوظ کریں۔'],\n                'write-to-stylish': ['اسٹائلش اردو متن آزمائیں', 'اسی متن کی کاپی کرنے کے قابل مختلف انداز بنائیں۔'],\n                'write-to-name-art': ['اردو نام آرٹ بنائیں', 'متن کو اصلی اردو فونٹس کے ساتھ تصویر کی صورت میں بنائیں۔'],\n                'write-to-templates': ['اردو ٹیمپلیٹس دیکھیں', 'کارڈ اسٹوڈیو کے لیے تیار ڈیزائن سے آغاز کریں۔']\n            };\n            Object.keys(labels).forEach(function (journey) {\n                var action = section.querySelector('[data-wu-journey="' + journey + '"]');\n                if (!action) return;\n                var strong = action.querySelector('strong');\n                var small = action.querySelector('small');\n                if (strong) strong.textContent = labels[journey][0];\n                if (small) small.textContent = labels[journey][1];\n            });\n        }\n        mount.parentNode.insertBefore(section, mount);\n"""
+          if 'اب اپنی لکھی ہوئی اردو استعمال کریں' not in s:
+              if anchor not in s:
+                  raise SystemExit('journey panel anchor missing')
+              s = s.replace(anchor, localized, 1)
+
+          anchor = """        button.innerHTML = '<span class=\"wu-authoring-share-icon\" aria-hidden=\"true\">↗</span><span class=\"wu-authoring-share-label\">Create &amp; Share</span><span class=\"wu-authoring-share-label-mobile\">Share</span>';\n        var language = header.querySelector('.wu-language-toggle');\n"""
+          localized = """        button.innerHTML = '<span class=\"wu-authoring-share-icon\" aria-hidden=\"true\">↗</span><span class=\"wu-authoring-share-label\">Create &amp; Share</span><span class=\"wu-authoring-share-label-mobile\">Share</span>';\n        if (isUrduLocale()) {\n            button.setAttribute('aria-label', 'اس اردو سے تصویر بنائیں اور شیئر کریں');\n            button.title = 'اس اردو سے تصویر بنائیں اور Write-Urdu.com کا لنک شیئر کریں';\n            button.innerHTML = '<span class=\"wu-authoring-share-icon\" aria-hidden=\"true\">↗</span><span class=\"wu-authoring-share-label\">بنائیں اور شیئر کریں</span><span class=\"wu-authoring-share-label-mobile\">شیئر کریں</span>';\n        }\n        var language = header.querySelector('.wu-language-toggle');\n"""
+          if 'اس اردو سے تصویر بنائیں اور شیئر کریں' not in s:
+              if anchor not in s:
+                  raise SystemExit('header share anchor missing')
+              s = s.replace(anchor, localized, 1)
+
+          anchor = """            button.title = 'Share the Urdu text only without creating a public Write Urdu link';\n            setActionLabel(button, 'Share text only', 'fas fa-share-alt');\n"""
+          localized = """            button.title = 'Share the Urdu text only without creating a public Write Urdu link';\n            setActionLabel(button, 'Share text only', 'fas fa-share-alt');\n            if (isUrduLocale()) {\n                button.title = 'عوامی Write Urdu لنک بنائے بغیر صرف اردو متن شیئر کریں';\n                setActionLabel(button, 'صرف متن شیئر کریں', 'fas fa-share-alt');\n            }\n"""
+          if 'صرف متن شیئر کریں' not in s:
+              if anchor not in s:
+                  raise SystemExit('share-text-only anchor missing')
+              s = s.replace(anchor, localized, 1)
+
+          path.write_text(s)
+
+          test = Path('tests/urdu-locale.spec.js')
+          t = test.read_text()
+          old = """  await expect(page.locator('[data-create-card]')).toContainText('اردو کارڈ بنائیں');\n"""
+          new = """  await expect(page.locator('.home-actions-group-create [data-create-card]')).toContainText('اردو کارڈ بنائیں');\n  await expect(page.locator('[data-wu-journey=\"write-to-card\"]')).toContainText('اس اردو کو کارڈ بنا کر شیئر کریں');\n  await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveAttribute('aria-label', /[\\u0600-\\u06FF]/);\n  await expect(page.locator('[data-wu-journey-panel]')).not.toContainText('Create & share this Urdu');\n"""
+          if old not in t:
+              raise SystemExit('Urdu Card assertion anchor missing')
+          t = t.replace(old, new, 1)
+          test.write_text(t)
+          PY
+          node --check js/card-studio-entry.js
+          git diff --check
+      - name: Commit final runtime localization
+        shell: bash
+        run: |
+          git config user.name "write-urdu-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git rm .github/workflows/tmp-i18n-runtime-localization.yml
+          git add js/card-studio-entry.js tests/urdu-locale.spec.js
+          git commit -m "fix: localize Urdu journey runtime"
+          git push origin HEAD:feature/wu-i18n-001c-closeout
