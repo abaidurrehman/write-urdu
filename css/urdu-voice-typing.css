@@ -259,13 +259,14 @@
 
 @media (max-width: 600px) {
   .urdu-voice-typing-page .urdu-tool-main { width: min(100% - 1rem, 1180px); }
-  .urdu-voice-hero { margin-bottom: 1rem; }
-  .urdu-voice-hero-demo { grid-template-columns: auto 1fr; padding: .9rem; }
-  .urdu-voice-demo-wave { display: none; }
-  .urdu-voice-hero-demo p { font-size: 1.15rem; }
-  .urdu-voice-control { min-height: 17rem; padding: 1rem; }
-  .urdu-voice-mic { width: 6rem; height: 6rem; }
-  .urdu-voice-mic svg { width: 2.7rem; height: 2.7rem; }
+  .urdu-voice-hero { margin-bottom: .5rem; }
+  .urdu-voice-hero-demo { display: none; }
+  .urdu-voice-benefits { display: none; }
+  .urdu-tool-workspace-header p { display: none; }
+  .urdu-voice-control { min-height: 0; padding: .85rem; }
+  .urdu-voice-mic { width: 3.75rem; height: 3.75rem; margin-bottom: .5rem; }
+  .urdu-voice-mic svg { width: 1.8rem; height: 1.8rem; }
+  .urdu-voice-control p { display: none; }
   .urdu-voice-transcript .urdu-tool-textarea { min-height: 17rem; }
   .urdu-voice-help-grid > * { padding: 1.05rem; }
 }

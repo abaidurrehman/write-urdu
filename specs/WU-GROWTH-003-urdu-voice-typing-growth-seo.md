@@ -649,6 +649,96 @@ This epic does not include:
 
 ## 18. Decision log
 
+### 2026-08-22 — Slice E: closed the continuation-measurement gap, rest stays blocked on baseline traffic
+
+Reviewed §13E's six implementation bullets against current state:
+
+- **"measure voice → save/share/create continuation as those downstream features ship"** — found this was never actually instrumented, despite being listed (in different words) under Slice B. The generic `window.WriteUrduTelemetry` client (`js/product-telemetry.js`) had no route entry for `/tools/urdu-voice-typing` in either `toolForRoute()` (fell back to the generic `content` bucket) or `bindPrimaryEditor()` (transcript textarea was never bound, so engagement/length tracking never fired), and `js/urdu-voice-typing.js`'s copy/clean/continue-writing handlers never called the telemetry client at all — they were pure `navigator.clipboard`/`window.location.assign` calls with no signal. Fixed:
+  - `js/product-telemetry.js`: added `/tools/urdu-voice-typing → 'voice_typing'` to `toolForRoute()` and `bindPrimaryEditor()` (binds `#voiceTranscript`, which already dispatches a bubbling `input` event on recognized speech — `js/urdu-voice-typing.js:152` — so engagement tracking needed no product-code change);
+  - `functions/api/events.js`: added `'voice_typing'` to the backend `TOOLS` allowlist (`cleanEvent` silently drops any event whose `tool` isn't allowlisted, so this was required or the route-name fix above would have caused every voice-page event to be dropped server-side). No migration/schema change needed — `tool` is a free-text column keyed generically in `product_hourly_metrics`/`product_hourly_handoffs`, not a fixed-column design;
+  - `js/urdu-voice-typing.js`: wired `copyTranscript()` to call `trackOutcome('copy_completed', { format: 'clipboard', success: true })` and `handoff()` to call `track('tool_handoff', { target_route })` before navigating away, reusing the exact event names/shapes already used by every other tool (no new event type, no content in the payload);
+  - live-verified via Playwright network interception: `tool: "voice_typing"` correctly attributed on `page_session_started`/`tool_engaged`; `copy_completed` fires with `format: clipboard, success: true`; `tool_handoff` fires with `target_route` before the page navigates away (delivered via the existing `pagehide` → `sendBeacon` flush, no dropped events).
+- **"test owner-page snippet/CTA changes"** and **"test contextual internal discovery placements using stable source IDs"** — both are explicitly gated ("when baseline volume supports interpretation"). Per the Slice D finding, the voice route has no accumulated Search Console/traffic history yet (new page) to interpret any experiment against. No experiment started; no new instrumentation speculatively built for hypothetical future placements, per the same reasoning that kept Slice B/D from adding unused infrastructure.
+- **"create reusable short demo assets/scripts"** and **"publish/repurpose on channels Write Urdu can maintain"** — distribution/marketing actions outside this session's tooling (no channel access), not attempted.
+- **"feed Search Console/product evidence back into the support-cluster queue"** — not an action, re-run Slice D once evidence exists.
+
+Verified after fix: `npm run seo:check`, `npm run governance:check`, `npm run locale:check`, `node tests/product-telemetry-contract.test.js` (pre-existing unrelated failure at the `payload()` regex assertion — reproduced identically on a clean stash of this branch before any of this session's edits, not caused by this change), `node tests/urdu-voice-typing-contract.test.js`, `node tests/product-pulse-contract.test.js`, plus live Playwright verification above.
+
+Net: one real measurement gap closed with existing, already-allowlisted infrastructure (no new schema/migration). Everything else in Slice E remains correctly on hold pending either baseline traffic or channel/creative decisions outside this session's scope.
+
+### 2026-08-22 — Slice D: blocked on evidence gate, no pages built
+
+Checked Search Console evidence per §5.3's publication gate before selecting any of the 6 candidate support intents (mobile/Android/iPhone, computer/browser, WhatsApp, punctuation/numbers, permission/not-working, how-to-use).
+
+- top ~150 sitewide queries by clicks contain zero voice-related terms;
+- confirmed with product owner: the voice owner page is new, no Search Console query data has accumulated around it yet;
+- no product-support-ticket or recurring-friction evidence was offered as an alternate gate-satisfying signal.
+
+Per §5.3 ("select only 1–3 support pages from Search Console evidence, product support evidence or clear recurring user friction... other candidates remain unbuilt until justified") and §13D's own first implementation step ("review Search Console query expansion after owner strengthening"), none of the 6 candidates are justified yet.
+
+Net: Slice D stays on hold, no pages built. Revisit once Search Console shows query expansion around voice terms, or product support/feedback surfaces recurring friction. Slice E's owner-page/internal-discovery experiments do not depend on this and can proceed independently of Slice D.
+
+### 2026-08-22 — Slice C: owner strengthening, one content gap closed
+
+Reviewed both owner routes live against §7's below-workspace content checklist and §5.2's Urdu acquisition-language requirement:
+
+- reciprocal `hreflang`/self-canonical: already correct on both routes (fixed under Slice A);
+- Urdu page copy: already natural task phrasing (`اردو وائس ٹائپنگ`, `آواز سے اردو`), not literal API/technical translation — no change needed;
+- sitemap membership: both routes present, but `sitemap.xml`/`robots.txt` were stale against Slice A's `lastmod` bump in `seo.config.js` — regenerated via `node scripts/generate-seo-files.js` (only the voice route's `lastmod` line changed, verified with `git diff`);
+- OG/Twitter/schema per locale: EN carries `WebApplication` only (Slice A fix); UR mirrors it — confirmed via `seo:check`;
+- internal anchor text pointing to the owner (`outcome-navigation.js`, `site-header.js`, `core-workspace-convergence.js`): already descriptive (`Speak and turn it into Urdu text`, `Urdu Voice Typing`, `Start voice typing`) — no change needed;
+- §7 item 6 (distinguish voice typing from typing Urdu with English letters, link to the main typing owner) was a genuine gap — added one descriptive link (`Prefer typing? Type Urdu with English letters` / `ٹائپ کرنا پسند ہے؟ انگریزی حروف سے اردو ٹائپ کریں`) to `/` in both `tools/urdu-voice-typing.html` and `locale/ur.js`, regenerated the Urdu page via `npm run locale:generate` (href auto-localizes to `/urdu/`);
+- §7 items 3–4 (mobile/browser compatibility guidance, permission recovery) were judged already met by existing runtime behavior — `js/urdu-voice-typing.js`'s `mic-blocked`/`unsupported-note` strings surface actionable guidance exactly when relevant — rather than adding unverified static browser-support claims to the page. Full troubleshooting content remains Slice D's evidence-gated support cluster.
+
+Verified after fix: `npm run seo:check`, `npm run locale:check`, `npm run governance:check`, `node tests/urdu-voice-typing-contract.test.js`, `node tests/urdu-locale-generated-contract.test.js`, and live Playwright checks confirming the new link renders on both locales without pushing the mobile mic button below the fold.
+
+Net: one real content gap closed, one stale generated-file gap closed (sitemap/robots), everything else on the §7/§5.2/§7.3 checklist was already correct.
+
+### 2026-08-22 — Slice A baseline recorded, three metadata defects fixed
+
+Baseline captured for both voice owner routes (live-rendered, Playwright-verified):
+
+```text
+EN  /tools/urdu-voice-typing
+    title: Urdu Voice Typing — Speak Urdu to Text Online | WriteUrdu
+    h1: Urdu Voice Typing
+    canonical: https://write-urdu.com/tools/urdu-voice-typing
+    hreflang: en/ur/x-default reciprocal, correct
+    schema: WebSite, Organization, WebPage, BreadcrumbList, WebApplication
+
+UR  /urdu/tools/urdu-voice-typing
+    title: اردو وائس ٹائپنگ | بولیں اور اردو متن حاصل کریں | WriteUrdu
+    h1: اردو وائس ٹائپنگ
+    canonical: https://write-urdu.com/urdu/tools/urdu-voice-typing
+    hreflang: en/ur/x-default reciprocal, correct
+    schema: WebPage, WebApplication
+```
+
+Search Console evidence not yet available for these routes (too new); baseline above is technical/on-page only.
+
+Three defects found and fixed as baseline-preserving corrections (not SEO experiments — no title/copy invented, only pre-existing drift removed):
+
+1. `js/urdu-voice-typing.js` `restorePageIdentity()` unconditionally overwrote `document.title`/H1 with stale hardcoded strings on every load and locale-change, silently downgrading the Urdu owner's title/H1 (lost the `اردو وائس ٹائپنگ` query term from section 5.2, lost brand-consistent title) below what the HTML source and seo.config.js already declared. Removed the override; page now trusts static HTML + seo.js as intended.
+2. Removing (1) exposed that `seo.config.js`'s EN title (`Speak to Type Urdu Online`) had drifted from the HTML file and this spec's own §4.6 baseline (`Speak Urdu to Text Online`). Realigned `seo.config.js` to the documented baseline.
+3. The Urdu HTML's static `ld+json` carried an empty `FAQPage` node (no `mainEntity`, no visible FAQ content anywhere on the page) — a direct §7.1 violation. Removed it, and dropped the matching `FAQPage` entry from `seo.config.js`'s schema list for the EN route (already inert there via `js/seo.js`'s entity guard, but declared a type that renders nothing).
+
+A fourth issue was found while checking §6.1's mobile requirement: on a 375×667 viewport the real "Start voice typing" button sat below the fold (y≈865–935) on both routes — the decorative hero-demo aside (mic icon + waveform + example sentence) and several redundant description paragraphs pushed it down, violating §4.3's non-negotiable invariant. Fixed in `css/urdu-voice-typing.css`'s `max-width: 600px` block: hero-demo, benefit-pill row, workspace-header paragraph and control-column paragraph are hidden at that width (visual only — no DOM/copy removed, no a11y-critical content lost since the button/H1 already carry the accessible name), and the mic icon is shrunk. Start button now lands at y≈482–552 on both routes, comfortably above the fold. Verified with `tests/voice-mobile-acceptance.spec.js` (4/4 pass, desktop + mobile-chromium projects) plus a direct Playwright bounding-box check.
+
+Verified after fix: `npm run seo:check`, `npm run governance:check`, `tests/urdu-voice-typing-contract.test.js`, `tests/voice-account-analytics-contract.test.js`, `tests/voice-mobile-acceptance.spec.js` all pass; live title/H1/schema/mobile-fold re-checked via Playwright on both routes.
+
+### 2026-08-22 — Slice B verified already complete, no changes needed
+
+Audited all `§8` discovery rows against live rendering (not just source) before building anything:
+
+- Homepage: `.wu-voice-entry-home` banner after `.home-hero-actions` (`site-header.js`) — confirmed live.
+- Urdu Keyboard / Rich Editor: contextual next-step card to the voice tool (`workspace-journey-registry.js` + `core-continuity.js`) — confirmed live on both.
+- My Documents: `.my-documents-hero` entry wired in `site-header.js`; route is a Pages Function so it can't render on the static dev server, but the wiring and `tests/urdu-voice-typing-contract.test.js` confirm it.
+- Tools/outcome navigation + Footer: `js/outcome-navigation.js`'s `GROUPS`/`FOOTER_GROUPS` already include voice, rendered into the global header nav and footer on every page, both locales — confirmed live (`/`, `/urdu/`).
+
+Nearly duplicated two things before catching it via live verification: (1) added a footer link directly in `js/site-header-core.js` before discovering `outcome-navigation.js` fully overwrites `.wu-footer-nav` at runtime, making that edit dead code — reverted, no diff left. (2) Started designing a new `voice_account_source_*` D1 table for source→route attribution before discovering `js/acquisition-telemetry.js` (loaded via `js/ads.js`, already active on this page, already classified as `page_type: create`) already posts `{route, locale, page_type, acquisition_channel}` per pageview to `/api/acquisition`, persisted via migration `0008_locale_metrics.sql`'s `site_hourly_locale_entry_routes`, and already reported per-route in `functions/api/internal/acquisition-pulse.js`. No new table needed or built.
+
+Net: Slice B required no code changes. Every acceptance item is already met by existing shared infrastructure predating this epic. Only §5.3/§13D's support-guide contextual links remain open, correctly gated behind Search Console evidence (Slice D).
+
 ### 2026-08-22 — Voice typing promoted to a dedicated growth epic
 
 Founder observation: the shipped Urdu voice typing feature is performing well enough to warrant strategic acquisition investment.
