@@ -9,7 +9,7 @@
     // Publish boundaries and adds a compatibility-safe Card Studio seed adapter.
     // WU-PLAT-003 remains the low-risk core-workspace convergence layer.
 
-    var HOME_SEARCH_INTENT_INTRO = 'Type Urdu using English letters. Press Space after each word to get Urdu script — no Urdu keyboard or account needed.';
+    var HOME_SEARCH_INTENT_INTRO = 'Type Urdu using English letters — for example, mera khayal hai → میرا خیال ہے. Press Space after each word to get Urdu script; no Urdu keyboard or account needed.';
 
     function loadScript(src, marker, done) {
         if (marker && root[marker]) {
