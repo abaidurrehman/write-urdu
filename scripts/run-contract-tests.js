@@ -51,6 +51,7 @@ const tests = [
   'tests/v2-creation-contract.test.js',
   'tests/card-studio-acquisition-contract.test.js',
   'tests/english-urdu-typing-acquisition-contract.test.js',
+  'tests/serp-intent-optimization-contract.test.js',
   'tests/stylish-urdu-acquisition-contract.test.js',
   'tests/name-art-acquisition-contract.test.js',
   'tests/name-art-task-first-contract.test.js'

@@ -202,6 +202,8 @@ Turn the expanded WriteUrdu product into one continuous user journey instead of 
 
 ## P1.1 — Defend and expand proven search demand
 
+**Current slice:** `WU-SEO-CTR-001` Phase 1 intent and measurement foundations are active. Homepage title/description experiments remain blocked on dated Search Console query-to-page, URL Inspection and recrawl evidence.
+
 - [ ] Improve CTR on high-impression queries without destabilizing proven ranking URLs.
 - [ ] Prioritize positions 4–10 first, then strong-relevance 11–20 queries.
 - [ ] Resolve cannibalization from measured query/page evidence.

@@ -21,6 +21,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-PLAT-004` | Basic Writer Command Toolbar | `/` | Active — share-first command surface implemented; production convergence follow-up active |
 | `WU-PLAT-004A` | Basic Writer Public Share Short Link | `/`, `/s/:id`, `/api/shares*` | Active — P0 hotfix; primary toolbar Share publishes explicit Write-Urdu short links |
 | `WU-SEO-ETU-001` | English to Urdu Typing acquisition | `/` | Implemented — homepage owns English-letter / Roman Urdu to Urdu-script typing intent |
+| `WU-SEO-CTR-001` | SERP CTR and intent optimization | `/`, `/urdu-keyboard` | Active — Phase 1 intent/measurement foundation; metadata experiment evidence-gated |
 | `WU-CS-UX-001` | Urdu Card Studio guided workflow | `/urdu-card-studio` | Implemented — v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Urdu Card Studio empty-state guidance | `/urdu-card-studio` | Implemented — retained through v2 creation migration |
 | `WU-SEO-CS-001` | Card Studio SEO acquisition | `/urdu-card-studio`, `/how-to-write-urdu-on-photo` | Implemented — Card Studio owns Urdu text/poetry-on-photo acquisition cluster |
