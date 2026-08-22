@@ -14,6 +14,7 @@ const locale = read('locale/ur.js');
 const generator = read('scripts/generate-urdu-locale.js');
 const telemetry = read('js/product-telemetry.js');
 const acquisition = read('js/acquisition-telemetry.js');
+const journeyRuntime = read('js/card-studio-entry.js');
 const events = read('functions/api/events.js');
 const acquisitionApi = read('functions/api/acquisition.js');
 const migration = read('migrations/0008_locale_metrics.sql');
@@ -37,6 +38,10 @@ assert.doesNotMatch(editor, />\s*(?:Basic editor|Create Urdu Card|Create QR Code
 
 assert.match(locale, /literalReplacements/, 'Reviewed literal replacements must live in the locale catalogue');
 assert.match(generator, /applyLiteralReplacements/, 'Static locale generator must own emitted Urdu command localization');
+assert.match(journeyRuntime, /function isUrduLocale\(\)/, 'Dynamic journey runtime must derive locale from the URL-owned locale helper');
+assert.match(journeyRuntime, /اس اردو کو کارڈ بنا کر شیئر کریں/, 'Dynamic Card Studio journey action must have reviewed Urdu copy');
+assert.match(journeyRuntime, /اس اردو سے تصویر بنائیں اور شیئر کریں/, 'Dynamic header share action must have an Urdu accessible label');
+assert.match(journeyRuntime, /صرف متن شیئر کریں/, 'Dynamic text-only share action must have Urdu copy');
 assert.match(telemetry, /locale:\s*locale/, 'Product telemetry must emit a bounded locale dimension');
 assert.match(acquisition, /locale:\s*currentLocale\(\)/, 'Acquisition telemetry must emit a bounded locale dimension');
 assert.match(events, /LOCALES = new Set\(\['en', 'ur'\]\)/, 'Product events API must bound locale to en/ur');
