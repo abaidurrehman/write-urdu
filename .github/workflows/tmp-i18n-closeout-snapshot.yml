@@ -1,9 +1,9 @@
 name: Temporary i18n closeout snapshot
 
 on:
-  push:
+  pull_request:
     branches:
-      - feature/wu-i18n-001c-closeout
+      - main
 
 permissions:
   contents: read
