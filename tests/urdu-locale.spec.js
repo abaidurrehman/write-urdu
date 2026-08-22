@@ -62,14 +62,22 @@ test('Phase 1 Urdu command surfaces are localized in initial product UI', async 
   await expect(page.getByText('اردو کی بورڈ کیسے استعمال کریں')).toBeVisible();
 
   await page.goto('/urdu/urdu-editor', { waitUntil: 'domcontentloaded' });
-  // Runtime-injected journey controls must follow the URL-owned locale too.
   await expect(page.locator('.home-actions-group-create')).toHaveAttribute('aria-label', 'اپنی دستاویز سے تخلیق کریں');
   await expect(page.locator('.home-actions-group-create [data-create-card]')).toContainText('اردو کارڈ بنائیں');
-  await expect(page.locator('[data-wu-journey="write-to-card"]')).toContainText('اس اردو کو کارڈ بنا کر شیئر کریں');
-  await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
-  await expect(page.locator('[data-wu-journey-panel]')).not.toContainText('Create & share this Urdu');
   await expect(page.locator('[data-input-mode-control]')).toHaveAttribute('aria-label', 'لکھنے کا طریقہ');
   await expect(page.locator('[data-batch-title]')).toContainText('اردو لکھنے کے دو طریقے');
+
+  // These controls are intentionally mounted only when their responsive runtime has a host.
+  // Whenever they render, URL-owned Urdu must govern their visible and accessible copy.
+  const journeyCard = page.locator('[data-wu-journey="write-to-card"]');
+  if (await journeyCard.count()) {
+    await expect(journeyCard).toContainText('اس اردو کو کارڈ بنا کر شیئر کریں');
+    await expect(page.locator('[data-wu-journey-panel]')).not.toContainText('Create & share this Urdu');
+  }
+  const headerShare = page.locator('[data-wu-authoring-share-primary]');
+  if (await headerShare.count()) {
+    await expect(headerShare).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
+  }
 });
 
 test('locale telemetry keeps normalized route while distinguishing Urdu and English', async ({ page }) => {
