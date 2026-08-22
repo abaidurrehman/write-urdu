@@ -267,7 +267,7 @@ test('human sitemap follows Write Create Work Learn taxonomy', async ({ page }) 
   await expect(page.locator('main')).toContainText('Create');
   await expect(page.locator('main')).toContainText('Work');
   await expect(page.locator('main')).toContainText('Learn');
-  await expect(page.locator('main')).toContainText('Urdu Text Cleaner');
+  await expect(page.locator('main')).toContainText('Fix broken or badly formatted Urdu');
   await expect(page.locator('main')).toContainText('Urdu & English Invoice Generator');
 });
 
