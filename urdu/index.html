@@ -56,29 +56,7 @@
 <script src="/google_jsapi.js"></script>
 <script src="/main.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.2.0/js/bootstrap-colorpicker.js"></script>
-<script>
-    window.twttr = (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0],
-            t = window.twttr || {};
-        if (d.getElementById(id)) return t;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js, fjs);
-
-        t._e = [];
-        t.ready = function (f) {
-            t._e.push(f);
-        };
-
-        return t;
-    }(document, "script", "twitter-wjs"));</script>
 <style type="text/css">
-    .twitter-share-button {
-        vertical-align: middle;
-        padding-right: 8px;
-    }
-
     canvas {
         border: 1px black solid;
     }
@@ -86,34 +64,7 @@
     #textCanvas {
         display: none;
     }
-
-    .facebook-responsive {
-        overflow: hidden;
-        padding-bottom: 40.25%;
-        position: relative;
-        height: 0;
-        text-align: center;
-        width: 100%;
-    }
-
-    .facebook-responsive iframe {
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 60%;
-        position: absolute;
-        text-align: center;
-    }
 </style>
-<div id="fb-root"></div>
-<script>
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7&appId=1410577659240776";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
 
 <div class="container-fluid">
     <div class="row mw-100" style="width: 100%;">
@@ -146,23 +97,6 @@
     &nbsp;
 
     <div class="row">
-        <div class="col-6 col-md-3">
-            <div class="col-6 col-md-3">
-                <div style="line-height:30px;">
-                    <div class="fb-like" data-action="like" data-href="https://www.facebook.com/WriteUrdu/"
-                        data-layout="standard" data-share="true" data-show-faces="true" data-size="small"></div>
-                    <a class="twitter-follow-button" data-size="small" href="https://twitter.com/UrduEditor"
-                        style="vertical-align:bottom;">Follow @UrduEditor </a>
-                </div>
-
-                <hr class="solid" />
-                <div style="float:left;width:250px">
-                    <!-- Advertising slot intentionally disabled on the editor workspace. -->
-                </div>
-            </div>
-            <br />
-        </div>
-
         <div class="col-12 col-md-9"><a href="/urdu/"
                 title="English to Urdu typing online"><img
                     alt="English to Urdu typing editor" class="logo"
@@ -293,20 +227,6 @@
                     <ul class="card-text" data-wu-l10n="home.howToList"><li>ایڈیٹر میں انگریزی حروف کی مدد سے اردو کا کوئی لفظ لکھیں، مثلاً <em>mera</em>۔</li><li>اسے خودکار طور پر اردو رسم الخط میں تبدیل کرنے کے لیے Space دبائیں۔</li><li>انگریزی حروف میں لکھا ہوا کوئی طویل اردو حصہ پیسٹ کریں، پھر <strong>حصے کو اردو رسم الخط میں تبدیل کریں</strong> منتخب کریں۔</li><li>نتیجہ آپ کی توقع کے مطابق نہ ہو تو Backspace دو بار دبائیں اور کوئی <strong>متبادل</strong> منتخب کریں۔</li><li>جب اردو کسی دوسری ایپ میں پیسٹ کرنی ہو تو <strong>متن کاپی کریں</strong> منتخب کریں۔</li><li>&quot;میرا خیال ہے&quot; <a href="/urdu/urdu-alphabet" title="اردو حروف تہجی کا رہنما">اردو رسم الخط</a> میں لکھنے کے لیے، <em>mera khayal hai</em> ٹائپ کریں اور ہر لفظ کے بعد Space دبائیں۔</li><li>اسی طریقے سے نام اور مختصر پیغامات لکھیں، پھر شیئر کرنے سے پہلے انہیں دیکھ لیں۔</li><li>عنوان، رنگ، فہرست یا دوسری فارمیٹنگ کے لیے <a href="/urdu/urdu-editor" title="رچ ٹیکسٹ ایڈیٹر میں اردو فارمیٹ کریں">اردو رچ ٹیکسٹ ایڈیٹر</a> کھولیں۔</li><li>کسی اردو کی بورڈ سافٹ ویئر کی ضرورت نہیں؛ سب کچھ آپ کے براؤزر میں چلتا ہے۔</li><li>زبان اور رسم الخط کے واضح جوابات کے لیے <a href="/urdu/urdu-faq" title="اردو کے بارے میں اکثر پوچھے گئے سوالات">اردو سوالات</a> پڑھیں۔</li></ul>
                 </div>
             </div>
-            &nbsp;
-
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title" data-wu-l10n="home.videoGuideTitle">رائٹ اردو کا ویڈیو رہنما</h4>
-
-                    <div class="facebook-responsive"><iframe
-                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                            allowfullscreen="true" frameborder="0" height="325" scrolling="no"
-                            src="https://www.facebook.com/plugins/video.php?height=325&amp;href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F3434891606638257%2F&amp;show_text=false"
-                            style="border:none;overflow:hidden" width="560"></iframe></div>
-                </div>
-            </div>
-
             <section class="seo-content homepage-seo" aria-labelledby="home-tools-title">
                 <section class="home-new-tools" id="home-new-tools" aria-labelledby="home-new-tools-title">
                     <p class="home-section-eyebrow" data-wu-l10n="home.newToolsEyebrow">اردو میں لکھنے اور تخلیق کرنے کے مزید طریقے</p>
@@ -355,8 +275,6 @@
                 <nav class="related-resources" aria-labelledby="home-related-title"><h3 id="home-related-title" data-wu-l10n="home.learnMoreTitle">مزید جانیں</h3><ul><li><a href="/write-urdu-documentation" data-wu-l10n="home.learnMoreDocs">مکمل دستاویزات پڑھیں</a></li><li><a href="/urdu-editor-features" data-wu-l10n="home.learnMoreFormatting">اردو فارمیٹنگ سیکھیں</a></li><li><a href="/urdu/urdu-faq" data-wu-l10n="home.learnMoreFaq">اکثر پوچھے گئے سوالات دیکھیں</a></li><li><a href="/why-write-urdu" data-wu-l10n="home.learnMoreWhy">رائٹ اردو کیوں؟</a></li></ul></nav>
             </section>
 
-            <div class="fb-comments" data-href="https://write-urdu.com/" data-numposts="7" data-width="800"
-                style="align-content: center;width:100%;"></div>
         </div>
     </div>
 </div>

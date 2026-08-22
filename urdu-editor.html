@@ -121,51 +121,9 @@
 
     </script>
 
-    <script>
-        window.twttr = (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0],
-                t = window.twttr || {};
-            if (d.getElementById(id)) return t;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://platform.twitter.com/widgets.js";
-            fjs.parentNode.insertBefore(js, fjs);
-
-            t._e = [];
-            t.ready = function (f) {
-                t._e.push(f);
-            };
-
-            return t;
-        }(document, "script", "twitter-wjs"));</script>
-
-
     <style type="text/css">
-        .twitter-share-button {
-            vertical-align: middle;
-            padding-right: 8px;
-        }
-
         .mce-content-body p {
             font-size: 18px !important;
-        }
-
-        .facebook-responsive {
-            overflow: hidden;
-            padding-bottom: 40.25%;
-            position: relative;
-            height: 0;
-            text-align: center;
-            width: 100%;
-        }
-
-        .facebook-responsive iframe {
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 60%;
-            position: absolute;
-            text-align: center;
         }
     </style>
 <script src="/locale.config.js" defer></script>
@@ -184,16 +142,6 @@
 </head>
 
 <body class="tool-page rich-editor-page">
-
-    <div id="fb-root"></div>
-    <script>
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s); js.id = id;
-            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7&appId=1410577659240776";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
 
     <div class="container-fluid">
 
@@ -247,19 +195,6 @@
         </div>
         <br>
         <div class="row">
-
-            <div class="col-6 col-md-3">
-                <div style="line-height:30px;">
-                    <div class="fb-like" data-href="https://www.facebook.com/WriteUrdu/" data-layout="standard"
-                        data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
-                    <a class="twitter-follow-button" style="vertical-align:bottom;"
-                        href="https://twitter.com/UrduEditor" data-size="small">
-                        Follow @UrduEditor
-                    </a>
-                </div>
-                <hr class="solid">
-                <div aria-hidden="true"></div>
-            </div>
 
             <div class="col-12 col-md-9">
                 <a href="/"
@@ -378,23 +313,6 @@
                             </ul>
                     </div>
                 </div>
-                <br>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Video guide to the Urdu Rich Text Editor</h4>
-                            <div class="facebook-responsive">
-                                <iframe
-                                    src="https://www.facebook.com/plugins/video.php?height=282&href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F753274025325672%2F&show_text=false&width=560"
-                                    width="560" height="282" style="border:none;overflow:hidden" scrolling="no"
-                                    frameborder="0" allowfullscreen="true"
-                                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                    allowFullScreen="true"></iframe>
-                            </div>
-                    </div>
-                </div>
-
-                <div class="fb-comments" data-href="http://write-urdu.com/"
-                    style="align-content: center;width:100%;" data-width="800" data-numposts="7"></div>
             </div>
 
 

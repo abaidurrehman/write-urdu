@@ -137,7 +137,6 @@
   font-size: .88rem;
   line-height: 1.55;
 }
-.rich-editor-page .card:has(.facebook-responsive),
 .rich-editor-page .card + br,
 .keyboard-page .card + br { display: none; }
 

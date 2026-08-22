@@ -54,29 +54,7 @@
 <script src="google_jsapi.js"></script>
 <script src="main.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.2.0/js/bootstrap-colorpicker.js"></script>
-<script>
-    window.twttr = (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0],
-            t = window.twttr || {};
-        if (d.getElementById(id)) return t;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js, fjs);
-
-        t._e = [];
-        t.ready = function (f) {
-            t._e.push(f);
-        };
-
-        return t;
-    }(document, "script", "twitter-wjs"));</script>
 <style type="text/css">
-    .twitter-share-button {
-        vertical-align: middle;
-        padding-right: 8px;
-    }
-
     canvas {
         border: 1px black solid;
     }
@@ -84,34 +62,7 @@
     #textCanvas {
         display: none;
     }
-
-    .facebook-responsive {
-        overflow: hidden;
-        padding-bottom: 40.25%;
-        position: relative;
-        height: 0;
-        text-align: center;
-        width: 100%;
-    }
-
-    .facebook-responsive iframe {
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 60%;
-        position: absolute;
-        text-align: center;
-    }
 </style>
-<div id="fb-root"></div>
-<script>
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7&appId=1410577659240776";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
 
 <div class="container-fluid">
     <div class="row mw-100" style="width: 100%;">
@@ -147,23 +98,6 @@
     &nbsp;
 
     <div class="row">
-        <div class="col-6 col-md-3">
-            <div class="col-6 col-md-3">
-                <div style="line-height:30px;">
-                    <div class="fb-like" data-action="like" data-href="https://www.facebook.com/WriteUrdu/"
-                        data-layout="standard" data-share="true" data-show-faces="true" data-size="small"></div>
-                    <a class="twitter-follow-button" data-size="small" href="https://twitter.com/UrduEditor"
-                        style="vertical-align:bottom;">Follow @UrduEditor </a>
-                </div>
-
-                <hr class="solid" />
-                <div style="float:left;width:250px">
-                    <!-- Advertising slot intentionally disabled on the editor workspace. -->
-                </div>
-            </div>
-            <br />
-        </div>
-
         <div class="col-12 col-md-9"><a href="/"
                 title="English to Urdu typing online"><img
                     alt="English to Urdu typing editor" class="logo"
@@ -313,20 +247,6 @@
                     </ul>
                 </div>
             </div>
-            &nbsp;
-
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title" data-wu-l10n="home.videoGuideTitle">Video guide to Write Urdu</h4>
-
-                    <div class="facebook-responsive"><iframe
-                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                            allowfullscreen="true" frameborder="0" height="325" scrolling="no"
-                            src="https://www.facebook.com/plugins/video.php?height=325&amp;href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F3434891606638257%2F&amp;show_text=false"
-                            style="border:none;overflow:hidden" width="560"></iframe></div>
-                </div>
-            </div>
-
             <section class="seo-content homepage-seo" aria-labelledby="home-tools-title">
                 <section class="home-new-tools" id="home-new-tools" aria-labelledby="home-new-tools-title">
                     <p class="home-section-eyebrow" data-wu-l10n="home.newToolsEyebrow">More ways to write and create in Urdu</p>
@@ -375,8 +295,6 @@
                 <nav class="related-resources" aria-labelledby="home-related-title"><h3 id="home-related-title" data-wu-l10n="home.learnMoreTitle">Learn more</h3><ul><li><a href="/write-urdu-documentation" data-wu-l10n="home.learnMoreDocs">Read the complete documentation</a></li><li><a href="/urdu-editor-features" data-wu-l10n="home.learnMoreFormatting">Learn Urdu formatting</a></li><li><a href="/urdu-faq" data-wu-l10n="home.learnMoreFaq">Browse frequently asked questions</a></li><li><a href="/why-write-urdu" data-wu-l10n="home.learnMoreWhy">Why Write Urdu?</a></li></ul></nav>
             </section>
 
-            <div class="fb-comments" data-href="https://write-urdu.com/" data-numposts="7" data-width="800"
-                style="align-content: center;width:100%;"></div>
         </div>
     </div>
 </div>
