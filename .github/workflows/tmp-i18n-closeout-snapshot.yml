@@ -1,0 +1,21 @@
+name: Temporary i18n closeout snapshot
+
+on:
+  push:
+    branches:
+      - feature/wu-i18n-001c-closeout
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: write-urdu-i18n-closeout-snapshot
+          path: .
+          include-hidden-files: true
+          retention-days: 1
