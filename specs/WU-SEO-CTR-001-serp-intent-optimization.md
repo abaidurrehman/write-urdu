@@ -1,6 +1,7 @@
 # WU-SEO-CTR-001 — SERP CTR and Intent Optimization
 
-**Status:** Groomed / ready for implementation  
+**Status:** Active — Phase 1 intent/measurement foundation; metadata experiment evidence-gated
+
 **Primary dependency:** `WU-SEO-ETU-001`  
 **Primary route:** `/`  
 **Secondary route:** `/urdu-keyboard`  
@@ -413,24 +414,24 @@ Only reopen page ownership if Search Console demonstrates that the current page 
 - [ ] Current production title, description, H1, canonical, and indexability are verified before another homepage metadata change.
 - [ ] Priority query→page ownership is recorded.
 - [ ] Google recrawl/indexed-state evidence is recorded where available.
-- [ ] A dated SERP experiment/change log exists before a new title test is shipped.
+- [x] A dated SERP experiment/change log exists before a new title test is shipped.
 - [ ] The previous comparison window is preserved for measurement.
 
 ### Homepage
 
-- [ ] `English to Urdu Typing Online` remains the primary acquisition job unless measured evidence approves a better plain-language variant.
-- [ ] First-screen copy explains English letters → Urdu script in user language.
-- [ ] The active editor remains prominent.
-- [ ] Copy remains an obvious action.
-- [ ] No technical terminology is required for the primary workflow.
-- [ ] No new ad is placed inside the writing surface.
+- [x] `English to Urdu Typing Online` remains the primary acquisition job unless measured evidence approves a better plain-language variant.
+- [x] First-screen copy explains English letters → Urdu script in user language.
+- [x] The active editor remains prominent.
+- [x] Copy remains an obvious action.
+- [x] No technical terminology is required for the primary workflow.
+- [x] No new ad is placed inside the writing surface.
 
 ### Urdu keyboard
 
-- [ ] `/urdu-keyboard` clearly owns direct Urdu keyboard intent.
-- [ ] Direct character input is the dominant promise.
-- [ ] Copy/save and no-install benefits are visible where accurate.
-- [ ] The page does not compete with `/` by making English-letter conversion its primary promise.
+- [x] `/urdu-keyboard` clearly owns direct Urdu keyboard intent.
+- [x] Direct character input is the dominant promise.
+- [x] Copy/save and no-install benefits are visible where accurate.
+- [x] The page does not compete with `/` by making English-letter conversion its primary promise.
 
 ### Measurement
 
@@ -438,7 +439,7 @@ Only reopen page ownership if Search Console demonstrates that the current page 
 - [ ] `urdu keyboard online` is monitored independently.
 - [ ] Device/country splits are reviewed when they materially explain CTR.
 - [ ] Product-use metrics are checked so higher CTR is not mistaken for success if editor usage degrades.
-- [ ] No raw writing/user-content telemetry is introduced.
+- [x] No raw writing/user-content telemetry is introduced.
 
 ## Verification commands
 

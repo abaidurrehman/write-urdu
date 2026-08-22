@@ -25,12 +25,30 @@ test('homepage keeps plain-language English to Urdu typing metadata and writing 
   await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /English to Urdu typing online.*English letters.*Urdu script/i);
   await expect(page.locator('.page-intro')).toContainText('Type Urdu using English letters');
   await expect(page.locator('.input-mode-option').first()).toHaveText('English letters → Urdu');
+  const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
+  const proof = compact ? page.locator('.page-intro') : page.locator('[data-wu-basic-mode-helper]');
+  await expect(proof).toBeVisible();
+  await expect(proof).toHaveText(/mera khayal hai\s*→\s*میرا خیال ہے/);
+  await expect(proof).toContainText(/press Space after each word/i);
   await expect(page.locator('body')).not.toContainText('This is transliteration');
   const types = await schemaTypes(page);
   expect(types).toContain('WebSite');
   expect(types).toContain('WebPage');
   expect(types).toContain('WebApplication');
   expect(types).toContain('Organization');
+});
+
+test('Urdu Keyboard keeps direct input dominant and sends English-letter writers to the homepage', async ({ page }) => {
+  await open(page, '/urdu-keyboard');
+  await expect(page.locator('h1')).toHaveText('Urdu Keyboard');
+  await expect(page.locator('mark.sm')).toHaveText('Type Urdu directly—no installation required');
+  await expect(page.locator('#write')).toBeVisible();
+  await expect(page.locator('#key1')).toBeVisible();
+  await expect(page.getByText('Roman Urdu words convert when you press Space')).toHaveCount(0);
+  const homepageLinks = page.locator('.keyboard-supporting-content a[href="/"]');
+  const labels = await homepageLinks.allTextContents();
+  expect(labels.length).toBeGreaterThanOrEqual(3);
+  expect(labels.every(label => label.trim() === 'English to Urdu typing')).toBe(true);
 });
 
 test('Roman Urdu support page keeps secondary intent without technical language in the title or H1', async ({ page }) => {
