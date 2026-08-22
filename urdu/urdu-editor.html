@@ -273,7 +273,7 @@
                             <p class="page-intro answer-summary" data-wu-l10n="urdu-editor.lede">اردو دستاویز کو عنوانات، فونٹس، رنگ، فہرستوں اور ترتیب کے ساتھ فارمیٹ کریں، پھر Word، PDF یا تصویر کی صورت میں محفوظ کریں۔</p>
 
                             <h4 class="small">
-                                <mark class="sm">Write, format and export Urdu documents online</mark>
+                                <mark class="sm">اردو دستاویز لکھیں، فارمیٹ کریں اور محفوظ کریں</mark>
                             </h4>
                         </div>
 
@@ -283,103 +283,103 @@
                 <hr class="solid">
                 <div style="margin-top:15px;">
                     <div class="tool-actions" style="text-align:right;margin-top:15px;width:100%;">
-                        <div class="home-actions-group home-actions-group-primary" role="group" aria-label="Writing mode">
-                        <a class="btn btn-success btn-sm" role="button" href="/urdu/" title="Switch to the basic editor">
-                            <i class="fas fa-pencil-alt" aria-hidden="true"></i> Basic editor</a>
+                        <div class="home-actions-group home-actions-group-primary" role="group" aria-label="لکھنے کا طریقہ">
+                        <a class="btn btn-success btn-sm" role="button" href="/urdu/" title="بنیادی ایڈیٹر کھولیں">
+                            <i class="fas fa-pencil-alt" aria-hidden="true"></i> بنیادی ایڈیٹر</a>
                         </div>
-                        <div class="home-actions-group home-actions-group-create" role="group" aria-label="Create with your document">
+                        <div class="home-actions-group home-actions-group-create" role="group" aria-label="اپنی دستاویز سے تخلیق کریں">
                         <button type="button" class="btn btn-outline-editor btn-sm" data-create-card data-editor-source="rich-editor">
-                            <i class="far fa-image" aria-hidden="true"></i> Create Urdu Card</button>
+                            <i class="far fa-image" aria-hidden="true"></i> اردو کارڈ بنائیں</button>
                         <button type="button" class="btn btn-outline-editor btn-sm" data-create-qr data-editor-source="rich-editor">
-                            <i class="fas fa-qrcode" aria-hidden="true"></i> Create QR Code</button>
+                            <i class="fas fa-qrcode" aria-hidden="true"></i> QR کوڈ بنائیں</button>
                         </div>
-                        <div class="home-actions-group home-actions-group-export" role="group" aria-label="Export and share">
+                        <div class="home-actions-group home-actions-group-export" role="group" aria-label="محفوظ اور شیئر کریں">
                         <details class="action-menu rich-action-menu">
-                            <summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> Export</summary>
+                            <summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> برآمد کریں</summary>
                             <div class="action-menu-panel">
                                 <button type="button" class="ExportToWord" id="exportWord" onclick="DownloadAsWord()">
-                                    <i class="far fa-file-word" aria-hidden="true"></i> Word document</button>
+                                    <i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز</button>
                                 <button type="button" id="exportPdf" onclick="DownloadAsPdf()">
-                                    <i class="far fa-file-pdf" aria-hidden="true"></i> PDF document</button>
+                                    <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز</button>
                                 <button type="button" id="exportImage" onclick="DownloadAsImage()">
-                                    <i class="far fa-image" aria-hidden="true"></i> PNG image</button>
+                                    <i class="far fa-image" aria-hidden="true"></i> PNG تصویر</button>
                                 <button type="button" id="PrintCurrentText" onclick="PrintText()">
-                                    <i class="fas fa-print" aria-hidden="true"></i> Print</button>
+                                    <i class="fas fa-print" aria-hidden="true"></i> پرنٹ کریں</button>
                                 <button type="button" id="previewExport" onclick="PreviewCurrentText()">
-                                    <i class="far fa-eye" aria-hidden="true"></i> Preview</button>
+                                    <i class="far fa-eye" aria-hidden="true"></i> پیش منظر</button>
                             </div>
                         </details>
                         <button type="button" class="btn btn-dark btn-sm" data-write-urdu-share
-                            title="Share the Urdu text using WhatsApp">
-                            <i class="fab fa-whatsapp" aria-hidden="true"></i> Share
+                            title="اردو متن WhatsApp پر شیئر کریں">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i> شیئر کریں
                         </button>
                         <details class="action-menu rich-action-menu">
-                            <summary class="btn btn-light"><i class="fas fa-ellipsis-h" aria-hidden="true"></i> More</summary>
+                            <summary class="btn btn-light"><i class="fas fa-ellipsis-h" aria-hidden="true"></i> مزید</summary>
                             <div class="action-menu-panel compact-menu-panel">
                                 <a href="/english-urdu-typing-tutorial"><i class="fas fa-question-circle"
-                                        aria-hidden="true"></i> Typing help</a>
+                                        aria-hidden="true"></i> ٹائپنگ مدد</a>
                                 <button type="button" data-toggle="modal" data-target="#exampleModal">
-                                    <i class="fas fa-list" aria-hidden="true"></i> Font samples</button>
+                                    <i class="fas fa-list" aria-hidden="true"></i> فونٹ نمونے</button>
                             </div>
                         </details>
                         </div>
                         <div class="spinner-grow text-success" role="status" id="spinner">
-                            <span class="sr-only">Loading transliteration...</span>
+                            <span class="sr-only">اردو تحریر تیار ہو رہی ہے...</span>
                         </div>
                         <button type="button" class="btn btn-danger btn-sm" id="clear" onclick="clearRichText();"
-                            title="Clear all typed Urdu text"><i class="far fa-trash-alt" aria-hidden="true"></i> Clear</button>
+                            title="تمام لکھا ہوا اردو متن صاف کریں"><i class="far fa-trash-alt" aria-hidden="true"></i> صاف کریں</button>
                     </div>
                 </div>
 
-                <div class="input-mode-control input-mode-control-rich" data-input-mode-control data-input-mode-storage="rich" data-input-mode-targets="#basic-example_ifr" role="group" aria-label="Input mode">
-                    <span class="input-mode-title" data-input-mode-title>Input mode</span>
-                    <button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">Roman Urdu → Urdu</button>
-                    <button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Direct Urdu / English</button>
-                    <span class="input-mode-note" data-input-mode-note>Type Roman Urdu and press Space to convert each word.</span>
+                <div class="input-mode-control input-mode-control-rich" data-input-mode-control data-input-mode-storage="rich" data-input-mode-targets="#basic-example_ifr" role="group" aria-label="لکھنے کا طریقہ">
+                    <span class="input-mode-title" data-input-mode-title>لکھنے کا طریقہ</span>
+                    <button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">انگریزی حروف → اردو</button>
+                    <button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">اردو یا انگریزی براہِ راست لکھیں</button>
+                    <span class="input-mode-note" data-input-mode-note>انگریزی حروف میں اردو لفظ لکھیں اور ہر لفظ کے بعد Space دبائیں۔</span>
                 </div>
                 <div class="batch-transliteration-panel" data-batch-transliteration data-batch-input-mode="rich" data-batch-target="#basic-example_ifr" role="region" aria-labelledby="rich-batch-transliteration-title">
-                    <strong data-batch-title id="rich-batch-transliteration-title">Two ways to write Urdu</strong>
-                    <span data-batch-guide>Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.</span>
-                    <small data-batch-note>This is transliteration: it changes sounds into Urdu script, not English meaning.</small>
-                    <strong data-batch-prompt hidden>Long Roman Urdu text detected. Convert this passage to Urdu script?</strong>
-                    <button type="button" data-batch-action hidden>Convert passage to Urdu script</button>
+                    <strong data-batch-title id="rich-batch-transliteration-title">اردو لکھنے کے دو طریقے</strong>
+                    <span data-batch-guide>انگریزی حروف میں اردو لکھیں اور ہر لفظ کے بعد Space دبائیں، یا طویل حصہ پیسٹ کر کے ایک مرحلے میں اردو رسم الخط میں بدلیں۔</span>
+                    <small data-batch-note>یہ آوازوں کو اردو رسم الخط میں بدلتا ہے؛ انگریزی معنی کا ترجمہ نہیں کرتا۔</small>
+                    <strong data-batch-prompt hidden>طویل متن ملا ہے۔ کیا اسے اردو رسم الخط میں تبدیل کیا جائے؟</strong>
+                    <button type="button" data-batch-action hidden>حصے کو اردو رسم الخط میں تبدیل کریں</button>
                     <span data-batch-status role="status" aria-live="polite"></span>
                 </div>
                 <div style="min-height:300px;">
-                    <label class="sr-only" for="basic-example">Urdu rich text editor</label>
+                    <label class="sr-only" for="basic-example">اردو رچ ٹیکسٹ ایڈیٹر</label>
                     <textarea style="min-height:400px;" dir="rtl" lang="ur" placeholder="لکھنا شروع کریں"
                         id="basic-example"></textarea>
                 </div>
 
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Write and format Urdu with the rich-text editor</h4>
+                        <h4 class="card-title">رچ ٹیکسٹ ایڈیٹر میں اردو لکھیں اور فارمیٹ کریں</h4>
                             <ul class="card-text">
-                                <li>Type a Roman Urdu word and press Space to convert it into Urdu script.</li>
-                                <li>Paste a longer Roman Urdu passage, then choose <strong>Convert passage to Urdu script</strong> to transliterate it in one step.</li>
-                                <li>If the result is not what you expected, press Backspace twice and choose a suggestion.</li>
-                                <li>Select text to change its font, size, colour, alignment or emphasis.</li>
-                                <li>Use the editor’s Edit menu—or your usual keyboard shortcut—to copy formatted text.</li>
-                                <li>Use <strong>Export</strong> to download a Word document, PDF or PNG image, or to print your document.</li>
+                                <li>انگریزی حروف میں اردو لفظ لکھیں اور اسے اردو رسم الخط میں بدلنے کے لیے Space دبائیں۔</li>
+                                <li>انگریزی حروف میں لکھا ہوا طویل اردو حصہ پیسٹ کریں، پھر اسے ایک مرحلے میں اردو رسم الخط میں بدلنے کے لیے <strong>حصے کو اردو رسم الخط میں تبدیل کریں</strong> منتخب کریں۔</li>
+                                <li>نتیجہ توقع کے مطابق نہ ہو تو Backspace دو بار دبائیں اور کوئی متبادل منتخب کریں۔</li>
+                                <li>فونٹ، سائز، رنگ، ترتیب یا نمایاں انداز بدلنے کے لیے متن منتخب کریں۔</li>
+                                <li>فارمیٹ شدہ متن کاپی کرنے کے لیے ایڈیٹر کا Edit مینو یا اپنا معمول کا کی بورڈ شارٹ کٹ استعمال کریں۔</li>
+                                <li>Word دستاویز، PDF یا PNG تصویر ڈاؤن لوڈ کرنے یا دستاویز پرنٹ کرنے کے لیے <strong>برآمد کریں</strong> منتخب کریں۔</li>
                             </ul>
                     </div>
                 </div>
                 <br>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">What you can create</h4>
+                        <h4 class="card-title">آپ کیا بنا سکتے ہیں</h4>
                         <ul class="card-text">
-                                <li>Polished Urdu documents, letters and reports for Word.</li>
-                                <li>Right-to-left HTML content for websites and web applications.</li>
-                                <li>Headings, quotations and body text for Urdu articles or blog posts.</li>
-                                <li>Clear, styled Urdu messages for email, presentations and social media.</li>
+                                <li>Word کے لیے نفیس اردو دستاویزات، خطوط اور رپورٹس۔</li>
+                                <li>ویب سائٹس اور ویب ایپلی کیشنز کے لیے دائیں سے بائیں HTML مواد۔</li>
+                                <li>اردو مضامین یا بلاگ پوسٹس کے لیے عنوانات، اقتباسات اور متن۔</li>
+                                <li>ای میل، پریزنٹیشن اور سوشل میڈیا کے لیے واضح اور خوب صورت اردو پیغامات۔</li>
                             </ul>
                     </div>
                 </div>
                 <br>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">Video guide to the Urdu Rich Text Editor</h4>
+                        <h4 class="card-title">اردو رچ ٹیکسٹ ایڈیٹر کا ویڈیو رہنما</h4>
                             <div class="facebook-responsive">
                                 <iframe
                                     src="https://www.facebook.com/plugins/video.php?height=282&href=https%3A%2F%2Fwww.facebook.com%2FWriteUrdu%2Fvideos%2F753274025325672%2F&show_text=false&width=560"
@@ -421,8 +421,8 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Sample Urdu typed text with available fonts</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title" id="exampleModalLabel">دستیاب فونٹس کے ساتھ نمونہ اردو متن</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="بند کریں">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -442,7 +442,7 @@
                     <img src="https://write-urdu.com/image/sample.png" width="726" height="467" loading="lazy" decoding="async" alt="Example of Urdu text typed online" />
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">بند کریں</button>
                 </div>
             </div>
         </div>
@@ -500,7 +500,7 @@
             var editor = tinymce.activeEditor;
             if (!editor.getContent({ format: 'text' }).trim() || window.confirm('Clear all text in the editor?')) {
                 editor.setContent('');
-                WriteUrduUI.notify('Editor cleared.', 'success');
+                WriteUrduUI.notify('ایڈیٹر صاف کر دیا گیا ہے۔', 'success');
             }
         }
 
@@ -511,10 +511,10 @@
                     var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
                     WriteUrduExport.downloadData(canvas.toDataURL("image/png"), "write-urdu.png");
                 });
-                WriteUrduUI.notify('PNG image exported successfully.', 'success');
+                WriteUrduUI.notify('PNG تصویر محفوظ ہو گئی ہے۔', 'success');
             } catch (error) {
                 console.error(error);
-                WriteUrduUI.notify('Image export failed. Please try again.', 'error');
+                WriteUrduUI.notify('تصویر محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
             }
         }
 
@@ -524,10 +524,10 @@
                 await WriteUrduExport.withBusyButton(document.getElementById('exportWord'), function () {
                     WriteUrduExport.downloadWord(getRichEditorElement(), 'write-urdu', true);
                 });
-                WriteUrduUI.notify('Word document exported successfully.', 'success');
+                WriteUrduUI.notify('Word دستاویز محفوظ ہو گئی ہے۔', 'success');
             } catch (error) {
                 console.error(error);
-                WriteUrduUI.notify('Word export failed. Please try again.', 'error');
+                WriteUrduUI.notify('Word دستاویز محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
             }
         }
 
@@ -539,10 +539,10 @@
                     var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
                     await WriteUrduExport.downloadPdf(canvas, 'write-urdu');
                 });
-                WriteUrduUI.notify('PDF exported successfully.', 'success');
+                WriteUrduUI.notify('PDF محفوظ ہو گئی ہے۔', 'success');
             } catch (error) {
                 console.error(error);
-                WriteUrduUI.notify('PDF export failed. Please try again.', 'error');
+                WriteUrduUI.notify('PDF محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
             }
         }
 
@@ -550,7 +550,7 @@
             var element = getRichEditorElement();
             var printWindow = window.open("", "_blank");
             if (!printWindow) {
-                WriteUrduUI.notify('Allow pop-ups to print your document.', 'error');
+                WriteUrduUI.notify('دستاویز پرنٹ کرنے کے لیے pop-ups کی اجازت دیں۔', 'error');
                 return;
             }
             try {
@@ -560,7 +560,7 @@
                 });
             } catch (error) {
                 printWindow.close();
-                WriteUrduUI.notify('Print preparation failed.', 'error');
+                WriteUrduUI.notify('پرنٹ تیار نہیں ہو سکا۔', 'error');
             }
         }
 
@@ -579,7 +579,7 @@
                 });
             } catch (error) {
                 console.error(error);
-                WriteUrduUI.notify('Preview could not be prepared.', 'error');
+                WriteUrduUI.notify('پیش منظر تیار نہیں ہو سکا۔', 'error');
             }
         }
 

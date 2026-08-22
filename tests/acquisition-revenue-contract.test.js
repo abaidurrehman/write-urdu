@@ -11,6 +11,7 @@ const dashboardHtml = fs.readFileSync(path.join(root, 'os', 'product-pulse.html'
 const adsSource = fs.readFileSync(path.join(root, 'js', 'ads.js'), 'utf8');
 const privacy = fs.readFileSync(path.join(root, 'write-urdu-privacy.html'), 'utf8');
 const migration = fs.readFileSync(path.join(root, 'migrations', '0003_acquisition_telemetry.sql'), 'utf8');
+const localeMigration = fs.readFileSync(path.join(root, 'migrations', '0008_locale_metrics.sql'), 'utf8');
 const analyticsSpec = fs.readFileSync(path.join(root, 'specs', 'WU-ANALYTICS-003-acquisition-and-returning-signal.md'), 'utf8');
 const revenuePlan = fs.readFileSync(path.join(root, 'docs', 'WU-ADSENSE-REVENUE-GROWTH-PLAN-2026-08-17.md'), 'utf8');
 
@@ -22,22 +23,29 @@ assert.doesNotMatch(acquisitionClient, /localStorage|sessionStorage/, 'Acquisiti
 const payloadBlock = acquisitionClient.match(/JSON\.stringify\(\{[\s\S]*?\}\);/);
 assert.ok(payloadBlock, 'Could not locate acquisition payload');
 assert.doesNotMatch(payloadBlock[0], /referrer|utm_|gclid|search_term|query_string/i, 'Network payload must contain only coarse acquisition fields');
+assert.match(payloadBlock[0], /locale:\s*currentLocale\(\)/, 'Acquisition payload must include bounded locale context');
 
 assert.match(acquisitionEndpoint, /ACQUISITION_CHANNELS = new Set/, 'Acquisition endpoint needs a strict channel allowlist');
 assert.match(acquisitionEndpoint, /site_hourly_acquisition/, 'Acquisition endpoint must write hourly rollups');
 assert.match(acquisitionEndpoint, /site_hourly_entry_routes/, 'Acquisition endpoint must write bounded entry-route rollups');
+assert.match(acquisitionEndpoint, /LOCALES = new Set\(\['en', 'ur'\]\)/, 'Acquisition endpoint must bound locale to en/ur');
+assert.match(acquisitionEndpoint, /site_hourly_locale_entry_routes/, 'Acquisition endpoint must write locale-aware entry rollups in the existing database');
 assert.doesNotMatch(acquisitionEndpoint, /request\.headers\.get\(['"]referer|cf-connecting-ip|user-agent/i, 'Acquisition endpoint must not persist request identity/referrer metadata');
 assert.match(acquisitionEndpoint, /www\.write-urdu\.com/, 'Acquisition endpoint must accept the legacy www host during canonical migration');
 assert.match(acquisitionEndpoint, /host === 'write-urdu\.com'/, 'Acquisition endpoint must accept the canonical apex host');
 
 assert.match(migration, /PRIMARY KEY \(bucket_hour, acquisition_channel, page_type\)/, 'Acquisition rollups need bounded primary keys');
 assert.doesNotMatch(migration, /\b(referrer|user_agent|ip_address|query_string)\s+(TEXT|INTEGER|BLOB|REAL)\b/i, 'Acquisition schema must not store identifying/free-form traffic columns');
+assert.match(localeMigration, /PRIMARY KEY \(bucket_hour, locale, acquisition_channel, page_type, route\)/, 'Locale acquisition routes need bounded cardinality');
+assert.doesNotMatch(localeMigration, /\b(referrer|user_agent|ip_address|query_string|editor_text|transcript|filename)\s+(TEXT|INTEGER|BLOB|REAL)\b/i, 'Locale measurement schema must stay content-free');
 
 assert.match(acquisitionPulse, /PRODUCT_OS_HOST\s*\|\|\s*'os\.write-urdu\.com'/, 'Acquisition Pulse API must stay on the protected OS host');
 assert.match(acquisitionPulse, /page_type IN \('write', 'create'\)/, 'Product entry source must be separable from site-wide entry traffic');
+assert.match(acquisitionPulse, /locale_entries/, 'Acquisition Pulse must expose locale entry totals');
 assert.match(acquisitionDashboard, /Direct \/ saved \/ unknown/, 'Dashboard must label direct traffic conservatively');
 assert.match(dashboardHtml, /id="productEntryBars"/, 'Product Pulse needs a product-entry source panel');
 assert.match(dashboardHtml, /id="entryRouteBars"/, 'Product Pulse needs a top-entry-routes panel');
+assert.match(dashboardHtml, /id="localeEntryBars"/, 'Product Pulse needs a locale-entry panel');
 assert.match(dashboardHtml, /js\/acquisition-pulse\.js/, 'Product Pulse must load acquisition rollup rendering');
 
 assert.match(adsSource, /acquisition-telemetry\.js/, 'Public monetized surfaces must load coarse acquisition measurement');

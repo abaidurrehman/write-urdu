@@ -64,6 +64,15 @@ function applyKey(html, key, value) {
   if (!re.test(html)) throw new Error('Missing localization marker: ' + key);
   return html.replace(re, '$1' + value + '$4');
 }
+function applyLiteralReplacements(html, productPath) {
+  (locale.literalReplacements && locale.literalReplacements[productPath] || []).forEach(function (pair) {
+    const from = pair[0];
+    const to = pair[1];
+    if (!html.includes(from)) throw new Error('Missing literal localization source for ' + productPath + ': ' + from.slice(0, 80));
+    html = html.split(from).join(to);
+  });
+  return html;
+}
 function rootSafeAssets(html) {
   return html.replace(/([\s<])(src|href|action)=(['"])(?![a-z]+:|\/\/|\/|#|\?|mailto:|tel:)([^'"]+)\3/ig, function (_, prefix, attr, quote, value) {
     if (!value || value.startsWith('data:')) return _;
@@ -126,6 +135,7 @@ function render(productPath, englishSource) {
   html = applyKey(html, productPath === '/' ? 'home.h1' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.h1', copy.h1);
   html = applyKey(html, productPath === '/' ? 'home.lede' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.lede', copy.lede);
   Object.keys(copy.strings || {}).forEach(function (key) { html = applyKey(html, key, copy.strings[key]); });
+  html = applyLiteralReplacements(html, productPath);
   html = rootSafeAssets(html);
   html = localeInternalLinks(html);
   html = setStaticSchema(html, productPath, copy);

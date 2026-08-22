@@ -43,3 +43,58 @@ test('nested Urdu voice route loads shared root assets without local 404s', asyn
   await expect(page.locator('#voiceTranscript')).toBeVisible();
   expect(local404s.filter(path => /^\/urdu\/(?:js|css|image)\//.test(path))).toEqual([]);
 });
+
+test('Phase 1 Urdu command surfaces are localized in initial product UI', async ({ page }) => {
+  await blockExternal(page);
+
+  await page.goto('/urdu/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.home-actions')).not.toHaveAttribute('aria-label', 'Editor actions');
+  await expect(page.locator('.home-actions')).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
+  await expect(page.locator('[data-copy-target="#transliterateTextarea"]')).toContainText('متن کاپی کریں');
+  await expect(page.locator('.home-actions details.action-menu').first()).toContainText('برآمد کریں');
+
+  await page.goto('/urdu/urdu-keyboard', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.keyboard-actions')).not.toHaveAttribute('aria-label', 'Editor actions');
+  await expect(page.locator('.keyboard-actions')).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
+  await expect(page.locator('[data-copy-target="#write"]')).toContainText('متن کاپی کریں');
+  await page.locator('input.bt[value="ا"]').click();
+  await expect(page.locator('#write')).toHaveValue(/ا/);
+  await expect(page.getByText('اردو کی بورڈ کیسے استعمال کریں')).toBeVisible();
+
+  await page.goto('/urdu/urdu-editor', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.home-actions-group-create')).toHaveAttribute('aria-label', 'اپنی دستاویز سے تخلیق کریں');
+  await expect(page.locator('.home-actions-group-create [data-create-card]')).toContainText('اردو کارڈ بنائیں');
+  await expect(page.locator('[data-input-mode-control]')).toHaveAttribute('aria-label', 'لکھنے کا طریقہ');
+  await expect(page.locator('[data-batch-title]')).toContainText('اردو لکھنے کے دو طریقے');
+
+  // These controls are intentionally mounted only when their responsive runtime has a host.
+  // Whenever they render, URL-owned Urdu must govern their visible and accessible copy.
+  const journeyCard = page.locator('[data-wu-journey="write-to-card"]');
+  if (await journeyCard.count()) {
+    await expect(journeyCard).toContainText('اس اردو کو کارڈ بنا کر شیئر کریں');
+    await expect(page.locator('[data-wu-journey-panel]')).not.toContainText('Create & share this Urdu');
+  }
+  const headerShare = page.locator('[data-wu-authoring-share-primary]');
+  if (await headerShare.count()) {
+    await expect(headerShare).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
+  }
+});
+
+test('locale telemetry keeps normalized route while distinguishing Urdu and English', async ({ page }) => {
+  const acquisition = [];
+  await page.route('**/api/acquisition', async route => {
+    const request = route.request();
+    acquisition.push(request.postDataJSON());
+    await route.fulfill({ status: 202, contentType: 'application/json', body: '{"accepted":1}' });
+  });
+  await blockExternal(page);
+
+  await page.goto('/urdu/', { waitUntil: 'domcontentloaded' });
+  await expect.poll(() => acquisition.length).toBeGreaterThan(0);
+  expect(acquisition.at(-1)).toMatchObject({ route: '/', locale: 'ur' });
+
+  acquisition.length = 0;
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect.poll(() => acquisition.length).toBeGreaterThan(0);
+  expect(acquisition.at(-1)).toMatchObject({ route: '/', locale: 'en' });
+});

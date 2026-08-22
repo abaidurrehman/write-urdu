@@ -20,6 +20,8 @@ for (const format of ['pdf', 'png', 'jpeg', 'doc', 'txt', 'svg']) {
 assert.match(html, /How much people write/, 'Writing-length panel is missing');
 assert.match(html, /Active usage time/, 'Active-time panel is missing');
 assert.match(html, /Tool usage/, 'Tool-usage table is missing');
+assert.match(html, /Product usage by language/, 'Locale usage panel is missing');
+assert.match(html, /id="localeUsageBars"/, 'Locale usage bars are missing');
 assert.match(html, /Canvas/, 'Tool table must expose canvas interaction breadth');
 assert.doesNotMatch(html, /adsbygoogle|googlesyndication|google-analytics|gtag\(/i, 'Founder dashboard must not load ads or public analytics');
 assert.doesNotMatch(html, /seo\.config\.js|js\/seo\.js|site-header\.js/, 'Founder dashboard must stay outside the public SEO/product shell');
@@ -37,6 +39,8 @@ assert.match(api, /active_0_10/, 'Dashboard must use coarse active-time rollups'
 assert.match(api, /canvas_interactions/, 'Dashboard must report canvas interaction breadth');
 assert.match(api, /template_uses/, 'Dashboard must report template usage');
 assert.match(api, /background_image_uses/, 'Dashboard must report local image usage');
+assert.match(api, /product_hourly_locale_metrics/, 'Dashboard API must expose bounded locale rollups');
+assert.match(api, /locale_breakdown/, 'Dashboard API must return locale breakdown');
 assert.doesNotMatch(api, /editor_text|roman_urdu_text|urdu_text|filename|clipboard_content|user_agent|referrer/i, 'Aggregate API must not introduce content or identity fields');
 
 assert.match(client, /\/api\/internal\/product-pulse\?days=/, 'Dashboard client must use the internal aggregate API');
@@ -49,6 +53,7 @@ assert.match(client, /handoffs/, 'Dashboard client must render product handoffs'
 assert.match(client, /Canvas edit/, 'Dashboard client must render canvas interactions');
 assert.match(client, /Template use/, 'Dashboard client must render template usage');
 assert.match(client, /Local image/, 'Dashboard client must render local image usage');
+assert.match(client, /localeUsageBars/, 'Dashboard client must render locale usage');
 
 // Product Pulse itself must not load the public telemetry collector and create
 // founder/admin visits in product metrics.

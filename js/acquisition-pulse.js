@@ -66,12 +66,15 @@
     if (!data.ready) {
       var source = q('#productEntryBars');
       var routes = q('#entryRouteBars');
+      var locales = q('#localeEntryBars');
       if (source) source.innerHTML = '<div class="os-empty">' + (data.message || 'Acquisition data is not ready yet.') + '</div>';
       if (routes) routes.innerHTML = '<div class="os-empty">Waiting for entry-route data.</div>';
+      if (locales) locales.innerHTML = '<div class="os-empty">Waiting for locale entry data.</div>';
       return;
     }
     renderBars('#productEntryBars', orderedChannels(data.product_channels), 'acquisition_channel', 'entries', channelLabels);
     renderBars('#entryRouteBars', data.entry_routes || [], 'route', 'entries');
+    renderBars('#localeEntryBars', data.locale_entries || [], 'locale', 'entries', { en: 'English', ur: 'Urdu (/urdu/)' });
     var note = q('#productEntryNote');
     if (note) note.textContent = fmt(data.current && data.current.product_entries) + ' product entries';
     var routeNote = q('#entryRouteNote');

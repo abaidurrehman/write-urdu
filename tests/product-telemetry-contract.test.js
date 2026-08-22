@@ -8,6 +8,7 @@ const integrations = fs.readFileSync(path.join(root, 'js', 'product-telemetry-in
 const endpoint = fs.readFileSync(path.join(root, 'functions', 'api', 'events.js'), 'utf8');
 const migration = fs.readFileSync(path.join(root, 'migrations', '0001_product_telemetry.sql'), 'utf8');
 const rollupMigration = fs.readFileSync(path.join(root, 'migrations', '0002_product_telemetry_rollups.sql'), 'utf8');
+const localeMigration = fs.readFileSync(path.join(root, 'migrations', '0008_locale_metrics.sql'), 'utf8');
 const writeMonetization = fs.readFileSync(path.join(root, 'js', 'write-monetization.js'), 'utf8');
 const v2Shell = fs.readFileSync(path.join(root, 'js', 'v2-shell.js'), 'utf8');
 const privacy = fs.readFileSync(path.join(root, 'write-urdu-privacy.html'), 'utf8');
@@ -30,6 +31,7 @@ assert.match(client, /canvas_interaction/, 'Canvas interaction signal is missing
 assert.match(client, /template_used/, 'Template-use signal is missing');
 assert.match(client, /background_image_used/, 'Local-background signal is missing');
 assert.match(client, /session_summary/, 'Session summary event is missing');
+assert.match(client, /locale:\s*locale/, 'Telemetry payload must include bounded locale context');
 assert.match(client, /copy_completed/, 'Copy outcome instrumentation is missing');
 assert.match(client, /export_completed/, 'Export outcome instrumentation is missing');
 assert.match(client, /batch_transliteration/, 'Batch transliteration instrumentation is missing');
@@ -67,6 +69,8 @@ assert.match(endpoint, /svg/, 'Telemetry endpoint must support QR SVG exports');
 assert.match(endpoint, /EVENT_NAMES = new Set/, 'Telemetry endpoint must use an event allowlist');
 assert.match(endpoint, /LENGTH_BUCKETS = new Set/, 'Telemetry endpoint must validate length buckets');
 assert.match(endpoint, /ACTIVE_BUCKETS = new Set/, 'Telemetry endpoint must validate active-time buckets');
+assert.match(endpoint, /LOCALES = new Set\(\['en', 'ur'\]\)/, 'Telemetry endpoint must bound locale to en/ur');
+assert.match(endpoint, /product_hourly_locale_metrics/, 'Telemetry endpoint must maintain locale rollups in the existing METRICS_DB');
 assert.match(endpoint, /originAllowed/, 'Telemetry endpoint must restrict browser origins');
 assert.match(endpoint, /www\.write-urdu\.com/, 'Telemetry endpoint must keep accepting the legacy www origin during canonical-host migration');
 assert.match(endpoint, /host === 'write-urdu\.com'/, 'Telemetry endpoint must accept the canonical apex origin');
@@ -77,8 +81,13 @@ assert.match(migration, /event_id TEXT NOT NULL UNIQUE/, 'Legacy event deduplica
 assert.match(rollupMigration, /CREATE TABLE IF NOT EXISTS product_hourly_metrics/, 'Hourly rollup schema is missing');
 assert.match(rollupMigration, /PRIMARY KEY \(bucket_hour, tool\)/, 'Hourly rollups must have bounded hour/tool cardinality');
 assert.match(rollupMigration, /DROP INDEX IF EXISTS idx_product_events_session/, 'Rollup migration must remove raw session index amplification');
+assert.match(localeMigration, /PRIMARY KEY \(bucket_hour, locale, tool\)/, 'Locale product rollups need bounded hour/locale/tool cardinality');
+const sqlWithoutComments = (sql) => sql.replace(/^\s*--.*$/gm, '');
+const rollupSchema = sqlWithoutComments(rollupMigration).toLowerCase();
+const localeSchema = sqlWithoutComments(localeMigration).toLowerCase();
 for (const forbiddenColumn of ['editor_text', 'content TEXT', 'filename TEXT', 'email TEXT', 'ip_address', 'user_agent', 'referrer']) {
-  assert.ok(!rollupMigration.toLowerCase().includes(forbiddenColumn.toLowerCase()), `D1 rollup schema must not contain ${forbiddenColumn}`);
+  assert.ok(!rollupSchema.includes(forbiddenColumn.toLowerCase()), `D1 rollup schema must not contain ${forbiddenColumn}`);
+  assert.ok(!localeSchema.includes(forbiddenColumn.toLowerCase()), `Locale D1 rollup schema must not contain ${forbiddenColumn}`);
 }
 
 assert.match(integrations, /\[data-card-status\]/, 'Card Studio/social export outcomes must be observed');

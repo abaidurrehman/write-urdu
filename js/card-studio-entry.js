@@ -46,6 +46,13 @@
         return path || '/';
     }
 
+    function isUrduLocale() {
+        if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.locale === 'function') {
+            return window.WriteUrduLocaleRoute.locale(window.location && window.location.pathname || '/') === 'ur';
+        }
+        return /^\/urdu(?:\/|$)/.test(String(window.location && window.location.pathname || '/'));
+    }
+
     function sourceName() {
         var path = normalizePath();
         if (path === '/urdu-editor') return 'rich-editor';
@@ -181,7 +188,7 @@
             editor.setContent(html);
             document.body.setAttribute('data-rich-handoff-imported', 'true');
             if (window.WriteUrduUI && typeof window.WriteUrduUI.notify === 'function') {
-                window.WriteUrduUI.notify('Your Urdu text is ready to format.', 'success');
+                window.WriteUrduUI.notify(isUrduLocale() ? 'آپ کا اردو متن فارمیٹنگ کے لیے تیار ہے۔' : 'Your Urdu text is ready to format.', 'success');
             }
             editor.focus();
             return;
@@ -238,6 +245,29 @@
                 '<button type="button" class="wu-next-journey-action" data-create-name-art data-editor-source="' + sourceName() + '" data-wu-journey="write-to-name-art"><strong>Make Urdu Name Art</strong><small>Render the text with real Urdu fonts as an image.</small></button>' +
                 '<a class="wu-next-journey-action" href="/urdu-templates" data-wu-journey="write-to-templates"><strong>Browse Urdu templates</strong><small>Choose a ready-made visual starting point for Card Studio.</small></a>' +
             '</div>';
+        if (isUrduLocale()) {
+            var eyebrow = section.querySelector('.wu-next-journey-eyebrow');
+            var title = section.querySelector('#wu-next-journey-title');
+            var copy = section.querySelector('.wu-next-journey-copy');
+            if (eyebrow) eyebrow.textContent = 'اگلا مرحلہ';
+            if (title) title.textContent = 'اب اپنی لکھی ہوئی اردو استعمال کریں';
+            if (copy) copy.textContent = 'اپنے موجودہ متن کو اگلے کام کے مطابق کسی دوسرے ٹول میں لے جائیں۔ متن اسی براؤزر میں منتقل ہوتا ہے؛ عوامی لنک صرف اس وقت بنتا ہے جب آپ خود شیئر کرنے کا انتخاب کریں۔';
+            var labels = {
+                'write-to-card': ['اس اردو کو کارڈ بنا کر شیئر کریں', 'متن کو کارڈ اسٹوڈیو میں کھولیں، خوبصورت بنائیں اور پھر Write-Urdu.com کا لنک شیئر کریں۔'],
+                'write-to-rich': ['رچ ایڈیٹر میں جاری رکھیں', 'دستاویز کو فارمیٹ کریں، پھر Word یا PDF میں محفوظ کریں۔'],
+                'write-to-stylish': ['اسٹائلش اردو متن آزمائیں', 'اسی متن کی کاپی کرنے کے قابل مختلف انداز بنائیں۔'],
+                'write-to-name-art': ['اردو نام آرٹ بنائیں', 'متن کو اصلی اردو فونٹس کے ساتھ تصویر کی صورت میں بنائیں۔'],
+                'write-to-templates': ['اردو ٹیمپلیٹس دیکھیں', 'کارڈ اسٹوڈیو کے لیے تیار ڈیزائن سے آغاز کریں۔']
+            };
+            Object.keys(labels).forEach(function (journey) {
+                var action = section.querySelector('[data-wu-journey="' + journey + '"]');
+                if (!action) return;
+                var strong = action.querySelector('strong');
+                var small = action.querySelector('small');
+                if (strong) strong.textContent = labels[journey][0];
+                if (small) small.textContent = labels[journey][1];
+            });
+        }
         mount.parentNode.insertBefore(section, mount);
     }
 
@@ -263,6 +293,11 @@
         button.setAttribute('aria-label', 'Create and share this Urdu');
         button.title = 'Create a visual from this Urdu, then publish a Write-Urdu.com share link';
         button.innerHTML = '<span class="wu-authoring-share-icon" aria-hidden="true">↗</span><span class="wu-authoring-share-label">Create &amp; Share</span><span class="wu-authoring-share-label-mobile">Share</span>';
+        if (isUrduLocale()) {
+            button.setAttribute('aria-label', 'اس اردو سے تصویر بنائیں اور شیئر کریں');
+            button.title = 'اس اردو سے تصویر بنائیں اور Write-Urdu.com کا لنک شیئر کریں';
+            button.innerHTML = '<span class="wu-authoring-share-icon" aria-hidden="true">↗</span><span class="wu-authoring-share-label">بنائیں اور شیئر کریں</span><span class="wu-authoring-share-label-mobile">شیئر کریں</span>';
+        }
         var language = header.querySelector('.wu-language-toggle');
         header.insertBefore(button, language || null);
         return button;
@@ -287,6 +322,10 @@
             button.removeAttribute('data-wu-i18n-control');
             button.title = 'Share the Urdu text only without creating a public Write Urdu link';
             setActionLabel(button, 'Share text only', 'fas fa-share-alt');
+            if (isUrduLocale()) {
+                button.title = 'عوامی Write Urdu لنک بنائے بغیر صرف اردو متن شیئر کریں';
+                setActionLabel(button, 'صرف متن شیئر کریں', 'fas fa-share-alt');
+            }
         });
     }
 
