@@ -29,6 +29,7 @@ const tests = [
   'tests/urdu-locale-route-contract.test.js',
   'tests/urdu-locale-generated-contract.test.js',
   'tests/urdu-locale-seo-contract.test.js',
+  'tests/urdu-locale-closeout-contract.test.js',
   'tests/invoice-preview-footer-contract.test.js',
   'tests/sitemap-directory-contract.test.js',
   'tests/stylish-urdu-core.test.js',

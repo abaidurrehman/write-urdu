@@ -295,7 +295,7 @@ for (const file of ['index.html', 'urdu-editor.html', 'urdu-keyboard.html']) {
 const alphabet = read('urdu-alphabet.html');
 assert.match(alphabet, /<body[^>]*class=["'][^"']*\balphabet-page\b[^"']*["']/i, 'Urdu alphabet page is missing its page contract');
 assert.match(alphabet, /<main[^>]*class=["'][^"']*\bauthority-main\b[^"']*["']/i, 'Urdu alphabet page is missing its v2 authority main region');
-assert.match(alphabet, /<caption>Common standalone Urdu characters/i, 'Urdu alphabet table is missing its accessible caption');
+assert.match(alphabet, /<caption\b[^>]*>Common standalone Urdu characters/i, 'Urdu alphabet table is missing its accessible caption');
 assert.match(alphabet, /<th[^>]*scope=["']col["']/i, 'Urdu alphabet table headers must declare their scope');
 assert.match(alphabet, /<td[^>]*>\s*ghain\s*<\/td>/i, 'Urdu alphabet table contains the corrected ghain name');
 const table = alphabet.match(/<table\b[^>]*>[\s\S]*?<\/table>/i)[0];

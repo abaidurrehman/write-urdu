@@ -19,6 +19,13 @@
         return /^\/[a-z0-9\/-]*$/i.test(path) ? path : '/';
     }
 
+    function currentLocale() {
+        if (root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.locale === 'function') {
+            return root.WriteUrduLocaleRoute.locale(root.location.pathname) === 'ur' ? 'ur' : 'en';
+        }
+        return /^\/urdu(?:\/|$)/i.test(String(root.location.pathname || '/')) ? 'ur' : 'en';
+    }
+
     function hostKey(value) {
         return String(value || '').toLowerCase().replace(/^www\./, '');
     }
@@ -71,6 +78,7 @@
     function send() {
         var body = JSON.stringify({
             route: normalizedPath(root.location.pathname),
+            locale: currentLocale(),
             page_type: pageType(),
             acquisition_channel: acquisitionChannel()
         });

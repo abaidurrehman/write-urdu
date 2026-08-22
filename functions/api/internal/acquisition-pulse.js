@@ -49,6 +49,12 @@ async function tablesReady(db) {
   return Number(result && result.table_count || 0) === 2;
 }
 
+
+async function tableExists(db, name) {
+  const row = await db.prepare(`SELECT 1 AS ok FROM sqlite_master WHERE type = 'table' AND name = ?1 LIMIT 1`).bind(name).first();
+  return Boolean(row && row.ok);
+}
+
 async function entrySummary(db, start, end, productOnly) {
   const productClause = productOnly ? "AND page_type IN ('write', 'create')" : '';
   return (await db.prepare(`
@@ -79,7 +85,15 @@ export async function onRequestGet(context) {
   }
 
   const bounds = windowBounds(days);
-  const [current, previous, productCurrent, productPrevious, channelResult, productChannelResult, routeResult] = await Promise.all([
+  const localeReady = await tableExists(db, 'site_hourly_locale_entry_routes');
+  const localePromise = localeReady ? db.prepare(`
+      SELECT locale, SUM(entries) AS entries
+      FROM site_hourly_locale_entry_routes
+      WHERE bucket_hour >= ?1 AND bucket_hour < ?2
+      GROUP BY locale
+      ORDER BY entries DESC
+    `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
+  const [current, previous, productCurrent, productPrevious, channelResult, productChannelResult, routeResult, localeResult] = await Promise.all([
     entrySummary(db, bounds.currentStart, bounds.currentEnd, false),
     entrySummary(db, bounds.previousStart, bounds.previousEnd, false),
     entrySummary(db, bounds.currentStart, bounds.currentEnd, true),
@@ -106,7 +120,8 @@ export async function onRequestGet(context) {
       GROUP BY route
       ORDER BY entries DESC
       LIMIT 10
-    `).bind(bounds.currentStart, bounds.currentEnd).all()
+    `).bind(bounds.currentStart, bounds.currentEnd).all(),
+    localePromise
   ]);
 
   return json({
@@ -125,7 +140,8 @@ export async function onRequestGet(context) {
     },
     site_channels: rows(channelResult),
     product_channels: rows(productChannelResult),
-    entry_routes: rows(routeResult)
+    entry_routes: rows(routeResult),
+    locale_entries: rows(localeResult)
   });
 }
 

@@ -26,6 +26,13 @@
         return /^\/[a-z0-9\/-]*$/i.test(path) ? path : '/';
     }
 
+    function currentLocale() {
+        if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.locale === 'function') {
+            return window.WriteUrduLocaleRoute.locale(window.location.pathname) === 'ur' ? 'ur' : 'en';
+        }
+        return /^\/urdu(?:\/|$)/i.test(String(window.location.pathname || '/')) ? 'ur' : 'en';
+    }
+
     function toolForRoute(path) {
         var tools = {
             '/': 'basic_editor',
@@ -64,6 +71,7 @@
 
     var session = sessionId();
     var route = normalizedPath(window.location.pathname);
+    var locale = currentLocale();
     var tool = toolForRoute(route);
 
     function deviceClass() {
@@ -112,6 +120,7 @@
             event_id: randomId(),
             session_id: session,
             route: route,
+            locale: locale,
             tool: tool,
             event_name: eventName,
             format: detail.format || null,

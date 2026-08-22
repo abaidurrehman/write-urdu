@@ -216,7 +216,16 @@ export async function onRequestGet(context) {
   }
 
   const bounds = windowBounds(days);
-  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop] = await Promise.all([
+  const localeReady = await tableExists(db, 'product_hourly_locale_metrics');
+  const localePromise = localeReady ? db.prepare(`
+      SELECT locale, SUM(visits) AS sessions, SUM(engaged_visits) AS engaged_sessions,
+             SUM(copies) AS copies, SUM(exports) AS exports
+      FROM product_hourly_locale_metrics
+      WHERE tool = 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
+      GROUP BY locale
+      ORDER BY sessions DESC
+    `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
+  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop, localeResult] = await Promise.all([
     summaryForWindow(db, bounds.currentStart, bounds.currentEnd),
     summaryForWindow(db, bounds.previousStart, bounds.previousEnd),
     db.prepare(`
@@ -253,7 +262,8 @@ export async function onRequestGet(context) {
       GROUP BY substr(bucket_hour, 1, 10)
       ORDER BY day ASC
     `).bind(bounds.currentStart, bounds.currentEnd).all(),
-    shareLoopForWindow(db, bounds)
+    shareLoopForWindow(db, bounds),
+    localePromise
   ]);
 
   const sessions = n(current, 'visits');
@@ -334,6 +344,7 @@ export async function onRequestGet(context) {
     handoffs: rows(handoffResult),
     tools: rows(toolResult),
     daily: rows(dailyResult),
+    locale_breakdown: rows(localeResult),
     share_loop: shareLoop
   });
 }

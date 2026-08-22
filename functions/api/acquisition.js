@@ -2,6 +2,7 @@ const ACQUISITION_CHANNELS = new Set([
   'google_search', 'other_search', 'direct_unknown', 'referral', 'campaign', 'internal'
 ]);
 const PAGE_TYPES = new Set(['write', 'learn', 'create', 'trust', 'unclassified']);
+const LOCALES = new Set(['en', 'ur']);
 
 const SCHEMA_STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS site_hourly_acquisition (
@@ -20,6 +21,25 @@ const SCHEMA_STATEMENTS = [
     entries INTEGER NOT NULL DEFAULT 0,
     latest_event_at TEXT,
     PRIMARY KEY (bucket_hour, acquisition_channel, page_type, route)
+  )`,
+  `CREATE TABLE IF NOT EXISTS site_hourly_locale_acquisition (
+    bucket_hour TEXT NOT NULL,
+    locale TEXT NOT NULL,
+    acquisition_channel TEXT NOT NULL,
+    page_type TEXT NOT NULL,
+    visits INTEGER NOT NULL DEFAULT 0,
+    latest_event_at TEXT,
+    PRIMARY KEY (bucket_hour, locale, acquisition_channel, page_type)
+  )`,
+  `CREATE TABLE IF NOT EXISTS site_hourly_locale_entry_routes (
+    bucket_hour TEXT NOT NULL,
+    locale TEXT NOT NULL,
+    acquisition_channel TEXT NOT NULL,
+    page_type TEXT NOT NULL,
+    route TEXT NOT NULL,
+    entries INTEGER NOT NULL DEFAULT 0,
+    latest_event_at TEXT,
+    PRIMARY KEY (bucket_hour, locale, acquisition_channel, page_type, route)
   )`
 ];
 
@@ -78,7 +98,8 @@ export async function onRequestPost(context) {
   const route = cleanRoute(input && input.route);
   const pageType = enumValue(input && input.page_type, PAGE_TYPES);
   const channel = enumValue(input && input.acquisition_channel, ACQUISITION_CHANNELS);
-  if (!route || !pageType || !channel) return json(400, { error: 'invalid_acquisition_event' });
+  const locale = enumValue((input && input.locale) || 'en', LOCALES);
+  if (!route || !pageType || !channel || !locale) return json(400, { error: 'invalid_acquisition_event' });
 
   const now = new Date();
   const bucket = hourBucket(now);
@@ -93,7 +114,13 @@ export async function onRequestPost(context) {
         VALUES (?1, ?2, ?3, 1, ?4)
         ON CONFLICT(bucket_hour, acquisition_channel, page_type)
         DO UPDATE SET visits = visits + 1, latest_event_at = excluded.latest_event_at`)
-        .bind(bucket, channel, pageType, latest)
+        .bind(bucket, channel, pageType, latest),
+      db.prepare(`INSERT INTO site_hourly_locale_acquisition
+        (bucket_hour, locale, acquisition_channel, page_type, visits, latest_event_at)
+        VALUES (?1, ?2, ?3, ?4, 1, ?5)
+        ON CONFLICT(bucket_hour, locale, acquisition_channel, page_type)
+        DO UPDATE SET visits = visits + 1, latest_event_at = excluded.latest_event_at`)
+        .bind(bucket, locale, channel, pageType, latest)
     ];
 
     if (channel !== 'internal') {
@@ -103,7 +130,13 @@ export async function onRequestPost(context) {
           VALUES (?1, ?2, ?3, ?4, 1, ?5)
           ON CONFLICT(bucket_hour, acquisition_channel, page_type, route)
           DO UPDATE SET entries = entries + 1, latest_event_at = excluded.latest_event_at`)
-          .bind(bucket, channel, pageType, route, latest)
+          .bind(bucket, channel, pageType, route, latest),
+        db.prepare(`INSERT INTO site_hourly_locale_entry_routes
+          (bucket_hour, locale, acquisition_channel, page_type, route, entries, latest_event_at)
+          VALUES (?1, ?2, ?3, ?4, ?5, 1, ?6)
+          ON CONFLICT(bucket_hour, locale, acquisition_channel, page_type, route)
+          DO UPDATE SET entries = entries + 1, latest_event_at = excluded.latest_event_at`)
+          .bind(bucket, locale, channel, pageType, route, latest)
       );
     }
 

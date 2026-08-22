@@ -197,6 +197,9 @@
       return safeText(label).replace(/^./, function (c) { return c.toUpperCase(); });
     });
     renderBars('#handoffBars', data.handoffs || [], 'target_route', 'events');
+    renderBars('#localeUsageBars', data.locale_breakdown || [], 'locale', 'sessions', function (label) {
+      return label === 'ur' ? 'Urdu (/urdu/)' : 'English';
+    });
   }
 
   function renderTools(data) {

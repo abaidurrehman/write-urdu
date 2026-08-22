@@ -175,8 +175,8 @@
                         <h1 data-wu-l10n="home.h1">انگریزی حروف سے اردو ٹائپ کریں</h1>
                         <p class="page-intro answer-summary" data-wu-l10n="home.lede">انگریزی حروف میں اردو لفظ لکھیں، ہر لفظ کے بعد Space دبائیں اور فوراً اردو رسم الخط حاصل کریں۔ پھر متن کو کاپی، ایڈٹ یا ڈاؤن لوڈ کریں۔</p>
 
-                        <div class="home-hero-meta" aria-label="Editor highlights" data-wu-l10n="home.heroMeta"><span>انگریزی حروف → اردو</span><span>اردو براہِ راست لکھیں</span></div>
-                        <div class="home-hero-actions" aria-label="Get started">
+                        <div class="home-hero-meta" aria-label="ایڈیٹر کی نمایاں خصوصیات" data-wu-l10n="home.heroMeta"><span>انگریزی حروف → اردو</span><span>اردو براہِ راست لکھیں</span></div>
+                        <div class="home-hero-actions" aria-label="شروع کریں">
                             <a class="home-hero-cta home-hero-cta-primary" href="#transliterateTextarea" data-start-typing data-wu-i18n-key="home.startTyping" data-wu-l10n="home.startTyping">لکھنا شروع کریں</a>
                             <a class="home-hero-cta home-hero-cta-secondary" href="#home-tools-title" data-wu-i18n-key="home.exploreTools" data-wu-l10n="home.exploreTools">مزید ٹولز دیکھیں</a>
                             <a class="home-hero-cta home-hero-cta-tertiary" href="#home-how-it-works" data-wu-i18n-key="home.learnHow" data-wu-l10n="home.learnHow">طریقہ کار جانیں</a>
@@ -188,63 +188,63 @@
             <hr class="solid" />
             <div class="container">
                 <div class="row">
-                    <div class="home-actions" role="toolbar" aria-label="Editor actions">
-                        <div class="home-actions-group home-actions-group-primary" role="group" aria-label="Common actions">
+                    <div class="home-actions" role="toolbar" aria-label="ایڈیٹر کے اقدامات">
+                        <div class="home-actions-group home-actions-group-primary" role="group" aria-label="عام اقدامات">
                         <button type="button" class="btn btn-success action-primary"
                             data-copy-target="#transliterateTextarea">
-                            <i class="fas fa-copy" aria-hidden="true"></i> Copy text
+                            <i class="fas fa-copy" aria-hidden="true"></i> متن کاپی کریں
                         </button>
                         <details class="action-menu">
                             <summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i>
-                                Export</summary>
+                                برآمد کریں</summary>
                             <div class="action-menu-panel">
-                                <label for="inputFileNameToSaveAs">Filename</label>
+                                <label for="inputFileNameToSaveAs">فائل کا نام</label>
                                 <input id="inputFileNameToSaveAs" value="میری فائل" lang="ur" dir="rtl" />
                                 <button type="button" onclick="saveTextAsFile('transliterateTextarea','inputFileNameToSaveAs')">
-                                    <i class="far fa-file-alt" aria-hidden="true"></i> Text file
+                                    <i class="far fa-file-alt" aria-hidden="true"></i> ٹیکسٹ فائل
                                 </button>
                                 <button type="button" id="exportImage" onclick="DownloadAsImage()">
-                                    <i class="far fa-image" aria-hidden="true"></i> PNG image
+                                    <i class="far fa-image" aria-hidden="true"></i> PNG تصویر
                                 </button>
                                 <button type="button" id="exportPdf" onclick="DownloadAsPdf()">
-                                    <i class="far fa-file-pdf" aria-hidden="true"></i> PDF document
+                                    <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز
                                 </button>
                                 <button type="button" class="ExportToWord" id="exportWord" onclick="DownloadAsWord()">
-                                    <i class="far fa-file-word" aria-hidden="true"></i> Word document
+                                    <i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز
                                 </button>
                                 <button type="button" id="PrintCurrentText" onclick="PrintText()">
-                                    <i class="fas fa-print" aria-hidden="true"></i> Print
+                                    <i class="fas fa-print" aria-hidden="true"></i> پرنٹ کریں
                                 </button>
                                 <button type="button" id="previewExport" onclick="PreviewCurrentText()">
-                                    <i class="far fa-eye" aria-hidden="true"></i> Preview
+                                    <i class="far fa-eye" aria-hidden="true"></i> پیش منظر
                                 </button>
                             </div>
                         </details>
                         </div>
-                        <div class="home-actions-group home-actions-group-create" role="group" aria-label="Create with your text">
+                        <div class="home-actions-group home-actions-group-create" role="group" aria-label="اپنی تحریر سے تخلیق کریں">
                         <a class="btn btn-outline-editor" href="/urdu/urdu-editor">
-                            <i class="fas fa-font" aria-hidden="true"></i> Rich editor
+                            <i class="fas fa-font" aria-hidden="true"></i> رچ ایڈیٹر
                         </a>
                         <a class="btn btn-outline-editor" href="/urdu-templates">
-                            <i class="fas fa-th-large" aria-hidden="true"></i> Templates
+                            <i class="fas fa-th-large" aria-hidden="true"></i> ٹیمپلیٹس
                         </a>
                         <a class="btn btn-outline-editor" href="/urdu-invoice-generator">
-                            <i class="fas fa-file-invoice" aria-hidden="true"></i> Invoice
+                            <i class="fas fa-file-invoice" aria-hidden="true"></i> انوائس
                         </a>
                         <button type="button" class="btn btn-outline-editor" data-create-card data-editor-source="basic-editor">
-                            <i class="far fa-image" aria-hidden="true"></i> Create Urdu Card
+                            <i class="far fa-image" aria-hidden="true"></i> اردو کارڈ بنائیں
                         </button>
                         <button type="button" class="btn btn-outline-editor" data-create-qr data-editor-source="basic-editor">
-                            <i class="fas fa-qrcode" aria-hidden="true"></i> Create QR Code
+                            <i class="fas fa-qrcode" aria-hidden="true"></i> QR کوڈ بنائیں
                         </button>
                         </div>
-                        <div class="home-actions-group home-actions-group-secondary" role="group" aria-label="Share and more options">
+                        <div class="home-actions-group home-actions-group-secondary" role="group" aria-label="شیئر اور مزید اختیارات">
                         <button type="button" class="btn btn-quiet" data-write-urdu-share>
-                            <i class="fab fa-whatsapp" aria-hidden="true"></i> Share
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i> شیئر کریں
                         </button>
                         <details class="action-menu">
-                            <summary class="btn btn-quiet" aria-label="More editor options"><i class="fas fa-sliders-h"
-                                    aria-hidden="true"></i> More</summary>
+                            <summary class="btn btn-quiet" aria-label="ایڈیٹر کے مزید اختیارات"><i class="fas fa-sliders-h"
+                                    aria-hidden="true"></i> مزید</summary>
                             <div class="action-menu-panel settings-panel">
                                 <label for="demo-input" data-wu-l10n="home.backgroundLabel">صفحے کا پس منظر</label>
                                 <input id="demo-input" type="text" value="rgb(255, 255, 255)" />
@@ -256,10 +256,10 @@
                 </div>
             </div>
 
-            <div class="editor-chrome" aria-label="Urdu typing status and editor controls">
+            <div class="editor-chrome" aria-label="اردو ٹائپنگ کی حالت اور ایڈیٹر کنٹرولز">
                 <span data-wu-l10n="home.editorChromeLabel"><i class="fas fa-language" aria-hidden="true"></i> رومن اردو ← اردو</span>
                 <span class="editor-shortcut" data-wu-l10n="home.editorShortcut">Ctrl+G سے زبان تبدیل کریں</span>
-                <div class="input-mode-control" data-input-mode-control data-input-mode-storage="basic" data-input-mode-targets="#transliterateTextarea" role="group" aria-label="Input mode">
+                <div class="input-mode-control" data-input-mode-control data-input-mode-storage="basic" data-input-mode-targets="#transliterateTextarea" role="group" aria-label="لکھنے کا طریقہ">
                     <span class="input-mode-title" data-input-mode-title data-wu-l10n="home.inputModeTitle">لکھنے کا طریقہ</span>
                     <button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true" data-wu-l10n="home.inputRoman">انگریزی حروف → اردو</button>
                     <button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false" data-wu-l10n="home.inputDirect">اردو یا انگریزی براہِ راست لکھیں</button>
@@ -268,7 +268,7 @@
                 <div class="spinner-grow text-success" id="spinner" role="status"><span
                         class="sr-only" data-wu-l10n="home.spinnerLabel">تحریر تبدیل ہو رہی ہے...</span></div>
                 <button type="button" class="btn-clear" id="clear" onclick="clearText()"
-                    title="Clear all typed Urdu text" data-wu-l10n="home.clearButton"><i class="far fa-trash-alt" aria-hidden="true"></i> صاف کریں</button>
+                    title="تمام لکھا ہوا اردو متن صاف کریں" data-wu-l10n="home.clearButton"><i class="far fa-trash-alt" aria-hidden="true"></i> صاف کریں</button>
             </div>
 
             <div class="batch-transliteration-panel" data-batch-transliteration data-batch-input-mode="basic" data-batch-target="#transliterateTextarea" role="region" aria-labelledby="batch-transliteration-title">
@@ -452,10 +452,10 @@
                 var filename = WriteUrduExport.safeFilename(document.getElementById('inputFileNameToSaveAs').value, 'write-urdu');
                 WriteUrduExport.downloadData(canvas.toDataURL("image/png"), filename + ".png");
             });
-            WriteUrduUI.notify('PNG image exported successfully.', 'success');
+            WriteUrduUI.notify('PNG تصویر محفوظ ہو گئی ہے۔', 'success');
         } catch (error) {
             console.error(error);
-            WriteUrduUI.notify('Image export failed. Please try again.', 'error');
+            WriteUrduUI.notify('تصویر محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
         }
     }
 
@@ -468,10 +468,10 @@
                     false
                 );
             });
-            WriteUrduUI.notify('Word document exported successfully.', 'success');
+            WriteUrduUI.notify('Word دستاویز محفوظ ہو گئی ہے۔', 'success');
         } catch (error) {
             console.error(error);
-            WriteUrduUI.notify('Word export failed. Please try again.', 'error');
+            WriteUrduUI.notify('Word دستاویز محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
         }
     }
 
@@ -482,10 +482,10 @@
                 var canvas = await WriteUrduExport.renderCanvas(element);
                 await WriteUrduExport.downloadPdf(canvas, document.getElementById('inputFileNameToSaveAs').value);
             });
-            WriteUrduUI.notify('PDF exported successfully.', 'success');
+            WriteUrduUI.notify('PDF محفوظ ہو گئی ہے۔', 'success');
         } catch (error) {
             console.error(error);
-            WriteUrduUI.notify('PDF export failed. Please try again.', 'error');
+            WriteUrduUI.notify('PDF محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
         }
     }
 
@@ -494,7 +494,7 @@
         var element = document.getElementById('transliterateTextarea');
         var printWindow = window.open("", "_blank");
         if (!printWindow) {
-            WriteUrduUI.notify('Allow pop-ups to print your document.', 'error');
+            WriteUrduUI.notify('دستاویز پرنٹ کرنے کے لیے pop-ups کی اجازت دیں۔', 'error');
             return;
         }
         try {
@@ -504,7 +504,7 @@
             });
         } catch (error) {
             printWindow.close();
-            WriteUrduUI.notify('Print preparation failed.', 'error');
+            WriteUrduUI.notify('پرنٹ تیار نہیں ہو سکا۔', 'error');
         }
     }
 
@@ -517,7 +517,7 @@
             });
         } catch (error) {
             console.error(error);
-            WriteUrduUI.notify('Preview could not be prepared.', 'error');
+            WriteUrduUI.notify('پیش منظر تیار نہیں ہو سکا۔', 'error');
         }
     }
 

@@ -39,6 +39,7 @@ const LENGTH_BUCKETS = new Set(['0', '1-20', '21-50', '51-100', '101-250', '251-
 const ACTIVE_BUCKETS = new Set(['0-10s', '11-30s', '31-60s', '61-180s', '181-600s', '600s+']);
 const INPUT_MODES = new Set(['roman', 'direct', 'unknown']);
 const DEVICE_CLASSES = new Set(['mobile', 'tablet', 'desktop']);
+const LOCALES = new Set(['en', 'ur']);
 
 const METRIC_COLUMNS = [
     'visits', 'engaged_visits', 'copies', 'exports',
@@ -87,6 +88,14 @@ const SCHEMA_STATEMENTS = [
         ${METRIC_DEFINITIONS},
         latest_event_at TEXT,
         PRIMARY KEY (bucket_hour, tool)
+    )`,
+    `CREATE TABLE IF NOT EXISTS product_hourly_locale_metrics (
+        bucket_hour TEXT NOT NULL,
+        locale TEXT NOT NULL,
+        tool TEXT NOT NULL,
+        ${METRIC_DEFINITIONS},
+        latest_event_at TEXT,
+        PRIMARY KEY (bucket_hour, locale, tool)
     )`,
     `CREATE TABLE IF NOT EXISTS product_hourly_handoffs (
         bucket_hour TEXT NOT NULL,
@@ -149,7 +158,8 @@ function cleanEvent(input) {
     const route = cleanRoute(input.route);
     const eventName = enumValue(input.event_name, EVENT_NAMES);
     const tool = enumValue(input.tool, TOOLS);
-    if (!eventId || !sessionId || !route || !eventName || !tool) return null;
+    const locale = enumValue(input.locale || 'en', LOCALES);
+    if (!eventId || !sessionId || !route || !eventName || !tool || !locale) return null;
 
     const targetRoute = input.target_route ? cleanRoute(input.target_route) : null;
     if (input.target_route && !targetRoute) return null;
@@ -158,6 +168,7 @@ function cleanEvent(input) {
         eventId,
         sessionId,
         route,
+        locale,
         tool,
         eventName,
         format: enumValue(input.format, FORMATS),
@@ -387,11 +398,21 @@ function isShareLoopEvent(event) {
 
 function aggregateEvents(events, now) {
     const byTool = new Map();
+    const localeByTool = new Map();
     const shareByTool = new Map();
     const handoffs = new Map();
     const getDelta = (tool) => {
         if (!byTool.has(tool)) byTool.set(tool, emptyDelta(tool, now));
         return byTool.get(tool);
+    };
+    const getLocaleDelta = (locale, tool) => {
+        const key = locale + '|' + tool;
+        if (!localeByTool.has(key)) {
+            const delta = emptyDelta(tool, now);
+            delta.locale = locale;
+            localeByTool.set(key, delta);
+        }
+        return localeByTool.get(key);
     };
     const getShareDelta = (tool) => {
         if (!shareByTool.has(tool)) shareByTool.set(tool, emptyShareDelta(tool, now));
@@ -401,6 +422,8 @@ function aggregateEvents(events, now) {
     events.forEach((event) => {
         applyEvent(getDelta(event.tool), event);
         applyEvent(getDelta('all'), event);
+        applyEvent(getLocaleDelta(event.locale, event.tool), event);
+        applyEvent(getLocaleDelta(event.locale, 'all'), event);
         if (isShareLoopEvent(event)) {
             applyShareEvent(getShareDelta(event.tool), event);
             applyShareEvent(getShareDelta('all'), event);
@@ -412,7 +435,7 @@ function aggregateEvents(events, now) {
             });
         }
     });
-    return { byTool: Array.from(byTool.values()), shareByTool: Array.from(shareByTool.values()), handoffs: Array.from(handoffs.values()) };
+    return { byTool: Array.from(byTool.values()), localeByTool: Array.from(localeByTool.values()), shareByTool: Array.from(shareByTool.values()), handoffs: Array.from(handoffs.values()) };
 }
 
 function metricUpsert(db, bucket, delta) {
@@ -423,6 +446,16 @@ function metricUpsert(db, bucket, delta) {
     const values = [bucket, delta.tool].concat(METRIC_COLUMNS.map((column) => delta[column])).concat([delta.latest_event_at]);
     return db.prepare(`INSERT INTO product_hourly_metrics (${columns.join(', ')}) VALUES (${placeholders})
                        ON CONFLICT(bucket_hour, tool) DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
+}
+
+function localeMetricUpsert(db, bucket, delta) {
+    const columns = ['bucket_hour', 'locale', 'tool'].concat(METRIC_COLUMNS).concat(['latest_event_at']);
+    const placeholders = columns.map(() => '?').join(', ');
+    const assignments = METRIC_COLUMNS.map((column) => `${column} = ${column} + excluded.${column}`)
+        .concat(['latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)']);
+    const values = [bucket, delta.locale, delta.tool].concat(METRIC_COLUMNS.map((column) => delta[column])).concat([delta.latest_event_at]);
+    return db.prepare(`INSERT INTO product_hourly_locale_metrics (${columns.join(', ')}) VALUES (${placeholders})
+                       ON CONFLICT(bucket_hour, locale, tool) DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
 }
 
 function shareMetricUpsert(db, bucket, delta) {
@@ -473,6 +506,7 @@ export async function onRequestPost(context) {
         const bucket = hourBucket(now);
         const aggregated = aggregateEvents(events, now.toISOString());
         const statements = aggregated.byTool.map((delta) => metricUpsert(db, bucket, delta))
+            .concat(aggregated.localeByTool.map((delta) => localeMetricUpsert(db, bucket, delta)))
             .concat(aggregated.shareByTool.map((delta) => shareMetricUpsert(db, bucket, delta)))
             .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)));
         await db.batch(statements);
