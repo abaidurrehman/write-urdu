@@ -72,6 +72,7 @@
             },
             header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Private by default · export or share when ready.' },
             aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
+            home: { startTyping: 'Start typing', exploreTools: 'Explore more tools', learnHow: 'Learn how it works' },
             languageAction: 'اردو',
             ui: {
                 'Copy text': 'Copy text', Export: 'Export', Share: 'Share', More: 'More', Clear: 'Clear',
@@ -120,6 +121,7 @@
             },
             header: { local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', free: 'استعمال کے لیے مفت', privacy: 'رازداری پہلے · تیار ہونے پر برآمد یا شیئر کریں۔' },
             aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
+            home: { startTyping: 'لکھنا شروع کریں', exploreTools: 'مزید ٹولز دیکھیں', learnHow: 'طریقہ کار جانیں' },
             languageAction: 'English',
             ui: {
                 'Copy text': 'متن کاپی کریں', Export: 'برآمد کریں', Share: 'شیئر کریں', More: 'مزید', Clear: 'صاف کریں',

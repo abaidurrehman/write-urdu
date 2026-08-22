@@ -125,6 +125,7 @@ function render(productPath, englishSource) {
   html = setMeta(html, 'twitter:description', copy.description, false);
   html = applyKey(html, productPath === '/' ? 'home.h1' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.h1', copy.h1);
   html = applyKey(html, productPath === '/' ? 'home.lede' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.lede', copy.lede);
+  Object.keys(copy.strings || {}).forEach(function (key) { html = applyKey(html, key, copy.strings[key]); });
   html = rootSafeAssets(html);
   html = localeInternalLinks(html);
   html = setStaticSchema(html, productPath, copy);
