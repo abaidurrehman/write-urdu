@@ -44,7 +44,7 @@ assert.match(client, /keepalive/, 'Keepalive fallback for exit delivery is missi
 // The network payload is an explicit object. It may contain buckets but never
 // a free-form text/content/value/referrer/user-agent field that could carry
 // what somebody wrote.
-const payloadBlock = client.match(/function payload\([\s\S]*?\n    }\n\n    function scheduleFlush/);
+const payloadBlock = client.match(/function payload\([\s\S]*?\r?\n    }\r?\n\r?\n    function scheduleFlush/);
 assert.ok(payloadBlock, 'Could not locate the telemetry payload contract');
 for (const forbidden of ['text:', 'content:', 'value:', 'filename:', 'referrer:', 'user_agent:', 'userAgent:', 'email:']) {
   assert.ok(!payloadBlock[0].includes(forbidden), `Telemetry payload must not include ${forbidden}`);

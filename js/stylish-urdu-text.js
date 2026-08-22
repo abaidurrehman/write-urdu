@@ -78,7 +78,7 @@
     if (query) query.addEventListener('input', function () { render(true); });
     [category, intensity].forEach(function (input) { if (input) input.addEventListener('change', function () { render(true); }); });
     root.querySelectorAll('[data-stylish-example]').forEach(function (button) { button.addEventListener('click', function () { textarea.value = button.getAttribute('data-stylish-example') || ''; textarea.dispatchEvent(new Event('input', { bubbles: true })); textarea.focus(); }); });
-    root.querySelector('[data-stylish-generate]').addEventListener('click', function () { var normalized = core.normalizeText(textarea.value); textarea.value = normalized.value; render(true); saveRecentInput(); setStatus(normalized.truncated ? 'Text was shortened to 100 grapheme clusters.' : 'Styles refreshed.'); });
+    root.querySelector('[data-stylish-generate]').addEventListener('click', function () { var normalized = core.normalizeText(textarea.value); textarea.value = normalized.value; render(true); saveRecentInput(); setStatus(normalized.truncated ? 'Text was shortened to the 100-character limit.' : 'Styles refreshed.'); });
     root.querySelector('[data-stylish-clear]').addEventListener('click', function () { textarea.value = ''; render(true); textarea.focus(); setStatus('Text cleared.'); });
     root.querySelector('[data-stylish-surprise]').addEventListener('click', function () { var examples = ['زندگی ایک خوب صورت سفر ہے۔', 'آج کا دن ایک نئی شروعات ہے۔', 'Abaid Rehman']; textarea.value = examples[Math.floor(Math.random() * examples.length)]; render(true); saveRecentInput(); });
     root.querySelector('[data-stylish-more]').addEventListener('click', function () { render(false); });

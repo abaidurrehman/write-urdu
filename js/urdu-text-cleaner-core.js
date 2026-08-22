@@ -120,8 +120,8 @@
         },
         {
             id: 'presentation-forms', category: 'characters', safety: 'safe', autoFix: true,
-            title: 'Legacy Arabic presentation forms found',
-            explanation: 'Presentation-form code points can come from older copy/paste workflows. They can usually be normalized to standard Unicode characters.',
+            title: 'Older character shapes found',
+            explanation: 'Text copied from older documents can use character shapes that do not work well in current apps. These can usually be replaced safely.',
             count: function (text) {
                 var source = String(text || '');
                 var count = 0;
@@ -136,8 +136,8 @@
         },
         {
             id: 'nbsp', category: 'spacing', safety: 'safe', autoFix: true,
-            title: 'Non-breaking spaces found',
-            explanation: 'Non-breaking spaces can behave unexpectedly when Urdu text is pasted between apps. Ordinary spaces are safer for normal prose.',
+            title: 'Unusual spaces found',
+            explanation: 'Some hidden spaces can behave unexpectedly when Urdu text is pasted between apps. Ordinary spaces are safer for normal writing.',
             count: function (text) { return countMatches(text, /\u00A0/g); },
             transform: function (text) { return String(text || '').replace(/\u00A0/g, ' '); }
         },
@@ -157,22 +157,22 @@
         },
         {
             id: 'zero-width-no-break-space', category: 'invisible', safety: 'safe', autoFix: true,
-            title: 'Invisible zero-width no-break characters found',
-            explanation: 'This invisible character is commonly introduced by copy/paste and can be removed from editable Urdu text.',
+            title: 'Hidden copy-and-paste marks found',
+            explanation: 'This invisible mark is often added during copy and paste and can be removed safely from editable Urdu text.',
             count: function (text) { return countMatches(text, /\uFEFF/g); },
             transform: function (text) { return String(text || '').replace(/\uFEFF/g, ''); }
         },
         {
             id: 'duplicate-bidi-controls', category: 'direction', safety: 'safe', autoFix: true,
-            title: 'Repeated direction controls found',
-            explanation: 'Identical adjacent direction controls are redundant. The cleaner can collapse each repeated run to one control without stripping all RTL metadata.',
+            title: 'Repeated text-direction marks found',
+            explanation: 'The same hidden direction mark appears more than once in a row. Keeping one is enough and preserves the intended text direction.',
             count: function (text) { return countPattern(text, /([\u061C\u200E\u200F\u202A-\u202E\u2066-\u2069])\1+/g); },
             transform: collapseDuplicateBidi
         },
         {
             id: 'duplicate-join-controls', category: 'invisible', safety: 'safe', autoFix: true,
-            title: 'Repeated join controls found',
-            explanation: 'Repeated identical ZWJ/ZWNJ characters are usually redundant. The cleaner keeps one rather than deleting all join controls.',
+            title: 'Repeated letter-joining marks found',
+            explanation: 'The same hidden joining mark appears more than once in a row. The cleaner keeps one instead of removing every mark.',
             count: function (text) { return countPattern(text, /([\u200C\u200D])\1+/g); },
             transform: collapseDuplicateJoinControls
         },
@@ -186,14 +186,14 @@
         },
         {
             id: 'bidi-controls', category: 'direction', safety: 'review', autoFix: false,
-            title: 'Direction-control characters present',
-            explanation: 'LRM, RLM, embedding, override or isolate marks can be legitimate. Review them instead of removing every mark automatically.',
+            title: 'Hidden text-direction marks found',
+            explanation: 'Some apps add invisible marks to control how Urdu and English appear together. Review them before removing anything.',
             count: function (text) { return countMatches(text, BIDI_CONTROLS); }
         },
         {
             id: 'suspicious-join-controls', category: 'invisible', safety: 'review', autoFix: false,
-            title: 'Join controls near spaces or punctuation',
-            explanation: 'ZWJ/ZWNJ can be valid in Urdu shaping, but controls beside whitespace or punctuation may be copy/paste artefacts.',
+            title: 'Hidden joining marks near spaces or punctuation',
+            explanation: 'Joining marks can be useful inside Urdu words, but marks beside a space or punctuation may be copy-and-paste leftovers.',
             count: countSuspiciousJoinControls
         },
         {
@@ -204,8 +204,8 @@
         },
         {
             id: 'mixed-direction-sequence', category: 'direction', safety: 'review', autoFix: false,
-            title: 'Mixed RTL/LTR number or slash sequence',
-            explanation: 'Urdu next to numbers, slashes, colons or hyphens can render differently across apps. Check the result visually before changing the logical text.',
+            title: 'Urdu mixed with numbers or separators',
+            explanation: 'Urdu beside numbers, slashes, colons or hyphens can look different across apps. Check the result before changing the text.',
             count: countMixedDirectionSequences
         },
         {

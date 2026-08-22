@@ -63,7 +63,7 @@ assert.doesNotMatch(seo, /image:\s*config\.SITE_ORIGIN \+ \(publisher\.logoPath/
 assert.doesNotMatch(seo, /SearchAction|query-input|search_term_string/, 'retired sitelinks search action markup should not remain in the entity graph');
 
 const llms = read('llms.txt');
-assert.match(llms, /^# Write Urdu\n\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
+assert.match(llms, /^# Write Urdu\r?\n\r?\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
 assert.match(llms, /Canonical site: https:\/\/write-urdu\.com\//, 'llms.txt canonical site statement is missing');
 assert.match(llms, /does not translate an English sentence into Urdu/i, 'llms.txt must preserve the English-letter typing versus translation distinction in plain language');
 assert.match(llms, /Last reviewed: 2026-08-19/, 'llms.txt review date is stale');
@@ -89,13 +89,13 @@ const revisionDates = {
   '/urdu-keyboard': '2026-08-07',
   '/urdu-alphabet': '2026-08-07',
   '/write-urdu-documentation': '2026-08-07',
-  '/urdu-faq': '2026-08-07',
+  '/urdu-faq': '2026-08-22',
   '/roman-urdu-transliteration': '2026-08-19',
   '/urdu-name-art-maker': '2026-08-13',
   '/urdu-card-studio': '2026-08-17',
   '/how-to-share-urdu-writing-online': '2026-08-17',
-  '/write-urdu-privacy': '2026-08-17',
-  '/contact': '2026-08-15',
+  '/write-urdu-privacy': '2026-08-22',
+  '/contact': '2026-08-22',
   '/write-urdu-sitemap': '2026-08-15'
 };
 for (const [route, revisionDate] of Object.entries(revisionDates)) {

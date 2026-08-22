@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Urdu Text Cleaner & RTL Fixer — Fix Unicode Urdu Online | WriteUrdu</title>
-    <meta name="description" content="Clean Urdu text in your browser. Fix Arabic/Urdu character variants, invisible RTL marks, spacing, kashida and mixed numeral issues without uploading your text.">
+    <title>Urdu Text Cleaner — Fix Spacing &amp; Text Direction | WriteUrdu</title>
+    <meta name="description" content="Fix broken Urdu text copied from PDFs, Word or websites. Correct common character, spacing and text-direction problems without uploading your writing.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="canonical" href="https://write-urdu.com/urdu-text-cleaner">
-    <meta property="og:type" content="website"><meta property="og:site_name" content="Write Urdu"><meta property="og:title" content="Urdu Text Cleaner & RTL Fixer"><meta property="og:description" content="Find and safely fix common Urdu Unicode, spacing and right-to-left text problems in your browser."><meta property="og:url" content="https://write-urdu.com/urdu-text-cleaner"><meta property="og:image" content="https://write-urdu.com/image/logo10.png"><meta property="og:image:alt" content="Write Urdu text cleaner">
-    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Urdu Text Cleaner & RTL Fixer"><meta name="twitter:description" content="Clean common Urdu Unicode and RTL text problems privately in your browser."><meta name="twitter:image" content="https://write-urdu.com/image/logo10.png">
+    <meta property="og:type" content="website"><meta property="og:site_name" content="Write Urdu"><meta property="og:title" content="Urdu Text Cleaner — Fix Spacing &amp; Text Direction"><meta property="og:description" content="Fix broken Urdu text copied from PDFs, Word or websites without uploading your writing."><meta property="og:url" content="https://write-urdu.com/urdu-text-cleaner"><meta property="og:image" content="https://write-urdu.com/image/logo10.png"><meta property="og:image:alt" content="Write Urdu text cleaner">
+    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Urdu Text Cleaner"><meta name="twitter:description" content="Fix common Urdu character, spacing and text-direction problems."><meta name="twitter:image" content="https://write-urdu.com/image/logo10.png">
     <link rel="icon" href="image/logo10.png" type="image/png">
     <link rel="stylesheet" href="css/site-header.css">
     <link rel="stylesheet" href="css/urdu-tools.css">
@@ -28,20 +28,20 @@
         <header class="urdu-tool-hero">
             <div>
                 <p class="urdu-tool-eyebrow">Fix copied Urdu text</p>
-                <h1>Urdu Text Cleaner & RTL Fixer</h1>
-                <p>Find common Unicode, spacing and right-to-left text problems without changing your source. Apply only safe fixes automatically, then review anything ambiguous yourself.</p>
+                <h1>Fix Broken or Badly Formatted Urdu Text</h1>
+                <p>Paste Urdu copied from a PDF, Word file, website or message. Fix common character, spacing and text-direction problems while keeping your original text unchanged.</p>
             </div>
             <aside class="urdu-tool-trust" aria-label="Privacy note">
-                <strong>Free and browser-based</strong><br>
-                Your source and cleaned result stay in this browser. WriteUrdu does not send this text to its analytics or a text-cleaning service.
+                <strong>Free and private</strong><br>
+                Your original and cleaned text stay on this device. WriteUrdu does not send them to analytics or a text-cleaning service.
             </aside>
         </header>
 
         <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="cleaner-workspace-title" google-side-rail-overlap="false">
             <div class="urdu-tool-workspace-header">
                 <div>
-                    <h2 id="cleaner-workspace-title">Clean and inspect Urdu text</h2>
-                    <p>Safe code-point and spacing fixes are separated from RTL cases that need human review.</p>
+                    <h2 id="cleaner-workspace-title">Check and clean your Urdu text</h2>
+                    <p>Clear problems can be fixed for you. Anything that could change your meaning is left for you to review.</p>
                 </div>
                 <span class="urdu-tool-status-pill" data-cleaner-status-pill>Waiting for text</span>
             </div>
@@ -49,12 +49,12 @@
             <div class="urdu-tool-grid">
                 <section class="urdu-tool-column" aria-labelledby="cleaner-source-title">
                     <div class="urdu-tool-label-row">
-                        <label id="cleaner-source-title" for="cleanerSource">Source text</label>
+                        <label id="cleaner-source-title" for="cleanerSource">Original text</label>
                         <span class="urdu-tool-helper" data-cleaner-source-meta>Paste or type Urdu text</span>
                     </div>
                     <textarea id="cleanerSource" class="urdu-tool-textarea" dir="rtl" lang="ur" spellcheck="false" maxlength="100000" placeholder="مثال: يہ اردو متن یہاں پیسٹ کریں ..."></textarea>
                     <div class="urdu-tool-actions">
-                        <button class="urdu-tool-button primary" type="button" data-cleaner-analyze>Analyze text</button>
+                        <button class="urdu-tool-button primary" type="button" data-cleaner-analyze>Check text</button>
                         <button class="urdu-tool-button" type="button" data-cleaner-clear>Clear</button>
                     </div>
                 </section>
@@ -62,11 +62,11 @@
                 <section class="urdu-tool-column" aria-labelledby="cleaner-result-title">
                     <div class="urdu-tool-label-row">
                         <label id="cleaner-result-title" for="cleanerResult">Cleaned result</label>
-                        <span class="urdu-tool-helper">Your source remains unchanged</span>
+                        <span class="urdu-tool-helper">Your original stays unchanged</span>
                     </div>
-                    <textarea id="cleanerResult" class="urdu-tool-textarea" dir="rtl" lang="ur" spellcheck="false" readonly placeholder="The cleaned result appears here after analysis."></textarea>
+                    <textarea id="cleanerResult" class="urdu-tool-textarea" dir="rtl" lang="ur" spellcheck="false" readonly placeholder="Your cleaned text appears here after you check it."></textarea>
                     <div class="urdu-tool-actions">
-                        <button class="urdu-tool-button primary" type="button" data-cleaner-fix-safe disabled>Fix safe issues</button>
+                        <button class="urdu-tool-button primary" type="button" data-cleaner-fix-safe disabled>Fix clear problems</button>
                         <button class="urdu-tool-button" type="button" data-cleaner-copy data-copy-target="#cleanerResult" disabled>Copy result</button>
                         <button class="urdu-tool-button" type="button" data-cleaner-handoff disabled>Open in WriteUrdu</button>
                     </div>
@@ -85,11 +85,11 @@
 
             <section class="urdu-tool-analysis" aria-labelledby="cleaner-analysis-title">
                 <div class="urdu-tool-summary" data-cleaner-summary aria-live="polite">
-                    <h3 id="cleaner-analysis-title">Analysis appears here</h3>
-                    <span class="urdu-tool-chip">Source is never overwritten</span>
+                    <h3 id="cleaner-analysis-title">Check results appear here</h3>
+                    <span class="urdu-tool-chip">Original text is never overwritten</span>
                 </div>
                 <ul class="urdu-tool-issues" data-cleaner-issues>
-                    <li class="urdu-tool-empty">Analyze the source to see safe fixes and review-only RTL warnings.</li>
+                    <li class="urdu-tool-empty">Check your text to see suggested fixes and anything that needs your review.</li>
                 </ul>
             </section>
         </section>
@@ -99,30 +99,30 @@
         <section class="urdu-tool-content" aria-label="About the Urdu text cleaner">
             <section>
                 <h2>What this Urdu text cleaner fixes</h2>
-                <p>Urdu copied from websites, PDFs, Word documents, messaging apps and older publishing workflows can contain characters that look almost identical but are encoded differently. That can affect search, copy and paste, exports, indexing and how text behaves in different apps.</p>
+                <p>Urdu copied from websites, PDFs, Word documents and messaging apps can contain look-alike characters or hidden marks. These can break search, copy and paste, file exports or the way text appears in another app.</p>
                 <h3>Arabic and Urdu character variants</h3>
-                <p>The cleaner can safely normalize common Arabic forms such as <span lang="ar" dir="rtl">ي</span> and <span lang="ar" dir="rtl">ك</span> to the Urdu forms <span lang="ur" dir="rtl">ی</span> and <span lang="ur" dir="rtl">ک</span>. It also normalizes compatible legacy Arabic presentation forms where Unicode provides a safe standard form.</p>
-                <h3>Invisible RTL and join controls</h3>
-                <p>Direction marks such as LRM, RLM, embeddings and isolates can be invisible while still changing how mixed Urdu, English and numbers are displayed. ZWJ and ZWNJ can also influence joining. Because these controls can be intentional, the tool reports ambiguous cases instead of blindly deleting them.</p>
+                <p>The cleaner can safely change common Arabic forms such as <span lang="ar" dir="rtl">ي</span> and <span lang="ar" dir="rtl">ك</span> to the Urdu forms <span lang="ur" dir="rtl">ی</span> and <span lang="ur" dir="rtl">ک</span>. It can also replace older character shapes with forms that work better in current apps.</p>
+                <h3>Hidden text-direction and joining marks</h3>
+                <p>Invisible marks can change how Urdu, English, numbers and punctuation appear together. Some are intentional, so the cleaner shows uncertain cases for review instead of deleting them automatically.</p>
                 <h3>Spacing, punctuation, kashida and numerals</h3>
-                <p>Repeated spaces, non-breaking spaces and obvious spaces before punctuation can be cleaned automatically. Kashida/tatweel is shown as a review action because it can be decorative. Numeral conversion is always an explicit choice rather than part of Fix Safe Issues.</p>
+                <p>Repeated spaces and obvious spaces before punctuation can be fixed automatically. Kashida may be decorative, so removing it remains your choice. Number style also changes only when you choose it.</p>
                 <h3>Mixed Urdu, English and numbers</h3>
-                <p>Sequences such as Urdu beside invoice numbers, dates, slashes, colons or hyphens can render differently across applications. The cleaner flags suspicious mixed-direction patterns and unmatched brackets, but it does not reverse punctuation or rewrite the logical text automatically.</p>
+                <p>Urdu beside invoice numbers, dates, slashes, colons or hyphens can look different across apps. The cleaner highlights unusual combinations and unmatched brackets, but it does not reverse punctuation or rewrite your wording automatically.</p>
             </section>
 
             <aside class="urdu-tool-related">
                 <h2>How to use it</h2>
                 <ol>
                     <li>Paste the Urdu text you want to inspect.</li>
-                    <li>Select <strong>Analyze text</strong>.</li>
-                    <li>Use <strong>Fix safe issues</strong> for conservative automatic changes.</li>
+                    <li>Select <strong>Check text</strong>.</li>
+                    <li>Use <strong>Fix clear problems</strong> for changes that do not need a decision from you.</li>
                     <li>Review yellow items before applying any optional change.</li>
                     <li>Copy the result or open it in WriteUrdu for editing and export.</li>
                 </ol>
                 <h2>Questions</h2>
-                <details open><summary>Does WriteUrdu upload my text?</summary><p>No. The cleaning rules run in JavaScript in this browser. The optional editor handoff uses session-only browser storage and removes the handoff after it is consumed.</p></details>
-                <details><summary>Is this a spelling or grammar checker?</summary><p>No. It fixes or diagnoses encoding, spacing and RTL presentation problems. It does not rewrite your Urdu wording.</p></details>
-                <details><summary>Why are some issues marked Review?</summary><p>Some invisible controls, punctuation and kashida are legitimate in particular contexts. Removing them automatically could change intended shaping or presentation, so the tool leaves those decisions to you.</p></details>
+                <details open><summary>Does WriteUrdu upload my text?</summary><p>No. Cleaning happens on this device. If you continue in another WriteUrdu editor, the text is passed only within this browser and removed from the transfer after it opens.</p></details>
+                <details><summary>Is this a spelling or grammar checker?</summary><p>No. It fixes character, spacing and text-direction problems. It does not rewrite your Urdu wording.</p></details>
+                <details><summary>Why are some issues marked Review?</summary><p>Some hidden marks, punctuation and kashida may be intentional. Removing them automatically could change how your text looks or reads, so the tool leaves those decisions to you.</p></details>
                 <details><summary>Will it fix every right-to-left layout problem?</summary><p>No. Apps implement mixed-direction layout around numbers and punctuation differently. The tool finds common suspicious patterns but deliberately avoids unsafe guesses.</p></details>
                 <p><a href="/">Write Roman Urdu → Urdu</a><br><a href="/urdu-editor">Format Urdu in the rich editor</a><br><a href="/urdu-keyboard">Use the Urdu keyboard</a></p>
             </aside>

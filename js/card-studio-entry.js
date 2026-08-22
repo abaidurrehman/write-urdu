@@ -241,7 +241,7 @@
             '<div class="wu-next-journey-actions">' +
                 '<button type="button" class="wu-next-journey-action is-primary is-share" data-create-card data-editor-source="' + sourceName() + '" data-wu-journey="write-to-card"><strong>Create &amp; share this Urdu</strong><small>Open the text in Card Studio, make it visual, then publish a beautiful Write-Urdu.com link.</small></button>' +
                 richAction +
-                '<button type="button" class="wu-next-journey-action" data-create-stylish data-editor-source="' + sourceName() + '" data-wu-journey="write-to-stylish"><strong>Try Stylish Urdu Text</strong><small>Generate copyable Unicode-decorated versions of the text.</small></button>' +
+                '<button type="button" class="wu-next-journey-action" data-create-stylish data-editor-source="' + sourceName() + '" data-wu-journey="write-to-stylish"><strong>Try Stylish Urdu Text</strong><small>Create decorated versions you can copy and paste.</small></button>' +
                 '<button type="button" class="wu-next-journey-action" data-create-name-art data-editor-source="' + sourceName() + '" data-wu-journey="write-to-name-art"><strong>Make Urdu Name Art</strong><small>Render the text with real Urdu fonts as an image.</small></button>' +
                 '<a class="wu-next-journey-action" href="/urdu-templates" data-wu-journey="write-to-templates"><strong>Browse Urdu templates</strong><small>Choose a ready-made visual starting point for Card Studio.</small></a>' +
             '</div>';

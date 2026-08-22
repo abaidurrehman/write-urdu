@@ -20,7 +20,7 @@ for (const [name, source] of [['About', about], ['Privacy', privacy]]) {
 }
 
 assert.match(about, /<h1 id=\"about-title\">About Write Urdu<\/h1>/, 'About page must statically match SEO-owned H1');
-assert.match(about, /How the project is maintained/, 'About page must retain maintenance/evidence information');
+assert.match(about, /How the product is maintained/, 'About page must retain maintenance/evidence information');
 assert.match(about, /What Write Urdu does not promise/, 'About page must state product limitations clearly');
 assert.match(about, /admin@write-urdu\.com/, 'About page must retain a correction contact channel');
 
