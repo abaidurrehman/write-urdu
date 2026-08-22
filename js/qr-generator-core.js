@@ -270,10 +270,10 @@
         var payloadResult = buildQrPayload(project.content);
         var contrast = evaluateContrast(project.design.foregroundColor, project.design.backgroundColor);
         var warnings = payloadResult.warnings.slice();
-        if (project.design.margin < 4) warnings.push('A clear margin of 4 modules is recommended for reliable scanning.');
+        if (project.design.margin < 4) warnings.push('Add more clear space around the QR code for reliable scanning.');
         if (contrast.level !== 'good') warnings.push('These colors may be difficult for some cameras to scan.');
         if (project.logo.enabled) {
-            if (project.design.errorCorrectionLevel !== 'H') warnings.push('A center logo works best with high error correction.');
+            if (project.design.errorCorrectionLevel !== 'H') warnings.push('A centre logo works best with the strongest scan reliability setting.');
             if (project.logo.sizeRatio > 0.2) warnings.push('A large logo can make the QR code harder to scan.');
         }
         return { valid: payloadResult.valid && contrast.valid && (!project.logo.enabled || Boolean(project.logo.dataUrl || project.logo.assetId)), payload: payloadResult, contrast: contrast, warnings: warnings };

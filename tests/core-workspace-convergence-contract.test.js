@@ -16,6 +16,11 @@ const spec = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-003-core-workspac
 const toolbarSpec = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-004-basic-writer-command-toolbar.md'), 'utf8');
 const shareAddendum = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-004A-basic-writer-public-share-short-link.md'), 'utf8');
 const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+const cleanerPage = fs.readFileSync(path.join(root, 'urdu-text-cleaner.html'), 'utf8');
+const qrPage = fs.readFileSync(path.join(root, 'qr-code-generator.html'), 'utf8');
+const stylishPage = fs.readFileSync(path.join(root, 'stylish-urdu-text-generator.html'), 'utf8');
+const nameArtPage = fs.readFileSync(path.join(root, 'urdu-name-art-maker.html'), 'utf8');
+const invoicePage = fs.readFileSync(path.join(root, 'urdu-invoice-generator.html'), 'utf8');
 
 assert.deepStrictEqual(Convergence.CORE_ROUTES, ['/', '/urdu-keyboard', '/urdu-editor'], 'Core convergence route ownership changed unexpectedly');
 assert.strictEqual(Convergence.coreWorkspace('/'), 'basic');
@@ -27,6 +32,18 @@ assert.strictEqual(Convergence.USER_FIRST_LABELS.cleaner, 'Fix broken or badly f
 assert.strictEqual(Convergence.USER_FIRST_LABELS.image, 'Turn an Urdu screenshot or photo into editable text');
 assert.ok(Convergence.LEGACY_TRUST_SELECTORS.includes('.fb-comments'), 'Legacy comments retirement is missing');
 assert.ok(Convergence.LEGACY_TRUST_SELECTORS.includes('.twitter-follow-button'), 'Legacy social follow retirement is missing');
+
+assert.match(cleanerPage, /Fix Broken or Badly Formatted Urdu Text/, 'Text Cleaner must lead with the user problem');
+assert.match(cleanerPage, /PDF, Word file, website or message/, 'Text Cleaner must name recognizable sources of broken Urdu text');
+assert.doesNotMatch(cleanerPage, /Safe code-point|review-only RTL|session-only browser storage/, 'Text Cleaner primary help must not expose implementation language');
+assert.match(qrPage, /What should your QR code open or show/, 'QR setup must ask about the user outcome');
+assert.doesNotMatch(qrPage, /What would you like to encode|Show encoded content|four-module margin/, 'QR setup must not require encoding or QR-spec vocabulary');
+assert.match(stylishPage, /ready to copy, paste and compare/, 'Stylish Text must explain the immediate result');
+assert.doesNotMatch(stylishPage, /Results are deterministic and generated locally/, 'Stylish Text results must not expose engineering guarantees');
+assert.match(nameArtPage, /Choose your Urdu font/, 'Name Art guidance must lead with a design choice');
+assert.doesNotMatch(nameArtPage, /shared renderer|short-lived session storage/, 'Name Art guidance must not expose renderer or storage internals');
+assert.match(invoicePage, /Show only what you need/, 'Invoice guidance must explain the user benefit of optional sections');
+assert.doesNotMatch(invoicePage, /without exposing the payload|More tools by the same developer/, 'Invoice guidance must not expose implementation nouns or developer-centric framing');
 
 assert.strictEqual(Convergence.BASIC_COMMAND_TOOLBAR_SRC, '/js/basic-writer-command-toolbar.js', 'Basic Writer toolbar loader path drifted');
 assert.match(runtime, /data-wu-command-toolbar-transition/, 'Basic Writer command-toolbar transition marker is missing');

@@ -44,7 +44,7 @@
         <header class="card-studio-topbar">
             <div>
                 <h1 data-card-i18n="title" data-wu-l10n="urdu-card-studio.h1">Urdu Card Studio</h1>
-                <p data-card-i18n="subtitle" data-wu-l10n="urdu-card-studio.lede">Design, move, edit and export Urdu cards in your browser.</p>
+                <p data-card-i18n="subtitle" data-wu-l10n="urdu-card-studio.lede">Turn Urdu poetry, quotes, greetings and announcements into polished images.</p>
                 <p class="card-studio-social-badge" data-social-only hidden><strong data-social-title></strong> <span data-social-subtitle></span></p>
                 <p class="card-studio-template-badge" data-card-library-template hidden aria-live="polite"></p>
             </div>
@@ -195,7 +195,7 @@
                     <select class="card-studio-select" id="cardBackgroundType" data-card-field="background.type"><option value="solid">Solid colour</option><option value="gradient">Built-in gradient</option><option value="image">Uploaded image</option></select>
                     <div data-card-background-solid><label class="card-studio-label" for="cardBackgroundColor" data-card-i18n="backgroundColorLabel">Background colour</label><input class="card-studio-input" id="cardBackgroundColor" data-card-field="background.color" type="color"></div>
                     <div data-card-background-gradient><label class="card-studio-label" for="cardGradient" data-card-i18n="gradientLabel">Gradient</label><select class="card-studio-select" id="cardGradient" data-card-field="background.gradientId"></select></div>
-                    <div class="card-studio-upload" data-card-background-image><label class="card-studio-label" for="cardImage" data-card-i18n="uploadLabel">Upload a local JPG, PNG or WebP</label><input id="cardImage" type="file" accept="image/jpeg,image/png,image/webp"><p class="card-studio-help" data-card-i18n="privacy">Your text and images stay in this browser and are not uploaded.</p><button class="card-studio-button" type="button" data-card-action="remove-image" data-card-i18n="removeImage">Remove image</button></div>
+                    <div class="card-studio-upload" data-card-background-image><label class="card-studio-label" for="cardImage" data-card-i18n="uploadLabel">Choose a JPG, PNG or WebP</label><input id="cardImage" type="file" accept="image/jpeg,image/png,image/webp"><p class="card-studio-help" data-card-i18n="privacy">Your text and background stay on this device while you design.</p><button class="card-studio-button" type="button" data-card-action="remove-image" data-card-i18n="removeImage">Remove image</button></div>
                     <div data-card-background-image data-card-advanced="true">
                         <div class="card-studio-field-row"><div><label class="card-studio-label" for="cardImageFit" data-card-i18n="fitLabel">Image fit</label><select class="card-studio-select" id="cardImageFit" data-card-field="background.fit"><option value="cover">Cover</option><option value="contain">Contain</option></select></div><div><label class="card-studio-label" for="cardOverlayColor" data-card-i18n="overlayColorLabel">Overlay</label><input class="card-studio-input" id="cardOverlayColor" data-card-field="background.overlayColor" type="color"></div></div>
                         <label class="card-studio-label" for="cardOverlay" data-card-i18n="overlayLabel">Overlay strength <span class="card-studio-range-value" data-card-overlay-value></span></label><input class="card-studio-range" id="cardOverlay" data-card-field="background.overlayOpacity" type="range" min="0" max=".8" step=".01">
@@ -216,7 +216,7 @@
                         <button class="card-studio-button primary" type="button" data-card-action="download" data-card-i18n="download" data-wu-l10n="urdu-card-studio.exportDownload">Download PNG</button>
                         <button class="card-studio-button secondary" type="button" data-card-action="share" data-card-i18n="share" data-wu-l10n="urdu-card-studio.exportShare">Share</button>
                     </div>
-                    <p class="card-studio-privacy" data-card-i18n="exportPrivacy" data-wu-l10n="urdu-card-studio.exportPrivacy">Processed in your browser. Your text and images stay on this device.</p>
+                <p class="card-studio-privacy" data-card-i18n="exportPrivacy" data-wu-l10n="urdu-card-studio.exportPrivacy">Your text and images stay on this device until you choose Publish &amp; Share.</p>
                     <div class="social-maker-controls" data-social-only hidden>
                         <h3>Social export</h3>
                         <p class="card-studio-help" data-social-guide></p>
@@ -271,11 +271,11 @@
     </main>
     <section class="seo-content" aria-labelledby="card-studio-about">
         <h2 id="card-studio-about" data-wu-l10n="urdu-card-studio.aboutTitle">Create Urdu cards and quote images online</h2>
-        <p data-wu-l10n="urdu-card-studio.aboutCopy">The Write Urdu Card Studio is a free browser-based Urdu card maker for quote images, poetry cards, announcements and social posts. Choose an Urdu font and template, add a local background, adjust the design and download the finished card as a PNG.</p>
+        <p data-wu-l10n="urdu-card-studio.aboutCopy">Create Urdu quote images, poetry cards, greetings, announcements and social posts for free. Choose an Urdu font and template, add your own background, adjust the design and download the finished card as PNG.</p>
         <div class="seo-content-grid">
             <article><h3 data-wu-l10n="urdu-card-studio.grid1Title">What you can create</h3><p data-wu-l10n="urdu-card-studio.grid1Copy">Make a poetry quote, WhatsApp status, Instagram quote, Eid greeting, Ramadan reminder or classroom announcement without a design account.</p></article>
             <article><h3 data-wu-l10n="urdu-card-studio.grid2Title">How it works</h3><p data-wu-l10n="urdu-card-studio.grid2Copy">Paste Urdu text, or send text from the basic editor, choose a size and template, adjust typography, then export the exact card you see in the preview.</p></article>
-            <article><h3 data-wu-l10n="urdu-card-studio.grid3Title">Private local images</h3><p data-wu-l10n="urdu-card-studio.grid3Copy">Background images are processed in this browser. They are not uploaded; remove them whenever you want and keep the finished PNG on your device.</p></article>
+            <article><h3 data-wu-l10n="urdu-card-studio.grid3Title">Use your own background privately</h3><p data-wu-l10n="urdu-card-studio.grid3Copy">Your background stays on this device while you design. Download the finished PNG when your card is ready.</p></article>
         </div>
         <div class="seo-content-grid">
             <article><h3 data-wu-l10n="urdu-card-studio.grid4Title">Output sizes for common posts</h3><p data-wu-l10n="urdu-card-studio.grid4Copy">Choose Square Post (1080 × 1080), Landscape Post (1280 × 720), Wide Social Post (1200 × 630), or Story / Status (1080 × 1920). Your text and background are reflowed for the selected ratio.</p></article>
@@ -283,9 +283,9 @@
             <article><h3 data-wu-l10n="urdu-card-studio.grid6Title">PNG export and sharing</h3><p data-wu-l10n="urdu-card-studio.grid6Copy">The final PNG is rendered at the selected output dimensions. Download it for WhatsApp Status, Instagram, classroom materials, announcements, or personal Urdu poetry cards.</p></article>
         </div>
         <h3 data-wu-l10n="urdu-card-studio.faqTitle">Card Studio questions</h3>
-        <details><summary data-wu-l10n="urdu-card-studio.q1">Is the Urdu Card Studio free?</summary><p data-wu-l10n="urdu-card-studio.a1">Yes. It is available without an account, and the design and PNG rendering run in the browser.</p></details>
+        <details><summary data-wu-l10n="urdu-card-studio.q1">Is the Urdu Card Studio free?</summary><p data-wu-l10n="urdu-card-studio.a1">Yes. No account is required. Create your design and download the PNG for free.</p></details>
         <details><summary data-wu-l10n="urdu-card-studio.q2">Can I use it on a phone?</summary><p data-wu-l10n="urdu-card-studio.a2">Yes. The preview and controls adapt to mobile screens, and direct text editing uses the device's native Urdu keyboard.</p></details>
-        <details><summary data-wu-l10n="urdu-card-studio.q3">Can I add a background image?</summary><p data-wu-l10n="urdu-card-studio.a3">Yes. Choose a local JPG, PNG or WebP image. It is processed in your browser and is not uploaded to Write Urdu.</p></details>
+        <details><summary data-wu-l10n="urdu-card-studio.q3">Can I add a background image?</summary><p data-wu-l10n="urdu-card-studio.a3">Yes. Choose a JPG, PNG or WebP from your device. It stays on your device while you design.</p></details>
         <details><summary data-wu-l10n="urdu-card-studio.q4">Why does a long quote appear smaller?</summary><p data-wu-l10n="urdu-card-studio.a4">Auto-fit reduces the font size when needed to keep the complete quote readable inside the selected card layout. Shorten the text or widen the text box when you want larger type.</p></details>
         <details><summary data-wu-l10n="urdu-card-studio.q5">Can I create a card from Roman Urdu?</summary><p data-wu-l10n="urdu-card-studio.a5">Type Roman Urdu in the basic editor first, then choose Create Urdu Card to send the resulting Urdu text to the Studio without changing your original draft.</p></details>
         <nav class="related-resources" aria-labelledby="card-related-title"><h3 id="card-related-title" data-wu-l10n="urdu-card-studio.relatedTitle">Related tools and guides</h3><ul><li><a href="/" data-wu-l10n="urdu-card-studio.related1">Type Roman Urdu in the basic editor</a></li><li><a href="/urdu-editor" data-wu-l10n="urdu-card-studio.related2">Format a longer Urdu document</a></li><li><a href="/urdu-editor-features" data-wu-l10n="urdu-card-studio.related3">Learn about Urdu fonts and alignment</a></li><li><a href="/write-urdu-privacy" data-wu-l10n="urdu-card-studio.related4">Read the privacy policy</a></li></ul></nav>

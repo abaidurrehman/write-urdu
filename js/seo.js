@@ -132,7 +132,7 @@
             '@id': publisherId,
             name: publisher.name || 'Write Urdu',
             url: config.SITE_ORIGIN + '/',
-            description: publisher.description || 'Browser-based Urdu writing tools.',
+            description: publisher.description || 'Urdu typing, document and creative tools.',
             logo: {
                 '@type': 'ImageObject',
                 '@id': config.SITE_ORIGIN + '/#logo',

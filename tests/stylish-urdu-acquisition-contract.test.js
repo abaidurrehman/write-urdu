@@ -14,9 +14,9 @@ assert.strictEqual(ads.resolvePageType('/stylish-urdu-text-generator'), 'create'
 assert.match(html, /Stylish Urdu Text Generator – Urdu Name Styles Copy and Paste/);
 assert.match(html, /data-wu-ad-boundary="post-workspace"/);
 assert.ok(html.indexOf('data-stylish-results') < html.indexOf('class="stylish-seo"'), 'Results must remain before supporting acquisition content');
-assert.match(html, /Copyable stylish Urdu text, not a fake font promise/);
+assert.match(html, /Stylish Urdu text you can copy and paste/);
 assert.match(html, /How to make stylish Urdu text for WhatsApp, Instagram and profiles/);
-assert.match(html, /destination app controls the font/i);
+assert.match(html, /receiving app controls the font/i);
 assert.match(html, /No universal compatibility guarantee is possible/);
 assert.match(html, /exact Nastaliq or Naskh look/);
 assert.match(html, /href="\/urdu-name-art-maker"/);

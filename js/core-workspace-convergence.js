@@ -181,7 +181,7 @@
         section.innerHTML =
             '<div class="sitemap-directory-section-heading">' +
                 '<div><span class="sitemap-directory-step">03</span><p class="sitemap-directory-eyebrow">Work</p></div>' +
-                '<div><h2 id="work-title">Create practical Urdu documents for work</h2><p>Use focused workspaces for structured documents without turning the writing tools into a business suite.</p></div>' +
+                '<div><h2 id="work-title">Create practical Urdu documents for work</h2><p>Make invoices and formal documents without leaving your Urdu writing tools.</p></div>' +
             '</div>' +
             '<div class="sitemap-directory-grid" data-wu-work-grid></div>';
         beforeNode.parentNode.insertBefore(section, beforeNode);
@@ -241,9 +241,9 @@
         if (intro) intro.textContent = 'Start with Roman Urdu, direct Urdu, your voice, an image, or older InPage text. You can refine and format the result without starting over.';
         if (grid && !grid.querySelector('[data-wu-capture-path]')) {
             grid.insertAdjacentHTML('beforeend',
-                docsCard('/tools/urdu-voice-typing', '🎙', 'Speak Urdu', 'Turn supported browser speech recognition into an editable Urdu transcript.', 'Start voice typing') +
+                docsCard('/tools/urdu-voice-typing', '🎙', 'Speak Urdu', 'Speak Urdu and turn your words into editable text you can copy or continue writing with.', 'Start voice typing') +
                 docsCard('/urdu-ocr', '▣', 'Image to Urdu Text', 'Turn a clear Urdu screenshot, photo or scan into editable text for correction and reuse.', 'Convert an Urdu image') +
-                docsCard('/tools/inpage-unicode-converter', 'I→U', 'Convert older InPage text', 'Move supported older Urdu text into modern Unicode so it works across current apps and browsers.', 'Convert InPage text')
+                docsCard('/tools/inpage-unicode-converter', 'I→U', 'Convert older InPage text', 'Move supported older Urdu text into a format you can copy and use in current apps.', 'Convert InPage text')
             );
         }
         root.document.body.setAttribute('data-wu-taxonomy-synced', 'true');

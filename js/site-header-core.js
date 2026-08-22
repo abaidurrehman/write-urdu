@@ -20,7 +20,7 @@
         { href: '/urdu-templates', match: ['/urdu-templates', '/urdu-templates.html'], key: 'templates', label: 'Templates', icon: 'grid' },
         { href: '/qr-code-generator', match: ['/qr-code-generator', '/qr-code-generator.html'], key: 'qrGenerator', label: 'QR Code Generator', icon: 'qr' },
         { href: '/urdu-text-cleaner', match: ['/urdu-text-cleaner', '/urdu-text-cleaner.html'], key: 'textCleaner', label: 'Urdu Text Cleaner', icon: 'sliders', secondary: true },
-        { href: '/urdu-ocr', match: ['/urdu-ocr', '/urdu-ocr.html'], key: 'urduOcr', label: 'Urdu OCR', icon: 'image', secondary: true },
+        { href: '/urdu-ocr', match: ['/urdu-ocr', '/urdu-ocr.html'], key: 'urduOcr', label: 'Image to Urdu Text', icon: 'image', secondary: true },
         { href: '/write-urdu-documentation', match: ['/write-urdu-documentation', '/write-urdu-documentation.html'], key: 'documentation', label: 'Documentation', icon: 'book', secondary: true },
         { href: '/how-to-write-urdu-on-photo', match: ['/how-to-write-urdu-on-photo'], key: 'photoGuide', label: 'Urdu on Photo Guide', icon: 'image', secondary: true },
         { href: '/how-to-share-urdu-writing-online', match: ['/how-to-share-urdu-writing-online'], key: 'shareGuide', label: 'Share Urdu Guide', icon: 'share', secondary: true },
@@ -58,17 +58,17 @@
             tagline: 'Write Urdu, simply',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
-                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', urduOcr: 'Urdu OCR', documentation: 'Documentation', photoGuide: 'Urdu on Photo Guide', shareGuide: 'Share Urdu Guide', features: 'Features',
+                alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Fix Urdu Text', urduOcr: 'Image to Urdu Text', documentation: 'Help & Guides', photoGuide: 'Write Urdu on a Photo', shareGuide: 'Share Urdu Writing', features: 'Features',
                 tutorials: 'Tutorials', faq: 'FAQ', privacy: 'Privacy and terms', create: 'Create', more: 'More', feedback: 'Feedback'
             },
             footer: {
                 home: 'Write Urdu', faq: 'FAQ', documentation: 'Documentation', features: 'Features',
                 formatting: 'Editor formatting guide', tutorials: 'Tutorials', privacy: 'Privacy and terms',
-                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Urdu Text Cleaner', urduOcr: 'Urdu OCR', quran: 'Learn Quran Online',
+                sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Fix Urdu Text', urduOcr: 'Image to Urdu Text', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
-                about: 'About Write Urdu', privacyNote: 'Your writing stays in this browser unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu and transliteration', fonts: 'Urdu font comparison',
-                note: '© Write Urdu. Browser-based Urdu typing tools.'
+                about: 'About Write Urdu', privacyNote: 'Your writing stays on this device unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'How English to Urdu typing works', fonts: 'Compare Urdu fonts',
+                note: '© Write Urdu. Free Urdu writing and creative tools.'
             },
             header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Private by default · export or share when ready.' },
             aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
@@ -113,17 +113,17 @@
             tagline: 'آسانی سے اردو لکھیں',
             nav: {
                 home: 'رائٹ اردو', editor: 'رچ ٹیکسٹ ایڈیٹر', keyboard: 'اردو کی بورڈ',
-                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ جنریٹر', textCleaner: 'اردو متن صاف کریں', urduOcr: 'اردو OCR', documentation: 'دستاویزات', photoGuide: 'تصویر پر اردو گائیڈ', shareGuide: 'اردو شیئرنگ گائیڈ', features: 'خصوصیات',
+                alphabet: 'اردو حروف تہجی', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', textCleaner: 'اردو متن درست کریں', urduOcr: 'تصویر سے اردو متن', documentation: 'مدد اور رہنما', photoGuide: 'تصویر پر اردو لکھیں', shareGuide: 'اردو تحریر شیئر کریں', features: 'خصوصیات',
                 tutorials: 'سبق', faq: 'سوالات', privacy: 'رازداری اور شرائط', create: 'تخلیق', more: 'مزید', feedback: 'رائے'
             },
             footer: {
                 home: 'رائٹ اردو', faq: 'سوالات', documentation: 'دستاویزات', features: 'خصوصیات',
                 formatting: 'ایڈیٹر فارمیٹنگ گائیڈ', tutorials: 'سبق', privacy: 'رازداری اور شرائط',
-                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', textCleaner: 'اردو متن صاف کریں', urduOcr: 'اردو OCR', quran: 'قرآن آن لائن سیکھیں',
+                sitemap: 'سائٹ میپ', search: 'تلاش', why: 'رائٹ اردو کیوں؟', cardStudio: 'کارڈ اسٹوڈیو', invoiceGenerator: 'انوائس جنریٹر', stylishText: 'خوب صورت اردو متن', nameArt: 'اردو نام آرٹ', whatsappMaker: 'واٹس ایپ اسٹیٹس میکر', instagramMaker: 'انسٹاگرام پوسٹ میکر', templates: 'ٹیمپلیٹس', qrGenerator: 'QR کوڈ بنائیں', textCleaner: 'اردو متن درست کریں', urduOcr: 'تصویر سے اردو متن', quran: 'قرآن آن لائن سیکھیں',
                 eyebrow: 'رائٹ اردو ٹولز', description: 'اردو لکھنے، فارمیٹ کرنے اور شیئر کرنے کے لیے آسان اور نجی جگہ۔',
                 local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', tools: 'ٹولز', learn: 'سیکھیں اور دریافت کریں',
                 about: 'رائٹ اردو کے بارے میں', privacyNote: 'آپ کی تحریر اسی براؤزر میں رہتی ہے، جب تک آپ اسے خود برآمد یا شیئر نہ کریں۔', made: 'دنیا بھر کے اردو لکھنے والوں کے لیے', transliteration: 'رومن اردو اور تحریر کی تبدیلی', fonts: 'اردو فونٹس کا موازنہ',
-                note: '© رائٹ اردو۔ براؤزر پر مبنی اردو ٹائپنگ ٹولز۔'
+                note: '© رائٹ اردو۔ اردو لکھنے اور تخلیق کے مفت ٹولز۔'
             },
             header: { local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', free: 'استعمال کے لیے مفت', privacy: 'رازداری پہلے · تیار ہونے پر برآمد یا شیئر کریں۔' },
             aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
@@ -169,8 +169,8 @@
         '/index.html': { title: ['Type Roman Urdu and convert it to Urdu script', 'آن لائن اردو لکھیں'], subtitle: ['Type Roman Urdu and convert it to Urdu in your browser', 'رومن اردو لکھیں اور اسے براؤزر میں اردو میں تبدیل کریں'], documentTitle: ['Write Urdu Online | Roman Urdu to Urdu Typing', 'آن لائن اردو لکھیں | رومن اردو سے اردو ٹائپنگ'] },
         '/urdu-editor.html': { title: ['Urdu Rich Text Editor', 'اردو رچ ٹیکسٹ ایڈیٹر'], subtitle: ['Write, format and export Urdu documents online', 'آن لائن اردو دستاویز لکھیں، فارمیٹ کریں اور برآمد کریں'], documentTitle: ['Urdu Rich Text Editor | Type and Format Urdu Online', 'اردو رچ ٹیکسٹ ایڈیٹر | آن لائن اردو لکھیں'] },
         '/urdu-keyboard.html': { title: ['Urdu Keyboard', 'اردو کی بورڈ'], subtitle: ['Type Urdu directly—no installation required', 'براہِ راست اردو لکھیں—انسٹالیشن کی ضرورت نہیں'], documentTitle: ['Online Urdu Keyboard | Type Urdu in Your Browser', 'آن لائن اردو کی بورڈ | براؤزر میں اردو لکھیں'] },
-        '/urdu-text-cleaner.html': { title: ['Urdu Text Cleaner & RTL Fixer', 'اردو متن صاف کریں اور RTL مسائل دیکھیں'], documentTitle: ['Urdu Text Cleaner & RTL Fixer — Fix Unicode Urdu Online | WriteUrdu', 'اردو متن صاف کریں اور RTL درست کریں | رائٹ اردو'] },
-        '/urdu-ocr.html': { title: ['Urdu OCR — Image to Urdu Text', 'اردو OCR — تصویر سے اردو متن'], documentTitle: ['Urdu OCR — Image to Urdu Text Online | WriteUrdu', 'اردو OCR — تصویر سے اردو متن | رائٹ اردو'] },
+        '/urdu-text-cleaner.html': { title: ['Fix broken or badly formatted Urdu text', 'خراب یا بے ترتیب اردو متن درست کریں'], documentTitle: ['Urdu Text Cleaner — Fix Spacing & Text Direction | WriteUrdu', 'اردو متن کی خالی جگہ اور سمت درست کریں | رائٹ اردو'] },
+        '/urdu-ocr.html': { title: ['Turn an Urdu image into editable text', 'اردو تصویر کو قابل تدوین متن میں بدلیں'], documentTitle: ['Urdu Image to Text — Convert Screenshots & Photos | WriteUrdu', 'اردو تصویر سے قابل تدوین متن | رائٹ اردو'] },
         '/urdu-alphabet.html': { title: ['Urdu alphabet', 'اردو حروف تہجی'], subtitle: ['A practical guide to Urdu letters and writing direction', 'اردو حروف اور لکھنے کی سمت کا عملی رہنما'], documentTitle: ['Urdu Alphabet Guide | Letters and Writing Direction', 'اردو حروف تہجی | حروف اور لکھنے کی سمت'] },
         '/urdu-card-studio.html': { title: ['Urdu Card Studio', 'اردو کارڈ اسٹوڈیو'], subtitle: ['Design and download polished Urdu cards in your browser', 'براؤزر میں خوب صورت اردو کارڈ بنائیں اور ڈاؤن لوڈ کریں'], documentTitle: ['Urdu Card Studio | Design Urdu Cards Online', 'اردو کارڈ اسٹوڈیو | آن لائن اردو کارڈ بنائیں'] },
         '/urdu-whatsapp-status-maker.html': { title: ['Urdu WhatsApp Status Maker', 'اردو واٹس ایپ اسٹیٹس میکر'], subtitle: ['Create a status image and download it for manual upload', 'اسٹیٹس تصویر بنائیں اور خود اپ لوڈ کرنے کے لیے ڈاؤن لوڈ کریں'], documentTitle: ['Urdu WhatsApp Status Maker | Write Urdu', 'اردو واٹس ایپ اسٹیٹس میکر | رائٹ اردو'] },
@@ -180,7 +180,7 @@
         '/write-urdu-documentation.html': { title: ['Write Urdu, beautifully explained.', 'رائٹ اردو، آسان انداز میں'], lede: ['A clear guide to every writing path on the site—from typing Roman Urdu and converting it into Urdu to polishing, saving and sharing a finished piece.', 'اس ویب سائٹ پر اردو لکھنے کے ہر طریقے کی واضح رہنمائی—رومن اردو کو اردو میں تبدیل کرنے سے لے کر متن کو سنوارنے، محفوظ کرنے اور شیئر کرنے تک۔'], documentTitle: ['Write Urdu Documentation | Roman Urdu, Keyboard and Rich Editor', 'رائٹ اردو دستاویزات | رومن اردو، کی بورڈ اور رچ ایڈیٹر'] },
         '/how-to-write-urdu-on-photo': { title: ['How to write Urdu text or poetry on a photo online', 'تصویر پر اردو متن یا شاعری آن لائن کیسے لکھیں'] },
         '/how-to-share-urdu-writing-online': { title: ['How to share Urdu writing online with a WriteUrdu link', 'WriteUrdu لنک کے ساتھ اردو تحریر آن لائن کیسے شیئر کریں'], documentTitle: ['How to Share Urdu Writing Online with a WriteUrdu Link', 'WriteUrdu لنک کے ساتھ اردو تحریر آن لائن شیئر کریں'] },
-        '/write-urdu-features.html': { title: ['Write Urdu features and export options', 'رائٹ اردو کی خصوصیات اور برآمد کے اختیارات'], subtitle: ['Write, refine and share Urdu text with browser-based tools', 'براؤزر پر مبنی ٹولز سے اردو متن لکھیں، بہتر بنائیں اور شیئر کریں'], documentTitle: ['Write Urdu Features | Drafts, Import, Export and Share', 'رائٹ اردو خصوصیات | مسودے، درآمد، برآمد اور شیئرنگ'] },
+        '/write-urdu-features.html': { title: ['Write Urdu features and export options', 'رائٹ اردو کی خصوصیات اور برآمد کے اختیارات'], subtitle: ['Write, improve, save and share Urdu text', 'اردو متن لکھیں، بہتر بنائیں، محفوظ کریں اور شیئر کریں'], documentTitle: ['Write Urdu Features | Drafts, Import, Export and Share', 'رائٹ اردو خصوصیات | مسودے، درآمد، برآمد اور شیئرنگ'] },
         '/urdu-editor-features.html': { title: ['Urdu Rich Text Editor formatting guide', 'اردو رچ ٹیکسٹ ایڈیٹر فارمیٹنگ گائیڈ'], subtitle: ['Learn how to format, export and share polished Urdu documents', 'خوب صورت اردو دستاویزات کو فارمیٹ، برآمد اور شیئر کرنے کا طریقہ سیکھیں'], documentTitle: ['Urdu Editor Formatting Guide | Fonts, Colour and Size', 'اردو ایڈیٹر فارمیٹنگ گائیڈ | فونٹس، رنگ اور سائز'] },
         '/english-urdu-typing-tutorial.html': { title: ['Write Urdu video tutorials', 'رائٹ اردو ویڈیو اسباق'], subtitle: ['Short guides for transliteration, typing and formatting', 'تحریر کی تبدیلی، ٹائپنگ اور فارمیٹنگ کے مختصر رہنما'], documentTitle: ['Write Urdu Tutorials | Typing and Formatting Guides', 'رائٹ اردو اسباق | ٹائپنگ اور فارمیٹنگ رہنما'] },
         '/urdu-faq.html': { title: ['Frequently Asked Questions', 'اکثر پوچھے گئے سوالات'], documentTitle: ['Urdu FAQ | Language, Script and Hindi–Urdu Questions', 'اردو سوالات | زبان، رسم الخط اور ہندی اردو'] },
@@ -342,8 +342,8 @@
                             '<a href="/" data-wu-i18n-key="footer.home">Write Urdu</a>' +
                             '<a href="/urdu-editor" data-wu-i18n-key="nav.editor">Rich Text Editor</a>' +
                             '<a href="/urdu-keyboard" data-wu-i18n-key="nav.keyboard">Urdu Keyboard</a>' +
-                            '<a href="/urdu-text-cleaner" data-wu-i18n-key="footer.textCleaner">Urdu Text Cleaner</a>' +
-                            '<a href="/urdu-ocr" data-wu-i18n-key="footer.urduOcr">Urdu OCR</a>' +
+                            '<a href="/urdu-text-cleaner" data-wu-i18n-key="footer.textCleaner">Fix Urdu Text</a>' +
+                            '<a href="/urdu-ocr" data-wu-i18n-key="footer.urduOcr">Image to Urdu Text</a>' +
                             '<a href="/urdu-card-studio" data-wu-i18n-key="footer.cardStudio">Card Studio</a>' +
                             '<a href="/urdu-invoice-generator" data-wu-i18n-key="footer.invoiceGenerator">Invoice Generator</a>' +
                             '<a href="/stylish-urdu-text-generator" data-wu-i18n-key="footer.stylishText">Stylish Urdu Text</a>' +
@@ -362,7 +362,7 @@
                             '<a href="/urdu-editor-features" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
                             '<a href="/english-urdu-typing-tutorial" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
                             '<a href="/how-to-share-urdu-writing-online" data-wu-i18n-key="nav.shareGuide">Share Urdu Guide</a>' +
-                            '<a href="/roman-urdu-transliteration" data-wu-i18n-key="footer.transliteration">Roman Urdu and transliteration</a>' +
+                            '<a href="/roman-urdu-transliteration" data-wu-i18n-key="footer.transliteration">How English to Urdu typing works</a>' +
                             '<a href="/urdu-fonts-nastaliq-vs-naskh" data-wu-i18n-key="footer.fonts">Urdu font comparison</a>' +
                         '</div>' +
                         '<div class="wu-footer-group">' +
@@ -378,7 +378,7 @@
                 '</div>' +
                 '<div class="wu-footer-privacy" data-wu-i18n-key="footer.privacyNote">Your writing stays in this browser unless you choose to export or share it.</div>' +
                 '<div class="wu-footer-bottom">' +
-                    '<p class="wu-footer-note" data-wu-i18n-key="footer.note">© Write Urdu. Browser-based Urdu typing tools.</p>' +
+                    '<p class="wu-footer-note" data-wu-i18n-key="footer.note">© Write Urdu. Free Urdu writing and creative tools.</p>' +
                     '<span class="wu-footer-made" data-wu-i18n-key="footer.made">Made for Urdu writers everywhere</span>' +
                 '</div>' +
             '</div>';

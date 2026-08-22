@@ -1,6 +1,6 @@
 # Write Urdu
 
-> Write Urdu is an independently maintained browser-based Urdu writing platform for English to Urdu typing, direct Urdu typing, document formatting and practical creative tools. No account or installation is required for the core writing experience.
+> Write Urdu helps people type Urdu with English letters, type Urdu directly, format documents and create shareable Urdu designs. Core writing tools are free and require no account or installation.
 
 Canonical site: https://write-urdu.com/
 

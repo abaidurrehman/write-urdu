@@ -162,7 +162,7 @@
                 '</div>' +
                 '<div class="wu-v2-footer-status">' +
                     '<span data-wu-i18n-key="footer.privacyNote">Your writing stays in this browser unless you choose to export or share it.</span>' +
-                    '<span data-wu-i18n-key="footer.note">© Write Urdu. Browser-based Urdu typing tools.</span>' +
+                    '<span data-wu-i18n-key="footer.note">© Write Urdu. Free Urdu writing and creative tools.</span>' +
                 '</div>' +
             '</div>';
     }

@@ -99,7 +99,7 @@
         if (!report.issues.length) {
             var empty = document.createElement('li');
             empty.className = 'urdu-tool-empty';
-            empty.textContent = 'No common Unicode, spacing, punctuation or RTL problems were detected. You can still review the text visually before using it elsewhere.';
+            empty.textContent = 'No common character, spacing, punctuation or text-direction problems were found. Review the text once before using it elsewhere.';
             issues.appendChild(empty);
             return;
         }
@@ -154,13 +154,13 @@
 
     function invalidateAnalysis() {
         hasAnalysis = false;
-        statusPill.textContent = source.value.trim() ? 'Ready to analyze' : 'Waiting for text';
+        statusPill.textContent = source.value.trim() ? 'Ready to check' : 'Waiting for text';
         safeFixButton.disabled = true;
         copyButton.disabled = true;
         handoffButton.disabled = true;
         numeralButton.disabled = true;
         summary.innerHTML = '<h3>Analysis appears here</h3><span class="urdu-tool-chip">Source is never overwritten</span>';
-        issues.innerHTML = '<li class="urdu-tool-empty">Analyze the source to see safe fixes and review-only RTL warnings.</li>';
+        issues.innerHTML = '<li class="urdu-tool-empty">Check your text to see suggested fixes and anything that needs your review.</li>';
         setResult('');
         setNotice('');
         refreshSourceMeta();
