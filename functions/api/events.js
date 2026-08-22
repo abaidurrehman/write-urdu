@@ -28,7 +28,7 @@ const EVENT_NAMES = new Set([
 const TOOLS = new Set([
     'basic_editor', 'rich_editor', 'urdu_keyboard', 'card_studio', 'stylish_text',
     'name_art', 'whatsapp_status', 'instagram_post', 'invoice_generator', 'qr_generator',
-    'public_share', 'content'
+    'public_share', 'voice_typing', 'content'
 ]);
 
 const FORMATS = new Set([

@@ -44,7 +44,8 @@
             '/urdu-whatsapp-status-maker': 'whatsapp_status',
             '/urdu-instagram-post-maker': 'instagram_post',
             '/urdu-invoice-generator': 'invoice_generator',
-            '/qr-code-generator': 'qr_generator'
+            '/qr-code-generator': 'qr_generator',
+            '/tools/urdu-voice-typing': 'voice_typing'
         };
         return tools[path] || 'content';
     }
@@ -246,6 +247,7 @@
         if (route === '/stylish-urdu-text-generator') return attachTextarea(document.getElementById('stylishText'));
         if (route === '/urdu-name-art-maker') return attachTextarea(document.getElementById('nameArtText'));
         if (route === '/urdu-whatsapp-status-maker' || route === '/urdu-instagram-post-maker') return attachDynamicReader('#cardText');
+        if (route === '/tools/urdu-voice-typing') return attachTextarea(document.getElementById('voiceTranscript'));
         return false;
     }
 

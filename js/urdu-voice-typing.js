@@ -58,10 +58,6 @@
     function t(key) { return STR[key][isUrduLocale() ? 'ur' : 'en']; }
 
     function restorePageIdentity() {
-        var urdu = isUrduLocale();
-        var heading = root.querySelector('h1');
-        if (heading) heading.textContent = urdu ? 'اردو آواز سے ٹائپنگ' : 'Urdu Voice Typing';
-        document.title = urdu ? 'اردو آواز سے ٹائپنگ | رائٹ اردو' : 'Urdu Voice Typing — Speak Urdu to Text Online | WriteUrdu';
         statusPill.textContent = t(currentStateKey);
         startButton.textContent = t(startButton.disabled ? 'voice-typing-unavailable' : 'start-voice-typing');
         supportNote.textContent = t(Recognition ? 'ready-note' : 'unsupported-note');
@@ -213,24 +209,27 @@
             transcript.select();
             promise = document.execCommand('copy') ? Promise.resolve() : Promise.reject(new Error('copy'));
         }
-        promise.then(function () { setNotice('copied', 'success'); })
-            .catch(function () { setNotice('copy-blocked', 'error'); });
+        promise.then(function () {
+            setNotice('copied', 'success');
+            if (window.WriteUrduTelemetry) window.WriteUrduTelemetry.trackOutcome('copy_completed', { format: 'clipboard', success: true });
+        }).catch(function () { setNotice('copy-blocked', 'error'); });
     }
 
     function handoff(target) {
         var text = String(transcript.value || '');
         if (!text.trim()) return;
-        var Handoff = window.WriteUrduTextHandoff;
-        if (Handoff && Handoff.store(text, target)) {
+        function go() {
+            if (window.WriteUrduTelemetry) window.WriteUrduTelemetry.track('tool_handoff', { target_route: target });
             abortRecognition();
             window.location.assign(target);
+        }
+        var Handoff = window.WriteUrduTextHandoff;
+        if (Handoff && Handoff.store(text, target)) {
+            go();
             return;
         }
         if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(function () {
-                abortRecognition();
-                window.location.assign(target);
-            }).catch(function () { setNotice('copy-first', 'error'); });
+            navigator.clipboard.writeText(text).then(go).catch(function () { setNotice('copy-first', 'error'); });
         } else setNotice('copy-first', 'error');
     }
 

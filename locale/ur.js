@@ -160,7 +160,7 @@ module.exports = {
       description: 'مائیک سے اردو بولیں اور آواز کو قابلِ تدوین اردو متن میں بدلیں۔ پھر متن کو درست، کاپی یا آگے ایڈٹ کریں۔',
       h1: 'اردو وائس ٹائپنگ',
       lede: 'مائیک دبائیں، قدرتی انداز میں اردو بولیں اور اپنی آواز کو قابلِ تدوین اردو متن میں تبدیل ہوتے دیکھیں۔',
-      lastReviewed: '2026-08-21',
+      lastReviewed: '2026-08-22',
       strings: {
         'tools.urdu-voice-typing.eyebrow': 'اردو بولیں → اردو متن',
         'tools.urdu-voice-typing.benefitFree': 'مفت',
@@ -196,6 +196,7 @@ module.exports = {
         'tools.urdu-voice-typing.linkClean': 'اردو متن صاف کریں',
         'tools.urdu-voice-typing.linkContinue': 'رائٹ اردو میں جاری رکھیں',
         'tools.urdu-voice-typing.linkKeyboard': 'اردو کی بورڈ استعمال کریں',
+        'tools.urdu-voice-typing.linkTyping': 'ٹائپ کرنا پسند ہے؟ انگریزی حروف سے اردو ٹائپ کریں',
         'tools.urdu-voice-typing.privacyNote': 'آواز سے ٹائپنگ کی دستیابی اور پروسیسنگ آپ کے براؤزر یا آلے پر منحصر ہے۔ <a href="/write-urdu-privacy#voice-typing">آواز سے ٹائپنگ کی رازداری اور براؤزر تفصیلات دیکھیں</a>۔'
       }
     },
