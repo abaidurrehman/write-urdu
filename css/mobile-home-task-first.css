@@ -93,12 +93,11 @@
     border-left: 0 !important;
   }
 
-  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode.input-mode-control,
-  body.locale-urdu.wu-v2-shell:not(.content-page) .editor-chrome .input-mode-control {
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode.input-mode-control {
     display: flex !important;
     width: 100% !important;
     min-width: 0 !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
     gap: 5px !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -121,22 +120,4 @@
     text-overflow: ellipsis !important;
   }
 
-  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-mode-note-source,
-  body.locale-urdu.wu-v2-shell:not(.content-page) .editor-chrome .input-mode-note {
-    display: block !important;
-    position: static !important;
-    width: 100% !important;
-    height: auto !important;
-    flex: 1 1 100% !important;
-    order: 10 !important;
-    margin: 2px 0 0 !important;
-    padding: 0 4px !important;
-    overflow: visible !important;
-    clip: auto !important;
-    color: var(--wu-color-text-muted) !important;
-    font-size: .66rem !important;
-    line-height: 1.35 !important;
-    text-align: center !important;
-    white-space: normal !important;
-  }
 }

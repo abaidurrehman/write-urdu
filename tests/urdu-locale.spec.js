@@ -52,7 +52,8 @@ test('Phase 1 Urdu command surfaces are localized in initial product UI', async 
   await expect(page.locator('.home-actions')).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
   await expect(page.locator('[data-copy-target="#transliterateTextarea"]')).toContainText('متن کاپی کریں');
   await expect(page.locator('.home-actions details.action-menu').first()).toContainText('برآمد کریں');
-  const proof = page.locator('.input-mode-note');
+  const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
+  const proof = compact ? page.locator('.page-intro') : page.locator('.input-mode-note');
   await expect(proof).toBeVisible();
   await expect(proof).toContainText('mera khayal hai');
   await expect(proof).toContainText('میرا خیال ہے');
