@@ -56,23 +56,23 @@
                 <div class="card-studio-action-group card-studio-history-actions" role="group" aria-label="History">
                     <span class="card-studio-action-group-label">History</span>
                     <div class="card-studio-action-group-buttons">
-                        <button class="card-studio-button quiet" type="button" data-card-ui-action="/undo" title="Undo last change" disabled>Undo</button>
-                        <button class="card-studio-button quiet" type="button" data-card-ui-action="/redo" title="Redo last change" disabled>Redo</button>
+                        <button class="card-studio-button quiet" type="button" data-card-ui-action="undo" title="Undo last change" disabled>Undo</button>
+                        <button class="card-studio-button quiet" type="button" data-card-ui-action="redo" title="Redo last change" disabled>Redo</button>
                     </div>
                 </div>
                 <div class="card-studio-action-group" role="group" aria-label="Workspace">
                     <span class="card-studio-action-group-label">Workspace</span>
                     <div class="card-studio-action-group-buttons">
                         <a class="card-studio-button" href="/urdu-templates">Browse templates</a>
-                        <button class="card-studio-button" type="button" data-card-action="/back" data-card-i18n="back">Back to editor</button>
+                        <button class="card-studio-button" type="button" data-card-action="back" data-card-i18n="back">Back to editor</button>
                     </div>
                 </div>
                 <div class="card-studio-action-group card-studio-action-group-export" role="group" aria-label="Export and share">
                     <span class="card-studio-action-group-label">Export</span>
                     <div class="card-studio-action-group-buttons">
-                        <button class="card-studio-button quiet" type="button" data-card-action="/reset" data-card-i18n="reset">Reset</button>
-                        <button class="card-studio-button secondary" type="button" data-card-action="/share" data-card-i18n="share">Share</button>
-                        <button class="card-studio-button primary" type="button" data-card-action="/download" data-card-i18n="download">Download PNG</button>
+                        <button class="card-studio-button quiet" type="button" data-card-action="reset" data-card-i18n="reset">Reset</button>
+                        <button class="card-studio-button secondary" type="button" data-card-action="share" data-card-i18n="share">Share</button>
+                        <button class="card-studio-button primary" type="button" data-card-action="download" data-card-i18n="download">Download PNG</button>
                     </div>
                 </div>
             </div>
@@ -139,8 +139,8 @@
                     </div>
                     <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
                     <div class="card-studio-content-actions" role="group" aria-label="Text actions">
-                        <button type="button" class="card-studio-button" data-card-content-action="/sample">Use sample text</button>
-                        <button type="button" class="card-studio-button quiet" data-card-content-action="/clear">Clear text</button>
+                        <button type="button" class="card-studio-button" data-card-content-action="sample">Use sample text</button>
+                        <button type="button" class="card-studio-button quiet" data-card-content-action="clear">Clear text</button>
                     </div>
                     <div class="card-studio-transliteration" aria-live="polite"><span data-card-transliteration-status>Roman Urdu input is loading…</span><button class="card-studio-transliteration-retry" type="button" data-card-transliteration-retry hidden>Retry</button></div>
                     <div class="input-mode-control input-mode-control-card" data-input-mode-control data-input-mode-storage="card" data-input-mode-targets="#cardText,#cardCanvasEditor" role="group" aria-label="Input mode">
@@ -190,7 +190,7 @@
                     </div>
                     <label class="card-studio-label" for="cardLayoutWidth" data-card-i18n="textBoxWidth">Text-box width (%)</label>
                     <input class="card-studio-range" id="cardLayoutWidth" data-card-layout-field="width" type="range" min="10" max="100" step="0.1">
-                    <div class="card-studio-layout-actions"><button type="button" class="card-studio-button" data-card-layout-action="/center-x" data-card-i18n="centerHorizontally">Centre horizontally</button><button type="button" class="card-studio-button" data-card-layout-action="/center-y" data-card-i18n="centerVertically">Centre vertically</button><button type="button" class="card-studio-button" data-card-layout-action="/reset" data-card-i18n="resetLayout">Reset layout</button></div>
+                    <div class="card-studio-layout-actions"><button type="button" class="card-studio-button" data-card-layout-action="center-x" data-card-i18n="centerHorizontally">Centre horizontally</button><button type="button" class="card-studio-button" data-card-layout-action="center-y" data-card-i18n="centerVertically">Centre vertically</button><button type="button" class="card-studio-button" data-card-layout-action="reset" data-card-i18n="resetLayout">Reset layout</button></div>
                 </section>
 
                 <section class="card-studio-section" data-card-step="style" data-card-step-panel>
@@ -199,7 +199,7 @@
                     <select class="card-studio-select" id="cardBackgroundType" data-card-field="background.type"><option value="solid">Solid colour</option><option value="gradient">Built-in gradient</option><option value="image">Uploaded image</option></select>
                     <div data-card-background-solid><label class="card-studio-label" for="cardBackgroundColor" data-card-i18n="backgroundColorLabel">Background colour</label><input class="card-studio-input" id="cardBackgroundColor" data-card-field="background.color" type="color"></div>
                     <div data-card-background-gradient><label class="card-studio-label" for="cardGradient" data-card-i18n="gradientLabel">Gradient</label><select class="card-studio-select" id="cardGradient" data-card-field="background.gradientId"></select></div>
-                    <div class="card-studio-upload" data-card-background-image><label class="card-studio-label" for="cardImage" data-card-i18n="uploadLabel">Upload a local JPG, PNG or WebP</label><input id="cardImage" type="file" accept="image/jpeg,image/png,image/webp"><p class="card-studio-help" data-card-i18n="privacy">Your text and images stay in this browser and are not uploaded.</p><button class="card-studio-button" type="button" data-card-action="/remove-image" data-card-i18n="removeImage">Remove image</button></div>
+                    <div class="card-studio-upload" data-card-background-image><label class="card-studio-label" for="cardImage" data-card-i18n="uploadLabel">Upload a local JPG, PNG or WebP</label><input id="cardImage" type="file" accept="image/jpeg,image/png,image/webp"><p class="card-studio-help" data-card-i18n="privacy">Your text and images stay in this browser and are not uploaded.</p><button class="card-studio-button" type="button" data-card-action="remove-image" data-card-i18n="removeImage">Remove image</button></div>
                     <div data-card-background-image data-card-advanced="true">
                         <div class="card-studio-field-row"><div><label class="card-studio-label" for="cardImageFit" data-card-i18n="fitLabel">Image fit</label><select class="card-studio-select" id="cardImageFit" data-card-field="background.fit"><option value="cover">Cover</option><option value="contain">Contain</option></select></div><div><label class="card-studio-label" for="cardOverlayColor" data-card-i18n="overlayColorLabel">Overlay</label><input class="card-studio-input" id="cardOverlayColor" data-card-field="background.overlayColor" type="color"></div></div>
                         <label class="card-studio-label" for="cardOverlay" data-card-i18n="overlayLabel">Overlay strength <span class="card-studio-range-value" data-card-overlay-value></span></label><input class="card-studio-range" id="cardOverlay" data-card-field="background.overlayOpacity" type="range" min="0" max=".8" step=".01">
@@ -213,14 +213,14 @@
                     <div data-card-advanced="true"><label class="card-studio-label" for="cardWatermarkPosition" data-card-i18n="watermarkPositionLabel">Watermark position</label><select class="card-studio-select" id="cardWatermarkPosition" data-card-field="watermark.position"><option value="bottom-left">Bottom left</option><option value="bottom-center">Bottom centre</option><option value="bottom-right">Bottom right</option></select></div>
                 </section>
                 <section class="card-studio-section card-studio-export-section" data-card-step="export" data-card-step-panel>
-                    <span class="card-studio-eyebrow">Ready to share?</span>
-                    <h2>Finish your card</h2>
-                    <p class="card-studio-help">Your preview is exported at the exact dimensions shown on the canvas.</p>
+                    <span class="card-studio-eyebrow" data-card-i18n="exportEyebrow" data-wu-l10n="urdu-card-studio.exportEyebrow">شیئر کرنے کے لیے تیار ہیں؟</span>
+                    <h2 data-card-i18n="exportHeading" data-wu-l10n="urdu-card-studio.exportHeading">اپنا کارڈ مکمل کریں</h2>
+                    <p class="card-studio-help" data-card-i18n="exportHelp" data-wu-l10n="urdu-card-studio.exportHelp">آپ کا پیش منظر کینوس پر دکھائے گئے عین طول و عرض میں برآمد کیا جائے گا۔</p>
                     <div class="card-studio-export-actions" role="group" aria-label="Export card">
-                        <button class="card-studio-button primary" type="button" data-card-action="/download">Download PNG</button>
-                        <button class="card-studio-button secondary" type="button" data-card-action="/share">Share</button>
+                        <button class="card-studio-button primary" type="button" data-card-action="download" data-card-i18n="download" data-wu-l10n="urdu-card-studio.exportDownload">PNG ڈاؤن لوڈ کریں</button>
+                        <button class="card-studio-button secondary" type="button" data-card-action="share" data-card-i18n="share" data-wu-l10n="urdu-card-studio.exportShare">شیئر کریں</button>
                     </div>
-                    <p class="card-studio-privacy">Processed in your browser. Your text and images stay on this device.</p>
+                    <p class="card-studio-privacy" data-card-i18n="exportPrivacy" data-wu-l10n="urdu-card-studio.exportPrivacy">آپ کے براؤزر میں پراسیس ہوتا ہے۔ آپ کا متن اور تصاویر اسی آلے پر رہتی ہیں۔</p>
                     <div class="social-maker-controls" data-social-only hidden>
                         <h3>Social export</h3>
                         <p class="card-studio-help" data-social-guide></p>
@@ -242,13 +242,13 @@
                     <div class="card-studio-safe-area" data-card-safe-area data-social-only hidden aria-hidden="true"><span data-card-safe-area-label></span></div>
                     <div class="card-studio-context-toolbar card-studio-canvas-toolbar" data-card-context-toolbar hidden role="toolbar" aria-label="Selected text actions">
                         <span class="card-studio-selected-object" data-card-selected-object data-card-i18n="textSelected">Text selected</span>
-                        <button type="button" class="card-studio-icon-button" data-card-object-action="/edit" data-card-tooltip="edit" aria-label="Edit" title="Edit text"><span class="card-toolbar-icon" aria-hidden="true">✎</span><span class="card-toolbar-label" data-card-i18n="edit">Edit</span></button>
-                        <button type="button" class="card-studio-icon-button" data-card-object-action="/align-left" data-card-tooltip="left" aria-label="Left" title="Align left"><span class="card-toolbar-icon" aria-hidden="true">←</span><span class="card-toolbar-label" data-card-i18n="left">Left</span></button>
-                        <button type="button" class="card-studio-icon-button" data-card-object-action="/align-center" data-card-tooltip="centre" aria-label="Centre" title="Align centre"><span class="card-toolbar-icon" aria-hidden="true">↔</span><span class="card-toolbar-label" data-card-i18n="centre">Centre</span></button>
-                        <button type="button" class="card-studio-icon-button" data-card-object-action="/align-right" data-card-tooltip="right" aria-label="Right" title="Align right"><span class="card-toolbar-icon" aria-hidden="true">→</span><span class="card-toolbar-label" data-card-i18n="right">Right</span></button>
-                        <button type="button" class="card-studio-icon-button" data-card-object-action="/reset" data-card-tooltip="resetPosition" aria-label="Reset position" title="Reset text position"><span class="card-toolbar-icon" aria-hidden="true">⌖</span><span class="card-toolbar-label" data-card-i18n="resetPosition">Reset position</span></button>
-                        <button type="button" class="card-studio-icon-button card-studio-icon-button-success" data-card-object-action="/done" data-card-tooltip="done" aria-label="Done" title="Done editing" hidden><span class="card-toolbar-icon" aria-hidden="true">✓</span><span class="card-toolbar-label" data-card-i18n="done">Done</span></button>
-                        <button type="button" class="card-studio-icon-button card-studio-icon-button-danger" data-card-object-action="/cancel" data-card-tooltip="cancel" aria-label="Cancel" title="Cancel editing" hidden><span class="card-toolbar-icon" aria-hidden="true">×</span><span class="card-toolbar-label" data-card-i18n="cancel">Cancel</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="edit" data-card-tooltip="edit" aria-label="Edit" title="Edit text"><span class="card-toolbar-icon" aria-hidden="true">✎</span><span class="card-toolbar-label" data-card-i18n="edit">Edit</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="align-left" data-card-tooltip="left" aria-label="Left" title="Align left"><span class="card-toolbar-icon" aria-hidden="true">←</span><span class="card-toolbar-label" data-card-i18n="left">Left</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="align-center" data-card-tooltip="centre" aria-label="Centre" title="Align centre"><span class="card-toolbar-icon" aria-hidden="true">↔</span><span class="card-toolbar-label" data-card-i18n="centre">Centre</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="align-right" data-card-tooltip="right" aria-label="Right" title="Align right"><span class="card-toolbar-icon" aria-hidden="true">→</span><span class="card-toolbar-label" data-card-i18n="right">Right</span></button>
+                        <button type="button" class="card-studio-icon-button" data-card-object-action="reset" data-card-tooltip="resetPosition" aria-label="Reset position" title="Reset text position"><span class="card-toolbar-icon" aria-hidden="true">⌖</span><span class="card-toolbar-label" data-card-i18n="resetPosition">Reset position</span></button>
+                        <button type="button" class="card-studio-icon-button card-studio-icon-button-success" data-card-object-action="done" data-card-tooltip="done" aria-label="Done" title="Done editing" hidden><span class="card-toolbar-icon" aria-hidden="true">✓</span><span class="card-toolbar-label" data-card-i18n="done">Done</span></button>
+                        <button type="button" class="card-studio-icon-button card-studio-icon-button-danger" data-card-object-action="cancel" data-card-tooltip="cancel" aria-label="Cancel" title="Cancel editing" hidden><span class="card-toolbar-icon" aria-hidden="true">×</span><span class="card-toolbar-label" data-card-i18n="cancel">Cancel</span></button>
                     </div>
                     <div class="card-studio-interaction-layer" data-card-interaction-layer tabindex="0" role="group" aria-label="Editable card preview" aria-describedby="cardCanvasHelp">
                         <div class="card-studio-selection-box" data-card-selection-box hidden aria-hidden="true">
@@ -274,25 +274,25 @@
         </nav>
     </main>
     <section class="seo-content" aria-labelledby="card-studio-about">
-        <h2 id="card-studio-about">Create Urdu cards and quote images online</h2>
-        <p>The Write Urdu Card Studio is a free browser-based Urdu card maker for quote images, poetry cards, announcements and social posts. Choose an Urdu font and template, add a local background, adjust the design and download the finished card as a PNG.</p>
+        <h2 id="card-studio-about" data-wu-l10n="urdu-card-studio.aboutTitle">آن لائن اردو کارڈز اور اقتباس کی تصاویر بنائیں</h2>
+        <p data-wu-l10n="urdu-card-studio.aboutCopy">رائٹ اردو کارڈ اسٹوڈیو ایک مفت براؤزر بیسڈ اردو کارڈ میکر ہے جو اقتباس کی تصاویر، شاعری کارڈز، اعلانات اور سوشل پوسٹس کے لیے استعمال ہوتا ہے۔ اردو فونٹ اور ٹیمپلیٹ منتخب کریں، مقامی پس منظر شامل کریں، ڈیزائن ترتیب دیں اور تیار کارڈ PNG کی صورت میں ڈاؤن لوڈ کریں۔</p>
         <div class="seo-content-grid">
-            <article><h3>What you can create</h3><p>Make a poetry quote, WhatsApp status, Instagram quote, Eid greeting, Ramadan reminder or classroom announcement without a design account.</p></article>
-            <article><h3>How it works</h3><p>Paste Urdu text, or send text from the basic editor, choose a size and template, adjust typography, then export the exact card you see in the preview.</p></article>
-            <article><h3>Private local images</h3><p>Background images are processed in this browser. They are not uploaded; remove them whenever you want and keep the finished PNG on your device.</p></article>
+            <article><h3 data-wu-l10n="urdu-card-studio.grid1Title">آپ کیا بنا سکتے ہیں</h3><p data-wu-l10n="urdu-card-studio.grid1Copy">بغیر کسی ڈیزائن اکاؤنٹ کے شاعری کا اقتباس، WhatsApp اسٹیٹس، انسٹاگرام اقتباس، عید کی مبارک باد، رمضان یاد دہانی یا کلاس روم اعلان بنائیں۔</p></article>
+            <article><h3 data-wu-l10n="urdu-card-studio.grid2Title">یہ کیسے کام کرتا ہے</h3><p data-wu-l10n="urdu-card-studio.grid2Copy">اردو متن پیسٹ کریں، یا بنیادی ایڈیٹر سے متن بھیجیں، سائز اور ٹیمپلیٹ منتخب کریں، ٹائپوگرافی ترتیب دیں، پھر پیش منظر میں نظر آنے والا عین کارڈ برآمد کریں۔</p></article>
+            <article><h3 data-wu-l10n="urdu-card-studio.grid3Title">نجی مقامی تصاویر</h3><p data-wu-l10n="urdu-card-studio.grid3Copy">پس منظر کی تصاویر اسی براؤزر میں پراسیس ہوتی ہیں۔ یہ اپ لوڈ نہیں کی جاتیں؛ جب چاہیں انہیں ہٹا دیں اور تیار PNG اپنے آلے پر رکھیں۔</p></article>
         </div>
         <div class="seo-content-grid">
-            <article><h3>Output sizes for common posts</h3><p>Choose Square Post (1080 × 1080), Landscape Post (1280 × 720), Wide Social Post (1200 × 630), or Story / Status (1080 × 1920). Your text and background are reflowed for the selected ratio.</p></article>
-            <article><h3>Urdu fonts and direct editing</h3><p>Templates use Urdu-friendly Noto Nastaliq Urdu and Noto Naskh Arabic styles. Select text on the preview to move or resize it, then edit it with the native text field on desktop or mobile.</p></article>
-            <article><h3>PNG export and sharing</h3><p>The final PNG is rendered at the selected output dimensions. Download it for WhatsApp Status, Instagram, classroom materials, announcements, or personal Urdu poetry cards.</p></article>
+            <article><h3 data-wu-l10n="urdu-card-studio.grid4Title">عام پوسٹس کے لیے آؤٹ پٹ سائز</h3><p data-wu-l10n="urdu-card-studio.grid4Copy">اسکوائر پوسٹ (1080 × 1080)، لینڈ اسکیپ پوسٹ (1280 × 720)، وائیڈ سوشل پوسٹ (1200 × 630)، یا اسٹوری/اسٹیٹس (1080 × 1920) منتخب کریں۔ آپ کا متن اور پس منظر منتخب کردہ تناسب کے مطابق خودکار ترتیب پاتے ہیں۔</p></article>
+            <article><h3 data-wu-l10n="urdu-card-studio.grid5Title">اردو فونٹس اور براہِ راست ترمیم</h3><p data-wu-l10n="urdu-card-studio.grid5Copy">ٹیمپلیٹس اردو دوست Noto Nastaliq Urdu اور Noto Naskh Arabic اسٹائل استعمال کرتے ہیں۔ پیش منظر پر متن منتخب کر کے اسے منتقل یا بڑا چھوٹا کریں، پھر ڈیسک ٹاپ یا موبائل پر مقامی ٹیکسٹ فیلڈ سے ترمیم کریں۔</p></article>
+            <article><h3 data-wu-l10n="urdu-card-studio.grid6Title">PNG برآمد اور شیئرنگ</h3><p data-wu-l10n="urdu-card-studio.grid6Copy">حتمی PNG منتخب کردہ آؤٹ پٹ طول و عرض میں تیار ہوتا ہے۔ اسے WhatsApp اسٹیٹس، انسٹاگرام، کلاس روم مواد، اعلانات یا ذاتی اردو شاعری کارڈز کے لیے ڈاؤن لوڈ کریں۔</p></article>
         </div>
-        <h3>Card Studio questions</h3>
-        <details><summary>Is the Urdu Card Studio free?</summary><p>Yes. It is available without an account, and the design and PNG rendering run in the browser.</p></details>
-        <details><summary>Can I use it on a phone?</summary><p>Yes. The preview and controls adapt to mobile screens, and direct text editing uses the device's native Urdu keyboard.</p></details>
-        <details><summary>Can I add a background image?</summary><p>Yes. Choose a local JPG, PNG or WebP image. It is processed in your browser and is not uploaded to Write Urdu.</p></details>
-        <details><summary>Why does a long quote appear smaller?</summary><p>Auto-fit reduces the font size when needed to keep the complete quote readable inside the selected card layout. Shorten the text or widen the text box when you want larger type.</p></details>
-        <details><summary>Can I create a card from Roman Urdu?</summary><p>Type Roman Urdu in the basic editor first, then choose Create Urdu Card to send the resulting Urdu text to the Studio without changing your original draft.</p></details>
-        <nav class="related-resources" aria-labelledby="card-related-title"><h3 id="card-related-title">Related tools and guides</h3><ul><li><a href="/urdu/">Type Roman Urdu in the basic editor</a></li><li><a href="/urdu/urdu-editor">Format a longer Urdu document</a></li><li><a href="/urdu-editor-features">Learn about Urdu fonts and alignment</a></li><li><a href="/write-urdu-privacy">Read the privacy policy</a></li></ul></nav>
+        <h3 data-wu-l10n="urdu-card-studio.faqTitle">کارڈ اسٹوڈیو سوالات</h3>
+        <details><summary data-wu-l10n="urdu-card-studio.q1">کیا اردو کارڈ اسٹوڈیو مفت ہے؟</summary><p data-wu-l10n="urdu-card-studio.a1">جی ہاں۔ یہ بغیر اکاؤنٹ کے دستیاب ہے، اور ڈیزائن و PNG رینڈرنگ براؤزر میں چلتی ہے۔</p></details>
+        <details><summary data-wu-l10n="urdu-card-studio.q2">کیا میں اسے موبائل فون پر استعمال کر سکتا ہوں؟</summary><p data-wu-l10n="urdu-card-studio.a2">جی ہاں۔ پیش منظر اور کنٹرولز موبائل اسکرینز کے مطابق ڈھل جاتے ہیں، اور براہِ راست متن ترمیم آلے کے مقامی اردو کی بورڈ سے ہوتی ہے۔</p></details>
+        <details><summary data-wu-l10n="urdu-card-studio.q3">کیا میں پس منظر کی تصویر شامل کر سکتا ہوں؟</summary><p data-wu-l10n="urdu-card-studio.a3">جی ہاں۔ مقامی JPG، PNG یا WebP تصویر منتخب کریں۔ یہ آپ کے براؤزر میں پراسیس ہوتی ہے اور رائٹ اردو پر اپ لوڈ نہیں کی جاتی۔</p></details>
+        <details><summary data-wu-l10n="urdu-card-studio.q4">طویل اقتباس چھوٹا کیوں نظر آتا ہے؟</summary><p data-wu-l10n="urdu-card-studio.a4">خودکار فٹ ضرورت پڑنے پر فونٹ سائز کم کر دیتا ہے تاکہ مکمل اقتباس منتخب کارڈ لے آؤٹ میں پڑھنے کے قابل رہے۔ بڑے حروف کے لیے متن مختصر کریں یا ٹیکسٹ باکس چوڑا کریں۔</p></details>
+        <details><summary data-wu-l10n="urdu-card-studio.q5">کیا میں رومن اردو سے کارڈ بنا سکتا ہوں؟</summary><p data-wu-l10n="urdu-card-studio.a5">پہلے بنیادی ایڈیٹر میں رومن اردو ٹائپ کریں، پھر نتیجے میں آنے والا اردو متن اسٹوڈیو میں بھیجنے کے لیے اردو کارڈ بنائیں منتخب کریں، آپ کا اصل مسودہ تبدیل ہوئے بغیر۔</p></details>
+        <nav class="related-resources" aria-labelledby="card-related-title"><h3 id="card-related-title" data-wu-l10n="urdu-card-studio.relatedTitle">متعلقہ ٹولز اور گائیڈز</h3><ul><li><a href="/urdu/" data-wu-l10n="urdu-card-studio.related1">بنیادی ایڈیٹر میں رومن اردو ٹائپ کریں</a></li><li><a href="/urdu/urdu-editor" data-wu-l10n="urdu-card-studio.related2">طویل اردو دستاویز فارمیٹ کریں</a></li><li><a href="/urdu-editor-features" data-wu-l10n="urdu-card-studio.related3">اردو فونٹس اور ترتیب کے بارے میں جانیں</a></li><li><a href="/write-urdu-privacy" data-wu-l10n="urdu-card-studio.related4">رازداری کی پالیسی پڑھیں</a></li></ul></nav>
     </section>
     <footer aria-label="Footer navigation"></footer>
     <script src="/js/card-studio-ui.js" defer></script>

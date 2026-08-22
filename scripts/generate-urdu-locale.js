@@ -65,9 +65,9 @@ function applyKey(html, key, value) {
   return html.replace(re, '$1' + value + '$4');
 }
 function rootSafeAssets(html) {
-  return html.replace(/\b(src|href|action)=(['"])(?![a-z]+:|\/\/|\/|#|\?|mailto:|tel:)([^'"]+)\2/ig, function (_, attr, quote, value) {
+  return html.replace(/([\s<])(src|href|action)=(['"])(?![a-z]+:|\/\/|\/|#|\?|mailto:|tel:)([^'"]+)\3/ig, function (_, prefix, attr, quote, value) {
     if (!value || value.startsWith('data:')) return _;
-    return attr + '=' + quote + '/' + value.replace(/^\.\//, '') + quote;
+    return prefix + attr + '=' + quote + '/' + value.replace(/^\.\//, '') + quote;
   });
 }
 function localeInternalLinks(html) {
@@ -125,6 +125,7 @@ function render(productPath, englishSource) {
   html = setMeta(html, 'twitter:description', copy.description, false);
   html = applyKey(html, productPath === '/' ? 'home.h1' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.h1', copy.h1);
   html = applyKey(html, productPath === '/' ? 'home.lede' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.lede', copy.lede);
+  Object.keys(copy.strings || {}).forEach(function (key) { html = applyKey(html, key, copy.strings[key]); });
   html = rootSafeAssets(html);
   html = localeInternalLinks(html);
   html = setStaticSchema(html, productPath, copy);

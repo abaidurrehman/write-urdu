@@ -20,26 +20,69 @@
     var recognition = null;
     var listening = false;
     var startedAt = 0;
+    var currentStateKey = 'checking-support';
+    var currentNoticeKey = null;
+
+    var STR = {
+        'start-voice-typing': { en: 'Start voice typing', ur: 'آواز سے ٹائپنگ شروع کریں' },
+        'voice-typing-unavailable': { en: 'Voice typing unavailable', ur: 'آواز سے ٹائپنگ دستیاب نہیں' },
+        'checking-support': { en: 'Checking support', ur: 'معاونت جانچی جا رہی ہے' },
+        ready: { en: 'Ready', ur: 'تیار' },
+        listening: { en: 'Listening', ur: 'سن رہا ہے' },
+        'hearing-speech': { en: 'Hearing speech', ur: 'آواز سنائی دے رہی ہے' },
+        'text-ready': { en: 'Text ready', ur: 'متن تیار ہے' },
+        'permission-blocked': { en: 'Permission blocked', ur: 'اجازت مسدود' },
+        'no-speech-detected': { en: 'No speech detected', ur: 'کوئی آواز نہیں ملی' },
+        'voice-typing-error': { en: 'Voice typing error', ur: 'آواز سے ٹائپنگ میں خرابی' },
+        'could-not-start': { en: 'Could not start', ur: 'شروع نہیں ہو سکا' },
+        'not-supported': { en: 'Not supported', ur: 'معاونت دستیاب نہیں' },
+        'listening-ellipsis': { en: 'Listening…', ur: 'سن رہا ہے…' },
+        'speak-naturally': { en: 'Speak naturally in Urdu. Your words will appear in the text box.', ur: 'اردو میں قدرتی انداز میں بولیں۔ آپ کے الفاظ ٹیکسٹ باکس میں ظاہر ہوں گے۔' },
+        'done-edit': { en: 'Done. Edit anything you want, then copy or keep writing.', ur: 'مکمل ہو گیا۔ جو چاہیں تبدیل کریں، پھر کاپی کریں یا لکھنا جاری رکھیں۔' },
+        copied: { en: 'Urdu text copied.', ur: 'اردو متن کاپی ہو گیا۔' },
+        'copy-blocked': { en: 'Copy was blocked. Select the text and copy it manually.', ur: 'کاپی مسدود ہو گئی۔ متن منتخب کر کے دستی طور پر کاپی کریں۔' },
+        'copy-first': { en: 'Copy the text first, then open the next tool.', ur: 'پہلے متن کاپی کریں، پھر اگلا ٹول کھولیں۔' },
+        'unsupported-note': { en: 'Voice typing is not available in this browser. Try another supported browser or continue with normal Urdu typing.', ur: 'آواز سے ٹائپنگ اس براؤزر میں دستیاب نہیں۔ کوئی دوسرا معاون براؤزر آزمائیں یا معمول کے مطابق اردو ٹائپ کرتے رہیں۔' },
+        'ready-note': { en: 'Ready when you are. Press Start voice typing and speak Urdu.', ur: 'جب آپ تیار ہوں، آواز سے ٹائپنگ شروع کریں دبائیں اور اردو بولیں۔' },
+        'could-not-start-yet': { en: 'Voice typing could not start yet. Wait a moment and try again.', ur: 'آواز سے ٹائپنگ ابھی شروع نہیں ہو سکی۔ تھوڑی دیر انتظار کر کے دوبارہ کوشش کریں۔' },
+        'mic-blocked': { en: 'Microphone access was blocked. Allow it in your browser settings and try again.', ur: 'مائیک تک رسائی مسدود کر دی گئی۔ براؤزر کی ترتیبات میں اجازت دیں اور دوبارہ کوشش کریں۔' },
+        'no-mic': { en: 'No microphone was available. Check your microphone and try again.', ur: 'کوئی مائیک دستیاب نہیں تھا۔ اپنا مائیک چیک کر کے دوبارہ کوشش کریں۔' },
+        'no-speech-heard': { en: 'I did not hear any speech. Try again and start speaking after Listening appears.', ur: 'کوئی آواز سنائی نہیں دی۔ دوبارہ کوشش کریں اور ‘سن رہا ہے’ ظاہر ہونے کے بعد بولنا شروع کریں۔' },
+        'network-error': { en: 'Voice typing could not connect. Check your internet connection and try again.', ur: 'آواز سے ٹائپنگ منسلک نہیں ہو سکی۔ اپنا انٹرنیٹ کنکشن چیک کر کے دوبارہ کوشش کریں۔' },
+        'lang-not-supported': { en: 'Urdu voice typing is not available in this browser.', ur: 'اس براؤزر میں اردو آواز سے ٹائپنگ دستیاب نہیں۔' },
+        aborted: { en: 'Voice typing stopped.', ur: 'آواز سے ٹائپنگ رک گئی۔' },
+        'generic-error': { en: 'Voice typing could not continue. You can still type Urdu normally in WriteUrdu.', ur: 'آواز سے ٹائپنگ جاری نہیں رہ سکی۔ آپ اب بھی رائٹ اردو میں معمول کے مطابق اردو ٹائپ کر سکتے ہیں۔' }
+    };
+
+    function isUrduLocale() { return document.documentElement.lang === 'ur'; }
+    function t(key) { return STR[key][isUrduLocale() ? 'ur' : 'en']; }
 
     function restorePageIdentity() {
-        var urdu = document.documentElement.lang === 'ur';
+        var urdu = isUrduLocale();
         var heading = root.querySelector('h1');
         if (heading) heading.textContent = urdu ? 'اردو آواز سے ٹائپنگ' : 'Urdu Voice Typing';
         document.title = urdu ? 'اردو آواز سے ٹائپنگ | رائٹ اردو' : 'Urdu Voice Typing — Speak Urdu to Text Online | WriteUrdu';
+        statusPill.textContent = t(currentStateKey);
+        startButton.textContent = t(startButton.disabled ? 'voice-typing-unavailable' : 'start-voice-typing');
+        supportNote.textContent = t(Recognition ? 'ready-note' : 'unsupported-note');
+        if (currentNoticeKey) notice.textContent = t(currentNoticeKey);
+        if (listening) interim.textContent = t('listening-ellipsis');
     }
 
     document.addEventListener('write-urdu:locale-change', restorePageIdentity);
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
     else restorePageIdentity();
 
-    function setNotice(message, type) {
-        notice.textContent = message || '';
+    function setNotice(messageKey, type) {
+        currentNoticeKey = messageKey;
+        notice.textContent = messageKey ? t(messageKey) : '';
         notice.className = 'urdu-tool-notice' + (type ? ' ' + type : '');
     }
 
-    function setStatus(label) {
-        statusPill.textContent = label;
-        root.setAttribute('data-voice-state', label.toLowerCase().replace(/\s+/g, '-'));
+    function setStatus(stateKey) {
+        currentStateKey = stateKey;
+        statusPill.textContent = t(stateKey);
+        root.setAttribute('data-voice-state', stateKey);
     }
 
     function hasText() {
@@ -63,14 +106,14 @@
         return left + ' ' + right;
     }
 
-    function friendlyError(code) {
-        if (code === 'not-allowed' || code === 'service-not-allowed') return 'Microphone access was blocked. Allow it in your browser settings and try again.';
-        if (code === 'audio-capture') return 'No microphone was available. Check your microphone and try again.';
-        if (code === 'no-speech') return 'I did not hear any speech. Try again and start speaking after Listening appears.';
-        if (code === 'network') return 'Voice typing could not connect. Check your internet connection and try again.';
-        if (code === 'language-not-supported') return 'Urdu voice typing is not available in this browser.';
-        if (code === 'aborted') return 'Voice typing stopped.';
-        return 'Voice typing could not continue. You can still type Urdu normally in WriteUrdu.';
+    function friendlyErrorKey(code) {
+        if (code === 'not-allowed' || code === 'service-not-allowed') return 'mic-blocked';
+        if (code === 'audio-capture') return 'no-mic';
+        if (code === 'no-speech') return 'no-speech-heard';
+        if (code === 'network') return 'network-error';
+        if (code === 'language-not-supported') return 'lang-not-supported';
+        if (code === 'aborted') return 'aborted';
+        return 'generic-error';
     }
 
     function configureRecognition() {
@@ -86,18 +129,18 @@
             startedAt = Date.now();
             startButton.hidden = true;
             stopButton.hidden = false;
-            interim.textContent = 'Listening…';
-            setStatus('Listening');
-            setNotice('Speak naturally in Urdu. Your words will appear in the text box.', 'success');
+            interim.textContent = t('listening-ellipsis');
+            setStatus('listening');
+            setNotice('speak-naturally', 'success');
             refreshActions();
         };
 
         instance.onaudiostart = function () {
-            setStatus('Listening');
+            setStatus('listening');
         };
 
         instance.onspeechstart = function () {
-            setStatus('Hearing speech');
+            setStatus('hearing-speech');
         };
 
         instance.onresult = function (event) {
@@ -109,17 +152,17 @@
                 if (result.isFinal) transcript.value = normalizeJoin(transcript.value, phrase);
                 else live += (live ? ' ' : '') + phrase.trim();
             }
-            interim.textContent = live || (listening ? 'Listening…' : '');
+            interim.textContent = live || (listening ? t('listening-ellipsis') : '');
             transcript.dispatchEvent(new Event('input', { bubbles: true }));
             refreshActions();
         };
 
         instance.onerror = function (event) {
             var code = event && event.error || 'unknown';
-            if (code !== 'aborted') setNotice(friendlyError(code), 'error');
-            if (code === 'not-allowed' || code === 'service-not-allowed') setStatus('Permission blocked');
-            else if (code === 'no-speech') setStatus('No speech detected');
-            else setStatus('Voice typing error');
+            if (code !== 'aborted') setNotice(friendlyErrorKey(code), 'error');
+            if (code === 'not-allowed' || code === 'service-not-allowed') setStatus('permission-blocked');
+            else if (code === 'no-speech') setStatus('no-speech-detected');
+            else setStatus('voice-typing-error');
         };
 
         instance.onend = function () {
@@ -127,9 +170,9 @@
             startButton.hidden = false;
             stopButton.hidden = true;
             interim.textContent = '';
-            if (!/blocked|error|detected/i.test(statusPill.textContent)) {
-                setStatus(hasText() ? 'Text ready' : 'Ready');
-                if (startedAt && hasText()) setNotice('Done. Edit anything you want, then copy or keep writing.', 'success');
+            if (['permission-blocked', 'no-speech-detected', 'voice-typing-error'].indexOf(currentStateKey) === -1) {
+                setStatus(hasText() ? 'text-ready' : 'ready');
+                if (startedAt && hasText()) setNotice('done-edit', 'success');
             }
             refreshActions();
         };
@@ -139,13 +182,13 @@
 
     function startRecognition() {
         if (!Recognition || listening) return;
-        setNotice('');
+        setNotice(null);
         if (!recognition) recognition = configureRecognition();
         try {
             recognition.start();
         } catch (error) {
-            setStatus('Could not start');
-            setNotice('Voice typing could not start yet. Wait a moment and try again.', 'error');
+            setStatus('could-not-start');
+            setNotice('could-not-start-yet', 'error');
         }
     }
 
@@ -170,8 +213,8 @@
             transcript.select();
             promise = document.execCommand('copy') ? Promise.resolve() : Promise.reject(new Error('copy'));
         }
-        promise.then(function () { setNotice('Urdu text copied.', 'success'); })
-            .catch(function () { setNotice('Copy was blocked. Select the text and copy it manually.', 'error'); });
+        promise.then(function () { setNotice('copied', 'success'); })
+            .catch(function () { setNotice('copy-blocked', 'error'); });
     }
 
     function handoff(target) {
@@ -187,19 +230,19 @@
             navigator.clipboard.writeText(text).then(function () {
                 abortRecognition();
                 window.location.assign(target);
-            }).catch(function () { setNotice('Copy the text first, then open the next tool.', 'error'); });
-        } else setNotice('Copy the text first, then open the next tool.', 'error');
+            }).catch(function () { setNotice('copy-first', 'error'); });
+        } else setNotice('copy-first', 'error');
     }
 
     if (!Recognition) {
-        setStatus('Not supported');
+        setStatus('not-supported');
         startButton.disabled = true;
-        startButton.textContent = 'Voice typing unavailable';
-        supportNote.textContent = 'Voice typing is not available in this browser. Try another supported browser or continue with normal Urdu typing.';
+        startButton.textContent = t('voice-typing-unavailable');
+        supportNote.textContent = t('unsupported-note');
         supportNote.classList.add('is-warning');
     } else {
-        setStatus('Ready');
-        supportNote.textContent = 'Ready when you are. Press Start voice typing and speak Urdu.';
+        setStatus('ready');
+        supportNote.textContent = t('ready-note');
     }
 
     startButton.addEventListener('click', startRecognition);
@@ -208,8 +251,8 @@
         abortRecognition();
         transcript.value = '';
         interim.textContent = '';
-        setStatus(Recognition ? 'Ready' : 'Not supported');
-        setNotice('');
+        setStatus(Recognition ? 'ready' : 'not-supported');
+        setNotice(null);
         startButton.hidden = false;
         stopButton.hidden = true;
         refreshActions();

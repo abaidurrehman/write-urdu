@@ -47,6 +47,14 @@
     copy.ur.transliterationReady = 'رومن اردو ان پٹ تیار ہے۔ ہر لفظ کے بعد Space دبائیں، کارڈ پر ترمیم کرتے وقت بھی۔';
     copy.en.tooltips = { edit:'Edit text', left:'Align left', centre:'Align centre', right:'Align right', resetPosition:'Reset text position', done:'Done editing', cancel:'Cancel editing' };
     copy.ur.tooltips = { edit:'متن میں ترمیم', left:'بائیں سیدھ', centre:'درمیانی سیدھ', right:'دائیں سیدھ', resetPosition:'متن کی جگہ دوبارہ بنائیں', done:'ترمیم مکمل کریں', cancel:'ترمیم منسوخ کریں' };
+    copy.en.exportEyebrow = 'Ready to share?';
+    copy.ur.exportEyebrow = 'شیئر کرنے کے لیے تیار ہیں؟';
+    copy.en.exportHeading = 'Finish your card';
+    copy.ur.exportHeading = 'اپنا کارڈ مکمل کریں';
+    copy.en.exportHelp = 'Your preview is exported at the exact dimensions shown on the canvas.';
+    copy.ur.exportHelp = 'آپ کا پیش منظر کینوس پر دکھائے گئے عین طول و عرض میں برآمد کیا جائے گا۔';
+    copy.en.exportPrivacy = 'Processed in your browser. Your text and images stay on this device.';
+    copy.ur.exportPrivacy = 'آپ کے براؤزر میں پراسیس ہوتا ہے۔ آپ کا متن اور تصاویر اسی آلے پر رہتی ہیں۔';
 
     if (socialConfig) {
         copy.en.title = socialConfig.title;
