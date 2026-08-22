@@ -63,7 +63,10 @@ test('Phase 1 Urdu command surfaces are localized in initial product UI', async 
 
   await page.goto('/urdu/urdu-editor', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('.home-actions-group-create')).toHaveAttribute('aria-label', 'اپنی دستاویز سے تخلیق کریں');
-  await expect(page.locator('[data-create-card]')).toContainText('اردو کارڈ بنائیں');
+  await expect(page.locator('.home-actions-group-create [data-create-card]')).toContainText('اردو کارڈ بنائیں');
+  await expect(page.locator('[data-wu-journey="write-to-card"]')).toContainText('اس اردو کو کارڈ بنا کر شیئر کریں');
+  await expect(page.locator('[data-wu-authoring-share-primary]')).toHaveAttribute('aria-label', /[\u0600-\u06FF]/);
+  await expect(page.locator('[data-wu-journey-panel]')).not.toContainText('Create & share this Urdu');
   await expect(page.locator('[data-input-mode-control]')).toHaveAttribute('aria-label', 'لکھنے کا طریقہ');
   await expect(page.locator('[data-batch-title]')).toContainText('اردو لکھنے کے دو طریقے');
 });
