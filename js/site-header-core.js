@@ -72,7 +72,13 @@
             },
             header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Private by default · export or share when ready.' },
             aria: { primary: 'Primary navigation', footer: 'Footer navigation', switchUrdu: 'Switch to Urdu', switchEnglish: 'Switch to English' },
-            home: { startTyping: 'Start typing', exploreTools: 'Explore more tools', learnHow: 'Learn how it works' },
+            home: {
+                startTyping: 'Start typing', exploreTools: 'Explore more tools', learnHow: 'Learn how it works',
+                howEyebrow: 'A simple path to Urdu script', howTitle: 'How it works',
+                stepOneTitle: 'Type with English letters.', stepOneCopy: 'Write the Urdu words you want using familiar English letters.',
+                stepTwoTitle: 'Press Space.', stepTwoCopy: 'Each completed word turns into Urdu script and suggestions remain available.',
+                stepThreeTitle: 'Use your Urdu anywhere.', stepThreeCopy: 'Copy, export, format, design a card, or continue into another tool.'
+            },
             languageAction: 'اردو',
             ui: {
                 'Copy text': 'Copy text', Export: 'Export', Share: 'Share', More: 'More', Clear: 'Clear',
@@ -121,7 +127,13 @@
             },
             header: { local: 'آپ کے براؤزر میں چلتا ہے', noAccount: 'اکاؤنٹ کی ضرورت نہیں', free: 'استعمال کے لیے مفت', privacy: 'رازداری پہلے · تیار ہونے پر برآمد یا شیئر کریں۔' },
             aria: { primary: 'بنیادی نیویگیشن', footer: 'فٹر نیویگیشن', switchUrdu: 'اردو میں تبدیل کریں', switchEnglish: 'انگریزی میں تبدیل کریں' },
-            home: { startTyping: 'لکھنا شروع کریں', exploreTools: 'مزید ٹولز دیکھیں', learnHow: 'طریقہ کار جانیں' },
+            home: {
+                startTyping: 'لکھنا شروع کریں', exploreTools: 'مزید ٹولز دیکھیں', learnHow: 'طریقہ کار جانیں',
+                howEyebrow: 'اردو رسم الخط تک آسان راستہ', howTitle: 'طریقہ کار',
+                stepOneTitle: 'انگریزی حروف میں لکھیں۔', stepOneCopy: 'اپنے مطلوبہ اردو الفاظ جانی پہچانی انگریزی حروف کی مدد سے لکھیں۔',
+                stepTwoTitle: 'Space دبائیں۔', stepTwoCopy: 'مکمل ہونے والا ہر لفظ اردو رسم الخط میں بدل جاتا ہے اور متبادل الفاظ بھی دستیاب رہتے ہیں۔',
+                stepThreeTitle: 'اپنی اردو تحریر کہیں بھی استعمال کریں۔', stepThreeCopy: 'متن کاپی، برآمد، فارمیٹ کریں، کارڈ ڈیزائن کریں، یا کسی دوسرے ٹول میں جاری رکھیں۔'
+            },
             languageAction: 'English',
             ui: {
                 'Copy text': 'متن کاپی کریں', Export: 'برآمد کریں', Share: 'شیئر کریں', More: 'مزید', Clear: 'صاف کریں',

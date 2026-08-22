@@ -65,9 +65,9 @@ function applyKey(html, key, value) {
   return html.replace(re, '$1' + value + '$4');
 }
 function rootSafeAssets(html) {
-  return html.replace(/\b(src|href|action)=(['"])(?![a-z]+:|\/\/|\/|#|\?|mailto:|tel:)([^'"]+)\2/ig, function (_, attr, quote, value) {
+  return html.replace(/([\s<])(src|href|action)=(['"])(?![a-z]+:|\/\/|\/|#|\?|mailto:|tel:)([^'"]+)\3/ig, function (_, prefix, attr, quote, value) {
     if (!value || value.startsWith('data:')) return _;
-    return attr + '=' + quote + '/' + value.replace(/^\.\//, '') + quote;
+    return prefix + attr + '=' + quote + '/' + value.replace(/^\.\//, '') + quote;
   });
 }
 function localeInternalLinks(html) {

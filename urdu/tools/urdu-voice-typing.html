@@ -36,11 +36,11 @@
     <main class="urdu-tool-main" data-urdu-voice-typing data-voice-state="ready">
         <header class="urdu-tool-hero urdu-voice-hero">
             <div class="urdu-voice-hero-copy">
-                <p class="urdu-tool-eyebrow">Speak Urdu → Urdu text</p>
+                <p class="urdu-tool-eyebrow" data-wu-l10n="tools.urdu-voice-typing.eyebrow">اردو بولیں → اردو متن</p>
                 <h1 data-wu-l10n="tools.urdu-voice-typing.h1">اردو وائس ٹائپنگ</h1>
                 <p class="urdu-voice-lede" data-wu-l10n="tools.urdu-voice-typing.lede">مائیک دبائیں، قدرتی انداز میں اردو بولیں اور اپنی آواز کو قابلِ تدوین اردو متن میں تبدیل ہوتے دیکھیں۔</p>
                 <div class="urdu-voice-benefits" aria-label="Voice typing highlights">
-                    <span>Free</span><span>No sign-up</span><span>Edit instantly</span>
+                    <span data-wu-l10n="tools.urdu-voice-typing.benefitFree">مفت</span><span data-wu-l10n="tools.urdu-voice-typing.benefitNoSignup">سائن اپ کی ضرورت نہیں</span><span data-wu-l10n="tools.urdu-voice-typing.benefitInstant">فوری ترمیم</span>
                 </div>
             </div>
             <aside class="urdu-voice-hero-demo" aria-label="Voice typing example">
@@ -57,10 +57,10 @@
         <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="voice-workspace-title" google-side-rail-overlap="false">
             <div class="urdu-tool-workspace-header">
                 <div>
-                    <h2 id="voice-workspace-title">Speak. Your Urdu appears here.</h2>
-                    <p>Press start, speak in Urdu, then edit anything before you copy or continue.</p>
+                    <h2 id="voice-workspace-title" data-wu-l10n="tools.urdu-voice-typing.workspaceTitle">بولیں۔ آپ کی اردو یہاں ظاہر ہوگی۔</h2>
+                    <p data-wu-l10n="tools.urdu-voice-typing.workspaceCopy">شروع کریں دبائیں، اردو میں بولیں، پھر کاپی یا آگے بڑھنے سے پہلے جو چاہیں تبدیل کریں۔</p>
                 </div>
-                <span class="urdu-tool-status-pill" data-voice-status-pill>Checking support</span>
+                <span class="urdu-tool-status-pill" data-voice-status-pill data-wu-l10n="tools.urdu-voice-typing.checkingSupport">معاونت جانچی جا رہی ہے</span>
             </div>
 
             <div class="urdu-tool-grid urdu-voice-workspace-grid">
@@ -72,11 +72,11 @@
                                     <rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M6.5 10.5v.5a5.5 5.5 0 0 0 11 0v-.5"></path><path d="M12 16.5V21"></path><path d="M9 21h6"></path>
                                 </svg>
                             </span>
-                            <h3 id="voice-control-title">Start speaking in Urdu</h3>
-                            <p>Press the button, allow microphone access if asked, and start talking.</p>
+                            <h3 id="voice-control-title" data-wu-l10n="tools.urdu-voice-typing.controlTitle">اردو میں بولنا شروع کریں</h3>
+                            <p data-wu-l10n="tools.urdu-voice-typing.controlCopy">بٹن دبائیں، پوچھے جانے پر مائیک تک رسائی کی اجازت دیں اور بولنا شروع کریں۔</p>
                             <div class="urdu-tool-actions urdu-voice-start-actions">
-                                <button class="urdu-tool-button primary urdu-voice-start-button" type="button" data-voice-start>Start voice typing</button>
-                                <button class="urdu-tool-button" type="button" data-voice-stop hidden>Stop listening</button>
+                                <button class="urdu-tool-button primary urdu-voice-start-button" type="button" data-voice-start data-wu-l10n="tools.urdu-voice-typing.startButton">آواز سے ٹائپنگ شروع کریں</button>
+                                <button class="urdu-tool-button" type="button" data-voice-stop hidden data-wu-l10n="tools.urdu-voice-typing.stopButton">سننا بند کریں</button>
                             </div>
                             <div class="urdu-voice-interim" data-voice-interim aria-live="polite" aria-label="Live voice typing status"></div>
                             <div class="urdu-voice-support-note" data-voice-support-note></div>
@@ -86,15 +86,15 @@
 
                 <section class="urdu-tool-column urdu-voice-transcript" aria-labelledby="voice-result-title">
                     <div class="urdu-tool-label-row">
-                        <label id="voice-result-title" for="voiceTranscript">Your Urdu text</label>
-                        <span class="urdu-tool-helper">Fully editable</span>
+                        <label id="voice-result-title" for="voiceTranscript" data-wu-l10n="tools.urdu-voice-typing.transcriptLabel">آپ کی اردو تحریر</label>
+                        <span class="urdu-tool-helper" data-wu-l10n="tools.urdu-voice-typing.transcriptHelper">مکمل طور پر قابلِ ترمیم</span>
                     </div>
                     <textarea id="voiceTranscript" class="urdu-tool-textarea" dir="rtl" lang="ur" spellcheck="true" maxlength="100000" placeholder="آپ کی اردو یہاں نظر آئے گی۔"></textarea>
                     <div class="urdu-tool-actions">
-                        <button class="urdu-tool-button primary" type="button" data-voice-copy disabled>Copy text</button>
-                        <button class="urdu-tool-button" type="button" data-voice-clean disabled>Clean text</button>
-                        <button class="urdu-tool-button" type="button" data-voice-editor disabled>Keep writing</button>
-                        <button class="urdu-tool-button ghost" type="button" data-voice-clear disabled>Clear</button>
+                        <button class="urdu-tool-button primary" type="button" data-voice-copy disabled data-wu-l10n="tools.urdu-voice-typing.copyButton">متن کاپی کریں</button>
+                        <button class="urdu-tool-button" type="button" data-voice-clean disabled data-wu-l10n="tools.urdu-voice-typing.cleanButton">متن صاف کریں</button>
+                        <button class="urdu-tool-button" type="button" data-voice-editor disabled data-wu-l10n="tools.urdu-voice-typing.editorButton">لکھنا جاری رکھیں</button>
+                        <button class="urdu-tool-button ghost" type="button" data-voice-clear disabled data-wu-l10n="tools.urdu-voice-typing.clearButton">صاف کریں</button>
                     </div>
                     <p class="urdu-tool-notice" data-voice-notice aria-live="polite"></p>
                 </section>
@@ -105,34 +105,30 @@
 
         <section class="urdu-voice-after" aria-label="Using Urdu voice typing">
             <div class="urdu-voice-steps">
-                <article><span>1</span><h2>Tap Start</h2><p>Begin voice typing with one click.</p></article>
-                <article><span>2</span><h2>Speak Urdu</h2><p>Talk naturally and watch your Urdu appear.</p></article>
-                <article><span>3</span><h2>Edit and use it</h2><p>Fix a word, copy the text or keep writing in WriteUrdu.</p></article>
+                <article><span>1</span><h2 data-wu-l10n="tools.urdu-voice-typing.step1Title">شروع کریں دبائیں</h2><p data-wu-l10n="tools.urdu-voice-typing.step1Copy">ایک کلک سے آواز سے ٹائپنگ شروع کریں۔</p></article>
+                <article><span>2</span><h2 data-wu-l10n="tools.urdu-voice-typing.step2Title">اردو بولیں</h2><p data-wu-l10n="tools.urdu-voice-typing.step2Copy">قدرتی انداز میں بولیں اور اپنی اردو ظاہر ہوتے دیکھیں۔</p></article>
+                <article><span>3</span><h2 data-wu-l10n="tools.urdu-voice-typing.step3Title">ترمیم کریں اور استعمال کریں</h2><p data-wu-l10n="tools.urdu-voice-typing.step3Copy">کوئی لفظ درست کریں، متن کاپی کریں یا رائٹ اردو میں لکھنا جاری رکھیں۔</p></article>
             </div>
 
             <div class="urdu-voice-help-grid">
                 <section>
-                    <p class="urdu-tool-eyebrow">Better results</p>
-                    <h2>A few simple tips</h2>
-                    <ul>
-                        <li>Speak at a comfortable pace.</li>
-                        <li>Pause briefly between longer sentences.</li>
-                        <li>Review names, numbers and punctuation before sharing.</li>
-                    </ul>
+                    <p class="urdu-tool-eyebrow" data-wu-l10n="tools.urdu-voice-typing.tipsEyebrow">بہتر نتائج</p>
+                    <h2 data-wu-l10n="tools.urdu-voice-typing.tipsTitle">چند آسان تجاویز</h2>
+                    <ul data-wu-l10n="tools.urdu-voice-typing.tipsList"><li>آرام دہ رفتار سے بولیں۔</li><li>طویل جملوں کے درمیان مختصر وقفہ دیں۔</li><li>شیئر کرنے سے پہلے نام، اعداد اور رموزِ اوقاف دیکھ لیں۔</li></ul>
                 </section>
                 <aside>
-                    <p class="urdu-tool-eyebrow">Keep going</p>
-                    <h2>Your text is ready to use</h2>
-                    <p>Clean spacing, continue writing, or switch to the Urdu keyboard whenever you want.</p>
+                    <p class="urdu-tool-eyebrow" data-wu-l10n="tools.urdu-voice-typing.keepGoingEyebrow">جاری رکھیں</p>
+                    <h2 data-wu-l10n="tools.urdu-voice-typing.keepGoingTitle">آپ کا متن استعمال کے لیے تیار ہے</h2>
+                    <p data-wu-l10n="tools.urdu-voice-typing.keepGoingCopy">فاصلہ درست کریں، لکھنا جاری رکھیں، یا جب چاہیں اردو کی بورڈ پر منتقل ہوں۔</p>
                     <div class="urdu-voice-links">
-                        <a href="/urdu-text-cleaner">Clean Urdu text</a>
-                        <a href="/urdu/">Continue in WriteUrdu</a>
-                        <a href="/urdu/urdu-keyboard">Use Urdu keyboard</a>
+                        <a href="/urdu-text-cleaner" data-wu-l10n="tools.urdu-voice-typing.linkClean">اردو متن صاف کریں</a>
+                        <a href="/urdu/" data-wu-l10n="tools.urdu-voice-typing.linkContinue">رائٹ اردو میں جاری رکھیں</a>
+                        <a href="/urdu/urdu-keyboard" data-wu-l10n="tools.urdu-voice-typing.linkKeyboard">اردو کی بورڈ استعمال کریں</a>
                     </div>
                 </aside>
             </div>
 
-            <p class="urdu-voice-privacy-link">Voice typing availability and processing depend on your browser or device. <a href="/write-urdu-privacy#voice-typing">See voice typing privacy &amp; browser details</a>.</p>
+            <p class="urdu-voice-privacy-link" data-wu-l10n="tools.urdu-voice-typing.privacyNote">آواز سے ٹائپنگ کی دستیابی اور پروسیسنگ آپ کے براؤزر یا آلے پر منحصر ہے۔ <a href="/write-urdu-privacy#voice-typing">آواز سے ٹائپنگ کی رازداری اور براؤزر تفصیلات دیکھیں</a>۔</p>
         </section>
     </main>
     <footer aria-label="Footer navigation"></footer>
