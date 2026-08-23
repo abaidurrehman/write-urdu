@@ -8,7 +8,7 @@
             title: 'Input mode',
             roman: 'English letters → Urdu',
             direct: 'Type Urdu directly',
-            romanNote: 'Type Urdu words using English letters and press Space after each word.',
+            romanNote: 'Example: mera khayal hai → میرا خیال ہے. Type Urdu words using English letters and press Space after each word.',
             directNote: 'Conversion is off in this mode. Type or paste Urdu or English directly; existing text is kept unchanged.',
             directAlert: 'English-letter conversion is off. Switch back to English letters → Urdu to convert as you type.',
             switchToRoman: 'Turn conversion on'
@@ -17,7 +17,7 @@
             title: 'تحریر کا طریقہ',
             roman: 'انگریزی حروف → اردو',
             direct: 'اردو یا انگریزی براہِ راست لکھیں',
-            romanNote: 'اردو الفاظ انگریزی حروف میں لکھیں اور ہر لفظ کے بعد Space دبائیں۔',
+            romanNote: 'مثال: mera khayal hai → میرا خیال ہے۔ اردو الفاظ انگریزی حروف میں لکھیں اور ہر لفظ کے بعد Space دبائیں۔',
             directNote: 'اس طریقے میں تبدیلی بند ہے۔ اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں؛ موجودہ متن تبدیل نہیں ہوگا۔',
             directAlert: 'انگریزی حروف سے اردو میں تبدیلی بند ہے۔ لکھتے وقت تبدیلی کے لیے انگریزی حروف → اردو منتخب کریں۔',
             switchToRoman: 'تبدیلی آن کریں'
