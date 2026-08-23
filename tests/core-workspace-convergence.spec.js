@@ -1,5 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
+const blockExternalServices = page => page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+
 async function waitForConvergence(page) {
   await page.waitForFunction(() => Boolean(window.WriteUrduCoreWorkspaceConvergence));
 }
@@ -9,6 +11,37 @@ async function waitForBasicToolbar(page) {
     window.WriteUrduBasicCommandToolbar &&
     document.querySelector('[data-wu-basic-command-surface]')
   ));
+}
+
+async function installRecognitionStub(page) {
+  await page.addInitScript(() => {
+    class FakeRecognition {
+      constructor() {
+        window.__basicVoiceConstructCount = (window.__basicVoiceConstructCount || 0) + 1;
+        window.__basicVoiceRecognition = this;
+      }
+
+      start() {
+        window.__basicVoiceStartCount = (window.__basicVoiceStartCount || 0) + 1;
+        queueMicrotask(() => {
+          if (this.onstart) this.onstart();
+          if (this.onaudiostart) this.onaudiostart();
+        });
+      }
+
+      stop() { queueMicrotask(() => { if (this.onend) this.onend(); }); }
+      abort() { queueMicrotask(() => { if (this.onend) this.onend(); }); }
+      emit(text, isFinal) {
+        const result = { 0: { transcript: text }, isFinal: Boolean(isFinal), length: 1 };
+        if (this.onresult) this.onresult({ resultIndex: 0, results: [result] });
+      }
+    }
+
+    window.SpeechRecognition = FakeRecognition;
+    window.webkitSpeechRecognition = FakeRecognition;
+    window.__basicVoiceConstructCount = 0;
+    window.__basicVoiceStartCount = 0;
+  });
 }
 
 test('Basic Writer exposes one share-first command toolbar directly above the canvas', async ({ page }) => {
@@ -149,6 +182,156 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   await expect(nextStep.locator('.wu-continue-actions > [data-wu-next-step-action]')).toHaveCount(3);
   await expect(nextStep.locator('[data-wu-next-step-action]')).toHaveCount(4);
   await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
+});
+
+test('Basic Writer voice uses the same editable state across Roman and direct corrections', async ({ page }) => {
+  await installRecognitionStub(page);
+  await blockExternalServices(page);
+  await page.goto('/', { waitUntil: 'commit', timeout: 15000 });
+  await waitForConvergence(page);
+  await waitForBasicToolbar(page);
+
+  const editor = page.locator('#transliterateTextarea');
+  const method = page.locator('[data-wu-basic-voice-method]');
+  const panel = page.locator('[data-wu-basic-voice-panel]');
+  const start = page.locator('[data-wu-basic-voice-start]');
+  const stop = page.locator('[data-wu-basic-voice-stop]');
+  const status = page.locator('[data-wu-basic-voice-status]');
+
+  await expect(method).toBeEnabled();
+  await expect(page.locator('[data-wu-voice-entry="home"]')).toHaveCount(0);
+  expect(await page.evaluate(() => window.__basicVoiceConstructCount)).toBe(0);
+
+  await method.evaluate(node => node.click());
+  await expect(panel).toBeVisible();
+  await expect(status).toHaveText('Ready');
+  expect(await page.evaluate(() => window.__basicVoiceConstructCount)).toBe(0);
+
+  await editor.fill('آج موسم اچھا ہے');
+  await editor.evaluate(node => node.setSelectionRange(8, 12));
+  await start.click();
+  await expect(status).toHaveText('Listening…');
+  const recognitionConfig = await page.evaluate(() => ({
+    lang: window.__basicVoiceRecognition.lang,
+    continuous: window.__basicVoiceRecognition.continuous,
+    interimResults: window.__basicVoiceRecognition.interimResults,
+    maxAlternatives: window.__basicVoiceRecognition.maxAlternatives
+  }));
+  expect(recognitionConfig).toEqual({ lang: 'ur-PK', continuous: true, interimResults: true, maxAlternatives: 1 });
+
+  await page.evaluate(() => window.__basicVoiceRecognition.emit('عارضی متن', false));
+  await expect(editor).toHaveValue('آج موسم اچھا ہے');
+  await expect(page.locator('[data-wu-basic-voice-interim]')).toHaveText('عارضی متن');
+  await page.evaluate(() => window.__basicVoiceRecognition.emit('بہت اچھا', true));
+  await expect(editor).toHaveValue('آج موسم بہت اچھا ہے');
+  await stop.click();
+  await expect(status).toHaveText('Text added / stopped');
+
+  const methodGeometry = await page.evaluate(() => {
+    const controls = Array.from(document.querySelectorAll('[data-input-mode-option], [data-wu-basic-voice-method]'));
+    const rects = controls.map(node => node.getBoundingClientRect());
+    const control = document.querySelector('[data-input-mode-control]');
+    const group = control && control.closest('.wu-basic-command-mode');
+    const toolbar = control && control.closest('.wu-basic-command-toolbar');
+    const voicePanel = document.querySelector('[data-wu-basic-voice-panel]');
+    const box = node => {
+      const rect = node.getBoundingClientRect();
+      const style = getComputedStyle(node);
+      return { left: rect.left, right: rect.right, width: rect.width, display: style.display, flex: style.flex, grid: style.gridTemplateColumns };
+    };
+    const overlaps = rects.some((rect, index) => rects.slice(index + 1).some(other => (
+      rect.left < other.right && rect.right > other.left && rect.top < other.bottom && rect.bottom > other.top
+    )));
+    return {
+      overlaps,
+      rects: rects.map(rect => ({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height })),
+      control: box(control),
+      group: box(group),
+      toolbar: box(toolbar),
+      voicePanel: box(voicePanel),
+      heights: rects.map(rect => rect.height),
+      pageWidth: document.documentElement.scrollWidth,
+      viewportWidth: window.innerWidth
+    };
+  });
+  expect(methodGeometry.overlaps, JSON.stringify(methodGeometry)).toBe(false);
+  for (const rect of methodGeometry.rects) {
+    expect(rect.left, JSON.stringify(methodGeometry)).toBeGreaterThanOrEqual(methodGeometry.toolbar.left - 1);
+    expect(rect.right, JSON.stringify(methodGeometry)).toBeLessThanOrEqual(methodGeometry.toolbar.right + 1);
+  }
+  expect(methodGeometry.voicePanel.left, JSON.stringify(methodGeometry)).toBeGreaterThanOrEqual(methodGeometry.toolbar.left - 1);
+  expect(methodGeometry.voicePanel.right, JSON.stringify(methodGeometry)).toBeLessThanOrEqual(methodGeometry.toolbar.right + 1);
+  expect(Math.min(...methodGeometry.heights)).toBeGreaterThanOrEqual(methodGeometry.viewportWidth <= 767 ? 44 : 40);
+  expect(methodGeometry.pageWidth).toBeLessThanOrEqual(methodGeometry.viewportWidth + 1);
+
+  await page.locator('[data-input-mode-option="roman"]').evaluate(node => node.click());
+  await editor.evaluate(node => {
+    const start = node.value.indexOf('بہت اچھا');
+    node.focus();
+    node.setSelectionRange(start, start + 'بہت اچھا'.length);
+  });
+  await page.keyboard.insertText('خوبصورت');
+  await expect(editor).toHaveValue('آج موسم خوبصورت ہے');
+
+  await method.evaluate(node => node.click());
+  await editor.evaluate(node => {
+    node.focus();
+    node.setSelectionRange(node.value.length, node.value.length);
+  });
+  await start.click();
+  await page.evaluate(() => window.__basicVoiceRecognition.emit('ہم باہر جائیں گے', true));
+  await expect(editor).toHaveValue('آج موسم خوبصورت ہے ہم باہر جائیں گے');
+  await stop.click();
+
+  await page.locator('[data-input-mode-option="direct"]').evaluate(node => node.click());
+  await editor.evaluate(node => {
+    node.focus();
+    node.setSelectionRange(0, 2);
+  });
+  await page.keyboard.insertText('کل');
+  await expect(editor).toHaveValue('کل موسم خوبصورت ہے ہم باہر جائیں گے');
+
+  await method.evaluate(node => node.click());
+  await editor.evaluate(node => {
+    node.focus();
+    node.setSelectionRange(node.value.length, node.value.length);
+  });
+  await start.click();
+  await page.evaluate(() => window.__basicVoiceRecognition.emit('پھر واپس آئیں گے', true));
+  await expect(editor).toHaveValue('کل موسم خوبصورت ہے ہم باہر جائیں گے پھر واپس آئیں گے');
+  expect(await page.evaluate(() => window.__basicVoiceStartCount)).toBe(3);
+});
+
+test('unsupported Basic Writer voice leaves Roman and direct typing available', async ({ page }) => {
+  await blockExternalServices(page);
+  await page.addInitScript(() => {
+    delete window.SpeechRecognition;
+    delete window.webkitSpeechRecognition;
+  });
+  await page.goto('/', { waitUntil: 'commit', timeout: 15000 });
+  await waitForConvergence(page);
+  await waitForBasicToolbar(page);
+
+  await expect(page.locator('[data-wu-basic-voice-method]')).toBeDisabled();
+  await expect(page.locator('[data-input-mode-option="roman"]')).toBeEnabled();
+  await expect(page.locator('[data-input-mode-option="direct"]')).toBeEnabled();
+  await page.locator('#transliterateTextarea').fill('عام اردو لکھائی جاری ہے');
+  await expect(page.locator('#transliterateTextarea')).toHaveValue('عام اردو لکھائی جاری ہے');
+});
+
+test('Urdu Basic Writer voice controls use Urdu labels', async ({ page }) => {
+  await installRecognitionStub(page);
+  await blockExternalServices(page);
+  await page.goto('/urdu/', { waitUntil: 'commit', timeout: 15000 });
+  await waitForConvergence(page);
+  await waitForBasicToolbar(page);
+
+  const method = page.locator('[data-wu-basic-voice-method]');
+  await expect(method).toContainText('بول کر اردو لکھیں');
+  await method.evaluate(node => node.click());
+  await expect(page.locator('[data-wu-basic-voice-status]')).toHaveText('تیار');
+  await expect(page.locator('[data-wu-basic-voice-start]')).toHaveText('آواز سے لکھنا شروع کریں');
+  await expect(page.locator('[data-wu-basic-voice-stop]')).toHaveText('آواز سے لکھنا روکیں');
 });
 
 test('phone outcome navigation and Basic Writer toolbar stay inside the viewport', async ({ page }) => {
