@@ -28,7 +28,10 @@ const PAGE = `<!DOCTYPE html>
         <h1>My Documents</h1>
         <p>Writing appears here only after you choose <strong>Save to my account</strong>. Local drafts in your browser stay separate.</p>
       </div>
-      <a class="my-documents-primary" href="/">Write something new</a>
+      <div class="my-documents-hero-actions">
+        <a class="my-documents-primary" href="/">Write something new</a>
+        <a class="my-documents-secondary" data-wu-voice-start-with href="/?wu-voice=1">Start with voice</a>
+      </div>
     </header>
     <div class="my-documents-message" role="status" aria-live="polite" data-documents-message>Loading your documents…</div>
     <section class="my-documents-state" data-documents-signed-out hidden>

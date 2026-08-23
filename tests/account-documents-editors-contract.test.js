@@ -57,7 +57,7 @@ assert.match(editorTools, /kind: 'rich'/, 'Rich adapter must remain owned by edi
 assert.match(editorTools, /createTextAdapter\(keyboard, 'keyboard'\)/, 'Keyboard adapter must remain owned by editor-tools');
 assert.match(styles, /\.editor-account-documents/, 'Rich/Keyboard account persistence needs a bounded editor-native panel');
 assert.doesNotMatch(styles, /position\s*:\s*(?:fixed|sticky)/, 'DOC-D account controls must not become fixed or sticky authoring chrome');
-assert.match(serviceWorker, /write-urdu-shell-v30/, 'PWA shell must include the current account/document UI cache revision');
+assert.match(serviceWorker, /write-urdu-shell-v31/, 'PWA shell must include the current account/document UI cache revision');
 assert.match(serviceWorker, /\.\/js\/editor-account-documents\.mjs/, 'PWA install must refresh the DOC-D controller');
 
 (async () => {

@@ -131,6 +131,37 @@ test('Rich Editor voice inserts into the real TinyMCE document at the current se
   expect(await page.evaluate(() => window.__writerVoiceStartCount)).toBe(3);
 });
 
+test('My Documents "Start with voice" handoff opens the Basic Writer panel without requesting the microphone', async ({ page }) => {
+  await installRecognitionStub(page);
+  await blockExternalServices(page);
+  await page.goto('/?wu-voice=1', { waitUntil: 'commit', timeout: 15000 });
+
+  const method = page.locator('[data-wu-basic-voice-method]');
+  const panel = page.locator('[data-wu-basic-voice-panel]');
+  await expect(method).toBeEnabled({ timeout: 10000 });
+  await expect(panel).toBeVisible();
+  expect(await page.evaluate(() => window.__writerVoiceConstructCount)).toBe(0);
+  expect(new URL(page.url()).searchParams.has('wu-voice')).toBe(false);
+
+  const start = page.locator('[data-wu-basic-voice-start]');
+  const status = page.locator('[data-wu-basic-voice-status]');
+  await start.click();
+  await expect(status).toHaveText('Listening…');
+});
+
+test('My Documents voice handoff on an unsupported browser leaves typing available and the panel closed', async ({ page }) => {
+  await page.addInitScript(() => {
+    delete window.SpeechRecognition;
+    delete window.webkitSpeechRecognition;
+  });
+  await blockExternalServices(page);
+  await page.goto('/?wu-voice=1', { waitUntil: 'commit', timeout: 15000 });
+
+  const method = page.locator('[data-wu-basic-voice-method]');
+  await expect(method).toBeDisabled({ timeout: 10000 });
+  await expect(page.locator('[data-wu-basic-voice-panel]')).toBeHidden();
+});
+
 test('unsupported Rich Editor voice leaves Roman and direct typing available', async ({ page }) => {
   await page.addInitScript(() => {
     delete window.SpeechRecognition;

@@ -39,6 +39,12 @@
   line-height: 1.7;
 }
 
+.my-documents-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .my-documents-primary,
 .my-documents-secondary,
 .my-documents-action {
@@ -146,7 +152,7 @@
 @media (max-width: 760px) {
   .my-documents-main { width: min(100% - 22px, 1120px); padding-top: 24px; }
   .my-documents-hero { display: grid; padding: 22px; }
-  .my-documents-hero .my-documents-primary { justify-self: start; }
+  .my-documents-hero .my-documents-hero-actions { justify-self: start; }
   .my-document-card { grid-template-columns: 1fr; padding: 18px; }
   .my-document-actions { justify-content: flex-start; max-width: none; }
 }
