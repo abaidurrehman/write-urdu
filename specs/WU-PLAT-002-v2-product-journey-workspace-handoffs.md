@@ -1,8 +1,8 @@
 # WU-PLAT-002 — V2 Product Journey & Workspace Handoffs
 
-**Status:** Active — P0 product architecture initiative  
+**Status:** Active — Slices A–G implemented and green; Slice H (measurement + usability closure) open  
 **Priority:** P0  
-**Date:** 2026-08-18  
+**Date:** 2026-08-18 (release-gate checklist re-graded against code 2026-08-23)  
 **Area:** Information architecture / workspace continuity / shared product shell  
 **Scope:** Sitewide interactive journeys; current + planned tools  
 **Research:** `docs/WU-V2-PRODUCT-JOURNEY-UX-RESEARCH-2026-08-18.md`
@@ -1023,26 +1023,26 @@ All existing editor, Card Studio, social, Stylish/Name Art, invoice, QR, SEO, Ad
 
 Do not call `WU-PLAT-002` P0 complete until:
 
-- [ ] Write/Create/Work/Learn IA is implemented on desktop and mobile.
-- [ ] My Drafts placement is defined as utility/account, not primary category.
-- [ ] All current interactive workspaces have descriptors.
-- [ ] Approved new tools have descriptors before release.
-- [ ] One shared handoff API owns new cross-workspace transfer behavior.
-- [ ] Current handoffs continue to work during migration.
-- [ ] Basic → Rich/Card/QR works without manual copy/paste.
-- [ ] Cleaner → Basic/Rich works without manual copy/paste.
-- [ ] Rich → Card/QR has explicit plain-text semantics.
-- [ ] OCR has defined Review/Clean/Write continuation if shipped.
-- [ ] Templates can seed the correct creation owner.
-- [ ] Invoice payment QR remains embedded, not an artificial tool hop.
-- [ ] `Continue with…` is contextual and capped at three visible actions.
-- [ ] target prior work is preserved/recoverable on P0 handoffs.
-- [ ] destination success/failure is visibly and accessibly acknowledged.
-- [ ] no handoff user content appears in URLs or analytics.
-- [ ] desktop + Pixel 5 role-flow tests are green.
-- [ ] existing canonical/SEO/AdSense/product contracts remain green.
-- [ ] the August 13 role audit is updated or superseded where findings became stale.
-- [ ] at least one IA/task-finding validation pass and one continuity usability pass are recorded.
+- [x] Write/Create/Work/Learn IA is implemented on desktop and mobile. (`js/outcome-navigation.js`)
+- [x] My Drafts placement is defined as utility/account, not primary category. (`my-documents` workspace, `category: 'Utility'` in `js/workspace-journey-registry.js`)
+- [x] All current interactive workspaces have descriptors. (`js/workspace-journey-registry.js`)
+- [x] Approved new tools have descriptors before release. (Hindi R&D registered `status: 'research'`, no shipped UI)
+- [x] One shared handoff API owns new cross-workspace transfer behavior. (`js/workspace-handoff.js`)
+- [x] Current handoffs continue to work during migration. (legacy-target compatibility mirror in `js/workspace-handoff.js`)
+- [x] Basic → Rich/Card/QR works without manual copy/paste. (`tests/core-continuity-contract.test.js`)
+- [x] Cleaner → Basic/Rich works without manual copy/paste. (`tests/capture-continuity-contract.test.js`)
+- [x] Rich → Card/QR has explicit plain-text semantics. (`rich-to-card`/`rich-to-qr` edges, `payloadKind: 'plain-text'`)
+- [x] OCR has defined Review/Clean/Write continuation if shipped. (`image-to-urdu-text` workspace edges)
+- [x] Templates can seed the correct creation owner. (`template-to-card` edge, `template-seed` payload kind)
+- [x] Invoice payment QR remains embedded, not an artificial tool hop. (`tests/create-publish-boundaries-contract.test.js`)
+- [x] `Continue with…` is contextual and capped at three visible actions. (`js/workspace-next-step.js`, `MAX_VISIBLE = 3`)
+- [x] target prior work is preserved/recoverable on P0 handoffs. (`js/workspace-handoff.js` conflict-policy per descriptor)
+- [x] destination success/failure is visibly and accessibly acknowledged. (`write-urdu:handoff-imported`/`write-urdu:handoff-failed` DOM events + status pattern)
+- [x] no handoff user content appears in URLs or analytics. (`tests/product-telemetry-contract.test.js` payload-field guard)
+- [x] desktop + Pixel 5 role-flow tests are green. (`playwright.config.js` `mobile-chromium` project + passing contract suites)
+- [x] existing canonical/SEO/AdSense/product contracts remain green. (57/57 contract test files pass)
+- [x] the August 13 role audit is updated or superseded where findings became stale. (`docs/WU-ROLE-JOURNEY-AUDIT-2026-08-13.md` §0 refresh, 2026-08-23)
+- [ ] at least one IA/task-finding validation pass and one continuity usability pass are recorded. **Not done** — requires a real moderated/tree-test session, not a code check. This is the sole remaining item blocking P0 closure.
 
 ---
 

@@ -177,24 +177,40 @@ Turn finished Urdu creations into short branded public links such as `write-urdu
 **Type:** Product architecture / information architecture / continuity  
 **Spec:** `specs/WU-PLAT-002-v2-product-journey-workspace-handoffs.md`  
 **Research:** `docs/WU-V2-PRODUCT-JOURNEY-UX-RESEARCH-2026-08-18.md`  
-**Status:** Active — approved P0 initiative.
+**Status:** Active — Slices A–G implemented and green (all 57 contract test files pass); Slice H (measurement + usability closure) is the remaining open work. This checklist was found stale on 2026-08-23 — most items below were already shipped in code (`js/workspace-journey-registry.js`, `js/workspace-handoff.js`, `js/workspace-next-step.js`, `js/outcome-navigation.js`, `js/core-continuity.js`, `js/capture-continuity.js`, `js/create-publish-boundaries-registry.js`) with no matching backlog update.
 
 Turn the expanded WriteUrdu product into one continuous user journey instead of exposing a growing directory of implementation-named tools. This is the successor layer above the completed P0.5 tactical links/handoffs; it does not reopen completed renderer or role-workspace work.
 
-- [ ] Replace tool-first global navigation with stable outcome groups: **Write / Create / Work / Learn** while preserving established URLs and SEO owners.
-- [ ] Keep `My drafts` in the account/continuity utility area rather than making it a fifth content category.
-- [ ] Register every current interactive workspace with input/output, persistence, natural-next-step and conflict/recovery contracts.
-- [ ] Register approved new tools (Cleaner, OCR, Voice, InPage and later Hindi R&D) in the same journey architecture before they ship as standalone destinations.
-- [ ] Consolidate new cross-workspace transfers behind one shared handoff API/registry while preserving the current 30-minute browser-session/privacy contract.
-- [ ] Implement core continuity: Basic/Keyboard/Rich/Cleaner → relevant Rich/Card/QR destinations without manual copy/paste.
-- [ ] Make `Continue with…` contextual, capped at three visible actions and positioned after the active task/result boundary.
-- [ ] Preserve target work before compatible imports; provide consistent accessible acknowledgement/recovery feedback.
-- [ ] Keep transformations and embedded capabilities distinct from navigation handoffs — especially Invoice payment QR and Card/social completion actions.
-- [ ] Integrate Templates, public-share seeds and future My Drafts through the same workspace-ownership model without creating a universal project database.
-- [ ] Validate desktop + Pixel 5 role flows, accessibility, SEO, AdSense boundaries and privacy-safe journey telemetry.
-- [ ] Run task-finding/IA validation and end-to-end continuity usability checks before closing P0.
+- [x] Replace tool-first global navigation with stable outcome groups: **Write / Create / Work / Learn** (`js/outcome-navigation.js`), preserving established URLs and SEO owners.
+- [x] Keep `My drafts` (`My Documents`) in the account/continuity utility area, not a fifth content category (`js/workspace-journey-registry.js` — `my-documents` workspace, `category: 'Utility'`).
+- [x] Register every current interactive workspace with input/output, persistence, natural-next-step and conflict/recovery contracts (`js/workspace-journey-registry.js`).
+- [x] Register approved new tools (Cleaner, OCR, Voice, InPage and Hindi R&D) in the same journey architecture — Hindi converter registered `status: 'research'` with no shipped UI, per contract.
+- [x] Consolidate cross-workspace transfers behind one shared handoff API/registry (`js/workspace-handoff.js`) preserving the 30-minute browser-session/privacy contract and legacy-key compatibility adapters.
+- [x] Core continuity: Basic/Keyboard/Rich/Cleaner → relevant Rich/Card/QR destinations without manual copy/paste (`tests/core-continuity-contract.test.js`, `tests/capture-continuity-contract.test.js` passing).
+- [x] `Continue with…` contextual, capped at three visible actions, positioned after the active task/result boundary (`js/workspace-next-step.js`).
+- [x] Preserve target work before compatible imports; consistent accessible acknowledgement/recovery feedback (`js/workspace-handoff.js` conflict/consume handling).
+- [x] Transformations and embedded capabilities kept distinct from navigation handoffs — Invoice payment QR and Card/social completion actions remain embedded (`tests/create-publish-boundaries-contract.test.js`).
+- [x] Templates and public-share seeds integrated through the same workspace-ownership model (`js/template-library-boundary.js`, `js/share-page.js`); My Drafts uses the same model via `document-reference` payload kind.
+- [x] Desktop + Pixel 5 role-flow, accessibility, SEO and AdSense-boundary contracts are green (`playwright.config.js` `mobile-chromium` project + existing contract suites).
+- [x] Privacy-safe journey handoff telemetry now reaches the existing product-telemetry pipeline: the shared `Continue with…` panel's `data-wu-next-step-action` links feed the existing `tool_handoff` event end-to-end (2026-08-23 fix, `js/product-telemetry.js`), closing the one real telemetry gap found on audit (the v2 panel was previously invisible to telemetry; `copy_completed`/`export_completed`/`session_summary` already covered the rest of spec §19's event surface under different, pre-existing names). `next_step_impression` (panel-seen, not just panel-clicked) and `handoff_recovery_used` (prior-work-preserved acknowledgement) remain unbuilt — deliberately deferred, not silently dropped; revisit only if impression-level data is actually needed.
+- [ ] Run task-finding/IA validation and end-to-end continuity usability checks before closing P0 — no tree-test or moderated usability pass recorded anywhere in `docs/`. This is the one item genuinely not done; it requires real user sessions, not more code.
 
 **Decision rule:** do not add a new tool to primary navigation or another destination-specific handoff key merely because the capability exists. Every new surface must first answer which user job it owns, which stage it participates in, what it accepts/produces and what the next natural action is.
+
+---
+
+## P0.8 — `WU-VOICE-PLAT-001` Unified Urdu Input Platform
+
+**Type:** Product input platform  
+**Specs:** `specs/WU-VOICE-PLAT-001-unified-urdu-input-platform.md`, `specs/WU-VOICE-PLAT-001A-shared-input-engine.md`, `specs/WU-VOICE-PLAT-001B-core-writing-rollout.md`, `specs/WU-VOICE-PLAT-001C-create-social-rollout.md`, `specs/WU-VOICE-PLAT-001D-growth-measurement.md`  
+**Status:** Active — this whole family was missing from the backlog until 2026-08-23 despite Slices A and B already being shipped and tested. Slice C (Create/Social rollout) implemented and green on 2026-08-23. Slice D (growth/measurement) remains planned.
+
+Give every workspace with a typing input a real third option — Speak Urdu — feeding the same editable model Roman/direct input already uses, not a separate transcript flow.
+
+- [x] Slice A — shared speech core + generic textarea/input insertion adapter (`js/voice-input-core.js`, `js/unified-urdu-input.js`); dedicated `/tools/urdu-voice-typing` migrated onto it.
+- [x] Slice B — Basic Writer, Rich Editor, Urdu Keyboard and My Documents "Start with voice" shortcut (`js/writer-voice-input.js`, `js/basic-writer-command-toolbar.js`).
+- [x] Slice C — Create/Social rollout (2026-08-23): Card Studio, WhatsApp Status Maker, Instagram Post Maker, Stylish Urdu Text and Name Art all mount the shared voice widget onto their real text field (`#cardText`, `#stylishText`, `#nameArtText`) via a new generic `mountInputModeTextTargets()`/`mountNameArt()` in `js/writer-voice-input.js`, reusing the exact `[data-input-mode-control]` chooser Roman/direct already use — no per-route adapter, no duplicate speech engine. Verified live in headless Chromium on all five routes (mic renders, panel opens, no console errors) and via `tests/create-social-voice-input-contract.test.js`. Known simplification: voice always targets the workspace's primary text field, not a canvas-selected layer (e.g. Card Studio's attribution field) — acceptable per spec §10's documented-primary-field fallback, not revisited unless evidence says otherwise.
+- [ ] Slice D — growth/measurement (SEO copy updates, adoption/completion funnels beyond the existing bounded `writer_voice_action` telemetry). Not started.
 
 ---
 

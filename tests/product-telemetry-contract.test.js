@@ -36,6 +36,7 @@ assert.match(client, /copy_completed/, 'Copy outcome instrumentation is missing'
 assert.match(client, /export_completed/, 'Export outcome instrumentation is missing');
 assert.match(client, /batch_transliteration/, 'Batch transliteration instrumentation is missing');
 assert.match(client, /tool_handoff/, 'Product handoff instrumentation is missing');
+assert.match(client, /data-wu-next-step-action/, 'Shared workspace Continue-with panel handoffs must feed product telemetry');
 assert.match(client, /summarySent \|\| !engaged/, 'Unengaged page views must not create empty session-summary events');
 assert.doesNotMatch(client, /track\('input_mode_changed'/, 'Input-mode toggles should stay local and be summarized once per engaged visit');
 assert.match(client, /sendBeacon/, 'Exit-safe telemetry delivery is missing');

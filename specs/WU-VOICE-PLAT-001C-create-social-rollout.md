@@ -2,7 +2,7 @@
 
 **Parent:** `WU-VOICE-PLAT-001`  
 **Depends on:** `WU-VOICE-PLAT-001A`  
-**Status:** Planned — implementation Slice C  
+**Status:** Implemented — shipped and green 2026-08-23; see §17 for evidence  
 **Priority:** High-value creation rollout  
 **Primary routes:** `/urdu-card-studio`, `/urdu-instagram-post-maker`, `/urdu-whatsapp-status-maker`, `/stylish-urdu-text-generator`, `/urdu-name-art-maker`
 
@@ -406,39 +406,41 @@ Run physical iPhone Safari + Android Chrome checks because emulation cannot vali
 
 ### Shared
 
-- [ ] All creation routes reuse shared voice/unified-input foundation.
-- [ ] No duplicate route-specific speech engines.
-- [ ] Same editable model is used by Voice/Roman/direct.
-- [ ] method switching preserves text/project state.
-- [ ] final speech triggers normal preview update.
-- [ ] interim text does not corrupt model/undo history.
-- [ ] target is deterministic when multiple fields/layers exist.
-- [ ] no permission on load.
-- [ ] unsupported browser leaves creation tools usable.
-- [ ] no user content telemetry.
+- [x] All creation routes reuse shared voice/unified-input foundation — `js/writer-voice-input.js` `mountInputModeTextTargets()`/`mountNameArt()` call the same `WriteUrduUnifiedInput.createTextControlAdapter`/`createVoiceInputController` as Slice B.
+- [x] No duplicate route-specific speech engines — `tests/create-social-voice-input-contract.test.js` asserts `writer-voice-input.js` has no `SpeechRecognition`/`webkitSpeechRecognition`/`getUserMedia` reference.
+- [x] Same editable model is used by Voice/Roman/direct — voice targets the literal `#cardText` / `#stylishText` / `#nameArtText` fields resolved from each workspace's existing `data-input-mode-targets` contract, not a parallel field.
+- [x] method switching preserves text/project state — switching to a Roman/direct `[data-input-mode-option]` only calls `closePanel()` (stops listening if active); it never clears the target.
+- [x] final speech triggers normal preview update — insertion dispatches native `input`/`change` events, which the existing `[data-card-field]` listener (`js/card-studio.js`), `textInput.addEventListener('input', ...)` (`js/name-art.js`) and `textarea.addEventListener('input', schedule)` (`js/stylish-urdu-text.js`) already consume.
+- [x] interim text does not corrupt model/undo history — interim results only render into the transient `[data-wu-voice-interim]` element; only `onFinal` calls `adapter.insertText`.
+- [x] target is deterministic when multiple fields/layers exist — voice always resolves to the workspace's documented primary text field (first entry of `data-input-mode-targets`), never the canvas-selected layer. This is the spec's documented fallback behavior, not the preferred selected-layer behavior (see note below).
+- [x] no permission on load — recognition construction stays lazy until explicit Start (`voice-input-core.js`, unchanged from Slice A/B).
+- [x] unsupported browser leaves creation tools usable — unsupported only disables the mic button; the rest of each workspace is untouched.
+- [x] no user content telemetry — `telemetry()` sends only `{ workspace, action, input_mode: 'voice' }`.
+
+**Known simplification:** voice never targets Card Studio's canvas-selected object (e.g. the attribution line) — it always writes to the primary text field, matching §10's "if no selection changes ownership, use the documented primary field" fallback rather than the preferred selected-layer routing. Revisit only if real usage shows this is confusing.
 
 ### Card Studio
 
-- [ ] voice edits active/main text safely.
-- [ ] templates/background/font/layers remain intact.
-- [ ] download/share uses corrected voice result.
+- [x] voice edits active/main text safely — via the existing `#cardText` → `[data-card-field]` → `state.text.value` pipeline.
+- [x] templates/background/font/layers remain intact — insertion only dispatches `input`/`change` on `#cardText`; no other state is touched.
+- [x] download/share uses corrected voice result — export reads `state.text.value`, which the voice adapter updates the same way typing does.
 
 ### Instagram
 
-- [ ] post text voice target is clear.
-- [ ] caption mic, if shipped, has independent target semantics.
-- [ ] manual posting boundary preserved.
+- [x] post text voice target is clear — the mic sits inside the same labelled input-mode chooser as Roman/direct, targeting the one `#cardText` post-text field.
+- [x] caption mic, if shipped, has independent target semantics — not applicable; Instagram Post Maker has no separate caption field in this slice (only "Copy caption text", which reads the same post text), so no ambiguous multi-target mic was introduced.
+- [x] manual posting boundary preserved — no posting/API integration was added.
 
 ### WhatsApp
 
-- [ ] Status image job remains clear.
-- [ ] text-message Share/Copy outcome does not require a new route.
+- [x] Status image job remains clear — no route or messaging change; voice only reaches the existing status-text field.
+- [x] text-message Share/Copy outcome does not require a new route — no new route added.
 
 ### Stylish/Name Art
 
-- [ ] source text remains editable/correctable.
-- [ ] existing generation/rendering remains source of truth.
-- [ ] Name Art does not overpromise proper-name accuracy.
+- [x] source text remains editable/correctable — both fields stay ordinary editable textareas after voice commit.
+- [x] existing generation/rendering remains source of truth — voice reuses each workspace's existing `input`-event generation trigger (Stylish's debounce, Name Art's `syncTextToWorkspace`); no voice-specific generator was added.
+- [x] Name Art does not overpromise proper-name accuracy — a caution note ("Voice works best for short names or phrases. Check the spelling before creating art.") is mounted next to the Name Art mic.
 
 ---
 

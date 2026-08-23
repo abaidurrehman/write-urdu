@@ -57,7 +57,8 @@ const tests = [
   'tests/serp-intent-optimization-contract.test.js',
   'tests/stylish-urdu-acquisition-contract.test.js',
   'tests/name-art-acquisition-contract.test.js',
-  'tests/name-art-task-first-contract.test.js'
+  'tests/name-art-task-first-contract.test.js',
+  'tests/create-social-voice-input-contract.test.js'
 ];
 
 function annotationText(value) {
