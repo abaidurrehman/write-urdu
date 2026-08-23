@@ -199,7 +199,7 @@ test('Basic Writer voice uses the same editable state across Roman and direct co
   const status = page.locator('[data-wu-basic-voice-status]');
 
   await expect(method).toBeEnabled();
-  await expect(page.locator('[data-wu-voice-entry="home"]')).toHaveCount(0);
+  await expect(page.locator('[data-wu-voice-entry="home"]')).toHaveCount(1);
   expect(await page.evaluate(() => window.__basicVoiceConstructCount)).toBe(0);
 
   await method.evaluate(node => node.click());

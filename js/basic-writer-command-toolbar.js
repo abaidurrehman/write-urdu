@@ -191,8 +191,6 @@
             button.addEventListener('click', function () { closeVoicePanel(methodButton, panel); });
         });
 
-        var discoveryEntry = root.document.querySelector('[data-wu-voice-entry="home"]');
-        if (discoveryEntry) discoveryEntry.remove();
         return voiceController;
     }
 

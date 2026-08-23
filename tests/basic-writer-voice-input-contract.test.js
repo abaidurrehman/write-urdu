@@ -25,7 +25,7 @@ assert.match(toolbar, /createTextControlAdapter\(editor\)/, 'Voice must target t
 assert.match(toolbar, /data-wu-basic-voice-method/, 'Compact Speak Urdu method control is missing');
 assert.match(toolbar, /data-wu-basic-voice-start/, 'Explicit Start voice action is missing');
 assert.match(toolbar, /data-wu-basic-voice-stop/, 'Explicit Stop voice action is missing');
-assert.match(toolbar, /data-wu-voice-entry="home"/, 'Embedded rollout must retire the duplicate homepage voice discovery card');
+assert.doesNotMatch(toolbar, /data-wu-voice-entry="home"/, 'Compact toggle must not remove the homepage voice discovery banner; both stay');
 assert.doesNotMatch(toolbar, /SpeechRecognition|webkitSpeechRecognition|getUserMedia/, 'Basic Writer must not own a route-specific speech engine');
 assert.doesNotMatch(toolbar, /createElement\(['"]textarea['"]\)|voiceTranscript/, 'Basic Writer must not create a separate voice transcript field');
 
