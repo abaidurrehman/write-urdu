@@ -75,6 +75,7 @@
   }
 
   body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar {
+    flex-wrap: wrap !important;
     gap: 6px !important;
     padding: 6px !important;
   }
@@ -86,7 +87,10 @@
   body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
     order: 10 !important;
     width: 100% !important;
-    flex: 1 1 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    box-sizing: border-box;
     margin: 0 !important;
     padding: 6px 0 0 !important;
     border-top: 1px solid var(--wu-color-border) !important;
@@ -94,10 +98,11 @@
   }
 
   body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode.input-mode-control {
-    display: flex !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     width: 100% !important;
     min-width: 0 !important;
-    flex-wrap: nowrap !important;
+    flex-wrap: wrap !important;
     gap: 5px !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -110,7 +115,7 @@
   body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-option {
     min-width: 0 !important;
     max-width: none !important;
-    min-height: 34px !important;
+    min-height: 44px !important;
     flex: 1 1 0 !important;
     padding: 4px 6px !important;
     overflow: hidden !important;
@@ -118,6 +123,11 @@
     line-height: 1.15 !important;
     white-space: nowrap !important;
     text-overflow: ellipsis !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-voice-panel,
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-alert {
+    grid-column: 1 / -1;
   }
 
 }

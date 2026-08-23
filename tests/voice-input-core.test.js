@@ -70,6 +70,22 @@ function fakeTarget(value = '') {
   };
 }
 
+function fakeElement() {
+  const listeners = Object.create(null);
+  const attributes = Object.create(null);
+  return {
+    textContent: '',
+    hidden: false,
+    disabled: false,
+    listeners,
+    attributes,
+    addEventListener(name, handler) { listeners[name] = handler; },
+    removeEventListener(name, handler) { if (listeners[name] === handler) delete listeners[name]; },
+    setAttribute(name, value) { attributes[name] = String(value); },
+    click() { if (listeners.click) listeners.click(); }
+  };
+}
+
 assert.equal(voice.recognitionConstructor({ SpeechRecognition: function Native() {} }).name, 'Native');
 assert.equal(voice.recognitionConstructor({ webkitSpeechRecognition: function Webkit() {} }).name, 'Webkit');
 assert.equal(voice.recognitionConstructor({}), null);
@@ -169,6 +185,63 @@ controller.destroy();
 assert.equal(lifecycleDouble.state.aborts, 2, 'destroy must abort active recognition');
 assert.equal(lifecycleEnvironment.documentListeners.visibilitychange, undefined, 'destroy must remove visibility cleanup listener');
 assert.equal(lifecycleEnvironment.windowListeners.pagehide, undefined, 'destroy must remove navigation cleanup listener');
+
+const embeddedDouble = recognitionDouble();
+const embeddedEnvironment = fakeEnvironment(embeddedDouble.Recognition);
+const embeddedTarget = fakeTarget('آج موسم اچھا ہے');
+embeddedTarget.selectionStart = 8;
+embeddedTarget.selectionEnd = 12;
+const embeddedElements = {
+  root: fakeElement(),
+  methodButton: fakeElement(),
+  methodLabel: fakeElement(),
+  startButton: fakeElement(),
+  stopButton: fakeElement(),
+  status: fakeElement(),
+  notice: fakeElement(),
+  interim: fakeElement()
+};
+let embeddedFinals = 0;
+let embeddedLocale = 'en';
+const embeddedController = unified.createVoiceInputController({
+  voiceApi: voice,
+  host: embeddedEnvironment.host,
+  locale: () => embeddedLocale,
+  adapter: unified.createTextControlAdapter(embeddedTarget),
+  elements: embeddedElements,
+  onFinal() { embeddedFinals += 1; }
+});
+assert.equal(embeddedController.isSupported(), true);
+assert.equal(embeddedDouble.state.constructed, 0, 'embedded voice setup must not construct recognition or request permission');
+assert.equal(embeddedElements.status.textContent, 'Ready');
+assert.equal(embeddedElements.methodLabel.textContent, 'Speak Urdu');
+embeddedElements.startButton.click();
+assert.equal(embeddedDouble.state.constructed, 1, 'recognition must be constructed only after Start');
+assert.equal(embeddedDouble.state.starts, 1);
+assert.equal(embeddedElements.status.textContent, 'Listening…');
+const embeddedRecognition = embeddedDouble.state.instances[0];
+embeddedRecognition.result([result('عارضی', false)]);
+assert.equal(embeddedTarget.value, 'آج موسم اچھا ہے', 'embedded interim speech must stay outside document state');
+assert.equal(embeddedElements.interim.textContent, 'عارضی');
+embeddedRecognition.result([result('بہت اچھا', true)]);
+assert.equal(embeddedTarget.value, 'آج موسم بہت اچھا ہے');
+assert.equal(embeddedFinals, 1);
+assert.equal(embeddedElements.status.textContent, 'Text added');
+embeddedElements.stopButton.click();
+embeddedTarget.value = 'دستی درستگی محفوظ';
+embeddedTarget.selectionStart = embeddedTarget.value.length;
+embeddedTarget.selectionEnd = embeddedTarget.value.length;
+embeddedElements.startButton.click();
+embeddedRecognition.result([result('اگلا جملہ', true)]);
+assert.equal(embeddedTarget.value, 'دستی درستگی محفوظ اگلا جملہ', 'manual correction must survive the next embedded voice segment');
+embeddedRecognition.error('not-allowed');
+assert.equal(embeddedElements.status.textContent, 'Permission blocked');
+embeddedLocale = 'ur';
+embeddedController.refreshLocale();
+assert.equal(embeddedElements.methodLabel.textContent, 'بول کر اردو لکھیں');
+assert.equal(embeddedElements.status.textContent, 'مائیک کی اجازت مسدود ہے');
+embeddedController.destroy();
+assert.equal(embeddedElements.startButton.listeners.click, undefined, 'destroy must remove embedded Start listener');
 
 const unsupported = voice.create({ host: fakeEnvironment(null).host });
 assert.equal(unsupported.isSupported(), false);

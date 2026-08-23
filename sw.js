@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v28';
+const CACHE_NAME = 'write-urdu-shell-v29';
 const APP_SHELL = [
   './',
   './index.html',
@@ -86,6 +86,8 @@ const APP_SHELL = [
   './js/site-runtime.js',
   './js/editor-tools.js',
   './js/input-mode.js',
+  './js/voice-input-core.js',
+  './js/unified-urdu-input.js',
   './js/batch-transliteration.js',
   './js/content-locale.js',
   './js/social-maker-core.js',

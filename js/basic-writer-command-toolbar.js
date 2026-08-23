@@ -10,6 +10,7 @@
     var OUTPUT_ACTIONS = ['pdf', 'word', 'png', 'preview', 'print'];
     var mediaQuery = null;
     var publishLoader = null;
+    var voiceController = null;
 
     function normalizeRoute(value) {
         var path = String(value || '/').split('?')[0].split('#')[0] || '/';
@@ -20,7 +21,11 @@
     }
 
     function isBasicRoute() {
-        return normalizeRoute(root && root.location && root.location.pathname || '/') === '/';
+        var path = root && root.location && root.location.pathname || '/';
+        if (root && root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.productPath === 'function') {
+            path = root.WriteUrduLocaleRoute.productPath(path);
+        }
+        return normalizeRoute(path) === '/';
     }
 
     function hasContent() {
@@ -54,11 +59,119 @@
 
     function telemetry(action) {
         if (!root || !root.WriteUrduTelemetry || typeof root.WriteUrduTelemetry.trackOutcome !== 'function') return;
-        root.WriteUrduTelemetry.trackOutcome('basic_toolbar_action', {
+        var detail = {
             workspace: 'basic-writer',
             action: action,
             hasContent: hasContent()
+        };
+        if (String(action || '').indexOf('voice') === 0) detail.input_mode = 'voice';
+        root.WriteUrduTelemetry.trackOutcome('basic_toolbar_action', detail);
+    }
+
+    function closeVoicePanel(methodButton, panel) {
+        if (!methodButton || !panel) return;
+        if (voiceController && voiceController.isListening()) voiceController.stop();
+        panel.hidden = true;
+        methodButton.classList.remove('is-active');
+        methodButton.setAttribute('aria-expanded', 'false');
+    }
+
+    function createVoiceInput(surface, modeControl, editor) {
+        if (!surface || !modeControl || !editor || !root.WriteUrduVoiceInput || !root.WriteUrduUnifiedInput) return null;
+        var existing = modeControl.querySelector('[data-wu-basic-voice-method]');
+        if (existing) return voiceController;
+
+        var methodButton = root.document.createElement('button');
+        methodButton.type = 'button';
+        methodButton.id = 'wuBasicVoiceMethod';
+        methodButton.className = 'input-mode-option wu-basic-voice-method';
+        methodButton.setAttribute('data-wu-basic-voice-method', '');
+        methodButton.setAttribute('data-wu-command-action', 'voice-select');
+        methodButton.setAttribute('aria-expanded', 'false');
+        methodButton.setAttribute('aria-controls', 'wuBasicVoicePanel');
+        methodButton.innerHTML = '<i class="fas fa-microphone" aria-hidden="true"></i><span data-wu-basic-voice-label>Speak Urdu</span>';
+
+        var panel = root.document.createElement('div');
+        panel.id = 'wuBasicVoicePanel';
+        panel.className = 'wu-basic-voice-panel';
+        panel.setAttribute('data-wu-basic-voice-panel', '');
+        panel.setAttribute('aria-labelledby', methodButton.id);
+        panel.hidden = true;
+
+        var actions = root.document.createElement('div');
+        actions.className = 'wu-basic-voice-actions';
+        var start = root.document.createElement('button');
+        start.type = 'button';
+        start.className = 'wu-basic-voice-action wu-basic-voice-action--start';
+        start.setAttribute('data-wu-basic-voice-start', '');
+        start.setAttribute('data-wu-command-action', 'voice-start');
+        var stop = root.document.createElement('button');
+        stop.type = 'button';
+        stop.className = 'wu-basic-voice-action wu-basic-voice-action--stop';
+        stop.setAttribute('data-wu-basic-voice-stop', '');
+        stop.setAttribute('data-wu-command-action', 'voice-stop');
+        stop.hidden = true;
+        actions.appendChild(start);
+        actions.appendChild(stop);
+
+        var feedback = root.document.createElement('div');
+        feedback.className = 'wu-basic-voice-feedback';
+        var status = root.document.createElement('strong');
+        status.setAttribute('data-wu-basic-voice-status', '');
+        status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
+        var notice = root.document.createElement('span');
+        notice.setAttribute('data-wu-basic-voice-notice', '');
+        var interim = root.document.createElement('span');
+        interim.className = 'wu-basic-voice-interim';
+        interim.setAttribute('data-wu-basic-voice-interim', '');
+        interim.setAttribute('aria-hidden', 'true');
+        feedback.appendChild(status);
+        feedback.appendChild(notice);
+        feedback.appendChild(interim);
+        panel.appendChild(actions);
+        panel.appendChild(feedback);
+
+        var sourceNote = modeControl.querySelector('[data-input-mode-note]');
+        modeControl.insertBefore(methodButton, sourceNote || null);
+        modeControl.appendChild(panel);
+
+        voiceController = root.WriteUrduUnifiedInput.createVoiceInputController({
+            adapter: root.WriteUrduUnifiedInput.createTextControlAdapter(editor),
+            elements: {
+                root: panel,
+                methodButton: methodButton,
+                methodLabel: methodButton.querySelector('[data-wu-basic-voice-label]'),
+                startButton: start,
+                stopButton: stop,
+                status: status,
+                notice: notice,
+                interim: interim
+            },
+            onStart: function () { telemetry('voice-started'); },
+            onFinal: function () {
+                syncState(surface);
+                telemetry('voice-final');
+            }
         });
+
+        methodButton.addEventListener('click', function () {
+            if (!voiceController.isSupported()) return;
+            var opening = panel.hidden;
+            if (opening) {
+                panel.hidden = false;
+                methodButton.classList.add('is-active');
+                methodButton.setAttribute('aria-expanded', 'true');
+            } else closeVoicePanel(methodButton, panel);
+        });
+
+        modeControl.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
+            button.addEventListener('click', function () { closeVoicePanel(methodButton, panel); });
+        });
+
+        var discoveryEntry = root.document.querySelector('[data-wu-voice-entry="home"]');
+        if (discoveryEntry) discoveryEntry.remove();
+        return voiceController;
     }
 
     function notifyShareLoadError() {
@@ -239,6 +352,9 @@
         if (!root || !root.document || !isBasicRoute()) return null;
         var existing = root.document.querySelector('[data-wu-basic-command-surface]');
         if (existing) {
+            var existingEditor = root.document.getElementById('transliterateTextarea');
+            var existingModeControl = existing.querySelector('[data-input-mode-control]');
+            createVoiceInput(existing, existingModeControl, existingEditor);
             syncModeHelper(existing);
             syncState(existing);
             syncResponsiveOutputs(existing);
@@ -397,6 +513,10 @@
         root.document.addEventListener('write-urdu:locale-change', function () { root.setTimeout(function () { syncModeHelper(surface); }, 0); });
         root.document.addEventListener('write-urdu:locale-changed', function () { root.setTimeout(function () { syncModeHelper(surface); }, 0); });
 
+        createVoiceInput(surface, modeControl, editor);
+        root.document.addEventListener('write-urdu:locale-change', function () { if (voiceController) voiceController.refreshLocale(); });
+        root.document.addEventListener('write-urdu:locale-changed', function () { if (voiceController) voiceController.refreshLocale(); });
+
         mediaQuery = root.matchMedia ? root.matchMedia(MOBILE_QUERY) : null;
         if (mediaQuery) {
             var mediaHandler = function () { syncResponsiveOutputs(surface); };
@@ -431,6 +551,7 @@
         syncState: syncState,
         syncModeHelper: syncModeHelper,
         syncResponsiveOutputs: syncResponsiveOutputs,
+        createVoiceInput: createVoiceInput,
         runAuthoringShare: runAuthoringShare,
         build: build,
         run: run
