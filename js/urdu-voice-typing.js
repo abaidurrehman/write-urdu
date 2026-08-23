@@ -2,9 +2,8 @@
     'use strict';
 
     var root = document.querySelector('[data-urdu-voice-typing]');
-    if (!root) return;
+    if (!root || !window.WriteUrduVoiceInput || !window.WriteUrduUnifiedInput) return;
 
-    var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     var startButton = root.querySelector('[data-voice-start]');
     var stopButton = root.querySelector('[data-voice-stop]');
     var clearButton = root.querySelector('[data-voice-clear]');
@@ -16,8 +15,8 @@
     var statusPill = root.querySelector('[data-voice-status-pill]');
     var notice = root.querySelector('[data-voice-notice]');
     var supportNote = root.querySelector('[data-voice-support-note]');
+    var transcriptTarget = window.WriteUrduUnifiedInput.createTextControlAdapter(transcript);
 
-    var recognition = null;
     var listening = false;
     var startedAt = 0;
     var currentStateKey = 'checking-support';
@@ -57,18 +56,6 @@
     function isUrduLocale() { return document.documentElement.lang === 'ur'; }
     function t(key) { return STR[key][isUrduLocale() ? 'ur' : 'en']; }
 
-    function restorePageIdentity() {
-        statusPill.textContent = t(currentStateKey);
-        startButton.textContent = t(startButton.disabled ? 'voice-typing-unavailable' : 'start-voice-typing');
-        supportNote.textContent = t(Recognition ? 'ready-note' : 'unsupported-note');
-        if (currentNoticeKey) notice.textContent = t(currentNoticeKey);
-        if (listening) interim.textContent = t('listening-ellipsis');
-    }
-
-    document.addEventListener('write-urdu:locale-change', restorePageIdentity);
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
-    else restorePageIdentity();
-
     function setNotice(messageKey, type) {
         currentNoticeKey = messageKey;
         notice.textContent = messageKey ? t(messageKey) : '';
@@ -93,34 +80,33 @@
         clearButton.disabled = !ready && !listening;
     }
 
-    function normalizeJoin(existing, addition) {
-        var left = String(existing || '');
-        var right = String(addition || '').trim();
-        if (!right) return left;
-        if (!left) return right;
-        if (/\s$/.test(left)) return left + right;
-        return left + ' ' + right;
-    }
-
-    function friendlyErrorKey(code) {
-        if (code === 'not-allowed' || code === 'service-not-allowed') return 'mic-blocked';
-        if (code === 'audio-capture') return 'no-mic';
-        if (code === 'no-speech') return 'no-speech-heard';
-        if (code === 'network') return 'network-error';
-        if (code === 'language-not-supported') return 'lang-not-supported';
-        if (code === 'aborted') return 'aborted';
+    function friendlyErrorKey(category) {
+        if (category === 'permission-denied') return 'mic-blocked';
+        if (category === 'audio-capture') return 'no-mic';
+        if (category === 'no-speech') return 'no-speech-heard';
+        if (category === 'network') return 'network-error';
+        if (category === 'language-not-supported') return 'lang-not-supported';
+        if (category === 'aborted') return 'aborted';
+        if (category === 'start-failed') return 'could-not-start-yet';
         return 'generic-error';
     }
 
-    function configureRecognition() {
-        if (!Recognition) return null;
-        var instance = new Recognition();
-        instance.lang = 'ur-PK';
-        instance.continuous = true;
-        instance.interimResults = true;
-        instance.maxAlternatives = 1;
+    function errorState(category) {
+        if (category === 'permission-denied') return 'permission-blocked';
+        if (category === 'no-speech') return 'no-speech-detected';
+        if (category === 'start-failed') return 'could-not-start';
+        return 'voice-typing-error';
+    }
 
-        instance.onstart = function () {
+    var controller = window.WriteUrduVoiceInput.create({
+        lang: 'ur-PK',
+        interimResults: true,
+        continuous: true,
+        onState: function (state) {
+            if (state === 'listening') setStatus('listening');
+            if (state === 'hearing-speech') setStatus('hearing-speech');
+        },
+        onStart: function () {
             listening = true;
             startedAt = Date.now();
             startButton.hidden = true;
@@ -129,73 +115,56 @@
             setStatus('listening');
             setNotice('speak-naturally', 'success');
             refreshActions();
-        };
-
-        instance.onaudiostart = function () {
-            setStatus('listening');
-        };
-
-        instance.onspeechstart = function () {
-            setStatus('hearing-speech');
-        };
-
-        instance.onresult = function (event) {
-            var live = '';
-            for (var i = event.resultIndex; i < event.results.length; i += 1) {
-                var result = event.results[i];
-                var phrase = result && result[0] && result[0].transcript ? String(result[0].transcript) : '';
-                if (!phrase) continue;
-                if (result.isFinal) transcript.value = normalizeJoin(transcript.value, phrase);
-                else live += (live ? ' ' : '') + phrase.trim();
-            }
-            interim.textContent = live || (listening ? t('listening-ellipsis') : '');
-            transcript.dispatchEvent(new Event('input', { bubbles: true }));
+        },
+        onInterim: function (text) {
+            interim.textContent = text || (listening ? t('listening-ellipsis') : '');
+        },
+        onFinal: function (text) {
+            transcriptTarget.insertText(text);
+            interim.textContent = listening ? t('listening-ellipsis') : '';
             refreshActions();
-        };
-
-        instance.onerror = function (event) {
-            var code = event && event.error || 'unknown';
-            if (code !== 'aborted') setNotice(friendlyErrorKey(code), 'error');
-            if (code === 'not-allowed' || code === 'service-not-allowed') setStatus('permission-blocked');
-            else if (code === 'no-speech') setStatus('no-speech-detected');
-            else setStatus('voice-typing-error');
-        };
-
-        instance.onend = function () {
+        },
+        onError: function (category) {
+            if (category === 'aborted') {
+                setStatus(hasText() ? 'text-ready' : 'ready');
+                return;
+            }
+            setNotice(friendlyErrorKey(category), 'error');
+            setStatus(errorState(category));
+        },
+        onEnd: function () {
             listening = false;
             startButton.hidden = false;
             stopButton.hidden = true;
             interim.textContent = '';
-            if (['permission-blocked', 'no-speech-detected', 'voice-typing-error'].indexOf(currentStateKey) === -1) {
+            if (['permission-blocked', 'no-speech-detected', 'voice-typing-error', 'could-not-start'].indexOf(currentStateKey) === -1) {
                 setStatus(hasText() ? 'text-ready' : 'ready');
                 if (startedAt && hasText()) setNotice('done-edit', 'success');
             }
             refreshActions();
-        };
+        }
+    });
 
-        return instance;
+    function restorePageIdentity() {
+        statusPill.textContent = t(currentStateKey);
+        startButton.textContent = t(startButton.disabled ? 'voice-typing-unavailable' : 'start-voice-typing');
+        supportNote.textContent = t(controller.isSupported() ? 'ready-note' : 'unsupported-note');
+        if (currentNoticeKey) notice.textContent = t(currentNoticeKey);
+        if (listening && !interim.textContent) interim.textContent = t('listening-ellipsis');
     }
 
     function startRecognition() {
-        if (!Recognition || listening) return;
+        if (!controller.isSupported() || listening) return;
         setNotice(null);
-        if (!recognition) recognition = configureRecognition();
-        try {
-            recognition.start();
-        } catch (error) {
-            setStatus('could-not-start');
-            setNotice('could-not-start-yet', 'error');
-        }
+        controller.start();
     }
 
     function stopRecognition() {
-        if (!recognition || !listening) return;
-        try { recognition.stop(); } catch (error) { }
+        controller.stop();
     }
 
     function abortRecognition() {
-        if (!recognition) return;
-        try { recognition.abort(); } catch (error) { }
+        controller.abort();
         listening = false;
     }
 
@@ -233,7 +202,7 @@
         } else setNotice('copy-first', 'error');
     }
 
-    if (!Recognition) {
+    if (!controller.isSupported()) {
         setStatus('not-supported');
         startButton.disabled = true;
         startButton.textContent = t('voice-typing-unavailable');
@@ -244,13 +213,17 @@
         supportNote.textContent = t('ready-note');
     }
 
+    document.addEventListener('write-urdu:locale-change', restorePageIdentity);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
+    else restorePageIdentity();
+
     startButton.addEventListener('click', startRecognition);
     stopButton.addEventListener('click', stopRecognition);
     clearButton.addEventListener('click', function () {
         abortRecognition();
         transcript.value = '';
         interim.textContent = '';
-        setStatus(Recognition ? 'ready' : 'not-supported');
+        setStatus(controller.isSupported() ? 'ready' : 'not-supported');
         setNotice(null);
         startButton.hidden = false;
         stopButton.hidden = true;
@@ -261,8 +234,6 @@
     cleanButton.addEventListener('click', function () { handoff('/urdu-text-cleaner'); });
     editorButton.addEventListener('click', function () { handoff('/'); });
     transcript.addEventListener('input', refreshActions);
-    document.addEventListener('visibilitychange', function () { if (document.hidden && listening) stopRecognition(); });
-    window.addEventListener('pagehide', abortRecognition);
 
     refreshActions();
 }());
