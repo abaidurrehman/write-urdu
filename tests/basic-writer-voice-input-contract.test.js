@@ -29,6 +29,11 @@ assert.match(toolbar, /data-wu-voice-entry="home"/, 'Embedded rollout must retir
 assert.doesNotMatch(toolbar, /SpeechRecognition|webkitSpeechRecognition|getUserMedia/, 'Basic Writer must not own a route-specific speech engine');
 assert.doesNotMatch(toolbar, /createElement\(['"]textarea['"]\)|voiceTranscript/, 'Basic Writer must not create a separate voice transcript field');
 
+assert.match(toolbar, /AUTO_VOICE_PARAM = 'wu-voice'/, 'My Documents "Start with voice" handoff must use the shared auto-open flag');
+assert.match(toolbar, /function openVoicePanelIfRequested/, 'Incoming voice handoff must only open the panel, never auto-start listening');
+assert.match(toolbar, /history\.replaceState\(/, 'Auto-open flag must be consumed once and stripped from the URL');
+assert.doesNotMatch(toolbar, /openVoicePanelIfRequested[\s\S]{0,400}voiceController\.start\(\)/, 'Auto-open must never call voiceController.start() itself, so no microphone permission is requested on load');
+
 assert.match(unified, /function createVoiceInputController/, 'Shared unified layer must own embedded voice orchestration');
 assert.match(unified, /adapter\.insertText\(value\)/, 'Final speech must commit through the workspace adapter');
 assert.match(unified, /elements\.startButton\.addEventListener\('click', startClick\)/, 'Recognition must start only from explicit Start action');
@@ -43,7 +48,7 @@ assert.match(mobileCss, /grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/
 assert.match(mobileCss, /flex:\s*0 0 100% !important/, 'Phone input chooser must own a full toolbar row');
 assert.match(mobileCss, /min-height:\s*44px !important/, 'Phone input methods need full touch targets');
 
-assert.match(serviceWorker, /write-urdu-shell-v30/, 'PWA cache must refresh for embedded voice assets');
+assert.match(serviceWorker, /write-urdu-shell-v31/, 'PWA cache must refresh for embedded voice assets');
 assert.match(serviceWorker, /\.\/js\/voice-input-core\.js/, 'Shared voice core must be cached');
 assert.match(serviceWorker, /\.\/js\/unified-urdu-input\.js/, 'Unified input layer must be cached');
 

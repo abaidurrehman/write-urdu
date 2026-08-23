@@ -76,6 +76,28 @@
         methodButton.setAttribute('aria-expanded', 'false');
     }
 
+    var AUTO_VOICE_PARAM = 'wu-voice';
+
+    function consumeAutoVoiceFlag() {
+        if (!root || !root.location || !root.URLSearchParams) return false;
+        var params = new root.URLSearchParams(root.location.search);
+        if (!params.has(AUTO_VOICE_PARAM)) return false;
+        params.delete(AUTO_VOICE_PARAM);
+        var query = params.toString();
+        var next = root.location.pathname + (query ? '?' + query : '') + root.location.hash;
+        if (root.history && typeof root.history.replaceState === 'function') root.history.replaceState(null, '', next);
+        return true;
+    }
+
+    function openVoicePanelIfRequested(methodButton, panel) {
+        if (!methodButton || !panel || !voiceController || !consumeAutoVoiceFlag()) return;
+        if (!voiceController.isSupported() || !panel.hidden) return;
+        panel.hidden = false;
+        methodButton.classList.add('is-active');
+        methodButton.setAttribute('aria-expanded', 'true');
+        telemetry('voice-auto-open');
+    }
+
     function createVoiceInput(surface, modeControl, editor) {
         if (!surface || !modeControl || !editor || !root.WriteUrduVoiceInput || !root.WriteUrduUnifiedInput) return null;
         var existing = modeControl.querySelector('[data-wu-basic-voice-method]');
@@ -355,6 +377,12 @@
             var existingEditor = root.document.getElementById('transliterateTextarea');
             var existingModeControl = existing.querySelector('[data-input-mode-control]');
             createVoiceInput(existing, existingModeControl, existingEditor);
+            if (existingModeControl) {
+                openVoicePanelIfRequested(
+                    existingModeControl.querySelector('[data-wu-basic-voice-method]'),
+                    existingModeControl.querySelector('[data-wu-basic-voice-panel]')
+                );
+            }
             syncModeHelper(existing);
             syncState(existing);
             syncResponsiveOutputs(existing);
@@ -514,6 +542,10 @@
         root.document.addEventListener('write-urdu:locale-changed', function () { root.setTimeout(function () { syncModeHelper(surface); }, 0); });
 
         createVoiceInput(surface, modeControl, editor);
+        openVoicePanelIfRequested(
+            modeControl.querySelector('[data-wu-basic-voice-method]'),
+            modeControl.querySelector('[data-wu-basic-voice-panel]')
+        );
         root.document.addEventListener('write-urdu:locale-change', function () { if (voiceController) voiceController.refreshLocale(); });
         root.document.addEventListener('write-urdu:locale-changed', function () { if (voiceController) voiceController.refreshLocale(); });
 

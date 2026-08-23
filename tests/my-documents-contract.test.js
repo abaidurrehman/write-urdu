@@ -24,6 +24,9 @@ assert.match(routeSource, /X-Robots-Tag[^\n]*noindex, follow, noarchive/, 'My Do
 assert.match(routeSource, /Cache-Control[^\n]*private, no-store, max-age=0/, 'Private account workspace shell must never be cached');
 assert.doesNotMatch(routeSource, /adsbygoogle|pagead2\.googlesyndication|data-wu-ad/, 'My Documents shell must not contain advertising markup');
 assert.match(routeSource, /\/js\/my-documents\.mjs/, 'My Documents function shell must load the document controller');
+assert.match(routeSource, /href="\/\?wu-voice=1"[^>]*>Start with voice</, 'My Documents must offer a bounded "Start with voice" creation shortcut');
+assert.match(routeSource, /Write something new<\/a>\s*<a class="my-documents-secondary" data-wu-voice-start-with href="\/\?wu-voice=1"/, '"Start with voice" must sit beside the existing creation shortcut, not replace it');
+assert.doesNotMatch(routeSource, /getUserMedia|SpeechRecognition/, 'My Documents must not request microphone permission itself; it only routes to the owning writer');
 
 assert.match(registrySource, /id: 'my-documents', routes: \['\/my-documents'\], status: 'current'/, 'Product registry must expose the shipped My Documents workspace');
 assert.match(registrySource, /label: 'My Documents', technicalLabel: 'Account-backed documents'/, 'Registry must use simple public language and precise internal terminology');
