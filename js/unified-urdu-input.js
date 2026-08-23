@@ -107,6 +107,11 @@
                 var currentSelection = selection();
                 var result = insertTextAtSelection(target.value, currentSelection.start, currentSelection.end, text);
                 target.value = result.value;
+                // A caret/selection set while the target is unfocused (e.g. the
+                // user tapped Stop instead of the textarea) is not reliably kept
+                // by the browser once focus moves elsewhere again. Focus first
+                // so the next on-screen key or keystroke lands where expected.
+                if (typeof target.focus === 'function') target.focus();
                 if (typeof target.setSelectionRange === 'function') target.setSelectionRange(result.selectionStart, result.selectionEnd);
                 if (typeof target.dispatchEvent === 'function') {
                     target.dispatchEvent(eventFor(target, 'input'));
