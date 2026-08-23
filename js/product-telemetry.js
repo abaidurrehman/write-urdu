@@ -324,7 +324,7 @@
                 return;
             }
 
-            var handoff = closest('[data-create-card], [data-create-qr], .home-actions-group-create a');
+            var handoff = closest('[data-create-card], [data-create-qr], [data-wu-next-step-action], .home-actions-group-create a');
             if (handoff) {
                 markEngaged();
                 var href = handoff.getAttribute('href');

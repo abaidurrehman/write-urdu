@@ -7,6 +7,28 @@
 
 ---
 
+## 0. Refresh — 2026-08-23 (`WU-PLAT-002` Slice A–G landed)
+
+The findings below were written before the `WU-PLAT-002` product-architecture work (workspace registry, shared handoff runtime v2, outcome-led navigation, core Write/Fix continuity) shipped. This section re-checks each finding against current `main` source so the audit does not go stale silently, per the `WU-PLAT-002` release gate. Findings not listed here are unchanged and still open.
+
+**Resolved:**
+
+- **S1 — Basic → Rich has no handoff (critical, was P0/P1).** Fixed. `js/workspace-journey-registry.js` now defines `basic-to-rich`/`keyboard-to-rich` edges, and `js/workspace-handoff.js` (v2 runtime) carries the payload through short-lived session storage with a one-time consume. Covered by `tests/core-continuity-contract.test.js` (passing).
+- **D2 — `Create` is not a consistent taxonomy (Card Studio/Templates lived outside `Create`).** Fixed. `js/outcome-navigation.js:21-32` now places Card Studio, Templates, WhatsApp Status, Instagram, Facebook, Stylish Text and Name Art in one `Create` group.
+- **D3 — mobile creative discovery required Menu → Create → tool.** Improved to the same one-level `Create` group referenced above; the outcome-led nav (`Write`/`Create`/`Work`/`Learn`) replaced the old flat/mixed taxonomy sitewide, desktop and mobile.
+- **M1 — Instagram/WhatsApp Status embed Card Studio in an iframe.** Fixed. `urdu-instagram-post-maker.html` and `urdu-whatsapp-status-maker.html` contain zero `iframe` references; both now run as direct role-owned workspaces (`js/social-direct-workspace.js`), matching the `WU-RW-001` direct-workspace contract.
+- **N1 — no direct name field in the Name Art shell.** Fixed. `urdu-name-art-maker.html:24` puts a top-level "Your name or short text" field first; the hero copy explicitly states "There is no second WriteUrdu tool embedded inside Name Art" (`urdu-name-art-maker.html:19`).
+- **Recommendation 1 (Basic Editor → Rich Editor text handoff) and Recommendation 6 (locale page-copy for Stylish Text/Name Art — tracked separately under `WU-I18N-001`, out of `WU-PLAT-002` scope).**
+
+**Still open (not re-verified as fixed, treat as current):**
+
+- N2/N3 (mobile template-grid ordering, text-only template labels), M2–M5 (Facebook entry point, marketer branding, carousel), W1/W2 language, recommendation 4 (dedicated homepage "what do you want to make?" task-chooser section — the outcome-led nav covers this at header/menu level per `WU-PLAT-002` Slice D, but no in-page homepage chooser card grid was found), recommendation 10 (role-level Playwright acceptance beyond the existing desktop + Pixel 5 layout/continuity suites), and all of Part D's P1/P2 items not listed as resolved above.
+- Section 12 "Validation still required" real-device checks have not been re-run; they remain open pending an actual device pass, not just source-level confirmation.
+
+This refresh does not replace a moderated device/usability pass — see `WU-PLAT-002` §20 Slice H, still the open item for a recorded task-finding/tree-test and continuity usability pass.
+
+---
+
 ## 1. Roles audited
 
 This audit follows four primary users from intent to useful output:

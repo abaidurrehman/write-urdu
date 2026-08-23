@@ -9,7 +9,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Active — mature-domain authority/growth control plane |
 | `WU-GROWTH-002` | Account Save + Share Entry Points | `/`, `/urdu-editor`, `/urdu-keyboard`, `/tools/urdu-voice-typing` | Active — compact account conversion + ungated share loop implementation |
 | `WU-GROWTH-003` | Urdu Voice Typing Growth & SEO | `/tools/urdu-voice-typing`, `/urdu/tools/urdu-voice-typing` | Planned — founder-approved acquisition, activation and authority epic |
-| `WU-VOICE-PLAT-001` | Unified Urdu Input Platform | Eligible Write/Create workspaces sitewide | Planned — founder-approved shared English-letters/direct/voice input platform |
+| `WU-VOICE-PLAT-001` | Unified Urdu Input Platform | Eligible Write/Create workspaces sitewide | Implemented core / acceptance pending — Slices A (shared engine), B (core writing) and C (Card Studio/WhatsApp/Instagram/Stylish/Name Art) shipped and green; Slice D (growth/measurement) still planned |
 | `WU-I18N-001` | Crawlable Urdu Locale | `/urdu/*` with eight-route Phase 1 corpus | Planned — founder-approved static-first Urdu search/product locale |
 | `WU-SHARE-001` | Public Share Pages & Viral Publishing Loop | `/urdu-card-studio`, `/`, `/s/:id`, `/api/shares*` | Active — first-party short-link loop proven in Card Studio and extending to Basic Writer |
 | `WU-ACCOUNT-001` | Account, Documents & Collaboration Platform Boundary | Account/document platform | Planned boundary — identity + My Documents first; collaboration/teams/social separately gated |
@@ -17,7 +17,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-DRAFT-001` | My Documents: cross-device account-backed writing | Core writing editors, `/my-documents`, `/api/documents*` | Planned — browser-local first; explicit account save in separate `WRITE_URDU_DB` |
 | `WU-RW-001` | Role-owned direct workspaces | Writing + creation role routes | Active — one top-level editor/canvas per role; remove nested WriteUrdu app/iframe architecture |
 | `WU-PLAT-001` | Unified product journey and acquisition-first homepage | `/` and related tools | Implemented — foundation complete |
-| `WU-PLAT-002` | V2 Product Journey & Workspace Handoffs | Sitewide interactive journeys | Active — P0 outcome-led IA, shared handoffs, contextual next steps and new-tool continuity |
+| `WU-PLAT-002` | V2 Product Journey & Workspace Handoffs | Sitewide interactive journeys | Implemented core / acceptance pending — Slices A–G (registry, handoff runtime, outcome-led IA, core/capture continuity, create/publish boundaries) shipped and green; Slice H task-finding/usability validation pass is the open item |
 | `WU-PLAT-003` | Core Workspace Convergence | `/`, `/urdu-keyboard`, `/urdu-editor` plus shared taxonomy/help surfaces | Active — P0 canvas-first convergence of legacy core workspaces into the task-first V2 product model |
 | `WU-PLAT-004` | Basic Writer Command Toolbar | `/` | Active — share-first command surface implemented; production convergence follow-up active |
 | `WU-PLAT-004A` | Basic Writer Public Share Short Link | `/`, `/s/:id`, `/api/shares*` | Active — P0 hotfix; primary toolbar Share publishes explicit Write-Urdu short links |

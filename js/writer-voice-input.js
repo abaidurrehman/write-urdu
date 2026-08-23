@@ -154,6 +154,62 @@
         }, 100);
     }
 
+    var CREATION_WORKSPACE_ALIASES = {
+        card: 'card_studio',
+        'whatsapp-status': 'whatsapp_status',
+        'instagram-post': 'instagram',
+        'stylish-text': 'stylish'
+    };
+
+    function mountInputModeTextTargets() {
+        if (!root.document || !root.WriteUrduUnifiedInput) return;
+        var controls = root.document.querySelectorAll('[data-input-mode-control][data-input-mode-targets]');
+        controls.forEach(function (control) {
+            if (control.classList.contains('input-mode-control-rich')) return;
+            if (control.querySelector('[data-wu-voice-method]')) return;
+
+            var targetSelector = String(control.getAttribute('data-input-mode-targets') || '').split(',')[0].trim();
+            var target = targetSelector && root.document.querySelector(targetSelector);
+            if (!target || typeof target.value === 'undefined') return;
+
+            ensureStyles();
+
+            var storageId = control.getAttribute('data-input-mode-storage') || 'creation';
+            var workspace = CREATION_WORKSPACE_ALIASES[storageId] || storageId.replace(/-/g, '_');
+            var widget = buildWidget('wuVoice' + storageId.replace(/[^a-zA-Z0-9]/g, ''));
+            var note = control.querySelector('[data-input-mode-note]');
+            control.insertBefore(widget.methodButton, note || null);
+            control.appendChild(widget.panel);
+
+            wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(target), workspace);
+
+            control.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
+                button.addEventListener('click', function () { closePanel(widget); });
+            });
+        });
+    }
+
+    function mountNameArt() {
+        if (!root.document || !root.WriteUrduUnifiedInput) return;
+        var target = root.document.querySelector('[data-name-art-text]');
+        var actions = root.document.querySelector('.name-art-text-actions');
+        if (!target || !actions || actions.querySelector('[data-wu-voice-method]')) return;
+
+        ensureStyles();
+
+        var widget = buildWidget('wuNameArtVoice');
+        actions.appendChild(widget.methodButton);
+        actions.appendChild(widget.panel);
+
+        var caution = root.document.createElement('span');
+        caution.className = 'name-art-convert-note';
+        caution.setAttribute('data-wu-voice-name-caution', '');
+        caution.textContent = 'Voice works best for short names or phrases. Check the spelling before creating art.';
+        actions.appendChild(caution);
+
+        wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(target), 'name_art');
+    }
+
     function mountKeyboard() {
         var textarea = root.document.getElementById('write');
         var toolbar = root.document.querySelector('.keyboard-actions');
@@ -179,6 +235,8 @@
         if (!root || !root.document) return;
         if (root.document.getElementById('basic-example')) mountRichEditor();
         else if (root.document.getElementById('write')) mountKeyboard();
+        mountInputModeTextTargets();
+        mountNameArt();
     }
 
     if (root && root.document) {
@@ -188,6 +246,8 @@
 
     return {
         mountRichEditor: mountRichEditor,
-        mountKeyboard: mountKeyboard
+        mountKeyboard: mountKeyboard,
+        mountInputModeTextTargets: mountInputModeTextTargets,
+        mountNameArt: mountNameArt
     };
 }));
