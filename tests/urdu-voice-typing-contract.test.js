@@ -4,7 +4,10 @@ const path = require('node:path');
 
 const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'tools', 'urdu-voice-typing.html'), 'utf8');
+const urduHtml = fs.readFileSync(path.join(root, 'urdu', 'tools', 'urdu-voice-typing.html'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'js', 'urdu-voice-typing.js'), 'utf8');
+const core = fs.readFileSync(path.join(root, 'js', 'voice-input-core.js'), 'utf8');
+const unified = fs.readFileSync(path.join(root, 'js', 'unified-urdu-input.js'), 'utf8');
 const privacy = fs.readFileSync(path.join(root, 'write-urdu-privacy.html'), 'utf8');
 const shell = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 const myDocuments = fs.readFileSync(path.join(root, 'functions', 'my-documents.js'), 'utf8');
@@ -22,6 +25,8 @@ assert.match(html, /data-wu-ad-boundary="post-workspace"/, 'voice page should ex
 assert.match(html, /href="\/write-urdu-privacy#voice-typing"/, 'detailed voice processing disclosure should live on the privacy page');
 assert.doesNotMatch(html, /speech-recognition interface|browser-vendor|vendor service|session-only browser storage/i, 'voice landing page should avoid implementation-heavy privacy copy');
 assert.match(html, /\/js\/text-handoff\.js/, 'voice page should use session-only tool handoff support');
+assert.match(html, /\/js\/voice-input-core\.js[\s\S]*\/js\/unified-urdu-input\.js[\s\S]*\/js\/urdu-voice-typing\.js/, 'English voice page should load shared core and adapter before route UI');
+assert.match(urduHtml, /\/js\/voice-input-core\.js[\s\S]*\/js\/unified-urdu-input\.js[\s\S]*\/js\/urdu-voice-typing\.js/, 'Urdu voice page should load the same shared core and adapter');
 
 assert.match(privacy, /id="voice-typing"/, 'privacy page should own the detailed Urdu Voice Typing disclosure');
 assert.match(privacy, /provider-operated recognition service/, 'privacy page should explain possible provider-side speech processing');
@@ -35,15 +40,19 @@ assert.match(shell, /السلام علیکم، آج میں آواز سے ارد�
 assert.match(myDocuments, /<script src="\/site-header\.js" defer><\/script>/, 'My Documents must load the shared shell that installs voice discovery');
 assert.match(discoveryCss, /\.wu-voice-entry-icon[\s\S]*width: 4\.5rem/, 'voice entry microphone should be visually prominent rather than tiny');
 
-assert.match(js, /window\.SpeechRecognition \|\| window\.webkitSpeechRecognition/, 'voice typing should use feature detection');
-assert.match(js, /instance\.lang = 'ur-PK'/, 'voice recognition should request Urdu');
+assert.match(core, /host\.SpeechRecognition \|\| host\.webkitSpeechRecognition/, 'shared voice core should own feature detection');
+assert.match(core, /instance\.lang = options\.lang \|\| 'ur-PK'/, 'shared voice core should request Urdu by default');
+assert.doesNotMatch(js, /SpeechRecognition|webkitSpeechRecognition|new Recognition/, 'dedicated route must not retain a duplicate speech engine');
+assert.match(js, /WriteUrduVoiceInput\.create/, 'dedicated route should use shared voice core');
+assert.match(js, /WriteUrduUnifiedInput\.createTextControlAdapter\(transcript\)/, 'dedicated route should use generic target adapter');
+assert.match(unified, /target\.value[\s\S]*target\.selectionStart[\s\S]*target\.selectionEnd/, 'target adapter should read current value and selection');
 assert.match(js, /startButton\.addEventListener\('click', startRecognition\)/, 'microphone should start only from an explicit action');
 assert.match(js, /Ready when you are\. Press Start voice typing and speak Urdu\./, 'supported-browser copy should stay simple and action-led');
 assert.doesNotMatch(js, /getUserMedia\s*\(/, 'voice typing should not create its own audio recording pipeline');
 assert.doesNotMatch(js, /fetch\s*\(/, 'voice typing must not upload transcript or audio through product code');
 assert.doesNotMatch(js, /XMLHttpRequest|sendBeacon|\/api\//, 'voice typing must not send transcript data to WriteUrdu endpoints');
-assert.match(js, /pagehide', abortRecognition/, 'recognition should stop when the page is left');
-assert.match(js, /visibilitychange/, 'recognition should stop when the page becomes hidden');
+assert.match(core, /pagehide[\s\S]*handlePageHide/, 'shared core should clean up recognition when the page is left');
+assert.match(core, /visibilitychange[\s\S]*handleVisibilityChange/, 'shared core should stop recognition when the page becomes hidden');
 assert.match(js, /handoff\('\/urdu-text-cleaner'\)/, 'voice transcript should hand off to the cleaner');
 assert.match(js, /handoff\('\/'\)/, 'voice transcript should hand off to the core editor');
 

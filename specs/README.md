@@ -9,6 +9,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Active — mature-domain authority/growth control plane |
 | `WU-GROWTH-002` | Account Save + Share Entry Points | `/`, `/urdu-editor`, `/urdu-keyboard`, `/tools/urdu-voice-typing` | Active — compact account conversion + ungated share loop implementation |
 | `WU-GROWTH-003` | Urdu Voice Typing Growth & SEO | `/tools/urdu-voice-typing`, `/urdu/tools/urdu-voice-typing` | Planned — founder-approved acquisition, activation and authority epic |
+| `WU-VOICE-PLAT-001` | Unified Urdu Input Platform | Eligible Write/Create workspaces sitewide | Planned — founder-approved shared English-letters/direct/voice input platform |
 | `WU-I18N-001` | Crawlable Urdu Locale | `/urdu/*` with eight-route Phase 1 corpus | Planned — founder-approved static-first Urdu search/product locale |
 | `WU-SHARE-001` | Public Share Pages & Viral Publishing Loop | `/urdu-card-studio`, `/`, `/s/:id`, `/api/shares*` | Active — first-party short-link loop proven in Card Studio and extending to Basic Writer |
 | `WU-ACCOUNT-001` | Account, Documents & Collaboration Platform Boundary | Account/document platform | Planned boundary — identity + My Documents first; collaboration/teams/social separately gated |

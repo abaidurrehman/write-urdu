@@ -35,6 +35,7 @@ const tests = [
   'tests/stylish-urdu-core.test.js',
   'tests/urdu-text-cleaner-core.test.js',
   'tests/urdu-ocr-contract.test.js',
+  'tests/voice-input-core.test.js',
   'tests/urdu-voice-typing-contract.test.js',
   'tests/voice-account-analytics-contract.test.js',
   'tests/inpage-unicode-core.test.js',
