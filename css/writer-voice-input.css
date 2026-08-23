@@ -1,0 +1,114 @@
+@import url("./design-tokens.css");
+
+/* WU-VOICE-PLAT-001B PR2 — Voice on Rich Editor + Urdu Keyboard */
+
+.wu-voice-method {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.wu-voice-method:disabled {
+  opacity: 0.52;
+  cursor: not-allowed;
+}
+
+.wu-voice-panel {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid #cfe6d8;
+  border-radius: 10px;
+  background: #f4faf6;
+}
+
+.wu-voice-panel[hidden] {
+  display: none !important;
+}
+
+.wu-voice-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 7px;
+}
+
+.wu-voice-action {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #0c9a58;
+  border-radius: 9px;
+  color: #fff;
+  background: #0c9a58;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wu-voice-action--stop {
+  border-color: #a93030;
+  background: #a93030;
+}
+
+.wu-voice-action:focus-visible {
+  outline: 3px solid rgba(16, 122, 75, 0.22);
+  outline-offset: 2px;
+}
+
+.wu-voice-feedback {
+  display: grid;
+  min-width: 0;
+  color: #526c60;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.wu-voice-feedback strong {
+  color: #17392b;
+  font-size: 0.86rem;
+}
+
+.wu-voice-interim {
+  overflow: hidden;
+  color: #647c70;
+  font-style: italic;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Urdu Keyboard: voice is secondary to the on-screen keys, so its widget
+   sits as a compact row below the existing Copy/Share/Clear/Save toolbar. */
+.wu-voice-widget {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 8px 0;
+}
+
+.wu-voice-widget .wu-voice-panel {
+  margin-top: 0;
+}
+
+@media (max-width: 767px) {
+  .wu-voice-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .wu-voice-actions,
+  .wu-voice-action {
+    width: 100%;
+  }
+
+  .wu-voice-method {
+    min-height: 44px;
+  }
+}
