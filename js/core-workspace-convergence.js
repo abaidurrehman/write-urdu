@@ -17,6 +17,38 @@
         cleaner: 'Fix broken or badly formatted Urdu text',
         image: 'Turn an Urdu screenshot or photo into editable text'
     };
+    var BASIC_COMMAND_COPY = {
+        en: {
+            toolbar: 'Writing and document actions',
+            primary: 'Share and copy',
+            outputs: 'Document actions',
+            mode: 'Input mode',
+            share: 'Share',
+            copy: 'Copy',
+            more: 'More',
+            clear: 'Clear',
+            preview: 'Preview',
+            print: 'Print',
+            fileOptions: 'File options',
+            editorOptions: 'Editor options',
+            textFile: 'Text file'
+        },
+        ur: {
+            toolbar: 'تحریر اور دستاویز کی کارروائیاں',
+            primary: 'شیئر اور کاپی',
+            outputs: 'دستاویز کی کارروائیاں',
+            mode: 'لکھنے کا طریقہ',
+            share: 'شیئر کریں',
+            copy: 'متن کاپی کریں',
+            more: 'مزید',
+            clear: 'صاف کریں',
+            preview: 'پیش منظر',
+            print: 'پرنٹ',
+            fileOptions: 'فائل کے اختیارات',
+            editorOptions: 'ایڈیٹر کے اختیارات',
+            textFile: 'متنی فائل'
+        }
+    };
 
     function normalizeRoute(value) {
         if (root && root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.productPath === 'function') return root.WriteUrduLocaleRoute.productPath(value || '/');
@@ -109,6 +141,53 @@
         setOutcomeLabel('/urdu-ocr', USER_FIRST_LABELS.image, 'Image to Urdu Text');
     }
 
+    function basicLocale() {
+        if (root && root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function') return root.WriteUrduLocale.get() === 'ur' ? 'ur' : 'en';
+        return root && root.document && /^ur\b/i.test(root.document.documentElement.lang || '') ? 'ur' : 'en';
+    }
+
+    function setCommandLabel(actions, selector, label) {
+        var control = actions && actions.querySelector(selector);
+        if (!control) return false;
+        var text = control.querySelector('span');
+        if (text) text.textContent = label;
+        else control.textContent = label;
+        control.setAttribute('aria-label', label);
+        return true;
+    }
+
+    function localizeBasicCommandToolbar() {
+        if (!root || !root.document || currentRoute() !== '/') return false;
+        var actions = root.document.querySelector('.home-actions[data-wu-basic-command-toolbar]');
+        if (!actions) return false;
+        var copy = BASIC_COMMAND_COPY[basicLocale()] || BASIC_COMMAND_COPY.en;
+        actions.setAttribute('aria-label', copy.toolbar);
+
+        var primary = actions.querySelector('.wu-basic-command-primary');
+        var outputs = actions.querySelector('[data-wu-basic-output-group]');
+        var mode = actions.querySelector('.wu-basic-command-mode');
+        if (primary) primary.setAttribute('aria-label', copy.primary);
+        if (outputs) outputs.setAttribute('aria-label', copy.outputs);
+        if (mode) mode.setAttribute('aria-label', copy.mode);
+
+        setCommandLabel(actions, '[data-wu-command-action="share"]', copy.share);
+        setCommandLabel(actions, '[data-wu-command-action="copy"]', copy.copy);
+        setCommandLabel(actions, '[data-wu-basic-more-toggle]', copy.more);
+        setCommandLabel(actions, '[data-wu-command-action="clear"]', copy.clear);
+        setCommandLabel(actions, '[data-wu-command-action="preview"]', copy.preview);
+        setCommandLabel(actions, '[data-wu-command-action="print"]', copy.print);
+        setCommandLabel(actions, '[data-wu-command-action="text"]', copy.textFile);
+
+        var mobileOutputs = actions.querySelector('[data-wu-basic-mobile-outputs]');
+        if (mobileOutputs) mobileOutputs.setAttribute('aria-label', copy.outputs);
+        var fileHeading = actions.querySelector('[data-wu-basic-file-options] .wu-basic-command-more-heading');
+        if (fileHeading) fileHeading.textContent = copy.fileOptions;
+        var editorHeading = actions.querySelector('[data-wu-basic-editor-options] .wu-basic-command-more-heading');
+        if (editorHeading) editorHeading.textContent = copy.editorOptions;
+        actions.setAttribute('data-wu-basic-command-locale', basicLocale());
+        return true;
+    }
+
     function retireBasicCreateGroup(actions) {
         if (!actions) return false;
         var createGroup = actions.querySelector('.home-actions-group-create');
@@ -122,6 +201,7 @@
         if (!root || !root.document || currentRoute() !== '/') return false;
         if (root.WriteUrduBasicCommandToolbar && typeof root.WriteUrduBasicCommandToolbar.run === 'function') {
             root.WriteUrduBasicCommandToolbar.run();
+            localizeBasicCommandToolbar();
             return true;
         }
         var existing = root.document.querySelector('script[data-wu-basic-command-toolbar-script]');
@@ -132,6 +212,7 @@
         script.setAttribute('data-wu-basic-command-toolbar-script', '');
         script.addEventListener('load', function () {
             if (root.WriteUrduBasicCommandToolbar && typeof root.WriteUrduBasicCommandToolbar.run === 'function') root.WriteUrduBasicCommandToolbar.run();
+            localizeBasicCommandToolbar();
         });
         root.document.head.appendChild(script);
         return true;
@@ -258,6 +339,7 @@
         startCleanupGuard();
         enhanceGlobalLabels();
         convergeBasicWriter();
+        localizeBasicCommandToolbar();
         convergeSitemap();
         convergeDocumentation();
         return true;
@@ -266,6 +348,7 @@
     function bind() {
         run();
         if (!root || !root.document) return;
+        root.document.addEventListener('write-urdu:locale-change', function () { root.setTimeout(localizeBasicCommandToolbar, 0); });
         root.document.addEventListener('write-urdu:locale-changed', function () { root.setTimeout(run, 0); });
         root.setTimeout(enhanceGlobalLabels, 100);
         root.setTimeout(enhanceGlobalLabels, 800);
@@ -289,6 +372,7 @@
         convergeSitemap: convergeSitemap,
         convergeDocumentation: convergeDocumentation,
         enhanceGlobalLabels: enhanceGlobalLabels,
+        localizeBasicCommandToolbar: localizeBasicCommandToolbar,
         loadBasicCommandToolbar: loadBasicCommandToolbar,
         removeLegacyTrustChrome: removeLegacyTrustChrome,
         removePrematureCoreChrome: removePrematureCoreChrome
