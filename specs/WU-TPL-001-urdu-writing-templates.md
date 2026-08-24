@@ -59,7 +59,7 @@ Phase 1 contains 12 original editable starter templates:
 
 Each template provides:
 
-- Urdu body text;
+- reviewed Urdu body text kept in a dedicated catalog;
 - clear placeholders such as `[آپ کا نام]`;
 - English task label;
 - category/search tags;
@@ -83,7 +83,7 @@ Each template provides:
 
 ## 4. Search / launch treatment
 
-The first runtime ships as `noindex,follow`.
+The first runtime ships as `noindex,follow`. The 2026-08-24 editorial pass is complete; indexing remains gated only on live product acceptance plus SEO-registry/sitemap integration.
 
 Reason: this is a product quick win before a separate SEO promotion pass. The route can be indexed after:
 
@@ -141,15 +141,18 @@ If writing templates later gain independent persistence/history or multiple down
 ```text
 urdu-writing-templates.html
 css/writing-templates.css
-js/writing-templates.js
+js/writing-template-catalog.js
+js/writing-templates-runtime.js
 tests/writing-templates-quick-win-contract.test.js
 
 existing integration:
-/urdu-templates.html
+urdu-templates.html
 _redirects
 scripts/run-contract-tests.js
 specs/README.md
 ```
+
+The reviewed wording lives in `js/writing-template-catalog.js`; interaction/search/handoff behaviour lives in `js/writing-templates-runtime.js`. Keep content revisions separate from runtime changes.
 
 ## 9. Acceptance criteria
 
@@ -164,7 +167,8 @@ specs/README.md
 - [x] route is `noindex,follow` for the initial acceptance period.
 - [x] clean-URL redirects are defined.
 - [ ] mobile browser acceptance recorded.
-- [ ] founder/content review of all Urdu templates recorded.
+- [x] editorial language review completed 2026-08-24: Pakistani school-application conventions normalized; office/business wording modernized; unnecessary English-office jargon removed.
+- [ ] live founder/product acceptance of the reviewed wording recorded.
 - [ ] decide promotion/indexing from initial usage/search evidence.
 
 ## 10. Verification
