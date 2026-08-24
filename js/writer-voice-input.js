@@ -7,6 +7,26 @@
     'use strict';
 
     var voiceController = null;
+    var DISCOVERY_COPY = {
+        en: {
+            intro: 'Type, paste or speak Urdu.',
+            helper: 'Use the mic when speaking is faster than typing.'
+        },
+        ur: {
+            intro: 'اردو ٹائپ کریں، پیسٹ کریں یا بول کر لکھیں۔',
+            helper: 'جب بولنا آسان ہو تو مائیک استعمال کریں۔'
+        }
+    };
+
+    function locale() {
+        if (!root || !root.document || !root.document.documentElement) return 'en';
+        return root.document.documentElement.lang === 'ur' ? 'ur' : 'en';
+    }
+
+    function discoveryText(key) {
+        var current = DISCOVERY_COPY[locale()] || DISCOVERY_COPY.en;
+        return current[key] || DISCOVERY_COPY.en[key] || '';
+    }
 
     function ensureStyles() {
         if (!root || !root.document || root.document.querySelector('link[data-wu-writer-voice-style]')) return;
@@ -30,7 +50,7 @@
         methodButton.setAttribute('data-wu-voice-method', '');
         methodButton.setAttribute('aria-expanded', 'false');
         methodButton.setAttribute('aria-controls', idPrefix + 'Panel');
-        methodButton.innerHTML = '<i class="fas fa-microphone" aria-hidden="true"></i><span data-wu-voice-label>Speak Urdu</span>';
+        methodButton.innerHTML = '<span class="wu-voice-method-icon" aria-hidden="true"><i class="fas fa-microphone"></i></span><span data-wu-voice-label>Speak Urdu</span>';
 
         var panel = root.document.createElement('div');
         panel.id = idPrefix + 'Panel';
@@ -74,6 +94,44 @@
         return { methodButton: methodButton, panel: panel, start: start, stop: stop, status: status, notice: notice, interim: interim };
     }
 
+    function mountDiscoveryIntro(control) {
+        if (!control) return null;
+        control.setAttribute('data-wu-voice-promoted', '');
+        var existing = control.querySelector('[data-wu-voice-discovery-copy]');
+        if (existing) return existing;
+
+        var intro = root.document.createElement('span');
+        intro.className = 'wu-voice-discovery-copy';
+        intro.setAttribute('data-wu-voice-discovery-copy', '');
+        intro.innerHTML = '<strong data-wu-voice-discovery-intro></strong><span data-wu-voice-discovery-helper></span>';
+
+        var title = control.querySelector('[data-input-mode-title], .input-mode-title');
+        if (title && title.nextSibling) control.insertBefore(intro, title.nextSibling);
+        else control.insertBefore(intro, control.firstChild || null);
+        refreshDiscoveryIntro(intro);
+        return intro;
+    }
+
+    function refreshDiscoveryIntro(intro) {
+        if (!intro) return;
+        var heading = intro.querySelector('[data-wu-voice-discovery-intro]');
+        var helper = intro.querySelector('[data-wu-voice-discovery-helper]');
+        if (heading) heading.textContent = discoveryText('intro');
+        if (helper) helper.textContent = discoveryText('helper');
+    }
+
+    function placeFeaturedMethod(control, methodButton, note) {
+        var directButton = control.querySelector('[data-input-mode-option="direct"]');
+        if (directButton) control.insertBefore(methodButton, directButton);
+        else control.insertBefore(methodButton, note || null);
+    }
+
+    function promoteControlBeforeTarget(control, target) {
+        if (!control || !target || !target.parentNode || control.parentNode !== target.parentNode) return;
+        if (control.nextElementSibling === target) return;
+        target.parentNode.insertBefore(control, target);
+    }
+
     function closePanel(widget) {
         if (voiceController && voiceController.isListening()) voiceController.stop();
         widget.panel.hidden = true;
@@ -81,7 +139,7 @@
         widget.methodButton.setAttribute('aria-expanded', 'false');
     }
 
-    function wireController(widget, adapter, workspace) {
+    function wireController(widget, adapter, workspace, intro) {
         if (!root.WriteUrduVoiceInput || !root.WriteUrduUnifiedInput) return null;
 
         voiceController = root.WriteUrduUnifiedInput.createVoiceInputController({
@@ -107,12 +165,18 @@
                 widget.panel.hidden = false;
                 widget.methodButton.classList.add('is-active');
                 widget.methodButton.setAttribute('aria-expanded', 'true');
+                telemetry(workspace, 'voice-selected');
             } else closePanel(widget);
         });
 
-        root.document.addEventListener('write-urdu:locale-change', function () { if (voiceController) voiceController.refreshLocale(); });
-        root.document.addEventListener('write-urdu:locale-changed', function () { if (voiceController) voiceController.refreshLocale(); });
+        function refreshLocale() {
+            if (voiceController) voiceController.refreshLocale();
+            refreshDiscoveryIntro(intro);
+        }
+        root.document.addEventListener('write-urdu:locale-change', refreshLocale);
+        root.document.addEventListener('write-urdu:locale-changed', refreshLocale);
 
+        telemetry(workspace, 'voice-exposed');
         return voiceController;
     }
 
@@ -138,12 +202,13 @@
                 root.clearInterval(timer);
                 ensureStyles();
 
+                var intro = mountDiscoveryIntro(modeControl);
                 var widget = buildWidget('wuRichVoice');
                 var note = modeControl.querySelector('[data-input-mode-note]');
-                modeControl.insertBefore(widget.methodButton, note || null);
+                placeFeaturedMethod(modeControl, widget.methodButton, note);
                 modeControl.appendChild(widget.panel);
 
-                wireController(widget, createRichTextAdapter(editor), 'rich_editor');
+                wireController(widget, createRichTextAdapter(editor), 'rich_editor', intro);
 
                 modeControl.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
                     button.addEventListener('click', function () { closePanel(widget); });
@@ -176,12 +241,14 @@
 
             var storageId = control.getAttribute('data-input-mode-storage') || 'creation';
             var workspace = CREATION_WORKSPACE_ALIASES[storageId] || storageId.replace(/-/g, '_');
+            var intro = mountDiscoveryIntro(control);
             var widget = buildWidget('wuVoice' + storageId.replace(/[^a-zA-Z0-9]/g, ''));
             var note = control.querySelector('[data-input-mode-note]');
-            control.insertBefore(widget.methodButton, note || null);
+            placeFeaturedMethod(control, widget.methodButton, note);
             control.appendChild(widget.panel);
+            promoteControlBeforeTarget(control, target);
 
-            wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(target), workspace);
+            wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(target), workspace, intro);
 
             control.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
                 button.addEventListener('click', function () { closePanel(widget); });
@@ -198,6 +265,7 @@
         ensureStyles();
 
         var widget = buildWidget('wuNameArtVoice');
+        widget.methodButton.classList.add('wu-voice-method--standalone');
         actions.appendChild(widget.methodButton);
         actions.appendChild(widget.panel);
 
@@ -207,7 +275,7 @@
         caution.textContent = 'Voice works best for short names or phrases. Check the spelling before creating art.';
         actions.appendChild(caution);
 
-        wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(target), 'name_art');
+        wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(target), 'name_art', null);
     }
 
     function mountKeyboard() {
@@ -219,16 +287,22 @@
         ensureStyles();
 
         var widget = buildWidget('wuKeyboardVoice');
-        widget.methodButton.classList.add('btn', 'btn-outline-success', 'btn-sm');
+        widget.methodButton.classList.add('btn', 'btn-outline-success', 'btn-sm', 'wu-voice-method--standalone');
 
         var container = root.document.createElement('div');
         container.className = 'wu-voice-widget';
         container.setAttribute('data-wu-voice-widget', '');
+        var intro = root.document.createElement('span');
+        intro.className = 'wu-voice-discovery-copy wu-voice-discovery-copy--standalone';
+        intro.setAttribute('data-wu-voice-discovery-copy', '');
+        intro.innerHTML = '<strong data-wu-voice-discovery-intro></strong><span data-wu-voice-discovery-helper></span>';
+        refreshDiscoveryIntro(intro);
+        container.appendChild(intro);
         container.appendChild(widget.methodButton);
         container.appendChild(widget.panel);
         toolbar.parentNode.insertBefore(container, toolbar.nextSibling);
 
-        wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(textarea), 'urdu_keyboard');
+        wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(textarea), 'urdu_keyboard', intro);
     }
 
     function boot() {
@@ -248,6 +322,8 @@
         mountRichEditor: mountRichEditor,
         mountKeyboard: mountKeyboard,
         mountInputModeTextTargets: mountInputModeTextTargets,
-        mountNameArt: mountNameArt
+        mountNameArt: mountNameArt,
+        mountDiscoveryIntro: mountDiscoveryIntro,
+        promoteControlBeforeTarget: promoteControlBeforeTarget
     };
 }));

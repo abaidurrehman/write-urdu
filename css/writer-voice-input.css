@@ -1,17 +1,94 @@
 @import url("./design-tokens.css");
 
-/* WU-VOICE-PLAT-001B PR2 — Voice on Rich Editor + Urdu Keyboard */
+/* WU-GROWTH-003A — Voice Discovery Launch
+   Voice remains a method inside the current workspace, but it must be visible
+   before users begin typing and especially obvious on mobile. */
+
+.input-mode-control[data-wu-voice-promoted] {
+  row-gap: 8px;
+}
+
+.wu-voice-discovery-copy {
+  display: grid;
+  flex: 1 1 100%;
+  gap: 2px;
+  width: 100%;
+  margin: 1px 0 2px;
+  color: #365b49;
+  font-size: .76rem;
+  line-height: 1.35;
+}
+
+.wu-voice-discovery-copy strong {
+  color: #17392b;
+  font-size: .84rem;
+  font-weight: 800;
+}
+
+.wu-voice-discovery-copy span {
+  color: #667b70;
+  font-size: .72rem;
+  font-weight: 500;
+}
+
+.wu-voice-discovery-copy--standalone {
+  margin: 0;
+}
 
 .wu-voice-method {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid #50a978;
+  color: #0d6d43;
+  background: linear-gradient(180deg, #f3fbf6 0%, #eaf8ef 100%);
+  box-shadow: 0 3px 10px rgb(14 111 67 / 8%);
+  font-size: .78rem;
+}
+
+.wu-voice-method:hover,
+.wu-voice-method:focus-visible {
+  border-color: #177245;
+  color: #0b5e3a;
+  background: #e2f5e9;
+  box-shadow: 0 0 0 3px rgba(23, 114, 69, .12), 0 4px 12px rgb(14 111 67 / 10%);
+}
+
+.wu-voice-method.is-active {
+  border-color: #177245;
+  color: #fff;
+  background: #177245;
+  box-shadow: 0 5px 14px rgb(14 111 67 / 18%);
+}
+
+.wu-voice-method-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border-radius: 999px;
+  color: #fff;
+  background: #177245;
+}
+
+.wu-voice-method.is-active .wu-voice-method-icon {
+  color: #177245;
+  background: #fff;
 }
 
 .wu-voice-method:disabled {
   opacity: 0.52;
   cursor: not-allowed;
+  box-shadow: none;
+}
+
+.wu-voice-method--standalone {
+  min-height: 44px;
 }
 
 .wu-voice-panel {
@@ -22,10 +99,11 @@
   width: 100%;
   min-width: 0;
   margin-top: 6px;
-  padding: 8px;
-  border: 1px solid #cfe6d8;
+  padding: 10px;
+  border: 1px solid #b9dec8;
   border-radius: 10px;
-  background: #f4faf6;
+  background: #effaf3;
+  box-shadow: 0 6px 18px rgb(14 111 67 / 6%);
 }
 
 .wu-voice-panel[hidden] {
@@ -82,8 +160,7 @@
   white-space: nowrap;
 }
 
-/* Urdu Keyboard: voice is secondary to the on-screen keys, so its widget
-   sits as a compact row below the existing Copy/Share/Clear/Save toolbar. */
+/* Urdu Keyboard: make Voice visible without competing with the key grid. */
 .wu-voice-widget {
   display: flex;
   flex-wrap: wrap;
@@ -91,6 +168,10 @@
   gap: 8px;
   width: 100%;
   margin: 8px 0;
+  padding: 9px;
+  border: 1px solid #d6e8dd;
+  border-radius: 10px;
+  background: #f7fbf8;
 }
 
 .wu-voice-widget .wu-voice-panel {
@@ -98,6 +179,40 @@
 }
 
 @media (max-width: 767px) {
+  .input-mode-control[data-wu-voice-promoted] .input-mode-title {
+    order: -4;
+  }
+
+  .input-mode-control[data-wu-voice-promoted] .wu-voice-discovery-copy {
+    order: -3;
+  }
+
+  .input-mode-control[data-wu-voice-promoted] .wu-voice-method {
+    order: -2;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 48px;
+    padding: 8px 12px;
+    font-size: .9rem;
+  }
+
+  .input-mode-control[data-wu-voice-promoted] .input-mode-option[data-input-mode-option] {
+    order: -1;
+  }
+
+  .input-mode-control[data-wu-voice-promoted] .input-mode-note {
+    order: 1;
+  }
+
+  .input-mode-control[data-wu-voice-promoted] .wu-voice-panel {
+    order: 2;
+  }
+
+  .wu-voice-discovery-copy strong {
+    font-size: .9rem;
+  }
+
   .wu-voice-panel {
     align-items: stretch;
     flex-direction: column;
@@ -108,7 +223,14 @@
     width: 100%;
   }
 
-  .wu-voice-method {
-    min-height: 44px;
+  .wu-voice-method--standalone {
+    width: 100%;
+    justify-content: flex-start;
+    min-height: 48px;
+  }
+
+  .wu-voice-widget {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
