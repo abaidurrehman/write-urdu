@@ -15,6 +15,7 @@ const APP_SHELL = [
   './roman-urdu-transliteration.html',
   './urdu-fonts-nastaliq-vs-naskh.html',
   './css/site-header.css',
+  './css/v3-production-polish.css',
   './css/account.css',
   './css/account-documents.css',
   './css/my-documents.css',
