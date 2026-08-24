@@ -362,6 +362,21 @@ body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .fb-comments {
 }
 
 @media (max-width: 767px) {
+  /* The shared V3 header already carries the Write Urdu brand. Hide the
+     duplicate legacy 80px logo so the actual Rich Editor reaches the first
+     mobile viewport instead of spending that space on repeated branding. */
+  body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > a[href="/"] > .logo {
+    display: none !important;
+  }
+
+  /* The shared Write navigation already provides the route back to the Basic
+     Writer. Repeating that handoff as a full-width third toolbar row pushes
+     TinyMCE below the task-first fold on phones, so keep the authoring actions
+     (Export, Share, More) and remove only this redundant mobile shortcut. */
+  body.wu-v2-shell.rich-editor-page .tool-actions .home-actions-group-primary {
+    display: none !important;
+  }
+
   body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > .container:first-of-type {
     padding-top: 8px;
     padding-bottom: 9px;

@@ -5,12 +5,14 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const v3Polish = fs.readFileSync(path.join(root, 'css', 'v3-production-polish.css'), 'utf8');
 
 assert.match(home, /data-wu-voice-entry="home"/, 'Homepage must keep the large source-visible Voice entry.');
 assert.match(home, /href="\/tools\/urdu-voice-typing"/, 'Homepage Voice entry must keep the canonical Voice owner link.');
 
 assert.match(sw, /const CACHE_NAME = 'write-urdu-shell-v\d+'/, 'PWA shell must keep an explicit cache revision.');
 assert.match(sw, /'\.\/css\/voice-discovery\.css'/, 'Voice discovery styling must be part of the offline shell.');
+assert.match(sw, /'\.\/css\/v3-production-polish\.css'/, 'Critical V3 layout corrections must refresh with service-worker installs.');
 assert.match(sw, /event\.request\.mode === 'navigate' \|\| event\.request\.destination === 'document'/, 'Public HTML navigations must be detected explicitly.');
 assert.match(
   sw,
@@ -23,6 +25,17 @@ assert.ok(navigationBlock, 'Navigation freshness branch must remain separate fro
 assert.ok(
   navigationBlock[1].indexOf('fetch(event.request)') < navigationBlock[1].indexOf('offlineNavigationFallback'),
   'Navigation must try the network before consulting offline HTML.'
+);
+
+assert.match(
+  v3Polish,
+  /rich-editor-page[\s\S]*?a\[href="\/"\][\s\S]*?> \.logo[\s\S]*?display:\s*none\s*!important/,
+  'Mobile Rich Editor must suppress duplicate legacy branding before the authoring surface.'
+);
+assert.match(
+  v3Polish,
+  /rich-editor-page \.tool-actions \.home-actions-group-primary[\s\S]*?display:\s*none\s*!important/,
+  'Mobile Rich Editor must not spend a full toolbar row on the redundant Basic editor handoff.'
 );
 
 console.log('Service worker navigation freshness contract passed.');
