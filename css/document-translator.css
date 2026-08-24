@@ -1,0 +1,67 @@
+@import url('./urdu-tools.css');
+
+.document-translator-page .urdu-tool-textarea {
+  min-height: 19rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.document-translator-page #documentUrduResult {
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  font-size: 1.18rem;
+  line-height: 2;
+}
+
+.document-upload-row {
+  display: flex;
+  gap: .7rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: .85rem;
+}
+
+.document-file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 2.75rem;
+  padding: .55rem .85rem;
+  border: 1px dashed var(--wu-color-border-strong, var(--wu-color-border));
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.document-file-label input {
+  max-width: 15rem;
+}
+
+.document-translator-page .urdu-tool-status-pill[data-state="busy"] {
+  opacity: .75;
+}
+
+.document-translator-page .urdu-tool-notice[data-state="error"] {
+  color: var(--wu-color-danger, #a12121);
+}
+
+.document-translator-page .urdu-tool-notice[data-state="success"] {
+  color: var(--wu-color-success, #17663a);
+}
+
+.document-preview-note {
+  margin: .9rem 0 0;
+  padding: .85rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+}
+
+@media (max-width: 700px) {
+  .document-translator-page .urdu-tool-textarea { min-height: 14rem; }
+  .document-upload-row { align-items: stretch; }
+  .document-file-label { width: 100%; }
+}

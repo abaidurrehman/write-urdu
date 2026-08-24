@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>English to Urdu Document Translator Preview | WriteUrdu</title>
+    <meta name="description" content="Translate English text or a TXT document into editable Urdu, then copy it or continue editing in WriteUrdu.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://write-urdu.com/tools/english-to-urdu-document-translator">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="English to Urdu Document Translator Preview">
+    <meta property="og:description" content="Turn English text into editable Urdu and continue working with it in WriteUrdu.">
+    <meta property="og:url" content="https://write-urdu.com/tools/english-to-urdu-document-translator">
+    <meta property="og:image" content="https://write-urdu.com/assets/social/write-urdu-home.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/document-translator.css">
+    <script src="/site-header.js" defer></script>
+    <script src="/js/site-runtime.js" defer></script>
+    <script src="/js/text-handoff.js" defer></script>
+    <script src="/js/document-translator.js" defer></script>
+    <script src="/js/product-telemetry.js" defer></script>
+</head>
+<body class="urdu-tool-page document-translator-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+    <main class="urdu-tool-main" data-document-translator>
+        <header class="urdu-tool-hero">
+            <div>
+                <p class="urdu-tool-eyebrow">Quick preview · English → Urdu</p>
+                <h1>English to Urdu Document Translator</h1>
+                <p>Paste English text or open a plain text document, translate it into Urdu, then review and edit the result before you use it.</p>
+            </div>
+            <aside class="urdu-tool-trust" aria-label="Preview scope">
+                <strong>First working slice</strong><br>
+                TXT and pasted text are supported now. PDF and Word import come next after translation quality is proven.
+            </aside>
+        </header>
+
+        <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="document-workspace-title" google-side-rail-overlap="false">
+            <div class="urdu-tool-workspace-header">
+                <div>
+                    <h2 id="document-workspace-title">Translate English text into editable Urdu</h2>
+                    <p>Nothing is translated until you select <strong>Translate to Urdu</strong>. WriteUrdu does not save this request as a document.</p>
+                </div>
+                <span class="urdu-tool-status-pill" data-document-status data-state="idle">Waiting for text</span>
+            </div>
+
+            <div class="document-upload-row">
+                <label class="document-file-label">
+                    Open a .txt file
+                    <input type="file" accept=".txt,text/plain" data-document-file>
+                </label>
+                <div class="urdu-tool-actions">
+                    <button class="urdu-tool-button ghost" type="button" data-document-sample>Load example</button>
+                    <button class="urdu-tool-button ghost" type="button" data-document-clear>Clear</button>
+                </div>
+            </div>
+
+            <div class="urdu-tool-grid">
+                <section class="urdu-tool-column" aria-labelledby="document-source-title">
+                    <div class="urdu-tool-label-row">
+                        <label id="document-source-title" for="documentEnglishSource">English source</label>
+                        <span class="urdu-tool-helper" data-document-source-count>0 / 12000</span>
+                    </div>
+                    <textarea id="documentEnglishSource" class="urdu-tool-textarea" dir="ltr" lang="en" spellcheck="true" maxlength="12000" data-document-source placeholder="Paste English text here, or open a .txt file."></textarea>
+                    <div class="urdu-tool-actions">
+                        <button class="urdu-tool-button primary" type="button" data-document-translate disabled>Translate to Urdu</button>
+                    </div>
+                </section>
+
+                <section class="urdu-tool-column" aria-labelledby="document-result-title">
+                    <div class="urdu-tool-label-row">
+                        <label id="document-result-title" for="documentUrduResult">Urdu translation</label>
+                        <span class="urdu-tool-helper" data-document-result-count>0 characters</span>
+                    </div>
+                    <textarea id="documentUrduResult" class="urdu-tool-textarea" dir="rtl" lang="ur" spellcheck="false" data-document-result placeholder="Your editable Urdu translation appears here."></textarea>
+                    <div class="urdu-tool-actions">
+                        <button class="urdu-tool-button primary" type="button" data-document-copy disabled>Copy Urdu</button>
+                        <button class="urdu-tool-button" type="button" data-document-continue disabled>Continue editing in WriteUrdu</button>
+                    </div>
+                    <p class="urdu-tool-notice" data-document-notice aria-live="polite"></p>
+                </section>
+            </div>
+
+            <p class="document-preview-note"><strong>Preview limit:</strong> up to 12,000 characters. Review names, dates, numbers and formal wording before relying on the translation.</p>
+        </section>
+
+        <section class="urdu-tool-content" aria-label="About this preview">
+            <section>
+                <h2>Why this preview starts with text files</h2>
+                <p>The difficult question is not whether WriteUrdu can open a PDF. It is whether English-to-Urdu translation is good enough to be genuinely useful. This first slice lets us validate the translation and editing experience before adding PDF and Word extraction.</p>
+                <h3>What works now</h3>
+                <p>Paste English text or choose a <code>.txt</code> file, translate it, edit the Urdu directly, copy it, or continue editing on WriteUrdu.</p>
+                <h3>What comes next</h3>
+                <p>Once translation quality passes review, the same workspace will accept text-based PDF and DOCX files. Scanned images and exact source-layout preservation remain separate quality-gated work.</p>
+            </section>
+            <aside class="urdu-tool-related">
+                <h2>Good test documents</h2>
+                <ul>
+                    <li>school notices and letters</li>
+                    <li>short business messages</li>
+                    <li>instructions and announcements</li>
+                    <li>simple headings and paragraphs</li>
+                </ul>
+                <p><a href="/">Write Urdu with English letters</a><br><a href="/urdu-editor">Open the Urdu document editor</a><br><a href="/tools/urdu-voice-typing">Speak Urdu instead</a></p>
+            </aside>
+        </section>
+    </main>
+    <footer aria-label="Footer navigation"></footer>
+    <div id="appNotifications" class="app-notifications" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
