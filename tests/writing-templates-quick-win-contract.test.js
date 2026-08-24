@@ -4,6 +4,13 @@ const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
+function schemaGraph(source) {
+    const match = source.match(/<script[^>]+type="application\/ld\+json"[^>]+data-write-urdu-schema[^>]*>([\s\S]*?)<\/script>/i);
+    assert.ok(match, 'Writing templates must ship static structured data in initial HTML');
+    const value = JSON.parse(match[1]);
+    assert.equal(value['@context'], 'https://schema.org');
+    return value['@graph'] || [];
+}
 
 const page = read('urdu-writing-templates.html');
 const urduPage = read('urdu', 'urdu-writing-templates.html');
@@ -35,9 +42,22 @@ assert.match(urduPage, /<meta name="robots" content="index,follow,max-image-prev
 assert.doesNotMatch(urduPage, /noindex/i, 'Urdu sibling must not be noindex');
 assert.match(urduPage, /<link rel="canonical" href="https:\/\/write-urdu\.com\/urdu\/urdu-writing-templates">/, 'Urdu sibling must self-canonicalize');
 assert.match(urduPage, /hreflang="en" href="https:\/\/write-urdu\.com\/urdu-writing-templates"/, 'Urdu sibling must link back to English owner');
+assert.match(urduPage, /property="og:locale" content="ur_PK"/, 'Urdu sibling must advertise Urdu Open Graph locale');
+assert.doesNotMatch(urduPage, /src="\/js\/seo\.js"/, 'Urdu sibling must not run the English-oriented SEO mutation runtime');
 assert.match(urduPage, /اردو درخواستوں اور خطوط کے تیار سانچے/, 'Urdu sibling must ship reviewed Urdu H1 in initial HTML');
 assert.match(urduPage, /WriteUrdu میں استعمال کریں/, 'Urdu sibling primary action must be localized');
 assert.match(urduPage, /رچ ایڈیٹر میں فارمیٹ کریں/, 'Urdu sibling Rich Editor action must be localized');
+
+const englishGraph = schemaGraph(page);
+const urduGraph = schemaGraph(urduPage);
+const englishList = englishGraph.find((node) => node['@type'] === 'ItemList');
+const urduList = urduGraph.find((node) => node['@type'] === 'ItemList');
+assert.equal(englishList.numberOfItems, 12, 'English schema must describe all 12 starter templates');
+assert.equal(englishList.itemListElement.length, 12, 'English ItemList must expose 12 items');
+assert.equal(urduList.numberOfItems, 12, 'Urdu schema must describe all 12 starter templates');
+assert.equal(urduList.itemListElement.length, 12, 'Urdu ItemList must expose 12 items');
+assert.ok(urduGraph.filter((node) => node.inLanguage).every((node) => node.inLanguage === 'ur'), 'Urdu page-level schema language must stay Urdu');
+assert.equal(englishGraph.find((node) => node['@type'] === 'WebApplication').inLanguage, 'en', 'English application schema language must stay English');
 
 assert.equal(app.TEMPLATES.length, 12, 'Phase 1 must contain exactly 12 reviewed starter templates');
 assert.ok(app.TEMPLATES.every((template) => template.body.includes('[') && template.body.includes(']')), 'Every template must expose editable placeholders');
