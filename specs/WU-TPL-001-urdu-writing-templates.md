@@ -86,6 +86,7 @@ Each template provides:
 11. Urdu handoffs must stay inside `/urdu/` when the destination has an Urdu counterpart.
 12. Product telemetry must never contain the template body or the user's edited text.
 13. Dedicated template/job pages remain blocked until the observation plan records an evidence-backed promotion decision.
+14. Search Console promotion scoring must remain deterministic and must not turn a threshold crossing into automatic page creation.
 
 ## 4. Search / launch treatment
 
@@ -134,7 +135,8 @@ The initial monitoring priority is:
 2. job application in Urdu;
 3. fee concession application in Urdu;
 4. resignation letter in Urdu;
-5. complaint application in Urdu.
+5. complaint application in Urdu;
+6. invitation/general application only as long-tail observation.
 
 This order is not pre-approval. Search Console evidence can reorder it immediately.
 
@@ -209,6 +211,29 @@ This lets us measure whether the library is useful without collecting document c
 
 Search Console remains the source of truth for individual query/job promotion decisions. Current product telemetry intentionally measures collection usefulness rather than identifying which private writing job a user selected.
 
+### Search Console scoring
+
+Use the deterministic repository scorer on a Search Console `Queries.csv` export:
+
+```bash
+npm run templates:gsc -- path/to/Queries.csv
+```
+
+or:
+
+```bash
+npm run templates:gsc -- path/to/Queries.csv --json
+```
+
+The scorer aggregates approved query variants into job clusters and implements the canonical observation plan's two single-export promotion-review gates:
+
+- **Near-win:** 100+ impressions with weighted average position 4–20;
+- **Click proof:** 25+ impressions and at least 3 clicks.
+
+The 7-day breakout gate requires comparable Dates exports and is intentionally not inferred from one Queries CSV.
+
+A `PROMOTION REVIEW` result is triage only. Before shipping a page, confirm current ranking URL/ownership and unique product value using the full observation plan.
+
 ## 9. Files
 
 ```text
@@ -218,6 +243,7 @@ css/writing-templates.css
 js/writing-template-catalog.js
 js/writing-templates-runtime.js
 tests/writing-templates-quick-win-contract.test.js
+tests/writing-template-gsc-observation-contract.test.js
 
 SEO / integration:
 seo.config.js
@@ -226,7 +252,9 @@ write-urdu-sitemap.html
 urdu-templates.html
 _redirects
 scripts/check-urdu-locale-seo.js
+scripts/analyze-writing-template-gsc.js
 scripts/run-contract-tests.js
+package.json
 specs/README.md
 docs/WU-TPL-001-SEO-OBSERVATION-PLAN-2026-08-24.md
 ```
@@ -253,6 +281,7 @@ The reviewed wording lives in `js/writing-template-catalog.js`; interaction/sear
 - [x] bounded product telemetry records use/copy/handoff without user text.
 - [x] launch contract protects crawl, locale, content and telemetry invariants.
 - [x] evidence-led SEO observation/promotion plan recorded with 7/14/28/56-day checkpoints.
+- [x] deterministic Search Console cluster scorer added and covered by the normal contract runner.
 - [ ] first Search Console baseline for the launched collection routes recorded.
 - [ ] first 28-day cluster review records HOLD / STRENGTHEN COLLECTION / PROMOTE ONE WINNER.
 
@@ -262,11 +291,18 @@ Run:
 
 ```bash
 node tests/writing-templates-quick-win-contract.test.js
+node tests/writing-template-gsc-observation-contract.test.js
 npm test
 npm run seo:generate
 npm run seo:check
 npm run governance:check
 npm run test:browser
+```
+
+When a Search Console export is available:
+
+```bash
+npm run templates:gsc -- path/to/Queries.csv
 ```
 
 After deployment, verify both language URLs return `200`, self-canonicalize and show the expected `hreflang` links. Then use the observation plan for Search Console impressions/clicks and bounded product telemetry before deciding whether to add more templates or dedicated intent pages.
