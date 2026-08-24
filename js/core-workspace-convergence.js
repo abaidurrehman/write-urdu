@@ -24,7 +24,7 @@
             outputs: 'Document actions',
             mode: 'Input mode',
             share: 'Share',
-            copy: 'Copy text',
+            copy: 'Copy',
             more: 'More',
             clear: 'Clear',
             preview: 'Preview',
