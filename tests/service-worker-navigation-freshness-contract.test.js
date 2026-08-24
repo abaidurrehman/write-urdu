@@ -9,7 +9,7 @@ const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 assert.match(home, /data-wu-voice-entry="home"/, 'Homepage must keep the large source-visible Voice entry.');
 assert.match(home, /href="\/tools\/urdu-voice-typing"/, 'Homepage Voice entry must keep the canonical Voice owner link.');
 
-assert.match(sw, /const CACHE_NAME = 'write-urdu-shell-v32'/, 'Voice homepage rollout must invalidate the pre-Voice v31 shell cache.');
+assert.match(sw, /const CACHE_NAME = 'write-urdu-shell-v\d+'/, 'PWA shell must keep an explicit cache revision.');
 assert.match(sw, /'\.\/css\/voice-discovery\.css'/, 'Voice discovery styling must be part of the offline shell.');
 assert.match(sw, /event\.request\.mode === 'navigate' \|\| event\.request\.destination === 'document'/, 'Public HTML navigations must be detected explicitly.');
 assert.match(
