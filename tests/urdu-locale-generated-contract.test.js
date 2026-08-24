@@ -7,7 +7,13 @@ const ur = require('../locale/ur.js');
 
 const root = path.resolve(__dirname, '..');
 const driftCheck = spawnSync(process.execPath, ['scripts/generate-urdu-locale.js', '--check'], { cwd: root, encoding: 'utf8' });
-assert.strictEqual(driftCheck.status, 0, `generated Urdu locale output is stale:\n${driftCheck.stderr || driftCheck.stdout || ''}`);
+let driftDetails = driftCheck.stderr || driftCheck.stdout || '';
+if (driftCheck.status !== 0) {
+  const materialize = spawnSync(process.execPath, ['scripts/generate-urdu-locale.js'], { cwd: root, encoding: 'utf8' });
+  const diff = spawnSync('git', ['diff', '--', 'urdu/index.html'], { cwd: root, encoding: 'utf8' });
+  driftDetails += '\nGenerated diff:\n' + (diff.stdout || diff.stderr || materialize.stderr || materialize.stdout || 'No diff available.');
+}
+assert.strictEqual(driftCheck.status, 0, `generated Urdu locale output is stale:\n${driftDetails}`);
 
 const outputs = {
   '/': 'urdu/index.html',

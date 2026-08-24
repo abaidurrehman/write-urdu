@@ -23,6 +23,7 @@ const APP_SHELL = [
   './css/core-workspace-convergence.css',
   './css/basic-writer-command-toolbar.css',
   './css/writer-voice-input.css',
+  './css/voice-discovery.css',
   './css/card-studio-publish.css',
   './css/editor-tools.css',
   './css/input-mode.css',
@@ -132,6 +133,26 @@ self.addEventListener('activate', event => {
   );
 });
 
+function cacheSuccessfulResponse(request, response) {
+  if (response && response.ok) {
+    const copy = response.clone();
+    caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+  }
+  return response;
+}
+
+function offlineNavigationFallback(request, url) {
+  return caches.match(request).then(cached => {
+    if (cached) return cached;
+    const extensionless = url.pathname !== '/' && !url.pathname.endsWith('/') && !url.pathname.includes('.');
+    if (extensionless) {
+      const fallback = new Request(url.origin + url.pathname + '.html', request);
+      return caches.match(fallback).then(extensionlessCached => extensionlessCached || caches.match('./index.html'));
+    }
+    return caches.match('./index.html');
+  });
+}
+
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
@@ -146,23 +167,23 @@ self.addEventListener('fetch', event => {
     url.pathname === '/my-documents/'
   ) return;
 
+  // Public HTML is acquisition/product content. Always ask the network first
+  // so homepage, SEO and discovery releases cannot remain hidden behind an
+  // old app-shell snapshot. The cached document is only an offline fallback.
+  const isNavigation = event.request.mode === 'navigate' || event.request.destination === 'document';
+  if (isNavigation) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => cacheSuccessfulResponse(event.request, response))
+        .catch(() => offlineNavigationFallback(event.request, url))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response && response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-        }
-        return response;
-      }).catch(() => {
-        const extensionless = url.pathname !== '/' && !url.pathname.endsWith('/') && !url.pathname.includes('.');
-        if (extensionless) {
-          const fallback = new Request(url.origin + url.pathname + '.html', event.request);
-          return caches.match(fallback);
-        }
-        return caches.match('./index.html');
-      });
+      return fetch(event.request).then(response => cacheSuccessfulResponse(event.request, response));
     })
   );
 });
