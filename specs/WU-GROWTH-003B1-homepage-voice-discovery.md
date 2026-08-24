@@ -1,7 +1,7 @@
 # WU-GROWTH-003B1 — Homepage Voice Discovery
 
 **Parent:** `WU-GROWTH-003A` / `WU-GROWTH-003`  
-**Status:** Implemented in stacked PR  
+**Status:** Ready for quality gate  
 **Branch:** `feature/voice-discovery-homepage`  
 **Date:** 2026-08-24
 
