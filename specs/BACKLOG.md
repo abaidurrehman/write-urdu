@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Product & Spec Backlog
 
 **Status:** Active  
-**Last updated:** 2026-08-18  
+**Last updated:** 2026-08-24  
 **Purpose:** One source of truth for priority, sequence and product state.
 
 This file owns **priority and sequence**. Individual feature specs own detailed behaviour and acceptance criteria. `specs/README.md` is the feature registry. `docs/WU-I001-IMPLEMENTATION-TRACKER.md` records v2 migration execution. Supporting SEO/audit documents provide evidence but do not own roadmap priority.
@@ -305,6 +305,22 @@ Winners get stronger landing content, examples, valid schema and supporting cont
 - [ ] Keep WriteUrdu-specific Urdu invoice value distinct from InvoiceCraftly rather than duplicating a generic invoice product.
 - [ ] Migrate to v2 only if the route remains strategically justified.
 
+## P1.8 — `WU-DOC-001` English to Urdu Document Translator
+
+**Type:** Product + acquisition / Work workflow  
+**Specs:** `specs/WU-DOC-001-english-to-urdu-document-translator.md`, `specs/WU-DOC-001A-ingestion-translation-foundation.md`, `specs/WU-DOC-001B-document-workspace-handoffs.md`, `specs/WU-DOC-001C-growth-seo-measurement.md`, `specs/WU-DOC-001D-scanned-images-layout-rnd.md`  
+**Feasibility:** `docs/WU-DOC-001-CLOUDFLARE-FEASIBILITY-2026-08-24.md`  
+**Status:** Planned — founder-approved 2026-08-24.
+
+Turn English PDF/DOCX/TXT documents into clean, editable Urdu and continue into the existing Write Urdu editing/export journey. The Phase 1 promise is semantic structure and editable Urdu, not pixel-perfect source-layout replacement.
+
+- [ ] Slice A — configure the current Workers AI binding; implement bounded `toMarkdown` extraction, `DocumentDraft`, translation adapter, IndicTrans2 Urdu baseline benchmark, safe limits and `/api/document-translate`.
+- [ ] Slice B — ship the focused upload/review workspace, editable RTL result, Copy, Rich Editor handoff, clean Print/Save-as-PDF path, accessibility/mobile acceptance and `WU-PLAT-002` registry integration.
+- [ ] Slice C — launch one canonical acquisition owner at `/tools/english-to-urdu-document-translator`, add truthful metadata/schema/internal discovery, bounded funnel telemetry, Urdu locale when generated under `WU-I18N-001`, and protect the active workspace from ads.
+- [ ] Slice D — benchmark photo/scanned/image-only inputs separately; expose image/OCR support only when extraction fidelity passes. Keep exact layout preservation as separately gated R&D.
+
+**Guardrails:** no automatic file/content persistence, no new D1/R2 store for transient translation, no document content/filename in telemetry/logs, no near-identical `/pdf-to-urdu` doorway pages at launch, and no claim that generated Urdu preserves the exact source layout.
+
 ---
 
 # LATER — P2
@@ -352,7 +368,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 - Related search for Auto ads.
 - Changing the transliteration provider or initialization contract without a compelling reason.
 - Accounts/cloud documents/server-side storage for the core writing workflow without demonstrated user demand.
-- AI translation/calligraphy features as a novelty project.
+- Generic AI translation/calligraphy novelty features. `WU-DOC-001` is the approved bounded document-workflow exception; expansion beyond its explicit contract requires its own evidence/spec.
 - Removing established URLs because they look visually old or redundant without query/route evidence.
 - Publishing founder identity, reviews, ratings, usage counts or `sameAs` profiles without verified public evidence.
 
@@ -366,6 +382,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 | `WU-SHARE-001` | Planned | P0.6 product-led distribution; Card Studio Phase 1 with release-blocking telemetry, then main editor expansion |
 | `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
 | `WU-PLAT-002` | Active | P0.7 outcome-led IA + shared workspace continuity; governs new-tool journey integration |
+| `WU-DOC-001` | Planned | P1.8 founder-approved document-to-Urdu Work workflow; text PDF/DOCX/TXT Phase 1, scanned/layout expansion separately gated |
 | `WU-CS-UX-001` | Implemented | Card Studio behavior complete; v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Implemented | Card Studio empty-state behavior retained through v2 migration |
 | `WU-SM-001` | Implemented core | v2 migration P1 |
@@ -389,4 +406,5 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 **Next product-architecture implementation:** P0.7 `WU-PLAT-002` Slice A/B — workspace registry + shared handoff runtime before adding more destination-specific seams.  
 **Parallel P0 distribution work:** P0.6 `WU-SHARE-001` remains approved; its public-to-local continuation should integrate with the new workspace-ownership contract rather than invent a separate journey model.  
 **Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
+**Approved P1 product expansion:** P1.8 `WU-DOC-001` is fully groomed and can start with Slice A when P1 capacity is available; it must reuse `WU-PLAT-002` rather than create an isolated document product.  
 **Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.
