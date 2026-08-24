@@ -4,34 +4,53 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+// Order matters: specific jobs must match before the broad application bucket.
 const CLUSTERS = [
   {
     id: 'leave-application',
     label: 'Leave application in Urdu',
+    tier: 1,
     terms: [
       /\bleave\s+application\b.*\burdu\b/i,
       /\burdu\b.*\bleave\s+application\b/i,
+      /\bapplication\s+for\s+leave\b.*\burdu\b/i,
       /\bsick\s+leave\b.*\burdu\b/i,
       /\burdu\b.*\bsick\s+leave\b/i,
       /چھٹی\s+کی\s+درخواست/u,
       /رخصت\s+کی\s+درخواست/u,
+      /درخواست\s+برائے\s+رخصت/u,
       /بیماری.*رخصت/u
     ]
   },
   {
     id: 'job-application',
     label: 'Job application in Urdu',
+    tier: 1,
     terms: [
       /\bjob\s+application\b.*\burdu\b/i,
       /\burdu\b.*\bjob\s+application\b/i,
       /\bapplication\s+for\s+job\b.*\burdu\b/i,
       /ملازمت\s+کی\s+درخواست/u,
+      /درخواست\s+برائے\s+ملازمت/u,
       /نوکری\s+کی\s+درخواست/u
+    ]
+  },
+  {
+    id: 'fee-concession',
+    label: 'Fee concession application in Urdu',
+    tier: 2,
+    terms: [
+      /\bfee(?:s)?\s+(?:concession|maafi|mafi)\b.*\burdu\b/i,
+      /\burdu\b.*\bfee(?:s)?\s+(?:concession|maafi|mafi)\b/i,
+      /\bfee(?:s)?\s+(?:maafi|mafi)\s+(?:ki\s+)?darkhwast\b/i,
+      /فیس\s+معافی\s+کی\s+درخواست/u,
+      /فیس\s+میں\s+رعایت\s+کی\s+درخواست/u
     ]
   },
   {
     id: 'resignation-letter',
     label: 'Resignation letter in Urdu',
+    tier: 2,
     terms: [
       /\bresignation\s+letter\b.*\burdu\b/i,
       /\burdu\b.*\bresignation\s+letter\b/i,
@@ -42,6 +61,7 @@ const CLUSTERS = [
   {
     id: 'complaint-application',
     label: 'Complaint application in Urdu',
+    tier: 2,
     terms: [
       /\bcomplaint\s+(?:application|letter)\b.*\burdu\b/i,
       /\burdu\b.*\bcomplaint\s+(?:application|letter)\b/i,
@@ -53,6 +73,7 @@ const CLUSTERS = [
   {
     id: 'invitation-letter',
     label: 'Invitation letter in Urdu',
+    tier: 3,
     terms: [
       /\binvitation\s+(?:letter|card)\b.*\burdu\b/i,
       /\burdu\b.*\binvitation\s+(?:letter|card)\b/i,
@@ -63,7 +84,8 @@ const CLUSTERS = [
   },
   {
     id: 'general-application',
-    label: 'Urdu application / درخواست',
+    label: 'General Urdu application / درخواست',
+    tier: 3,
     terms: [
       /\bapplication\s+in\s+urdu\b/i,
       /\burdu\s+application\b/i,
@@ -162,10 +184,17 @@ function findCluster(query) {
   return CLUSTERS.find((cluster) => cluster.terms.some((term) => term.test(normalized))) || null;
 }
 
+function promotionReasons(metrics) {
+  const reasons = [];
+  if (metrics.impressions >= 100 && metrics.position >= 4 && metrics.position <= 20) reasons.push('near-win');
+  if (metrics.impressions >= 25 && metrics.clicks >= 3) reasons.push('click-proof');
+  return reasons;
+}
+
 function classify(metrics) {
-  if (metrics.impressions >= 1000 && metrics.position <= 20) return 'promotion-review';
-  if (metrics.impressions >= 500 || metrics.clicks >= 5) return 'candidate';
-  if (metrics.impressions >= 100 || metrics.clicks >= 1) return 'observe';
+  if (promotionReasons(metrics).length) return 'promotion-review';
+  if (metrics.impressions >= 25 || metrics.clicks >= 1) return 'candidate';
+  if (metrics.impressions > 0) return 'observe';
   return 'hold';
 }
 
@@ -175,6 +204,7 @@ function analyzeRows(rows) {
   const buckets = new Map(CLUSTERS.map((cluster) => [cluster.id, {
     id: cluster.id,
     label: cluster.label,
+    tier: cluster.tier,
     matchedQueries: 0,
     clicks: 0,
     impressions: 0,
@@ -201,20 +231,22 @@ function analyzeRows(rows) {
   return [...buckets.values()].map((bucket) => {
     const position = bucket.impressions ? bucket.weightedPosition / bucket.impressions : 0;
     const ctr = bucket.impressions ? bucket.clicks / bucket.impressions : 0;
-    const result = {
+    const metrics = { ...bucket, position };
+    return {
       id: bucket.id,
       label: bucket.label,
+      tier: bucket.tier,
       matchedQueries: bucket.matchedQueries,
       clicks: bucket.clicks,
       impressions: bucket.impressions,
       ctr,
       position,
-      recommendation: classify({ ...bucket, position }),
+      recommendation: classify(metrics),
+      promotionReasons: promotionReasons(metrics),
       topQueries: bucket.topQueries
         .sort((a, b) => b.impressions - a.impressions || b.clicks - a.clicks)
         .slice(0, 3)
     };
-    return result;
   }).sort((a, b) => b.impressions - a.impressions || b.clicks - a.clicks);
 }
 
@@ -245,21 +277,22 @@ function markdownReport(results, sourceName) {
     '',
     `Source: ${sourceName || 'Search Console query CSV'}`,
     '',
-    '| Intent cluster | Clicks | Impressions | CTR | Avg position | Signal |',
-    '| --- | ---: | ---: | ---: | ---: | --- |'
+    '| Intent cluster | Tier | Clicks | Impressions | CTR | Avg position | Signal |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | --- |'
   ];
   results.forEach((item) => {
-    lines.push(`| ${item.label} | ${item.clicks} | ${item.impressions} | ${pct(item.ctr)} | ${position(item.position)} | ${recommendationLabel(item.recommendation)} |`);
+    lines.push(`| ${item.label} | ${item.tier} | ${item.clicks} | ${item.impressions} | ${pct(item.ctr)} | ${position(item.position)} | ${recommendationLabel(item.recommendation)} |`);
   });
 
   const review = results.filter((item) => item.recommendation === 'promotion-review');
   lines.push('', '## Decision rule', '');
   if (review.length) {
-    lines.push(`Review ${review.map((item) => `**${item.label}**`).join(', ')} for a dedicated landing page. This is a review trigger, not an automatic publish decision.`);
+    lines.push(`Review ${review.map((item) => `**${item.label}**`).join(', ')} against the full promotion gates. This is a review trigger, not an automatic publish decision.`);
   } else {
-    lines.push('No intent cluster has crossed the promotion-review threshold yet. Keep the collection page as the owner and continue observing.');
+    lines.push('No intent cluster has crossed the query-CSV promotion-review gates yet. Keep the collection page as the owner and continue observing.');
   }
-  lines.push('', 'Before creating a dedicated page, confirm the query maps to `/urdu-writing-templates` in the Search Console Pages/Queries view and that the new page can provide substantially more value than the template body alone.');
+  lines.push('', 'This scorer implements the 28-day **near-win** and **click-proof** gates from the canonical observation plan. The 7-day breakout-growth gate requires comparable Dates exports and is intentionally not inferred from a single Queries.csv file.');
+  lines.push('', 'Before creating a dedicated page, confirm the query maps to `/urdu-writing-templates` (or understand why another WriteUrdu page owns it) in the Search Console Pages/Queries view and confirm the proposed page adds substantial product value beyond the template body.');
 
   const top = results.filter((item) => item.topQueries.length);
   if (top.length) {
@@ -279,7 +312,8 @@ function usage() {
     '  node scripts/analyze-writing-template-gsc.js <Queries.csv>',
     '  node scripts/analyze-writing-template-gsc.js <Queries.csv> --json',
     '',
-    'Use the Queries.csv file from a Google Search Console Performance export.'
+    'Use the Queries.csv file from a Google Search Console Performance export.',
+    'The output is triage only; the canonical promotion decision still requires Pages/query ownership and unique-value review.'
   ].join('\n');
 }
 
@@ -308,6 +342,7 @@ module.exports = {
   parseCsv,
   resolveColumns,
   findCluster,
+  promotionReasons,
   classify,
   analyzeRows,
   analyzeCsv,
