@@ -8,9 +8,9 @@
 
 ## 1. Why this plan exists
 
-The writing-template library now has 12 useful starter templates and two crawlable language routes. The next risk is over-expansion: publishing one page per template before Search Console proves demand would create thin, overlapping pages and dilute the collection owner's authority.
+The writing-template library has 12 useful starter templates and two crawlable language routes. The next risk is over-expansion: publishing one page per template before Search Console proves demand would create thin, overlapping pages and dilute the collection owner's authority.
 
-The operating loop is therefore:
+The operating loop is:
 
 ```text
 collection launch
@@ -21,24 +21,19 @@ collection launch
 → observe again
 ```
 
-Do not create synonym/doorway pages such as multiple variants of `leave application in urdu`, `urdu leave application`, and `application for leave in urdu`. One useful page owns one distinct job.
+Do not create synonym/doorway pages such as separate routes for `leave application in urdu`, `urdu leave application`, and `application for leave in urdu`. One useful page owns one distinct job.
 
 ## 2. Day-zero state
 
 Launch date: **2026-08-24**.
 
-The latest Search Console ZIP previously supplied in another project thread is not available on the current repository/file surface, so this document intentionally records **no fabricated pre-launch impression count**.
+No post-launch Search Console baseline has been recorded yet. Never substitute an external keyword estimate for WriteUrdu's own query evidence.
 
 The first post-launch Search Console export that includes 2026-08-24 becomes the baseline snapshot.
 
-External SERP research on 2026-08-24 confirms clear existing Urdu-specific search/result ecosystems for at least:
+Current crawl observation on launch day: external search snapshots had not yet surfaced the new writing-template routes. Treat this as an indexing/crawl observation only; it is not a reason to create more URLs.
 
-- leave applications in Urdu;
-- job applications in Urdu;
-- fee-concession applications in Urdu;
-- resignation letters in Urdu.
-
-That is prioritization evidence only. It does **not** justify a dedicated WriteUrdu page until WriteUrdu's own Search Console data begins surfacing the job.
+No individual writing-job page is approved at launch.
 
 ## 3. Query clusters to watch
 
@@ -103,19 +98,60 @@ Current collection template:
 
 ### Tier 3 — long-tail watch
 
+- invitation letter / `دعوت نامہ`;
+- broad `application in urdu` / `urdu application` / `درخواست`;
 - certificate request/application;
-- general request application;
 - payment reminder in Urdu;
-- meeting notice in Urdu;
-- invitation letter in Urdu.
+- meeting notice in Urdu.
 
-Do not create pages for Tier 3 solely because the template exists.
+Do not create Tier 3 pages solely because the template exists.
 
-## 4. Search Console collection procedure
+## 4. Search Console scorer
+
+The repository includes a deterministic scorer for the approved query clusters:
+
+```text
+scripts/analyze-writing-template-gsc.js
+```
+
+Export **Performance → Search results → Queries** as CSV and run:
+
+```bash
+npm run templates:gsc -- path/to/Queries.csv
+```
+
+Machine-readable output:
+
+```bash
+npm run templates:gsc -- path/to/Queries.csv --json
+```
+
+The scorer:
+
+- recognizes the governed English/Roman/Urdu query variants;
+- assigns each query to one specific job before the broad application bucket;
+- sums clicks and impressions;
+- calculates CTR from aggregate clicks/impressions;
+- calculates impression-weighted average position;
+- shows the leading matched queries;
+- marks clusters `HOLD`, `OBSERVE`, `CANDIDATE`, or `PROMOTION REVIEW`.
+
+It intentionally does **not** publish pages or change SEO configuration.
+
+### Promotion-review gates implemented by the scorer
+
+The scorer implements the two gates that can be safely evaluated from one Queries CSV:
+
+1. **Near-win:** 100+ impressions and cluster-weighted average position 4–20; or
+2. **Click proof:** 25+ impressions and at least 3 organic clicks.
+
+The third gate from §7 — a 7-day breakout versus the previous comparable 7-day period — requires comparable Dates exports and is intentionally not inferred from a single query CSV.
+
+`PROMOTION REVIEW` means investigate the cluster. It does not mean ship a page.
+
+## 5. Search Console collection procedure
 
 At each checkpoint export **Queries, Pages, Countries, Devices and Dates** for Web search.
-
-Use these views:
 
 ### A. Exact English collection route
 
@@ -143,15 +179,15 @@ Page filter:
 https://write-urdu.com/urdu/urdu-writing-templates
 ```
 
-Capture the same fields separately. Do not merge the two routes until checking whether Google is serving different query language/user segments.
+Capture the same fields separately. Do not merge the two routes until checking whether Google serves different language/user segments.
 
 ### C. Sitewide query discovery
 
-Search sitewide Queries for the cluster terms in §3. This catches cases where Google initially assigns a query to `/`, `/urdu-editor`, `/urdu-templates`, or another established URL instead of the new collection owner.
+Search sitewide Queries for the clusters in §3. This catches cases where Google initially assigns a query to `/`, `/urdu-editor`, `/urdu-templates`, or another established URL instead of the new collection owner.
 
-If another route is earning a narrow application query, investigate intent ownership before adding a new page.
+If another route earns a narrow application query, investigate intent ownership before adding a new page.
 
-## 5. Checkpoint cadence
+## 6. Checkpoint cadence
 
 ### Checkpoint 1 — crawl/index health: ~7 days
 
@@ -181,17 +217,17 @@ Classify every material query into:
 - another distinct job;
 - irrelevant/noise.
 
-A cluster can enter `candidate` state, but normally should not ship yet.
+A cluster can enter `CANDIDATE` state, but normally should not ship yet.
 
 ### Checkpoint 3 — promotion decision: ~28 days
 
-Use the gates in §6.
+Run `templates:gsc` on the 28-day Queries export, then apply every mandatory gate in §7.
 
 ### Checkpoint 4 — confirmation: ~56 days
 
 Re-score candidates that did not pass at day 28. Earlier promotion is allowed only for a very clear breakout with strong intent fit.
 
-## 6. Dedicated-page promotion gates
+## 7. Dedicated-page promotion gates
 
 A template becomes eligible for its own route only when **all** mandatory gates pass.
 
@@ -217,19 +253,19 @@ Those belong to the same owner.
 
 ### Gate B — observed WriteUrdu demand — mandatory
 
-Use a rolling 28-day window. A cluster qualifies for deeper review when **at least one** of these evidence paths is true:
+Use a rolling 28-day window. A cluster qualifies for deeper review when **at least one** evidence path is true:
 
 1. **Near-win:** 100+ impressions with cluster-weighted average position roughly 4–20; or
 2. **Click proof:** 25+ impressions and at least 3 organic clicks; or
 3. **Breakout:** 20+ impressions in the latest 7 days and at least 100% growth versus the previous comparable 7 days, with the same intent remaining relevant.
 
-These are prioritization thresholds, not ranking guarantees. If the site has unusually low/high exposure, re-score using relative evidence rather than mechanically publishing a page.
+These are prioritization thresholds, not ranking guarantees. If the site has unusually low/high exposure, use relative evidence rather than mechanically publishing a page.
 
 ### Gate C — current owner fit — mandatory
 
 Before creating a page, inspect which WriteUrdu URL Google currently ranks for the cluster.
 
-- If `/urdu-writing-templates` ranks: candidate can be promoted if a dedicated page would answer the job materially better.
+- If `/urdu-writing-templates` ranks: candidate can be promoted if a dedicated page answers the job materially better.
 - If another established page ranks strongly: first decide whether that route should remain owner.
 - If multiple WriteUrdu URLs split impressions: fix cannibalization before adding another URL.
 
@@ -240,9 +276,9 @@ A dedicated page must add more than the same template body.
 Minimum useful page contract:
 
 - one editable template/workspace or direct preselected template state;
-- when this format is appropriate;
+- when the format is appropriate;
 - what information the user must replace;
-- 2–4 useful variations where genuinely different (for example school vs office leave);
+- 2–4 useful variations where genuinely different;
 - common mistakes/checklist;
 - direct Basic Writer / Rich Editor continuation;
 - truthful recipient-specific limitation;
@@ -264,7 +300,7 @@ The dedicated page must have:
 - sitemap inclusion only after the page is complete;
 - appropriate English/Urdu locale treatment based on actual copy readiness.
 
-## 7. Decision outcomes
+## 8. Decision outcomes
 
 At each 28-day review, every cluster receives exactly one state:
 
@@ -287,17 +323,6 @@ The query is useful but does not justify a URL. Improve:
 Create exactly one distinct owner page/spec for the strongest qualified job.
 
 **Rate limit:** normally no more than one new dedicated writing-job SEO page per 28-day observation cycle. Observe its interaction with the collection before approving the next one.
-
-## 8. Likely first candidates — not pre-approved pages
-
-Based on current external result quality and the Phase 1 catalogue, the first clusters to watch most closely are:
-
-1. leave application in Urdu;
-2. job application in Urdu;
-3. fee concession application in Urdu;
-4. resignation letter in Urdu.
-
-This ranking is only a monitoring priority. Search Console evidence can reorder it immediately.
 
 ## 9. Product telemetry used alongside Search Console
 
@@ -325,7 +350,7 @@ Do not:
 - add ads inside the active template/editor workspace;
 - collect users' template search text or edited application content for SEO analysis.
 
-## 11. First review template
+## 11. Review table
 
 Use this table at each checkpoint:
 
@@ -336,13 +361,24 @@ Use this table at each checkpoint:
 | Fee concession | — | — | — | — | — | — | HOLD | Observe |
 | Resignation | — | — | — | — | — | — | HOLD | Observe |
 | Complaint | — | — | — | — | — | — | HOLD | Observe |
-| Other | — | — | — | — | — | — | HOLD | Observe |
+| Invitation / other | — | — | — | — | — | — | HOLD | Observe |
 
 Never replace `—` with an estimate. Only record exported Search Console evidence.
 
-## 12. Next action
+## 12. Observation log
 
-After the deployed routes have had time to crawl, provide the next Search Console Performance ZIP. Review the exact page-filtered and sitewide query data against this plan, update the table, and approve either:
+### 2026-08-24 — launch baseline
+
+- English and Urdu collection routes launched as indexable search surfaces in repository source.
+- External crawl/search snapshots had not yet surfaced the new routes at the time of observation.
+- No post-launch Search Console baseline available on the current file surface.
+- No individual template landing pages approved.
+- Deterministic query-cluster scorer added as `npm run templates:gsc -- <Queries.csv>`.
+- Next meaningful decision requires post-launch Search Console evidence.
+
+## 13. Next action
+
+After the deployed routes have had time to crawl, provide the next Search Console Performance ZIP/CSV. Review exact page-filtered and sitewide query data against this plan, update the review table, and approve exactly one of:
 
 ```text
 HOLD
