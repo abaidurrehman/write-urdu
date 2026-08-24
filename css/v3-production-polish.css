@@ -117,6 +117,58 @@ body.wu-v2-shell:not(.content-page) .home-hero-actions {
   margin: 12px 0 16px;
 }
 
+/* Voice is a first-view feature, but its discovery card must not push the
+   actual Urdu writing canvas below the fold. On laptop/mobile viewports keep
+   the mic, feature name and CTA visually strong while collapsing the sample
+   and explanatory copy before sacrificing the core writing task. */
+@media (max-width: 1400px) {
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home {
+    grid-template-columns: auto minmax(0, 1fr) minmax(12rem, .8fr) auto;
+    gap: .6rem;
+    padding: .35rem .7rem;
+    margin-bottom: 0;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    box-shadow: 0 0 0 .3rem rgb(24 145 81 / 8%);
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-icon svg {
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-copy {
+    gap: 0;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-kicker {
+    font-size: .62rem;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-copy strong {
+    font-size: 1rem;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-copy small {
+    display: none;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-output {
+    padding: .25rem .55rem;
+    font-size: .96rem;
+    line-height: 1.55;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-arrow {
+    width: 1.65rem;
+    height: 1.65rem;
+    font-size: 1rem;
+  }
+}
+
 body.wu-v2-shell:not(.content-page) hr.solid {
   margin: 8px 0 10px;
 }
@@ -205,6 +257,16 @@ body.wu-v2-shell:not(.content-page) .batch-transliteration-panel:not(:has([data-
     flex: 0 0 auto;
     padding: .5rem .78rem;
     font-size: .8rem;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: .55rem;
+    padding: .35rem .55rem;
+  }
+
+  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-output {
+    display: none;
   }
 
   /* Keep every editor command reachable without letting three action groups
