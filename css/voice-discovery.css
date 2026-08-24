@@ -45,6 +45,7 @@
 
 .wu-voice-entry-home {
   grid-column: 1 / -1;
+  margin-top: .8rem;
   margin-bottom: .35rem;
 }
 
@@ -81,6 +82,11 @@
   font-weight: var(--wu-weight-bold);
   letter-spacing: .08em;
   text-transform: uppercase;
+}
+
+html[dir='rtl'] .wu-voice-entry-kicker {
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .wu-voice-entry-copy strong {
@@ -124,6 +130,49 @@
   font-weight: var(--wu-weight-bold);
 }
 
+html[dir='rtl'] .wu-voice-entry-arrow {
+  transform: rotate(180deg);
+}
+
+/* The Basic Writer already has embedded Voice. Make that method feel like a
+   first-class choice rather than another small input-mode pill. */
+body[data-wu-basic-command-toolbar='true'] .wu-basic-input-mode .wu-basic-voice-method {
+  min-height: 44px;
+  padding: 7px 13px;
+  border-color: #50a978;
+  color: #0d6d43;
+  background: linear-gradient(180deg, #f3fbf6 0%, #eaf8ef 100%);
+  box-shadow: 0 3px 10px rgb(14 111 67 / 8%);
+}
+
+body[data-wu-basic-command-toolbar='true'] .wu-basic-input-mode .wu-basic-voice-method i {
+  display: inline-grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 999px;
+  color: #fff;
+  background: #177245;
+}
+
+body[data-wu-basic-command-toolbar='true'] .wu-basic-input-mode .wu-basic-voice-method:hover,
+body[data-wu-basic-command-toolbar='true'] .wu-basic-input-mode .wu-basic-voice-method:focus-visible {
+  border-color: #177245;
+  color: #0b5e3a;
+  background: #e2f5e9;
+}
+
+body[data-wu-basic-command-toolbar='true'] .wu-basic-input-mode .wu-basic-voice-method.is-active {
+  border-color: #177245;
+  color: #fff;
+  background: #177245;
+}
+
+body[data-wu-basic-command-toolbar='true'] .wu-basic-input-mode .wu-basic-voice-method.is-active i {
+  color: #177245;
+  background: #fff;
+}
+
 @media (max-width: 760px) {
   .wu-voice-entry {
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -144,6 +193,13 @@
   .wu-voice-entry-icon svg {
     width: 2rem;
     height: 2rem;
+  }
+
+  body[data-wu-basic-command-toolbar='true'] .wu-basic-input-mode .wu-basic-voice-method {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 48px;
   }
 }
 
