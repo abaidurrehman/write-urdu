@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const config = require('../locale.config.js');
 const locale = require('../locale/ur.js');
+const growthOverrides = require('../locale/ur-growth-overrides.js');
 const seo = require('../seo.config.js');
 const Route = require('../js/locale-route.js');
 const root = path.resolve(__dirname, '..');
@@ -65,7 +66,10 @@ function applyKey(html, key, value) {
   return html.replace(re, '$1' + value + '$4');
 }
 function applyLiteralReplacements(html, productPath) {
-  (locale.literalReplacements && locale.literalReplacements[productPath] || []).forEach(function (pair) {
+  const pairs = []
+    .concat(locale.literalReplacements && locale.literalReplacements[productPath] || [])
+    .concat(growthOverrides[productPath] || []);
+  pairs.forEach(function (pair) {
     const from = pair[0];
     const to = pair[1];
     if (!html.includes(from)) throw new Error('Missing literal localization source for ' + productPath + ': ' + from.slice(0, 80));
