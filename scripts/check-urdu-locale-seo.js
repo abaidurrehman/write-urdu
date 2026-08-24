@@ -27,6 +27,9 @@ function alternates(source) {
 }
 function generatedFile(productPath) { return productPath === '/' ? 'urdu/index.html' : 'urdu' + productPath + '.html'; }
 const expectedUrduUrls = new Set();
+const standaloneUrduUrls = new Set([
+  seo.SITE_ORIGIN + '/urdu/urdu-writing-templates'
+]);
 
 for (const productPath of localeConfig.phase1Routes) {
   const record = localeConfig.routes[productPath];
@@ -85,11 +88,13 @@ for (const productPath of localeConfig.phase1Routes) {
 
 const sitemap = read('sitemap.xml');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gi)].map(match => decode(match[1]).trim());
-const actualUrduUrls = new Set(locs.filter(url => {
+const allUrduUrls = new Set(locs.filter(url => {
   try { const p = new URL(url).pathname; return p === '/urdu/' || p.startsWith('/urdu/'); } catch (_) { return false; }
 }));
+for (const url of standaloneUrduUrls) if (!allUrduUrls.has(url)) errors.push(`sitemap: missing standalone Urdu URL ${url}`);
+const actualUrduUrls = new Set([...allUrduUrls].filter(url => !standaloneUrduUrls.has(url)));
 if (actualUrduUrls.size !== expectedUrduUrls.size) errors.push(`sitemap: expected exactly ${expectedUrduUrls.size} launched Urdu URLs, found ${actualUrduUrls.size}`);
 for (const url of expectedUrduUrls) if (!actualUrduUrls.has(url)) errors.push(`sitemap: missing launched Urdu URL ${url}`);
 for (const url of actualUrduUrls) if (!expectedUrduUrls.has(url)) errors.push(`sitemap: unlaunched Urdu URL included ${url}`);
 if (errors.length) { console.error(errors.map(error => 'URDU-SEO: ' + error).join('\n')); process.exit(1); }
-console.log(`Urdu locale SEO checks passed for ${localeConfig.phase1Routes.length} reciprocal locale pairs and ${actualUrduUrls.size} Urdu sitemap URLs.`);
+console.log(`Urdu locale SEO checks passed for ${localeConfig.phase1Routes.length} reciprocal locale pairs, ${actualUrduUrls.size} generated Urdu sitemap URLs and ${standaloneUrduUrls.size} standalone Urdu sibling.`);
