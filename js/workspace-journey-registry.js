@@ -109,6 +109,17 @@
             ]
         },
         {
+            id: 'writing-templates', routes: ['/urdu-writing-templates', '/urdu/urdu-writing-templates'], status: 'current', category: 'Write', stages: ['Write', 'Refine'],
+            label: 'Start from an Urdu application or letter', technicalLabel: 'Urdu Writing Templates',
+            jobs: ['start an Urdu application', 'start a letter or notice', 'edit a ready-made Urdu writing template'], accepts: ['plain-text'], produces: ['plain-text'],
+            persistence: 'current template edit local only', conflictPolicy: 'template selection never overwrites a saved editor draft automatically',
+            next: [
+                { id: 'writing-template-to-basic', target: 'basic-writer', type: 'handoff', label: 'Use in WriteUrdu', payloadKind: 'plain-text' },
+                { id: 'writing-template-to-rich', target: 'rich-editor', type: 'handoff', label: 'Format in Rich Editor', payloadKind: 'plain-text' },
+                { id: 'writing-template-copy', target: null, type: 'embedded', label: 'Copy template', payloadKind: null }
+            ]
+        },
+        {
             id: 'stylish-text', routes: ['/stylish-urdu-text-generator'], status: 'current', category: 'Create', stages: ['Create'],
             label: 'Create stylish copyable Urdu text', technicalLabel: 'Stylish Urdu Text',
             jobs: ['make copyable styled Urdu text'], accepts: ['plain-text'], produces: ['plain-text'],
