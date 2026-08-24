@@ -118,6 +118,23 @@
         target.insertAdjacentElement('afterend', entry);
     }
 
+    // The governed outcome-navigation runtime owns the rendered footer. Keep
+    // the newer writing-template acquisition page connected there as well as
+    // in sitemaps/SEO registries. The literal href is intentional: the static
+    // regression gate verifies that every public root HTML page has a shared
+    // navigation path, while localeHref upgrades it for Urdu routes at runtime.
+    function installWritingTemplatesFooterLink() {
+        var footer = document.querySelector('.wu-footer-nav');
+        var group = footer && footer.querySelector('[data-wu-footer-group="create"]');
+        if (!group || group.querySelector('[data-wu-writing-templates-link]')) return;
+        group.insertAdjacentHTML('beforeend', '<a data-wu-writing-templates-link href="/urdu-writing-templates">Writing templates</a>');
+        var link = group.querySelector('[data-wu-writing-templates-link]');
+        if (!link) return;
+        link.href = localeHref('/urdu-writing-templates');
+        var urdu = document.documentElement.getAttribute('dir') === 'rtl' || /^ur\b/i.test(document.documentElement.lang || '');
+        link.textContent = urdu ? 'اردو تحریری سانچے' : 'Writing templates';
+    }
+
     function installHomeAccountDocuments() {
         if (normalizedPath() !== '/') return;
         ensureStylesheet('/css/account-documents.css');
@@ -226,6 +243,7 @@
     }
 
     document.addEventListener('write-urdu:locale-change', restoreHomepageSearchIntentCopy);
+    document.addEventListener('write-urdu:outcome-navigation-ready', installWritingTemplatesFooterLink);
 
     loadScript('/js/site-header-core.js', 'WriteUrduLocale', function () {
         installAccountControl();
@@ -237,6 +255,7 @@
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {
             if (root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
                 root.WriteUrduOutcomeNavigation.render();
+                installWritingTemplatesFooterLink();
                 protectOutcomeNavigationDuringV2Start();
             }
             loadScript('/js/core-workspace-convergence.js', 'WriteUrduCoreWorkspaceConvergence', function () {
@@ -245,6 +264,7 @@
                 }
                 restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
                 installVoiceDiscovery();
+                installWritingTemplatesFooterLink();
                 loadContextualNextSteps();
                 loadCreationDestinationAdapters();
             });
