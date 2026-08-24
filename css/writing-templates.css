@@ -1,0 +1,173 @@
+@import url('./urdu-tools.css');
+
+.writing-templates-page .urdu-tool-main {
+  max-width: 1180px;
+}
+
+.writing-templates-hero {
+  align-items: stretch;
+}
+
+.writing-template-hero-actions,
+.writing-template-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  margin-top: 1rem;
+}
+
+.writing-template-controls {
+  display: grid;
+  gap: .75rem;
+  margin: 1rem 0 1.2rem;
+}
+
+.writing-template-search-label {
+  font-weight: 800;
+}
+
+.writing-template-search {
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface);
+  color: var(--wu-color-ink);
+  padding: .7rem .85rem;
+  font: inherit;
+}
+
+.writing-template-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.writing-template-filter {
+  border: 1px solid var(--wu-color-border);
+  border-radius: 999px;
+  background: var(--wu-color-surface);
+  color: var(--wu-color-ink-soft);
+  padding: .5rem .75rem;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.writing-template-filter[aria-pressed="true"] {
+  border-color: var(--wu-color-primary);
+  color: var(--wu-color-primary);
+  background: var(--wu-color-surface-soft);
+}
+
+.writing-template-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .9rem;
+}
+
+.writing-template-card {
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: var(--wu-color-surface);
+}
+
+.writing-template-card h3 {
+  margin: .1rem 0 0;
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  font-size: 1.22rem;
+  line-height: 1.9;
+}
+
+.writing-template-card > .urdu-tool-button {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+.writing-template-badge {
+  align-self: flex-start;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.writing-template-english-title {
+  margin: 0;
+  font-weight: 800;
+}
+
+.writing-template-card p {
+  margin: 0;
+}
+
+.writing-template-preview {
+  max-height: 7.5rem;
+  overflow: hidden;
+  padding: .65rem .75rem;
+  border-inline-start: 3px solid var(--wu-color-border-strong, var(--wu-color-border));
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  line-height: 1.9;
+}
+
+.writing-template-editor-section {
+  scroll-margin-top: 5rem;
+}
+
+.writing-template-editor {
+  width: 100%;
+  min-height: 26rem;
+  resize: vertical;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface);
+  color: var(--wu-color-ink);
+  padding: 1rem;
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  font-size: 1.2rem;
+  line-height: 2.05;
+}
+
+.writing-template-empty {
+  padding: 1.25rem;
+  border: 1px dashed var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  text-align: center;
+}
+
+.writing-template-guidance {
+  margin-top: 1rem;
+}
+
+.writing-templates-page .urdu-tool-notice[data-state="success"] {
+  color: var(--wu-color-success, #17663a);
+}
+
+@media (max-width: 900px) {
+  .writing-template-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .writing-template-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .writing-template-editor {
+    min-height: 22rem;
+  }
+
+  .writing-template-editor-actions .urdu-tool-button {
+    width: 100%;
+  }
+}
