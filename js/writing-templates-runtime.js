@@ -51,7 +51,14 @@
     function transfer(text, targetWorkspace, actionId) {
         var handoff = root && root.WriteUrduWorkspaceHandoff;
         if (!handoff || typeof handoff.transfer !== 'function') return { ok: false, reason: 'handoff-unavailable' };
-        return handoff.transfer({ sourceWorkspace: 'templates', sourceRoute: '/urdu-writing-templates', targetWorkspace: targetWorkspace, kind: 'plain-text', payload: { text: String(text || '') }, actionId: actionId });
+        return handoff.transfer({
+            sourceWorkspace: 'templates',
+            sourceRoute: isUrduLocale() ? '/urdu/urdu-writing-templates' : '/urdu-writing-templates',
+            targetWorkspace: targetWorkspace,
+            kind: 'plain-text',
+            payload: { text: String(text || '') },
+            actionId: actionId
+        });
     }
     function telemetry(name, detail) {
         var api = root && root.WriteUrduTelemetry;
@@ -60,6 +67,12 @@
     function engage() {
         var api = root && root.WriteUrduTelemetry;
         if (api && typeof api.engage === 'function') api.engage();
+    }
+    function destinationRoute(targetWorkspace, defaultRoute) {
+        if (!isUrduLocale()) return defaultRoute;
+        if (targetWorkspace === 'basic-writer') return '/urdu/';
+        if (targetWorkspace === 'rich-editor') return '/urdu/urdu-editor';
+        return defaultRoute;
     }
 
     function mount() {
@@ -134,16 +147,18 @@
         });
         writerButton.addEventListener('click', function () {
             var text = String(editor.value || '').trim(); if (!text) return;
-            telemetry('tool_handoff', { target_route: '/' });
+            var target = urdu ? '/urdu/' : '/';
+            telemetry('tool_handoff', { target_route: target });
             var result = transfer(text, 'basic-writer', 'writing-template-to-basic');
-            if (result && result.ok && result.route) return root.location.assign(result.route);
+            if (result && result.ok && result.route) return root.location.assign(destinationRoute('basic-writer', result.route));
             setNotice(urdu ? URDU_UI.writerFallback : 'Copy the template, then open WriteUrdu to continue.', 'info');
         });
         richButton.addEventListener('click', function () {
             var text = String(editor.value || '').trim(); if (!text) return;
-            telemetry('tool_handoff', { target_route: '/urdu-editor' });
+            var target = urdu ? '/urdu/urdu-editor' : '/urdu-editor';
+            telemetry('tool_handoff', { target_route: target });
             var result = transfer(text, 'rich-editor', 'writing-template-to-rich');
-            if (result && result.ok && result.route) return root.location.assign(result.route);
+            if (result && result.ok && result.route) return root.location.assign(destinationRoute('rich-editor', result.route));
             setNotice(urdu ? URDU_UI.richFallback : 'Copy the template, then open the Urdu editor to format it.', 'info');
         });
 
@@ -151,5 +166,5 @@
     }
 
     if (root && root.document) { if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', mount); else mount(); }
-    return { CATEGORIES: CATEGORIES, TEMPLATES: TEMPLATES, getTemplate: getTemplate, searchTemplates: searchTemplates, transfer: transfer, mount: mount, isUrduLocale: isUrduLocale };
+    return { CATEGORIES: CATEGORIES, TEMPLATES: TEMPLATES, getTemplate: getTemplate, searchTemplates: searchTemplates, transfer: transfer, mount: mount, isUrduLocale: isUrduLocale, destinationRoute: destinationRoute };
 }));
