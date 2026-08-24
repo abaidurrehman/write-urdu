@@ -32,5 +32,10 @@ assert.match(
   /rich-editor-page[\s\S]*?a\[href="\/"\][\s\S]*?> \.logo[\s\S]*?display:\s*none\s*!important/,
   'Mobile Rich Editor must suppress duplicate legacy branding before the authoring surface.'
 );
+assert.match(
+  v3Polish,
+  /rich-editor-page \.tool-actions \.home-actions-group-primary[\s\S]*?display:\s*none\s*!important/,
+  'Mobile Rich Editor must not spend a full toolbar row on the redundant Basic editor handoff.'
+);
 
 console.log('Service worker navigation freshness contract passed.');
