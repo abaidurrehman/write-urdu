@@ -8,7 +8,8 @@
 **Primary route:** `/urdu-writing-templates`  
 **Urdu sibling:** `/urdu/urdu-writing-templates`  
 **Related route:** `/urdu-templates` remains the visual-design template owner  
-**Journey dependency:** `WU-PLAT-002`
+**Journey dependency:** `WU-PLAT-002`  
+**SEO observation:** `docs/WU-TPL-001-SEO-OBSERVATION-PLAN-2026-08-24.md`
 
 ---
 
@@ -84,6 +85,7 @@ Each template provides:
 10. English and Urdu siblings must self-canonicalize and expose reciprocal `hreflang`.
 11. Urdu handoffs must stay inside `/urdu/` when the destination has an Urdu counterpart.
 12. Product telemetry must never contain the template body or the user's edited text.
+13. Dedicated template/job pages remain blocked until the observation plan records an evidence-backed promotion decision.
 
 ## 4. Search / launch treatment
 
@@ -107,7 +109,36 @@ The two routes expose reciprocal English/Urdu `hreflang` and `x-default` points 
 
 The Urdu sibling is intentionally a bounded standalone localized sibling in this slice rather than expanding the generator-managed eight-route `WU-I18N-001` Phase 1 registry. `scripts/check-urdu-locale-seo.js` explicitly validates this standalone sitemap member while retaining exact checks for the generator-owned Urdu set.
 
-Do not publish thin pages for every individual template merely to target query variants. Use Search Console and product telemetry to identify a template that merits a genuinely useful dedicated page first.
+Do not publish thin pages for every individual template merely to target query variants. Expansion is governed by `docs/WU-TPL-001-SEO-OBSERVATION-PLAN-2026-08-24.md`.
+
+The observation sequence is:
+
+```text
+~7 days  → crawl/index health only
+~14 days → query-cluster discovery
+~28 days → first promotion decision
+~56 days → confirmation/re-score
+```
+
+A dedicated writing-job page must pass all of these gates:
+
+1. distinct user job rather than a synonym variant;
+2. observed WriteUrdu Search Console demand;
+3. clean current route ownership / no unresolved cannibalization;
+4. unique product value beyond repeating the template body;
+5. clean canonical/internal-link/locale ownership.
+
+The initial monitoring priority is:
+
+1. leave application in Urdu;
+2. job application in Urdu;
+3. fee concession application in Urdu;
+4. resignation letter in Urdu;
+5. complaint application in Urdu.
+
+This order is not pre-approval. Search Console evidence can reorder it immediately.
+
+Normally promote no more than one dedicated writing-job page in a 28-day observation cycle, then observe its interaction with the collection before approving another.
 
 ## 5. Handoff contract
 
@@ -176,6 +207,8 @@ Do **not** send:
 
 This lets us measure whether the library is useful without collecting document content.
 
+Search Console remains the source of truth for individual query/job promotion decisions. Current product telemetry intentionally measures collection usefulness rather than identifying which private writing job a user selected.
+
 ## 9. Files
 
 ```text
@@ -195,6 +228,7 @@ _redirects
 scripts/check-urdu-locale-seo.js
 scripts/run-contract-tests.js
 specs/README.md
+docs/WU-TPL-001-SEO-OBSERVATION-PLAN-2026-08-24.md
 ```
 
 The reviewed wording lives in `js/writing-template-catalog.js`; interaction/search/handoff behaviour lives in `js/writing-templates-runtime.js`. Keep content revisions separate from runtime changes.
@@ -218,7 +252,9 @@ The reviewed wording lives in `js/writing-template-catalog.js`; interaction/sear
 - [x] Urdu handoffs remain in the Urdu locale.
 - [x] bounded product telemetry records use/copy/handoff without user text.
 - [x] launch contract protects crawl, locale, content and telemetry invariants.
-- [ ] long-term template expansion remains evidence-led from Search Console and usage data.
+- [x] evidence-led SEO observation/promotion plan recorded with 7/14/28/56-day checkpoints.
+- [ ] first Search Console baseline for the launched collection routes recorded.
+- [ ] first 28-day cluster review records HOLD / STRENGTHEN COLLECTION / PROMOTE ONE WINNER.
 
 ## 11. Verification
 
@@ -233,4 +269,4 @@ npm run governance:check
 npm run test:browser
 ```
 
-After deployment, verify both language URLs return `200`, self-canonicalize and show the expected `hreflang` links. Then monitor Search Console impressions/clicks and bounded product telemetry before deciding whether to add more templates or dedicated intent pages.
+After deployment, verify both language URLs return `200`, self-canonicalize and show the expected `hreflang` links. Then use the observation plan for Search Console impressions/clicks and bounded product telemetry before deciding whether to add more templates or dedicated intent pages.
