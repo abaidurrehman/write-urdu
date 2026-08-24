@@ -42,6 +42,7 @@ const tests = [
   'tests/voice-account-analytics-contract.test.js',
   'tests/inpage-unicode-core.test.js',
   'tests/inpage-unicode-contract.test.js',
+  'tests/document-translator-quick-win-contract.test.js',
   'tests/sua-acceptance-contract.test.js',
   'tests/journey-handoffs-contract.test.js',
   'tests/workspace-journey-runtime.test.js',
