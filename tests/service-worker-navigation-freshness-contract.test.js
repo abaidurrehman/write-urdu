@@ -20,7 +20,7 @@ assert.match(
   'Navigational HTML must be network-first with cache only as offline fallback.'
 );
 
-const navigationBlock = sw.match(/if \(isNavigation\) \{([\s\S]*?)\n  \}\n\n  event\.respondWith/);
+const navigationBlock = sw.match(/if \(isNavigation\) \{([\s\S]*?)\r?\n  \}\r?\n\r?\n  event\.respondWith/);
 assert.ok(navigationBlock, 'Navigation freshness branch must remain separate from static-asset cache-first handling.');
 assert.ok(
   navigationBlock[1].indexOf('fetch(event.request)') < navigationBlock[1].indexOf('offlineNavigationFallback'),
