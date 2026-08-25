@@ -18,7 +18,10 @@
     "templates:check": "node scripts/validate-template-library.js",
     "templates:gsc": "node scripts/analyze-writing-template-gsc.js",
     "locale:generate": "node scripts/generate-urdu-locale.js",
-    "locale:check": "node scripts/generate-urdu-locale.js --check"
+    "locale:check": "node scripts/generate-urdu-locale.js --check",
+    "ai:benchmark:validate": "node scripts/urdu-ai-benchmark.js validate",
+    "ai:benchmark": "node scripts/urdu-ai-benchmark.js run",
+    "ai:benchmark:score": "node scripts/urdu-ai-benchmark.js score"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"
