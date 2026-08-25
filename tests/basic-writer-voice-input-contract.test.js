@@ -48,7 +48,7 @@ assert.match(mobileCss, /grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/
 assert.match(mobileCss, /flex:\s*0 0 100% !important/, 'Phone input chooser must own a full toolbar row');
 assert.match(mobileCss, /min-height:\s*44px !important/, 'Phone input methods need full touch targets');
 
-assert.match(serviceWorker, /write-urdu-shell-v31/, 'PWA cache must refresh for embedded voice assets');
+assert.match(serviceWorker, /write-urdu-shell-v32/, 'PWA cache must refresh for embedded voice assets');
 assert.match(serviceWorker, /\.\/js\/voice-input-core\.js/, 'Shared voice core must be cached');
 assert.match(serviceWorker, /\.\/js\/unified-urdu-input\.js/, 'Unified input layer must be cached');
 
