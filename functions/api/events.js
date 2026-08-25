@@ -22,7 +22,12 @@ const EVENT_NAMES = new Set([
     'share_referred_creation_started',
     'share_republish_completed',
     'share_deleted',
-    'share_reported'
+    'share_reported',
+    'voice_exposed',
+    'voice_selected',
+    'voice_started',
+    'voice_final',
+    'voice_switch_continued'
 ]);
 
 const TOOLS = new Set([
@@ -37,7 +42,7 @@ const FORMATS = new Set([
 ]);
 const LENGTH_BUCKETS = new Set(['0', '1-20', '21-50', '51-100', '101-250', '251-500', '501-1000', '1001-2500', '2500+']);
 const ACTIVE_BUCKETS = new Set(['0-10s', '11-30s', '31-60s', '61-180s', '181-600s', '600s+']);
-const INPUT_MODES = new Set(['roman', 'direct', 'unknown']);
+const INPUT_MODES = new Set(['roman', 'direct', 'unknown', 'voice']);
 const DEVICE_CLASSES = new Set(['mobile', 'tablet', 'desktop']);
 const LOCALES = new Set(['en', 'ur']);
 
@@ -49,8 +54,9 @@ const METRIC_COLUMNS = [
     'length_0', 'length_1_20', 'length_21_50', 'length_51_100', 'length_101_250',
     'length_251_500', 'length_501_1000', 'length_1001_2500', 'length_2500_plus',
     'active_0_10', 'active_11_30', 'active_31_60', 'active_61_180', 'active_181_600', 'active_600_plus',
-    'input_roman', 'input_direct', 'input_unknown',
-    'device_mobile', 'device_tablet', 'device_desktop'
+    'input_roman', 'input_direct', 'input_unknown', 'input_voice',
+    'device_mobile', 'device_tablet', 'device_desktop',
+    'voice_exposed', 'voice_selected', 'voice_started', 'voice_final', 'voice_switch_continued'
 ];
 
 const SHARE_METRIC_COLUMNS = [
@@ -369,8 +375,13 @@ function applyEvent(delta, event) {
         incrementBucket(delta, 'active_', event.activeTimeBucket, {
             '0-10s': '0_10', '11-30s': '11_30', '31-60s': '31_60', '61-180s': '61_180', '181-600s': '181_600', '600s+': '600_plus'
         });
-        incrementBucket(delta, 'input_', event.inputMode, { roman: 'roman', direct: 'direct', unknown: 'unknown' });
+        incrementBucket(delta, 'input_', event.inputMode, { roman: 'roman', direct: 'direct', unknown: 'unknown', voice: 'voice' });
     }
+    if (event.eventName === 'voice_exposed') delta.voice_exposed += 1;
+    if (event.eventName === 'voice_selected') delta.voice_selected += 1;
+    if (event.eventName === 'voice_started') delta.voice_started += 1;
+    if (event.eventName === 'voice_final') delta.voice_final += 1;
+    if (event.eventName === 'voice_switch_continued') delta.voice_switch_continued += 1;
 }
 
 function applyShareEvent(delta, event) {

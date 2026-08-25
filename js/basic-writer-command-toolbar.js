@@ -57,14 +57,27 @@
         return button;
     }
 
+    var VOICE_EVENT_NAMES = {
+        'voice-exposed': 'voice_exposed',
+        'voice-selected': 'voice_selected',
+        'voice-started': 'voice_started',
+        'voice-final': 'voice_final',
+        'voice-auto-open': 'voice_selected',
+        'voice-switch-continued': 'voice_switch_continued'
+    };
+
     function telemetry(action) {
         if (!root || !root.WriteUrduTelemetry || typeof root.WriteUrduTelemetry.trackOutcome !== 'function') return;
+        var voiceEventName = VOICE_EVENT_NAMES[action];
+        if (voiceEventName) {
+            root.WriteUrduTelemetry.trackOutcome(voiceEventName, { input_mode: 'voice' });
+            return;
+        }
         var detail = {
             workspace: 'basic-writer',
             action: action,
             hasContent: hasContent()
         };
-        if (String(action || '').indexOf('voice') === 0) detail.input_mode = 'voice';
         root.WriteUrduTelemetry.trackOutcome('basic_toolbar_action', detail);
     }
 
@@ -158,6 +171,8 @@
         modeControl.insertBefore(methodButton, sourceNote || null);
         modeControl.appendChild(panel);
 
+        var awaitingSwitchProxy = false;
+
         voiceController = root.WriteUrduUnifiedInput.createVoiceInputController({
             adapter: root.WriteUrduUnifiedInput.createTextControlAdapter(editor),
             elements: {
@@ -170,9 +185,10 @@
                 notice: notice,
                 interim: interim
             },
-            onStart: function () { telemetry('voice-started'); },
+            onStart: function () { awaitingSwitchProxy = false; telemetry('voice-started'); },
             onFinal: function () {
                 syncState(surface);
+                awaitingSwitchProxy = true;
                 telemetry('voice-final');
             }
         });
@@ -184,13 +200,21 @@
                 panel.hidden = false;
                 methodButton.classList.add('is-active');
                 methodButton.setAttribute('aria-expanded', 'true');
+                telemetry('voice-selected');
             } else closeVoicePanel(methodButton, panel);
         });
 
         modeControl.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
-            button.addEventListener('click', function () { closeVoicePanel(methodButton, panel); });
+            button.addEventListener('click', function () {
+                closeVoicePanel(methodButton, panel);
+                if (awaitingSwitchProxy) {
+                    awaitingSwitchProxy = false;
+                    telemetry('voice-switch-continued');
+                }
+            });
         });
 
+        telemetry('voice-exposed');
         return voiceController;
     }
 

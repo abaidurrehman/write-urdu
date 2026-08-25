@@ -37,9 +37,19 @@
         root.document.head.appendChild(link);
     }
 
+    var VOICE_EVENT_NAMES = {
+        'voice-exposed': 'voice_exposed',
+        'voice-selected': 'voice_selected',
+        'voice-started': 'voice_started',
+        'voice-final': 'voice_final',
+        'voice-switch-continued': 'voice_switch_continued'
+    };
+
     function telemetry(workspace, action) {
         if (!root || !root.WriteUrduTelemetry || typeof root.WriteUrduTelemetry.trackOutcome !== 'function') return;
-        root.WriteUrduTelemetry.trackOutcome('writer_voice_action', { workspace: workspace, action: action, input_mode: 'voice' });
+        var eventName = VOICE_EVENT_NAMES[action];
+        if (!eventName) return;
+        root.WriteUrduTelemetry.trackOutcome(eventName, { input_mode: 'voice' });
     }
 
     function buildWidget(idPrefix) {
@@ -142,6 +152,13 @@
     function wireController(widget, adapter, workspace, intro) {
         if (!root.WriteUrduVoiceInput || !root.WriteUrduUnifiedInput) return null;
 
+        var awaitingSwitchProxy = false;
+        widget.noteModeSwitch = function () {
+            if (!awaitingSwitchProxy) return;
+            awaitingSwitchProxy = false;
+            telemetry(workspace, 'voice-switch-continued');
+        };
+
         voiceController = root.WriteUrduUnifiedInput.createVoiceInputController({
             adapter: adapter,
             elements: {
@@ -154,8 +171,8 @@
                 notice: widget.notice,
                 interim: widget.interim
             },
-            onStart: function () { telemetry(workspace, 'voice-started'); },
-            onFinal: function () { telemetry(workspace, 'voice-final'); }
+            onStart: function () { awaitingSwitchProxy = false; telemetry(workspace, 'voice-started'); },
+            onFinal: function () { awaitingSwitchProxy = true; telemetry(workspace, 'voice-final'); }
         });
 
         widget.methodButton.addEventListener('click', function () {
@@ -211,7 +228,10 @@
                 wireController(widget, createRichTextAdapter(editor), 'rich_editor', intro);
 
                 modeControl.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
-                    button.addEventListener('click', function () { closePanel(widget); });
+                    button.addEventListener('click', function () {
+                        closePanel(widget);
+                        if (widget.noteModeSwitch) widget.noteModeSwitch();
+                    });
                 });
             } else if (attempts > 100) {
                 root.clearInterval(timer);
@@ -251,7 +271,10 @@
             wireController(widget, root.WriteUrduUnifiedInput.createTextControlAdapter(target), workspace, intro);
 
             control.querySelectorAll('[data-input-mode-option]').forEach(function (button) {
-                button.addEventListener('click', function () { closePanel(widget); });
+                button.addEventListener('click', function () {
+                    closePanel(widget);
+                    if (widget.noteModeSwitch) widget.noteModeSwitch();
+                });
             });
         });
     }

@@ -263,6 +263,7 @@
             var bucket = lengthBucket(textLength());
             if (bucket) detail.length_bucket = bucket;
         }
+        if (detail.input_mode === 'voice') currentInputMode = 'voice';
         track(name, detail);
     }
 
