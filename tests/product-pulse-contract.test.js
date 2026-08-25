@@ -55,6 +55,20 @@ assert.match(client, /Template use/, 'Dashboard client must render template usag
 assert.match(client, /Local image/, 'Dashboard client must render local image usage');
 assert.match(client, /localeUsageBars/, 'Dashboard client must render locale usage');
 
+// WU-VOICE-PLAT-001D §7: extend the existing Product Pulse reporting with a
+// cross-workspace Voice adoption/completion section (not a separate voice
+// dashboard), sourced from the existing per-tool product_hourly_metrics
+// counters (migrations 0009/0010) — no session-level or Search Console join.
+assert.match(api, /function voiceSection\(/, 'Product Pulse API must build a cross-workspace voice section');
+assert.match(api, /voice_switch_continued/, 'Voice section must expose the correction/continuation switch proxy');
+assert.match(api, /voice_error_permission_denied/, 'Voice section must expose bounded voice failure categories');
+assert.match(api, /by_workspace/, 'Voice section must break adoption down by workspace');
+assert.match(api, /voice_led_share_of_concluded_sessions/, 'Voice section must compare voice-led sessions at the aggregate level only, never a per-session join');
+assert.doesNotMatch(api, /searchconsole|search_console/i, 'Product Pulse must never join Search Console query data to product sessions');
+assert.match(html, /id="voiceCrossWorkspacePanel"/, 'Dashboard must expose a cross-workspace Voice panel');
+assert.match(html, /Voice adoption across workspaces/, 'Cross-workspace Voice panel must be labelled distinctly from the Voice Typing signup funnel panel');
+assert.match(client, /function renderVoiceCrossWorkspace\(/, 'Dashboard client must render the cross-workspace Voice section');
+
 // Product Pulse itself must not load the public telemetry collector and create
 // founder/admin visits in product metrics.
 assert.doesNotMatch(html, /product-telemetry\.js/, 'Product Pulse must not measure its own founder usage');

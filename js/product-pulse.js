@@ -179,6 +179,87 @@
     }
   }
 
+  function renderVoiceCrossWorkspace(data) {
+    var voice = data.voice || {};
+    var panel = q('#voiceCrossWorkspacePanel');
+    if (!panel) return;
+
+    var kpis = {
+      exposed: q('[data-voice-cw-kpi="exposed"]'),
+      started: q('[data-voice-cw-kpi="started"]'),
+      final_rate: q('[data-voice-cw-kpi="final_rate"]'),
+      switch_continued_rate: q('[data-voice-cw-kpi="switch_continued_rate"]'),
+      voice_led_share_of_concluded_sessions: q('[data-voice-cw-kpi="voice_led_share_of_concluded_sessions"]')
+    };
+
+    if (!voice.ready) {
+      Object.keys(kpis).forEach(function (key) { if (kpis[key]) kpis[key].textContent = '—'; });
+      renderBars('#voiceCrossWorkspaceBars', [], 'label', 'value');
+      renderBars('#voiceErrorBars', [], 'category', 'events');
+      renderBars('#voiceEligibleDeviceBars', [], 'device_class', 'sessions');
+      var body = q('#voiceWorkspaceRows');
+      if (body) body.innerHTML = '<tr><td colspan="8" class="os-empty">No Voice activity yet for this period.</td></tr>';
+      return;
+    }
+
+    if (kpis.exposed) kpis.exposed.textContent = fmt(voice.exposed);
+    if (kpis.started) kpis.started.textContent = fmt(voice.started);
+    if (kpis.final_rate) kpis.final_rate.textContent = percent(voice.final_rate);
+    if (kpis.switch_continued_rate) kpis.switch_continued_rate.textContent = percent(voice.switch_continued_rate);
+    if (kpis.voice_led_share_of_concluded_sessions) kpis.voice_led_share_of_concluded_sessions.textContent = percent(voice.voice_led_share_of_concluded_sessions);
+
+    renderBars('#voiceCrossWorkspaceBars', [
+      { label: 'Mic exposed', value: voice.exposed },
+      { label: 'Mic selected', value: voice.selected },
+      { label: 'Voice started', value: voice.started },
+      { label: 'Final speech', value: voice.final },
+      { label: 'Switched to Roman/direct', value: voice.switch_continued }
+    ], 'label', 'value');
+
+    renderBars('#voiceErrorBars', voice.errors || [], 'category', 'events', function (label) {
+      var names = {
+        permission_denied: 'Mic permission denied', audio_capture: 'No microphone found',
+        no_speech: 'No speech heard', network: 'Network error',
+        language_unsupported: 'Language unsupported', unknown: 'Other'
+      };
+      return names[label] || safeText(label);
+    });
+
+    renderBars('#voiceEligibleDeviceBars', voice.eligible_workspace_devices || [], 'device_class', 'sessions', function (label) {
+      return safeText(label).replace(/^./, function (c) { return c.toUpperCase(); });
+    });
+
+    var rows = q('#voiceWorkspaceRows');
+    if (rows) {
+      rows.innerHTML = '';
+      var workspaces = voice.by_workspace || [];
+      if (!workspaces.length) {
+        rows.innerHTML = '<tr><td colspan="8" class="os-empty">No workspace exposes Voice yet for this period.</td></tr>';
+      } else {
+        workspaces.forEach(function (item) {
+          var row = document.createElement('tr');
+          var values = [
+            toolLabels[item.tool] || item.tool,
+            fmt(item.sessions),
+            fmt(item.voice_started),
+            percent(item.adoption_rate),
+            percent(item.final_rate),
+            percent(item.switch_continued_rate),
+            fmt(item.voice_led_sessions),
+            percent(item.voice_led_share_of_concluded_sessions)
+          ];
+          values.forEach(function (value, index) {
+            var cell = document.createElement('td');
+            cell.className = index === 0 ? 'os-tool-name' : 'num';
+            cell.textContent = value;
+            row.appendChild(cell);
+          });
+          rows.appendChild(row);
+        });
+      }
+    }
+  }
+
   function orderedBuckets(items, order) {
     var map = {};
     (items || []).forEach(function (item) { map[item.bucket] = item; });
@@ -274,6 +355,7 @@
     hideBanner();
     renderKpis(data);
     renderOutcomes(data);
+    renderVoiceCrossWorkspace(data);
     renderShareLoop(data);
     renderDistributions(data);
     renderTools(data);

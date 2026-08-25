@@ -28,6 +28,8 @@ assert.match(toolbar, /data-wu-basic-voice-stop/, 'Explicit Stop voice action is
 assert.doesNotMatch(toolbar, /data-wu-voice-entry="home"/, 'Compact toggle must not remove the homepage voice discovery banner; both stay');
 assert.doesNotMatch(toolbar, /SpeechRecognition|webkitSpeechRecognition|getUserMedia/, 'Basic Writer must not own a route-specific speech engine');
 assert.doesNotMatch(toolbar, /createElement\(['"]textarea['"]\)|voiceTranscript/, 'Basic Writer must not create a separate voice transcript field');
+assert.match(toolbar, /'voice-error':\s*'voice_error'/, 'Basic Writer voice must map failure to the bounded voice_error event (WU-VOICE-PLAT-001D §7)');
+assert.match(toolbar, /onError:\s*function\s*\(category\)\s*\{\s*if\s*\(category === 'aborted'\) return;\s*telemetry\('voice-error', category\);/, 'Basic Writer voice must report non-abort recognition failures for the Product Pulse failure-category breakdown');
 
 assert.match(toolbar, /AUTO_VOICE_PARAM = 'wu-voice'/, 'My Documents "Start with voice" handoff must use the shared auto-open flag');
 assert.match(toolbar, /function openVoicePanelIfRequested/, 'Incoming voice handoff must only open the panel, never auto-start listening');

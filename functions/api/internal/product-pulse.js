@@ -1,4 +1,9 @@
 const ALLOWED_DAYS = new Set([1, 7, 30]);
+const VOICE_METRIC_COLUMNS = [
+  'voice_exposed', 'voice_selected', 'voice_started', 'voice_final', 'voice_switch_continued',
+  'voice_error_permission_denied', 'voice_error_audio_capture', 'voice_error_no_speech',
+  'voice_error_network', 'voice_error_language_unsupported', 'voice_error_unknown'
+];
 const METRIC_COLUMNS = [
   'visits', 'engaged_visits', 'copies', 'exports',
   'export_pdf', 'export_png', 'export_png_transparent', 'export_jpeg', 'export_doc', 'export_txt', 'export_svg',
@@ -7,9 +12,9 @@ const METRIC_COLUMNS = [
   'length_0', 'length_1_20', 'length_21_50', 'length_51_100', 'length_101_250',
   'length_251_500', 'length_501_1000', 'length_1001_2500', 'length_2500_plus',
   'active_0_10', 'active_11_30', 'active_31_60', 'active_61_180', 'active_181_600', 'active_600_plus',
-  'input_roman', 'input_direct', 'input_unknown',
+  'input_roman', 'input_direct', 'input_unknown', 'input_voice',
   'device_mobile', 'device_tablet', 'device_desktop'
-];
+].concat(VOICE_METRIC_COLUMNS);
 const SHARE_METRIC_COLUMNS = [
   'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
   'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
@@ -101,6 +106,79 @@ function exportRows(summary) {
     { format: 'svg', events: n(summary, 'export_svg') },
     { format: 'png_transparent', events: n(summary, 'export_png_transparent') }
   ].filter((item) => item.events > 0);
+}
+
+function voiceErrorRows(summary) {
+  return [
+    { category: 'permission_denied', events: n(summary, 'voice_error_permission_denied') },
+    { category: 'audio_capture', events: n(summary, 'voice_error_audio_capture') },
+    { category: 'no_speech', events: n(summary, 'voice_error_no_speech') },
+    { category: 'network', events: n(summary, 'voice_error_network') },
+    { category: 'language_unsupported', events: n(summary, 'voice_error_language_unsupported') },
+    { category: 'unknown', events: n(summary, 'voice_error_unknown') }
+  ].filter((item) => item.events > 0);
+}
+
+// Cross-workspace Voice adoption/completion answering spec §7's 8 questions.
+// Reads only the existing per-tool product_hourly_metrics counters from
+// migrations/0009 and 0010 (no session-level join, no Search Console join).
+function voiceSection(current, toolRows) {
+  const started = n(current, 'voice_started');
+  const final = n(current, 'voice_final');
+  const byWorkspace = (toolRows || [])
+    .filter((row) => n(row, 'voice_exposed') > 0 || n(row, 'voice_started') > 0)
+    .map((row) => {
+      const rowStarted = n(row, 'voice_started');
+      const rowFinal = n(row, 'voice_final');
+      return {
+        tool: row.tool,
+        sessions: n(row, 'sessions'),
+        voice_exposed: n(row, 'voice_exposed'),
+        voice_selected: n(row, 'voice_selected'),
+        voice_started: rowStarted,
+        voice_final: rowFinal,
+        voice_switch_continued: n(row, 'voice_switch_continued'),
+        adoption_rate: ratio(rowStarted, n(row, 'sessions')),
+        final_rate: ratio(rowFinal, rowStarted),
+        switch_continued_rate: ratio(n(row, 'voice_switch_continued'), rowFinal),
+        voice_led_sessions: n(row, 'input_voice'),
+        voice_led_share_of_concluded_sessions: ratio(n(row, 'input_voice'), n(row, 'summary_count')),
+        device_mobile: n(row, 'device_mobile'),
+        device_tablet: n(row, 'device_tablet'),
+        device_desktop: n(row, 'device_desktop')
+      };
+    })
+    .sort((a, b) => b.adoption_rate - a.adoption_rate);
+
+  const voiceEligibleDevices = byWorkspace.reduce((totals, row) => {
+    totals.mobile += row.device_mobile;
+    totals.tablet += row.device_tablet;
+    totals.desktop += row.device_desktop;
+    return totals;
+  }, { mobile: 0, tablet: 0, desktop: 0 });
+
+  return {
+    ready: byWorkspace.length > 0 || started > 0 || n(current, 'voice_exposed') > 0,
+    exposed: n(current, 'voice_exposed'),
+    selected: n(current, 'voice_selected'),
+    started,
+    final,
+    switch_continued: n(current, 'voice_switch_continued'),
+    final_rate: ratio(final, started),
+    switch_continued_rate: ratio(n(current, 'voice_switch_continued'), final),
+    voice_led_sessions: n(current, 'input_voice'),
+    voice_led_share_of_concluded_sessions: ratio(n(current, 'input_voice'), n(current, 'summary_count')),
+    errors: voiceErrorRows(current),
+    by_workspace: byWorkspace,
+    // Visits to workspaces where Voice is exposed, split by device. Device is
+    // captured on page visits, not on individual voice events, so this is the
+    // device mix of Voice-eligible traffic, not confirmed voice usage itself.
+    eligible_workspace_devices: [
+      { device_class: 'desktop', sessions: voiceEligibleDevices.desktop },
+      { device_class: 'mobile', sessions: voiceEligibleDevices.mobile },
+      { device_class: 'tablet', sessions: voiceEligibleDevices.tablet }
+    ].filter((item) => item.sessions > 0)
+  };
 }
 
 async function shareLoopForWindow(db, bounds) {
@@ -244,11 +322,21 @@ export async function onRequestGet(context) {
              SUM(exports) AS exports,
              SUM(canvas_interactions) AS canvas_interactions,
              SUM(template_uses) AS template_uses,
-             SUM(background_image_uses) AS background_image_uses
+             SUM(background_image_uses) AS background_image_uses,
+             SUM(summary_count) AS summary_count,
+             SUM(input_voice) AS input_voice,
+             SUM(device_mobile) AS device_mobile,
+             SUM(device_tablet) AS device_tablet,
+             SUM(device_desktop) AS device_desktop,
+             SUM(voice_exposed) AS voice_exposed,
+             SUM(voice_selected) AS voice_selected,
+             SUM(voice_started) AS voice_started,
+             SUM(voice_final) AS voice_final,
+             SUM(voice_switch_continued) AS voice_switch_continued
       FROM product_hourly_metrics
       WHERE tool <> 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
       GROUP BY tool
-      HAVING SUM(visits) > 0 OR SUM(engaged_visits) > 0 OR SUM(copies) > 0 OR SUM(exports) > 0
+      HAVING SUM(visits) > 0 OR SUM(engaged_visits) > 0 OR SUM(copies) > 0 OR SUM(exports) > 0 OR SUM(voice_exposed) > 0
       ORDER BY sessions DESC, engaged_sessions DESC
     `).bind(bounds.currentStart, bounds.currentEnd).all(),
     db.prepare(`
@@ -345,7 +433,8 @@ export async function onRequestGet(context) {
     tools: rows(toolResult),
     daily: rows(dailyResult),
     locale_breakdown: rows(localeResult),
-    share_loop: shareLoop
+    share_loop: shareLoop,
+    voice: voiceSection(current, rows(toolResult))
   });
 }
 

@@ -56,4 +56,15 @@ assert.match(core, /visibilitychange[\s\S]*handleVisibilityChange/, 'shared core
 assert.match(js, /handoff\('\/urdu-text-cleaner'\)/, 'voice transcript should hand off to the cleaner');
 assert.match(js, /handoff\('\/'\)/, 'voice transcript should hand off to the core editor');
 
+// WU-VOICE-PLAT-001D §4: Speak an Urdu message -> edit/correct -> Copy or Share
+// to WhatsApp, distinct from the Status Maker's image outcome. Reuses the
+// existing approved WhatsApp share pattern (navigator.share falling back to
+// WhatsApp's own api.whatsapp.com intent) — no new backend, no new route.
+assert.match(html, /data-voice-whatsapp data-write-urdu-share/, 'voice page should expose a Send to WhatsApp action wired into the existing share telemetry');
+assert.match(urduHtml, /data-voice-whatsapp data-write-urdu-share/, 'Urdu voice page should expose the same Send to WhatsApp action');
+assert.match(js, /function shareToWhatsApp/, 'voice page should implement the WhatsApp message share action');
+assert.match(js, /navigator\.share/, 'WhatsApp share should prefer the native share sheet before falling back');
+assert.match(js, /api\.whatsapp\.com\/send\?text=/, 'WhatsApp fallback must use the existing approved WhatsApp intent, not a WriteUrdu backend');
+assert.doesNotMatch(js, /urdu-whatsapp-message-maker/, 'no dedicated WhatsApp message route should be created without evidence (WU-VOICE-PLAT-001D §4.3)');
+
 console.log('Urdu voice typing product, discoverability and privacy contract passed.');

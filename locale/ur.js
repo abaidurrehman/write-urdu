@@ -175,6 +175,7 @@ module.exports = {
         'tools.urdu-voice-typing.transcriptLabel': 'آپ کی اردو تحریر',
         'tools.urdu-voice-typing.transcriptHelper': 'مکمل طور پر قابلِ ترمیم',
         'tools.urdu-voice-typing.copyButton': 'متن کاپی کریں',
+        'tools.urdu-voice-typing.whatsappButton': 'واٹس ایپ پر بھیجیں',
         'tools.urdu-voice-typing.cleanButton': 'متن صاف کریں',
         'tools.urdu-voice-typing.editorButton': 'لکھنا جاری رکھیں',
         'tools.urdu-voice-typing.clearButton': 'صاف کریں',

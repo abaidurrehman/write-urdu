@@ -130,6 +130,7 @@
             input_mode: detail.input_mode || null,
             success: typeof detail.success === 'boolean' ? detail.success : null,
             device_class: deviceClass(),
+            error_category: detail.error_category || null,
             target_route: detail.target_route ? normalizedPath(detail.target_route) : null
         };
     }

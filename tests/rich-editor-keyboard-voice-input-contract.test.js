@@ -28,6 +28,13 @@ assert.match(writerVoice, /input-mode-control-rich/, 'Rich Editor voice must mou
 assert.match(writerVoice, /\.keyboard-actions/, 'Urdu Keyboard voice must mount near the existing keyboard toolbar');
 assert.doesNotMatch(writerVoice, /SpeechRecognition|webkitSpeechRecognition|getUserMedia/, 'Writer voice mount must not own a route-specific speech engine');
 assert.doesNotMatch(writerVoice, /createElement\(['"]textarea['"]\)|voiceTranscript/, 'Writer voice mount must not create a separate transcript field');
+assert.match(writerVoice, /'voice-error':\s*'voice_error'/, 'Writer voice mount must map failure to the bounded voice_error event (WU-VOICE-PLAT-001D §7)');
+assert.match(writerVoice, /onError:\s*function\s*\(category\)\s*\{\s*if\s*\(category === 'aborted'\) return;\s*telemetry\(workspace, 'voice-error', category\);/, 'Writer voice mount must report non-abort recognition failures for the Product Pulse failure-category breakdown');
+
+const events = read('functions', 'api', 'events.js');
+assert.match(events, /'voice_error'/, 'events API must allowlist the voice_error event name');
+assert.match(events, /ERROR_CATEGORIES = new Set\(\[/, 'events API must bound voice error categories to a fixed enum');
+assert.match(events, /voice_error_permission_denied/, 'events API must aggregate bounded voice failure categories');
 
 assert.match(css, /\.wu-voice-panel/, 'Voice panel styling is missing');
 assert.match(css, /\.wu-voice-action/, 'Voice start/stop action styling is missing');

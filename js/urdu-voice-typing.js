@@ -8,6 +8,7 @@
     var stopButton = root.querySelector('[data-voice-stop]');
     var clearButton = root.querySelector('[data-voice-clear]');
     var copyButton = root.querySelector('[data-voice-copy]');
+    var whatsappButton = root.querySelector('[data-voice-whatsapp]');
     var cleanButton = root.querySelector('[data-voice-clean]');
     var editorButton = root.querySelector('[data-voice-editor]');
     var transcript = root.querySelector('#voiceTranscript');
@@ -40,6 +41,7 @@
         'done-edit': { en: 'Done. Edit anything you want, then copy or keep writing.', ur: 'مکمل ہو گیا۔ جو چاہیں تبدیل کریں، پھر کاپی کریں یا لکھنا جاری رکھیں۔' },
         copied: { en: 'Urdu text copied.', ur: 'اردو متن کاپی ہو گیا۔' },
         'copy-blocked': { en: 'Copy was blocked. Select the text and copy it manually.', ur: 'کاپی مسدود ہو گئی۔ متن منتخب کر کے دستی طور پر کاپی کریں۔' },
+        'share-blocked': { en: 'Sharing was blocked. Copy the text and share it manually.', ur: 'شیئر کرنا مسدود ہو گیا۔ متن کاپی کر کے دستی طور پر شیئر کریں۔' },
         'copy-first': { en: 'Copy the text first, then open the next tool.', ur: 'پہلے متن کاپی کریں، پھر اگلا ٹول کھولیں۔' },
         'unsupported-note': { en: 'Voice typing is not available in this browser. Try another supported browser or continue with normal Urdu typing.', ur: 'آواز سے ٹائپنگ اس براؤزر میں دستیاب نہیں۔ کوئی دوسرا معاون براؤزر آزمائیں یا معمول کے مطابق اردو ٹائپ کرتے رہیں۔' },
         'ready-note': { en: 'Ready when you are. Press Start voice typing and speak Urdu.', ur: 'جب آپ تیار ہوں، آواز سے ٹائپنگ شروع کریں دبائیں اور اردو بولیں۔' },
@@ -75,6 +77,7 @@
     function refreshActions() {
         var ready = hasText();
         copyButton.disabled = !ready;
+        if (whatsappButton) whatsappButton.disabled = !ready;
         cleanButton.disabled = !ready;
         editorButton.disabled = !ready;
         clearButton.disabled = !ready && !listening;
@@ -184,6 +187,22 @@
         }).catch(function () { setNotice('copy-blocked', 'error'); });
     }
 
+    function shareToWhatsApp() {
+        var text = String(transcript.value || '').trim();
+        if (!text) return;
+        if (typeof navigator.share === 'function') {
+            navigator.share({ title: 'Write Urdu', text: text }).catch(function (error) {
+                if (error && error.name === 'AbortError') return;
+                var shareWindow = window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank', 'noopener,noreferrer');
+                if (shareWindow) shareWindow.opener = null;
+            });
+            return;
+        }
+        var shareWindow = window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank', 'noopener,noreferrer');
+        if (shareWindow) shareWindow.opener = null;
+        else setNotice('share-blocked', 'error');
+    }
+
     function handoff(target) {
         var text = String(transcript.value || '');
         if (!text.trim()) return;
@@ -231,6 +250,7 @@
         transcript.focus();
     });
     copyButton.addEventListener('click', copyTranscript);
+    if (whatsappButton) whatsappButton.addEventListener('click', shareToWhatsApp);
     cleanButton.addEventListener('click', function () { handoff('/urdu-text-cleaner'); });
     editorButton.addEventListener('click', function () { handoff('/'); });
     transcript.addEventListener('input', refreshActions);

@@ -81,6 +81,29 @@
         </div>
       </article>
 
+      <article class="os-card os-panel span-12" id="voiceCrossWorkspacePanel">
+        <div class="os-panel-head"><h2>Voice adoption across workspaces</h2><span class="os-panel-note">Speak Urdu in Basic Writer, Rich Editor, Keyboard, Card Studio, social makers and Voice Typing — WU-VOICE-PLAT-001D</span></div>
+        <section class="os-kpis" aria-label="Cross-workspace voice metrics">
+          <article class="os-card os-kpi"><div class="os-kpi-label">Mic exposed</div><div class="os-kpi-value" data-voice-cw-kpi="exposed">—</div><div class="os-kpi-meta">Workspaces where Voice is offered</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Voice started</div><div class="os-kpi-value" data-voice-cw-kpi="started">—</div><div class="os-kpi-meta">Listening began</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Final-speech rate</div><div class="os-kpi-value" data-voice-cw-kpi="final_rate">—</div><div class="os-kpi-meta">At least one committed result ÷ started</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Switch-to-manual rate</div><div class="os-kpi-value" data-voice-cw-kpi="switch_continued_rate">—</div><div class="os-kpi-meta">Correction/continuation proxy, not an accuracy claim</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Voice-led concluded sessions</div><div class="os-kpi-value" data-voice-cw-kpi="voice_led_share_of_concluded_sessions">—</div><div class="os-kpi-meta">Share of ended sessions where voice was the input mode</div></article>
+        </section>
+        <div class="os-grid">
+          <div class="span-5"><div class="os-panel-head"><h2>Funnel volume</h2><span class="os-panel-note">Current period</span></div><div class="os-bars" id="voiceCrossWorkspaceBars"></div></div>
+          <div class="span-4"><div class="os-panel-head"><h2>Failure categories suppressing activation</h2><span class="os-panel-note">Bounded, no transcript</span></div><div class="os-bars" id="voiceErrorBars"></div></div>
+          <div class="span-3"><div class="os-panel-head"><h2>Voice-eligible traffic by device</h2><span class="os-panel-note">Visits to voice-enabled workspaces</span></div><div class="os-bars" id="voiceEligibleDeviceBars"></div></div>
+        </div>
+        <div class="os-table-wrap" style="margin-top:18px">
+          <table>
+            <thead><tr><th>Workspace</th><th class="num">Visits</th><th class="num">Voice started</th><th class="num">Adoption</th><th class="num">Final-speech rate</th><th class="num">Switch-to-manual</th><th class="num">Voice-led sessions</th><th class="num">Voice-led share of concluded sessions</th></tr></thead>
+            <tbody id="voiceWorkspaceRows"></tbody>
+          </table>
+        </div>
+        <div class="os-panel-note" style="margin-top:12px">Aggregate hourly counters only — no voice transcript, audio or session-level join. Switch-to-manual is a correction/continuation proxy, never proof that speech was wrong.</div>
+      </article>
+
       <article class="os-card os-panel span-12" id="shareLoopPanel">
         <div class="os-panel-head"><h2>Share Loop</h2><span class="os-panel-note">Publish → visit → create → republish</span></div>
         <section class="os-kpis" aria-label="Share loop metrics">

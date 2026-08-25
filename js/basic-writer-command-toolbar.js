@@ -63,14 +63,17 @@
         'voice-started': 'voice_started',
         'voice-final': 'voice_final',
         'voice-auto-open': 'voice_selected',
-        'voice-switch-continued': 'voice_switch_continued'
+        'voice-switch-continued': 'voice_switch_continued',
+        'voice-error': 'voice_error'
     };
 
-    function telemetry(action) {
+    function telemetry(action, errorCategory) {
         if (!root || !root.WriteUrduTelemetry || typeof root.WriteUrduTelemetry.trackOutcome !== 'function') return;
         var voiceEventName = VOICE_EVENT_NAMES[action];
         if (voiceEventName) {
-            root.WriteUrduTelemetry.trackOutcome(voiceEventName, { input_mode: 'voice' });
+            var detail = { input_mode: 'voice' };
+            if (voiceEventName === 'voice_error') detail.error_category = errorCategory;
+            root.WriteUrduTelemetry.trackOutcome(voiceEventName, detail);
             return;
         }
         var detail = {
@@ -186,6 +189,10 @@
                 interim: interim
             },
             onStart: function () { awaitingSwitchProxy = false; telemetry('voice-started'); },
+            onError: function (category) {
+                if (category === 'aborted') return;
+                telemetry('voice-error', category);
+            },
             onFinal: function () {
                 syncState(surface);
                 awaitingSwitchProxy = true;

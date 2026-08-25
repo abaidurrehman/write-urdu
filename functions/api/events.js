@@ -27,7 +27,8 @@ const EVENT_NAMES = new Set([
     'voice_selected',
     'voice_started',
     'voice_final',
-    'voice_switch_continued'
+    'voice_switch_continued',
+    'voice_error'
 ]);
 
 const TOOLS = new Set([
@@ -45,6 +46,7 @@ const ACTIVE_BUCKETS = new Set(['0-10s', '11-30s', '31-60s', '61-180s', '181-600
 const INPUT_MODES = new Set(['roman', 'direct', 'unknown', 'voice']);
 const DEVICE_CLASSES = new Set(['mobile', 'tablet', 'desktop']);
 const LOCALES = new Set(['en', 'ur']);
+const ERROR_CATEGORIES = new Set(['permission-denied', 'audio-capture', 'no-speech', 'network', 'language-not-supported', 'unknown']);
 
 const METRIC_COLUMNS = [
     'visits', 'engaged_visits', 'copies', 'exports',
@@ -56,7 +58,9 @@ const METRIC_COLUMNS = [
     'active_0_10', 'active_11_30', 'active_31_60', 'active_61_180', 'active_181_600', 'active_600_plus',
     'input_roman', 'input_direct', 'input_unknown', 'input_voice',
     'device_mobile', 'device_tablet', 'device_desktop',
-    'voice_exposed', 'voice_selected', 'voice_started', 'voice_final', 'voice_switch_continued'
+    'voice_exposed', 'voice_selected', 'voice_started', 'voice_final', 'voice_switch_continued',
+    'voice_error_permission_denied', 'voice_error_audio_capture', 'voice_error_no_speech',
+    'voice_error_network', 'voice_error_language_unsupported', 'voice_error_unknown'
 ];
 
 const SHARE_METRIC_COLUMNS = [
@@ -183,6 +187,7 @@ function cleanEvent(input) {
         inputMode: enumValue(input.input_mode, INPUT_MODES),
         success: typeof input.success === 'boolean' ? (input.success ? 1 : 0) : null,
         deviceClass: enumValue(input.device_class, DEVICE_CLASSES),
+        errorCategory: enumValue(input.error_category, ERROR_CATEGORIES),
         targetRoute
     };
 }
@@ -382,6 +387,12 @@ function applyEvent(delta, event) {
     if (event.eventName === 'voice_started') delta.voice_started += 1;
     if (event.eventName === 'voice_final') delta.voice_final += 1;
     if (event.eventName === 'voice_switch_continued') delta.voice_switch_continued += 1;
+    if (event.eventName === 'voice_error') {
+        incrementBucket(delta, 'voice_error_', event.errorCategory, {
+            'permission-denied': 'permission_denied', 'audio-capture': 'audio_capture', 'no-speech': 'no_speech',
+            network: 'network', 'language-not-supported': 'language_unsupported', unknown: 'unknown'
+        });
+    }
 }
 
 function applyShareEvent(delta, event) {

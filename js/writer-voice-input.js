@@ -42,14 +42,17 @@
         'voice-selected': 'voice_selected',
         'voice-started': 'voice_started',
         'voice-final': 'voice_final',
-        'voice-switch-continued': 'voice_switch_continued'
+        'voice-switch-continued': 'voice_switch_continued',
+        'voice-error': 'voice_error'
     };
 
-    function telemetry(workspace, action) {
+    function telemetry(workspace, action, errorCategory) {
         if (!root || !root.WriteUrduTelemetry || typeof root.WriteUrduTelemetry.trackOutcome !== 'function') return;
         var eventName = VOICE_EVENT_NAMES[action];
         if (!eventName) return;
-        root.WriteUrduTelemetry.trackOutcome(eventName, { input_mode: 'voice' });
+        var detail = { input_mode: 'voice' };
+        if (eventName === 'voice_error') detail.error_category = errorCategory;
+        root.WriteUrduTelemetry.trackOutcome(eventName, detail);
     }
 
     function buildWidget(idPrefix) {
@@ -172,7 +175,11 @@
                 interim: widget.interim
             },
             onStart: function () { awaitingSwitchProxy = false; telemetry(workspace, 'voice-started'); },
-            onFinal: function () { awaitingSwitchProxy = true; telemetry(workspace, 'voice-final'); }
+            onFinal: function () { awaitingSwitchProxy = true; telemetry(workspace, 'voice-final'); },
+            onError: function (category) {
+                if (category === 'aborted') return;
+                telemetry(workspace, 'voice-error', category);
+            }
         });
 
         widget.methodButton.addEventListener('click', function () {
