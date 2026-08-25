@@ -1,28 +1,52 @@
 ---
 name: wu-community-publishing
-description: Implement or review WU-COMMUNITY-001 for WriteUrdu. Build authenticated Urdu writing submissions, long-writing publish prompts, Product OS moderation, approved immutable public snapshots, /urdu-writers SSR pages, taxonomy, reporting, revisions and withdrawal while preserving private My Documents and local-first writing.
+description: Implement or review WU-COMMUNITY-001 Urdu Writers one slice at a time. Covers authenticated submission snapshots, editor publishing prompts, Product OS human moderation, immutable approved public SSR writing, reporting, My Publications, revisions, withdrawal, taxonomy, SEO, policy and launch closure while preserving local-first writing and private My Documents.
 ---
 
-# WriteUrdu Community Publishing — moderated Urdu Writers
+# WriteUrdu Community Publishing — implementation skill
 
-Read first:
+Use this skill for any implementation/review task under `WU-COMMUNITY-001`.
+
+The product is **Urdu Writers**: signed-in writers explicitly submit writing snapshots, Product OS moderators approve/reject them, and only approved immutable snapshots become durable public WriteUrdu pages.
+
+---
+
+## 1. Mandatory read order
+
+Always read current `main` and these parent contracts first:
 
 1. `specs/WU-COMMUNITY-001-moderated-urdu-writing-publishing.md`
 2. `specs/WU-AUTH-001-social-authentication-foundation.md`
 3. `specs/WU-DRAFT-001-cross-device-cloud-drafts.md`
 4. `specs/WU-GROWTH-002-account-save-share-entry-points.md`
 5. `specs/WU-SHARE-001-public-share-pages-viral-publishing-loop.md`
-6. current `functions/lib/auth.mjs`
-7. current `/api/documents*` handlers and document client modules
-8. current Product OS internal endpoint patterns
-9. current `functions/s/[id].js` and share report implementation
-10. current migration, route, SEO, sitemap, AdSense and service-worker registries.
+6. `specs/WU-PLAT-002-v2-product-journey-workspace-handoffs.md`
+7. current `functions/lib/auth.mjs`
+8. current `/api/documents*` implementation
+9. current Product OS `/api/internal/*` security/host patterns
+10. current `functions/s/[id].js` + share report patterns
+11. current migrations, route registry, sitemap, SEO, AdSense, telemetry and service-worker owners.
 
-## Core rule
+Then read the **exact slice file** being implemented:
+
+```text
+COMMUNITY-A → specs/WU-COMMUNITY-001A-submission-data-api.md
+COMMUNITY-B → specs/WU-COMMUNITY-001B-editor-prompt-submission-ux.md
+COMMUNITY-C → specs/WU-COMMUNITY-001C-os-moderation-publishing.md
+COMMUNITY-D → specs/WU-COMMUNITY-001D-public-reader-seo-reporting.md
+COMMUNITY-E → specs/WU-COMMUNITY-001E-my-publications-revisions-withdrawal.md
+COMMUNITY-F → specs/WU-COMMUNITY-001F-taxonomy-guidelines-launch-closure.md
+```
+
+Do not implement from this skill alone. The slice spec owns detailed acceptance criteria.
+
+---
+
+## 2. Core invariant
 
 **Private writing is never the public object.**
 
-The only path to public content is:
+The only valid path to public content is:
 
 ```text
 editor / My Documents
@@ -33,11 +57,17 @@ editor / My Documents
   → /urdu-writers/:slug
 ```
 
-Never point a public page at `writing_documents`.
+Never point a public page/API at `writing_documents`.
 
-Never let a post-approval private edit mutate the approved publication.
+Never let a private edit mutate an approved publication.
 
-## Database decision
+Never let writer/public APIs set approval state.
+
+---
+
+## 3. Existing platform decisions to preserve
+
+### Database
 
 Use:
 
@@ -45,28 +75,247 @@ Use:
 env.METRICS_DB
 ```
 
-Do not create another D1 database.
+Do not create `COMMUNITY_DB`, `WRITE_URDU_DB`, `ACCOUNT_DB` or another D1 database.
 
-At the 2026-08-25 baseline, inspect current migrations and expect the next migration to be around:
+Before migration work:
+
+- inspect current migration sequence;
+- reconcile next migration number;
+- capture current table inventory;
+- add community tables additively;
+- prove telemetry/share/Auth.js/`writing_documents` tables remain unchanged.
+
+Never edit an already-applied migration.
+
+### Identity
+
+Authorization subject is always:
 
 ```text
-0009_community_writing.sql
+session.user.id
 ```
 
-Reconcile numbering with current `main`; never renumber or edit applied migrations.
+obtained through the project auth wrapper.
 
-Add product-owned community tables only. Preserve telemetry, share-artifact, Auth.js and `writing_documents` tables unchanged.
+Never authorize by email.
 
-## Phase 1 — schema and writer API
+Provider name/email/image are not public author identity.
 
-Create at least:
+### Local-first writing
+
+Normal writing remains anonymous/local-first.
+
+Publishing may require sign-in only **after explicit publish intent**.
+
+Auth/publish failure must never disable:
+
+```text
+transliteration
+Basic Writer
+Rich Editor
+Urdu Keyboard
+Voice input
+local autosave/history
+My Documents
+copy/export/share-link flows
+```
+
+---
+
+## 4. Slice boundaries
+
+### COMMUNITY-A — submission data + API
+
+Build only the private submission foundation:
 
 ```text
 community_writing_submissions
-community_writing_publications
+community_writing_publications schema
+community_writing_reports schema
+controlled taxonomy
+server content validation/sanitization
+owner-only submission CRUD/pending update
+quota/rate/duplicate guards
 ```
 
-Submission ownership is always `session.user.id` from the project auth wrapper.
+No public reader route. No approval endpoint.
+
+### COMMUNITY-B — editor prompt + submission UX
+
+Build shared publishing discovery across:
+
+```text
+Basic Writer
+Rich Editor
+Urdu Keyboard
+Voice transcript
+```
+
+Automatic prompt heuristic:
+
+```text
+>= 600 non-whitespace characters
+OR
+>= 90 whitespace-delimited words
+```
+
+Also ship manual `Publish to Urdu Writers` so short poetry can submit.
+
+Signed-out publish intent uses existing safe short-lived same-origin auth continuity. Never put writing in URL/OAuth state.
+
+### COMMUNITY-C — Product OS moderation
+
+Build the **only approval boundary**.
+
+Expected internal operations:
+
+```text
+queue/detail
+approve exact revision
+reject exact revision
+approved-revision replacement
+emergency unpublish
+```
+
+Moderation writes must fail closed behind current Product OS + Cloudflare Access boundary.
+
+Do not enable public corpus before this slice’s security/state tests are green.
+
+### COMMUNITY-D — public reader + SEO/reporting
+
+Only read:
+
+```text
+community_writing_publications WHERE status='published'
+```
+
+Build:
+
+```text
+/urdu-writers
+/urdu-writers/:slug
+/urdu-writers/category/:category
+/sitemap-community.xml
+public read API
+report API
+```
+
+Pending/rejected/private content must be impossible to retrieve anonymously.
+
+### COMMUNITY-E — My Publications lifecycle
+
+Build authenticated private writer status/control:
+
+```text
+/my-publications
+pending update
+revision submission
+rejection state
+withdrawal
+source-document return
+```
+
+Current public version remains live while a revision is pending/rejected.
+
+Writer withdrawal removes public visibility but never deletes private source writing.
+
+### COMMUNITY-F — launch closure
+
+Close:
+
+```text
+taxonomy/indexing quality
+Community Guidelines
+Privacy/Terms reconciliation
+navigation/route/sitemap registries
+AdSense boundaries
+telemetry schema
+Product OS operational metrics
+moderation capacity/pause controls
+feature-flag rollout/rollback
+production launch proof
+```
+
+No comments/likes/follows/profiles/social feed/AI auto-approval in this epic.
+
+---
+
+## 5. Community state model
+
+### Submission
+
+Expected states:
+
+```text
+pending
+approved
+rejected
+withdrawn
+```
+
+Writer can replace only an owned `pending` submission with optimistic revision safety.
+
+### Publication
+
+Expected states:
+
+```text
+published
+unpublished
+```
+
+Public routes always require `published`.
+
+### Revision rule
+
+After first approval:
+
+```text
+current publication stays live
+→ writer submits a new pending revision
+→ moderator reviews exact revision
+→ approval atomically replaces public snapshot
+```
+
+A rejected revision never changes current public version.
+
+### Withdrawal
+
+Owner withdrawal:
+
+```text
+publication → unpublished
+hub/category/API/sitemap remove it
+public detail → 410 + noindex
+private source document untouched
+```
+
+Republishing always requires moderation again.
+
+---
+
+## 6. Public author identity
+
+Submission asks for:
+
+```text
+public author name / pen name
+```
+
+Rules:
+
+- account name may be prefilled only as convenience;
+- writer explicitly confirms/edits it;
+- never prefill/show provider email as public name;
+- provider image is not part of v1;
+- public name is snapshotted into submission/publication;
+- later account profile changes do not silently alter public writing.
+
+No public author profile pages in v1.
+
+---
+
+## 7. Controlled taxonomy
 
 Initial primary categories:
 
@@ -95,199 +344,139 @@ story
 other
 ```
 
-Rules:
-
-- exactly one category;
-- 1–5 curated tags;
-- no free-form tags in v1;
-- public author name chosen explicitly by user;
-- never auto-publish account email/name/photo;
-- title <= 180 chars;
-- public name <= 80 chars;
-- manual submission body minimum 80 chars;
-- strict rich HTML sanitizer if rich format is retained;
-- body/title/name never enter logs/telemetry.
-
-Writer routes require auth and `Cache-Control: no-store`.
-
-## Phase 2 — editor discovery and submission
-
-Implement one shared client module, suggested:
+Enforce:
 
 ```text
-js/community-publishing.mjs
+exactly 1 category
+1–5 unique curated tags
 ```
 
-Do not put publish logic into transliteration internals.
+No free-form public tags.
 
-Initial automatic prompt heuristic:
+Moderator may correct category/tags before approval.
+
+Moderator may not silently rewrite title/body/public name.
+
+---
+
+## 8. Content safety
+
+Server owns validation.
+
+Initial common guards from the feature family:
 
 ```text
->= 600 non-whitespace characters
-OR
->= 90 whitespace-delimited words
+title <= 180 chars
+public author name <= 80 chars
+manual body >= 80 chars
+body bounded well below platform maximums
+max 5 pending submissions/user
+bounded rolling submission rate
 ```
 
-Eligible automatic prompt surfaces:
+### Rich HTML
 
-- Basic Writer;
-- Rich Editor;
-- Urdu Keyboard;
-- Voice transcript.
+If rich community publishing is retained:
 
-Exclude Invoice, QR, Card Studio and other transactional workspaces from the automatic long-writing prompt.
+- use a proven server-side allowlist sanitizer compatible with Cloudflare runtime;
+- derive plain text after sanitization;
+- strip unsafe tags/attributes/URLs.
 
-Prompt once per content signature/session and make it dismissible.
+If a proven sanitizer is unavailable, publish plain text in v1.
 
-Also expose an explicit `Publish to Urdu Writers` action so short poems/ghazals can be submitted without reaching the long-text threshold.
+**Never hand-roll regex HTML sanitization.**
 
-Signed-out submission must preserve writing through the existing safe OAuth/session handoff pattern. Never put text in URL/auth state.
+---
 
-Submission requires explicit confirmation that:
+## 9. Moderation security
 
-- writer owns/has rights to the work;
-- approved work will be public;
-- community publishing terms/guidelines are accepted.
+Product OS approval/rejection/unpublish mutations must require the current verified OS/Cloudflare Access boundary.
 
-## Phase 3 — moderation
-
-Product OS is the only approval surface.
-
-Expected internal routes:
+At minimum:
 
 ```text
-GET  /api/internal/community/moderation?status=pending
-GET  /api/internal/community/moderation/:id
-POST /api/internal/community/moderation/:id/approve
-POST /api/internal/community/moderation/:id/reject
-POST /api/internal/community/publications/:id/unpublish
+correct PRODUCT_OS_HOST
+Cloudflare Access protected hostname
+verified authenticated Access identity/current project pattern
+optional configured moderator allowlist
 ```
 
-Moderation writes must fail closed:
-
-- correct `PRODUCT_OS_HOST`;
-- OS hostname protected by Cloudflare Access;
-- production write requires authenticated Access identity/header;
-- optional moderator allowlist if configured;
-- never authorize from a client flag/query parameter.
-
-Queue shows title, chosen public name, tags/category, submitted time, source editor and safe preview.
-
-Do not show account email by default.
-
-Moderator may adjust curated category/tags before approval.
-
-Moderator must not silently rewrite title/body/public author name. Reject/resubmit if writer text needs changes.
-
-Approval must be idempotent and revision-aware.
-
-## Phase 4 — public snapshot
-
-Only `community_writing_publications` can power public routes.
-
-Public routes:
+Never authorize from:
 
 ```text
-/urdu-writers
-/urdu-writers/:slug
-/urdu-writers/category/:category
-/sitemap-community.xml
+query flag
+localStorage
+client role string
+hidden form field
+unverified arbitrary email header
 ```
 
-Public detail must be SSR/crawler-readable and contain:
+Never persist Access tokens/assertion bodies.
 
-- approved title;
-- approved public author name;
-- category/tags;
-- publish date;
-- exact approved safe text;
-- correct `lang="ur"` and `dir="rtl"` where appropriate;
-- canonical;
-- OG/Twitter metadata;
-- suitable Article/CreativeWork JSON-LD;
-- report action;
-- Write your own Urdu continuation CTA.
+Approval/rejection requires the moderator’s expected `submission_revision`.
+
+Stale review => conflict and reload.
+
+---
+
+## 10. Approval atomicity
+
+First approval must atomically:
+
+1. verify exact pending revision;
+2. generate publication ID + stable server slug;
+3. copy approved snapshot to publication table;
+4. mark submission approved/reviewed;
+5. link publication/submission.
+
+Use a current supported D1 atomic transaction/batch pattern after verifying platform semantics at implementation time.
+
+Duplicate exact approval must be idempotent.
+
+Revision approval atomically replaces approved publication fields while keeping stable canonical slug and original `published_at`.
+
+---
+
+## 11. Public SSR/SEO rules
+
+Public detail must be server-rendered/crawler-readable and include:
+
+```text
+approved title
+approved public author name
+category/tags
+published date
+full approved safe writing
+lang=ur / dir=rtl
+canonical
+OG/Twitter metadata
+truthful Article/CreativeWork JSON-LD
+report action
+Write your own Urdu CTA
+```
 
 Never expose:
 
-- user ID;
-- email;
-- provider/account data;
-- private document ID;
-- submission/moderation metadata.
-
-Pending/rejected/withdrawn/unpublished records must be impossible to retrieve through public endpoints.
-
-## Slugs
-
-Generate server-side on first approval.
-
-Use stable identity plus a readable title fragment, e.g.:
-
 ```text
-a8k2-meri-pehli-ghazal
+user ID
+email
+provider/account data
+source document ID
+submission ID
+moderation identity/rejection data
 ```
 
-The stable prefix identifies the publication. Do not depend on perfect Urdu-to-Latin transliteration for routing.
+Community sitemap contains published canonical URLs only.
 
-Title changes must not automatically break the canonical URL.
+Category pages remain conservative/noindex until corpus quality threshold + manual SEO review are met.
 
-## Revision rule
+`/s/:id` remains the separate noindex direct-share surface.
 
-Pending submission can be replaced and revision increments.
+---
 
-After approval:
+## 12. Public reporting
 
-```text
-current approved publication stays live
-→ writer submits revision
-→ revision becomes pending
-→ moderator reviews
-→ approved revision replaces public snapshot
-```
-
-Never take the old approved version down merely because a new revision is pending.
-
-Stale approval/revision operations fail safely.
-
-## Withdrawal
-
-Writer can withdraw own published writing without waiting for approval.
-
-Withdrawal:
-
-- removes hub/category/sitemap visibility;
-- public detail becomes unavailable/`410` + `noindex`;
-- does not delete My Documents source;
-- does not permit automatic republish.
-
-Republishing requires moderation again.
-
-## My Publications
-
-Provide a noindex authenticated status surface:
-
-```text
-In review
-Published
-Not approved
-Withdrawn
-Revision in review
-```
-
-Keep publication status separate from local/account document save status.
-
-Writer actions:
-
-- open public page;
-- revise/resubmit;
-- withdraw;
-- read rejection reason/note;
-- return to source editor/document when safe.
-
-## Public reporting
-
-Every published page supports bounded reporting:
+Controlled reasons:
 
 ```text
 spam
@@ -297,139 +486,209 @@ copyright
 other
 ```
 
-Reuse existing report rate-limit/security patterns where useful, but do not write community reports into share-artifact tables.
+Report records are community-owned and do not store reporter identity in v1.
 
-Reports raise moderation visibility; they do not automatically rewrite content.
+Reports raise moderator visibility but do not auto-unpublish by count.
 
-Moderators can unpublish immediately.
+Do not write community reports into share-artifact tables.
 
-## Guidelines / legal product copy
+---
 
-Before broad launch ship a concise `/community-guidelines` page and reconcile Privacy/Terms.
+## 13. Guidelines/legal product boundary
 
-Copy must explain:
+Before broad launch:
 
-- submit own/licensed work only;
-- no private information about others;
-- no spam/disguised ads;
-- no harassment/hate/exploitation/illegal material;
-- no unauthorized copyrighted poems/articles/books;
-- WriteUrdu can reject/remove content;
-- writer can withdraw own work;
-- reporting/takedown path;
-- writer retains copyright; WriteUrdu receives permission to display approved work.
+- `/community-guidelines` exists;
+- Privacy distinguishes local/private/submitted/public writing;
+- publishing consent/Terms match actual license/withdrawal behavior;
+- report/takedown path works;
+- account deletion interaction is documented.
+
+Core rights principle:
+
+**Writer keeps copyright they own; WriteUrdu receives the permission needed to display/distribute the approved version under the publishing terms.**
 
 Do not claim ownership of writer copyright.
 
-## SEO quality gates
+---
 
-Do not ship indexable UGC until moderation/public-read boundaries are proven.
+## 14. Ads
 
-Required:
-
-- approved/published only in public corpus;
-- SSR full text;
-- stable canonical;
-- published-only community sitemap;
-- no thin indexable arbitrary tag/search pages;
-- withdrawn content removed from discovery;
-- no bulk publication from local/imported history;
-- no AI bulk publishing or automatic approval in this epic.
-
-Category pages can remain `noindex,follow` until they contain enough reviewed material to be useful.
-
-## Abuse guards
-
-At minimum:
-
-- auth required;
-- max 5 pending submissions/user;
-- bounded submission rate;
-- server-side taxonomy/content validation;
-- duplicate signature may be used as a queue guard;
-- ability to disable community submissions for abusive accounts without editing Auth.js tables when evidence requires it.
-
-Never auto-approve based on provider or account age.
-
-## Telemetry
-
-Allowed event names include:
+Do not place ads on:
 
 ```text
-community_publish_prompt_shown
-community_publish_prompt_clicked
-community_submission_started
-community_submission_completed
-community_submission_failed
-community_publication_viewed
-community_write_cta_clicked
-community_report_submitted
+submission flow
+/my-publications
+Product OS moderation
 ```
 
-Never include title/body/excerpt/public name/email/user ID/document ID/submission ID/publication ID.
+Do not insert ads inside writer body.
 
-## Suggested implementation order
+Any public-reading monetization uses existing safe post-content/reading boundaries and current `WU-GROWTH-001` operating contract.
 
-1. COMMUNITY-A schema + writer submission API.
-2. COMMUNITY-B Basic Writer prompt + submission UX, then reuse for Rich/Keyboard/Voice.
-3. COMMUNITY-C Product OS queue + approve/reject.
-4. COMMUNITY-D public SSR hub/detail + report + sitemap.
-5. COMMUNITY-E My Publications + revisions + withdrawal.
-6. COMMUNITY-F category discovery + guidelines/privacy/terms + route/ad/telemetry launch closure.
+Do not use this feature as an excuse to increase site-wide Auto ads.
 
-Do not start with public pages before the approval boundary exists.
+---
 
-## Test gates
+## 15. Telemetry privacy
 
-Server/API:
+Allowed event family is defined in Slice F.
 
-- unauthenticated submission rejected;
-- user A cannot see/mutate user B;
-- controlled taxonomy enforced;
-- max pending quota;
-- content validation/sanitization;
-- no writing in logs/telemetry;
-- private document edits never change publication.
+Telemetry can contain only bounded product-state metadata such as:
 
-Moderation:
+```text
+workspace/route type
+entry point
+category
+size bucket
+state bucket
+outcome/error category
+```
 
-- public host cannot approve/reject;
-- production write requires OS/Access boundary;
-- duplicate approval idempotent;
-- stale revision fails;
-- rejection produces no public row;
-- approved revision replaces only after approval.
+Never include:
 
-Public:
+```text
+title
+body/excerpt
+public author name
+email
+user ID
+document ID
+submission ID
+publication ID/slug
+content signature
+moderator identity
+```
 
-- pending/rejected/withdrawn inaccessible;
-- published SSR page has canonical/robots/lang/dir/metadata;
-- no private IDs/email in HTML/API;
-- sitemap published-only;
-- withdrawal removes discovery and returns unavailable/noindex.
+Focused tests must enforce forbidden fields.
 
-Browser:
+---
 
-- long prompt threshold and once-per-session behavior;
-- short poetry manual action;
-- OAuth continuity;
-- exact Urdu/RTL snapshot across Basic/Rich/Keyboard/Voice;
-- API failure never breaks typing/local save;
-- My Publications states/actions.
+## 16. Feature flags and rollback
 
-Run full repository suite after focused tests.
+Use at least:
 
-## Stop conditions
+```text
+COMMUNITY_SUBMISSIONS_ENABLED
+COMMUNITY_PUBLIC_ENABLED
+```
 
-Stop and fix if:
+Rollback never drops shared D1 tables.
 
-- another D1 database is introduced;
-- public page reads `writing_documents` directly;
-- writer can alter an approved public row without moderation;
-- pending/rejected content is reachable publicly;
-- auth provider email/name becomes public automatically;
-- moderator writes are callable from normal public origin;
-- arbitrary tags create unbounded public URLs;
-- text is logged/telemetried;
-- the prompt interferes with typing/local autosave;
-- publication can happen without human approval.
+Disabling submissions must not break writing/My Documents/current public reading.
+
+Disabling public corpus must fail public community routes closed/noindex while retaining private/moderation data.
+
+---
+
+## 17. Implementation workflow for an agent
+
+For each requested slice:
+
+1. read parent + exact slice spec;
+2. inspect current `main` owners/dependencies;
+3. reconcile any spec drift explicitly;
+4. record baseline tests before code changes;
+5. implement the smallest shared owner set that satisfies the slice;
+6. add focused contract/unit/browser tests from that slice;
+7. run existing auth/documents/share/editor/SEO regressions affected by touched files;
+8. run full repository gate;
+9. verify no writing/private identity appears in logs/telemetry/public HTML;
+10. update parent/child status and `specs/README.md`/`specs/BACKLOG.md` only if implementation state actually changed;
+11. provide production/preview verification notes and unresolved gates.
+
+Do not combine multiple slices in one implementation PR unless explicitly requested and the earlier slice acceptance gates are already green.
+
+---
+
+## 18. Suggested test families
+
+Names can follow repository conventions, but coverage must include:
+
+```text
+community-submission-api-contract
+community-publishing-editor-contract
+community-moderation-security-contract
+community-public-reader-contract
+community-publications-lifecycle-contract
+community-launch-governance-contract
+```
+
+Also retain/re-run relevant existing contracts for:
+
+```text
+auth foundation
+My Documents basic/editors
+Voice typing/input
+share loop
+product telemetry
+SEO authority/sitemap
+AdSense route governance
+service worker/application shell
+```
+
+---
+
+## 19. Slice exit gates
+
+### A exit
+
+- owner-only pending submission API green;
+- migration safe;
+- controlled taxonomy/content guard green;
+- no public publishing capability.
+
+### B exit
+
+- automatic prompt + manual short-poetry path green on all eligible editors;
+- auth continuity preserves writing;
+- successful submit says `In review`, not published.
+
+### C exit
+
+- OS/Access security green;
+- exact-revision approval/rejection green;
+- atomic/idempotent publication creation green;
+- stale review cannot publish.
+
+### D exit
+
+- published-only SSR corpus green;
+- pending/rejected/private leakage impossible;
+- report + sitemap + withdrawal/unpublish public behavior green.
+
+### E exit
+
+- My Publications state model green;
+- pending revisions preserve current public version;
+- owner withdrawal green;
+- no direct republish bypass.
+
+### F exit
+
+- guidelines/privacy/terms + taxonomy/indexing + ads + telemetry + OS metrics + rollout/rollback production checklist closed.
+
+---
+
+## 20. Global stop conditions
+
+Stop and fix immediately if any implementation does any of the following:
+
+- introduces another D1 database;
+- makes sign-in required for normal writing;
+- points public pages at `writing_documents`/submission rows;
+- lets writer/public API approve content;
+- lets private edits mutate approved publication;
+- exposes provider email/name automatically as public identity;
+- makes arbitrary user tags into public crawlable URLs;
+- authorizes moderator writes from public origin/client flag;
+- approves a stale unseen revision;
+- accepts rich HTML without a proven server sanitizer;
+- logs/telemeters writing or private identifiers;
+- allows pending/rejected content into public API/HTML/sitemap;
+- lets CDN caching keep withdrawn writing publicly readable;
+- deletes private My Documents content when publication is withdrawn;
+- inserts ads inside writer content/private/moderation surfaces;
+- claims WriteUrdu owns writer copyright;
+- enables AI automatic approval to compensate for moderation volume;
+- builds comments/likes/follows/profiles/social feed inside this epic.
