@@ -5,3 +5,4 @@ playwright-report/
 .qa-*/
 qa-*.png
 .vs/
+.benchmark-results/
