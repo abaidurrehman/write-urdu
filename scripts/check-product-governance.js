@@ -58,7 +58,7 @@ if (registryByRoute.size !== registry.length) errors.push('registry: duplicate c
 const explicitLegacyHtmlFiles = new Set(config.pages.flatMap(page => (page.legacyPaths || [])
   .filter(candidate => /^\/[\w/-]+\.html$/i.test(candidate))
   .map(candidate => candidate.replace(/^\//, ''))));
-const htmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html') && !file.startsWith('google'));
+const htmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html') && !file.startsWith('google') && file !== '404.html');
 htmlFiles.forEach(file => {
   if (!registryByFile.has(file) && !explicitLegacyHtmlFiles.has(file)) errors.push(`${file}: public HTML file is missing from route registry`);
 });
