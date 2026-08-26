@@ -18,7 +18,9 @@
     "templates:check": "node scripts/validate-template-library.js",
     "templates:gsc": "node scripts/analyze-writing-template-gsc.js",
     "locale:generate": "node scripts/generate-urdu-locale.js",
-    "locale:check": "node scripts/generate-urdu-locale.js --check"
+    "locale:check": "node scripts/generate-urdu-locale.js --check",
+    "shell:sync": "node scripts/sync-static-shell.js --write",
+    "shell:check": "node scripts/sync-static-shell.js --check"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"
