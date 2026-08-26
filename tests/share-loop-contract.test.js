@@ -147,7 +147,7 @@ assert.doesNotMatch(pulseApi, /SELECT[^;]*(?:public_text|manage_token_hash|image
 assert.match(guide, /Publish &amp; Share/, 'Public guide must explain the publish action');
 assert.match(guide, /Download PNG/, 'Public guide must distinguish local download from publishing');
 assert.match(guide, /Manage published links/, 'Public guide must explain later deletion');
-assert.match(guide, /If a local photo is visible in the card, it is naturally present inside that published rendered PNG/, 'Guide must accurately describe published-background privacy');
+assert.match(guide, /If a local photo is visible in the finished card, it is included in that published card image/, 'Guide must accurately describe published-background privacy in user language');
 assert.match(privacy, /Public share links/, 'Privacy policy must disclose public shares');
 assert.match(privacy, /Clearing browser\/site storage may remove that self-service management token and does not, by itself, delete/, 'Privacy policy must explain local-token deletion semantics');
 assert.match(seo, /how-to-share-urdu-writing-online/, 'Sharing guide must be registered in SEO configuration');
