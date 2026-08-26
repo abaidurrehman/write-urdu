@@ -37,6 +37,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Slice B static shell outputs
+        run: npm run shell:sync && npm run locale:generate
+
+      - name: Upload Slice B generated HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: slice-b-static-shell-${{ github.run_id }}
+          path: |
+            *.html
+            tools/*.html
+            urdu/**/*.html
+          if-no-files-found: error
+          retention-days: 2
+
       - name: Run static and transliteration contract tests
         run: npm test
 
