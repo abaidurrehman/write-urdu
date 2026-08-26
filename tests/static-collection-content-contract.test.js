@@ -37,6 +37,8 @@ assert.ok(renderedUrduWriting.includes('یہ سانچہ استعمال کریں'
 
 const stylishItems = representativeStylishItems();
 assert.strictEqual(stylishItems.length, 10, 'Stylish Urdu source examples must stay bounded to 10 representative styles');
+assert.strictEqual(new Set(stylishItems.map(item => item.id)).size, 10, 'Stylish Urdu representative styles must be unique');
+assert.ok(stylishItems.some(item => item.id.startsWith('popular-')), 'Stylish Urdu source must represent the Popular style family directly');
 const renderedStylish = applyStaticCollectionContent(read('stylish-urdu-text-generator.html'), '/stylish-urdu-text-generator');
 assert.strictEqual((renderedStylish.match(/data-wu-static-catalogue-item/g) || []).length, 10, 'Stylish Urdu source must expose 10 representative examples');
 assert.ok(renderedStylish.includes('آپ کا اردو نام'), 'Stylish Urdu source examples must contain representative Urdu text');
