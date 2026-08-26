@@ -16,5 +16,11 @@ module.exports = {
       '<article><h3><a href="/tools/urdu-voice-typing">Urdu Voice Typing</a></h3><p>Speak Urdu and turn your voice into editable Urdu text with your microphone.</p></article>',
       '<article><h3><a href="/tools/urdu-voice-typing">اردو وائس ٹائپنگ</a></h3><p>مائیک سے اردو بولیں اور اپنی آواز کو قابلِ تدوین اردو متن میں تبدیل کریں۔</p></article>'
     ]
+  ],
+  '/how-to-write-urdu-on-photo': [
+    [
+      'کارڈ اسٹوڈیو ایک وسیع اردو تصویر بنانے والا ٹول ہے۔ ایک ہی طریقہ کار کئی عملی نتائج کے لیے دوبارہ استعمال ہو سکتا ہے، بغیر ہر تلاش کے لیے الگ ٹول بنائے۔',
+      'اردو شاعری، اقتباس، مبارک باد، اعلانات اور سوشل پوسٹس کے لیے کارڈ اسٹوڈیو کا یہی طریقہ استعمال کریں۔'
+    ]
   ]
 };

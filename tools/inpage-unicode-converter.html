@@ -42,7 +42,7 @@
             </div>
             <aside class="urdu-tool-trust" aria-label="Processing and scope note">
                 <strong>Free · no account needed</strong><br>
-                Conversion runs locally in JavaScript. This version converts pasted text; it does not open or generate complete <code>.inp</code> document files.
+                Your text stays on this device during conversion. This version converts pasted text; it does not open or generate complete <code>.inp</code> document files.
             </aside>
         </header>
 
@@ -50,7 +50,7 @@
             <div class="urdu-tool-workspace-header">
                 <div>
                     <h2 id="inpage-workspace-title">Convert Urdu text in either direction</h2>
-                    <p>Your source stays unchanged. Unsupported mappings are preserved and reported instead of being guessed.</p>
+                    <p>Your source stays unchanged. Unsupported characters are kept and listed for review instead of being guessed.</p>
                 </div>
                 <span class="urdu-tool-status-pill" data-inpage-status>Waiting for text</span>
             </div>
@@ -113,16 +113,16 @@
         <section class="urdu-tool-content" aria-label="About InPage and Unicode Urdu conversion">
             <section>
                 <h2>What this converter supports</h2>
-                <p>Older InPage workflows can represent Urdu characters with a legacy two-part pattern rather than modern Unicode code points. This tool recognizes the supported InPage v1/v2-style clipboard mapping, converts known Urdu letters, numerals, punctuation and common composite sequences, and leaves unknown data untouched for review.</p>
+                <p>This tool converts supported Urdu text copied from common older InPage workflows into modern Unicode, and can convert supported Unicode Urdu back for older InPage workflows. Known Urdu letters, numerals and punctuation are converted; anything unsupported is kept visible so you can review it.</p>
                 <h3>InPage to Unicode</h3>
                 <p>Paste legacy text copied from a compatible InPage workflow and convert it to Unicode Urdu. Unicode text works naturally in current browsers, messaging apps, Microsoft Word and the WriteUrdu editor.</p>
                 <h3>Unicode to InPage</h3>
-                <p>The reverse direction uses one documented preferred legacy byte for each supported Unicode character. Where multiple legacy bytes can represent the same Unicode mark, the converter chooses a stable preferred mapping. Characters without a confirmed reversible mapping are preserved and flagged rather than replaced with a guess.</p>
+                <p>Convert supported Unicode Urdu back into text intended for compatible older InPage workflows. Some characters can be represented differently in older InPage versions, so always review the result before using it in an important document.</p>
                 <h3>Text conversion is not document conversion</h3>
-                <p>An InPage <code>.inp</code> file can contain document structure, layout, fonts and other binary data beyond the character mapping. This version deliberately handles pasted text only. It does not claim to preserve page layout or open arbitrary <code>.inp</code> files.</p>
+                <p>An InPage <code>.inp</code> file can contain page layout, fonts and other document information in addition to the text. This version handles pasted text only. It does not preserve page layout or open complete <code>.inp</code> files.</p>
                 <h3>Why some converted text may still need cleaning</h3>
-                <p>Legacy text can contain Arabic forms, kashida, unusual punctuation or direction controls even after encoding conversion. For Unicode output you can continue directly to the <a href="/urdu-text-cleaner">Urdu Text Cleaner &amp; RTL Fixer</a> before editing or exporting.</p>
-                <p class="inpage-scope-note"><strong>Mapping profile:</strong> <code>inpage-v1v2-clipboard-2026-08-17</code>. The implementation is conservative: known mappings convert, unknown mappings remain visible, and the original source is never overwritten.</p>
+                <p>Older text can contain Arabic forms, kashida, unusual punctuation or direction controls even after conversion. For Unicode output you can continue directly to the <a href="/urdu-text-cleaner">Urdu Text Cleaner &amp; RTL Fixer</a> before editing or exporting.</p>
+                <p class="inpage-scope-note"><strong>Check the result before using it.</strong> Supported characters are converted, unsupported content stays visible for review, and your original source is never overwritten.</p>
             </section>
 
             <aside class="urdu-tool-related">
@@ -135,10 +135,10 @@
                     <li>Copy the result. Unicode output can also continue to Cleaner or WriteUrdu.</li>
                 </ol>
                 <h2>Questions</h2>
-                <details open><summary>Is the converter free?</summary><p>Yes. The character conversion runs in your browser and does not require a paid conversion API or an account.</p></details>
-                <details><summary>Does WriteUrdu upload my text?</summary><p>No. This converter does not send the source or converted result to a conversion service. Generic product telemetry must not contain the text itself.</p></details>
-                <details><summary>Can I upload an .inp file?</summary><p>Not in this version. The first release focuses on pasted text so the encoding behavior can remain transparent and reversible. Full .inp file parsing is a separate future feature.</p></details>
-                <details><summary>Why was a character not converted?</summary><p>Some InPage variants use undocumented or context-dependent byte values. The converter preserves unsupported data and reports it rather than silently substituting the wrong Urdu character.</p></details>
+                <details open><summary>Is the converter free?</summary><p>Yes. The conversion runs on this device and does not require a paid conversion service or an account.</p></details>
+                <details><summary>Does WriteUrdu upload my text?</summary><p>No. This converter does not send the source or converted result to a conversion service. Product usage measurement does not include the text itself.</p></details>
+                <details><summary>Can I upload an .inp file?</summary><p>Not in this version. The tool focuses on pasted text. Full <code>.inp</code> document conversion would be a separate feature.</p></details>
+                <details><summary>Why was a character not converted?</summary><p>Older InPage versions and workflows can represent some characters differently. When the converter cannot safely identify a character, it keeps it visible and reports it instead of silently substituting the wrong Urdu character.</p></details>
                 <p><a href="/urdu-text-cleaner">Clean converted Urdu</a><br><a href="/urdu-ocr">Extract Urdu from an image</a><br><a href="/">Open the Urdu editor</a></p>
             </aside>
         </section>
