@@ -1,0 +1,61 @@
+{
+  "reviewedAt": "2026-08-25",
+  "gatewayId": "write-urdu-ai",
+  "providers": [
+    {
+      "id": "mistral",
+      "label": "Mistral Small 4",
+      "model": "mistral-small-2603",
+      "endpointSuffix": "mistral/v1/chat/completions",
+      "apiKeyEnv": "MISTRAL_API_KEY",
+      "benchmarkStatus": "allowed",
+      "productionStatus": "candidate",
+      "notes": [
+        "Commercial API candidate; revalidate data controls and account configuration before production enablement.",
+        "No explicit benchmarking prohibition was found in the commercial use restrictions reviewed on 2026-08-25."
+      ],
+      "sources": [
+        "https://docs.mistral.ai/models/mistral-small-4-0-26-03",
+        "https://legal.mistral.ai/terms/commercial-terms-of-service"
+      ]
+    },
+    {
+      "id": "groq",
+      "label": "Groq GPT-OSS 120B",
+      "model": "openai/gpt-oss-120b",
+      "endpointSuffix": "groq/chat/completions",
+      "apiKeyEnv": "GROQ_API_KEY",
+      "benchmarkStatus": "allowed",
+      "productionStatus": "candidate",
+      "notes": [
+        "Customer applications may expose AI Model Services to end users subject to the agreement and applicable model terms.",
+        "Enable Zero Data Retention in the Groq organization before production use where available.",
+        "The benchmark evaluates model suitability for Write Urdu; it must not be repurposed to develop a competing inference/cloud service."
+      ],
+      "sources": [
+        "https://console.groq.com/docs/model/openai/gpt-oss-120b",
+        "https://console.groq.com/docs/legal/services-agreement",
+        "https://console.groq.com/docs/your-data"
+      ]
+    },
+    {
+      "id": "cerebras",
+      "label": "Cerebras GPT-OSS 120B",
+      "model": "gpt-oss-120b",
+      "endpointSuffix": "cerebras/chat/completions",
+      "apiKeyEnv": "CEREBRAS_API_KEY",
+      "benchmarkStatus": "blocked-terms",
+      "productionStatus": "research-hold",
+      "notes": [
+        "Cerebras Terms of Use reviewed on 2026-08-25 prohibit using the Service for benchmarking or competitive analysis.",
+        "Do not execute the comparative WU-AI-001A corpus against Cerebras unless a later written permission/contract or updated terms clearly permit it.",
+        "The adapter metadata is retained only so a future terms clearance does not require redesigning the benchmark format."
+      ],
+      "sources": [
+        "https://inference-docs.cerebras.ai/models/overview",
+        "https://www.cerebras.ai/terms-of-service",
+        "https://www.cerebras.ai/privacy-policy"
+      ]
+    }
+  ]
+}

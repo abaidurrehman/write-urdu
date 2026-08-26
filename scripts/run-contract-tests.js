@@ -63,7 +63,8 @@ const tests = [
   'tests/stylish-urdu-acquisition-contract.test.js',
   'tests/name-art-acquisition-contract.test.js',
   'tests/name-art-task-first-contract.test.js',
-  'tests/create-social-voice-input-contract.test.js'
+  'tests/create-social-voice-input-contract.test.js',
+  'tests/urdu-ai-benchmark-contract.test.js'
 ];
 
 function annotationText(value) {
