@@ -57,8 +57,11 @@ assert.strictEqual((renderedTwice.match(/data-write-urdu-schema/g) || []).length
 const runtime = read('js/seo.js');
 assert.match(runtime, /!document\.head\.querySelector\('script\[data-write-urdu-schema\]'\)/, 'Runtime SEO must detect the static owned graph before attempting dynamic schema');
 
+const urduGenerator = read('scripts/generate-urdu-locale.js');
+assert.match(urduGenerator, /data-write-urdu-schema/, 'Urdu generator must explicitly strip inherited English static schema');
 const urduHome = read('urdu/index.html');
 assert.match(urduHome, /data-wu-urdu-schema/, 'Existing Urdu static schema must remain present');
+assert.doesNotMatch(urduHome, /data-write-urdu-schema/, 'Generated Urdu source must not carry the English owned schema graph');
 assert.match(urduHome, /"inLanguage":"ur"/, 'Existing Urdu graph must remain Urdu-language schema');
 
 console.log('Static SEO graph foundation contracts passed.');
