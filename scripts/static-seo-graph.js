@@ -108,6 +108,13 @@ function websiteNode(config) {
   };
 }
 
+function applicationCategory(pageId) {
+  if (['urdu-card-studio', 'urdu-instagram-post-maker', 'urdu-whatsapp-status-maker', 'urdu-name-art-maker'].includes(pageId)) return 'DesignApplication';
+  if (['home', 'urdu-editor', 'urdu-writing-templates'].includes(pageId)) return 'WritingApplication';
+  if (pageId === 'urdu-invoice-generator') return 'BusinessApplication';
+  return 'UtilitiesApplication';
+}
+
 function applicationFeatures(pageId) {
   const values = {
     home: ['Type Urdu with English letters', 'Urdu word suggestions', 'Direct Urdu typing', 'Copy and save drafts', 'Download text'],
@@ -195,7 +202,7 @@ function buildGraph(page, html, options = {}) {
       name: resolvedTitle.replace(/\s+[–—].*$/, ''),
       url: canonical,
       mainEntityOfPage: { '@id': webpageId },
-      applicationCategory: page.id === 'urdu-card-studio' ? 'DesignApplication' : (page.id === 'urdu-editor' || page.id === 'home' || page.id === 'urdu-writing-templates' ? 'WritingApplication' : 'UtilitiesApplication'),
+      applicationCategory: applicationCategory(page.id),
       operatingSystem: 'Any',
       browserRequirements: 'Works in a modern web browser',
       isAccessibleForFree: true,
@@ -288,10 +295,37 @@ function schemaTag(page, html, options) {
   return '<script type="application/ld+json" data-write-urdu-schema>' + payload + '</script>';
 }
 
+function typeList(value) {
+  return Array.isArray(value) ? value : (value ? [value] : []);
+}
+
+function removeLegacyGovernedSchema(html, page, options = {}) {
+  const config = options.config || seo;
+  const canonical = config.canonical(page.path);
+  const governed = new Set(page.schema || []);
+  if (page.id === 'why-write-urdu') governed.add('AboutPage');
+  return String(html || '').replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/ig, function (full, attrs, body) {
+    if (!/\btype\s*=\s*(["'])application\/ld\+json\1/i.test(attrs)) return full;
+    if (/\bdata-write-urdu-schema\b|\bdata-wu-urdu-schema\b/i.test(attrs)) return full;
+    let payload;
+    try { payload = JSON.parse(body.trim()); } catch (error) { return full; }
+    const nodes = payload && Array.isArray(payload['@graph']) ? payload['@graph'] : [payload];
+    const duplicatesRouteSchema = nodes.some(function (node) {
+      if (!node || typeof node !== 'object') return false;
+      const overlaps = typeList(node['@type']).some(type => governed.has(type));
+      if (!overlaps) return false;
+      const identity = String(node.url || node['@id'] || '');
+      return !identity || identity === canonical || identity.startsWith(canonical + '#');
+    });
+    return duplicatesRouteSchema ? '' : full;
+  });
+}
+
 function applyStaticSeoGraph(html, page, options = {}) {
   if (!page || page.indexable !== true) return html;
   const tag = schemaTag(page, html, options);
-  let output = String(html || '').replace(/\s*<script\b[^>]*data-write-urdu-schema[^>]*>[\s\S]*?<\/script>/ig, '');
+  let output = removeLegacyGovernedSchema(String(html || ''), page, options);
+  output = output.replace(/\s*<script\b[^>]*data-write-urdu-schema[^>]*>[\s\S]*?<\/script>/ig, '');
   if (!/<\/head>/i.test(output)) throw new Error('Missing </head> for ' + page.path);
   return output.replace(/<\/head>/i, '    ' + tag + '\n</head>');
 }
@@ -302,5 +336,6 @@ module.exports = {
   extractFaq,
   plainText,
   sourceDescription,
-  templateItems
+  templateItems,
+  removeLegacyGovernedSchema
 };
