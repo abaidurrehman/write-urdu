@@ -1,7 +1,7 @@
 # WU-SEO-CRAWL-001D — Static Collection Content
 
 **Parent:** `WU-SEO-CRAWL-001`  
-**Status:** Planned
+**Status:** In progress
 
 ## Goal
 
@@ -96,6 +96,16 @@ Do not create Urdu siblings for collections that are not launched in the locale 
 - Keep initial HTML size bounded; omit decorative payloads that do not aid users/crawlers.
 - Images should follow existing lazy-loading/performance rules.
 
+## Implementation notes
+
+- `scripts/static-collection-content.js` now renders source-visible cards from the existing design-template, writing-template and Stylish Urdu registries.
+- The existing runtime renderers already replace their grid contents on initialization, so the source catalogue is replaced rather than duplicated after JavaScript runs.
+- `/urdu-templates` targets all 46 existing design templates.
+- English and Urdu writing-template pages target the same reviewed 12-item catalogue with locale-safe labels.
+- Stylish Urdu is deliberately bounded to 10 representative examples; personalized results remain client-side.
+- `scripts/sync-static-collection-content.js` provides deterministic write/check modes.
+- `tests/static-collection-content-contract.test.js` verifies registry counts, representative source content and the no-duplicate progressive-enhancement contract before public HTML emission.
+
 ## Acceptance criteria
 
 - [ ] `/urdu-templates` source HTML contains named template items rather than only `Loading templates…` + empty grid.
@@ -123,6 +133,7 @@ Add runtime tests asserting:
 
 ```bash
 npm test
+npm run collections:check
 node scripts/check-seo.js
 node scripts/check-urdu-locale-seo.js
 ```
