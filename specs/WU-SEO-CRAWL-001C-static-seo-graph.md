@@ -1,7 +1,7 @@
 # WU-SEO-CRAWL-001C — Static SEO Graph
 
 **Parent:** `WU-SEO-CRAWL-001`  
-**Status:** Planned
+**Status:** In progress
 
 ## Goal
 
@@ -87,6 +87,22 @@ Prefer semantic source-visible breadcrumb markup for indexable content/tool page
 
 Do not create misleading hierarchy merely to add schema.
 
+## Implementation progress
+
+- [x] Build-time graph helper uses `seo.config.js` for route/page identity.
+- [x] FAQ schema is derived from visible `<details>` question/answer content.
+- [x] Design-template ItemList data comes from `js/template-library-core.js`.
+- [x] Writing-template ItemList data comes from `js/writing-template-catalog.js`.
+- [x] Representative source-level graph contract covers application, FAQ, Article, HowTo, collection and AboutPage families.
+- [x] Runtime `js/seo.js` already detects an existing `data-write-urdu-schema` graph and does not append a duplicate.
+- [x] Urdu locale generation strips inherited English static schema before emitting the locale-owned `data-wu-urdu-schema` graph.
+- [x] `seo:graph:sync` and `seo:graph:check` commands are registered.
+- [x] Static SEO graph contract is wired into the normal `npm test` suite.
+- [ ] Pass the first CI foundation gate without rewriting public HTML.
+- [ ] Emit the deterministic static graph across registered indexable English source pages.
+- [ ] Add `seo:graph:check` to read-only CI after generated HTML is committed.
+- [ ] Confirm rendered browser DOM contains exactly one English owned graph on representative routes.
+
 ## Acceptance criteria
 
 - [ ] Representative English indexable pages contain their declared JSON-LD in initial HTML.
@@ -120,6 +136,7 @@ Also add a rendered-DOM/browser assertion that exactly one owned schema graph ex
 
 ```bash
 npm test
+npm run seo:graph:check
 node scripts/check-seo.js
 node scripts/check-urdu-locale-seo.js
 node scripts/generate-seo-files.js
