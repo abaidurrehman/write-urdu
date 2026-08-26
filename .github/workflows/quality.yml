@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -25,10 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout Slice D branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: feat/wu-seo-crawl-001d
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -38,22 +36,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Refresh Slice D static collections
-        run: npm run collections:sync
-
-      - name: Commit final deterministic collection HTML
-        if: github.event_name == 'pull_request' && github.head_ref == 'feat/wu-seo-crawl-001d'
-        run: |
-          git config user.name "write-urdu-ci"
-          git config user.email "actions@users.noreply.github.com"
-          git add -- stylish-urdu-text-generator.html
-          if git diff --cached --quiet; then
-            echo "Stylish collection HTML is already current."
-          else
-            git commit -m "WU-SEO-CRAWL-001D: refresh Stylish source examples"
-            git push origin HEAD:feat/wu-seo-crawl-001d
-          fi
 
       - name: Validate static source shell
         run: npm run shell:check
