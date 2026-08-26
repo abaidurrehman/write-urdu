@@ -7,6 +7,7 @@ const locale = require('../locale/ur.js');
 const growthOverrides = require('../locale/ur-growth-overrides.js');
 const seo = require('../seo.config.js');
 const Route = require('../js/locale-route.js');
+const { applyStaticShell } = require('./static-shell.js');
 const root = path.resolve(__dirname, '..');
 const checkOnly = process.argv.includes('--check');
 
@@ -90,6 +91,16 @@ function localeInternalLinks(html) {
     return target ? 'href=' + quote + target + suffix + quote : full;
   });
 }
+function urduShellHref(href) {
+  const value = String(href || '');
+  if (!value.startsWith('/')) return value;
+  const match = value.match(/^([^?#]*)([?#].*)?$/);
+  if (!match) return value;
+  const pathname = match[1] || '/';
+  if (pathname.startsWith('/urdu/')) return value;
+  const target = Route.href(pathname, 'ur');
+  return target ? target + (match[2] || '') : value;
+}
 function ensureLocaleScripts(html) {
   if (!/src=["']\/locale\.config\.js["']/i.test(html)) {
     html = html.replace(/<\/head>/i, '    <script src="/locale.config.js" defer></script>\n    <script src="/js/locale-route.js" defer></script>\n</head>');
@@ -138,10 +149,14 @@ function render(productPath, englishSource) {
   html = setMeta(html, 'twitter:description', copy.description, false);
   html = applyKey(html, productPath === '/' ? 'home.h1' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.h1', copy.h1);
   html = applyKey(html, productPath === '/' ? 'home.lede' : record.source.replace(/\.html$/, '').replace(/\//g, '.') + '.lede', copy.lede);
-  Object.keys(copy.strings || {}).forEach(function (key) { html = applyKey(html, key, copy.strings[key]); });
+  Object.keys(copy.strings || {}).forEach(function (key) {
+    if (/^(?:nav|footer)\./.test(key)) return;
+    html = applyKey(html, key, copy.strings[key]);
+  });
   html = applyLiteralReplacements(html, productPath);
   html = rootSafeAssets(html);
   html = localeInternalLinks(html);
+  html = applyStaticShell(html, { locale: 'ur', hrefFor: urduShellHref });
   html = setStaticSchema(html, productPath, copy);
   return html.replace(/\r\n/g, '\n');
 }

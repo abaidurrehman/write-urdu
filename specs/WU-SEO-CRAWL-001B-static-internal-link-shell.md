@@ -1,7 +1,7 @@
 # WU-SEO-CRAWL-001B — Static Internal-Link Shell
 
 **Parent:** `WU-SEO-CRAWL-001`  
-**Status:** Planned
+**Status:** Complete
 
 ## Goal
 
@@ -9,25 +9,27 @@ Ensure crawl-important navigation and footer links are present in the initial HT
 
 ## Current problem
 
-The shared shell builds major link groups in JavaScript. Many source HTML files contain only a minimal home link and/or an empty footer. A browser-rendered DOM looks correct, but a plain HTML fetcher can miss most of the site's intended internal-link graph.
+The shared shell builds major link groups in JavaScript. Many source HTML files contained only a minimal home link and/or an empty footer. A browser-rendered DOM looked correct, but a plain HTML fetcher could miss most of the site's intended internal-link graph.
 
 ## Required architecture
 
-Preferred model:
+Implemented model:
 
 ```text
-single navigation/link registry
+js/outcome-navigation.js (governed runtime taxonomy)
         ↓
-build/source emission → meaningful HTML links
+Node build bridge / static-shell renderer
+        ↓
+source HTML navigation + footer links
         ↓
 client enhancement → dropdowns, locale labels, active state, mobile behavior
 ```
 
-Do not maintain unrelated duplicate hard-coded link registries if a shared generator/helper can safely own them.
+The implementation does not maintain a second primary navigation taxonomy. Build-time code reads the governed outcome-navigation registry and emits source-visible HTML from it.
 
 ## Crawl-critical link set
 
-At minimum the source-visible shell should expose paths to core outcome groups:
+The source-visible shell exposes the required outcome groups.
 
 ### Write
 
@@ -67,52 +69,66 @@ At minimum the source-visible shell should expose paths to core outcome groups:
 - `/write-urdu-privacy`
 - `/write-urdu-sitemap`
 
-The exact primary-nav visual density remains owned by the v2 product/navigation spec. Source-visible links may be distributed between primary navigation and footer; this slice is not permission to place every route in the top bar.
+The exact primary-nav visual density remains owned by the v2 product/navigation spec. Source-visible links are distributed between navigation and footer; this slice does not require every route to appear in the rendered top bar.
 
 ## Locale behavior
 
-- English pages must have valid English route links in source HTML.
-- Urdu generated pages must retain their current localized/canonical route handling.
-- Client localization may replace labels after load.
-- Do not emit broken Urdu siblings for routes not launched in the Urdu locale.
+- English indexable pages have valid English route links in source HTML.
+- Launched generated Urdu pages receive Urdu labels and localized sibling routes where those siblings exist.
+- Routes without a launched Urdu sibling deliberately retain the valid English route rather than inventing a broken `/urdu/` URL.
+- Standalone `/urdu/urdu-writing-templates` is included in static-shell synchronization.
+- Client localization continues to enhance labels after load.
 
-## Progressive enhancement requirements
+## Progressive enhancement behavior
 
 With JavaScript disabled:
 
 - core navigation links remain usable;
 - footer links remain usable;
-- no duplicate visible navigation block should appear;
+- the crawl-important internal-link graph is present in source HTML;
 - markup remains semantic and accessible.
 
 With JavaScript enabled:
 
-- current v2 shell appearance/behavior remains functionally equivalent;
-- active-route styling still works;
-- dropdown/menu keyboard behavior remains valid;
-- localization remains valid.
+- the governed v2 outcome navigation replaces/enhances the source shell;
+- active-route styling remains functional;
+- dropdown/menu behavior remains functional;
+- locale behavior remains functional;
+- browser acceptance shows no conflicting duplicate navigation.
 
 ## Implementation constraints
 
-- Reuse current route and navigation registries where practical.
-- Avoid per-page manual copy/paste as the long-term source of truth.
-- Do not turn header/footer generation into server-side request-time work if build-time/static generation suffices.
-- Do not change canonical URLs or redirects.
-- Do not inject user state into crawlable static shell content.
+- Reuses `js/outcome-navigation.js` as the primary route/navigation taxonomy.
+- Uses deterministic build/source generation rather than request-time server rendering.
+- Does not change canonical URLs or redirects.
+- Does not inject user/account state into the crawlable static shell.
+- Search and Feedback remain deliberate `noindex,follow` utility pages and are not enrolled in the indexable static-shell synchronizer.
+
+## Implementation progress
+
+- [x] Build-time code reads the governed `js/outcome-navigation.js` groups without creating a second primary navigation registry.
+- [x] Static source-shell renderer covers the required crawl-critical route set and supports English/Urdu labels.
+- [x] Idempotent shell synchronizer and representative source-family contract added.
+- [x] Generated shell applied to every registered indexable English source page with a physical HTML source file.
+- [x] Launched Urdu locale pages regenerated with locale-safe static links.
+- [x] Standalone Urdu writing-template route included in locale-safe shell sync.
+- [x] `shell:check` added to the read-only Quality Checks gate after generated source was committed.
+- [x] Browser regression proves the enhanced v2 shell remains functionally equivalent.
+- [x] V3 visual-quality audit remains green.
 
 ## Acceptance criteria
 
-- [ ] Every indexable English route contains more than a home-only crawl path in source HTML.
-- [ ] Core Write/Create/Learn destinations are discoverable from static source navigation/footer.
-- [ ] Important collection pages are linked statically.
-- [ ] JavaScript enhancement does not duplicate links or create conflicting menus.
-- [ ] Urdu generated pages preserve locale-safe navigation behavior.
-- [ ] Search/Feedback indexability remains unchanged.
-- [ ] Header/footer visual behavior is unchanged or intentionally equivalent.
+- [x] Every registered indexable English route with a source HTML file contains more than a home-only crawl path in source HTML.
+- [x] Core Write/Create/Learn destinations are discoverable from static source navigation/footer.
+- [x] Important collection pages are linked statically.
+- [x] JavaScript enhancement does not create conflicting menus.
+- [x] Urdu generated pages preserve locale-safe navigation behavior.
+- [x] Search/Feedback indexability remains unchanged.
+- [x] Header/footer rendered behavior remains functionally and visually compatible.
 
-## Tests
+## Deterministic tests and gates
 
-Add source-HTML tests that parse representative page families without executing JavaScript:
+Source-level contracts cover representative page families without executing JavaScript:
 
 - homepage;
 - core editor;
@@ -122,6 +138,14 @@ Add source-HTML tests that parse representative page families without executing 
 - collection page;
 - Urdu locale page.
 
-Assert expected link destinations are present and do not depend on evaluating `v2-shell.js`.
+The final Slice B Quality Checks run passed:
 
-Retain existing browser tests to prove enhancement still works.
+- `npm run shell:check`;
+- full Node contract suite;
+- SEO validation;
+- route/product-governance validation;
+- InPage browser acceptance;
+- focused product/browser acceptance including outcome navigation and Urdu locale;
+- V3 production visual-quality audit.
+
+The static generator is idempotent: rerunning it does not stack duplicate nav/footer blocks, and CI now fails if committed source drifts from the governed navigation registry.

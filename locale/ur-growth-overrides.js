@@ -7,7 +7,6 @@
 module.exports = {
   '/': [
     ['aria-label="Try Urdu Voice Typing"', 'aria-label="اردو وائس ٹائپنگ آزمائیں"'],
-    ['title="Urdu Rich Text Editor features"', 'title="Urdu Rich Text Editor"'],
     [
       '<span class="wu-voice-entry-copy"><span class="wu-voice-entry-kicker">Speak Urdu</span><strong>Talk. Get Urdu text.</strong><small>Use Urdu Voice Typing when speaking is faster than typing.</small></span>',
       '<span class="wu-voice-entry-copy"><span class="wu-voice-entry-kicker">آواز سے اردو لکھیں</span><strong>بولیں، اردو متن حاصل کریں۔</strong><small>جب بولنا ٹائپ کرنے سے آسان ہو تو اردو وائس ٹائپنگ استعمال کریں۔</small></span>'

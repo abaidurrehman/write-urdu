@@ -7,6 +7,7 @@ const tests = [
   'tests/v2-authority-contract.test.js',
   'tests/seo-authority-contract.test.js',
   'tests/public-language-leakage-contract.test.js',
+  'tests/static-shell-source-contract.test.js',
   'tests/ads-policy-contract.test.js',
   'tests/shell-style-ownership-contract.test.js',
   'tests/product-telemetry-contract.test.js',
