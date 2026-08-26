@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -25,39 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout closeout branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: chore/wu-seo-crawl-001-closeout
-
-      - name: Align telemetry privacy contract wording
-        if: github.event_name == 'pull_request' && github.head_ref == 'chore/wu-seo-crawl-001-closeout'
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('tests/product-telemetry-contract.test.js')
-          source = path.read_text()
-          old = """assert.match(privacy, /Product usage telemetry/, 'Privacy processing table must disclose first-party product telemetry');
-          assert.match(privacy, /never the Urdu or Roman Urdu text you write|does not transmit the Urdu or Roman Urdu text you write/, 'Privacy page must explicitly say writing content is not collected');
-          assert.match(privacy, /session storage|session identifier/i, 'Privacy page must explain the ephemeral telemetry session identifier');"""
-          new = """assert.match(privacy, /Product usage analytics/, 'Privacy processing table must disclose product usage analytics');
-          assert.match(privacy, /never the Urdu or English-letter text you write|Written text[\\s\\S]*not included/i, 'Privacy page must explicitly say writing content is not collected');
-          assert.match(privacy, /temporary identifier for the current browser tab/i, 'Privacy page must explain the temporary per-tab analytics identifier');
-          assert.match(privacy, /do not send the share ID/i, 'Privacy page must state that analytics exclude individual public-share IDs');
-          assert.match(privacy, /does not add an identifier that follows you across visits/i, 'Privacy page must state that arrival analytics do not add cross-visit tracking');"""
-          if old not in source:
-              raise SystemExit('Expected legacy telemetry privacy assertions were not found')
-          path.write_text(source.replace(old, new, 1))
-          PY
-          git config user.name "write-urdu-ci"
-          git config user.email "actions@users.noreply.github.com"
-          git add -- tests/product-telemetry-contract.test.js
-          if git diff --cached --quiet; then
-            echo "Telemetry privacy contract is already current."
-          else
-            git commit -m "WU-SEO-CRAWL-001: align telemetry privacy contract wording"
-            git push origin HEAD:chore/wu-seo-crawl-001-closeout
-          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
