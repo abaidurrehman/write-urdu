@@ -30,26 +30,26 @@ jobs:
         with:
           ref: chore/wu-seo-crawl-001-closeout
 
-      - name: Align share privacy contract wording
+      - name: Align contact privacy contract wording
         if: github.event_name == 'pull_request' && github.head_ref == 'chore/wu-seo-crawl-001-closeout'
         run: |
           python - <<'PY'
           from pathlib import Path
-          path = Path('tests/share-loop-contract.test.js')
+          path = Path('tests/contact-feedback-trust-contract.test.js')
           source = path.read_text()
-          old = "assert.match(privacy, /Clearing browser\\/site storage may remove that self-service management token and does not, by itself, delete/, 'Privacy policy must explain local-token deletion semantics');"
-          new = "assert.match(privacy, /private deletion key/, 'Privacy policy must explain private deletion access');\nassert.match(privacy, /Clearing browser\\/site storage may remove this self-service deletion access and does not, by itself, delete/, 'Privacy policy must explain local deletion-key semantics');"
+          old = "assert.match(privacy, /does not store a separate copy of the form submission in the product-telemetry database/, 'Privacy policy must separate messages from product telemetry');"
+          new = "assert.match(privacy, /does not add a separate copy of the form submission to product analytics/, 'Privacy policy must separate submitted messages from product analytics');"
           if old not in source:
-              raise SystemExit('Expected legacy share privacy assertion was not found')
+              raise SystemExit('Expected legacy contact privacy assertion was not found')
           path.write_text(source.replace(old, new, 1))
           PY
           git config user.name "write-urdu-ci"
           git config user.email "actions@users.noreply.github.com"
-          git add -- tests/share-loop-contract.test.js
+          git add -- tests/contact-feedback-trust-contract.test.js
           if git diff --cached --quiet; then
-            echo "Share privacy contract is already current."
+            echo "Contact privacy contract is already current."
           else
-            git commit -m "WU-SEO-CRAWL-001: align share privacy contract wording"
+            git commit -m "WU-SEO-CRAWL-001: align contact privacy contract wording"
             git push origin HEAD:chore/wu-seo-crawl-001-closeout
           fi
 
