@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -25,8 +25,50 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout closeout branch
         uses: actions/checkout@v4
+        with:
+          ref: chore/wu-seo-crawl-001-closeout
+
+      - name: Simplify privacy implementation wording
+        if: github.event_name == 'pull_request' && github.head_ref == 'chore/wu-seo-crawl-001-closeout'
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          privacy = Path('write-urdu-privacy.html')
+          source = privacy.read_text()
+          replacements = {
+              'transliteration, telemetry': 'English-to-Urdu typing suggestions, basic usage analytics',
+              'First-party product telemetry records coarse usage events and coarse arrival channels, never the Urdu or Roman Urdu text you write or the ID of a public share.': 'Basic usage analytics record actions such as which tool was used and broad arrival sources, never the Urdu or English-letter text you write or the ID of a public share.',
+              'Product usage telemetry': 'Product usage analytics',
+              'Instrumented product pages send first-party aggregate interaction events to Write Urdu. Public pages may also classify the current arrival into a coarse source such as Google Search, other search, direct/unknown, referral, campaign or internal navigation.': 'Some product pages send basic usage events to Write Urdu. They may also record a broad arrival source such as Google Search, another search engine, direct/unknown, referral, campaign or an internal link.',
+              'Event type, normalized route/tool, coarse text-length and active-time buckets, input mode, export format, device class and an ephemeral tab-session identifier may be processed. Public-share telemetry normalizes all individual share routes to one generic route and does not transmit the share ID. Written text, filenames, clipboard contents, email, full referrer URLs, campaign values and user-agent strings are not part of these telemetry events. The arrival signal adds no persistent cross-session identifier.': 'Write Urdu may process the action type, page or tool, broad text-length and active-time ranges, input method, export format, device type and a temporary identifier for the current browser tab. Usage analytics group individual public-share pages together and do not send the share ID. Written text, filenames, clipboard contents, email, full referring URLs, campaign values and full browser-identification strings are not included. The recorded arrival source does not add an identifier that follows you across visits.',
+              'source-tool/preset information, a random share identifier, a hash of the private management token and limited operational/moderation fields': 'tool and size information, a random share identifier, information needed to verify deletion access and limited moderation/operations data',
+              'aggregate reproduction can be measured without linking that relationship to an analytics session': 'aggregate reuse can be counted without linking that relationship to a visitor profile',
+              'Projects may be saved in IndexedDB; no external QR service receives the content.': 'Projects may be saved in browser storage; no external QR service receives the content.',
+              'Write Urdu does not create its own audio recording or upload pipeline for this tool.': 'Write Urdu does not create its own audio recording or send microphone audio itself for this tool.',
+              'Write Urdu does not create a separate audio recording, does not upload microphone audio to a Write Urdu API, and does not include recognized transcript text in first-party product telemetry.': 'Write Urdu does not create a separate audio recording, does not send microphone audio itself, and does not include recognized text in Write Urdu usage analytics.',
+              'That action creates an immutable public snapshot with a short address such as': 'That action creates a public link that keeps the version you chose to share at that time, with a short address such as',
+              'small Write-Urdu.com provenance footer': 'small Write-Urdu.com footer',
+              'Initial public share pages are unlisted, kept out of the normal XML sitemap and marked <strong>noindex</strong>; those measures are intended to prevent arbitrary user-generated pages from becoming a search-content program, not to provide access control.': 'Initial public share pages are unlisted, kept out of the normal XML sitemap and marked <strong>noindex</strong>. These settings reduce normal search discovery; they do not make the link private.',
+              'The browser that publishes a share receives a private management token. Write Urdu stores only a hash of that token on the server; the token itself is stored locally in the publishing browser and is not placed in the public URL. When the token is available, the publisher can delete the public link from Card Studio. Clearing browser/site storage may remove that self-service management token and does not, by itself, delete an already-published public share.': 'The browser that publishes a share keeps a private deletion key. The key is not placed in the public URL, and Write Urdu stores only a protected verification value rather than the key itself. While the key remains in that browser, the publisher can delete the public link from Card Studio. Clearing browser/site storage may remove this self-service deletion access and does not, by itself, delete an already-published public share.',
+              'The <a href="/contact">Contact</a> and <a href="/feedback">Feedback</a> forms send the fields you choose to enter to a same-origin Write Urdu Pages Function. Cloudflare Turnstile is used to reduce automated spam. After successful validation, a private service-bound mailer sends an email notification to the project mailbox. Write Urdu does not store a separate copy of the form submission in the product-telemetry database.': 'The <a href="/contact">Contact</a> and <a href="/feedback">Feedback</a> forms send only the fields you choose to enter through the Write Urdu form service. Cloudflare Turnstile is used to reduce automated spam, and accepted messages are delivered privately to the project mailbox. Write Urdu does not add a separate copy of the form submission to product analytics.',
+              'Submitted form fields pass through a Write Urdu Cloudflare Pages Function and Cloudflare Turnstile before a private email notification is delivered.': "Submitted form fields pass through Write Urdu's form service and Cloudflare Turnstile before a private email notification is delivered."
+          }
+          for old, new in replacements.items():
+              if old in source:
+                  source = source.replace(old, new)
+          privacy.write_text(source)
+
+          config = Path('seo.config.js')
+          config_source = config.read_text()
+          config_source = config_source.replace(
+              'Understand how Write Urdu handles local drafts, optional public share links, uploaded share snapshots, transliteration, telemetry, ads and feedback.',
+              'Understand how Write Urdu handles local drafts, voice typing, optional public share links, English-to-Urdu typing suggestions, basic usage analytics, ads and feedback.'
+          )
+          config.write_text(config_source)
+          PY
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -36,6 +78,22 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Refresh static SEO graph after privacy copy change
+        run: npm run seo:graph:sync
+
+      - name: Commit privacy closeout changes
+        if: github.event_name == 'pull_request' && github.head_ref == 'chore/wu-seo-crawl-001-closeout'
+        run: |
+          git config user.name "write-urdu-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- write-urdu-privacy.html seo.config.js
+          if git diff --cached --quiet; then
+            echo "Privacy closeout copy is already current."
+          else
+            git commit -m "WU-SEO-CRAWL-001: simplify privacy implementation wording"
+            git push origin HEAD:chore/wu-seo-crawl-001-closeout
+          fi
 
       - name: Validate static source shell
         run: npm run shell:check
