@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -25,34 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout closeout branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: chore/wu-seo-crawl-001-closeout
-
-      - name: Reconcile residual public registry wording
-        if: github.event_name == 'pull_request' && github.head_ref == 'chore/wu-seo-crawl-001-closeout'
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('seo.config.js')
-          source = path.read_text()
-          old = "Create Urdu Instagram post images in square, portrait, or story sizes with local backgrounds, safe-area guides, and PNG or JPEG download."
-          new = "Create Urdu Instagram post images in square, portrait or story sizes. Type, paste or speak Urdu, choose a background, then download PNG or JPEG."
-          if old not in source:
-              print('Residual registry wording already reconciled.')
-          else:
-              path.write_text(source.replace(old, new, 1))
-          PY
-          git config user.name "write-urdu-ci"
-          git config user.email "actions@users.noreply.github.com"
-          git add -- seo.config.js
-          if git diff --cached --quiet; then
-            echo "SEO registry copy is already current."
-          else
-            git commit -m "WU-SEO-CRAWL-001: remove residual Instagram jargon"
-            git push origin HEAD:chore/wu-seo-crawl-001-closeout
-          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
