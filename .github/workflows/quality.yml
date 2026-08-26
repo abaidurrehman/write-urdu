@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -25,8 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout Slice D branch
         uses: actions/checkout@v4
+        with:
+          ref: feat/wu-seo-crawl-001d
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -37,11 +39,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate Slice D static collections
+        run: npm run collections:sync
+
+      - name: Commit deterministic Slice D HTML
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/wu-seo-crawl-001d'
+        run: |
+          git config user.name "write-urdu-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- urdu-templates.html urdu-writing-templates.html urdu/urdu-writing-templates.html stylish-urdu-text-generator.html
+          if git diff --cached --quiet; then
+            echo "Generated collection HTML is already committed."
+          else
+            git commit -m "WU-SEO-CRAWL-001D: sync static collection content"
+            git push origin HEAD:feat/wu-seo-crawl-001d
+          fi
+
       - name: Validate static source shell
         run: npm run shell:check
 
       - name: Validate static SEO graph
         run: npm run seo:graph:check
+
+      - name: Validate static collection content
+        run: npm run collections:check
 
       - name: Run static and transliteration contract tests
         run: npm test
