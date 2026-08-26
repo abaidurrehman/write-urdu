@@ -13,7 +13,8 @@ const pages = {
   inpage: read('tools/inpage-unicode-converter.html'),
   ocr: read('urdu-ocr.html'),
   instagram: read('urdu-instagram-post-maker.html'),
-  sitemap: read('write-urdu-sitemap.html')
+  sitemap: read('write-urdu-sitemap.html'),
+  privacy: read('write-urdu-privacy.html')
 };
 
 const leakedPublicPhrases = [
@@ -37,7 +38,16 @@ const leakedPublicPhrases = [
   'safe-area guide',
   'purpose-built sizes and safe areas',
   'Product documentation',
-  'Writing operations'
+  'Writing operations',
+  'ephemeral tab-session identifier',
+  'hash of the private management token',
+  'source-tool/preset information',
+  'limited operational/moderation fields',
+  'same-origin Write Urdu Pages Function',
+  'private service-bound mailer',
+  'product-telemetry database',
+  'Write-Urdu.com provenance footer',
+  'search-content program'
 ];
 
 const publicCorpus = Object.values(pages).join('\n');
@@ -63,6 +73,12 @@ assert.match(pages.instagram, /optional guide while editing/i,
   'Instagram maker should explain the visual guide in user language');
 assert.match(pages.sitemap, /Speak in Urdu and turn your voice into editable text/i,
   'human sitemap should describe voice typing by outcome');
+assert.match(pages.privacy, /Basic usage analytics/i,
+  'privacy policy should explain analytics in user language');
+assert.match(pages.privacy, /private deletion key/i,
+  'privacy policy should explain share deletion access without token/hash implementation language');
+assert.match(pages.privacy, /Write Urdu form service/i,
+  'privacy policy should describe form handling by user-visible purpose rather than function architecture');
 
 for (const [name, html] of Object.entries(pages)) {
   assert.match(html, /<link rel="canonical" href="https:\/\/write-urdu\.com\//,

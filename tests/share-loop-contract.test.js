@@ -149,7 +149,8 @@ assert.match(guide, /Download PNG/, 'Public guide must distinguish local downloa
 assert.match(guide, /Manage published links/, 'Public guide must explain later deletion');
 assert.match(guide, /If a local photo is visible in the finished card, it is included in that published card image/, 'Guide must accurately describe published-background privacy in user language');
 assert.match(privacy, /Public share links/, 'Privacy policy must disclose public shares');
-assert.match(privacy, /Clearing browser\/site storage may remove that self-service management token and does not, by itself, delete/, 'Privacy policy must explain local-token deletion semantics');
+assert.match(privacy, /private deletion key/, 'Privacy policy must explain private deletion access');
+assert.match(privacy, /Clearing browser\/site storage may remove this self-service deletion access and does not, by itself, delete/, 'Privacy policy must explain local deletion-key semantics');
 assert.match(seo, /how-to-share-urdu-writing-online/, 'Sharing guide must be registered in SEO configuration');
 assert.match(sitemap, /how-to-share-urdu-writing-online/, 'Sharing guide must be in the XML sitemap');
 

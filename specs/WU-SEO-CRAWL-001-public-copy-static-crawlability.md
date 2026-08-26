@@ -1,6 +1,6 @@
 # WU-SEO-CRAWL-001 — Public Copy & Static Crawlability
 
-**Status:** Planned — founder-approved P0 cleanup  
+**Status:** Implementation complete — production source verification pending  
 **Priority:** P0.9  
 **Owner:** SEO + Product + Web Platform  
 **Scope:** All public indexable WriteUrdu pages, shared shell, structured data, collection pages and crawl-critical internal links  
@@ -335,15 +335,15 @@ After Slice C/D closure, request recrawl for priority acquisition/collection rou
 
 `WU-SEO-CRAWL-001` is complete when:
 
-- [ ] Slice A public-language leakage sweep is complete and guarded by tests.
-- [ ] Slice B source-visible navigation/footer link graph is complete.
-- [ ] Slice C route schema/breadcrumb generation is static-first and runtime-safe.
-- [ ] Slice D major catalogue pages expose meaningful item content without JavaScript.
-- [ ] all canonical/hreflang/query-owner invariants are green;
-- [ ] the human sitemap reads like a user task directory rather than a product spec;
-- [ ] privacy/legal content remains truthful after simplification;
-- [ ] no indexability change occurs for Search/Feedback;
-- [ ] no existing Urdu static-SEO behavior regresses;
+- [x] Slice A public-language leakage sweep is complete and guarded by tests.
+- [x] Slice B source-visible navigation/footer link graph is complete.
+- [x] Slice C route schema/breadcrumb generation is static-first and runtime-safe.
+- [x] Slice D major catalogue pages expose meaningful item content without JavaScript.
+- [x] all canonical/hreflang/query-owner invariants are green;
+- [x] the human sitemap reads like a user task directory rather than a product spec;
+- [x] privacy/legal content remains truthful after simplification;
+- [x] no indexability change occurs for Search/Feedback;
+- [x] no existing Urdu static-SEO behavior regresses;
 - [ ] production source-view spot checks are recorded for representative Write / Create / Learn / Trust pages.
 
 ---
@@ -365,3 +365,17 @@ FAQ answer text should stay crawlable. FAQ JSON-LD moves static as part of Slice
 ### 2026-08-26 — Preserve mature-domain intent ownership
 
 This is a quality/crawlability cleanup, not an excuse to rename established acquisition routes or rewrite successful simple homepage language.
+
+### 2026-08-26 — A–D implementation and repository closeout verified
+
+The planned implementation sequence is merged and protected by deterministic source-level checks:
+
+- Slice A — PR #124, public-language cleanup;
+- Slice B — PR #125, source-visible navigation/footer shell;
+- Slice C — PR #126, source-visible structured-data graph;
+- Slice D — PR #127, source-visible collection/catalogue content;
+- Closeout — PR #128, aggregate crawlability gate across all 32 indexable registry routes plus residual Instagram/privacy language reconciliation.
+
+The aggregate gate verifies canonical/title/description/H1, source-visible shell/schema, collection content, homepage intent ownership, Search/Feedback noindex+sitemap rules and Urdu/static-SEO continuity together. The final implementation head also passed the focused browser suite and V3 visual-quality audit.
+
+The one remaining Definition of Done item is a fresh production source-view spot check. It is intentionally left open because the current execution environment cannot resolve/fetch fresh source for the newly changed production collection routes; repository and browser validation must not be mislabeled as a live-source verification.
