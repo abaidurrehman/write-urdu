@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -25,33 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout closeout branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: chore/wu-seo-crawl-001-closeout
-
-      - name: Align contact privacy contract wording
-        if: github.event_name == 'pull_request' && github.head_ref == 'chore/wu-seo-crawl-001-closeout'
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('tests/contact-feedback-trust-contract.test.js')
-          source = path.read_text()
-          old = "assert.match(privacy, /does not store a separate copy of the form submission in the product-telemetry database/, 'Privacy policy must separate messages from product telemetry');"
-          new = "assert.match(privacy, /does not add a separate copy of the form submission to product analytics/, 'Privacy policy must separate submitted messages from product analytics');"
-          if old not in source:
-              raise SystemExit('Expected legacy contact privacy assertion was not found')
-          path.write_text(source.replace(old, new, 1))
-          PY
-          git config user.name "write-urdu-ci"
-          git config user.email "actions@users.noreply.github.com"
-          git add -- tests/contact-feedback-trust-contract.test.js
-          if git diff --cached --quiet; then
-            echo "Contact privacy contract is already current."
-          else
-            git commit -m "WU-SEO-CRAWL-001: align contact privacy contract wording"
-            git push origin HEAD:chore/wu-seo-crawl-001-closeout
-          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
