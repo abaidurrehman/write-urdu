@@ -40,7 +40,7 @@
             <div class="urdu-tool-workspace-header">
                 <div>
                     <h2 id="ocr-workspace-title">Turn a screenshot or photo into Urdu text</h2>
-                    <p>Best with clear printed Urdu. Our current testing is strongest on simple Naskh-style text; Nastaliq and decorative layouts can need more corrections. Always check important names, numbers and punctuation.</p>
+                    <p>Best with clear printed Urdu. Simple Naskh-style text usually needs fewer corrections; Nastaliq and decorative layouts can need more. Always check important names, numbers and punctuation.</p>
                 </div>
                 <span class="urdu-tool-status-pill" data-ocr-status-pill>Choose an image</span>
             </div>
@@ -91,7 +91,7 @@
                         <button class="urdu-tool-button" type="button" data-ocr-editor disabled>Continue writing</button>
                     </div>
                     <p class="urdu-tool-notice" data-ocr-notice aria-live="polite"></p>
-                    <div class="urdu-ocr-quality-note"><strong>Which Urdu text works best?</strong> Clear printed text is the safest starting point. Current testing is strongest with simple Naskh-style Urdu. Nastaliq is more complex, so poetry images, newspapers, decorative fonts, handwriting, skewed photos and mixed English can need extra corrections.</div>
+                    <div class="urdu-ocr-quality-note"><strong>Which Urdu text works best?</strong> Clear printed text is the safest starting point. Simple Naskh-style Urdu usually gives the cleanest result. Nastaliq is more complex, so poetry images, newspapers, decorative fonts, handwriting, skewed photos and mixed English can need extra corrections.</div>
                 </section>
             </div>
         </section>
@@ -103,13 +103,13 @@
                 <h2>How Urdu image to text works</h2>
                 <p>The tool reads the writing inside your image and turns it into normal Urdu text you can select, edit, search and copy. The technology is often called Urdu OCR, but you do not need to know that term to use it.</p>
                 <h3>Which font gives the best result?</h3>
-                <p>Use a clear screenshot or scan with readable printed Urdu, strong contrast and enough resolution. Our current benchmark is strongest on Naskh-style printed text. Nastaliq can also be read, but its joined and sloping layout is more complex and may require more manual correction, especially in poetry, newspapers and heavily styled designs.</p>
+                <p>Use a clear screenshot or scan with readable printed Urdu, strong contrast and enough resolution. Naskh-style printed text usually gives the cleanest result. Nastaliq can also be read, but its joined and sloping layout is more complex and may require more manual correction, especially in poetry, newspapers and heavily styled designs.</p>
                 <h3>How to get a cleaner result</h3>
                 <p>Crop the image around the Urdu text, keep the page straight, and avoid distant photos, blurred text, decorative backgrounds and heavy image compression. Clear dark text on a simple background is usually easier to read.</p>
                 <h3>Why you should review the text</h3>
                 <p>Image-to-text recognition can confuse similar letter shapes, dots, punctuation, numbers and mixed Urdu/English content. Treat the converted text as a fast editable starting point rather than a guarantee that every character is correct.</p>
                 <h3>Continue with WriteUrdu</h3>
-                <p>After conversion you can <a href="/urdu-text-cleaner">fix spacing and Urdu text direction</a> or <a href="/">continue writing in WriteUrdu</a>. The handoff uses session-only browser storage rather than putting your text in a URL.</p>
+                <p>After conversion you can <a href="/urdu-text-cleaner">fix spacing and Urdu text direction</a> or <a href="/">continue writing in WriteUrdu</a>. Your text is passed to the next WriteUrdu tool on this device and is not placed in the page address.</p>
             </section>
             <aside class="urdu-tool-related">
                 <h2>How to convert an Urdu image to text</h2>
@@ -123,8 +123,8 @@
                 <h2>Questions</h2>
                 <details open><summary>Is Urdu image to text free?</summary><p>Yes. This version reads the image in your browser and does not require a paid image-to-text account.</p></details>
                 <details><summary>What does Urdu OCR mean?</summary><p>OCR means optical character recognition. It is the technical name for software that reads writing inside a picture and converts it into editable text.</p></details>
-                <details><summary>Does my image leave the browser?</summary><p>WriteUrdu does not upload the selected image or converted text to its own server for recognition. Static text-reading code and Urdu language data are downloaded when needed from the configured CDN.</p></details>
-                <details><summary>Is Naskh or Nastaliq easier to convert?</summary><p>Our current testing is strongest on clear Naskh-style printed Urdu. Nastaliq has a more complex joined and sloping layout, so it may need more corrections. We do not claim that every Urdu font is recognized equally well.</p></details>
+                <details><summary>Does my image leave the browser?</summary><p>WriteUrdu does not upload the selected image or converted text to its own server for recognition. The first time you use the tool, your browser may download the files it needs to read Urdu text.</p></details>
+                <details><summary>Is Naskh or Nastaliq easier to convert?</summary><p>Clear Naskh-style printed Urdu usually needs fewer corrections. Nastaliq has a more complex joined and sloping layout, so it may need more review. Results can vary with font, image quality and layout.</p></details>
                 <details><summary>Can I upload a PDF?</summary><p>Not in this version. Capture or convert the relevant page as a PNG, JPEG or WebP image and use that image here.</p></details>
                 <p><a href="/urdu-text-cleaner">Fix Urdu text</a><br><a href="/">Write Roman Urdu → Urdu</a><br><a href="/urdu-editor">Format an Urdu document</a></p>
             </aside>
