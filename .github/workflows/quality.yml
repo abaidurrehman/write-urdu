@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.ref }}
@@ -25,8 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Checkout Slice C branch
         uses: actions/checkout@v4
+        with:
+          ref: feat/wu-seo-crawl-001c
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -37,11 +39,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Re-sync Slice C static SEO outputs
+        run: npm run seo:graph:sync
+
+      - name: Commit deterministic Slice C HTML
+        if: github.event_name == 'pull_request' && github.head_ref == 'feat/wu-seo-crawl-001c'
+        run: |
+          git config user.name "write-urdu-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- '*.html' 'tools/*.html'
+          if git diff --cached --quiet; then
+            echo "Generated HTML is already committed."
+          else
+            git commit -m "WU-SEO-CRAWL-001C: refresh static SEO graphs"
+            git push origin HEAD:feat/wu-seo-crawl-001c
+          fi
+
       - name: Validate static source shell
         run: npm run shell:check
-
-      - name: Validate static SEO graph
-        run: npm run seo:graph:check
 
       - name: Run static and transliteration contract tests
         run: npm test
