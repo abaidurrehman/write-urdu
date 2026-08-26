@@ -71,7 +71,7 @@ assert.doesNotMatch(mailer, /payload\?\.to|payload\?\.from/, 'Visitor payload mu
 
 assert.match(privacy, /id="contact-feedback-data"/, 'Privacy policy must expose a contact/feedback processing section');
 assert.match(privacy, /Cloudflare Turnstile/, 'Privacy policy must identify spam verification processing');
-assert.match(privacy, /does not store a separate copy of the form submission in the product-telemetry database/, 'Privacy policy must separate messages from product telemetry');
+assert.match(privacy, /does not add a separate copy of the form submission to product analytics/, 'Privacy policy must separate submitted messages from product analytics');
 assert.match(privacy, /Editor drafts, local images and browser-stored projects are not attached automatically/, 'Privacy policy must preserve the local-content boundary');
 
 assert.strictEqual(config.PUBLISHER.contactPath, '/contact', 'Organization contactPoint should use the dedicated contact route');
