@@ -200,6 +200,7 @@ function buildGraph(page, html, options = {}) {
       browserRequirements: 'Works in a modern web browser',
       isAccessibleForFree: true,
       description: resolvedDescription,
+      inLanguage: language,
       featureList: applicationFeatures(page.id),
       publisher: { '@id': publisherId }
     });
