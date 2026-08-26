@@ -13,8 +13,8 @@ assert.ok(html.includes('<link rel="canonical" href="https://write-urdu.com/urdu
 assert.ok(html.includes('<title>Urdu Image to Text'), 'search title must lead with the user task rather than the OCR acronym');
 assert.ok(html.includes('<h1>Convert Urdu Images to Editable Text</h1>'), 'H1 must explain the outcome in plain language');
 assert.ok(html.includes('Turn a screenshot or photo into Urdu text'), 'workspace heading must describe the user job');
-assert.ok(html.includes('current testing is strongest on simple Naskh-style text'), 'font guidance must explain the strongest currently tested printed style');
-assert.ok(html.includes('Nastaliq and decorative layouts can need more corrections'), 'font guidance must be honest about Nastaliq limitations');
+assert.ok(html.includes('Simple Naskh-style text usually needs fewer corrections'), 'font guidance must explain the strongest currently supported printed style in user language');
+assert.ok(html.includes('Nastaliq and decorative layouts can need more'), 'font guidance must be honest about Nastaliq limitations');
 assert.ok(html.includes('What does Urdu OCR mean?'), 'OCR may remain as a secondary explained technical/search synonym');
 assert.ok(html.includes('data-urdu-ocr'), 'OCR implementation hook must remain stable');
 assert.ok(html.includes('google-anno-skip'), 'OCR workspace must be excluded from ad-intent annotation');
