@@ -6,12 +6,12 @@ const writingTemplates = require('../js/writing-template-catalog.js');
 
 const SECTION_LABELS = { tools: 'Tools', guides: 'Guides', about: 'About', utility: 'Tools' };
 const PAGE_TOPICS = {
-  home: ['English to Urdu typing', 'Urdu typing online', 'Urdu writing online', 'Roman Urdu transliteration'],
-  'urdu-editor': ['Urdu rich text editing', 'Urdu document formatting'],
+  home: ['English to Urdu typing', 'Urdu typing online', 'Urdu writing online'],
+  'urdu-editor': ['Urdu document editing', 'Urdu document formatting'],
   'urdu-keyboard': ['Urdu keyboard', 'Direct Urdu typing'],
-  'roman-urdu-transliteration': ['Roman Urdu', 'Urdu transliteration'],
+  'roman-urdu-transliteration': ['English to Urdu typing', 'Roman Urdu typing'],
   'urdu-alphabet': ['Urdu alphabet', 'Urdu script'],
-  'write-urdu-documentation': ['Urdu typing', 'Urdu writing', 'Write Urdu documentation']
+  'write-urdu-documentation': ['Urdu typing', 'Urdu writing', 'Write Urdu help']
 };
 
 function hasSchema(page, type) {
@@ -35,6 +35,13 @@ function plainText(value) {
     .replace(/<[^>]+>/g, ' '))
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function sourceDescription(html, fallback) {
+  const tag = (String(html || '').match(/<meta\b(?=[^>]*\bname=["']description["'])[^>]*>/i) || [])[0];
+  if (!tag) return fallback;
+  const value = tag.match(/\bcontent=(["'])([\s\S]*?)\1/i);
+  return value && value[2] ? decodeEntities(value[2]).trim() : fallback;
 }
 
 function extractFaq(html) {
@@ -63,7 +70,7 @@ function publisherNode(config) {
     '@id': publisherId,
     name: publisher.name || 'Write Urdu',
     url: config.SITE_ORIGIN + '/',
-    description: publisher.description || 'Urdu typing, document and creative tools.',
+    description: publisher.description || 'Tools for writing and creating in Urdu.',
     logo: {
       '@type': 'ImageObject',
       '@id': config.SITE_ORIGIN + '/#logo',
@@ -95,7 +102,7 @@ function websiteNode(config) {
     url: config.SITE_ORIGIN + '/',
     name: 'Write Urdu',
     alternateName: publisher.alternateName || ['WriteUrdu', 'Write-Urdu.com'],
-    description: 'Browser-based tools for typing, formatting, designing and sharing Urdu.',
+    description: 'Tools for typing, formatting, designing and sharing Urdu.',
     inLanguage: ['en', 'ur'],
     publisher: { '@id': config.SITE_ORIGIN + '/#publisher' }
   };
@@ -103,13 +110,13 @@ function websiteNode(config) {
 
 function applicationFeatures(pageId) {
   const values = {
-    home: ['Roman Urdu transliteration with English letters', 'Urdu suggestions', 'Direct Urdu writing', 'Copy and local draft support', 'Text export'],
-    'urdu-editor': ['Rich Urdu formatting', 'Urdu fonts and alignment', 'Word, PDF and PNG export'],
-    'urdu-keyboard': ['On-screen Urdu character input', 'Physical keyboard input', 'Copy and text-file export'],
-    'urdu-card-studio': ['Urdu card and quote-image design', 'Urdu fonts and templates', 'Local background images', 'Direct text positioning and editing', 'PNG export'],
-    'qr-code-generator': ['Urdu text and URL QR codes', 'Wi-Fi and WhatsApp payloads', 'PNG and SVG export'],
-    'stylish-urdu-text-generator': ['Curated Unicode Urdu styles', 'Roman Urdu and direct Urdu input', 'Local favourites and copy actions', 'Name Art handoff'],
-    'urdu-name-art-maker': ['Urdu font-based name images', 'Card Studio templates and direct editing', 'Local background images', 'PNG export']
+    home: ['Type Urdu with English letters', 'Urdu word suggestions', 'Direct Urdu typing', 'Copy and save drafts', 'Download text'],
+    'urdu-editor': ['Format Urdu documents', 'Urdu fonts and alignment', 'Download Word, PDF and PNG'],
+    'urdu-keyboard': ['On-screen Urdu keyboard', 'Physical keyboard input', 'Copy and download text'],
+    'urdu-card-studio': ['Create Urdu quote and poetry images', 'Urdu fonts and templates', 'Use your own background image', 'Move and edit text on the design', 'Download PNG'],
+    'qr-code-generator': ['QR codes for Urdu text and links', 'Wi-Fi and WhatsApp QR codes', 'Download PNG and SVG'],
+    'stylish-urdu-text-generator': ['Ready-made Urdu text styles', 'English-letter and direct Urdu input', 'Save favourites and copy text', 'Continue to Urdu Name Art'],
+    'urdu-name-art-maker': ['Create Urdu name images', 'Templates and direct editing', 'Use your own background image', 'Download PNG']
   };
   return values[pageId] || [];
 }
@@ -142,7 +149,7 @@ function buildGraph(page, html, options = {}) {
   const config = options.config || seo;
   const canonical = config.canonical(page.path);
   const resolvedTitle = page.searchTitle || page.title;
-  const resolvedDescription = page.searchDescription || page.description;
+  const resolvedDescription = sourceDescription(html, page.searchDescription || page.description);
   const publisherId = config.SITE_ORIGIN + '/#publisher';
   const websiteId = config.SITE_ORIGIN + '/#website';
   const webpageId = canonical + '#webpage';
@@ -190,7 +197,7 @@ function buildGraph(page, html, options = {}) {
       mainEntityOfPage: { '@id': webpageId },
       applicationCategory: page.id === 'urdu-card-studio' ? 'DesignApplication' : (page.id === 'urdu-editor' || page.id === 'home' || page.id === 'urdu-writing-templates' ? 'WritingApplication' : 'UtilitiesApplication'),
       operatingSystem: 'Any',
-      browserRequirements: 'Requires JavaScript and a modern web browser',
+      browserRequirements: 'Works in a modern web browser',
       isAccessibleForFree: true,
       description: resolvedDescription,
       featureList: applicationFeatures(page.id),
@@ -263,10 +270,10 @@ function buildGraph(page, html, options = {}) {
       '@id': canonical + '#how-to',
       name: 'How to type Urdu online with Write Urdu',
       step: [
-        { '@type': 'HowToStep', name: 'Type', text: 'Enter Roman Urdu, Urdu characters or paste text into the editor.' },
-        { '@type': 'HowToStep', name: 'Convert', text: 'Use Space to commit transliterated words, or switch to direct keyboard input.' },
-        { '@type': 'HowToStep', name: 'Refine', text: 'Correct spacing, add punctuation, find and replace text, or format a rich document.' },
-        { '@type': 'HowToStep', name: 'Share', text: 'Copy, download, print or share the result when it is ready to leave the editor.' }
+        { '@type': 'HowToStep', name: 'Type', text: 'Type with English letters, enter Urdu directly, or paste text into the editor.' },
+        { '@type': 'HowToStep', name: 'Convert', text: 'Press Space to turn words typed with English letters into Urdu, or use direct Urdu input.' },
+        { '@type': 'HowToStep', name: 'Refine', text: 'Correct spacing, add punctuation, find and replace text, or format a longer document.' },
+        { '@type': 'HowToStep', name: 'Share', text: 'Copy, download, print or share the result when it is ready.' }
       ],
       isPartOf: { '@id': webpageId }
     });
@@ -293,5 +300,6 @@ module.exports = {
   applyStaticSeoGraph,
   extractFaq,
   plainText,
+  sourceDescription,
   templateItems
 };
