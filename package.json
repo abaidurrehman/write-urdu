@@ -24,7 +24,8 @@
     "shell:sync": "node scripts/sync-static-shell.js --write",
     "shell:check": "node scripts/sync-static-shell.js --check",
     "collections:sync": "node scripts/sync-static-collection-content.js --write",
-    "collections:check": "node scripts/sync-static-collection-content.js --check"
+    "collections:check": "node scripts/sync-static-collection-content.js --check",
+    "benchmark:ai-writing": "node scripts/ai-writing-benchmark/run.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"

@@ -11,7 +11,8 @@ export function createFormConfiguration(env = {}) {
 
   return {
     configured: hasTurnstile && hasMailer,
-    turnstileSiteKey: String(env.TURNSTILE_SITE_KEY || '').trim()
+    turnstileSiteKey: String(env.TURNSTILE_SITE_KEY || '').trim(),
+    aiWritingEnabled: env.AI_WRITING_ENABLED === 'true'
   };
 }
 

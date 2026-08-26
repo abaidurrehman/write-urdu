@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Product & Spec Backlog
 
 **Status:** Active  
-**Last updated:** 2026-08-24  
+**Last updated:** 2026-08-25  
 **Purpose:** One source of truth for priority, sequence and product state.
 
 This file owns **priority and sequence**. Individual feature specs own detailed behaviour and acceptance criteria. `specs/README.md` is the feature registry. `docs/WU-I001-IMPLEMENTATION-TRACKER.md` records v2 migration execution. Supporting SEO/audit documents provide evidence but do not own roadmap priority.
@@ -331,6 +331,25 @@ Turn English PDF/DOCX/TXT documents into clean, editable Urdu and continue into 
 
 **Guardrails:** no automatic file/content persistence, no new D1/R2 store for transient translation, no document content/filename in telemetry/logs, no near-identical `/pdf-to-urdu` doorway pages at launch, and no claim that generated Urdu preserves the exact source layout.
 
+## P1.9 — `WU-AI-001` Urdu AI Writing Assistant Platform
+
+**Type:** Product / writing-assistant layer  
+**Spec:** `specs/WU-AI-001-urdu-ai-writing-assistant-platform.md`  
+**Research:** `docs/WU-AI-001-URDU-AI-DEMAND-RESEARCH-2026-08-24.md`  
+**Status:** Planned — founder-approved, benchmark-gated.
+
+Provider-neutral AI writing-assistant layer (Fix/Improve/Simplify/Formal/Friendly/Shorten/Expand/Summarize) inside the existing editor state on `/`, `/urdu-editor`, `/urdu-keyboard`. Not a chatbot; does not replace the deterministic English-letter → Urdu typing engine.
+
+- [ ] Slice A — benchmark corpus, provider adapters (Mistral/Groq/Cerebras/Gemini quality-control), human scoring, dated provider/terms matrix, primary/fallback decision. May proceed now as research/enablement without displacing active P0 work.
+- [ ] Slice B — shared transformation service: action registry, versioned prompts, provider-neutral adapter, dedicated `write-urdu-ai` AI Gateway boundary, rate/budget controls, metadata-only telemetry, kill switch.
+- [ ] Slice C — core editor actions: compact command entry, 18+ first-use gate, selection-scoped preview, Replace/Insert/Copy/Keep original, undo, desktop/mobile/RTL acceptance.
+- [ ] Slice D — optional `Polish this Urdu` after English-letter/Roman Urdu conversion.
+- [ ] Slice E — adult work/life continuations, gated on usage evidence from C/D.
+- [ ] Slice F — voice/OCR/document integrations, reusing `WU-VOICE-PLAT-001`/`WU-DOC-001` outputs only.
+- [ ] Slice G — evidence-led dedicated acquisition routes (grammar checker, simple Urdu, Roman Urdu correction), gated on Search Console + usage evidence.
+
+**Guardrails:** no client-side provider keys, `cf-aig-collect-log-payload: false` proven before release, no response caching for user writing, no input/output text in telemetry, no thin AI keyword pages in Phase 1, Gemini remains benchmark-only pending explicit under-18 API-client terms clearance.
+
 ---
 
 # LATER — P2
@@ -393,6 +412,7 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 | `WU-PLAT-001` | Implemented | Foundation complete; maintain contracts |
 | `WU-PLAT-002` | Active | P0.7 outcome-led IA + shared workspace continuity; governs new-tool journey integration |
 | `WU-DOC-001` | Planned | P1.8 founder-approved document-to-Urdu Work workflow; text PDF/DOCX/TXT Phase 1, scanned/layout expansion separately gated |
+| `WU-AI-001` | Planned | P1.9 founder-approved, benchmark-gated Urdu AI writing-assistant layer; Slice A may start now, B–D are the production path, E–G are evidence-gated |
 | `WU-CS-UX-001` | Implemented | Card Studio behavior complete; v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Implemented | Card Studio empty-state behavior retained through v2 migration |
 | `WU-SM-001` | Implemented core | v2 migration P1 |
@@ -417,4 +437,5 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 **Parallel P0 distribution work:** P0.6 `WU-SHARE-001` remains approved; its public-to-local continuation should integrate with the new workspace-ownership contract rather than invent a separate journey model.  
 **Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
 **Approved P1 product expansion:** P1.8 `WU-DOC-001` is fully groomed and can start with Slice A when P1 capacity is available; it must reuse `WU-PLAT-002` rather than create an isolated document product.  
+**Approved P1 research track:** P1.9 `WU-AI-001` Slice A (benchmark + provider/terms gate) can start now without displacing P0 work; Slices B–D are the production path once Slice A's primary/fallback decision lands, and Slices E–G stay evidence-gated.  
 **Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.

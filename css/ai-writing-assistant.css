@@ -1,0 +1,206 @@
+.wu-ai-writing-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.wu-ai-writing-command {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    background: #fff;
+    color: #1f2937;
+    cursor: pointer;
+    font-size: 0.9rem;
+    list-style: none;
+}
+
+.wu-ai-writing-command::-webkit-details-marker {
+    display: none;
+}
+
+.wu-ai-writing-command--fix {
+    color: #4c1d95;
+    border-color: rgba(124, 58, 237, 0.35);
+}
+
+.wu-ai-writing-command[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wu-ai-writing-menu {
+    position: relative;
+}
+
+.wu-ai-writing-menu-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    inset-inline-start: 0;
+    z-index: 20;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+    padding: 6px;
+}
+
+.wu-ai-writing-menu:not([open]) .wu-ai-writing-menu-panel {
+    display: none;
+}
+
+.wu-ai-writing-menu-item {
+    text-align: start;
+    padding: 10px 12px;
+    min-height: 44px;
+    border: 0;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #1f2937;
+}
+
+.wu-ai-writing-menu-item:hover,
+.wu-ai-writing-menu-item:focus-visible {
+    background: rgba(124, 58, 237, 0.08);
+}
+
+.wu-ai-writing-turnstile-host {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.wu-ai-writing-panel {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    border-radius: 12px;
+    background: rgba(124, 58, 237, 0.05);
+    max-width: 100%;
+}
+
+.wu-ai-writing-status {
+    font-size: 0.85rem;
+    color: #4c1d95;
+    min-height: 1.1em;
+}
+
+.wu-ai-writing-context {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    color: #4c1d95;
+}
+
+.wu-ai-writing-result-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    color: #1f2937;
+}
+
+.wu-ai-writing-panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.wu-ai-writing-panel-action {
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(15, 23, 42, 0.15);
+    background: #fff;
+    color: #1f2937;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.wu-ai-writing-panel-action--primary {
+    background: #4c1d95;
+    color: #fff;
+    border-color: #4c1d95;
+}
+
+.wu-ai-writing-age-gate {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 1000;
+}
+
+.wu-ai-writing-age-gate-card {
+    background: #fff;
+    border-radius: 14px;
+    max-width: 420px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+.wu-ai-writing-age-gate-card h2 {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    color: #1f2937;
+}
+
+.wu-ai-writing-age-gate-card p {
+    margin: 0 0 16px;
+    font-size: 0.9rem;
+    color: #334155;
+}
+
+.wu-ai-writing-age-gate-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.wu-ai-writing-age-gate-confirm,
+.wu-ai-writing-age-gate-cancel {
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(15, 23, 42, 0.15);
+    background: #fff;
+    color: #1f2937;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.wu-ai-writing-age-gate-confirm {
+    background: #4c1d95;
+    color: #fff;
+    border-color: #4c1d95;
+}
+
+@media (max-width: 767px) {
+    .wu-ai-writing-menu-panel {
+        position: fixed;
+        inset-inline: 12px;
+        top: auto;
+        bottom: 12px;
+    }
+
+    .wu-ai-writing-panel {
+        margin-inline: 0;
+    }
+}

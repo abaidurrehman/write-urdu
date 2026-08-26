@@ -5,3 +5,7 @@ playwright-report/
 .qa-*/
 qa-*.png
 .vs/
+.env
+.env.local
+.dev.vars
+scripts/ai-writing-benchmark/results/

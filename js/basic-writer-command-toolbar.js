@@ -11,6 +11,7 @@
     var mediaQuery = null;
     var publishLoader = null;
     var voiceController = null;
+    var aiWritingLoader = null;
 
     function normalizeRoute(value) {
         var path = String(value || '/').split('?')[0].split('#')[0] || '/';
@@ -262,6 +263,85 @@
         return publishLoader;
     }
 
+    function aiWritingLocale() {
+        if (root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function') return root.WriteUrduLocale.get() === 'ur' ? 'ur' : 'en';
+        return root.document && /^ur\b/i.test(root.document.documentElement.lang || '') ? 'ur' : 'en';
+    }
+
+    function createAiWritingAdapter(editor) {
+        return {
+            getValue: function () { return editor.value || ''; },
+            getSelectionRange: function () {
+                var value = editor.value || '';
+                var start = typeof editor.selectionStart === 'number' ? editor.selectionStart : value.length;
+                var end = typeof editor.selectionEnd === 'number' ? editor.selectionEnd : start;
+                return { start: start, end: end };
+            },
+            replaceRange: function (start, end, text) {
+                var value = editor.value || '';
+                editor.value = value.slice(0, start) + text + value.slice(end);
+                var caret = start + text.length;
+                editor.focus();
+                if (typeof editor.setSelectionRange === 'function') editor.setSelectionRange(caret, caret);
+                editor.dispatchEvent(new Event('input', { bubbles: true }));
+                editor.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        };
+    }
+
+    function ensureAiWritingAssistant() {
+        if (root.WriteUrduAiWriting && typeof root.WriteUrduAiWriting.mount === 'function') return Promise.resolve(root.WriteUrduAiWriting);
+        if (aiWritingLoader) return aiWritingLoader;
+        aiWritingLoader = new Promise(function (resolve, reject) {
+            var existing = root.document.querySelector('script[data-wu-ai-writing-loader],script[src$="/js/ai-writing-assistant.js"]');
+            function finish() {
+                if (root.WriteUrduAiWriting && typeof root.WriteUrduAiWriting.mount === 'function') resolve(root.WriteUrduAiWriting);
+                else reject(new Error('ai_writing_assistant_unavailable'));
+            }
+            if (existing) {
+                existing.addEventListener('load', finish, { once: true });
+                root.setTimeout(finish, 1200);
+                return;
+            }
+            if (!root.document.querySelector('script[data-wu-ai-writing-age-gate-loader],script[src$="/js/ai-writing-age-gate.js"]')) {
+                var ageGateScript = root.document.createElement('script');
+                ageGateScript.src = '/js/ai-writing-age-gate.js';
+                ageGateScript.setAttribute('data-wu-ai-writing-age-gate-loader', '');
+                root.document.head.appendChild(ageGateScript);
+            }
+            if (!root.document.querySelector('link[data-wu-ai-writing-style]')) {
+                var link = root.document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '/css/ai-writing-assistant.css';
+                link.setAttribute('data-wu-ai-writing-style', '');
+                root.document.head.appendChild(link);
+            }
+            var script = root.document.createElement('script');
+            script.src = '/js/ai-writing-assistant.js';
+            script.setAttribute('data-wu-ai-writing-loader', '');
+            script.onload = finish;
+            script.onerror = function () { reject(new Error('ai_writing_assistant_load_failed')); };
+            root.document.head.appendChild(script);
+        }).catch(function (error) {
+            aiWritingLoader = null;
+            throw error;
+        });
+        return aiWritingLoader;
+    }
+
+    function mountAiWriting(surface, editor) {
+        if (!surface || !editor) return;
+        var host = surface.querySelector('.wu-basic-command-primary') || surface;
+        if (host.querySelector('[data-wu-ai-writing-group]')) return;
+        ensureAiWritingAssistant().then(function (assistant) {
+            assistant.mount({
+                container: host,
+                adapter: createAiWritingAdapter(editor),
+                locale: aiWritingLocale
+            });
+        }).catch(function () { /* Optional enhancement; toolbar works without it. */ });
+    }
+
     function runAuthoringShare() {
         if (!hasContent()) return false;
         ensurePublicSharePublisher().then(function (publisher) {
@@ -415,6 +495,7 @@
             syncModeHelper(existing);
             syncState(existing);
             syncResponsiveOutputs(existing);
+            mountAiWriting(existing, existingEditor);
             return existing;
         }
 
@@ -569,6 +650,8 @@
         root.document.addEventListener('write-urdu:handoff-imported', function () { root.setTimeout(function () { syncState(surface); }, 0); });
         root.document.addEventListener('write-urdu:locale-change', function () { root.setTimeout(function () { syncModeHelper(surface); }, 0); });
         root.document.addEventListener('write-urdu:locale-changed', function () { root.setTimeout(function () { syncModeHelper(surface); }, 0); });
+        root.document.addEventListener('write-urdu:locale-change', function () { if (root.WriteUrduAiWriting && typeof root.WriteUrduAiWriting.refreshLocale === 'function') root.WriteUrduAiWriting.refreshLocale(surface, aiWritingLocale()); });
+        root.document.addEventListener('write-urdu:locale-changed', function () { if (root.WriteUrduAiWriting && typeof root.WriteUrduAiWriting.refreshLocale === 'function') root.WriteUrduAiWriting.refreshLocale(surface, aiWritingLocale()); });
 
         createVoiceInput(surface, modeControl, editor);
         openVoicePanelIfRequested(
@@ -588,6 +671,7 @@
         syncState(surface);
         syncResponsiveOutputs(surface);
         syncModeHelper(surface);
+        mountAiWriting(surface, editor);
         root.setTimeout(function () { syncModeHelper(surface); syncState(surface); }, 100);
         root.setTimeout(function () { syncModeHelper(surface); syncState(surface); }, 700);
         return surface;
