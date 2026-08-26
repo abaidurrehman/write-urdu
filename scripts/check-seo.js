@@ -4,7 +4,7 @@ const config = require('../seo.config.js');
 
 const root = path.resolve(__dirname, '..');
 const html = file => fs.readFileSync(path.join(root, file), 'utf8');
-const files = fs.readdirSync(root).filter(file => file.endsWith('.html') && !file.startsWith('google'));
+const files = fs.readdirSync(root).filter(file => file.endsWith('.html') && !file.startsWith('google') && file !== '404.html');
 const errors = [];
 const decodeHtml = value => String(value || '')
   .replace(/&amp;/gi, '&')
