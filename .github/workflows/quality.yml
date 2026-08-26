@@ -55,6 +55,15 @@ jobs:
       - name: Validate routes and product governance
         run: npm run governance:check
 
+      - name: Verify live canonical routing
+        run: npm run seo:live
+
+      - name: Verify live production SEO
+        run: npm run seo:production
+
+      - name: Verify live production source crawlability
+        run: npm run seo:source-live
+
       - name: Run InPage converter browser acceptance
         run: npx playwright test tests/inpage.spec.js
 
