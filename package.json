@@ -9,6 +9,8 @@
     "seo:generate": "node scripts/generate-seo-files.js",
     "seo:sync-heads": "node scripts/sync-static-search-metadata.js --write",
     "seo:heads:check": "node scripts/sync-static-search-metadata.js --check",
+    "seo:graph:sync": "node scripts/sync-static-seo-graph.js --write",
+    "seo:graph:check": "node scripts/sync-static-seo-graph.js --check",
     "seo:check": "node scripts/check-seo.js && node scripts/check-urdu-locale-seo.js && npm run seo:heads:check",
     "seo:live": "node scripts/check-live-canonical.js",
     "seo:production": "node scripts/check-live-production.js",

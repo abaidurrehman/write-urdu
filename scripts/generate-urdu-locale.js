@@ -121,6 +121,9 @@ function setStaticSchema(html, productPath, copy) {
   (page.schema || []).forEach(function (type) { graph.push(schemaNode(type, canonical, copy, page)); });
   const payload = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
   const tag = '<script type="application/ld+json" data-wu-urdu-schema>' + payload + '</script>';
+  // English source pages now own a static SEO graph. Strip it before emitting the
+  // locale-owned Urdu graph so generated /urdu/* HTML never carries both graphs.
+  html = html.replace(/\s*<script\b[^>]*data-write-urdu-schema[^>]*>[\s\S]*?<\/script>/ig, '');
   html = html.replace(/\s*<script\b[^>]*data-wu-urdu-schema[^>]*>[\s\S]*?<\/script>/ig, '');
   return html.replace(/<\/head>/i, '    ' + tag + '\n</head>');
 }
