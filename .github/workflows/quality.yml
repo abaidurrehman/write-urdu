@@ -43,6 +43,9 @@ jobs:
       - name: Validate static SEO graph
         run: npm run seo:graph:check
 
+      - name: Validate static collection content
+        run: npm run collections:check
+
       - name: Run static and transliteration contract tests
         run: npm test
 

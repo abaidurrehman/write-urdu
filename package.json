@@ -22,7 +22,9 @@
     "locale:generate": "node scripts/generate-urdu-locale.js",
     "locale:check": "node scripts/generate-urdu-locale.js --check",
     "shell:sync": "node scripts/sync-static-shell.js --write",
-    "shell:check": "node scripts/sync-static-shell.js --check"
+    "shell:check": "node scripts/sync-static-shell.js --check",
+    "collections:sync": "node scripts/sync-static-collection-content.js --write",
+    "collections:check": "node scripts/sync-static-collection-content.js --check"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"

@@ -9,6 +9,7 @@ const tests = [
   'tests/public-language-leakage-contract.test.js',
   'tests/static-shell-source-contract.test.js',
   'tests/static-seo-graph-contract.test.js',
+  'tests/static-collection-content-contract.test.js',
   'tests/ads-policy-contract.test.js',
   'tests/shell-style-ownership-contract.test.js',
   'tests/product-telemetry-contract.test.js',
