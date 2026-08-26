@@ -1,7 +1,7 @@
 # WU-SEO-CRAWL-001B — Static Internal-Link Shell
 
 **Parent:** `WU-SEO-CRAWL-001`  
-**Status:** Planned
+**Status:** In progress
 
 ## Goal
 
@@ -99,6 +99,16 @@ With JavaScript enabled:
 - Do not turn header/footer generation into server-side request-time work if build-time/static generation suffices.
 - Do not change canonical URLs or redirects.
 - Do not inject user state into crawlable static shell content.
+
+## Implementation progress
+
+- [x] Build-time code can read the governed `js/outcome-navigation.js` groups without creating a second primary navigation registry.
+- [x] Static source-shell renderer covers the required crawl-critical route set and supports English/Urdu labels.
+- [x] Idempotent shell synchronizer and representative source-family contract added.
+- [ ] Apply generated shell to every indexable English source page.
+- [ ] Regenerate launched Urdu locale pages with locale-safe links.
+- [ ] Add `shell:check` to the final quality gate after generated source is committed.
+- [ ] Run browser regression proving the enhanced v2 shell remains visually/functionally equivalent.
 
 ## Acceptance criteria
 
