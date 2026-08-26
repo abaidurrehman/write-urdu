@@ -130,7 +130,10 @@ function representativeStylishItems() {
   const categories = ['minimal', 'royal', 'hearts', 'islamic', 'gaming', 'social', 'kashida', 'urdu-english', 'decorative', 'popular'];
   const items = [];
   for (const category of categories) {
-    const result = stylishCore.generateStyles(sample, { category, limit: 1 });
+    const options = category === 'popular'
+      ? { category: 'all', query: 'popular', limit: 1 }
+      : { category, limit: 1 };
+    const result = stylishCore.generateStyles(sample, options);
     if (result.items && result.items[0]) items.push(result.items[0]);
   }
   return items;
