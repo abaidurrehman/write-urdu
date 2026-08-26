@@ -14,6 +14,7 @@ const home = buildGraph(page('/'), read('index.html'));
 assert.deepStrictEqual(types(home).slice(0, 3), ['WebSite', 'Organization', 'WebPage'], 'Homepage must start with stable site/publisher/page identities');
 assert.ok(types(home).includes('WebApplication'), 'Homepage must expose WebApplication statically');
 assert.strictEqual(nodes(home, 'WebPage')[0]['@id'], 'https://write-urdu.com/#webpage', 'Homepage WebPage identity changed');
+assert.strictEqual(nodes(home, 'WebApplication')[0].inLanguage, 'en', 'English application schema must declare English');
 
 const keyboardHtml = read('urdu-keyboard.html');
 const keyboard = buildGraph(page('/urdu-keyboard'), keyboardHtml);
@@ -44,6 +45,7 @@ assert.strictEqual(templateList.numberOfItems, templateList.itemListElement.leng
 const writingTemplates = buildGraph(page('/urdu-writing-templates'), read('urdu-writing-templates.html'));
 assert.ok(types(writingTemplates).includes('CollectionPage'), 'Writing Templates must expose CollectionPage');
 assert.strictEqual(nodes(writingTemplates, 'ItemList')[0].numberOfItems, 12, 'Writing Templates ItemList must use the 12-item product catalogue');
+assert.strictEqual(nodes(writingTemplates, 'WebApplication')[0].inLanguage, 'en', 'Writing Templates application schema language must stay English');
 
 const about = buildGraph(page('/why-write-urdu'), read('why-write-urdu.html'));
 assert.ok(types(about).includes('AboutPage'), 'About route must use AboutPage identity');
@@ -53,6 +55,10 @@ const rendered = applyStaticSeoGraph(read('urdu-keyboard.html'), page('/urdu-key
 assert.strictEqual((rendered.match(/data-write-urdu-schema/g) || []).length, 1, 'Static graph application must be idempotent and own exactly one schema tag');
 const renderedTwice = applyStaticSeoGraph(rendered, page('/urdu-keyboard'));
 assert.strictEqual((renderedTwice.match(/data-write-urdu-schema/g) || []).length, 1, 'Second graph application must not duplicate schema');
+
+const instagramRendered = applyStaticSeoGraph(read('urdu-instagram-post-maker.html'), page('/urdu-instagram-post-maker'));
+assert.strictEqual((instagramRendered.match(/type="application\/ld\+json"/g) || []).length, 1, 'Governed Instagram WebApplication schema must not coexist with a legacy duplicate block');
+assert.strictEqual(nodes(buildGraph(page('/urdu-instagram-post-maker'), instagramRendered), 'WebApplication')[0].applicationCategory, 'DesignApplication', 'Instagram maker must retain design application semantics');
 
 const runtime = read('js/seo.js');
 assert.match(runtime, /!document\.head\.querySelector\('script\[data-write-urdu-schema\]'\)/, 'Runtime SEO must detect the static owned graph before attempting dynamic schema');
