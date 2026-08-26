@@ -15,9 +15,34 @@ function escapeHtml(value) {
 }
 
 function replaceContainer(html, attr, content) {
-  const re = new RegExp('(<([a-z0-9-]+)\\b(?=[^>]*\\b' + attr + '(?:\\s|=|>|$))[^>]*>)[\\s\\S]*?(<\\/\\2>)', 'i');
-  if (!re.test(html)) throw new Error('Missing collection container: ' + attr);
-  return html.replace(re, '$1' + content + '$3');
+  const source = String(html || '');
+  const startMarker = '<!-- wu-static-collection:start:' + attr + ' -->';
+  const endMarker = '<!-- wu-static-collection:end:' + attr + ' -->';
+  const marked = new RegExp(escapeRegex(startMarker) + '[\\s\\S]*?' + escapeRegex(endMarker), 'i');
+  const markedContent = startMarker + content + endMarker;
+  if (marked.test(source)) return source.replace(marked, markedContent);
+
+  const openRe = new RegExp('<([a-z0-9-]+)\\b(?=[^>]*\\b' + attr + '(?:\\s|=|>|$))[^>]*>', 'i');
+  const open = openRe.exec(source);
+  if (!open) throw new Error('Missing collection container: ' + attr);
+  const tagName = open[1];
+  const openEnd = open.index + open[0].length;
+  const tokenRe = new RegExp('<\\/?' + tagName + '\\b[^>]*>', 'ig');
+  tokenRe.lastIndex = openEnd;
+  let depth = 1;
+  let token;
+  while ((token = tokenRe.exec(source))) {
+    if (/^<\//.test(token[0])) depth -= 1;
+    else if (!/\/>$/.test(token[0])) depth += 1;
+    if (depth === 0) {
+      return source.slice(0, openEnd) + markedContent + source.slice(token.index);
+    }
+  }
+  throw new Error('Unclosed collection container: ' + attr);
+}
+
+function escapeRegex(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function replaceSimpleText(html, attr, content) {
@@ -29,7 +54,7 @@ function replaceSimpleText(html, attr, content) {
 function ensureHidden(html, attr) {
   const re = new RegExp('<([a-z0-9-]+)\\b(?=[^>]*\\b' + attr + '(?:\\s|=|>|$))([^>]*)>', 'i');
   return html.replace(re, function (tag, name, attrs) {
-    if (/\\shidden(?:\\s|=|>|$)/i.test(tag)) return tag;
+    if (/\shidden(?:\s|=|>|$)/i.test(tag)) return tag;
     return '<' + name + attrs + ' hidden>';
   });
 }
