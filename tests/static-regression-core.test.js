@@ -25,7 +25,9 @@ const invoiceRefinementSpec = path.join(root, 'specs', 'WU-IG-003-invoice-refine
 assert.ok(fs.existsSync(invoiceRefinementSpec), 'Invoice v1.2 refinement specification is missing');
 assert.match(fs.readFileSync(invoiceRefinementSpec, 'utf8'), /Feature ID:\*\*\s*`WU-IG-003`/, 'Invoice v1.2 refinement specification has no stable ID');
 const allHtmlFiles = fs.readdirSync(root).filter(file => file.endsWith('.html'));
-const htmlFiles = allHtmlFiles.filter(file => !file.startsWith('google'));
+const infrastructureHtmlFiles = allHtmlFiles.filter(file => file.startsWith('google'));
+const systemHtmlFiles = new Set(['404.html']);
+const htmlFiles = allHtmlFiles.filter(file => !infrastructureHtmlFiles.includes(file) && !systemHtmlFiles.has(file));
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const unifiedJourneySpec = path.join(root, 'specs', 'WU-PLAT-001-unified-product-journey.md');
 assert.ok(fs.existsSync(unifiedJourneySpec), 'Unified product journey specification is missing');
@@ -352,8 +354,9 @@ for (const file of htmlFiles) {
   const route = new RegExp(`href(?::|=)\\s*["']${slug === '/' ? '\\/' : slug}["']`);
   assert(route.test(sharedHeader), `${file} is not connected to the shared header or footer`);
 }
-for (const file of allHtmlFiles.filter(file => !htmlFiles.includes(file))) {
+for (const file of infrastructureHtmlFiles) {
   assert.match(read(file), /^google-site-verification:/, `${file} is an unlinked HTML file without a documented infrastructure purpose`);
 }
+assert.ok(systemHtmlFiles.has('404.html'), '404.html must remain an explicitly classified system page');
 
 console.log(`Static regression tests passed for ${htmlFiles.length} HTML files.`);
