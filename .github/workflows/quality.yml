@@ -38,7 +38,7 @@ jobs:
         run: npm ci
 
       - name: Generate Slice B static shell outputs
-        run: npm run shell:sync && npm run locale:generate
+        run: npm run locale:generate && npm run shell:sync
 
       - name: Upload Slice B generated HTML
         uses: actions/upload-artifact@v4
