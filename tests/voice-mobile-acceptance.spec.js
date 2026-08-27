@@ -48,6 +48,15 @@ async function installRecognitionStub(page, mode = 'success') {
   }, { mode });
 }
 
+async function installUserAgent(page, userAgent) {
+  await page.addInitScript(({ userAgent }) => {
+    Object.defineProperty(window.navigator, 'userAgent', {
+      configurable: true,
+      get: () => userAgent
+    });
+  }, { userAgent });
+}
+
 async function openVoice(page) {
   await blockExternalServices(page);
   await page.goto('/tools/urdu-voice-typing', { waitUntil: 'domcontentloaded', timeout: 15000 });
@@ -105,8 +114,36 @@ test('mobile voice permission denial is bounded and leaves the transcript usable
 
   await expect(page.locator('[data-voice-status-pill]')).toHaveText('Permission blocked');
   await expect(page.locator('[data-voice-notice]')).toContainText('Microphone access was blocked');
+  await expect(page.locator('[data-voice-support-note]')).toContainText(/Enable (?:microphone access|the microphone on Android)/);
+  await expect(page.locator('[data-voice-support-note]')).toContainText('Microphone to Allow');
   await expect(page.locator('[data-voice-start]')).toBeVisible();
 
   await page.locator('#voiceTranscript').fill('میں پھر بھی یہاں اردو لکھ سکتا ہوں');
   await expect(page.locator('#voiceTranscript')).toHaveValue('میں پھر بھی یہاں اردو لکھ سکتا ہوں');
+});
+
+test('iPhone Safari permission denial shows the exact Safari recovery path', async ({ page }) => {
+  await installUserAgent(page, 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1');
+  await installRecognitionStub(page, 'denied');
+  await openVoice(page);
+
+  await page.locator('[data-voice-start]').click();
+
+  const help = page.locator('[data-voice-support-note]');
+  await expect(help).toContainText('Enable the microphone on iPhone or iPad');
+  await expect(help).toContainText('Website Settings');
+  await expect(help).toContainText('Apps → Safari → Microphone');
+});
+
+test('Android permission denial shows the Chrome site-permission recovery path', async ({ page }) => {
+  await installUserAgent(page, 'Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Mobile Safari/537.36');
+  await installRecognitionStub(page, 'denied');
+  await openVoice(page);
+
+  await page.locator('[data-voice-start]').click();
+
+  const help = page.locator('[data-voice-support-note]');
+  await expect(help).toContainText('Enable the microphone on Android');
+  await expect(help).toContainText('Site settings → Microphone');
+  await expect(help).toContainText('write-urdu.com');
 });
