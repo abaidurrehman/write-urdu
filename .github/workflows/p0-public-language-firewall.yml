@@ -47,4 +47,13 @@ jobs:
           fi
 
       - name: Enforce public language firewall
-        run: node scripts/public-language-firewall.js --check
+        run: npm run language:check
+
+      - name: Run contract tests
+        run: npm test
+
+      - name: Run SEO checks
+        run: npm run seo:check
+
+      - name: Run governance checks
+        run: npm run governance:check
