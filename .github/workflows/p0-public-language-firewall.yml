@@ -35,10 +35,13 @@ jobs:
         run: |
           if git diff --quiet; then
             echo "No generated copy changes."
-            exit 0
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add --all
+            git commit -m "Apply P0 public product language cleanup"
+            git push origin HEAD:p0-public-product-language-firewall
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add --all
-          git commit -m "Apply P0 public product language cleanup"
-          git push origin HEAD:p0-public-product-language-firewall
+
+      - name: Enforce public language firewall
+        run: node scripts/public-language-firewall.js --check
