@@ -1,0 +1,43 @@
+name: P0 public language normalization
+
+on:
+  push:
+    branches:
+      - p0-public-product-language-firewall
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: p0-public-product-language-firewall
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Normalize public product language
+        run: node scripts/public-language-firewall.js --write
+
+      - name: Verify static shell
+        run: npm run shell:check
+
+      - name: Commit normalized public copy
+        run: |
+          if git diff --quiet; then
+            echo "No generated copy changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit -m "Apply P0 public product language cleanup"
+          git push origin HEAD:p0-public-product-language-firewall
