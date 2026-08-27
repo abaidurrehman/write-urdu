@@ -31,15 +31,25 @@ assert.match(html, /<link rel="canonical" href="https:\/\/write-urdu\.com\/chang
 assert.match(html, /<h1[^>]*>New in Write Urdu<\/h1>/, 'Customer changelog H1 missing');
 
 const releases = html.match(/<article class="changelog-release"/g) || [];
-assert.ok(releases.length >= 4, 'Seed changelog must contain the verified customer-facing release history');
+assert.ok(releases.length >= 8, 'Changelog must contain the verified customer-facing release history');
+const aug24 = html.indexOf('datetime="2026-08-24"');
+const aug22 = html.indexOf('datetime="2026-08-22"');
+const aug20 = html.indexOf('datetime="2026-08-20"');
 const aug19 = html.indexOf('datetime="2026-08-19"');
 const aug18 = html.indexOf('datetime="2026-08-18"');
 const aug17 = html.indexOf('datetime="2026-08-17"');
-assert.ok(aug19 >= 0 && aug18 > aug19 && aug17 > aug18, 'Changelog releases must appear newest first');
+assert.ok(
+    aug24 >= 0 && aug22 > aug24 && aug20 > aug22 && aug19 > aug20 && aug18 > aug19 && aug17 > aug18,
+    'Changelog releases must appear newest first'
+);
 assert.match(html, /What changed/i, 'Changelog must explain what changed');
 assert.match(html, /Why it helps/i, 'Changelog must explain customer benefit');
 assert.match(html, /How to use it/i, 'Changelog must explain how to use shipped changes');
 assert.match(html, /href="\/"[^>]*>Try English to Urdu typing/, 'Changelog must link directly to the main typing experience');
+assert.match(html, /href="\/urdu-writing-templates"/, 'Writing Templates release link missing');
+assert.match(html, /href="\/urdu\/"/, 'Urdu-language release link missing');
+assert.match(html, /href="\/sign-in"[^>]*>Sign in to use My Documents/, 'My Documents account entry link missing');
+assert.match(html, /Voice input now works inside the main writing and design tools/, 'Expanded Voice input release missing');
 assert.match(html, /href="\/urdu-text-cleaner"/, 'Text Cleaner release link missing');
 assert.match(html, /href="\/urdu-ocr"/, 'Image-to-text release link missing');
 assert.match(html, /href="\/tools\/urdu-voice-typing"/, 'Voice Typing release link missing');
