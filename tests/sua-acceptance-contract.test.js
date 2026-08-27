@@ -57,7 +57,8 @@ assert.match(nameArtPage, /data-name-art-workspace[^>]+data-card-studio/, 'Name 
 assert.match(nameArtPage, /<canvas[^>]+id="cardCanvas"/, 'Name Art direct export canvas is missing');
 assert.doesNotMatch(nameArtPage, /<iframe\b/i, 'Name Art must not embed a second WriteUrdu application');
 assert.match(nameArtPage, /data-wu-ad-boundary="post-workspace"/, 'Name Art monetization boundary must remain outside the workspace');
-assert.match(nameArtPage, /Nothing is uploaded|stay in this browser/i, 'Name Art local-processing privacy message is missing');
+assert.match(nameArtPage, /href="\/write-urdu-privacy"/, 'Name Art must keep privacy details reachable from the page');
+assert.doesNotMatch(nameArtPage, /Nothing is uploaded|stay in this browser/i, 'Name Art must not regress to repetitive implementation-led privacy slogans');
 assert.doesNotMatch(nameArtPage, /[?&](?:text|name)=/i, 'Name Art must not put user text into URLs');
 
 const nameArtController = fs.readFileSync(path.join(root, 'js', 'name-art.js'), 'utf8');
