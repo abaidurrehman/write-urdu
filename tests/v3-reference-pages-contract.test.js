@@ -25,9 +25,10 @@ function assertModernReferencePage(source, expectedH1) {
 assertModernReferencePage(features, 'Write Urdu features and export options');
 assertModernReferencePage(editorFeatures, 'Urdu Rich Text Editor formatting guide');
 
-assert.match(features, /Local drafts and recent history/, 'Operational guide must keep local-draft guidance');
+assert.match(features, /Saved drafts and recent history|Recover saved drafts/, 'Operational guide must keep saved-draft and recovery guidance');
 assert.match(features, /Import a text file/, 'Operational guide must keep import guidance');
 assert.match(features, /TXT, Word, PDF and PNG export/, 'Operational guide must describe the current export family');
+assert.doesNotMatch(features, /Local drafts and recent history/, 'Reference copy should describe the user capability rather than local-storage architecture');
 assert.match(editorFeatures, /editor-current-desktop\.png/, 'Formatting guide must show the current desktop editor');
 assert.match(editorFeatures, /editor-current-mobile\.png/, 'Formatting guide must retain a mobile editor example');
 assert.match(editorFeatures, /Noto Nastaliq Urdu/, 'Formatting guide must retain Urdu font guidance');
