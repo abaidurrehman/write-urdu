@@ -23,7 +23,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Regenerate static SEO graph
-        run: node scripts/sync-static-seo-graph.js
+        run: node scripts/sync-static-seo-graph.js --write
       - name: Verify generated SEO graph
         run: npm run seo:graph:check
       - name: Commit generated graph
