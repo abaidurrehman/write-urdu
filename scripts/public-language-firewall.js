@@ -18,11 +18,8 @@ const replacements = [
 
   // Homepage: value first, privacy details linked rather than repeated.
   ['Everything runs in your browser, so you can start immediately without signing up.', 'Start immediately and turn your Urdu writing into messages, documents and designs.'],
-  ['Your writing stays in this browser unless you choose to export or share it.', 'Your writing is yours. See Privacy for details.'],
   ['Local PDF or PNG export', 'Download as PDF or PNG'],
   ['local PDF or PNG export', 'PDF or PNG download'],
-  ['stay on this device', 'stay available while you work'],
-  ['stays on this device', 'stays available while you work'],
 
   // About: remove product-management rationale, defensive limits and test/process language.
   ['About Write Urdu – Purpose, Privacy and How It Works', 'About Write Urdu – Urdu Writing Made Simple'],
@@ -42,6 +39,18 @@ const replacements = [
   ['Exports depend on the browser and device.', 'Check important files after download.'],
   ['Word, PDF, PNG, printing and native sharing can behave differently across browsers and operating systems.', 'After downloading or printing, give the final document or image a quick review before you send it.'],
   ['Third-party services have their own policies.', 'Privacy details are available in one place.'],
+  ['Roman Urdu transliteration, web fonts and other explicitly documented services may involve external providers. The <a href="/write-urdu-privacy">privacy page</a> explains those boundaries.', 'Read the <a href="/write-urdu-privacy">Privacy page</a> for details about how Write Urdu handles data and external services.'],
+  ['Start with Roman Urdu or direct Urdu input.', 'Type with English letters or enter Urdu directly.'],
+  ['<strong>Roman Urdu typing</strong>', '<strong>English to Urdu typing</strong>'],
+
+  // English-letter typing guide: use the language users actually search and understand.
+  ['Roman Urdu to Urdu Typing Online | WriteUrdu', 'English to Urdu Typing with English Letters | WriteUrdu'],
+  ['Type Roman Urdu using English letters and turn it into Urdu script. See examples, spelling tips and how to review Urdu word suggestions.', 'Type Urdu using English letters and turn each word into Urdu script. See examples, spelling tips and how to review Urdu word suggestions.'],
+  ['Type Roman Urdu with English letters and turn it into Urdu script, with examples and spelling tips.', 'Type Urdu with English letters and turn it into Urdu script, with examples and spelling tips.'],
+  ['Roman Urdu to Urdu typing guide', 'English to Urdu typing guide'],
+  ['Roman Urdu to Urdu Typing', 'English to Urdu Typing with English Letters'],
+  ['Roman Urdu typing guide', 'English to Urdu typing guide'],
+  ['"Roman Urdu typing"', '"Urdu typing with English letters"'],
 
   // InPage converter: keep InPage/Unicode where it is genuine user/search intent; remove implementation/spec wording.
   ['free in your browser. No account or paid API.', 'free with no account required.'],
@@ -52,6 +61,7 @@ const replacements = [
   ['Not in this version. The tool focuses on pasted text. Full .inp document conversion would be a separate feature.', 'Not currently. This tool converts text you paste from InPage; it does not open complete .inp documents.'],
   ['Move pasted Urdu text between a supported legacy InPage clipboard representation and modern Unicode. Convert in either direction without uploading the text.', 'Paste older InPage Urdu text and convert it to modern Unicode, or convert supported Unicode Urdu back for older InPage workflows.'],
   ['Your text stays on this device during conversion. This version converts pasted text; it does not open or generate complete <code>.inp</code> document files.', 'Paste text copied from InPage to convert it. Complete <code>.inp</code> document files are not supported.'],
+  ['Your text stays available while you work during conversion. This version converts pasted text; it does not open or generate complete <code>.inp</code> document files.', 'Paste the text you want to convert. Complete <code>.inp</code> document files are not supported.'],
   ['This version handles pasted text only. It does not preserve page layout or open complete <code>.inp</code> files.', 'This tool handles pasted text only, so page layout and complete <code>.inp</code> documents are not included.'],
   ['Conversion runs locally in JavaScript.', 'Paste your text, choose a direction and convert it.'],
   ['Generic product telemetry must not contain the text itself.', 'See Privacy for details about usage measurement.'],
@@ -65,8 +75,17 @@ const replacements = [
   ['PDF files are not supported in this version.', 'Use a PNG, JPG or other supported image.'],
 
   // Text Cleaner: explain the outcome, not analytics/network architecture.
-  ['does not send them to analytics or a text-cleaning service', 'does not include your writing in usage measurement'],
+  ['Correct common character, spacing and text-direction problems without uploading your writing.', 'Correct common character, spacing and text-direction problems, then copy the cleaned result.'],
+  ['Fix broken Urdu text copied from PDFs, Word or websites without uploading your writing.', 'Fix broken Urdu text copied from PDFs, Word or websites, then copy the cleaned result.'],
+  ['does not send them to analytics or a text-cleaning service', 'keeps the focus on fixing the text you pasted'],
   ['Your text stays on this device while you clean it.', 'Paste your text, clean it and review the result.'],
+  ['<aside class="urdu-tool-trust" aria-label="Privacy note">\n                <strong>Free and private</strong><br>\n                Your original and cleaned text stay available while you work. WriteUrdu does not include your writing in usage measurement.\n            </aside>', '<aside class="urdu-tool-trust" aria-label="Quick tip">\n                <strong>Review the cleaned result</strong><br>\n                Keep the original beside it and check important names, numbers and punctuation before copying.\n            </aside>'],
+  ['"name":"Does WriteUrdu upload my text?","acceptedAnswer":{"@type":"Answer","text":"No. Cleaning happens on this device. If you continue in another WriteUrdu editor, the text is passed only within this browser and removed from the transfer after it opens."}', '"name":"What kind of Urdu text can I clean?","acceptedAnswer":{"@type":"Answer","text":"Paste Urdu copied from PDFs, Word files, websites or messages. The cleaner focuses on character, spacing and text-direction problems."}'],
+
+  // QR: explain what the result does rather than defending the implementation.
+  ['The QR code contains the text or link you enter. WriteUrdu does not add a redirect or track who scans it.', 'The QR code opens the text or link you entered, so people can reach it with a scan.'],
+  ['<article><h3>Your details stay private</h3><p>Your QR content and logo stay available while you work. If you type Urdu with English letters, the <a href="/write-urdu-privacy">privacy policy</a> explains the separate word-suggestion service.</p></article>', '<article><h3>Ready to download</h3><p>Preview your QR code, then download PNG or SVG for print, messages or documents.</p></article>'],
+  ['See how your QR details stay private', 'Privacy and data handling'],
 
   // Invoice and creative tools: stop leading with processing architecture or repeated negatives.
   ['Everything is processed in this browser. No account or upload is required.', 'Create, preview and download your invoice without creating an account.'],
@@ -75,7 +94,21 @@ const replacements = [
   ['Nothing is sent to Instagram.', 'Post the downloaded image when you are ready.'],
   ['WriteUrdu does not connect to WhatsApp or post a status for you.', 'Download your finished image, then add it to your WhatsApp Status.'],
 
-  // Documentation and forms: remove server/vendor/API vocabulary from ordinary help copy.
+  // Documentation: explain tasks and outcomes, not storage, browser APIs or service architecture.
+  ['Write Roman Urdu with familiar English letters. Press Space to commit a word and let transliteration turn it into Urdu as you go.', 'Type Urdu words with familiar English letters. Press Space after each word to get Urdu script as you go.'],
+  ['Enter Roman Urdu, Urdu characters or paste text into the editor.', 'Enter Urdu with English letters, type Urdu characters directly, or paste existing text into the editor.'],
+  ['Use Space to commit transliterated words, or switch to direct keyboard input.', 'Press Space after each English-letter word, or switch to direct Urdu keyboard input.'],
+  ['<strong>Local drafts</strong><span>Save a working draft in this browser and recover it after a refresh.</span>', '<strong>Working drafts</strong><span>Save a working draft and pick it up again after a refresh.</span>'],
+  ['<strong>Native sharing</strong><span>Use your device’s share sheet when it is available, with copy as a fallback.</span>', '<strong>Share writing</strong><span>Share your writing using available apps, or copy it when that is easier.</span>'],
+  ['<td>Copy selected text using the browser</td>', '<td>Copy selected text</td>'],
+  ['<h2 id="privacy-title">Privacy by design</h2>\n                <p>Your writing should stay yours. The editors are designed to do useful work locally whenever possible.</p>\n                <ul>\n                    <li>Local drafts and recent history are stored in your browser.</li>\n                    <li>No sign-in is needed to type, format or export.</li>\n                    <li>Roman Urdu transliteration may require an internet connection for Google’s service.</li>\n                    <li>Clear your saved draft or history from the editor whenever you choose.</li>\n                </ul>', '<h2 id="privacy-title">Keep your writing moving</h2>\n                <p>Use the simplest writing path for the job, then move into richer tools only when you need them.</p>\n                <ul>\n                    <li>Save a working draft and return to it later.</li>\n                    <li>Type Urdu with English letters or enter Urdu directly.</li>\n                    <li>Move to the rich editor when formatting matters.</li>\n                    <li>Copy, download, print or share when the writing is ready.</li>\n                </ul>'],
+  ['A lightweight UTF-8 download that preserves Urdu characters and opens almost anywhere.', 'A lightweight text download that keeps Urdu characters and opens almost anywhere.'],
+  ['Print directly from the browser or send text through your device’s native sharing options.', 'Print your finished text or share it through the apps available to you.'],
+  ['Transliteration depends on context and the conversion service. Try another spelling, use the suggestion list, or switch to direct Urdu keyboard input for precise characters.', 'English-letter spellings can have more than one Urdu result. Try another spelling, use the suggestion list, or switch to direct Urdu keyboard input for precise characters.'],
+  ['Choose the <a href="/">basic editor</a> if you think in Roman Urdu.', 'Choose the <a href="/">basic editor</a> if you prefer typing Urdu with English letters.'],
+  ['<summary>Does it work without an internet connection?</summary>\n                    <p>Direct Urdu input, rich editing, local drafts and exports are designed to work in the browser. Roman Urdu transliteration may need an internet connection when Google’s service is unavailable locally.</p>', '<summary>Can I come back to a draft later?</summary>\n                    <p>Yes. Use the draft controls to save a working copy and reopen it when you are ready to continue.</p>'],
+
+  // Forms: one short reassurance plus a Privacy link; vendor details stay in Privacy.
   ['Bring in a plain-text UTF-8 file without sending it to a server.', 'Open an existing .txt file and continue editing.'],
   ['Use your device\'s share sheet when available, with copy as a fallback.', 'Share your writing using the apps available on your phone or computer.'],
   ['Submitting sends only these form fields through Cloudflare for spam verification and delivery.', 'We only receive the information you enter here. See Privacy for details.'],
@@ -107,6 +140,19 @@ const forbidden = [
   /first release focuses/i
 ];
 
+const defensiveOutsidePrivacy = [
+  /everything runs in (?:this|your) browser/i,
+  /stays? (?:on|in) (?:this|your) (?:device|browser)/i,
+  /without uploading(?: your writing| the text)?/i,
+  /processed in (?:this|your) browser/i,
+  /product usage measurement/i,
+  /privacy by design/i,
+  /native sharing/i,
+  /plain-text UTF-8/i,
+  /paid API/i,
+  /Cloudflare for spam verification/i
+];
+
 const skipDirs = new Set(['.git', '.github', 'node_modules', 'specs', 'docs', 'skills', '.claude', 'tests', 'os']);
 
 function collectPublicFiles(dir, out) {
@@ -131,7 +177,7 @@ for (const extra of ['llms.txt', 'js/outcome-navigation.js']) {
 let changed = 0;
 for (const relative of [...new Set(publicFiles)].sort()) {
   const filename = path.join(root, relative);
-  let source = fs.readFileSync(filename, 'utf8');
+  const source = fs.readFileSync(filename, 'utf8');
   let next = source;
   for (const [from, to] of replacements) next = next.split(from).join(to);
   if (write && next !== source) {
@@ -158,6 +204,14 @@ for (const relative of [...new Set(publicFiles)].sort()) {
     if (rule.test(source)) {
       console.error(`Public product language leak in ${relative}: ${rule}`);
       failed = true;
+    }
+  }
+  if (relative !== 'write-urdu-privacy.html') {
+    for (const rule of defensiveOutsidePrivacy) {
+      if (rule.test(source)) {
+        console.error(`Defensive/implementation copy belongs in Privacy, found in ${relative}: ${rule}`);
+        failed = true;
+      }
     }
   }
 }
