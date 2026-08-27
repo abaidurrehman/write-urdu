@@ -29,7 +29,8 @@ assert.doesNotMatch(primaryNavigation, /Roman Urdu writer|Understand Roman Urdu 
 assert.match(primaryNavigation, /Format an assignment or document/, 'Write menu must expose document intent');
 assert.match(primaryNavigation, /Speak and turn it into Urdu text/, 'Voice Typing must be integrated as a current Write outcome');
 assert.match(primaryNavigation, /\/tools\/urdu-voice-typing/, 'Voice Typing route missing from outcome navigation');
-assert.match(primaryNavigation, /Convert legacy InPage text/, 'InPage conversion must be integrated as a current Write outcome');
+assert.match(primaryNavigation, /Convert older InPage Urdu/, 'InPage conversion must be integrated as a current Write outcome in user language');
+assert.doesNotMatch(primaryNavigation, /Convert legacy InPage text/, 'Navigation must not regress to implementation-led legacy wording');
 assert.match(primaryNavigation, /\/tools\/inpage-unicode-converter/, 'InPage route missing from outcome navigation');
 assert.match(primaryNavigation, /Make a poetry, quote or announcement image/, 'Create menu must lead with a recognizable creation job');
 assert.match(primaryNavigation, /Create an Urdu or English invoice/, 'Work menu must expose the invoice outcome');
