@@ -13,8 +13,8 @@
                 { href: '/urdu-editor', icon: 'document', label: { en: 'Format an assignment or document', ur: 'اسائنمنٹ یا دستاویز فارمیٹ کریں' }, tool: { en: 'Rich Text Editor', ur: 'رچ ٹیکسٹ ایڈیٹر' } },
                 { href: '/tools/urdu-voice-typing', icon: 'voice', label: { en: 'Speak and turn it into Urdu text', ur: 'بول کر اردو متن بنائیں' }, tool: { en: 'Urdu Voice Typing', ur: 'اردو وائس ٹائپنگ' } },
                 { href: '/urdu-ocr', icon: 'image', label: { en: 'Extract Urdu text from an image', ur: 'تصویر سے اردو متن نکالیں' }, tool: { en: 'Urdu OCR', ur: 'اردو OCR' } },
-                { href: '/urdu-text-cleaner', icon: 'fix', label: { en: 'Fix spacing, RTL and Unicode issues', ur: 'فاصلہ، RTL اور یونیکوڈ مسائل درست کریں' }, tool: { en: 'Text Cleaner', ur: 'ٹیکسٹ کلینر' } },
-                { href: '/tools/inpage-unicode-converter', icon: 'convert', label: { en: 'Convert legacy InPage text', ur: 'پرانا InPage متن تبدیل کریں' }, tool: { en: 'InPage ↔ Unicode', ur: 'InPage ↔ Unicode' } }
+                { href: '/urdu-text-cleaner', icon: 'fix', label: { en: 'Fix broken or messy Urdu text', ur: 'خراب یا بکھرا ہوا اردو متن درست کریں' }, tool: { en: 'Text Cleaner', ur: 'ٹیکسٹ کلینر' } },
+                { href: '/tools/inpage-unicode-converter', icon: 'convert', label: { en: 'Convert older InPage Urdu', ur: 'پرانا InPage متن تبدیل کریں' }, tool: { en: 'InPage ↔ Unicode', ur: 'InPage ↔ Unicode' } }
             ]
         },
         {
@@ -101,12 +101,12 @@
     var FOOTER_COPY = {
         en: {
             description: 'Type, format and share Urdu online.',
-            privacy: 'Your writing stays in this browser unless you choose to export or share it.',
+            privacy: 'Your writing is yours. See Privacy for details.',
             copyright: '© Write Urdu'
         },
         ur: {
             description: 'اردو آن لائن ٹائپ کریں، فارمیٹ کریں اور شیئر کریں۔',
-            privacy: 'آپ کی تحریر اسی براؤزر میں رہتی ہے جب تک آپ اسے ایکسپورٹ یا شیئر نہ کریں۔',
+            privacy: 'آپ کی تحریر آپ کی ہے۔ تفصیل کے لیے رازداری کا صفحہ دیکھیں۔',
             copyright: '© Write Urdu'
         }
     };
