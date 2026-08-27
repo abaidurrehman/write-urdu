@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
 
+# Temporary branch-only normalizer; remove before merge.
 jobs:
   normalize:
     if: github.actor != 'github-actions[bot]'
