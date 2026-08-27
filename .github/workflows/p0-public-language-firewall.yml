@@ -29,6 +29,7 @@ jobs:
         run: |
           node scripts/public-language-firewall.js --write
           node scripts/p0-public-language-cleanup-pass2.js
+          node scripts/p0-final-two.js
 
       - name: Verify static shell
         run: npm run shell:check
