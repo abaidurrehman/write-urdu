@@ -48,7 +48,7 @@ assert.match(html, /How to use it/i, 'Changelog must explain how to use shipped 
 assert.match(html, /href="\/"[^>]*>Try English to Urdu typing/, 'Changelog must link directly to the main typing experience');
 assert.match(html, /href="\/urdu-writing-templates"/, 'Writing Templates release link missing');
 assert.match(html, /href="\/urdu\/"/, 'Urdu-language release link missing');
-assert.match(html, /href="\/my-documents"/, 'My Documents release link missing');
+assert.match(html, /href="\/sign-in"[^>]*>Sign in to use My Documents/, 'My Documents account entry link missing');
 assert.match(html, /Voice input now works inside the main writing and design tools/, 'Expanded Voice input release missing');
 assert.match(html, /href="\/urdu-text-cleaner"/, 'Text Cleaner release link missing');
 assert.match(html, /href="\/urdu-ocr"/, 'Image-to-text release link missing');
