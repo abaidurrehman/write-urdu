@@ -29,6 +29,41 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Reconcile public SEO registry language
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = 'seo.config.js';
+          let source = fs.readFileSync(path, 'utf8');
+          const replacements = [
+            [
+              "{ id: 'urdu-name-art-maker', path: '/urdu-name-art-maker', legacyPaths: ['/urdu-name-art-maker.html'], indexable: true, title: 'Urdu Name Art Maker – Create Stylish Urdu Name Images', searchTitle: 'Urdu Name Art Maker – Urdu Name Image & DP Maker | WriteUrdu', description: 'Create Urdu name images with Nastaliq and Naskh fonts, templates, local backgrounds and downloadable PNG export.', searchDescription: 'Create Urdu name art, name images and DP/profile designs with Urdu-safe fonts, 24 original templates, local backgrounds and PNG or transparent PNG export.', h1: 'Urdu Name Art Studio', section: 'tools', priority: .88, changefreq: 'monthly', lastmod: '2026-08-13', schema: ['WebApplication', 'FAQPage'] },",
+              "{ id: 'urdu-name-art-maker', path: '/urdu-name-art-maker', legacyPaths: ['/urdu-name-art-maker.html'], indexable: true, title: 'Urdu Name Art Maker – Create Stylish Urdu Name Images', searchTitle: 'Urdu Name Art Maker – Urdu Name Image & DP Maker | WriteUrdu', description: 'Create Urdu name images with Nastaliq and Naskh fonts, templates, custom backgrounds and downloadable PNG export.', searchDescription: 'Create Urdu name art, name images and DP/profile designs with Urdu-safe fonts, 24 original templates, custom backgrounds and PNG or transparent PNG download.', h1: 'Urdu Name Art Studio', section: 'tools', priority: .88, changefreq: 'monthly', lastmod: '2026-08-13', schema: ['WebApplication', 'FAQPage'] },"
+            ],
+            [
+              "{ id: 'why-write-urdu', path: '/why-write-urdu', legacyPaths: ['/why-write-urdu.html'], indexable: true, title: 'About Write Urdu – Purpose, Privacy and How It Works', description: 'Learn why Write Urdu was created, who it helps, how your writing stays private and how to report a correction.', h1: 'About Write Urdu', section: 'about', priority: .7, changefreq: 'yearly', lastmod: '2026-08-22', schema: [] },",
+              "{ id: 'why-write-urdu', path: '/why-write-urdu', legacyPaths: ['/why-write-urdu.html'], indexable: true, title: 'About Write Urdu – Urdu Writing Made Simple', description: 'Learn why Write Urdu exists, who it helps and the different ways you can write, format and create in Urdu.', h1: 'About Write Urdu', section: 'about', priority: .7, changefreq: 'yearly', lastmod: '2026-08-22', schema: [] },"
+            ],
+            [
+              "{ id: 'write-urdu-privacy', path: '/write-urdu-privacy', legacyPaths: ['/write-urdu-privacy.html'], indexable: true, title: 'Write Urdu Privacy Policy – Local Storage, Public Shares and Services', description: 'Understand how Write Urdu handles local drafts, voice typing, optional public share links, English-to-Urdu typing suggestions, basic usage analytics, ads and feedback.', h1: 'Write Urdu privacy policy and terms', section: 'about', priority: .6, changefreq: 'yearly', lastmod: '2026-08-22', schema: [] },",
+              "{ id: 'write-urdu-privacy', path: '/write-urdu-privacy', legacyPaths: ['/write-urdu-privacy.html'], indexable: true, title: 'Write Urdu Privacy Policy – Writing, Accounts and Public Shares', description: 'Understand how Write Urdu handles saved drafts, voice typing, public share links, English-to-Urdu typing suggestions, accounts, analytics, ads and feedback.', h1: 'Write Urdu privacy policy and terms', section: 'about', priority: .6, changefreq: 'yearly', lastmod: '2026-08-22', schema: [] },"
+            ],
+            [
+              "{ id: 'roman-urdu-transliteration', path: '/roman-urdu-transliteration', legacyPaths: ['/roman-urdu-transliteration.html'], indexable: true, title: 'Roman Urdu to Urdu Typing Online | WriteUrdu', description: 'Type Roman Urdu using English letters and turn it into Urdu script. See examples, spelling tips and how to review Urdu word suggestions.', h1: 'Roman Urdu to Urdu Typing', section: 'guides', priority: .72, changefreq: 'yearly', datePublished: '2026-07-16', lastmod: '2026-08-19', schema: ['Article'] },",
+              "{ id: 'roman-urdu-transliteration', path: '/roman-urdu-transliteration', legacyPaths: ['/roman-urdu-transliteration.html'], indexable: true, title: 'English to Urdu Typing with English Letters | WriteUrdu', description: 'Type Urdu using English letters and turn each word into Urdu script. See examples, spelling tips and how to review Urdu word suggestions.', h1: 'English to Urdu Typing with English Letters', section: 'guides', priority: .72, changefreq: 'yearly', datePublished: '2026-07-16', lastmod: '2026-08-19', schema: ['Article'] },"
+            ]
+          ];
+          let changed = 0;
+          for (const [from, to] of replacements) {
+            if (source.includes(to)) continue;
+            if (!source.includes(from)) throw new Error('Expected SEO registry entry was not found');
+            source = source.replace(from, to);
+            changed += 1;
+          }
+          if (changed) fs.writeFileSync(path, source);
+          console.log(`SEO registry reconciled: ${changed} entr${changed === 1 ? 'y' : 'ies'} updated.`);
+          NODE
+
       - name: Normalize public product language
         run: |
           node scripts/public-language-firewall.js --write
@@ -46,7 +81,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add --all
-            git commit -m "Apply final P0 public product language cleanup"
+            git commit -m "Reconcile public product language and SEO registry"
             git push origin HEAD:p0-public-product-language-firewall
           fi
 
