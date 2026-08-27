@@ -30,7 +30,7 @@ test('global navigation is organized by Write / Create / Work / Learn outcomes',
   await expect(firstWrite.locator('strong')).toHaveText('Start writing in Urdu');
   await expect(firstWrite.locator('small')).toHaveText('English to Urdu typing');
   await expect(groups.nth(0).locator('a[href="/tools/urdu-voice-typing"]')).toContainText('Speak and turn it into Urdu text');
-  await expect(groups.nth(0).locator('a[href="/tools/inpage-unicode-converter"]')).toContainText('Convert legacy InPage text');
+  await expect(groups.nth(0).locator('a[href="/tools/inpage-unicode-converter"]')).toContainText('Convert older InPage Urdu');
 
   await groups.nth(1).locator('summary').click();
   await expect(groups.nth(1).locator('a[href="/urdu-card-studio"] strong')).toContainText('Make a poetry, quote or announcement image');
@@ -46,6 +46,7 @@ test('global navigation is organized by Write / Create / Work / Learn outcomes',
   await expect(groups.nth(3).locator('a[href="/urdu-faq"] strong')).toHaveText('Get answers to common questions');
 
   await expect(nav).not.toContainText('transliteration');
+  await expect(nav).not.toContainText('Convert legacy InPage text');
   await expect(page.locator('[data-wu-drafts-utility-slot]')).toHaveCount(1);
   await expect(nav.locator('[data-wu-nav-group="my-drafts"], [data-wu-nav-group="drafts"]')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
@@ -82,7 +83,8 @@ test('footer is compact and organized around Write Urdu / Create / Help', async 
   await expect(footer).not.toContainText('Roman Urdu');
   await expect(footer).not.toContainText('transliteration');
 
-  await expect(page.locator('.wu-footer-privacy-note')).toContainText('stays in this browser');
+  await expect(page.locator('.wu-footer-privacy-note')).toHaveText('Your writing is yours. See Privacy for details.');
+  await expect(page.locator('.wu-footer-privacy-note')).not.toContainText('stays in this browser');
   const utility = page.locator('.wu-footer-utility-links');
   await expect(utility.locator('a')).toHaveCount(4);
   await expect(utility).toContainText('Feedback');
