@@ -114,7 +114,7 @@ test('mobile voice permission denial is bounded and leaves the transcript usable
 
   await expect(page.locator('[data-voice-status-pill]')).toHaveText('Permission blocked');
   await expect(page.locator('[data-voice-notice]')).toContainText('Microphone access was blocked');
-  await expect(page.locator('[data-voice-support-note]')).toContainText('Enable microphone access');
+  await expect(page.locator('[data-voice-support-note]')).toContainText(/Enable (?:microphone access|the microphone on Android)/);
   await expect(page.locator('[data-voice-support-note]')).toContainText('Microphone to Allow');
   await expect(page.locator('[data-voice-start]')).toBeVisible();
 
