@@ -1,6 +1,6 @@
 # WU-ACCOUNT-001 — Account, Documents and Collaboration Platform Boundary
 
-**Status:** Planned product boundary — founder direction reconciled 2026-08-19  
+**Status:** Active boundary — child specs `WU-AUTH-001`/`WU-DRAFT-001` implemented core; collaboration/teams/social remain separately gated, not started  
 **Area:** Account platform / retention / future collaboration  
 **Depends on:** existing anonymous writing product, v2 shell and existing WriteUrdu D1 database  
 **Primary child specs:** `WU-AUTH-001`, `WU-DRAFT-001`

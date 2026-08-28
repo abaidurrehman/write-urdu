@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Product & Spec Backlog
 
 **Status:** Active  
-**Last updated:** 2026-08-25  
+**Last updated:** 2026-08-28  
 **Purpose:** One source of truth for priority, sequence and product state.
 
 This file owns **priority and sequence**. Individual feature specs own detailed behaviour and acceptance criteria. `specs/README.md` is the feature registry. `docs/WU-I001-IMPLEMENTATION-TRACKER.md` records v2 migration execution. Supporting SEO/audit documents provide evidence but do not own roadmap priority.
@@ -155,22 +155,22 @@ Create deliberate, contextually useful paths between established writing demand 
 **Type:** Product-led growth / distribution  
 **Spec:** `specs/WU-SHARE-001-public-share-pages-viral-publishing-loop.md`  
 **Guide source:** `docs/WU-SHARE-001-USER-GUIDE.md`  
-**Status:** Planned — founder-approved; Card Studio is the Phase 1 proving ground.
+**Status:** Active — Phase 1 shipped in Card Studio and extended to the Basic Writer/main editor short link (`WU-PLAT-004A`); reconciled 2026-08-28, this checklist was stale — the feature has been in production code since before the 2026-08-25 grooming pass.
 
 Turn finished Urdu creations into short branded public links such as `write-urdu.com/s/:id`, with a polished social preview, restrained Write-Urdu.com provenance and a strong path for recipients to create and publish their own version.
 
-- [ ] Build generic Share Artifact storage/API using D1 metadata + R2 image storage; do not hard-code the backend to Card Studio.
-- [ ] Add explicit Card Studio `Publish & Share` while preserving local Download and image-only sharing semantics.
-- [ ] Serve dynamic `/s/:id` pages with server-rendered OG/Twitter preview metadata, selectable RTL Urdu text and `noindex,follow`.
-- [ ] Add `Create your own` / `Use this text` continuation without putting Urdu text into URLs.
-- [ ] Add author-side delete token, public report flow, bounded anonymous publishing controls and no public gallery.
-- [ ] Keep UGC share pages out of sitemap/feed/llms discovery and ad-free in Phase 1.
-- [ ] Instrument publish → public view → CTA → referred creation → republish from the first release using `WU-ANALYTICS-001`.
-- [ ] Add Share Loop reporting to Product Pulse, including parent/child reproduction metrics.
-- [ ] Ship the public `/how-to-share-urdu-writing-online` guide and update privacy copy as part of the feature release.
-- [ ] After Phase 1 proves the loop, integrate the same service into the main/basic editor, where mature adoption is highest.
+- [x] Build generic Share Artifact storage/API using D1 metadata + R2 image storage; not hard-coded to Card Studio (`functions/api/shares.js`, `migrations/0004_share_artifacts.sql`).
+- [x] Add explicit Card Studio `Publish & Share` while preserving local Download and image-only sharing semantics (`js/card-studio-publish.js`).
+- [x] Serve dynamic `/s/:id` pages with server-rendered OG/Twitter preview metadata, selectable RTL Urdu text and `noindex,follow` (`functions/s/[id].js`).
+- [x] Add `Create your own` / `Use this text` continuation without putting Urdu text into URLs.
+- [x] Add author-side delete/manage token, public report flow, bounded anonymous publishing controls and no public gallery (`manage_token_hash`, `report_count` columns; `data-share-report` UI in `functions/s/[id].js`).
+- [x] Keep UGC share pages out of sitemap/feed/llms discovery and ad-free in Phase 1.
+- [x] Instrument publish → public view → CTA → referred creation → republish using `WU-ANALYTICS-001`.
+- [x] Add Share Loop reporting to Product Pulse, including parent/child reproduction metrics (`os/product-pulse.html` share-loop section).
+- [x] Ship the public `/how-to-share-urdu-writing-online` guide and update privacy copy as part of the feature release.
+- [x] Integrate the same service into the main/basic editor (`js/basic-writer-publish.js` calls `/api/shares` with `source_tool=basic_editor`, per `WU-PLAT-004A`).
 
-**Release gate:** do not mark the feature released if production publishing works but share-loop telemetry/Product Pulse reporting does not. Measurement is part of the feature, not a later analytics task.
+**Release gate:** met — production publishing and share-loop telemetry/Product Pulse reporting both ship together.
 
 ## P0.7 — `WU-PLAT-002` V2 Product Journey & Workspace Handoffs
 
@@ -203,7 +203,7 @@ Turn the expanded WriteUrdu product into one continuous user journey instead of 
 
 **Type:** Product input platform  
 **Specs:** `specs/WU-VOICE-PLAT-001-unified-urdu-input-platform.md`, `specs/WU-VOICE-PLAT-001A-shared-input-engine.md`, `specs/WU-VOICE-PLAT-001B-core-writing-rollout.md`, `specs/WU-VOICE-PLAT-001C-create-social-rollout.md`, `specs/WU-VOICE-PLAT-001D-growth-measurement.md`  
-**Status:** Active — this whole family was missing from the backlog until 2026-08-23 despite Slices A and B already being shipped and tested. Slice C (Create/Social rollout) implemented and green on 2026-08-23. Slice D (growth/measurement) is partially complete (2026-08-25): adoption/final-speech telemetry, the correction-switch proxy and completion-outcome linkage are now wired end-to-end (client events + `functions/api/events.js` allowlist/aggregation + `migrations/0009_voice_input_mode.sql`); cross-workspace Product Pulse reporting and the WhatsApp voice-to-message outcome remain unbuilt.
+**Status:** Active — Slices A/B/C shipped and green. Slice D (growth/measurement) is functionally complete as of 2026-08-28 except non-code marketing assets: adoption/final-speech telemetry, the correction-switch proxy, completion-outcome linkage, cross-workspace Product Pulse reporting and the WhatsApp voice-to-message outcome are all wired end-to-end (`migrations/0009_voice_input_mode.sql`, `migrations/0010_voice_error_category.sql`, commit `7e66f54`). Only short-form demonstration assets (§9, no channel/creative access) remain open. `.claude/skills/wu-voice-plat-001d-remaining/SKILL.md` still describes the Product Pulse/WhatsApp items as pending — that skill file is stale and should be corrected or retired.
 
 Give every workspace with a typing input a real third option — Speak Urdu — feeding the same editable model Roman/direct input already uses, not a separate transcript flow.
 
@@ -217,8 +217,8 @@ Give every workspace with a typing input a real third option — Speak Urdu — 
   - [x] Completion tied back to a prior voice session via existing outcome taxonomy — `js/product-telemetry.js`'s `trackOutcome()` now sets `currentInputMode = 'voice'` whenever a voice event fires, so the existing `session_summary` → `input_mode` mechanism (already had `input_roman`/`input_direct`/`input_unknown` columns) now also produces `input_voice`, added in the same migration. Reuses the pre-existing taxonomy per spec, no new event shape.
   - [x] Owner-page copy stays truthful/task-language only — `DISCOVERY_COPY` in `js/writer-voice-input.js` already matches spec §3 approved language.
   - [x] No bulk voice+outcome keyword pages created — confirmed via `specs/WU-GROWTH-003-urdu-voice-typing-growth-seo.md` decision log (2026-08-22), correctly held behind its own evidence gate.
-  - [ ] Cross-workspace Product Pulse section answering §7's 8 adoption/completion questions — not built yet; the new counters above are the data source it would read. (`functions/api/internal/voice-account-pulse.js` + `voice_account_hourly_metrics` is a separate, route-scoped signup-attribution system for `/tools/urdu-voice-typing` only, from a different epic — do not conflate with this cross-workspace ask.)
-  - [ ] WhatsApp voice-to-message outcome (§4) and Status-vs-message distinction (§13 items 9-10) — not built.
+  - [x] Cross-workspace Product Pulse section answering §7's adoption/completion questions — shipped 2026-08-25 in commit `7e66f54` (`functions/api/internal/product-pulse.js` voice adoption panel + `os/product-pulse.html`, reading the counters above plus new `voice_error` telemetry from `migrations/0010_voice_error_category.sql`). This checklist entry was stale — the commit landed after the last edit here and was never reconciled until 2026-08-28.
+  - [x] WhatsApp voice-to-message outcome (§4) — shipped same commit `7e66f54`: `shareToWhatsApp()` in `js/urdu-voice-typing.js:190` opens `api.whatsapp.com/send?text=`. Status-vs-message distinction (§13 items 9-10) confirmed live.
   - [ ] Short-form demonstration assets (§9) — not built, outside this session's tooling (no channel/creative access).
   - **Deploy note:** `migrations/0009_voice_input_mode.sql` applied to production D1 (`writeurdu-db`, 2026-08-25, via `wrangler d1 execute --remote --file`; no root `wrangler.jsonc` exists for `d1 migrations apply` to target, so applied directly — 12/12 ALTER TABLE statements ran clean, verified via `PRAGMA table_info` on both tables). Counters now live. Verified locally via `npm test` (63/63 contract files) and live Playwright network interception confirming `voice_exposed`/`voice_selected`/`voice_final` post with `input_mode: 'voice'` and no console errors.
 
@@ -336,19 +336,22 @@ Turn English PDF/DOCX/TXT documents into clean, editable Urdu and continue into 
 **Type:** Product / writing-assistant layer  
 **Spec:** `specs/WU-AI-001-urdu-ai-writing-assistant-platform.md`  
 **Research:** `docs/WU-AI-001-URDU-AI-DEMAND-RESEARCH-2026-08-24.md`  
-**Status:** Planned — founder-approved, benchmark-gated.
+**Provider terms matrix:** `docs/WU-AI-001-PROVIDER-TERMS-MATRIX-2026-08-26.md`  
+**Status:** Implemented core / acceptance pending — Slices A-C built and test-covered (commit `0f7742e`, polished `65653e6`); this checklist was found stale on 2026-08-28, written unchecked in the same commit that shipped the code. Feature stays behind the `AI_WRITING_ENABLED` kill switch in production because Gate A/B provider-terms closure is not done — Mistral is the only wired provider and is still on a Free plan without confirmed ZDR/retention terms; Groq/Cerebras remain benchmark-only.
 
 Provider-neutral AI writing-assistant layer (Fix/Improve/Simplify/Formal/Friendly/Shorten/Expand/Summarize) inside the existing editor state on `/`, `/urdu-editor`, `/urdu-keyboard`. Not a chatbot; does not replace the deterministic English-letter → Urdu typing engine.
 
-- [ ] Slice A — benchmark corpus, provider adapters (Mistral/Groq/Cerebras/Gemini quality-control), human scoring, dated provider/terms matrix, primary/fallback decision. May proceed now as research/enablement without displacing active P0 work.
-- [ ] Slice B — shared transformation service: action registry, versioned prompts, provider-neutral adapter, dedicated `write-urdu-ai` AI Gateway boundary, rate/budget controls, metadata-only telemetry, kill switch.
-- [ ] Slice C — core editor actions: compact command entry, 18+ first-use gate, selection-scoped preview, Replace/Insert/Copy/Keep original, undo, desktop/mobile/RTL acceptance.
+- [x] Slice A — benchmark corpus, provider adapters (Mistral wired; Groq/Cerebras benchmark-only), human scoring, dated provider/terms matrix (`docs/WU-AI-001-PROVIDER-TERMS-MATRIX-2026-08-26.md`). Primary/fallback decision still open pending ZDR confirmation — do not flip `AI_WRITING_ENABLED` until Gate B closes.
+- [x] Slice B — shared transformation service: action registry, versioned prompts, provider-neutral adapter (`functions/lib/ai-writing/`), dedicated AI Gateway boundary (`cf-aig-collect-log-payload: false`, `cf-aig-skip-cache: true`), rate/budget controls (`policy.mjs`), metadata-only telemetry, kill switch — all verified in `tests/ai-writing-contract.test.js`.
+- [x] Slice C — core editor actions: command entry, 18+ first-use gate, selection-scoped preview, Replace/Insert/Copy/Keep original, undo, desktop/mobile/RTL acceptance (`js/ai-writing-assistant.js`, `js/ai-writing-age-gate.js`).
 - [ ] Slice D — optional `Polish this Urdu` after English-letter/Roman Urdu conversion.
 - [ ] Slice E — adult work/life continuations, gated on usage evidence from C/D.
 - [ ] Slice F — voice/OCR/document integrations, reusing `WU-VOICE-PLAT-001`/`WU-DOC-001` outputs only.
 - [ ] Slice G — evidence-led dedicated acquisition routes (grammar checker, simple Urdu, Roman Urdu correction), gated on Search Console + usage evidence.
 
-**Guardrails:** no client-side provider keys, `cf-aig-collect-log-payload: false` proven before release, no response caching for user writing, no input/output text in telemetry, no thin AI keyword pages in Phase 1, Gemini remains benchmark-only pending explicit under-18 API-client terms clearance.
+**Guardrails:** no client-side provider keys, `cf-aig-collect-log-payload: false` proven before release (done), no response caching for user writing, no input/output text in telemetry, no thin AI keyword pages in Phase 1, Gemini remains benchmark-only pending explicit under-18 API-client terms clearance.
+
+**Immediate unblock:** the only thing standing between shipped code and live revenue-adjacent usage is closing Gate B (confirm Mistral ZDR/retention terms, or pick a fallback provider with confirmed terms) and flipping `AI_WRITING_ENABLED`. This is now a decision/procurement task, not an engineering task.
 
 ---
 
@@ -383,6 +386,34 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 - [ ] Browser compatibility for writing/creation tools.
 - [ ] Local-draft/image-upload/QR-logo privacy guidance.
 - [ ] Urdu punctuation, numerals and RTL direction.
+
+---
+
+# Path to $5/day AdSense — priority read of the remaining backlog
+
+**Caveat:** the current daily AdSense figure is not known from this repo — capturing it is itself the open P0.1A checkbox below. This section does not claim a measured gap to $5/day; it orders the *existing* remaining backlog (no new items invented) by fastest plausible revenue lift per unit of effort for a mature 10+ year organic-search domain. Confirm the actual current daily number before treating this as a committed plan — if it already clears $5/day, most of Tier 1 is still worth doing (it's the measurement/unlock layer every other revenue decision depends on), but the framing changes from "reach $5" to "grow past whatever the baseline is."
+
+**Tier 1 — near-zero engineering cost, pure unlock (do first):**
+1. P0.1A's 3 remaining checkboxes — create AdSense custom/URL channels, configure Auto-ads page exclusions, capture the post-restoration baseline (top pages, RPM, country, device, format). Nothing above this can be prioritized by evidence until this exists.
+2. P0.2 — smoke-test/validate/recrawl already-shipped SEO-A1 pages. Free indexing/CTR upside sitting idle on pages that already rank.
+3. `WU-AI-001` Gate B — the code (Slices A-C) is already built and tested; only a provider-terms/ZDR decision stands between it and `AI_WRITING_ENABLED=true`. AI actions add session depth on Write pages, which indirectly lifts pageviews into ad-carrying Learn/Create surfaces without new engineering.
+
+**Tier 2 — evidence-gated but cheap once Tier 1 data lands:**
+4. P0.1B Authority Opportunity Map — once exports exist, join query → route → page type → RPM and re-rank everything below by real numbers instead of estimate.
+5. P1.1 — CTR improvements on positions 4-10 queries. Rank is already earned; this is pure snippet/title/description work, the highest revenue-per-hour lever available.
+6. P1.3 — page-type AdSense placement experiments (Learn-page `guide_after_answer` variants, side rail, Multiplex, mobile bottom anchor) once the P0.1A baseline exists to compare against.
+
+**Tier 3 — moderate build cost, compounding pageviews:**
+7. P1.2 — 1-3 strong pages on one evidence-backed topic cluster; new indexable surface owning real demand, not a bulk content program.
+8. P0.7 Slice H — task-finding/IA usability validation; reduces bounce and increases pages/session sitewide, which multiplies every other page's ad impressions.
+9. `WU-SEO-CRAWL-001` — production source-view spot check; protects the crawlability/indexability gains already shipped from silently regressing.
+
+**Tier 4 — larger builds, second-order revenue (only once Tier 1-3 evidence justifies the investment):**
+10. P1.8 `WU-DOC-001` Slices A-C — new acquisition surface with real search demand per its research doc; adds a whole new Learn/Work page-type cluster.
+11. P1.9 `WU-AI-001` Slices D-G — deeper AI integration once Gate B is closed and usage data from C justifies expansion.
+12. `WU-SHARE-001`/`WU-COMMUNITY-001`-style distribution loops — compounding organic reach but slower payback than direct SEO/CTR work.
+
+**Do not**, in pursuit of $5/day: increase site-wide ad density ahead of the P0.1A baseline (priority rule 9), build doorway/thin pages (HOLD list), or put ads inside active writing/editor regions (priority rule 8). A mature-domain product loses more from an ad-load misstep than a small daily figure like $5/day is worth chasing carelessly.
 
 ---
 
@@ -421,6 +452,11 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 | `WU-IG-002` | Implemented | Same invoice decision |
 | `WU-IG-003` | Implemented | Same invoice decision |
 | `WU-SEO-001` | Superseded | Requirements absorbed by `WU-PLAT-001`, SEO-A1 and `WU-GROWTH-001` |
+| `WU-SEO-CRAWL-001` | Implemented | Slices A-D complete (PR #124-128, closeout PR #135/#136); production source-view spot check outstanding |
+| `WU-GROWTH-003` | Active | Slices A/B/C/E shipped (PR #114); Slice D correctly held on Search Console evidence gate |
+| `WU-I18N-001` | Implemented core | Phase 1 (Slices A/B/C) shipped and live at `/urdu/*`; 001D full-product expansion remains Planned, gated on Phase 1 evidence |
+| `WU-ACCOUNT-001` | Active boundary | Child specs `WU-AUTH-001`/`WU-DRAFT-001` implemented core; collaboration/teams/social remain separately gated |
+| `WU-DRAFT-001` | Implemented core | Shipped PR #83; acceptance checklist not formally closed |
 
 ## Grooming rules going forward
 
@@ -432,10 +468,11 @@ Evidence-gated candidates from `docs/SEO-CONTENT-BACKLOG.md`:
 
 ## Current queue
 
+**Reconciled 2026-08-28:** this pass found six items that were already done in code but not reflected here — `WU-SEO-CRAWL-001` (A-D, fully shipped and closed out), `WU-GROWTH-003` (Slices A/B/C/E shipped), `WU-I18N-001` (Phase 1 A/B/C live at `/urdu/*`), `WU-ACCOUNT-001`/`WU-DRAFT-001` (implemented core), `WU-SHARE-001` (P0.6 checklist was stale — the whole loop including main-editor integration is live), and `WU-AI-001` Slices A-C (built and tested but held behind a kill switch, not "Planned"). No true duplicate/overlapping feature specs were found; `WU-TOOLS-EXPANSION-002/003/004/005` and `WU-TRUST-002`/`WU-CHANGELOG-001`/`WU-ANALYTICS-001-003` were also implemented but missing from `specs/README.md`'s registry table — added.  
 **Completed product implementation:** P1.4 V2 creation-workspace migration is fully shipped — Card Studio + Templates (PR #20), and Stylish Urdu Text + Name Art + Social makers + QR (implemented in `css/v2-creation-tools.css`, `css/name-art-task-first.css` and `css/v2-publish-tools.css`; confirmed live 2026-08-20 after this checklist was found stale).  
-**Next product-architecture implementation:** P0.7 `WU-PLAT-002` Slice A/B — workspace registry + shared handoff runtime before adding more destination-specific seams.  
-**Parallel P0 distribution work:** P0.6 `WU-SHARE-001` remains approved; its public-to-local continuation should integrate with the new workspace-ownership contract rather than invent a separate journey model.  
-**Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation.  
-**Approved P1 product expansion:** P1.8 `WU-DOC-001` is fully groomed and can start with Slice A when P1 capacity is available; it must reuse `WU-PLAT-002` rather than create an isolated document product.  
-**Approved P1 research track:** P1.9 `WU-AI-001` Slice A (benchmark + provider/terms gate) can start now without displacing P0 work; Slices B–D are the production path once Slice A's primary/fallback decision lands, and Slices E–G stay evidence-gated.  
-**Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available.
+**Next product-architecture implementation:** P0.7 `WU-PLAT-002` Slice H — task-finding/IA usability validation is the one remaining open item in that epic; everything else in Slices A-G is shipped.  
+**Real unblock, not a build task:** `WU-AI-001` is fully built (Slices A-C) and only needs Gate B provider-terms/ZDR closure (or a fallback provider decision) before `AI_WRITING_ENABLED` can go live — see P1.9.  
+**Parallel operational follow-up:** P0.2 production SEO validation/recrawl and post-restoration AdSense observation remain open; `WU-SEO-CRAWL-001`'s production source-view spot check is the same category of leftover verification work.  
+**Approved P1 product expansion:** P1.8 `WU-DOC-001` is fully groomed and can start with Slice A when P1 capacity is available; it must reuse `WU-PLAT-002` rather than create an isolated document product. Note a small `functions/api/document-translate.js` TXT-only preview already exists but is not the Slice A contract.  
+**Not yet started, correctly so:** `WU-COMMUNITY-001` (A-F) and `WU-I18N-001D` have zero code and remain Planned/gated on their stated evidence.  
+**Evidence-gated growth work:** P1.1/P1.2 and the full Authority Opportunity Map move as soon as detailed Search Console + AdSense exports are available. See the new "Path to $5/day AdSense" section below for a revenue-ordered read of the remaining backlog.

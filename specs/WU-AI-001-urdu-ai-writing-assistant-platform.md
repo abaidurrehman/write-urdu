@@ -2,7 +2,7 @@
 
 **Product:** Write Urdu  
 **Feature ID:** `WU-AI-001`  
-**Status:** Planned — founder-approved, benchmark-gated  
+**Status:** Implemented core / acceptance pending — Slices A-C built and test-covered; kept behind `AI_WRITING_ENABLED` kill switch pending Gate A/B provider-terms closure  
 **Priority:** P1 candidate; Slice 0 may proceed without displacing active P0 work  
 **Date:** 2026-08-24  
 **Area:** Write / AI-assisted Urdu correction, rewriting and comprehension  

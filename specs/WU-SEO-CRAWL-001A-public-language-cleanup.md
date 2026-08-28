@@ -1,7 +1,7 @@
 # WU-SEO-CRAWL-001A — Public Language Cleanup
 
 **Parent:** `WU-SEO-CRAWL-001`  
-**Status:** Planned  
+**Status:** Complete  
 **Priority:** P0 — first implementation slice
 
 ## Goal

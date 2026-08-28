@@ -2,7 +2,7 @@
 
 **Product:** Write Urdu  
 **Feature/strategy ID:** `WU-GROWTH-003`  
-**Status:** Planned — founder-approved growth epic  
+**Status:** Active — Slices A/B/C/E shipped (PR #114); Slice D correctly held on Search Console evidence gate  
 **Primary owner route:** `/tools/urdu-voice-typing`  
 **Urdu locale route:** `/urdu/tools/urdu-voice-typing`  
 **Commercial parent:** `WU-GROWTH-001`  

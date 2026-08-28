@@ -2,7 +2,7 @@
 
 **Product:** Write Urdu  
 **Feature ID:** `WU-I18N-001`  
-**Status:** Planned — founder-approved  
+**Status:** Implemented core — Phase 1 (Slices A/B/C) shipped and live at `/urdu/*` (PR #101/#102); 001D full-product expansion remains Planned, gated on Phase 1 evidence  
 **Locale route:** `/urdu/`  
 **Default locale:** English (`en`) on existing canonical routes  
 **Urdu locale:** Urdu (`ur`) on `/urdu/*`  

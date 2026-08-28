@@ -1,6 +1,6 @@
 # WU-SHARE-001 — Public Share Pages & Viral Publishing Loop
 
-**Status:** Planned  
+**Status:** Active — Phase 1 shipped in Card Studio (`functions/api/shares.js`, `functions/s/[id].js`, report/manage-token flows, `docs/../how-to-share-urdu-writing-online.html` guide live)  
 **Priority:** P0.6  
 **Area:** Growth / creation / distribution  
 **Phase 1 source:** `/urdu-card-studio`  

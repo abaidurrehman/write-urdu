@@ -8,16 +8,16 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | --- | --- | --- | --- |
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | Sitewide | Active — mature-domain authority/growth control plane |
 | `WU-GROWTH-002` | Account Save + Share Entry Points | `/`, `/urdu-editor`, `/urdu-keyboard`, `/tools/urdu-voice-typing` | Active — compact account conversion + ungated share loop implementation |
-| `WU-GROWTH-003` | Urdu Voice Typing Growth & SEO | `/tools/urdu-voice-typing`, `/urdu/tools/urdu-voice-typing` | Planned — founder-approved acquisition, activation and authority epic |
+| `WU-GROWTH-003` | Urdu Voice Typing Growth & SEO | `/tools/urdu-voice-typing`, `/urdu/tools/urdu-voice-typing` | Active — Slices A/B/C/E shipped (PR #114); Slice D correctly held on Search Console evidence gate |
 | `WU-COMMUNITY-001` | Moderated Urdu Writing Publishing / Urdu Writers | `/urdu-writers`, `/urdu-writers/:slug`, `/my-publications`, Product OS moderation | Planned — founder-approved moderated community publishing loop |
 | `WU-VOICE-PLAT-001` | Unified Urdu Input Platform | Eligible Write/Create workspaces sitewide | Implemented core / acceptance pending — Slices A (shared engine), B (core writing) and C (Card Studio/WhatsApp/Instagram/Stylish/Name Art) shipped and green; Slice D (growth/measurement) still planned |
-| `WU-I18N-001` | Crawlable Urdu Locale | `/urdu/*` with eight-route Phase 1 corpus | Planned — founder-approved static-first Urdu search/product locale |
+| `WU-I18N-001` | Crawlable Urdu Locale | `/urdu/*` with eight-route Phase 1 corpus | Implemented core — Phase 1 (Slices A hreflang/canonical, B/C content-QA) shipped and live at `/urdu/*` (PR #101/#102); 001D full-product expansion remains Planned, gated on Phase 1 evidence |
 | `WU-SHARE-001` | Public Share Pages & Viral Publishing Loop | `/urdu-card-studio`, `/`, `/s/:id`, `/api/shares*` | Active — first-party short-link loop proven in Card Studio and extending to Basic Writer |
-| `WU-ACCOUNT-001` | Account, Documents & Collaboration Platform Boundary | Account/document platform | Planned boundary — identity + My Documents first; collaboration/teams/social separately gated |
+| `WU-ACCOUNT-001` | Account, Documents & Collaboration Platform Boundary | Account/document platform | Active boundary — child specs `WU-AUTH-001` and `WU-DRAFT-001` are implemented core; collaboration/teams/social remain separately gated, not started |
 | `WU-AUTH-001` | Optional social authentication foundation | `/sign-in`, `/api/auth/*`, `/api/me`, shared header | Implemented core / acceptance pending — Google + Facebook providers live in code (`functions/lib/auth.mjs`, reusing `METRICS_DB`); Facebook pending production app registration + secrets |
-| `WU-DRAFT-001` | My Documents: cross-device account-backed writing | Core writing editors, `/my-documents`, `/api/documents*` | Planned — browser-local first; explicit account save in existing `METRICS_DB` |
-| `WU-DOC-001` | English to Urdu Document Translator | `/tools/english-to-urdu-document-translator` | Planned — founder-approved; PDF/DOCX/TXT → clean editable Urdu, Cloudflare-native foundation, scanned/layout expansion gated |
-| `WU-AI-001` | Urdu AI Writing Assistant Platform | `/`, `/urdu-editor`, `/urdu-keyboard`; no dedicated SEO route in Phase 1 | Planned — founder-approved, benchmark-gated Urdu correction/simplification/tone platform |
+| `WU-DRAFT-001` | My Documents: cross-device account-backed writing | Core writing editors, `/my-documents`, `/api/documents*` | Implemented core / acceptance pending — browser-local first, explicit account save shipped in `METRICS_DB` (PR #83: `functions/lib/documents.mjs`, `js/my-documents-ui.mjs`, conflict handling, 5 contract test files) |
+| `WU-DOC-001` | English to Urdu Document Translator | `/tools/english-to-urdu-document-translator` | Planned — founder-approved; PDF/DOCX/TXT → clean editable Urdu, Cloudflare-native foundation, scanned/layout expansion gated. Note: `functions/api/document-translate.js` ships a small TXT-only preview slice, not the Slice A contract |
+| `WU-AI-001` | Urdu AI Writing Assistant Platform | `/`, `/urdu-editor`, `/urdu-keyboard`; no dedicated SEO route in Phase 1 | Implemented core / acceptance pending — Slices A-C built and test-covered (`functions/api/ai-writing.js`, `js/ai-writing-assistant.js`); kept behind `AI_WRITING_ENABLED` kill switch in production pending Gate A/B provider-terms/ZDR closure (Mistral only, still Free plan); Slices D-G not started |
 | `WU-TPL-001` | Urdu Writing Templates | `/urdu-writing-templates`, `/urdu/urdu-writing-templates` | Implemented — 12 reviewed AI-free writing starters, bilingual search launch, locale-preserving editor handoffs and bounded usage measurement |
 | `WU-RW-001` | Role-owned direct workspaces | Writing + creation role routes | Active — one top-level editor/canvas per role; remove nested WriteUrdu app/iframe architecture |
 | `WU-PLAT-001` | Unified product journey and acquisition-first homepage | `/` and related tools | Implemented — foundation complete |
@@ -27,7 +27,7 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-PLAT-004A` | Basic Writer Public Share Short Link | `/`, `/s/:id`, `/api/shares*` | Active — P0 hotfix; primary toolbar Share publishes explicit Write-Urdu short links |
 | `WU-SEO-ETU-001` | English to Urdu Typing acquisition | `/` | Implemented — homepage owns English-letter / Roman Urdu to Urdu-script typing intent |
 | `WU-SEO-CTR-001` | SERP CTR and intent optimization | `/`, `/urdu-keyboard` | Active — Phase 1 intent/measurement foundation; metadata experiment evidence-gated |
-| `WU-SEO-CRAWL-001` | Public Copy & Static Crawlability | Sitewide public/indexable routes | Planned — P0.9 founder-approved cleanup of public engineering-language leakage, source-visible internal links, static SEO graph and crawlable collections |
+| `WU-SEO-CRAWL-001` | Public Copy & Static Crawlability | Sitewide public/indexable routes | Implemented — Slices A-D (public language cleanup, static internal-link shell, static SEO graph, static collection content) complete and merged (PR #124-128, closeout PR #135/#136); 70/70 contract tests pass; production source-view spot check outstanding |
 | `WU-CS-UX-001` | Urdu Card Studio guided workflow | `/urdu-card-studio` | Implemented — v2 creation hierarchy migrated in PR #20 |
 | `WU-CS-UX-002` | Urdu Card Studio empty-state guidance | `/urdu-card-studio` | Implemented — retained through v2 creation migration |
 | `WU-SEO-CS-001` | Card Studio SEO acquisition | `/urdu-card-studio`, `/how-to-write-urdu-on-photo` | Implemented — Card Studio owns Urdu text/poetry-on-photo acquisition cluster |
@@ -39,6 +39,17 @@ Feature work is tracked with stable IDs so implementation, tests and future prod
 | `WU-IG-002` | Invoice visual polish and adaptive layout | `/urdu-invoice-generator` | Implemented — follows invoice strategy decision |
 | `WU-IG-003` | Invoice refinement v1.2 | `/urdu-invoice-generator` | Implemented — follows invoice strategy decision |
 | `WU-SEO-001` | New-tool marketing and SEO launch | Sitewide | Superseded — absorbed by `WU-PLAT-001`, SEO-A1 and `WU-GROWTH-001` |
+| `WU-TOOLS-EXPANSION-001` | Browser-first Urdu Tools Program (umbrella) | Sitewide tools | Active — umbrella contract; see child specs 002-006 below |
+| `WU-TOOLS-EXPANSION-002` | Urdu Text Cleaner / RTL Fixer | `/urdu-text-cleaner` | Implemented — `urdu-text-cleaner.html`, `tests/urdu-text-cleaner-core.test.js` |
+| `WU-TOOLS-EXPANSION-003` | Urdu OCR | `/urdu-ocr` | Implemented — MVP shipped, `js/urdu-ocr.js`, `tests/urdu-ocr-contract.test.js` |
+| `WU-TOOLS-EXPANSION-004` | Urdu Voice Typing (engine/quality contract) | `/tools/urdu-voice-typing` | Implemented — see `WU-GROWTH-003`/`WU-VOICE-PLAT-001` for acquisition and cross-workspace layers |
+| `WU-TOOLS-EXPANSION-005` | In-page Unicode Converter | `/tools/inpage-unicode-converter` | Implemented |
+| `WU-TOOLS-EXPANSION-006` | Urdu/Hindi Script Converter R&D | Not yet routed | Hold — R&D only, correctly unbuilt |
+| `WU-TRUST-002` | Contact & Feedback | `/contact` | Implemented — `contact.html`, `functions/api/messages.js` |
+| `WU-CHANGELOG-001` | Customer-facing Product Updates | `/changelog` | Implemented — `changelog.html`, `tests/changelog-contract.test.js` |
+| `WU-ANALYTICS-001` | Privacy-safe Product Telemetry | Sitewide | Implemented — `functions/api/events.js`, `migrations/0002_product_telemetry_rollups.sql` |
+| `WU-ANALYTICS-002` | Rollups and Creation-tool Coverage | Sitewide | Implemented |
+| `WU-ANALYTICS-003` | Acquisition and Returning Signal | Sitewide | Implemented core — acquisition signal (Phase A) live, `js/acquisition-telemetry.js`; returning-visitor Phase B correctly still gated/unbuilt |
 
 ## Status vocabulary
 

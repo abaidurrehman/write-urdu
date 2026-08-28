@@ -1,6 +1,6 @@
 # WU-DRAFT-001 — My Documents: Cross-device Account-backed Writing
 
-**Status:** Planned — founder-approved 2026-08-13; reconciled 2026-08-19  
+**Status:** Implemented core / acceptance pending — shipped PR #83 (`functions/lib/documents.mjs`, `js/my-documents-ui.mjs`, conflict handling, 5 contract test files)  
 **Area:** Writing persistence / retention  
 **Routes:** core writers, `/my-documents`, `/api/documents*`  
 **Depends on:** `WU-AUTH-001`  
