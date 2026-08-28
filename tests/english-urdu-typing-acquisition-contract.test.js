@@ -14,6 +14,7 @@ const romanGuide = seo.byPath['/roman-urdu-transliteration'];
 const formattingGuide = seo.byPath['/urdu-editor-features'];
 const homeHtml = read('index.html');
 const runtimeSeo = read('js/seo.js');
+const productionSeoCheck = read('scripts/check-live-production.js');
 const llms = read('llms.txt');
 const sitemap = read('sitemap.xml');
 const redirects = read('_redirects');
@@ -41,6 +42,11 @@ assert.match(homeHtml, /How to type Urdu with English letters/i, 'Homepage must 
 assert.match(homeHtml, /Type Urdu words using English letters[\s\S]*Press Space[\s\S]*Urdu script/i, 'Homepage must expose the real English-letter-to-Urdu workflow');
 assert.match(homeHtml, /does not translate English sentences into Urdu/i, 'Homepage must explain the typing-versus-translation distinction in plain language');
 assert.doesNotMatch(homeHtml, /<ins[^>]+adsbygoogle/i, 'Homepage must not hard-code an ad inside the active writing markup');
+
+assert.match(productionSeoCheck, /const expectedH1 = page\.h1 \|\| '';/, 'Production verification must read the expected H1 from the shared SEO registry');
+assert.match(productionSeoCheck, /const actualH1 = h1From\(text\);/, 'Production verification must read the H1 from initial production HTML');
+assert.match(productionSeoCheck, /initial H1 is/, 'Production verification must report H1 drift clearly');
+assert.doesNotMatch(productionSeoCheck, /Type Roman Urdu and convert it to Urdu script/i, 'Production verification must not hard-code retired Roman Urdu homepage ownership copy');
 
 assert.match(tutorial.title, /Video Tutorial/i, 'Tutorial must remain a walkthrough owner, not the product owner');
 assert.doesNotMatch(tutorial.title, /^English to Urdu Typing Online/i, 'Tutorial must not compete for the prime product title');
