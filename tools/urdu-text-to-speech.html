@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Urdu Text to Speech — Test Page | Write Urdu</title>
+  <meta name="description" content="Type or paste Urdu and listen to your device read it aloud. Experimental Write Urdu test page.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <link rel="canonical" href="https://write-urdu.com/tools/urdu-text-to-speech">
+  <link rel="icon" href="/image/logo10.png" type="image/png">
+  <link rel="stylesheet" href="/css/site-header.css">
+  <link rel="stylesheet" href="/css/urdu-text-to-speech.css">
+  <script src="/locale.config.js" defer></script>
+  <script src="/js/locale-route.js" defer></script>
+  <script src="/site-header.js" defer></script>
+  <script src="/js/site-runtime.js" defer></script>
+  <script src="/js/urdu-text-to-speech.js" defer></script>
+</head>
+<body class="urdu-tool-page urdu-text-to-speech-page">
+  <nav class="navbar wu-static-site-nav" data-wu-static-shell="nav" aria-label="Primary navigation">
+    <a class="wu-static-brand" href="/">Write Urdu</a>
+  </nav>
+
+  <main class="urdu-tool-main" data-urdu-text-to-speech data-reader-state="checking">
+    <header class="urdu-tool-hero tts-hero">
+      <div>
+        <p class="urdu-tool-eyebrow">Urdu text → Urdu voice</p>
+        <h1>Urdu Text to Speech</h1>
+        <p class="tts-lede">Type or paste Urdu, then tap Listen. If your phone or computer has an Urdu reading voice, it will read the text aloud.</p>
+        <div class="tts-benefits" aria-label="Highlights">
+          <span>Free</span>
+          <span>No sign-up</span>
+          <span>Uses your device voice</span>
+        </div>
+      </div>
+      <aside class="tts-hero-card" aria-label="Urdu reading example">
+        <span class="tts-speaker" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 5 6.8 8.5H3v7h3.8L11 19V5Z"></path>
+            <path d="M15 9.5a4 4 0 0 1 0 5"></path>
+            <path d="M17.8 6.8a8 8 0 0 1 0 10.4"></path>
+          </svg>
+        </span>
+        <div>
+          <small>سنیں</small>
+          <p dir="rtl" lang="ur">السلام علیکم، اردو سننا اب اور بھی آسان ہے۔</p>
+        </div>
+      </aside>
+    </header>
+
+    <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="tts-workspace-title" google-side-rail-overlap="false">
+      <div class="urdu-tool-workspace-header">
+        <div>
+          <h2 id="tts-workspace-title">Write Urdu. Hear it aloud.</h2>
+          <p>Paste anything you want to test. Nothing needs to be uploaded to use the reader.</p>
+        </div>
+        <span class="urdu-tool-status-pill" data-tts-status-pill>Checking Urdu voice</span>
+      </div>
+
+      <div class="tts-workspace-grid">
+        <section class="tts-editor-panel" aria-labelledby="tts-text-label">
+          <div class="urdu-tool-label-row">
+            <label id="tts-text-label" for="ttsText">Your Urdu text</label>
+            <span class="urdu-tool-helper"><span data-tts-count>0</span> / 5000</span>
+          </div>
+          <textarea id="ttsText" class="urdu-tool-textarea tts-textarea" dir="rtl" lang="ur" maxlength="5000" spellcheck="true" placeholder="یہاں اردو لکھیں یا پیسٹ کریں۔۔۔"></textarea>
+          <div class="urdu-tool-actions tts-secondary-actions">
+            <button class="urdu-tool-button" type="button" data-tts-sample>Try sample</button>
+            <button class="urdu-tool-button ghost" type="button" data-tts-clear disabled>Clear</button>
+          </div>
+        </section>
+
+        <section class="tts-player-panel" aria-labelledby="tts-player-title">
+          <div class="tts-player-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 5 6.8 8.5H3v7h3.8L11 19V5Z"></path>
+              <path d="M15 9.5a4 4 0 0 1 0 5"></path>
+              <path d="M17.8 6.8a8 8 0 0 1 0 10.4"></path>
+            </svg>
+          </div>
+          <h3 id="tts-player-title">Listen to your Urdu</h3>
+          <p class="tts-player-copy" data-tts-support-message aria-live="polite">Looking for an Urdu reading voice on this device…</p>
+
+          <div class="tts-controls">
+            <button class="urdu-tool-button primary tts-listen-button" type="button" data-tts-listen disabled>
+              <span aria-hidden="true">▶</span> Listen
+            </button>
+            <button class="urdu-tool-button" type="button" data-tts-pause disabled>Pause</button>
+            <button class="urdu-tool-button" type="button" data-tts-stop disabled>Stop</button>
+          </div>
+
+          <div class="tts-options">
+            <label class="tts-field" data-tts-voice-field hidden>
+              <span>Voice</span>
+              <select data-tts-voice aria-label="Urdu voice"></select>
+            </label>
+            <label class="tts-field">
+              <span>Speed</span>
+              <select data-tts-rate aria-label="Reading speed">
+                <option value="0.8">0.8×</option>
+                <option value="1" selected>1×</option>
+                <option value="1.2">1.2×</option>
+              </select>
+            </label>
+          </div>
+
+          <p class="tts-now-reading" data-tts-now-reading aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+
+    <section class="tts-test-notes" aria-labelledby="tts-test-title">
+      <div>
+        <p class="urdu-tool-eyebrow">For this first test</p>
+        <h2 id="tts-test-title">Please try it on the devices you normally use.</h2>
+      </div>
+      <div class="tts-test-grid">
+        <article><strong>Phone</strong><span>Try Chrome or Safari and tell us whether an Urdu voice appears.</span></article>
+        <article><strong>Computer</strong><span>Try a short sentence and a longer paragraph.</span></article>
+        <article><strong>Voice quality</strong><span>Listen for Urdu pronunciation, pauses and natural flow.</span></article>
+      </div>
+    </section>
+  </main>
+
+  <footer data-wu-static-shell="footer"></footer>
+</body>
+</html>
