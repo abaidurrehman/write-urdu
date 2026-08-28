@@ -65,6 +65,8 @@ assert.match(toolbar, /\/js\/ai-writing-age-gate\.js/, 'Toolbar must load the ag
 assert.match(toolbar, /function createAiWritingAdapter\(editor\)/, 'Toolbar must adapt the real Basic Writer textarea for the AI widget');
 assert.match(toolbar, /getSelectionRange:/, 'Adapter must expose the selection range the widget scopes requests to');
 assert.match(toolbar, /replaceRange:/, 'Adapter must expose a single replace primitive used for replace/insert/undo');
+assert.match(toolbar, /data-wu-ai-writing-host/, 'AI writing must own a dedicated surface instead of rendering its result inside Share/Copy controls');
+assert.match(toolbar, /editorFrame\.parentNode\.insertBefore\(host, editorFrame\.nextSibling\)/, 'AI writing surface must follow the editor in the task flow');
 const mountCalls = [...toolbar.matchAll(/mountAiWriting\(/g)];
 assert.ok(mountCalls.length >= 2, 'Both the fresh-build and already-built toolbar branches must mount the AI widget');
 assert.doesNotMatch(toolbar, /mountAiWriting[\s\S]{0,200}throw/, 'AI widget mount failure must not break the rest of the toolbar');
@@ -72,6 +74,12 @@ assert.doesNotMatch(toolbar, /mountAiWriting[\s\S]{0,200}throw/, 'AI widget moun
 // --- Mobile constraint: only two compact controls, not eight equally-prominent buttons (spec §16.1) ---
 assert.match(assistant, /wu-ai-writing-command--fix/, 'Fix Urdu must stay a single compact command');
 assert.match(assistant, /wu-ai-writing-command--menu/, 'Remaining actions must collapse into one compact menu');
+assert.match(assistant, /AI writing assistant/, 'Assistant must name itself clearly instead of relying on ambiguous Improve copy');
+assert.match(assistant, /data-wu-ai-writing-jump/, 'Visible toolbar discovery must lead users to the dedicated assistant surface');
+assert.match(assistant, /createAssistantIntro/, 'Assistant needs concise task and scope guidance before its commands');
+assert.match(assistant, /resultText\.setAttribute\('dir', 'rtl'\)/, 'Suggested Urdu must use explicit RTL semantics');
+assert.match(assistant, /resultText\.setAttribute\('lang', 'ur'\)/, 'Suggested Urdu must expose its language to assistive technology');
+assert.match(css, /\.wu-ai-writing-shell\s*\{[\s\S]*grid-template-columns:/, 'Assistant needs a contained desktop layout separate from the generic toolbar');
 assert.match(css, /min-height:\s*44px/, 'AI writing controls need mobile-sized touch targets');
 assert.match(css, /@media \(max-width: 767px\)/, 'AI writing panel needs a mobile layout rule');
 

@@ -184,6 +184,111 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
 });
 
+test('Basic Writer makes AI writing help discoverable and keeps review below the editor', async ({ page }) => {
+  const original = 'مجھے معلوم تھا کہ مجھے اس کا مسکرانا پسند ہے۔';
+  const improved = 'مجھے معلوم تھا کہ مجھے اس کی مسکراہٹ پسند ہے۔';
+
+  await page.addInitScript(() => {
+    window.turnstile = {
+      render: (_host, options) => {
+        window.__aiTurnstileOptions = options;
+        return 1;
+      },
+      reset: () => {},
+      execute: () => queueMicrotask(() => window.__aiTurnstileOptions.callback('test-token'))
+    };
+  });
+  await page.route('**/api/form-config', route => route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify({ aiWritingEnabled: true, turnstileSiteKey: 'test-site-key' })
+  }));
+  await page.route('**/api/ai-writing', async route => {
+    const request = route.request().postDataJSON();
+    expect(request.text).toBe(original);
+    expect(request.action).toBe('improve');
+    expect(request['cf-turnstile-response']).toBe('test-token');
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, version: 1, action: 'improve', result: improved })
+    });
+  });
+  await blockExternalServices(page);
+  await page.goto('/');
+  await waitForConvergence(page);
+  await waitForBasicToolbar(page);
+
+  const editor = page.locator('#transliterateTextarea');
+  const host = page.locator('[data-wu-ai-writing-host]');
+  const jump = page.locator('[data-wu-ai-writing-jump]');
+  await expect(host).toBeVisible();
+  await expect(host).toContainText('AI writing assistant');
+  await expect(host).toContainText('Make your Urdu clearer');
+  await expect(jump).toBeVisible();
+  await expect(jump).toContainText('AI writing');
+
+  const hierarchy = await page.evaluate(() => {
+    const editorFrame = document.querySelector('#demo');
+    const assistant = document.querySelector('[data-wu-ai-writing-host]');
+    const primary = document.querySelector('.wu-basic-command-primary');
+    return {
+      afterEditor: Boolean(editorFrame && assistant && (editorFrame.compareDocumentPosition(assistant) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      outsideToolbar: Boolean(primary && assistant && !primary.contains(assistant))
+    };
+  });
+  expect(hierarchy).toEqual({ afterEditor: true, outsideToolbar: true });
+
+  await editor.fill(original);
+  await jump.click();
+  await expect(host.getByRole('button', { name: 'Fix Urdu' })).toBeFocused();
+
+  await host.getByText('More improvements', { exact: true }).click();
+  const menu = host.locator('.wu-ai-writing-menu-panel');
+  await expect(menu).toBeVisible();
+  await expect(menu).toContainText('Choose how to improve it');
+  await expect(menu).toContainText('Clearer, more natural Urdu');
+  await menu.getByRole('button', { name: /Improve writing/ }).click();
+
+  const gate = page.locator('[data-wu-ai-writing-age-gate]');
+  await expect(gate).toBeVisible();
+  await gate.getByRole('button', { name: 'I am 18 or older, continue' }).click();
+
+  const result = host.locator('[data-wu-ai-writing-panel]');
+  await expect(result).toBeVisible();
+  await expect(result).toContainText('Your suggestion is ready');
+  await expect(result.locator('.wu-ai-writing-result-text')).toHaveText(improved);
+  await expect(result.locator('.wu-ai-writing-result-text')).toHaveAttribute('dir', 'rtl');
+  await expect(editor).toHaveValue(original);
+
+  await result.getByRole('button', { name: 'Replace' }).click();
+  await expect(editor).toHaveValue(improved);
+  await result.getByRole('button', { name: 'Undo' }).click();
+  await expect(editor).toHaveValue(original);
+
+  const geometry = await page.evaluate(() => {
+    const viewport = document.documentElement.clientWidth;
+    const assistant = document.querySelector('[data-wu-ai-writing-host]').getBoundingClientRect();
+    const trigger = document.querySelector('[data-wu-ai-writing-jump]').getBoundingClientRect();
+    const actions = Array.from(document.querySelectorAll('.wu-ai-writing-command')).map(node => node.getBoundingClientRect().height);
+    return {
+      assistantLeft: assistant.left,
+      assistantRight: assistant.right,
+      triggerLeft: trigger.left,
+      triggerRight: trigger.right,
+      minActionHeight: Math.min(...actions),
+      viewport,
+      overflow: document.documentElement.scrollWidth - viewport
+    };
+  });
+  expect(geometry.assistantLeft).toBeGreaterThanOrEqual(0);
+  expect(geometry.assistantRight).toBeLessThanOrEqual(geometry.viewport + 1);
+  expect(geometry.triggerLeft).toBeGreaterThanOrEqual(0);
+  expect(geometry.triggerRight).toBeLessThanOrEqual(geometry.viewport + 1);
+  expect(geometry.minActionHeight).toBeGreaterThanOrEqual(44);
+  expect(geometry.overflow).toBeLessThanOrEqual(1);
+});
+
 test('Basic Writer voice uses the same editable state across Roman and direct corrections', async ({ page }) => {
   await installRecognitionStub(page);
   await blockExternalServices(page);

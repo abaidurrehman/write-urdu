@@ -10,6 +10,7 @@ Important facts:
 - English-letter Urdu typing changes how the Urdu words are written; it does not translate an English sentence into Urdu. Writers should review ambiguous names, spellings and important text before sharing it.
 - The Urdu Keyboard supports direct Urdu-character input when exact spelling or punctuation matters.
 - The Rich Text Editor is intended for formatted Urdu documents, headings, lists, fonts, alignment and export.
+- The homepage includes optional AI writing help for adults aged 18 and over. After writing or pasting Urdu, users can fix mistakes, improve clarity, simplify wording, change tone, shorten, expand or summarize selected text or the current paragraph. Every suggestion is shown for review before it replaces the original.
 - Urdu Card Studio is the primary image-creation surface for putting Urdu text, poetry, quotes and announcements on a background or photo and exporting the finished design.
 - Stylish Urdu Text Generator is the primary copy/paste surface for decorated Urdu names and short phrases; exact Nastaliq/Naskh image appearance belongs to Urdu Name Art.
 - Urdu Name Art Maker is the focused image-rendering surface for Urdu name art, name images and DP/profile designs, with 24 original templates across 12 packs, six output presets and transparent PNG export.
@@ -17,11 +18,12 @@ Important facts:
 - Write Urdu does not require an account for the core editors.
 - Product guides are maintained against the current public interface. Corrections can be reported through the public feedback channel, while questions that need a reply have a dedicated contact route.
 - The public changelog records shipped user-facing features and improvements in customer language, with direct instructions for trying them; engineering work and unreleased ideas are excluded.
-- Last reviewed: 2026-08-19.
+- Last reviewed: 2026-08-28.
 
 ## Start writing
 
 - [English to Urdu typing / Urdu typing online](https://write-urdu.com/): Type Urdu words using English letters, press Space to get Urdu script, review suggestions, copy text and continue into other writing tools.
+- [AI writing help inside the Urdu editor](https://write-urdu.com/#ai-writing-assistant): Select Urdu text or place the cursor in a paragraph, choose an improvement, review the suggestion, then replace, insert or copy it. The original stays unchanged until the user chooses an action.
 - [Urdu Rich Text Editor](https://write-urdu.com/urdu-editor): Format Urdu with headings, fonts, colours, lists and alignment, then export a document.
 - [Online Urdu Keyboard](https://write-urdu.com/urdu-keyboard): Type Urdu characters directly with an on-screen or physical keyboard.
 

@@ -21,8 +21,30 @@
     var ACTIONS = ['fix', 'improve', 'simplify', 'formal', 'friendly', 'shorten', 'expand', 'summarize'];
 
     var COMMAND_LABEL = {
-        en: { fix: 'Fix Urdu', improve: 'Improve writing', simplify: 'Simplify', formal: 'Make formal', friendly: 'Make friendly', shorten: 'Shorten', expand: 'Expand', summarize: 'Summarize', menu: 'Improve', menuToggle: 'More AI writing actions', busy: 'Working on your Urdu…' },
-        ur: { fix: 'اردو درست کریں', improve: 'تحریر بہتر بنائیں', simplify: 'آسان بنائیں', formal: 'رسمی انداز', friendly: 'دوستانہ انداز', shorten: 'مختصر کریں', expand: 'تفصیل بڑھائیں', summarize: 'خلاصہ کریں', menu: 'بہتر بنائیں', menuToggle: 'مزید AI تحریری اختیارات', busy: 'آپ کی اردو پر کام ہو رہا ہے…' }
+        en: { fix: 'Fix Urdu', improve: 'Improve writing', simplify: 'Make simpler', formal: 'Make formal', friendly: 'Make friendly', shorten: 'Shorten', expand: 'Expand', summarize: 'Summarize', menu: 'More improvements', menuToggle: 'Choose another AI writing action', busy: 'Working on your Urdu…' },
+        ur: { fix: 'اردو درست کریں', improve: 'تحریر بہتر بنائیں', simplify: 'آسان بنائیں', formal: 'رسمی انداز', friendly: 'دوستانہ انداز', shorten: 'مختصر کریں', expand: 'تفصیل بڑھائیں', summarize: 'خلاصہ کریں', menu: 'مزید بہتری', menuToggle: 'مزید AI تحریری اختیارات منتخب کریں', busy: 'آپ کی اردو پر کام ہو رہا ہے…' }
+    };
+
+    var ACTION_HELP = {
+        en: { improve: 'Clearer, more natural Urdu', simplify: 'Easier everyday wording', formal: 'Respectful professional tone', friendly: 'Warm conversational tone', shorten: 'Keep the point, lose repetition', expand: 'Add clarity without inventing facts', summarize: 'Keep only the main points' },
+        ur: { improve: 'زیادہ واضح اور قدرتی اردو', simplify: 'آسان روزمرہ الفاظ', formal: 'باادب اور پیشہ ورانہ انداز', friendly: 'نرم اور دوستانہ انداز', shorten: 'بات برقرار، تکرار کم', expand: 'نئی بات شامل کیے بغیر وضاحت', summarize: 'صرف اہم نکات رکھیں' }
+    };
+
+    var DISCOVERY_COPY = {
+        en: {
+            eyebrow: 'AI writing assistant', badge: '18+', title: 'Make your Urdu clearer',
+            body: 'Fix mistakes, simplify difficult wording, or change tone while keeping your original safe.',
+            scope: 'Select text for a precise change, or place your cursor in a paragraph.',
+            jump: 'AI writing', jumpTitle: 'Open AI writing help', empty: 'Write or paste some Urdu first, then choose AI writing.',
+            menuHeading: 'Choose how to improve it', ready: 'Your suggestion is ready. Review it before changing your writing.'
+        },
+        ur: {
+            eyebrow: 'AI تحریری معاون', badge: '18+', title: 'اپنی اردو مزید واضح بنائیں',
+            body: 'اصل تحریر محفوظ رکھتے ہوئے غلطیاں درست کریں، مشکل الفاظ آسان بنائیں یا انداز بدلیں۔',
+            scope: 'خاص تبدیلی کے لیے متن منتخب کریں، یا کرسر کسی پیراگراف میں رکھیں۔',
+            jump: 'AI تحریر', jumpTitle: 'AI تحریری مدد کھولیں', empty: 'پہلے کچھ اردو لکھیں یا پیسٹ کریں، پھر AI تحریری مدد منتخب کریں۔',
+            menuHeading: 'بہتری کا طریقہ منتخب کریں', ready: 'آپ کی تجویز تیار ہے۔ تحریر بدلنے سے پہلے اسے دیکھ لیں۔'
+        }
     };
 
     var RESULT_LABEL = {
@@ -170,7 +192,7 @@
         fixButton.className = 'wu-ai-writing-command wu-ai-writing-command--fix';
         fixButton.setAttribute('data-wu-ai-writing-action', 'fix');
         fixButton.setAttribute('data-wu-basic-content-action', '');
-        fixButton.innerHTML = '<i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i><span>' + COMMAND_LABEL[activeLang].fix + '</span>';
+        fixButton.innerHTML = '<i class="fas fa-magic" aria-hidden="true"></i><span>' + COMMAND_LABEL[activeLang].fix + '</span>';
 
         var details = root.document.createElement('details');
         details.className = 'wu-ai-writing-menu';
@@ -185,12 +207,17 @@
 
         var list = root.document.createElement('div');
         list.className = 'wu-ai-writing-menu-panel';
+        var menuHeading = root.document.createElement('strong');
+        menuHeading.className = 'wu-ai-writing-menu-heading';
+        menuHeading.setAttribute('data-wu-ai-writing-menu-heading', '');
+        menuHeading.textContent = DISCOVERY_COPY[activeLang].menuHeading;
+        list.appendChild(menuHeading);
         ACTIONS.filter(function (action) { return action !== 'fix'; }).forEach(function (action) {
             var item = root.document.createElement('button');
             item.type = 'button';
             item.className = 'wu-ai-writing-menu-item';
             item.setAttribute('data-wu-ai-writing-action', action);
-            item.textContent = COMMAND_LABEL[activeLang][action];
+            item.innerHTML = '<span>' + COMMAND_LABEL[activeLang][action] + '</span><small>' + ACTION_HELP[activeLang][action] + '</small>';
             list.appendChild(item);
         });
         details.appendChild(list);
@@ -212,6 +239,60 @@
         return group;
     }
 
+    function createAssistantIntro(activeLang, group) {
+        var copy = DISCOVERY_COPY[activeLang];
+        var shell = root.document.createElement('div');
+        shell.className = 'wu-ai-writing-shell';
+
+        var intro = root.document.createElement('div');
+        intro.className = 'wu-ai-writing-intro';
+        intro.innerHTML =
+            '<div class="wu-ai-writing-eyebrow"><i class="fas fa-magic" aria-hidden="true"></i><span data-wu-ai-writing-eyebrow>' + copy.eyebrow + '</span><span class="wu-ai-writing-age-badge">' + copy.badge + '</span></div>' +
+            '<strong class="wu-ai-writing-title" data-wu-ai-writing-title>' + copy.title + '</strong>' +
+            '<p data-wu-ai-writing-body>' + copy.body + '</p>';
+
+        var commands = root.document.createElement('div');
+        commands.className = 'wu-ai-writing-commands';
+        commands.appendChild(group);
+        var scope = root.document.createElement('small');
+        scope.className = 'wu-ai-writing-scope';
+        scope.setAttribute('data-wu-ai-writing-scope', '');
+        scope.textContent = copy.scope;
+        commands.appendChild(scope);
+
+        shell.appendChild(intro);
+        shell.appendChild(commands);
+        return shell;
+    }
+
+    function createDiscoveryJump(options, activeLang, group) {
+        var discoveryContainer = options.discoveryContainer;
+        if (!discoveryContainer || discoveryContainer.querySelector('[data-wu-ai-writing-jump]')) return null;
+        var copy = DISCOVERY_COPY[activeLang];
+        var jump = root.document.createElement('button');
+        jump.type = 'button';
+        jump.className = 'wu-basic-command wu-basic-command--ai';
+        jump.setAttribute('data-wu-ai-writing-jump', '');
+        jump.setAttribute('title', copy.jumpTitle);
+        jump.innerHTML = '<i class="fas fa-magic" aria-hidden="true"></i><span>' + copy.jump + '</span><small>AI</small>';
+        jump.addEventListener('click', function () {
+            if (!String(options.adapter.getValue() || '').trim()) {
+                notify(copy.empty, 'info');
+                if (options.editor && typeof options.editor.focus === 'function') options.editor.focus();
+                return;
+            }
+            options.container.classList.add('is-guided');
+            options.container.scrollIntoView({ behavior: root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+            root.setTimeout(function () {
+                options.container.classList.remove('is-guided');
+                var firstAction = group.querySelector('[data-wu-ai-writing-action]');
+                if (firstAction) firstAction.focus();
+            }, 450);
+        });
+        discoveryContainer.appendChild(jump);
+        return jump;
+    }
+
     function createResultPanel() {
         var panel = root.document.createElement('div');
         panel.className = 'wu-ai-writing-panel';
@@ -226,10 +307,12 @@
 
         var context = root.document.createElement('strong');
         context.className = 'wu-ai-writing-context';
+        context.setAttribute('tabindex', '-1');
 
         var resultText = root.document.createElement('div');
         resultText.className = 'wu-ai-writing-result-text';
-        resultText.setAttribute('dir', 'auto');
+        resultText.setAttribute('dir', 'rtl');
+        resultText.setAttribute('lang', 'ur');
 
         var actions = root.document.createElement('div');
         actions.className = 'wu-ai-writing-panel-actions';
@@ -304,7 +387,9 @@
                 resetPanelActions();
                 panelParts.context.textContent = RESULT_LABEL[activeLang][action] || RESULT_LABEL[activeLang].fix;
                 panelParts.resultText.textContent = text;
+                panelParts.status.textContent = DISCOVERY_COPY[activeLang].ready;
                 panelParts.root.hidden = false;
+                panelParts.context.focus();
 
                 replaceButton.onclick = function () {
                     var beforeValue = adapter.getValue();
@@ -397,9 +482,10 @@
             }
 
             var group = createEntryPoint(activeLang, runAction);
-            container.appendChild(group);
+            container.appendChild(createAssistantIntro(activeLang, group));
             container.appendChild(hiddenHost);
             container.appendChild(panelParts.root);
+            createDiscoveryJump(options, activeLang, group);
             return group;
         });
     }
@@ -412,10 +498,31 @@
         if (fixSpan) fixSpan.textContent = COMMAND_LABEL[nextLang].fix;
         var menuSpan = group.querySelector('summary span');
         if (menuSpan) menuSpan.textContent = COMMAND_LABEL[nextLang].menu;
+        var copy = DISCOVERY_COPY[nextLang];
+        var host = group.closest('[data-wu-ai-writing-host]') || container;
+        var eyebrow = host.querySelector('[data-wu-ai-writing-eyebrow]');
+        var title = host.querySelector('[data-wu-ai-writing-title]');
+        var body = host.querySelector('[data-wu-ai-writing-body]');
+        var scope = host.querySelector('[data-wu-ai-writing-scope]');
+        var menuHeading = host.querySelector('[data-wu-ai-writing-menu-heading]');
+        if (eyebrow) eyebrow.textContent = copy.eyebrow;
+        if (title) title.textContent = copy.title;
+        if (body) body.textContent = copy.body;
+        if (scope) scope.textContent = copy.scope;
+        if (menuHeading) menuHeading.textContent = copy.menuHeading;
+        host.setAttribute('aria-label', copy.eyebrow);
         group.querySelectorAll('.wu-ai-writing-menu-item').forEach(function (item) {
             var action = item.getAttribute('data-wu-ai-writing-action');
-            if (action && COMMAND_LABEL[nextLang][action]) item.textContent = COMMAND_LABEL[nextLang][action];
+            if (action && COMMAND_LABEL[nextLang][action]) item.innerHTML = '<span>' + COMMAND_LABEL[nextLang][action] + '</span><small>' + ACTION_HELP[nextLang][action] + '</small>';
         });
+        var jump = root.document.querySelector('[data-wu-ai-writing-jump]');
+        if (jump) {
+            jump.setAttribute('title', copy.jumpTitle);
+            var jumpLabel = jump.querySelector('span');
+            if (jumpLabel) jumpLabel.textContent = copy.jump;
+            var discovery = jump.closest('[data-wu-ai-writing-discovery]');
+            if (discovery) discovery.setAttribute('aria-label', copy.eyebrow);
+        }
         return true;
     }
 

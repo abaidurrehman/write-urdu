@@ -331,15 +331,49 @@
 
     function mountAiWriting(surface, editor) {
         if (!surface || !editor) return;
-        var host = surface.querySelector('.wu-basic-command-primary') || surface;
+        var primary = surface.querySelector('.wu-basic-command-primary') || surface;
+        var discoveryContainer = surface.querySelector('[data-wu-ai-writing-discovery]');
+        if (!discoveryContainer) {
+            discoveryContainer = root.document.createElement('div');
+            discoveryContainer.className = 'wu-basic-command-group wu-basic-command-ai-entry';
+            discoveryContainer.setAttribute('data-wu-ai-writing-discovery', '');
+            discoveryContainer.setAttribute('role', 'group');
+            discoveryContainer.setAttribute('aria-label', aiWritingLocale() === 'ur' ? 'AI تحریری مدد' : 'AI writing help');
+            primary.parentNode.insertBefore(discoveryContainer, primary.nextSibling);
+        }
+        var host = root.document.querySelector('[data-wu-ai-writing-host]');
+        if (!host) {
+            host = root.document.createElement('section');
+            host.id = 'ai-writing-assistant';
+            host.className = 'wu-ai-writing-host';
+            host.setAttribute('data-wu-ai-writing-host', '');
+            host.setAttribute('aria-label', aiWritingLocale() === 'ur' ? 'AI تحریری معاون' : 'AI writing assistant');
+            var editorFrame = editor.closest ? editor.closest('#demo') : null;
+            editorFrame = editorFrame || editor;
+            editorFrame.parentNode.insertBefore(host, editorFrame.nextSibling);
+        }
         if (host.querySelector('[data-wu-ai-writing-group]')) return;
         ensureAiWritingAssistant().then(function (assistant) {
-            assistant.mount({
+            return assistant.mount({
                 container: host,
                 adapter: createAiWritingAdapter(editor),
-                locale: aiWritingLocale
+                locale: aiWritingLocale,
+                editor: editor,
+                discoveryContainer: discoveryContainer
             });
-        }).catch(function () { /* Optional enhancement; toolbar works without it. */ });
+        }).then(function (group) {
+            if (!group) {
+                if (host.parentNode) host.parentNode.removeChild(host);
+                if (discoveryContainer.parentNode) discoveryContainer.parentNode.removeChild(discoveryContainer);
+                return;
+            }
+            syncState(surface);
+            root.document.body.setAttribute('data-wu-ai-writing-available', 'true');
+        }).catch(function () {
+            if (host && !host.querySelector('[data-wu-ai-writing-group]') && host.parentNode) host.parentNode.removeChild(host);
+            if (discoveryContainer && discoveryContainer.parentNode) discoveryContainer.parentNode.removeChild(discoveryContainer);
+            /* Optional enhancement; toolbar works without it. */
+        });
     }
 
     function runAuthoringShare() {
