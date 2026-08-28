@@ -184,6 +184,14 @@ const PROVIDERS = [
     apiKeyEnv: 'GROQ_API_KEY',
     model: 'openai/gpt-oss-120b',
   }),
+  makeOpenAiCompatibleProvider({
+    id: 'cerebras',
+    label: 'Cerebras GPT-OSS 120B',
+    providerSlug: 'cerebras',
+    chatPath: 'chat/completions',
+    apiKeyEnv: 'CEREBRAS_API_KEY',
+    model: 'gpt-oss-120b',
+  }),
   geminiProvider,
 ];
 
