@@ -27,7 +27,7 @@ Important facts:
 
 ## Learn Urdu writing
 
-- [Roman Urdu to Urdu typing guide](https://write-urdu.com/roman-urdu-transliteration): Shows how Urdu words written with English letters become Urdu script, why spellings can vary and how to review suggestions.
+- [English to Urdu typing guide](https://write-urdu.com/roman-urdu-transliteration): Shows how Urdu words written with English letters become Urdu script, why spellings can vary and how to review suggestions.
 - [Urdu alphabet guide](https://write-urdu.com/urdu-alphabet): Common standalone Urdu characters, names, right-to-left direction and joining behavior.
 - [Complete Write Urdu documentation](https://write-urdu.com/write-urdu-documentation): English-letter Urdu typing, direct input, formatting, drafts, exports and related creation tools.
 - [Write Urdu FAQ](https://write-urdu.com/urdu-faq): Product, privacy, export, typing and Urdu-script questions.

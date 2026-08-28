@@ -98,10 +98,15 @@ assert.match(integrations, /\[data-qr-status\]/, 'QR output telemetry is missing
 assert.match(integrations, /\[data-stylish-status\]/, 'Stylish Text output telemetry is missing');
 assert.match(integrations, /clipboard_image/, 'QR image-copy completion must be distinguishable');
 
+// Public privacy copy protects the guarantees in plain language; implementation
+// mechanics remain enforced above in source/schema assertions instead of being
+// required as customer-facing wording.
 assert.match(privacy, /Product usage analytics/, 'Privacy processing table must disclose product usage analytics');
-assert.match(privacy, /never the Urdu or English-letter text you write|Written text[\s\S]*not included/i, 'Privacy page must explicitly say writing content is not collected');
-assert.match(privacy, /temporary identifier for the current browser tab/i, 'Privacy page must explain the temporary per-tab analytics identifier');
-assert.match(privacy, /do not send the share ID/i, 'Privacy page must state that analytics exclude individual public-share IDs');
-assert.match(privacy, /does not add an identifier that follows you across visits/i, 'Privacy page must state that arrival analytics do not add cross-visit tracking');
+assert.match(privacy, /writing itself is not included in those analytics|Urdu or English-letter writing itself[\s\S]*not included/i,
+  'Privacy page must explicitly say writing content is excluded from analytics');
+assert.match(privacy, /short-lived session identifier/i,
+  'Privacy page must explain that usage measurement uses only a short-lived session identifier');
+assert.match(privacy, /individual public-share IDs are not included/i,
+  'Privacy page must state that analytics exclude individual public-share IDs');
 
 console.log('Privacy-safe scalable product telemetry contract passed.');

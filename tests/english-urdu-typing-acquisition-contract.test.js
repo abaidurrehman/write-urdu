@@ -48,7 +48,10 @@ assert.match(richEditor.title, /Rich Text Editor/i, 'Rich Editor must retain for
 assert.doesNotMatch(richEditor.title, /^English to Urdu Typing Online/i, 'Rich Editor must not compete for the prime product title');
 assert.match(keyboard.title, /Urdu Keyboard/i, 'Keyboard must retain direct-input ownership');
 assert.doesNotMatch(keyboard.title, /^English to Urdu Typing Online/i, 'Keyboard must not compete for the prime product title');
-assert.match(romanGuide.title, /Roman Urdu to Urdu Typing/i, 'Roman Urdu guide must retain secondary Roman-specific typing ownership');
+assert.strictEqual(romanGuide.path, '/roman-urdu-transliteration', 'Existing secondary typing-guide canonical must remain stable');
+assert.match(romanGuide.title, /English to Urdu Typing with English Letters/i, 'Secondary typing guide must use the observed user-language job');
+assert.doesNotMatch(romanGuide.title, /^English to Urdu Typing Online\b/i, 'Secondary typing guide must not compete for the homepage prime product title');
+assert.doesNotMatch(romanGuide.title, /Roman Urdu|transliteration/i, 'Secondary guide title must not force internal linguistic terminology into search-facing copy');
 assert.match(formattingGuide.title, /Formatting Guide/i, 'Formatting guide must retain formatting-reference ownership');
 
 assert.match(runtimeSeo, /home: \['English to Urdu typing'/, 'Homepage entity topics must include the prime typing phrase');

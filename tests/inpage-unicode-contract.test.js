@@ -14,7 +14,7 @@ assert.match(html, /data-inpage-mode="unicode-to-legacy"/, 'reverse conversion m
 assert.match(html, /google-anno-skip/, 'converter workspace must be protected from annotation-style ads');
 assert.match(html, /google-side-rail-overlap="false"/, 'converter workspace must protect side-rail overlap');
 assert.match(html, /data-wu-ad-boundary="post-workspace"/, 'converter needs an explicit post-workspace monetization boundary');
-assert.match(html, /does not open or generate complete <code>\.inp<\/code> document files/i, 'page must not claim generic .inp document support');
+assert.match(html, /Complete <code>\.inp<\/code> document files are not supported/i, 'page must clearly state that complete .inp document files are not supported');
 assert.match(html, /js\/inpage-unicode-core\.js/, 'mapping engine is missing');
 assert.match(html, /js\/text-handoff\.js/, 'session-only Unicode handoff is missing');
 assert.match(html, /\/urdu-text-cleaner/, 'Unicode output should lead to the cleaner');

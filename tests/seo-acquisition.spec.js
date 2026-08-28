@@ -51,11 +51,13 @@ test('Urdu Keyboard keeps direct input dominant and sends English-letter writers
   expect(labels.every(label => label.trim() === 'English to Urdu typing')).toBe(true);
 });
 
-test('Roman Urdu support page keeps secondary intent without technical language in the title or H1', async ({ page }) => {
+test('secondary English-to-Urdu typing guide keeps its canonical route without technical search-facing language', async ({ page }) => {
   await open(page, '/roman-urdu-transliteration');
-  await expect(page.locator('h1')).toHaveText('Roman Urdu to Urdu Typing');
-  await expect.poll(() => page.title()).toBe('Roman Urdu to Urdu Typing Online | WriteUrdu');
+  await expect(page.locator('h1')).toHaveText('English to Urdu Typing with English Letters');
+  await expect.poll(() => page.title()).toBe('English to Urdu Typing with English Letters | WriteUrdu');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://write-urdu.com/roman-urdu-transliteration');
+  await expect(page.locator('h1')).not.toContainText('Roman Urdu');
+  expect(await page.title()).not.toMatch(/Roman Urdu|transliteration/i);
 });
 
 test('Card Studio keeps its acquisition metadata and application schema after shared shell initialization', async ({ page }) => {
