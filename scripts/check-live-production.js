@@ -55,6 +55,11 @@ function titleFrom(html) {
   return match ? decodeHtml(match[1].replace(/\s+/g, ' ')) : '';
 }
 
+function h1From(html) {
+  const match = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  return match ? decodeHtml(match[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ')) : '';
+}
+
 function metaFrom(html, attribute, key) {
   const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regex = new RegExp(`<meta\\s+${attribute}=["']${escaped}["']\\s+content=["']([^"']*)["']`, 'i');
@@ -88,22 +93,22 @@ async function checkPage(pathname) {
 
   const expectedTitle = page.searchTitle || page.title;
   const expectedDescription = page.searchDescription || page.description;
+  const expectedH1 = page.h1 || '';
   const actualTitle = titleFrom(text);
   const actualDescription = metaFrom(text, 'name', 'description');
   const actualCanonical = canonicalFrom(text);
+  const actualH1 = h1From(text);
 
   if (actualTitle !== expectedTitle) failures.push(`${url}: initial HTML title is "${actualTitle}", expected "${expectedTitle}"`);
   if (actualDescription !== expectedDescription) failures.push(`${url}: initial HTML description is out of sync with seo.config.js`);
   if (actualCanonical !== url) failures.push(`${url}: canonical is "${actualCanonical || 'missing'}", expected "${url}"`);
+  if (expectedH1 && actualH1 !== expectedH1) failures.push(`${url}: initial H1 is "${actualH1 || 'missing'}", expected "${expectedH1}"`);
 
   const ogTitle = metaFrom(text, 'property', 'og:title');
   const twitterTitle = metaFrom(text, 'name', 'twitter:title');
   if (ogTitle !== expectedTitle) failures.push(`${url}: initial og:title is out of sync`);
   if (twitterTitle !== expectedTitle) failures.push(`${url}: initial twitter:title is out of sync`);
 
-  if (pathname === '/' && !/Type Roman Urdu and convert it to Urdu script/i.test(text)) {
-    failures.push(`${url}: homepage H1 ownership signal is missing`);
-  }
   if (pathname === '/urdu-keyboard' && /Best online English to Urdu typing tool/i.test(text)) {
     failures.push(`${url}: legacy English-to-Urdu ownership copy still appears on the Keyboard page`);
   }
