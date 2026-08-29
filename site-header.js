@@ -155,6 +155,14 @@
         loadModule('/js/account-growth-entry.mjs');
     }
 
+    function installCommunityPublishing() {
+        var path = normalizedPath();
+        if (['/', '/urdu-editor', '/urdu-keyboard', '/tools/urdu-voice-typing'].indexOf(path) < 0) return;
+        ensureStylesheet('/css/account-documents.css');
+        ensureStylesheet('/css/community-publishing.css');
+        loadModule('/js/community-publishing-ui.mjs');
+    }
+
     function restoreHomepageSearchIntentCopy(event) {
         if (normalizedPath() !== '/') return;
         var locale = event && event.detail && event.detail.locale;
@@ -250,6 +258,7 @@
         installHomeAccountDocuments();
         installEditorAccountDocuments();
         installAccountGrowthEntryPoints();
+        installCommunityPublishing();
         installVoiceDiscovery();
         restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WriteUrdu OS — Community Writing</title>
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="description" content="Private WriteUrdu moderation queue for Urdu Writers submissions.">
+  <link rel="stylesheet" href="/css/community-writing-os.css">
+</head>
+<body>
+  <main class="os-shell">
+    <header class="os-topbar">
+      <div class="os-brand">
+        <div class="os-mark" aria-hidden="true">WU</div>
+        <div><strong>WriteUrdu OS</strong><span>Founder control plane</span></div>
+      </div>
+      <div class="os-status" id="moderatorStatus">Community Writing</div>
+    </header>
+
+    <section class="os-hero">
+      <p class="os-eyebrow">Moderation</p>
+      <h1>Community Writing</h1>
+      <p class="os-lede">Review pending Urdu Writers submissions. Approving creates the only public snapshot that can appear on <code>/urdu-writers</code>; rejecting keeps the writer's private submission untouched.</p>
+    </section>
+
+    <div class="os-banner" id="queueBanner" hidden></div>
+
+    <div class="os-tabs" id="statusTabs" role="group" aria-label="Queue filter">
+      <button type="button" data-status="pending" aria-pressed="true">Pending</button>
+      <button type="button" data-status="approved" aria-pressed="false">Recently approved</button>
+      <button type="button" data-status="rejected" aria-pressed="false">Recently rejected</button>
+      <button type="button" data-status="withdrawn" aria-pressed="false">Withdrawn</button>
+    </div>
+
+    <div class="os-queue-list" id="queueList" aria-live="polite"></div>
+    <div class="os-empty" id="queueEmpty" hidden>Nothing here right now.</div>
+    <button class="os-load-more" id="loadMore" type="button" hidden>Load more</button>
+  </main>
+
+  <dialog class="os-review-dialog" id="reviewDialog" aria-labelledby="reviewTitle">
+    <div class="os-review-head">
+      <div>
+        <h2 id="reviewTitle">Review submission</h2>
+        <div class="os-review-meta" id="reviewMeta"></div>
+      </div>
+      <button class="os-review-close" id="reviewClose" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="os-review-body">
+      <div class="os-conflict-note" id="reviewConflict" hidden></div>
+
+      <div class="os-review-field">
+        <label>Title</label>
+        <div class="value" id="reviewFieldTitle" lang="ur" dir="rtl"></div>
+      </div>
+      <div class="os-review-field">
+        <label>Public name</label>
+        <div class="value" id="reviewFieldAuthor" lang="ur" dir="rtl"></div>
+      </div>
+      <div class="os-review-field">
+        <label for="reviewCategory">Category (moderator may adjust)</label>
+        <select class="os-review-select" id="reviewCategory"></select>
+      </div>
+      <div class="os-review-field">
+        <label>Tags (moderator may adjust)</label>
+        <div class="os-review-tags" id="reviewTags"></div>
+      </div>
+      <div class="os-review-field">
+        <label>Writing</label>
+        <div class="os-review-text" id="reviewFieldText" lang="ur" dir="rtl"></div>
+      </div>
+
+      <div class="os-reject-panel" id="rejectPanel" hidden>
+        <div class="os-review-field">
+          <label for="rejectionCode">Rejection reason</label>
+          <select class="os-review-select" id="rejectionCode"></select>
+        </div>
+        <div class="os-review-field">
+          <label for="rejectionNote">Note to writer (optional)</label>
+          <textarea class="os-review-textarea" id="rejectionNote" rows="3" maxlength="500"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="os-review-actions" id="reviewActions">
+      <button class="os-btn" id="startReject" type="button">Reject</button>
+      <button class="os-btn is-danger" id="confirmReject" type="button" hidden>Confirm reject</button>
+      <button class="os-btn" id="cancelReject" type="button" hidden>Cancel</button>
+      <button class="os-btn is-primary" id="confirmApprove" type="button">Approve &amp; publish</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="/js/community-writing-os.mjs"></script>
+</body>
+</html>

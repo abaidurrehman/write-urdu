@@ -1,7 +1,7 @@
 # WU-COMMUNITY-001D — Public Reader + SEO + Reporting
 
 **Parent:** `WU-COMMUNITY-001`  
-**Status:** Planned  
+**Status:** Implemented core / acceptance pending — `functions/lib/community-publications.mjs`, SSR routes `functions/urdu-writers/index.js`, `functions/urdu-writers/[slug].js`, `functions/urdu-writers/category/[category].js`, dynamic `functions/sitemap-community.xml.js`, public JSON API under `functions/api/community/publications/`, `css/community-writers.css`, `js/community-writers.js`; `tests/community-public-reader-contract.test.js` green (2026-08-29). Gated end-to-end on `COMMUNITY_PUBLIC_ENABLED` (default off — entire surface 404s until explicitly enabled, matching the Slice A/C kill-switch convention); category-page indexing stays conservatively `noindex,follow` pending Slice F's corpus-size threshold decision; main static `sitemap.xml`/robots registry not yet wired to include the community sitemap (Slice F). Verified via contract tests, governance/SEO checks and a static-asset smoke check only — no live Cloudflare Pages preview deploy exercised yet  
 **Date:** 2026-08-25  
 **Scope:** public SSR hub/detail routes, public read API, stable metadata/schema, report flow, published-only sitemap, withdrawn/unpublished handling  
 **Depends on:** `WU-COMMUNITY-001C` moderation boundary proven green

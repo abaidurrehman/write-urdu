@@ -1,0 +1,168 @@
+@import url('./design-tokens.css');
+
+.my-publications-page {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--wu-color-ink);
+  background: linear-gradient(180deg, #fbfdfb 0, #fff 30rem);
+  font-family: var(--wu-font-ui);
+}
+
+.my-publications-main {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 44px 0 72px;
+}
+
+.my-publications-hero {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 30px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-xl);
+  background: linear-gradient(135deg, var(--wu-color-brand-soft), #fff 72%);
+  box-shadow: var(--wu-shadow-sm);
+}
+
+.my-publications-hero h1 {
+  margin: 4px 0 8px;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  letter-spacing: -.045em;
+}
+
+.my-publications-hero p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--wu-color-muted);
+  line-height: 1.7;
+}
+
+.my-publications-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.my-publications-primary,
+.my-publications-secondary,
+.my-publications-action {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--wu-radius-md);
+  font: inherit;
+  font-weight: var(--wu-weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.my-publications-primary {
+  color: #fff;
+  border-color: var(--wu-color-brand);
+  background: var(--wu-color-brand);
+}
+
+.my-publications-primary:hover { color: #fff; background: var(--wu-color-brand-strong); }
+.my-publications-secondary,
+.my-publications-action { color: var(--wu-color-ink); border-color: var(--wu-color-border); background: #fff; }
+.my-publications-secondary:hover,
+.my-publications-action:hover { background: var(--wu-color-brand-soft); text-decoration: none; }
+.my-publications-action[data-action="withdraw"] { color: #9b3434; border-color: #efd0d0; }
+.my-publications-action[data-action="revise"] { color: var(--wu-color-brand-strong); border-color: #b9dbc6; }
+
+.my-publications-message {
+  margin: 18px 0 0;
+  color: var(--wu-color-muted);
+  font-size: .92rem;
+}
+
+.my-publications-state {
+  margin-top: 20px;
+  padding: 34px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: #fff;
+  box-shadow: var(--wu-shadow-sm);
+  text-align: center;
+}
+.my-publications-state h2 { margin: 0 0 8px; }
+.my-publications-state p { margin: 0 auto 20px; max-width: 620px; color: var(--wu-color-muted); }
+
+.my-publications-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.my-publication-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+  padding: 20px 22px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-lg);
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(20 35 28 / 5%);
+}
+
+.my-publication-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+}
+.my-publication-title { margin: 0; font-size: 1.05rem; font-weight: var(--wu-weight-bold); }
+
+.my-publication-chip {
+  padding: 3px 10px;
+  border-radius: var(--wu-radius-pill);
+  font-size: .72rem;
+  font-weight: var(--wu-weight-semibold);
+  border: 1px solid transparent;
+}
+.my-publication-chip[data-state="in_review"],
+.my-publication-chip[data-state="revision_in_review"] { color: #7a5b0a; background: #fdf1d6; border-color: #f2d998; }
+.my-publication-chip[data-state="published"] { color: var(--wu-color-brand-strong); background: var(--wu-color-brand-soft); border-color: #b9dbc6; }
+.my-publication-chip[data-state="not_approved"] { color: #9b3434; background: #fbeaea; border-color: #efd0d0; }
+.my-publication-chip[data-state="withdrawn"] { color: #4b4b4b; background: #eee; border-color: #d8d8d8; }
+.my-publication-chip[data-state="unpublished_removed"] { color: #9b3434; background: #fbeaea; border-color: #efd0d0; }
+
+.my-publication-category { padding: 3px 8px; border-radius: var(--wu-radius-pill); color: var(--wu-color-brand-strong); background: var(--wu-color-brand-soft); font-size: .72rem; font-weight: var(--wu-weight-semibold); }
+.my-publication-meta { margin: 8px 0 0; color: var(--wu-color-muted); font-size: .79rem; }
+.my-publication-note { margin: 8px 0 0; padding: 10px 12px; border-radius: var(--wu-radius-md); background: #fbeaea; color: #6b2b2b; font-size: .85rem; line-height: 1.6; }
+.my-publication-note[data-tone="info"] { background: #f4f6f4; color: #414c46; }
+.my-publication-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; max-width: 300px; }
+
+.my-publications-dialog {
+  width: min(500px, calc(100% - 28px));
+  padding: 0;
+  border: 0;
+  border-radius: var(--wu-radius-xl);
+  box-shadow: 0 26px 70px rgb(7 28 18 / 24%);
+}
+.my-publications-dialog::backdrop { background: rgb(7 28 18 / 42%); }
+.my-publications-dialog-card { position: relative; padding: 26px; }
+.my-publications-dialog-card h2 { margin: 0 34px 8px 0; }
+.my-publications-dialog-card p { color: var(--wu-color-muted); line-height: 1.6; }
+.my-publications-dialog-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #eef3f0; font-size: 1.3rem; cursor: pointer; }
+.my-publications-dialog-card label { display: grid; gap: 6px; margin-top: 16px; font-weight: var(--wu-weight-semibold); }
+.my-publications-dialog-card input,
+.my-publications-dialog-card textarea { padding: 8px 10px; border: 1px solid var(--wu-color-border); border-radius: var(--wu-radius-md); font: inherit; }
+.my-publications-dialog-card textarea { min-height: 200px; font-family: var(--wu-font-urdu); font-size: 1.05rem; line-height: 1.9; resize: vertical; }
+.my-publications-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+.my-publications-dialog-error { color: #9b3434; font-weight: var(--wu-weight-semibold); }
+
+@media (max-width: 760px) {
+  .my-publications-main { width: min(100% - 22px, 1120px); padding-top: 24px; }
+  .my-publications-hero { display: grid; padding: 22px; }
+  .my-publications-hero .my-publications-hero-actions { justify-self: start; }
+  .my-publication-card { grid-template-columns: 1fr; padding: 18px; }
+  .my-publication-actions { justify-content: flex-start; max-width: none; }
+}

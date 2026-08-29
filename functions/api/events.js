@@ -28,13 +28,22 @@ const EVENT_NAMES = new Set([
     'voice_started',
     'voice_final',
     'voice_switch_continued',
-    'voice_error'
+    'voice_error',
+    'community_publish_prompt_shown',
+    'community_publish_prompt_clicked',
+    'community_publish_manual_clicked',
+    'community_submission_started',
+    'community_submission_completed',
+    'community_submission_failed',
+    'community_publication_viewed',
+    'community_write_cta_clicked',
+    'community_report_submitted'
 ]);
 
 const TOOLS = new Set([
     'basic_editor', 'rich_editor', 'urdu_keyboard', 'card_studio', 'stylish_text',
     'name_art', 'whatsapp_status', 'instagram_post', 'invoice_generator', 'qr_generator',
-    'public_share', 'voice_typing', 'content'
+    'public_share', 'voice_typing', 'content', 'community_writing'
 ]);
 
 const FORMATS = new Set([

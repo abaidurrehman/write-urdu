@@ -1,7 +1,7 @@
 # WU-COMMUNITY-001C — Product OS Moderation + Approval Boundary
 
 **Parent:** `WU-COMMUNITY-001`  
-**Status:** Planned  
+**Status:** Implemented core / acceptance pending — `functions/lib/community-moderation.mjs`, 5 internal API routes under `functions/api/internal/community/`, `os/community-writing.html` + `js/community-writing-os.mjs` + `css/community-writing-os.css`; `tests/community-moderation-security-contract.test.js` and `tests/community-moderation-approval-contract.test.js` green (2026-08-29). Moderator authorization trusts `Cf-Access-Authenticated-User-Email` (no Cloudflare Access JWT verification exists anywhere in this repo — documented, pragmatic v1 choice per §4) plus an optional `COMMUNITY_MODERATOR_EMAILS` allowlist. Verified via contract tests and a static-asset smoke check only — no live Cloudflare Access/Product OS deploy exercised yet  
 **Date:** 2026-08-25  
 **Scope:** moderation queue, secure internal APIs, approve/reject, publication snapshot creation, revision-safe replacement, emergency unpublish  
 **Depends on:** `WU-COMMUNITY-001A`, current Product OS host + Cloudflare Access protection

@@ -1,7 +1,7 @@
 # WU-COMMUNITY-001A — Submission Data + Authenticated Writer API
 
 **Parent:** `WU-COMMUNITY-001`  
-**Status:** Planned  
+**Status:** Implemented core / acceptance pending — `migrations/0012_community_writing.sql`, `functions/lib/community-taxonomy.mjs`, `functions/lib/community-content.mjs`, `functions/lib/community-submissions.mjs`, `functions/api/community/submissions*.js`; `tests/community-submission-api-contract.test.js` green (2026-08-28)  
 **Date:** 2026-08-25  
 **Scope:** D1 schema, shared validation/sanitization, authenticated submission APIs, ownership, quotas, revision-safe pending updates  
 **Depends on:** `WU-AUTH-001`, stable `getSession()`, existing `METRICS_DB`

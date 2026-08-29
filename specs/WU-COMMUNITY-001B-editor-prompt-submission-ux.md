@@ -1,7 +1,7 @@
 # WU-COMMUNITY-001B — Editor Prompt + Submission Experience
 
 **Parent:** `WU-COMMUNITY-001`  
-**Status:** Planned  
+**Status:** Implemented core / acceptance pending — `js/community-publishing.mjs`, `js/community-publishing-ui.mjs`, `css/community-publishing.css`, wired via `site-header.js` `installCommunityPublishing()` across Basic/Rich/Keyboard/Voice; `tests/community-publishing-editor-contract.test.js` green (2026-08-29). Verified via contract tests and a static-asset smoke check only — no live browser/Functions verification yet (this repo's local dev server has no D1/Functions runtime; needs a Cloudflare Pages preview deploy)  
 **Date:** 2026-08-25  
 **Scope:** meaningful-writing detection, manual publish action, auth continuity, metadata form, exact preview, submission states across Basic/Rich/Keyboard/Voice  
 **Depends on:** `WU-COMMUNITY-001A`, `WU-AUTH-001`, existing workspace handoff/account continuity
