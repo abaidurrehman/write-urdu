@@ -638,6 +638,88 @@ export async function handlePublicationUnpublish(request, env = {}, id, dependen
   }
 }
 
+// Slice F §12/§13 operational pulse: counts only, reusing the same fail-closed
+// Access boundary as the moderation queue. No raw title/body/name/user identity
+// is ever read here -- only status/timestamp columns, matching the discipline
+// already proven in functions/api/internal/product-pulse.js.
+function isoDaysAgo(days) {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+}
+
+function hoursBetween(fromIso, toIso) {
+  if (!fromIso) return null;
+  const from = Date.parse(fromIso);
+  const to = Date.parse(toIso);
+  if (Number.isNaN(from) || Number.isNaN(to)) return null;
+  return Math.max(0, Math.round((to - from) / (60 * 60 * 1000)));
+}
+
+function windowCounts(db, sql) {
+  return Promise.all([1, 7, 30].map((days) => db.prepare(sql).bind(isoDaysAgo(days)).first())).then(
+    ([day1, day7, day30]) => ({
+      last_1d: Number(day1?.total) || 0,
+      last_7d: Number(day7?.total) || 0,
+      last_30d: Number(day30?.total) || 0
+    })
+  );
+}
+
+// Sourced from the existing bounded product_hourly_metrics rollups (same
+// table Product Pulse reads) -- never the raw product_events table, and
+// never per-route/per-title, matching WU-COMMUNITY-001D §18's discipline.
+async function readingPulse(db) {
+  const row = await db.prepare(`SELECT
+      COALESCE(SUM(community_views), 0) AS views,
+      COALESCE(SUM(community_cta_clicks), 0) AS ctaClicks
+    FROM product_hourly_metrics
+    WHERE tool = 'community_writing' AND bucket_hour >= ?1`).bind(isoDaysAgo(7)).first();
+  return { views_7d: Number(row?.views) || 0, cta_clicks_7d: Number(row?.ctaClicks) || 0 };
+}
+
+export async function handleCommunityPulse(request, env = {}, dependencies = {}) {
+  if (request.method !== 'GET') return error(405, 'method_not_allowed');
+  const context = await (dependencies.requireModerationContext || requireModerationContext)(request, env);
+  if (context.response) return context.response;
+
+  const db = context.db;
+  const now = new Date().toISOString();
+
+  try {
+    const [pendingRow, oldestPendingRow, publishedRow, unpublishedRow, submissions, approved, rejected, reports, reading] =
+      await Promise.all([
+        db.prepare("SELECT COUNT(*) AS total FROM community_writing_submissions WHERE status = 'pending'").first(),
+        db.prepare("SELECT MIN(submitted_at) AS oldest FROM community_writing_submissions WHERE status = 'pending'").first(),
+        db.prepare("SELECT COUNT(*) AS total FROM community_writing_publications WHERE status = 'published'").first(),
+        db.prepare("SELECT COUNT(*) AS total FROM community_writing_publications WHERE status = 'unpublished'").first(),
+        windowCounts(db, 'SELECT COUNT(*) AS total FROM community_writing_submissions WHERE submitted_at >= ?1'),
+        windowCounts(db, "SELECT COUNT(*) AS total FROM community_writing_submissions WHERE status = 'approved' AND reviewed_at >= ?1"),
+        windowCounts(db, "SELECT COUNT(*) AS total FROM community_writing_submissions WHERE status = 'rejected' AND reviewed_at >= ?1"),
+        windowCounts(db, 'SELECT COUNT(*) AS total FROM community_writing_reports WHERE created_at >= ?1'),
+        readingPulse(db)
+      ]);
+
+    const decided30d = approved.last_30d + rejected.last_30d;
+    return json(200, {
+      ready: true,
+      generated_at: now,
+      pending: {
+        count: Number(pendingRow?.total) || 0,
+        oldest_pending_age_hours: hoursBetween(oldestPendingRow?.oldest, now)
+      },
+      submissions,
+      approved,
+      rejected,
+      approval_rate_30d: decided30d ? approved.last_30d / decided30d : 0,
+      published_total: Number(publishedRow?.total) || 0,
+      unpublished_total: Number(unpublishedRow?.total) || 0,
+      reports,
+      reading
+    });
+  } catch {
+    return error(503, 'community_moderation_unavailable');
+  }
+}
+
 export const COMMUNITY_MODERATION_INTERNALS = Object.freeze({
   validId,
   slugFragment,

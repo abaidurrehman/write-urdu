@@ -94,6 +94,7 @@
     var FOOTER_UTILITY_LINKS = [
         { href: '/write-urdu-feedback', label: { en: 'Feedback', ur: 'رائے' } },
         { href: '/changelog', label: { en: 'What’s new', ur: 'نیا کیا ہے' } },
+        { href: '/community-guidelines', label: { en: 'Community guidelines', ur: 'کمیونٹی رہنما اصول' } },
         { href: '/write-urdu-sitemap', label: { en: 'Sitemap', ur: 'سائٹ میپ' } },
         { href: '/write-urdu-privacy', label: { en: 'Terms', ur: 'شرائط' } }
     ];

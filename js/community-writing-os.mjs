@@ -23,6 +23,7 @@ const state = {
 };
 
 const el = {
+  pulse: document.getElementById('osPulse'),
   banner: document.getElementById('queueBanner'),
   tabs: document.getElementById('statusTabs'),
   list: document.getElementById('queueList'),
@@ -351,8 +352,36 @@ function bind() {
   el.confirmReject.addEventListener('click', reject);
 }
 
+function pulseStat(label, value, warn) {
+  return `<div class="os-card os-pulse-stat${warn ? ' is-warn' : ''}"><span class="os-pulse-value">${value}</span><span class="os-pulse-label">${label}</span></div>`;
+}
+
+async function loadPulse() {
+  if (!el.pulse) return;
+  try {
+    const pulse = await api('/api/internal/community/pulse');
+    if (!pulse || pulse.ready === false) return;
+    const oldestHours = pulse.pending.oldest_pending_age_hours;
+    const oldestLabel = oldestHours === null ? 'no pending items' : `oldest ${oldestHours}h`;
+    el.pulse.innerHTML = [
+      pulseStat('Pending', `${pulse.pending.count}`, oldestHours !== null && oldestHours > 72),
+      pulseStat('Oldest pending', oldestLabel, oldestHours !== null && oldestHours > 72),
+      pulseStat('Approved (7d)', pulse.approved.last_7d),
+      pulseStat('Rejected (7d)', pulse.rejected.last_7d),
+      pulseStat('Approval rate (30d)', `${Math.round(pulse.approval_rate_30d * 100)}%`),
+      pulseStat('Published total', pulse.published_total),
+      pulseStat('Reports (7d)', pulse.reports.last_7d, pulse.reports.last_7d > 0),
+      pulseStat('Reading views (7d)', pulse.reading.views_7d),
+      pulseStat('Write CTA clicks (7d)', pulse.reading.cta_clicks_7d)
+    ].join('');
+  } catch {
+    // Pulse is a convenience panel; the queue itself must keep working without it.
+  }
+}
+
 populateRejectionCodes();
 bind();
 loadQueue(true);
+loadPulse();
 
 export const COMMUNITY_WRITING_OS_INTERNALS = Object.freeze({ REJECTION_CODES, moderationErrorMessage });

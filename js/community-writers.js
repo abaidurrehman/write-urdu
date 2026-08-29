@@ -107,8 +107,10 @@
     trackOnce('community-page-view', 'community_publication_viewed');
     var reportButton = q('[data-cw-report]');
     if (reportButton) reportButton.addEventListener('click', reportPublication);
-    var writeCta = q('[data-cw-write-cta]');
-    if (writeCta) writeCta.addEventListener('click', function () { track('community_write_cta_clicked'); });
+    var writeCtas = document.querySelectorAll('[data-cw-write-cta]');
+    for (var i = 0; i < writeCtas.length; i += 1) {
+      writeCtas[i].addEventListener('click', function () { track('community_write_cta_clicked'); });
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind);

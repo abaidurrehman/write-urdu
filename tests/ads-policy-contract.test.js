@@ -31,6 +31,11 @@ assert.strictEqual(ads.resolvePageType('/urdu-invoice-generator'), 'create', 'In
 assert.strictEqual(ads.resolvePageType('/write-urdu-privacy'), 'trust', 'Privacy must not be monetized as a content page');
 assert.strictEqual(ads.resolvePageType('/changelog'), 'trust', 'Customer changelog must remain an ad-free trust/product-information surface');
 assert.strictEqual(ads.resolvePageType('/write-urdu-feedback'), 'trust', 'Feedback must not be monetized as a content page');
+assert.strictEqual(ads.resolvePageType('/community-guidelines'), 'trust', 'Community guidelines must not be monetized as a content page');
+assert.strictEqual(ads.resolvePageType('/my-publications'), 'trust', 'My Publications is a private writer dashboard and must stay ad-free');
+assert.strictEqual(ads.resolvePageType('/urdu-writers'), 'trust', 'Urdu Writers hub must be ad-free until content density is deliberately promoted to a monetized page type');
+assert.strictEqual(ads.resolvePageType('/urdu-writers/some-slug'), 'trust', 'Urdu Writers detail pages must be ad-free until content density is deliberately promoted to a monetized page type');
+assert.strictEqual(ads.resolvePageType('/urdu-writers/category/poetry'), 'trust', 'Urdu Writers category pages must be ad-free until content density is deliberately promoted to a monetized page type');
 
 assert.strictEqual(ads.placementName('learn'), 'guide_after_answer', 'Learn placement family changed');
 assert.strictEqual(ads.placementName('create'), 'tool_post_workspace', 'Create placement family changed');

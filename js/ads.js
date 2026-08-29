@@ -31,9 +31,18 @@
         ],
         trust: [
             '/why-write-urdu', '/contact', '/changelog', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
-            '/write-urdu-search', '/write-urdu-sitemap', '/sign-in', '/my-documents'
+            '/write-urdu-search', '/write-urdu-sitemap', '/sign-in', '/my-documents',
+            '/community-guidelines', '/my-publications'
         ]
     };
+
+    // Urdu Writers reading pages are ad-free until a deliberate future decision
+    // enables the site's normal Learn/reading-page ad governance for them
+    // (spec: eligible only after content density is useful, never inside the
+    // writer's body). Prefix match since detail/category routes are dynamic.
+    var PREFIX_PAGE_TYPES = [
+        { prefix: '/urdu-writers', type: 'trust' }
+    ];
 
     var LEGACY_DUPLICATE_ROUTES = { '/english-urdu-typing-tutorial': true };
 
@@ -68,7 +77,9 @@
     function resolvePageType(pathname) {
         var path = normalizePath(pathname);
         var type = Object.keys(PAGE_TYPES).find(function (key) { return PAGE_TYPES[key].indexOf(path) >= 0; });
-        return type || 'unclassified';
+        if (type) return type;
+        var prefixMatch = PREFIX_PAGE_TYPES.find(function (rule) { return path === rule.prefix || path.indexOf(rule.prefix + '/') === 0; });
+        return (prefixMatch && prefixMatch.type) || 'unclassified';
     }
 
     function placementName(pageType) {

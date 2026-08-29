@@ -189,7 +189,7 @@ function formDialog(state) {
       <div class="wu-community-confirms">
         <label><input type="checkbox" name="rightsConfirmed"${state.rightsConfirmed ? ' checked' : ''} required> I wrote this, or I have permission to publish it.</label>
         <label><input type="checkbox" name="publicConfirmed"${state.publicConfirmed ? ' checked' : ''} required> I understand approved writing will be publicly readable on WriteUrdu.</label>
-        <label><input type="checkbox" name="guidelinesConfirmed"${state.guidelinesConfirmed ? ' checked' : ''} required> I agree to the Community Publishing Guidelines.</label>
+        <label><input type="checkbox" name="guidelinesConfirmed"${state.guidelinesConfirmed ? ' checked' : ''} required> I agree to the <a href="/community-guidelines" target="_blank" rel="noopener">Community Publishing Guidelines</a>.</label>
       </div>
       <p class="wu-community-error" data-wu-community-form-error hidden></p>
       <div class="wu-community-dialog-actions">

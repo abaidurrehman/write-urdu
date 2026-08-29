@@ -28,6 +28,9 @@ function parseTags(value) {
 }
 
 export const HUB_PAGE_LIMIT = HUB_LIMIT;
+// Slice F §4: below this, a category page is an operational thin-content guard,
+// not a ranking decision -- crossing it only makes the page index-eligible.
+export const CATEGORY_INDEX_THRESHOLD = 5;
 
 export function communityPublicFeatureState(env = {}) {
   if (env.COMMUNITY_PUBLIC_ENABLED !== 'true') return 'disabled';
@@ -119,6 +122,12 @@ export function createPublicationRepository(db) {
         LIMIT ${HUB_LIMIT}`).bind(...binds).all();
       const rows = Array.isArray(result?.results) ? result.results : [];
       return rows.map(mapCard);
+    },
+
+    async countPublishedByCategory(category) {
+      const row = await db.prepare(`SELECT COUNT(*) AS total FROM community_writing_publications
+        WHERE status = 'published' AND primary_category = ?1`).bind(category).first();
+      return Number(row?.total) || 0;
     },
 
     async getPublishedBySlug(slug) {
@@ -243,7 +252,7 @@ ${inner.head}
   <main class="cw-shell">
     <header class="cw-topbar">
       <a class="cw-brand" href="/urdu-writers" aria-label="Urdu Writers home"><span class="cw-brand-mark" aria-hidden="true">اردو</span><span>Urdu Writers</span></a>
-      <a class="cw-write-link" href="/urdu-editor">Write your own Urdu</a>
+      <a class="cw-write-link" href="/urdu-editor" data-cw-write-cta>Write your own Urdu</a>
     </header>
     ${inner.body}
     <footer class="cw-footer"><span>Published with <a href="/">Write Urdu</a></span><span><a href="/community-guidelines">Guidelines</a> &middot; <a href="/write-urdu-privacy">Privacy</a> &middot; <a href="/contact">Contact</a></span></footer>
@@ -314,7 +323,7 @@ export function renderHubPage({ origin, items, nextCursor, robots }) {
       <p class="cw-kicker">Community reading</p>
       <h1>Read Urdu writing from the Write Urdu community</h1>
       <p>${escapeHtml(description)}</p>
-      <a class="cw-button primary" href="/urdu-editor">Write and submit your own</a>
+      <a class="cw-button primary" href="/urdu-editor" data-cw-write-cta>Write and submit your own</a>
     </section>
     <nav class="cw-chips" aria-label="Categories">${categoryChipsHtml(null)}</nav>
     <section class="cw-grid" aria-label="Published writing">${cards}</section>

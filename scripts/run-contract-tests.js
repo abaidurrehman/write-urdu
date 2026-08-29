@@ -25,6 +25,7 @@ const tests = [
   'tests/community-moderation-approval-contract.test.js',
   'tests/community-public-reader-contract.test.js',
   'tests/community-my-publications-contract.test.js',
+  'tests/community-taxonomy-launch-contract.test.js',
   'tests/account-documents-basic-contract.test.js',
   'tests/my-documents-contract.test.js',
   'tests/account-documents-editors-contract.test.js',

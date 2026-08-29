@@ -5,7 +5,8 @@ import {
   validPrimaryCategory,
   renderCategoryPage,
   renderUnavailablePage,
-  HUB_PAGE_LIMIT
+  HUB_PAGE_LIMIT,
+  CATEGORY_INDEX_THRESHOLD
 } from '../../lib/community-publications.mjs';
 
 export async function onRequestGet({ request, env, params }) {
@@ -30,9 +31,12 @@ export async function onRequestGet({ request, env, params }) {
   const items = await repository.listPublishedByCategory(category, cursor);
   const nextCursor = items.length === HUB_PAGE_LIMIT ? `${items[items.length - 1].publishedAt}|${items[items.length - 1].id}` : null;
 
-  // Category indexing threshold is finalized in Slice F; serve a conservatively
-  // noindexed functional page until that corpus-size decision is made.
-  return renderCategoryPage({ origin: publicOrigin(request, env), category, items, nextCursor, robots: 'noindex,follow' });
+  // Operational thin-content guard (spec §4): below threshold stays noindex,follow
+  // regardless of page count; crossing it only makes the page index-eligible, not
+  // automatically indexed -- promotion still wants a manual SEO look before broad discovery.
+  const total = await repository.countPublishedByCategory(category);
+  const robots = total >= CATEGORY_INDEX_THRESHOLD ? 'index,follow' : 'noindex,follow';
+  return renderCategoryPage({ origin: publicOrigin(request, env), category, items, nextCursor, robots });
 }
 
 export function onRequest(context) {

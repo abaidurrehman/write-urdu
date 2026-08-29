@@ -1,7 +1,7 @@
 # WU-COMMUNITY-001F — Taxonomy + Guidelines + Launch Closure
 
 **Parent:** `WU-COMMUNITY-001`  
-**Status:** Planned  
+**Status:** Implemented core / acceptance pending — category indexing threshold is live (`CATEGORY_INDEX_THRESHOLD = 5` in `functions/lib/community-publications.mjs`, applied by `functions/urdu-writers/category/[category].js`); `/community-guidelines` is live, ad-free, linked from the submission dialog, the public reading-page footer and the shared V2 footer utility row (`js/outcome-navigation.js`); `write-urdu-privacy.html` reconciles community submissions/publications states in both the Privacy data table/section and a new Terms §8 community-publishing clause; `robots.txt`/`sitemap.xml` advertise the dynamic `sitemap-community.xml`; `js/ads.js` classifies `/community-guidelines`, `/my-publications` and all `/urdu-writers*` routes ad-free (the reading pages stay ad-free by deliberate default, not yet promoted to a monetized page type); `functions/api/events.js` allows the four remaining Slice E/F telemetry events and rolls `community_publication_viewed`/`community_write_cta_clicked` (already sent by `js/community-writers.js`, previously accepted then silently discarded) into bounded `community_views`/`community_cta_clicks` columns on `product_hourly_metrics`/`product_hourly_locale_metrics` (`migrations/0014_community_telemetry_rollups.sql`); `functions/api/internal/community/pulse.js` gives the OS moderation page a counts-only operational pulse (pending queue, oldest-pending age, approved/rejected/reports windows, approval rate, 7-day reading views/write-CTA clicks) reusing the same fail-closed Access boundary as moderation, rendered in `os/community-writing.html`; no migration ever drops a table. `tests/community-taxonomy-launch-contract.test.js` green (2026-08-29). Still open, and deliberately not claimed done here: actual legal review of the guidelines/terms wording, the product decision on when to flip `COMMUNITY_PUBLIC_ENABLED`/add broader site discovery (spec §14 Stage 3), the ad-density judgment call for eventually monetizing `/urdu-writers`, and the operational habit of watching the new OS pulse panel against the 72h moderation-capacity guideline (spec §13) — these are process/product decisions, not code.  
 **Date:** 2026-08-25  
 **Scope:** category discovery, indexing thresholds, guidelines/privacy/terms, route/navigation integration, AdSense boundary, telemetry/OS metrics, feature flags, launch and rollback proof  
 **Depends on:** `WU-COMMUNITY-001A` through `WU-COMMUNITY-001E`
@@ -592,18 +592,18 @@ Any of these needs separate evidence, moderation and privacy design.
 
 ## 20. Acceptance criteria
 
-- [ ] Controlled taxonomy governance is explicit and no free-form tag archive exists.
-- [ ] Category indexability is conservative and quality-gated.
-- [ ] `/community-guidelines` is live and linked from submission/reporting context.
-- [ ] Privacy and publishing terms reflect actual storage/publication/withdrawal behavior.
-- [ ] Urdu Writers discovery is added without displacing the homepage writing job.
-- [ ] Sitemap/robots/route registries contain published-only community discovery.
-- [ ] Community ad classification protects writer body and keeps private/moderation surfaces ad-free.
-- [ ] Community telemetry schemas forbid writing/identity/IDs.
-- [ ] OS operational metrics show queue/reports/aggregate funnel health.
-- [ ] Submission-pause and public-disable rollback flags are production-tested.
-- [ ] Launch checklist is completed before broad promotion/indexing.
-- [ ] Full repository + production smoke regressions pass.
+- [x] Controlled taxonomy governance is explicit and no free-form tag archive exists (Slice A `community-taxonomy.mjs`; unchanged here).
+- [x] Category indexability is conservative and quality-gated (`CATEGORY_INDEX_THRESHOLD`, still noindex,follow below threshold, index,follow at/above it -- no separate manual-promotion gate was built beyond the threshold itself).
+- [x] `/community-guidelines` is live and linked from submission/reporting context (submission dialog checkbox; public reading-page footer next to the report control).
+- [x] Privacy and publishing terms reflect actual storage/publication/withdrawal behavior.
+- [ ] Urdu Writers discovery is added without displacing the homepage writing job -- only the guidelines page is linked from shared navigation so far; the `/urdu-writers` hub itself is deliberately not added to nav/footer discovery yet because `COMMUNITY_PUBLIC_ENABLED` is still off (Stage 3 action, spec §14).
+- [x] Sitemap/robots contain published-only community discovery (`sitemap-community.xml` is empty while the public flag is off, and is now advertised from `robots.txt`); the acquisition-route registry (`docs/WU-PUBLIC-PAGE-REGISTRY.csv`) was left untouched since it scopes P0-P2 migrated acquisition pages, not this feature's routes.
+- [x] Community ad classification protects writer body and keeps private/moderation surfaces ad-free (`/community-guidelines`, `/my-publications`, all `/urdu-writers*` routes classified `trust`/ad-free by default).
+- [x] Community telemetry schemas forbid writing/identity/IDs (structural: `cleanEvent()` only ever reads a fixed enum/id shape off the payload; all 13 events from spec §11 are now in the allowlist).
+- [x] OS operational metrics show queue/reports/aggregate funnel health -- queue/reports/approval-rate pulse plus 7-day reading views and write-CTA clicks, sourced from the bounded `product_hourly_metrics` rollups (`readingPulse()` in `functions/lib/community-moderation.mjs`; `migrations/0014_community_telemetry_rollups.sql`).
+- [ ] Submission-pause and public-disable rollback flags are production-tested -- structurally safe (no migration ever drops a table; both flags already independently gate their surfaces), but not exercised by actually toggling them in production.
+- [ ] Launch checklist is completed before broad promotion/indexing -- see §16; several boxes are legal/product decisions, not code.
+- [x] Full repository regression passes (77/77 contract test files); production smoke of this slice's new surfaces has not been run yet.
 
 ---
 

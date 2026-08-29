@@ -103,6 +103,11 @@ function runSelect(sql, args, state) {
     const row = state.publications.find((entry) => entry.slug === args[0]);
     return row ? [{ status: row.status }] : [];
   }
+  if (sql.includes('SELECT COUNT(*) AS total FROM community_writing_publications') && sql.includes('primary_category = ?1')) {
+    const category = args[0];
+    const total = state.publications.filter((row) => row.status === 'published' && row.primary_category === category).length;
+    return [{ total }];
+  }
   if (sql.includes('primary_category = ?1 AND id !=')) {
     const [category, excludeId] = args;
     const rows = state.publications

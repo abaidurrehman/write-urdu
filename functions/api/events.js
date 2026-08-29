@@ -37,7 +37,11 @@ const EVENT_NAMES = new Set([
     'community_submission_failed',
     'community_publication_viewed',
     'community_write_cta_clicked',
-    'community_report_submitted'
+    'community_report_submitted',
+    'community_my_publications_viewed',
+    'community_revision_started',
+    'community_revision_submitted',
+    'community_publication_withdrawn'
 ]);
 
 const TOOLS = new Set([
@@ -69,7 +73,8 @@ const METRIC_COLUMNS = [
     'device_mobile', 'device_tablet', 'device_desktop',
     'voice_exposed', 'voice_selected', 'voice_started', 'voice_final', 'voice_switch_continued',
     'voice_error_permission_denied', 'voice_error_audio_capture', 'voice_error_no_speech',
-    'voice_error_network', 'voice_error_language_unsupported', 'voice_error_unknown'
+    'voice_error_network', 'voice_error_language_unsupported', 'voice_error_unknown',
+    'community_views', 'community_cta_clicks'
 ];
 
 const SHARE_METRIC_COLUMNS = [
@@ -402,6 +407,8 @@ function applyEvent(delta, event) {
             network: 'network', 'language-not-supported': 'language_unsupported', unknown: 'unknown'
         });
     }
+    if (event.eventName === 'community_publication_viewed') delta.community_views += 1;
+    if (event.eventName === 'community_write_cta_clicked') delta.community_cta_clicks += 1;
 }
 
 function applyShareEvent(delta, event) {
