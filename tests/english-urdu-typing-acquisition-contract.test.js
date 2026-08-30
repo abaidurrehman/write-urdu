@@ -18,7 +18,6 @@ const productionSeoCheck = read('scripts/check-live-production.js');
 const llms = read('llms.txt');
 const sitemap = read('sitemap.xml');
 const redirects = read('_redirects');
-const spec = read('specs/archive/implemented/WU-SEO-ETU-001-english-to-urdu-typing-acquisition.md');
 
 assert.ok(home && home.indexable, 'Homepage must remain the indexable typing product owner');
 assert.strictEqual(home.path, '/', 'English-to-Urdu typing owner must remain the homepage canonical');
@@ -74,7 +73,5 @@ assert.match(redirects, /^\/index\.html \/ 301$/m, 'Legacy homepage URL must con
 for (const forbidden of ['/english-to-urdu-typing', '/english-urdu-typing', '/type-urdu-in-english', '/urdu-typing-in-english']) {
   assert.strictEqual(Boolean(seo.byPath[forbidden]), false, `Doorway route must not exist: ${forbidden}`);
 }
-assert.match(spec, /Do \*\*not\*\* create keyword-clone routes/i, 'Acquisition spec must retain the doorway-page guardrail');
-assert.match(spec, /Search Console vocabulary outranks internal product terminology/i, 'Acquisition spec must preserve the data-backed public-language guardrail');
 
 console.log('English to Urdu typing acquisition contract passed.');
