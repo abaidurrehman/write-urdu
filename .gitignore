@@ -9,3 +9,4 @@ qa-*.png
 .env.local
 .dev.vars
 scripts/ai-writing-benchmark/results/
+.wrangler/

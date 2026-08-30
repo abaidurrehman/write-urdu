@@ -206,8 +206,9 @@
         var text = textLength() === null ? '' : String(editorReader() || '');
         var trimmedLength = text.trim().length;
         if (URDU_CHAR_PATTERN.test(text)) {
+            var liveInputMode = selectedInputMode();
             trackOnce('writer-first-urdu-success', 'writer_first_urdu_success', {
-                input_mode: currentInputMode !== 'unknown' ? currentInputMode : null
+                input_mode: liveInputMode !== 'unknown' ? liveInputMode : null
             });
         }
         DEPTH_THRESHOLDS.forEach(function (threshold) {
