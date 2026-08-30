@@ -11,7 +11,7 @@ const guidePage = read('how-to-write-urdu-on-photo.html');
 const llms = read('llms.txt');
 const sitemap = read('sitemap.xml');
 const redirects = read('_redirects');
-const spec = read('specs/WU-SEO-CS-001-card-studio-acquisition.md');
+const spec = read('specs/archive/implemented/WU-SEO-CS-001-card-studio-acquisition.md');
 
 const card = seo.byPath['/urdu-card-studio'];
 const guide = seo.byPath['/how-to-write-urdu-on-photo'];

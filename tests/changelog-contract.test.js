@@ -13,7 +13,7 @@ const sitemap = read('sitemap.xml');
 const humanSitemap = read('write-urdu-sitemap.html');
 const redirects = read('_redirects');
 const llms = read('llms.txt');
-const spec = read('specs/WU-CHANGELOG-001-customer-facing-product-updates.md');
+const spec = read('specs/archive/implemented/WU-CHANGELOG-001-customer-facing-product-updates.md');
 const page = seo.byPath['/changelog'];
 
 assert.ok(page && page.indexable, 'Customer changelog must be a registered indexable public page');
