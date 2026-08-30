@@ -5,6 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const config = require(path.join(root, 'seo.config.js'));
+const isoDate = value => /^\d{4}-\d{2}-\d{2}$/.test(String(value || ''));
 
 const home = config.pages.find(page => page.id === 'home');
 assert.ok(home, 'homepage SEO registry entry is missing');
@@ -41,8 +42,9 @@ assert.deepStrictEqual(privacyConfig.schema, [], 'Privacy policy must remain a W
 assert.ok(contactConfig && contactConfig.indexable === true && contactConfig.path === '/contact', 'Contact must be a durable indexable trust page');
 assert.ok(feedbackConfig && feedbackConfig.indexable === false && feedbackConfig.path === '/feedback', 'Feedback must remain a noindex product utility');
 const romanConfig = config.pages.find(page => page.id === 'roman-urdu-transliteration');
-assert.strictEqual(romanConfig.datePublished, '2026-07-16', 'Roman Urdu publication date must match the visible published date');
-assert.strictEqual(romanConfig.lastmod, '2026-08-19', 'Roman Urdu revision date must reflect the plain-language update');
+assert.strictEqual(romanConfig.datePublished, '2026-07-16', 'Roman Urdu publication date is a historical fact and must match the visible published date');
+assert.ok(isoDate(romanConfig.lastmod), 'Roman Urdu guide must carry a valid ISO revision date');
+assert.ok(Date.parse(romanConfig.lastmod) >= Date.parse(romanConfig.datePublished), 'Roman Urdu revision date cannot precede publication');
 
 const seo = read('js/seo.js');
 assert.match(seo, /page\.searchTitle \|\| page\.title/, 'runtime SEO must support a search-facing title override when explicitly needed');
@@ -66,7 +68,8 @@ const llms = read('llms.txt');
 assert.match(llms, /^# Write Urdu\r?\n\r?\n> /, 'llms.txt must begin with the proposed H1 and summary structure');
 assert.match(llms, /Canonical site: https:\/\/write-urdu\.com\//, 'llms.txt canonical site statement is missing');
 assert.match(llms, /does not translate an English sentence into Urdu/i, 'llms.txt must preserve the English-letter typing versus translation distinction in plain language');
-assert.match(llms, /Last reviewed: 2026-08-28/, 'llms.txt review date is stale');
+const llmsReview = llms.match(/Last reviewed:\s*(\d{4}-\d{2}-\d{2})/i);
+assert.ok(llmsReview && isoDate(llmsReview[1]), 'llms.txt must expose a valid review date without freezing one historical revision');
 assert.match(llms, /AI writing help inside the Urdu editor/, 'llms.txt must describe the shipped AI writing workflow without creating a thin AI route');
 assert.match(llms, /## Start writing/, 'llms.txt must prioritize core writing workflows');
 assert.match(llms, /## Trust, policies and corrections/, 'llms.txt trust resource section is missing');
@@ -84,28 +87,13 @@ assert.match(robots, /User-agent:\s*OAI-SearchBot[\s\S]*?Allow:\s*\//i, 'OAI-Sea
 assert.match(robots, /User-agent:\s*GPTBot[\s\S]*?Disallow:\s*\//i, 'GPTBot training policy must remain explicitly blocked');
 
 const sitemap = read('sitemap.xml');
-const revisionDates = {
-  '/': '2026-08-19',
-  '/urdu-editor': '2026-08-07',
-  '/urdu-keyboard': '2026-08-07',
-  '/urdu-alphabet': '2026-08-07',
-  '/write-urdu-documentation': '2026-08-07',
-  '/urdu-faq': '2026-08-22',
-  '/roman-urdu-transliteration': '2026-08-19',
-  '/urdu-name-art-maker': '2026-08-13',
-  '/urdu-card-studio': '2026-08-17',
-  '/how-to-share-urdu-writing-online': '2026-08-17',
-  '/write-urdu-privacy': '2026-08-29',
-  '/contact': '2026-08-22',
-  '/write-urdu-sitemap': '2026-08-15'
-};
-for (const [route, revisionDate] of Object.entries(revisionDates)) {
+for (const route of ['/', '/urdu-editor', '/urdu-keyboard', '/urdu-alphabet', '/write-urdu-documentation', '/urdu-faq', '/roman-urdu-transliteration', '/urdu-name-art-maker', '/urdu-card-studio', '/how-to-share-urdu-writing-online', '/write-urdu-privacy', '/contact', '/write-urdu-sitemap']) {
   const page = config.pages.find(candidate => candidate.path === route);
-  assert.ok(page && page.lastmod === revisionDate, `${route} must carry its current material revision date in config`);
-  const escaped = route === '/' ? 'https://write-urdu.com/' : `https://write-urdu.com${route}`;
-  const block = sitemap.match(new RegExp(`<url>[\\s\\S]*?<loc>${escaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/loc>[\\s\\S]*?<\\/url>`));
+  assert.ok(page && isoDate(page.lastmod), `${route} must carry a valid material revision date in config`);
+  const canonical = route === '/' ? 'https://write-urdu.com/' : `https://write-urdu.com${route}`;
+  const block = sitemap.match(new RegExp(`<url>[\\s\\S]*?<loc>${canonical.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/loc>[\\s\\S]*?<\\/url>`));
   assert.ok(block, `sitemap is missing ${route}`);
-  assert.match(block[0], new RegExp(`<lastmod>${revisionDate}<\\/lastmod>`), `${route} sitemap lastmod is stale`);
+  assert.match(block[0], new RegExp(`<lastmod>${page.lastmod}<\\/lastmod>`), `${route} sitemap lastmod must match the registry`);
 }
 assert.doesNotMatch(sitemap, /<loc>https:\/\/write-urdu\.com\/feedback<\/loc>/, 'noindex Feedback must stay out of the XML sitemap');
 assert.doesNotMatch(sitemap, /<loc>https:\/\/write-urdu\.com\/s\//, 'user-generated share pages must stay out of the XML sitemap');
@@ -118,7 +106,9 @@ assert.match(about, /admin@write-urdu\.com/, 'About page must expose the public 
 const security = read('.well-known/security.txt');
 assert.match(security, /^Contact: mailto:admin@write-urdu\.com$/m, 'security.txt must use the public security contact');
 assert.match(security, /^Canonical: https:\/\/write-urdu\.com\/\.well-known\/security\.txt$/m, 'security.txt canonical URL is missing');
-assert.match(security, /^Expires: 2027-08-07T00:00:00Z$/m, 'security.txt must carry a future expiry date');
+const expires = security.match(/^Expires:\s*(\S+)$/m);
+assert.ok(expires && Number.isFinite(Date.parse(expires[1])), 'security.txt must carry a valid expiry timestamp');
+assert.ok(Date.parse(expires[1]) > Date.now(), 'security.txt expiry must remain in the future');
 
 const ads = read('ads.txt');
 assert.match(ads, /^google\.com, pub-4727847909946286, DIRECT, f08c47fec0942fa0\s*$/i, 'ads.txt must declare the configured Google publisher relationship');

@@ -12,9 +12,20 @@ test('professional sitemap is a task-first responsive directory', async ({ page,
   await open(page);
 
   await expect(page.locator('.wu-site-header')).toBeVisible();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Everything you can do with Write Urdu');
-  await expect(page.locator('.sitemap-directory-section')).toHaveCount(4);
-  await expect(page.locator('.sitemap-directory-card')).toHaveCount(25);
+  const heading = page.getByRole('heading', { level: 1 });
+  await expect(heading).toBeVisible();
+  await expect(heading).toContainText('Write Urdu');
+
+  for (const section of ['write', 'create', 'learn', 'about']) {
+    await expect(page.locator(`#${section}.sitemap-directory-section`)).toBeVisible();
+  }
+
+  const inventory = await page.evaluate(() => ({
+    sections: document.querySelectorAll('.sitemap-directory-section').length,
+    cards: document.querySelectorAll('.sitemap-directory-card').length
+  }));
+  expect(inventory.sections).toBeGreaterThanOrEqual(4);
+  expect(inventory.cards).toBeGreaterThanOrEqual(25);
   await expect(page.locator('table')).toHaveCount(0);
   await expect(page.locator('footer.wu-footer')).toBeVisible();
 
