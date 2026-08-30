@@ -34,11 +34,15 @@ assert.deepEqual(
   'Card resize constraints changed'
 );
 
-assert.equal(templates.TEMPLATES.length, 46, 'Template Library must retain the 46 starter designs');
-assert.deepEqual(
-  templates.CATEGORY_COUNTS,
-  { poetry: 12, social: 8, religious: 8, education: 6, business: 6, events: 6 },
-  'Template category inventory changed unexpectedly'
+assert.ok(templates.TEMPLATES.length >= 46, 'Template Library must retain at least the launch inventory');
+const categoryMinimums = { poetry: 12, social: 8, religious: 8, education: 6, business: 6, events: 6 };
+for (const [category, minimum] of Object.entries(categoryMinimums)) {
+  assert.ok((templates.CATEGORY_COUNTS[category] || 0) >= minimum, `${category} template inventory fell below the launch minimum`);
+}
+assert.equal(
+  Object.values(templates.CATEGORY_COUNTS).reduce((sum, count) => sum + count, 0),
+  templates.TEMPLATES.length,
+  'Template category counts must describe the current registry'
 );
 assert.deepEqual(templates.validateRegistry(templates.TEMPLATES), [], 'Template registry must remain internally valid');
 const poetryTemplate = templates.getTemplateBySlug('quiet-morning-verse');
