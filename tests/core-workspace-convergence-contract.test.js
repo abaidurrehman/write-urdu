@@ -116,7 +116,7 @@ assert.match(spec, /Slice E — Rich Editor convergence/, 'Rich Editor convergen
 
 // The specification is now intentionally ahead of the shipped toolbar. Guard the revised product decision rather than
 // pinning the 2026-08-18 command wall and forcing future UX research to preserve it forever.
-assert.match(toolbarSpec, /persistent pre-value command wall is superseded/i, 'WU-PLAT-004 must record the evidence-driven visibility reversal');
+assert.match(toolbarSpec, /visibility\/priority model is superseded by `WU-PLAT-002H`/i, 'WU-PLAT-004 must record the evidence-driven visibility reversal');
 assert.match(toolbarSpec, /E0 — Empty/, 'WU-PLAT-004 must define the empty-state activation contract');
 assert.match(toolbarSpec, /English letters -> Urdu/, 'WU-PLAT-004 must lead with the proven English-letter input job');
 assert.match(toolbarSpec, /Copy becomes directly visible\/obvious/, 'WU-PLAT-004 must reveal Copy after first value');
