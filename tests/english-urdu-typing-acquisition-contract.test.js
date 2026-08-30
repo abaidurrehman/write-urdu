@@ -18,7 +18,7 @@ const productionSeoCheck = read('scripts/check-live-production.js');
 const llms = read('llms.txt');
 const sitemap = read('sitemap.xml');
 const redirects = read('_redirects');
-const spec = read('specs/WU-SEO-ETU-001-english-to-urdu-typing-acquisition.md');
+const spec = read('specs/archive/implemented/WU-SEO-ETU-001-english-to-urdu-typing-acquisition.md');
 
 assert.ok(home && home.indexable, 'Homepage must remain the indexable typing product owner');
 assert.strictEqual(home.path, '/', 'English-to-Urdu typing owner must remain the homepage canonical');
