@@ -22,7 +22,13 @@
     '/urdu-faq': { source: 'urdu-faq.html', ur: true, indexable: true },
     '/urdu-card-studio': { source: 'urdu-card-studio.html', ur: true, indexable: true },
     '/how-to-write-urdu-on-photo': { source: 'how-to-write-urdu-on-photo.html', ur: true, indexable: true },
-    '/urdu-writing-templates': { source: 'urdu-writing-templates.html', ur: true, indexable: true, standalone: true }
+    '/urdu-writing-templates': { source: 'urdu-writing-templates.html', ur: true, indexable: true, standalone: true },
+    // No `source` -- /urdu-writers is a Cloudflare Pages Function (functions/urdu-writers/),
+    // not static HTML, so it is deliberately absent from phase1Routes (the static-mirror
+    // generator loop). Its /urdu counterpart is a hand-written function mirror instead
+    // (functions/urdu/urdu-writers/). This entry only teaches Route.href/hasLocale that
+    // the ur counterpart exists, so nav/footer links self-localize.
+    '/urdu-writers': { ur: true, indexable: true }
   };
   return {
     defaultLocale: 'en',

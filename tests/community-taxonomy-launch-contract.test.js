@@ -105,8 +105,8 @@ assert.match(moderationSource, /reading$/m, 'Pulse response must expose the read
 
 const communityClient = read('js', 'community-writers.js');
 assert.match(communityClient, /querySelectorAll\('\[data-cw-write-cta\]'\)/, 'Client must track every write CTA on the page, not just the first');
-assert.match(publicationsSource, /cw-write-link" href="\/urdu-editor" data-cw-write-cta/, 'Topbar write link must be tracked as a CTA');
-assert.match(publicationsSource, /cw-button primary" href="\/urdu-editor" data-cw-write-cta/, 'Hub hero write button must be tracked as a CTA');
+assert.match(publicationsSource, /class="cw-write-link"[^>]*data-cw-write-cta/, 'Topbar write link must be tracked as a CTA');
+assert.match(publicationsSource, /class="cw-button primary"[^>]*data-cw-write-cta/, 'Hub hero write button must be tracked as a CTA');
 
 // --- Rollback (spec §15): normal rollback never drops shared tables ---
 const migrationsDir = path.join(root, 'migrations');

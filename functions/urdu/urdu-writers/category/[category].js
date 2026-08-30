@@ -7,16 +7,16 @@ import {
   renderUnavailablePage,
   HUB_PAGE_LIMIT,
   CATEGORY_INDEX_THRESHOLD
-} from '../../lib/community-publications.mjs';
+} from '../../../lib/community-publications.mjs';
 
 export async function onRequestGet({ request, env, params }) {
   const state = communityPublicFeatureState(env);
-  if (state === 'disabled') return renderUnavailablePage(404, 'disabled', 'noindex,nofollow', 'en');
-  if (state === 'unavailable') return renderUnavailablePage(503, 'unavailable', 'noindex,nofollow', 'en');
+  if (state === 'disabled') return renderUnavailablePage(404, 'disabled', 'noindex,nofollow', 'ur');
+  if (state === 'unavailable') return renderUnavailablePage(503, 'unavailable', 'noindex,nofollow', 'ur');
 
   const category = String((params && params.category) || '').trim().toLowerCase();
   if (!validPrimaryCategory(category)) {
-    return renderUnavailablePage(404, 'category_not_found', 'noindex,nofollow', 'en');
+    return renderUnavailablePage(404, 'category_not_found', 'noindex,nofollow', 'ur');
   }
 
   const url = new URL(request.url);
@@ -31,12 +31,9 @@ export async function onRequestGet({ request, env, params }) {
   const items = await repository.listPublishedByCategory(category, cursor);
   const nextCursor = items.length === HUB_PAGE_LIMIT ? `${items[items.length - 1].publishedAt}|${items[items.length - 1].id}` : null;
 
-  // Operational thin-content guard (spec §4): below threshold stays noindex,follow
-  // regardless of page count; crossing it only makes the page index-eligible, not
-  // automatically indexed -- promotion still wants a manual SEO look before broad discovery.
   const total = await repository.countPublishedByCategory(category);
   const robots = total >= CATEGORY_INDEX_THRESHOLD ? 'index,follow' : 'noindex,follow';
-  return renderCategoryPage({ origin: publicOrigin(request, env), category, items, nextCursor, robots, locale: 'en' });
+  return renderCategoryPage({ origin: publicOrigin(request, env), category, items, nextCursor, robots, locale: 'ur' });
 }
 
 export function onRequest(context) {
