@@ -30,7 +30,7 @@ assert.match(home.searchDescription || '', /Urdu script/i, 'Homepage search desc
 assert.doesNotMatch(home.searchDescription || '', /transliteration/i, 'Homepage search description must not require technical linguistic terminology');
 assert.doesNotMatch(home.searchDescription || '', /Roman Urdu/i, 'Homepage search description must not make secondary Roman Urdu terminology the primary acquisition language');
 assert.ok((home.searchDescription || '').length <= 165, 'Homepage search description should remain concise');
-assert.strictEqual(home.lastmod, '2026-08-19', 'Homepage acquisition revision date must be current');
+assert.match(home.lastmod || '', /^\d{4}-\d{2}-\d{2}$/, 'Homepage must carry an ISO material revision date');
 
 assert.ok(homeHtml.includes(`<title>${home.searchTitle}</title>`), 'Initial homepage HTML must expose the acquisition title without waiting for JavaScript');
 assert.ok(homeHtml.includes(`<meta name="description" content="${home.searchDescription}">`), 'Initial homepage HTML must expose the acquisition description without waiting for JavaScript');
@@ -67,7 +67,9 @@ assert.match(runtimeSeo, /locale !== ['"]ur['"][\s\S]*applyResolvedSearchMetadat
 
 assert.match(llms, /homepage is the main English to Urdu typing/i, 'llms.txt must name the homepage as the English-to-Urdu typing owner');
 assert.match(llms, /English to Urdu typing \/ Urdu typing online/, 'llms.txt start-writing section must expose the prime acquisition job');
-assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/<\/loc>[\s\S]*?<lastmod>2026-08-19<\/lastmod>/, 'Homepage sitemap freshness must reflect the acquisition revision');
+const homeSitemapBlock = sitemap.match(/<url>[\s\S]*?<loc>https:\/\/write-urdu\.com\/<\/loc>[\s\S]*?<\/url>/);
+assert.ok(homeSitemapBlock, 'Homepage is missing from sitemap');
+assert.match(homeSitemapBlock[0], new RegExp(`<lastmod>${home.lastmod}<\\/lastmod>`), 'Homepage sitemap revision must match the SEO registry');
 assert.match(redirects, /^\/index\.html \/ 301$/m, 'Legacy homepage URL must continue consolidating to the canonical root');
 
 for (const forbidden of ['/english-to-urdu-typing', '/english-urdu-typing', '/type-urdu-in-english', '/urdu-typing-in-english']) {
