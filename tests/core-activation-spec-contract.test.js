@@ -35,12 +35,13 @@ assert.match(activation, /Basic -> Rich|Basic → Rich|preferred continuation fo
 assert.match(activation, /No major Card Studio acquisition expansion/i, 'Activation contract must gate Card Studio acquisition behind completion evidence');
 assert.match(activation, /Do not send typed text|Forbidden:[\s\S]*typed strings/i, 'Activation telemetry must prohibit writing content');
 
-assert.match(toolbar, /persistent pre-value command wall is superseded/i, 'Basic Writer spec must record the visibility reversal');
+assert.match(toolbar, /visibility\/priority model is superseded by `WU-PLAT-002H`/i, 'Basic Writer spec must record the evidence-driven visibility reversal');
 assert.match(toolbar, /E0 — Empty/, 'Basic Writer spec must define an empty activation state');
 assert.match(toolbar, /English letters -> Urdu/, 'Basic Writer must preserve the simple English-letter input job');
 assert.match(toolbar, /Speak Urdu/, 'Voice must be discoverable as an input choice');
 assert.match(toolbar, /Copy becomes directly visible\/obvious/, 'Copy must become obvious after first value');
-assert.match(toolbar, /PDF[\s\S]*Word[\s\S]*E3/i, 'Document outputs must be promoted after substantial writing rather than before value');
+assert.match(toolbar, /\*\*PDF\*\* — E3\+/, 'PDF must be promoted after substantial writing rather than before value');
+assert.match(toolbar, /\*\*Word\*\* — E3\+/, 'Word must be promoted after substantial writing rather than before value');
 
 assert.match(growth, /one growth request at a time/i, 'Growth spec must coordinate Keep, Share and Community Publish');
 assert.match(growth, /E0 — empty/, 'Growth acquisition must stay out of the empty state');
