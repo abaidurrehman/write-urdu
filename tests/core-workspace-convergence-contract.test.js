@@ -45,24 +45,26 @@ assert.doesNotMatch(nameArtPage, /shared renderer|short-lived session storage/, 
 assert.match(invoicePage, /Show only what you need/, 'Invoice guidance must explain the user benefit of optional sections');
 assert.doesNotMatch(invoicePage, /without exposing the payload|More tools by the same developer/, 'Invoice guidance must not expose implementation nouns or developer-centric framing');
 
+// Runtime assertions below intentionally describe the currently shipped toolbar. WU-PLAT-002H/WU-PLAT-004
+// now define the next evidence-backed convergence change; that UI will update these runtime assertions in its implementation PR.
 assert.strictEqual(Convergence.BASIC_COMMAND_TOOLBAR_SRC, '/js/basic-writer-command-toolbar.js', 'Basic Writer toolbar loader path drifted');
 assert.match(runtime, /data-wu-command-toolbar-transition/, 'Basic Writer command-toolbar transition marker is missing');
-assert.match(runtime, /actions\.hidden = false/, 'Basic Writer command surface must remain visible while empty');
+assert.match(runtime, /actions\.hidden = false/, 'Current Basic Writer command surface must remain visible while empty until the activation slice replaces it');
 assert.match(runtime, /data-wu-core-actionbar', 'pre-editor'/, 'Basic Writer action surface must be treated as pre-editor');
 assert.match(runtime, /loadBasicCommandToolbar\(\)/, 'Core convergence must load the dedicated Basic Writer command toolbar');
 assert.doesNotMatch(runtime, /parent\.insertBefore\(actions, hint\.nextSibling\)/, 'Legacy post-editor action-bar relocation must be retired');
 
-assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'word', 'png', 'preview', 'print'], 'Direct output action order changed unexpectedly');
+assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'word', 'png', 'preview', 'print'], 'Current direct output action order changed unexpectedly');
 assert.strictEqual(Toolbar.MOBILE_QUERY, '(max-width: 767px)');
-assert.match(toolbarRuntime, /setAction\(share, 'share', 'Share'/, 'Share must be a first-class toolbar action');
-assert.match(toolbarRuntime, /setAction\(copy, 'copy', 'Copy'/, 'Copy must be directly visible');
-assert.match(toolbarRuntime, /setAction\(pdf, 'pdf', 'PDF'/, 'PDF must be a direct desktop action');
-assert.match(toolbarRuntime, /setAction\(word, 'word', 'Word'/, 'Word must be a direct desktop action');
-assert.match(toolbarRuntime, /setAction\(png, 'png', 'PNG'/, 'PNG must be a direct desktop action');
-assert.match(toolbarRuntime, /setAction\(preview, 'preview', 'Preview'/, 'Preview must be a direct desktop action');
-assert.match(toolbarRuntime, /setAction\(print, 'print', 'Print'/, 'Print must be a direct desktop action');
-assert.match(toolbarRuntime, /data-wu-basic-content-action/, 'Content-dependent toolbar state contract is missing');
-assert.match(toolbarRuntime, /button\.disabled = !enabled/, 'Empty-state commands must use the real disabled property');
+assert.match(toolbarRuntime, /setAction\(share, 'share', 'Share'/, 'Current Share action is missing');
+assert.match(toolbarRuntime, /setAction\(copy, 'copy', 'Copy'/, 'Current Copy action is missing');
+assert.match(toolbarRuntime, /setAction\(pdf, 'pdf', 'PDF'/, 'Current PDF action is missing');
+assert.match(toolbarRuntime, /setAction\(word, 'word', 'Word'/, 'Current Word action is missing');
+assert.match(toolbarRuntime, /setAction\(png, 'png', 'PNG'/, 'Current PNG action is missing');
+assert.match(toolbarRuntime, /setAction\(preview, 'preview', 'Preview'/, 'Current Preview action is missing');
+assert.match(toolbarRuntime, /setAction\(print, 'print', 'Print'/, 'Current Print action is missing');
+assert.match(toolbarRuntime, /data-wu-basic-content-action/, 'Current content-dependent toolbar state contract is missing');
+assert.match(toolbarRuntime, /button\.disabled = !enabled/, 'Current empty-state commands must use the real disabled property');
 assert.match(toolbarRuntime, /data-wu-basic-mobile-outputs/, 'Mobile overflow destination is missing');
 assert.match(toolbarRuntime, /compact \? mobileGroup : desktopGroup/, 'Document actions must move into More on small screens');
 assert.match(toolbarRuntime, /data-input-mode-control/, 'Existing input-mode control must be reused');
@@ -111,8 +113,16 @@ assert.doesNotMatch(css, /position\s*:\s*(?:fixed|sticky)/, 'Core convergence mu
 assert.match(spec, /Make the oldest, most-used parts of Write Urdu feel as intentional as the newest parts/, 'Initiative principle is missing');
 assert.match(spec, /Slice D — Urdu Keyboard convergence/, 'Keyboard convergence follow-up is not documented');
 assert.match(spec, /Slice E — Rich Editor convergence/, 'Rich Editor convergence follow-up is not documented');
-assert.match(toolbarSpec, /Share → Copy → PDF → Word → PNG → Preview → Print → Input mode → More → Clear/, 'Approved command order is missing from WU-PLAT-004');
-assert.match(toolbarSpec, /remain visible before typing/i, 'Persistent empty-state toolbar decision is missing');
+
+// The specification is now intentionally ahead of the shipped toolbar. Guard the revised product decision rather than
+// pinning the 2026-08-18 command wall and forcing future UX research to preserve it forever.
+assert.match(toolbarSpec, /visibility\/priority model is superseded by `WU-PLAT-002H`/i, 'WU-PLAT-004 must record the evidence-driven visibility reversal');
+assert.match(toolbarSpec, /E0 — Empty/, 'WU-PLAT-004 must define the empty-state activation contract');
+assert.match(toolbarSpec, /English letters -> Urdu/, 'WU-PLAT-004 must lead with the proven English-letter input job');
+assert.match(toolbarSpec, /Copy becomes directly visible\/obvious/, 'WU-PLAT-004 must reveal Copy after first value');
+assert.match(toolbarSpec, /Continue with formatting/, 'WU-PLAT-004 must define the substantial-writing Rich escalation');
+assert.match(toolbarSpec, /one growth request at a time/i, 'WU-PLAT-004 must defer growth prompts to the shared arbitration rule');
+
 assert.match(shareAddendum, /supersedes WU-PLAT-004 §9\.1/i, 'Public-share addendum must explicitly supersede the old text-only toolbar behavior');
 assert.match(shareAddendum, /Publish & get short link/i, 'Public-share addendum must define the first-party short-link share behavior');
 assert.match(shareAddendum, /Publishing is \*\*always explicit\*\*/i, 'Explicit-publication guardrail is missing');

@@ -1,209 +1,306 @@
 # WU-GROWTH-002 — Account Save + Share Entry Points
 
-**Status:** Active — implementation slice approved 2026-08-20  
-**Priority:** P0 growth loop  
+**Status:** Active — revised for `WU-PLAT-002H` activation programme  
+**Priority:** P0 retention/distribution dependency  
 **Area:** Account conversion / retention / sharing  
 **Routes:** `/`, `/urdu-editor`, `/urdu-keyboard`, `/tools/urdu-voice-typing`  
-**Reuses:** `WU-AUTH-001`, `WU-DRAFT-001`, `WU-SHARE-001`, `WU-ANALYTICS-001`
+**Reuses:** `WU-AUTH-001`, `WU-DRAFT-001`, `WU-SHARE-001`, existing analytics  
+**Prompt-arbitration owner:** `WU-PLAT-002H`  
+**Revision date:** 2026-08-30
 
-## 1. Problem
+---
 
-WriteUrdu now has optional accounts, My Documents and public short-link sharing, but those capabilities are not presented consistently at the moment a user has created valuable Urdu text.
+## 1. Product problem
 
-The homepage account card is useful but verbose. Rich Editor and Urdu Keyboard have compact account-save controls, yet their copy emphasizes implementation/continuity details rather than the user outcome. Voice Typing has an editable transcript but no direct account-save or public-share entry point.
+WriteUrdu already has optional accounts, My Documents, public short-link sharing and community publishing. The problem is no longer simply that these capabilities are absent from the writing surfaces.
 
-That leaves two product-growth loops underexposed:
+Product Pulse now shows a meaningful long-writing cohort and a growing number of competing post-writing actions. If every feature owner independently promotes Account, Keep, Share and Community Publish, the writing experience becomes noisier and discovery becomes worse rather than better.
 
-`write -> save -> return -> write again`
+The two desired loops remain:
+
+`write -> keep/save -> return -> write again`
 
 and
 
-`write -> share WriteUrdu link -> recipient opens -> recipient writes -> shares again`
+`write -> share -> recipient writes -> shares/publishes again`
 
-The feature must improve discovery without turning the writing canvas into an account wall or a large marketing panel.
+But the revised product rule is:
 
-## 2. Product decision
+> **Ask for one growth decision at a time, after the user has created enough value for that decision to make sense.**
 
-Use one compact **Keep this writing** pattern on active writing surfaces.
+---
 
-For a signed-out user with useful text, the pattern should communicate only the high-value outcomes:
+## 2. Evidence that changes the old implementation posture
 
-- create a free account to keep the writing in My Documents;
-- share a public snapshot with a WriteUrdu link.
+7-day Product Pulse reviewed 2026-08-30:
 
-Do not lead with browser-storage architecture, device-sync terminology, OAuth details or privacy implementation. Those details remain available in the account/privacy/help surfaces where they belong.
+- 326 measured writing sessions reached 500+ characters;
+- 235 reached 1,000+ characters;
+- 15 new accounts were observed in the Voice & Accounts block;
+- the public share loop produced 8 CTA clicks but 0 referred starts;
+- core writing already exposes many task/growth actions.
 
-Sharing remains available without an account. Account creation must not be inserted as a gate in front of the viral share loop.
+Therefore `has any text` is no longer a sufficient rule for showing acquisition prompts.
 
-## 3. UX contract
+---
 
-### Signed out
+## 3. Growth-request arbitration
 
-Use compact copy equivalent to:
+`WU-PLAT-002H` owns the shared eligibility/arbitration model. This spec owns the account/save/share behavior when selected.
+
+### Growth requests
+
+The following are growth requests:
+
+- `Keep this writing` / account-save acquisition;
+- public `Share link` promotion;
+- `Publish to Urdu Writers` promotion.
+
+Normal task commands such as Copy/PDF/Word are **not** growth requests and may coexist.
+
+### Default priority
+
+1. **Protect valuable unsaved work** — Keep/save.
+2. **Complete the current task** — task commands remain available.
+3. **Distribute after value/completion** — Share.
+4. **Community publication** — after substantial/long work and only when eligible/appropriate.
+
+The implementation may adjust exact thresholds after measurement, but it must preserve one visible growth request at a time in the governed decision area.
+
+---
+
+## 4. Eligibility by writing state
+
+Use the `WU-PLAT-002H` E0–E5 model rather than independent page-specific timers.
+
+### E0 — empty
+
+- no account/save/share acquisition card;
+- no community publishing prompt;
+- writing/input task dominates.
+
+### E1/E2 — first value / short text
+
+- do not interrupt first success with account creation;
+- Share may remain available as an explicit user-invoked command where already supported;
+- no automatic Keep promotion merely because a few characters exist.
+
+### E3 — substantial writing (~500–999 measurement bucket)
+
+If signed out and work is not safely account-backed:
+
+**Keep this writing** becomes eligible and normally wins the growth-request slot.
+
+### E4 — long form (1,000+ measurement bucket)
+
+- Keep remains priority when valuable work is unsaved/account-unprotected;
+- if signed in/saved, Community Publish may become eligible according to `WU-COMMUNITY-001`;
+- Share may be offered after a meaningful completion point;
+- do not show all three together.
+
+### E5 — post-completion
+
+After Copy/export/save:
+
+- Share may become the selected growth request;
+- Community Publish may be selected for eligible long-form work;
+- account acquisition should not reappear for authenticated users.
+
+Thresholds are evidence buckets, not permanent semantic truth. The shared controller should allow reviewed tuning without duplicating logic across pages.
+
+---
+
+## 5. Signed-out UX
+
+When Keep is selected by arbitration, use outcome-led copy equivalent to:
 
 **Keep this writing**  
-Create a free account to save it in My Documents, or share it with a link.
+Save it in My Documents so you can continue later.
 
 Primary action: `Create free account`  
-Secondary action: `Share link`
+Secondary utility: existing sign-in route where appropriate.
 
-The sign-in route remains the single identity entry point; `Create free account` is benefit-led CTA wording, not a second authentication system.
+Do not lead with:
 
-### Signed in
+- browser-storage architecture;
+- device-sync implementation details;
+- OAuth/provider details;
+- generic privacy disclaimers.
 
-Replace acquisition copy with useful state/actions:
+Those remain in account/privacy/help surfaces.
 
-- explicit `Save to my account` / `Save to My Documents` according to the existing editor contract;
+Creating an account must not become a gate for Copy/export or public Share.
+
+---
+
+## 6. Signed-in UX
+
+Never advertise account creation to an authenticated user.
+
+Useful states/actions:
+
+- explicit `Save to My Documents` / saved state according to the existing editor owner;
 - `My Documents`;
-- `Share link`.
+- Share/Publish only when selected by arbitration.
 
-Do not keep advertising account creation after the user is authenticated.
+Do not show a persistent acquisition card merely because the same component is used for signed-out users.
 
-### Visibility and density
+---
 
-- Existing homepage account value space may remain prominent.
-- Rich Editor and Urdu Keyboard use the existing compact editor-native account panel.
-- Voice Typing gets the same compact visual treatment below the transcript actions and appears only when the transcript contains text.
-- No fixed, sticky or modal account promotion.
-- No account prompt may cover the active writing canvas or push the primary writing action below a new large marketing block.
+## 7. Share contract
 
-## 4. Share contract
+Public sharing remains account-independent unless the underlying existing route explicitly requires identity for another reason.
 
-`Share link` is account-independent.
+Reuse the shipped share service:
 
-- Basic Writer reuses its shipped `WriteUrduBasicPublish` short-link flow.
-- Rich Editor and Urdu Keyboard publish the current plain-text snapshot through the existing `document-share.mjs` -> `/api/shares` -> `/s/:id` service.
-- Voice Typing publishes its current transcript through the same plain-text snapshot service.
-- Public publishing always requires an explicit confirmation that anyone with the link can view the selected snapshot.
-- Rich formatting remains private; the public artifact contains the plain-text snapshot only.
-- No user text is placed in URLs, telemetry events or account-entry query parameters.
-- Editing after publication does not silently mutate an existing public snapshot.
+- Basic Writer -> existing Basic public-share adapter/short-link flow;
+- Rich Editor / Urdu Keyboard -> existing plain-text document-share path;
+- Voice -> current transcript snapshot path where shipped;
+- other surfaces -> their existing approved adapters.
 
-## 5. Account-save contract
+Rules:
 
-This slice does not change account ownership, document schemas or sync semantics.
+- public publishing requires explicit confirmation;
+- writing is not automatically uploaded because Share is visible;
+- rich formatting may remain private when the public-share contract is plain text;
+- writing text never enters URL query/hash or product telemetry;
+- editing after publication does not silently mutate an immutable public snapshot;
+- Share link and Community Publish remain clearly distinct jobs.
 
-- Basic Writer keeps the existing explicit opt-in account save and throttled sync.
-- Rich Editor and Urdu Keyboard keep the existing explicit opt-in account save, per-editor metadata and optimistic revision handling.
-- Voice Typing saves an explicit **copy** as a basic text document in the existing My Documents API. It does not introduce a fourth document editor kind or continuous voice-document sync.
-- Voice text is preserved in short-lived `sessionStorage` before account navigation so an OAuth round trip does not discard a transcript. The handoff expires after 30 minutes and is consumed on restore.
-- No local-draft history is automatically uploaded when a user creates an account.
+---
 
-## 6. Privacy and data boundaries
+## 8. Account-save contract
 
-No new database or storage binding is introduced.
+This spec does not change account ownership or storage schemas.
 
-Existing services only:
+Preserve existing owners:
 
-- Auth.js identity session from `WU-AUTH-001`;
-- `writing_documents` in the existing D1 binding from `WU-DRAFT-001`;
-- Share Artifact API/storage from `WU-SHARE-001`.
+- Basic Writer account save/sync behavior;
+- Rich Editor / Urdu Keyboard document metadata + revision handling;
+- Voice explicit save-copy behavior;
+- My Documents APIs;
+- short-lived session handoff needed to survive an auth round trip where already approved.
 
-The compact entry point must not send writing text to analytics. Account-entry telemetry records only a route/handoff event. Public share telemetry uses existing bounded share events.
+No local draft history is automatically uploaded merely because an account is created.
 
-A user can continue writing, copying and exporting without creating an account.
+---
 
-## 7. Telemetry / commercial measurement
+## 9. Prompt coordinator / implementation boundary
 
-This feature is intended to increase repeat usage and referral acquisition, not to claim direct revenue by itself.
+Do **not** let each page independently decide `if text then show account card`.
 
-Use existing privacy-safe events where available:
+Prefer one shared eligibility/arbitration layer (exact file/name may align with current architecture) that receives only bounded state such as:
 
-- account CTA -> existing `tool_handoff` to `/sign-in`;
-- share attempt -> `share_clicked` / `share_publish_started`;
-- successful publish -> `share_publish_completed`;
-- completed native/copy share -> `share_completed`;
-- failed publish -> `share_publish_failed`.
+- workspace;
+- authenticated yes/no;
+- save state (`unsaved`, `saved`, `unknown`);
+- writing-depth bucket (not writing content);
+- most recent completion category;
+- community rollout/eligibility flag;
+- explicit user-invoked action.
 
-Do not add user text, email, document IDs or share IDs to product telemetry.
+It returns at most one growth-prompt ID:
 
-Commercial evaluation should compare:
+- `none`;
+- `keep`;
+- `share`;
+- `community_publish`.
 
-1. engaged writing sessions -> account-entry clicks;
-2. account-entry clicks -> authenticated users / saved documents;
-3. engaged writing sessions -> public link publication;
-4. published links -> share-page visits -> recipient creation starts;
-5. resulting repeat sessions/page depth and observed AdSense revenue.
+The coordinator must not inspect semantic writing content.
 
-The founder target of `$5/day` is an outcome target, not an acceptance assertion for this individual feature.
+Existing persistence/share/community modules remain owners of the selected action.
 
-## 8. Implementation map
+---
 
-### Shared growth layer
+## 10. Visibility/density
 
-`js/account-growth-entry.mjs`
+- no fixed/sticky/modal account acquisition during active writing;
+- no growth prompt may cover the canvas;
+- do not insert a large prompt above a focused editor when the user crosses a character threshold;
+- prefer stable post-task/continuation regions;
+- one growth request at a time;
+- ordinary task commands remain immediately usable.
 
-- enhances the existing Basic/Rich/Keyboard account panels rather than duplicating their persistence controllers;
-- changes signed-out CTA language to `Create free account`;
-- removes device/local-storage explanation from the visible compact value copy;
-- exposes account-independent `Share link` actions;
-- owns Voice Typing account/share continuity.
+---
 
-### Shared shell
+## 11. Telemetry
 
-`site-header.js`
+Use `WU-PLAT-002H-METRICS-CONTRACT.md`.
 
-- loads the growth layer only on `/`, `/urdu-editor`, `/urdu-keyboard`, `/tools/urdu-voice-typing`;
-- continues to load the original account controllers on their existing routes.
+Measure, without content:
 
-### PWA
+For each prompt family (`keep`, `share`, `community_publish`):
 
-`sw.js`
+- eligible;
+- shown;
+- clicked/opened;
+- completed;
+- cancelled/dismissed where useful;
+- `suppressed_due_to_arbitration`.
 
-- application-shell refresh so returning users receive the updated shared shell;
-- include the new growth module in the application shell.
+Commercial/retention review should compare:
 
-### Governance/tests
+- substantial writing -> Keep shown -> account/save completion;
+- post-completion -> Share shown -> successful publication/share;
+- Community Publish shown -> submitted/approved where appropriate;
+- resulting return/referred-writing signals;
+- task-completion guardrails.
 
-- register this spec in `specs/README.md`;
-- add a focused contract test and retain existing Auth/My Documents/share/Voice contracts.
+Do not call prompt CTR alone a success.
 
-## 9. Non-goals
+---
+
+## 12. Privacy boundary
+
+Never emit:
+
+- writing text;
+- selected text;
+- transcript content;
+- email/user identity in product analytics;
+- document/share IDs;
+- filenames;
+- HTML.
+
+No new database is introduced by prompt arbitration.
+
+---
+
+## 13. Acceptance criteria
+
+- [ ] Empty/first-value Basic Writer has no account/share/community acquisition wall.
+- [ ] Prompt eligibility follows the shared `WU-PLAT-002H` state model.
+- [ ] Substantial unsaved signed-out work can receive `Keep this writing`.
+- [ ] Authenticated users never receive account-creation acquisition copy.
+- [ ] At most one growth request is visibly promoted in the governed decision area.
+- [ ] Share link remains available without account creation where the existing service allows it.
+- [ ] Share and Community Publish use distinct labels/flows.
+- [ ] Community Publish does not compete with higher-priority unsaved-work protection.
+- [ ] Existing document-save/revision behavior remains unchanged.
+- [ ] Existing public-share confirmation/privacy behavior remains unchanged.
+- [ ] No writing content enters URLs or telemetry.
+- [ ] Product Pulse reports eligible/shown/completed/suppressed states for growth requests.
+- [ ] Browser acceptance covers signed-out/signed-in E0/E3/E4/E5 states on the governed core routes.
+
+---
+
+## 14. Non-goals
 
 - mandatory signup;
 - paid account tier;
-- Facebook authentication in this slice;
-- public profiles, followers, comments or teams;
-- collaboration/live shared documents;
-- changing the share-artifact backend or public `/s/:id` semantics;
-- adding a new D1 database;
-- automatic upload of browser-local drafts;
+- changing auth providers;
+- collaboration/teams;
+- comments/follows/likes;
+- automatic cloud upload of local history;
 - redesigning My Documents;
-- placing AdSense inside the account prompt or active writing canvas.
+- changing share-artifact storage/API semantics;
+- placing AdSense inside prompts or the active writing area;
+- using text semantics/AI to decide whether writing is `good enough` to save/publish.
 
-## 10. Acceptance criteria
+---
 
-- [ ] Homepage account value card says `Create free account` for signed-out users and exposes an actual `Share link` action.
-- [ ] Homepage visible value copy focuses on My Documents + sharing rather than device/browser implementation detail.
-- [ ] Rich Editor and Urdu Keyboard compact account panels say `Create free account` when signed out.
-- [ ] Rich Editor and Urdu Keyboard expose account-independent `Share link` actions using plain-text immutable snapshots.
-- [ ] Voice Typing shows a compact prompt only after transcript text exists.
-- [ ] Signed-out Voice Typing offers `Create free account` and `Share link`.
-- [ ] Voice transcript survives the sign-in round trip through a short-lived session-only handoff.
-- [ ] Signed-in Voice Typing can explicitly save a copy to My Documents and can open My Documents.
-- [ ] Voice sharing does not require account creation.
-- [ ] Every public share path requires explicit public-snapshot confirmation.
-- [ ] No writing text enters URLs or product telemetry.
-- [ ] Existing local autosave, account revision safety, Voice recognition and `/s/:id` behavior remain unchanged.
-- [ ] PWA application shell includes the new module so returning users receive the updated entry points.
-- [ ] Focused contract tests and the repository quality suite pass.
+## 15. Definition of done
 
-## 11. Verification
+The account/share layer should feel like a helpful consequence of value already created, not another thing the visitor must understand before writing.
 
-Focused:
-
-```bash
-node tests/account-growth-entry-contract.test.js
-node tests/account-documents-basic-contract.test.js
-node tests/account-documents-editors-contract.test.js
-node tests/urdu-voice-typing-contract.test.js
-node tests/share-loop-contract.test.js
-```
-
-Repository gate:
-
-```bash
-npm test
-```
-
-Browser acceptance should cover signed-out and signed-in desktop/mobile states on the four governed routes, including public-share confirmation and Voice transcript preservation through account navigation.
+A serious writer receives a timely way to keep work. A completed writer receives a timely way to distribute it. An eligible community writer can publish. Those asks do not compete on screen, and none of them become a gate to the core writing task.
