@@ -1,21 +1,13 @@
 const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
-const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-const firewall = spawnSync(process.execPath, [path.join(root, 'scripts', 'public-language-firewall.js'), '--check'], {
-  cwd: root,
-  encoding: 'utf8'
-});
-assert.strictEqual(
-  firewall.status,
-  0,
-  `site-wide public product language firewall must pass:\n${firewall.stdout || ''}${firewall.stderr || ''}`
-);
-
+// The site-wide language firewall is a first-class governance check and runs
+// separately in CI. This contract owns the product-specific copy invariants
+// below instead of spawning the same checker a second time.
 const pages = {
   homepage: read('index.html'),
   about: read('why-write-urdu.html'),
