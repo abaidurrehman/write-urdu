@@ -7,6 +7,7 @@ const html = fs.readFileSync(path.join(root, 'os', 'product-pulse.html'), 'utf8'
 const client = fs.readFileSync(path.join(root, 'js', 'product-pulse.js'), 'utf8');
 const api = fs.readFileSync(path.join(root, 'functions', 'api', 'internal', 'product-pulse.js'), 'utf8');
 const telemetry = fs.readFileSync(path.join(root, 'js', 'product-telemetry.js'), 'utf8');
+const events = fs.readFileSync(path.join(root, 'functions', 'api', 'events.js'), 'utf8');
 
 assert.match(html, /<meta name="robots" content="noindex,nofollow,noarchive">/, 'Product Pulse must remain out of public search');
 assert.match(html, /Product Pulse/, 'Product Pulse heading is missing');
@@ -87,6 +88,47 @@ assert.doesNotMatch(api, /editor_text|roman_urdu_text|urdu_text|filename|clipboa
 assert.match(html, /id="activationFunnelPanel"/, 'Dashboard must expose a first-value funnel panel');
 assert.match(html, /First value/, 'First-value panel must be labelled distinctly from other panels');
 assert.match(client, /function renderActivation\(/, 'Dashboard client must render the first-value funnel section');
+
+// WU-PLAT-002H Gate A completion: Card Studio completion funnel, continuation
+// funnel, share-referral trace for all three CTA destinations, and misleading
+// rate-label fixes (event counts that can exceed starts must not render as a
+// bounded percent).
+for (const name of [
+  'card_studio_export_step_reached', 'card_studio_export_attempted',
+  'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored',
+  'share_destination_ready', 'share_referral_recognized'
+]) {
+  assert.ok(events.includes(`'${name}'`), `EVENT_NAMES must include ${name}`);
+}
+assert.match(events, /card_studio_export_quick/, 'Card Studio export metric columns must split by quick/advanced mode');
+assert.match(events, /destination_ready/, 'Share metric columns must include destination_ready');
+assert.match(events, /referral_recognized/, 'Share metric columns must include referral_recognized');
+
+assert.match(api, /function cardStudioSection\(/, 'Product Pulse API must build a Card Studio completion funnel section');
+assert.match(api, /function continuationSection\(/, 'Product Pulse API must build a continuation funnel section');
+assert.match(api, /card_studio_export_step_reached/, 'Card Studio section must expose the export-step-reached stage');
+assert.match(api, /continuation_payload_restored/, 'Continuation section must expose the payload-restored stage');
+assert.doesNotMatch(api, /editor_text|roman_urdu_text|urdu_text|filename|clipboard_content|user_agent|referrer/i, 'Gate A completion sections must not introduce content or identity fields');
+
+assert.match(html, /id="cardStudioFunnelPanel"/, 'Dashboard must expose a Card Studio completion funnel panel');
+assert.match(html, /id="continuationFunnelPanel"/, 'Dashboard must expose a continuation funnel panel');
+assert.match(client, /function renderCardStudioFunnel\(/, 'Dashboard client must render the Card Studio completion funnel');
+assert.match(client, /function renderContinuationFunnel\(/, 'Dashboard client must render the continuation funnel');
+
+// A "rate" built from an uncapped, repeatable-per-session numerator over a
+// ~1-per-session denominator must not be displayed as a bounded percent.
+assert.doesNotMatch(client, /cta\.textContent = percent/, 'CTA clicks-per-view is not a bounded rate and must not render as percent');
+assert.doesNotMatch(client, /republish\.textContent = percent/, 'Referred-publish ratio must not render as a bounded percent');
+assert.doesNotMatch(client, /final_rate\.textContent = percent/, 'Voice final-results-per-start must not render as a bounded percent');
+assert.doesNotMatch(client, /percent\(item\.adoption_rate\)/, 'Voice tries-per-visit must not render as a bounded percent');
+assert.match(html, /Final results per start/, 'Voice final rate must use the metrics-contract wording, not "rate"');
+assert.match(html, /CTA clicks per view/, 'Share CTA metric must be labelled as a per-view ratio, not a rate');
+
+assert.match(telemetry, /share_referred_creation_started/, 'Telemetry collector must reuse share_referred_creation_started for Basic Writer/QR referrals');
+assert.match(telemetry, /continuation_shown/, 'Telemetry collector must emit continuation_shown');
+const shareTransfers = fs.readFileSync(path.join(root, 'js', 'share-page.js'), 'utf8');
+assert.doesNotMatch(shareTransfers, /transfer\('basic-writer', 'share-to-basic', publicText\(\), null\)/, 'Basic Writer CTA must preserve referral context, not drop it');
+assert.doesNotMatch(shareTransfers, /transfer\('qr-generator', 'share-to-qr', publicUrl\(\), null\)/, 'QR generator CTA must preserve referral context, not drop it');
 
 // Product Pulse itself must not load the public telemetry collector and create
 // founder/admin visits in product metrics.

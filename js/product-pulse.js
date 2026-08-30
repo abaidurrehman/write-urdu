@@ -153,8 +153,8 @@
 
     if (published) published.textContent = fmt(share.published_links);
     if (views) views.textContent = fmt(share.public_page_views);
-    if (cta) cta.textContent = percent(share.cta_rate);
-    if (republish) republish.textContent = percent(share.republish_rate);
+    if (cta) cta.textContent = ratio(share.cta_rate);
+    if (republish) republish.textContent = ratio(share.republish_rate);
     if (reproduction) reproduction.textContent = ratio(share.reproduction_ratio);
     if (viewsMeta) viewsMeta.textContent = Number(share.views_per_published_link || 0).toFixed(1).replace(/\.0$/, '') + ' views / link';
 
@@ -163,6 +163,8 @@
       { label: 'Published links', value: share.published_links },
       { label: 'Public views', value: share.public_page_views },
       { label: 'CTA clicks', value: share.cta_clicks },
+      { label: 'Destination ready', value: share.destination_ready },
+      { label: 'Referral recognized', value: share.referral_recognized },
       { label: 'Referred starts', value: share.referred_creation_starts },
       { label: 'Republished', value: share.republish_completed },
       { label: 'Child shares', value: share.child_share_artifacts }
@@ -204,7 +206,7 @@
 
     if (kpis.exposed) kpis.exposed.textContent = fmt(voice.exposed);
     if (kpis.started) kpis.started.textContent = fmt(voice.started);
-    if (kpis.final_rate) kpis.final_rate.textContent = percent(voice.final_rate);
+    if (kpis.final_rate) kpis.final_rate.textContent = ratio(voice.final_rate);
     if (kpis.switch_continued_rate) kpis.switch_continued_rate.textContent = percent(voice.switch_continued_rate);
     if (kpis.voice_led_share_of_concluded_sessions) kpis.voice_led_share_of_concluded_sessions.textContent = percent(voice.voice_led_share_of_concluded_sessions);
 
@@ -242,8 +244,8 @@
             toolLabels[item.tool] || item.tool,
             fmt(item.sessions),
             fmt(item.voice_started),
-            percent(item.adoption_rate),
-            percent(item.final_rate),
+            ratio(item.adoption_rate),
+            ratio(item.final_rate),
             percent(item.switch_continued_rate),
             fmt(item.voice_led_sessions),
             percent(item.voice_led_share_of_concluded_sessions)
@@ -340,6 +342,84 @@
         });
       }
     }
+  }
+
+  function renderCardStudioFunnel(data) {
+    var studio = data.card_studio_funnel || {};
+    var panel = q('#cardStudioFunnelPanel');
+    if (!panel) return;
+
+    var funnel = studio.funnel || {};
+    var conversion = studio.conversion || {};
+    var modeSplit = studio.mode_split || {};
+
+    var kpis = {
+      visit: q('[data-card-studio-kpi="visit"]'),
+      canvas_change_rate: q('[data-card-studio-kpi="canvas_change_rate"]'),
+      export_attempted_rate: q('[data-card-studio-kpi="export_attempted_rate"]'),
+      advanced_rate: q('[data-card-studio-kpi="advanced_rate"]')
+    };
+
+    if (!studio.ready) {
+      Object.keys(kpis).forEach(function (key) { if (kpis[key]) kpis[key].textContent = '—'; });
+      renderBars('#cardStudioFunnelBars', [], 'label', 'value');
+      renderBars('#cardStudioModeBars', [], 'label', 'value');
+      return;
+    }
+
+    if (kpis.visit) kpis.visit.textContent = fmt(funnel.visit);
+    if (kpis.canvas_change_rate) kpis.canvas_change_rate.textContent = percent(conversion.canvas_change_rate);
+    if (kpis.export_attempted_rate) kpis.export_attempted_rate.textContent = percent(conversion.export_attempted_rate);
+    if (kpis.advanced_rate) kpis.advanced_rate.textContent = percent(modeSplit.advanced_rate);
+
+    renderBars('#cardStudioFunnelBars', [
+      { label: 'Visit', value: funnel.visit },
+      { label: 'Preset choice', value: funnel.preset_choice },
+      { label: 'Text entered', value: funnel.text_entered },
+      { label: 'First canvas change', value: funnel.first_canvas_change },
+      { label: 'Export step reached', value: funnel.export_step_reached },
+      { label: 'Export attempted', value: funnel.export_attempted }
+    ], 'label', 'value');
+
+    renderBars('#cardStudioModeBars', [
+      { label: 'Quick mode exports', value: modeSplit.quick },
+      { label: 'Advanced mode exports', value: modeSplit.advanced }
+    ], 'label', 'value');
+  }
+
+  function renderContinuationFunnel(data) {
+    var continuation = data.continuation || {};
+    var panel = q('#continuationFunnelPanel');
+    if (!panel) return;
+
+    var funnel = continuation.funnel || {};
+    var conversion = continuation.conversion || {};
+
+    var kpis = {
+      shown: q('[data-continuation-kpi="shown"]'),
+      selected_rate: q('[data-continuation-kpi="selected_rate"]'),
+      destination_ready_rate: q('[data-continuation-kpi="destination_ready_rate"]'),
+      payload_restored_rate: q('[data-continuation-kpi="payload_restored_rate"]')
+    };
+
+    if (!continuation.ready) {
+      Object.keys(kpis).forEach(function (key) { if (kpis[key]) kpis[key].textContent = '—'; });
+      renderBars('#continuationFunnelBars', [], 'label', 'value');
+      return;
+    }
+
+    if (kpis.shown) kpis.shown.textContent = fmt(funnel.shown);
+    if (kpis.selected_rate) kpis.selected_rate.textContent = percent(conversion.selected_rate);
+    if (kpis.destination_ready_rate) kpis.destination_ready_rate.textContent = percent(conversion.destination_ready_rate);
+    if (kpis.payload_restored_rate) kpis.payload_restored_rate.textContent = percent(conversion.payload_restored_rate);
+
+    renderBars('#continuationFunnelBars', [
+      { label: 'Shown', value: funnel.shown },
+      { label: 'Selected', value: funnel.selected },
+      { label: 'Stored', value: funnel.stored },
+      { label: 'Destination ready', value: funnel.destination_ready },
+      { label: 'Payload restored', value: funnel.payload_restored }
+    ], 'label', 'value');
   }
 
   function orderedBuckets(items, order) {
@@ -439,6 +519,8 @@
     renderOutcomes(data);
     renderVoiceCrossWorkspace(data);
     renderActivation(data);
+    renderCardStudioFunnel(data);
+    renderContinuationFunnel(data);
     renderShareLoop(data);
     renderDistributions(data);
     renderTools(data);

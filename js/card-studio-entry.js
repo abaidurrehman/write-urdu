@@ -38,6 +38,10 @@
         nameArt: { route: '/urdu-name-art-maker', file: 'urdu-name-art-maker.html', key: 'writeUrdu.nameArt.handoff.v1' }
     };
 
+    function track(name, detail) {
+        if (window.WriteUrduTelemetry && window.WriteUrduTelemetry.track) window.WriteUrduTelemetry.track(name, detail || {});
+    }
+
     function normalizePath() {
         var path = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(window.location && window.location.pathname || '/') : String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
@@ -98,6 +102,7 @@
         try {
             sessionStorage.setItem(config.key, JSON.stringify(payload));
         } catch (error) { /* Private browsing: destination can still open blank. */ }
+        track('continuation_stored', { target_route: config.route });
     }
 
     function readOneTimeHandoff(destination) {
@@ -186,6 +191,7 @@
                 preserveRichSnapshot({ content: editor.getContent() || '', text: currentText, savedAt: Date.now() });
             }
             editor.setContent(html);
+            track('continuation_payload_restored', { target_route: '/urdu-editor' });
             document.body.setAttribute('data-rich-handoff-imported', 'true');
             if (window.WriteUrduUI && typeof window.WriteUrduUI.notify === 'function') {
                 window.WriteUrduUI.notify(isUrduLocale() ? 'آپ کا اردو متن فارمیٹنگ کے لیے تیار ہے۔' : 'Your Urdu text is ready to format.', 'success');
@@ -201,6 +207,7 @@
         if (normalizePath() !== '/urdu-editor') return;
         var incoming = readOneTimeHandoff('rich');
         if (!incoming) return;
+        track('continuation_destination_ready', { target_route: '/urdu-editor' });
         var html = plainTextToHtml(incoming.text);
         stageRichDraft(incoming, html);
         waitForRichEditor(incoming, html, 0);

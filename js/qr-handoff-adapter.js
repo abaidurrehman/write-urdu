@@ -20,6 +20,7 @@
         if (!envelope || !envelope.payload || envelope.payload.kind !== 'plain-text') return null;
         var text = typeof envelope.payload.text === 'string' ? envelope.payload.text : '';
         if (!text.trim()) return null;
+        if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_destination_ready', { target_route: '/qr-code-generator' });
         try {
             root.sessionStorage.setItem(LEGACY_KEY, JSON.stringify({
                 version: 1,

@@ -20,6 +20,8 @@
     var outcomeHooksInstalled = false;
     var copyWatchToken = 0;
     var trackedOnce = Object.create(null);
+    var SHARE_REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
+    var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true };
 
     function normalizedPath(value) {
         if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(value || '/');
@@ -133,7 +135,8 @@
             success: typeof detail.success === 'boolean' ? detail.success : null,
             device_class: deviceClass(),
             error_category: detail.error_category || null,
-            target_route: detail.target_route ? normalizedPath(detail.target_route) : null
+            target_route: detail.target_route ? normalizedPath(detail.target_route) : null,
+            card_mode: detail.card_mode || null
         };
     }
 
@@ -157,6 +160,45 @@
         trackedOnce[key] = true;
         track(eventName, detail);
         return true;
+    }
+
+    // Generalizes the referral marker js/card-studio-publish.js already
+    // maintains for Card Studio to the other two share-page CTA destinations
+    // (Basic Writer, QR generator) so WU-PLAT-002H Gate A's share-referral
+    // trace covers all three, not just Card Studio.
+    function getShareReferral() {
+        try {
+            var raw = window.sessionStorage.getItem(SHARE_REFERRAL_KEY);
+            if (!raw) return null;
+            var value = JSON.parse(raw);
+            if (!value || !/^[A-Za-z0-9]{8,12}$/.test(String(value.id || '')) || Number(value.expiresAt || 0) <= Date.now()) {
+                window.sessionStorage.removeItem(SHARE_REFERRAL_KEY);
+                return null;
+            }
+            return value;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function saveShareReferral(value) {
+        try { window.sessionStorage.setItem(SHARE_REFERRAL_KEY, JSON.stringify(value)); } catch (error) { }
+    }
+
+    function trackShareReferralDestinationReady() {
+        if (!REFERRAL_DESTINATION_TOOLS[tool] || !getShareReferral()) return;
+        trackOnce('share-destination-ready', 'share_destination_ready');
+        trackOnce('share-referral-recognized', 'share_referral_recognized');
+    }
+
+    function trackShareReferredCreationStarted() {
+        if (!REFERRAL_DESTINATION_TOOLS[tool]) return;
+        var referral = getShareReferral();
+        if (!referral || referral.started) return;
+        referral.started = true;
+        referral.startedAt = Date.now();
+        saveShareReferral(referral);
+        track('share_referred_creation_started', {});
     }
 
     function send(events, beacon) {
@@ -222,6 +264,7 @@
 
     function markEngaged() {
         noteActivity();
+        trackShareReferredCreationStarted();
         trackWriterFunnel();
         if (engaged) return;
         engaged = true;
@@ -368,8 +411,61 @@
                 var href = handoff.getAttribute('href');
                 var targetRoute = href || (handoff.hasAttribute('data-create-card') ? '/urdu-card-studio' : '/qr-code-generator');
                 track('tool_handoff', { target_route: targetRoute, length_bucket: lengthBucket(textLength()) });
+                return;
+            }
+
+            var cardExport = closest('[data-card-action="download"], [data-card-action="share"]');
+            var cardRoot = cardExport && closest('[data-card-studio]');
+            if (cardRoot) {
+                markEngaged();
+                track('card_studio_export_attempted', { card_mode: cardRoot.getAttribute('data-card-ui-mode') || 'quick' });
             }
         }, true);
+    }
+
+    // WU-PLAT-002H Gate A completion: continuation funnel. Kept fully
+    // decoupled from js/card-studio-entry.js / js/core-continuity.js (two
+    // independent, order-dependent handoff-wiring systems -- see the Gate A
+    // completion plan) by listening for the v2 path's DOM events centrally
+    // and polling for the presence of any continuation control for "shown".
+    function bindContinuationSignals() {
+        document.addEventListener('write-urdu:handoff-started', function () { track('continuation_stored'); });
+        document.addEventListener('write-urdu:handoff-imported', function () { track('continuation_payload_restored'); });
+        var attempts = 0;
+        var timer = window.setInterval(function () {
+            attempts += 1;
+            if (document.querySelector('[data-wu-next-step-action], [data-continue-rich], [data-create-card], [data-create-qr], .home-actions-group-create a')) {
+                trackOnce('continuation-shown', 'continuation_shown');
+                window.clearInterval(timer);
+            } else if (attempts >= 40) {
+                window.clearInterval(timer);
+            }
+        }, 250);
+    }
+
+    // Card Studio completion funnel (Gate A completion). Observes the guided
+    // UI's own state attributes/click targets instead of touching
+    // js/card-studio.js or js/card-studio-ui.js, matching the existing
+    // decoupled-observer pattern used for export_completed detection.
+    function bindCardStudioExportSignals() {
+        if (tool !== 'card_studio') return;
+        var attempts = 0;
+        var timer = window.setInterval(function () {
+            attempts += 1;
+            var root = document.querySelector('[data-card-studio]');
+            if (root) {
+                window.clearInterval(timer);
+                var check = function () {
+                    if (root.getAttribute('data-card-active-step') === 'export') trackOnce('card-studio-export-step-reached', 'card_studio_export_step_reached');
+                };
+                if (window.MutationObserver) {
+                    new MutationObserver(check).observe(root, { attributes: true, attributeFilter: ['data-card-active-step'] });
+                }
+                check();
+            } else if (attempts >= 40) {
+                window.clearInterval(timer);
+            }
+        }, 250);
     }
 
     function rootSelectorForTool() {
@@ -530,10 +626,13 @@
         bindPrimaryEditor();
         bindProductActions();
         bindCreationToolSignals();
+        bindContinuationSignals();
+        bindCardStudioExportSignals();
         installOutcomeHooks();
         startActiveTimer();
         track('page_session_started');
         if (writerFunnelEligible()) trackOnce('writer-viewed', 'writer_viewed');
+        trackShareReferralDestinationReady();
         document.addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'hidden') flush(true);
         });

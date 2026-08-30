@@ -4,13 +4,13 @@ This checklist is subordinate to `WU-PLAT-002H-core-activation-feature-discovery
 
 ## Gate A — Baseline and instrumentation
 
-- [ ] Confirm current Product Pulse event definitions for writing depth, active use, handoffs, Voice and Share.
+- [x] Confirm current Product Pulse event definitions for writing depth, active use, handoffs, Voice and Share.
 - [x] Add/validate first-value funnel: eligible/visible -> focus -> input -> first Urdu success -> depth -> first outcome.
 - [x] Add device/workspace/input-mode breakdown without collecting content.
-- [ ] Add continuation funnel: shown -> clicked -> destination ready -> meaningful start -> outcome.
-- [ ] Add Share referral trace through destination ready and referred start.
-- [ ] Add/validate Card Studio completion stages.
-- [ ] Fix misleading rate labels where event counts can exceed starts.
+- [x] Add continuation funnel: shown -> clicked -> destination ready -> meaningful start -> outcome.
+- [x] Add Share referral trace through destination ready and referred start.
+- [x] Add/validate Card Studio completion stages.
+- [x] Fix misleading rate labels where event counts can exceed starts.
 - [ ] Capture pre-change 7-day baseline in Product Pulse.
 
 **Exit gate:** we can explain the zero-char population more precisely than `abandoned`, and every planned UX change has a measurable primary funnel step.

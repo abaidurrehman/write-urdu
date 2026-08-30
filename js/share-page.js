@@ -147,11 +147,11 @@
     });
     var useText = q('[data-share-use-text]');
     if (useText) useText.addEventListener('click', function () {
-      transfer('basic-writer', 'share-to-basic', publicText(), null);
+      transfer('basic-writer', 'share-to-basic', publicText(), 'basic_writer');
     });
     var qr = q('[data-share-qr]');
     if (qr) qr.addEventListener('click', function () {
-      transfer('qr-generator', 'share-to-qr', publicUrl(), null);
+      transfer('qr-generator', 'share-to-qr', publicUrl(), 'qr');
     });
     var copy = q('[data-share-copy]');
     if (copy) copy.addEventListener('click', copyLink);

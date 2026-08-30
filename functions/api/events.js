@@ -50,7 +50,15 @@ const EVENT_NAMES = new Set([
     'writer_depth_100',
     'writer_depth_500',
     'writer_depth_1000',
-    'writer_outcome_first'
+    'writer_outcome_first',
+    'card_studio_export_step_reached',
+    'card_studio_export_attempted',
+    'continuation_shown',
+    'continuation_stored',
+    'continuation_destination_ready',
+    'continuation_payload_restored',
+    'share_destination_ready',
+    'share_referral_recognized'
 ]);
 
 const TOOLS = new Set([
@@ -69,6 +77,7 @@ const INPUT_MODES = new Set(['roman', 'direct', 'unknown', 'voice']);
 const DEVICE_CLASSES = new Set(['mobile', 'tablet', 'desktop']);
 const LOCALES = new Set(['en', 'ur']);
 const ERROR_CATEGORIES = new Set(['permission-denied', 'audio-capture', 'no-speech', 'network', 'language-not-supported', 'unknown']);
+const CARD_MODES = new Set(['quick', 'advanced']);
 
 const METRIC_COLUMNS = [
     'visits', 'engaged_visits', 'copies', 'exports',
@@ -85,13 +94,16 @@ const METRIC_COLUMNS = [
     'voice_error_network', 'voice_error_language_unsupported', 'voice_error_unknown',
     'community_views', 'community_cta_clicks',
     'writer_viewed', 'writer_focused', 'writer_first_input', 'writer_first_urdu_success',
-    'writer_depth_20', 'writer_depth_100', 'writer_depth_500', 'writer_depth_1000', 'writer_outcome_first'
+    'writer_depth_20', 'writer_depth_100', 'writer_depth_500', 'writer_depth_1000', 'writer_outcome_first',
+    'card_studio_export_step_reached', 'card_studio_export_attempted', 'card_studio_export_quick', 'card_studio_export_advanced',
+    'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored'
 ];
 
 const SHARE_METRIC_COLUMNS = [
     'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
     'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
-    'device_mobile', 'device_tablet', 'device_desktop'
+    'device_mobile', 'device_tablet', 'device_desktop',
+    'destination_ready', 'referral_recognized'
 ];
 
 let schemaReady = null;
@@ -213,6 +225,7 @@ function cleanEvent(input) {
         success: typeof input.success === 'boolean' ? (input.success ? 1 : 0) : null,
         deviceClass: enumValue(input.device_class, DEVICE_CLASSES),
         errorCategory: enumValue(input.error_category, ERROR_CATEGORIES),
+        cardMode: enumValue(input.card_mode, CARD_MODES),
         targetRoute
     };
 }
@@ -294,6 +307,14 @@ function legacyMetricSelect(toolExpression) {
                0 AS writer_depth_500,
                0 AS writer_depth_1000,
                0 AS writer_outcome_first,
+               0 AS card_studio_export_step_reached,
+               0 AS card_studio_export_attempted,
+               0 AS card_studio_export_quick,
+               0 AS card_studio_export_advanced,
+               0 AS continuation_shown,
+               0 AS continuation_stored,
+               0 AS continuation_destination_ready,
+               0 AS continuation_payload_restored,
                MAX(received_at) AS latest_event_at
         FROM product_events
         WHERE received_at < strftime('%Y-%m-%dT%H:00:00Z', 'now')
@@ -452,6 +473,15 @@ function applyEvent(delta, event) {
     if (event.eventName === 'writer_depth_500') delta.writer_depth_500 += 1;
     if (event.eventName === 'writer_depth_1000') delta.writer_depth_1000 += 1;
     if (event.eventName === 'writer_outcome_first') delta.writer_outcome_first += 1;
+    if (event.eventName === 'card_studio_export_step_reached') delta.card_studio_export_step_reached += 1;
+    if (event.eventName === 'card_studio_export_attempted') {
+        delta.card_studio_export_attempted += 1;
+        incrementBucket(delta, 'card_studio_export_', event.cardMode, { quick: 'quick', advanced: 'advanced' });
+    }
+    if (event.eventName === 'continuation_shown') delta.continuation_shown += 1;
+    if (event.eventName === 'continuation_stored') delta.continuation_stored += 1;
+    if (event.eventName === 'continuation_destination_ready') delta.continuation_destination_ready += 1;
+    if (event.eventName === 'continuation_payload_restored') delta.continuation_payload_restored += 1;
 }
 
 function applyShareEvent(delta, event) {
@@ -464,7 +494,9 @@ function applyShareEvent(delta, event) {
         share_referred_creation_started: 'referred_creation_starts',
         share_republish_completed: 'republish_completed',
         share_deleted: 'deletions',
-        share_reported: 'reports'
+        share_reported: 'reports',
+        share_destination_ready: 'destination_ready',
+        share_referral_recognized: 'referral_recognized'
     };
     if (mapping[event.eventName]) delta[mapping[event.eventName]] += 1;
     if (event.eventName === 'share_clicked' && (event.tool === 'public_share' || event.tool === 'card_studio')) delta.link_share_actions += 1;

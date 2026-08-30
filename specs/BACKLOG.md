@@ -44,9 +44,9 @@ Execution gates:
 - [x] Validate `writer eligible/visible → focus → first input → first successful Urdu → depth → first outcome`.
 - [x] Split at minimum by mobile/desktop, workspace and input mode.
 - [x] Distinguish true pre-input loss from non-writing intent/telemetry classification; do not call every zero-char visit abandonment.
-- [ ] Add continuation and Share-referral destination-ready/meaningful-start measurement.
-- [ ] Add/validate Card Studio completion funnel.
-- [ ] Fix misleading dashboard `rate` labels that can exceed 100% because repeated events are used as numerators.
+- [x] Add continuation and Share-referral destination-ready/meaningful-start measurement.
+- [x] Add/validate Card Studio completion funnel.
+- [x] Fix misleading dashboard `rate` labels that can exceed 100% because repeated events are used as numerators.
 
 ### P0.1B — Basic Writer E0/E1 simplification
 

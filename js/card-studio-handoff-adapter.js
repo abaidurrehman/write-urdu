@@ -88,10 +88,12 @@
 
         var envelope = handoff.take(TARGET);
         if (!envelope || !envelope.payload) return null;
+        if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_destination_ready', { target_route: '/urdu-card-studio' });
         if (template) applyTemplateRoute(template);
 
         var appliedLive = applyToRunningApp(envelope, template);
         if (!appliedLive && !writeLegacyText(envelope)) return null;
+        if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_payload_restored', { target_route: '/urdu-card-studio' });
 
         if (root.document && root.document.documentElement) {
             root.document.documentElement.setAttribute('data-wu-card-seed-kind', kind);

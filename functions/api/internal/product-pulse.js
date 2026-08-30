@@ -8,6 +8,12 @@ const WRITER_FUNNEL_METRIC_COLUMNS = [
   'writer_viewed', 'writer_focused', 'writer_first_input', 'writer_first_urdu_success',
   'writer_depth_20', 'writer_depth_100', 'writer_depth_500', 'writer_depth_1000', 'writer_outcome_first'
 ];
+const CARD_STUDIO_METRIC_COLUMNS = [
+  'card_studio_export_step_reached', 'card_studio_export_attempted', 'card_studio_export_quick', 'card_studio_export_advanced'
+];
+const CONTINUATION_METRIC_COLUMNS = [
+  'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored'
+];
 const METRIC_COLUMNS = [
   'visits', 'engaged_visits', 'copies', 'exports',
   'export_pdf', 'export_png', 'export_png_transparent', 'export_jpeg', 'export_doc', 'export_txt', 'export_svg',
@@ -18,11 +24,12 @@ const METRIC_COLUMNS = [
   'active_0_10', 'active_11_30', 'active_31_60', 'active_61_180', 'active_181_600', 'active_600_plus',
   'input_roman', 'input_direct', 'input_unknown', 'input_voice',
   'device_mobile', 'device_tablet', 'device_desktop'
-].concat(VOICE_METRIC_COLUMNS).concat(WRITER_FUNNEL_METRIC_COLUMNS);
+].concat(VOICE_METRIC_COLUMNS).concat(WRITER_FUNNEL_METRIC_COLUMNS).concat(CARD_STUDIO_METRIC_COLUMNS).concat(CONTINUATION_METRIC_COLUMNS);
 const SHARE_METRIC_COLUMNS = [
   'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
   'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
-  'device_mobile', 'device_tablet', 'device_desktop'
+  'device_mobile', 'device_tablet', 'device_desktop',
+  'destination_ready', 'referral_recognized'
 ];
 
 function json(body, status = 200) {
@@ -262,6 +269,73 @@ function activationSection(current, toolRows) {
   };
 }
 
+// WU-PLAT-002H Gate A completion: Card Studio completion funnel (spec Funnel
+// 6). Visit/preset/text/canvas stages reuse the existing generic per-tool
+// counters (filtered tool='card_studio'); export-step/attempted/mode columns
+// come from migration 0016. No content, no per-card identifiers.
+function cardStudioSection(toolRows) {
+  const row = (toolRows || []).find((item) => item.tool === 'card_studio');
+  if (!row) return { ready: false };
+  const visits = n(row, 'sessions');
+  const textEntered = n(row, 'engaged_sessions');
+  const canvasChange = n(row, 'canvas_interactions');
+  const stepReached = n(row, 'card_studio_export_step_reached');
+  const attempted = n(row, 'card_studio_export_attempted');
+  const quick = n(row, 'card_studio_export_quick');
+  const advanced = n(row, 'card_studio_export_advanced');
+  return {
+    ready: visits > 0,
+    funnel: {
+      visit: visits,
+      preset_choice: n(row, 'template_uses'),
+      text_entered: textEntered,
+      first_canvas_change: canvasChange,
+      export_step_reached: stepReached,
+      export_attempted: attempted
+    },
+    conversion: {
+      text_entered_rate: ratio(textEntered, visits),
+      canvas_change_rate: ratio(canvasChange, textEntered),
+      export_step_reached_rate: ratio(stepReached, canvasChange),
+      export_attempted_rate: ratio(attempted, stepReached)
+    },
+    mode_split: {
+      quick,
+      advanced,
+      advanced_rate: ratio(advanced, quick + advanced)
+    }
+  };
+}
+
+// WU-PLAT-002H Gate A completion: continuation funnel (spec Funnel 3).
+// "Selected" reuses the existing tool_handoff-derived `handoffs` counter so
+// the established name/dashboard usage is not disturbed. Instrumented on top
+// of both existing handoff-wiring code paths without unifying them -- see
+// the Gate A completion plan for the known dual-system caveat.
+function continuationSection(current) {
+  const shown = n(current, 'continuation_shown');
+  const selected = n(current, 'handoffs');
+  const stored = n(current, 'continuation_stored');
+  const destinationReady = n(current, 'continuation_destination_ready');
+  const payloadRestored = n(current, 'continuation_payload_restored');
+  return {
+    ready: shown > 0 || selected > 0,
+    funnel: {
+      shown,
+      selected,
+      stored,
+      destination_ready: destinationReady,
+      payload_restored: payloadRestored
+    },
+    conversion: {
+      selected_rate: ratio(selected, shown),
+      stored_rate: ratio(stored, selected),
+      destination_ready_rate: ratio(destinationReady, stored),
+      payload_restored_rate: ratio(payloadRestored, destinationReady)
+    }
+  };
+}
+
 async function shareLoopForWindow(db, bounds) {
   const [hasMetrics, hasArtifacts] = await Promise.all([
     tableExists(db, 'share_hourly_metrics'),
@@ -314,6 +388,8 @@ async function shareLoopForWindow(db, bounds) {
   const ctaClicks = n(metrics, 'cta_clicks');
   const referredStarts = n(metrics, 'referred_creation_starts');
   const republishes = n(metrics, 'republish_completed');
+  const destinationReady = n(metrics, 'destination_ready');
+  const referralRecognized = n(metrics, 'referral_recognized');
   const publishedLinks = n(artifacts, 'published_links');
   const eligibleParents = n(parentCohort, 'eligible_parents');
   const activatedParents = n(parentCohort, 'activated_parents');
@@ -332,8 +408,11 @@ async function shareLoopForWindow(db, bounds) {
     link_share_actions: n(metrics, 'link_share_actions'),
     cta_clicks: ctaClicks,
     cta_rate: ratio(ctaClicks, pageViews),
+    destination_ready: destinationReady,
+    destination_ready_rate: ratio(destinationReady, ctaClicks),
+    referral_recognized: referralRecognized,
     referred_creation_starts: referredStarts,
-    referred_creation_rate: ratio(referredStarts, ctaClicks),
+    referred_creation_rate: ratio(referredStarts, referralRecognized || ctaClicks),
     republish_completed: republishes,
     republish_rate: ratio(republishes, referredStarts),
     eligible_parent_shares: eligibleParents,
@@ -418,7 +497,11 @@ export async function onRequestGet(context) {
              SUM(writer_focused) AS writer_focused,
              SUM(writer_first_input) AS writer_first_input,
              SUM(writer_first_urdu_success) AS writer_first_urdu_success,
-             SUM(writer_outcome_first) AS writer_outcome_first
+             SUM(writer_outcome_first) AS writer_outcome_first,
+             SUM(card_studio_export_step_reached) AS card_studio_export_step_reached,
+             SUM(card_studio_export_attempted) AS card_studio_export_attempted,
+             SUM(card_studio_export_quick) AS card_studio_export_quick,
+             SUM(card_studio_export_advanced) AS card_studio_export_advanced
       FROM product_hourly_metrics
       WHERE tool <> 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
       GROUP BY tool
@@ -521,7 +604,9 @@ export async function onRequestGet(context) {
     locale_breakdown: rows(localeResult),
     share_loop: shareLoop,
     voice: voiceSection(current, rows(toolResult)),
-    activation: activationSection(current, rows(toolResult))
+    activation: activationSection(current, rows(toolResult)),
+    card_studio_funnel: cardStudioSection(rows(toolResult)),
+    continuation: continuationSection(current)
   });
 }
 
