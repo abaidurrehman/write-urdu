@@ -97,6 +97,7 @@ export async function requireModerationContext(request, env = {}) {
   if (!allowedModerationHost(request, env)) return { response: error(404, 'not_found') };
   if (!hasD1Binding(env.METRICS_DB)) return { response: error(503, 'community_moderation_unavailable') };
 
+  console.log('TEMP_DEBUG_HEADERS', JSON.stringify(Array.from(request.headers.keys())));
   const moderatorEmail = trimmedString(request.headers.get(ACCESS_EMAIL_HEADER)).toLowerCase();
   if (!moderatorEmail || !EMAIL_PATTERN.test(moderatorEmail)) {
     return { response: error(401, 'moderator_identity_required') };
