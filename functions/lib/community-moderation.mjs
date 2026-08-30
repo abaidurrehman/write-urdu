@@ -7,7 +7,30 @@ const MAX_REJECTION_NOTE_CHARS = 500;
 const NULL_BYTE_PATTERN = new RegExp(String.fromCharCode(0), 'g');
 const SLUG_ALPHABET = '23456789abcdefghjkmnpqrstuvwxyz';
 const ACCESS_EMAIL_HEADER = 'cf-access-authenticated-user-email';
+const ACCESS_JWT_HEADER = 'cf-access-jwt-assertion';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Observed in production: on this Pages custom domain, Access forwards
+// Cf-Access-Jwt-Assertion (proof it already validated the token) but does not
+// also add Cf-Access-Authenticated-User-Email. Access strips/overwrites any
+// client-supplied copy of both headers before the Worker sees them, so
+// reading the email claim out of the already-Access-validated JWT carries the
+// same trust boundary as reading the pre-parsed header -- it is a fallback
+// for the same fact, not a weaker check. No signature re-verification is
+// attempted here for the same reason the email header itself isn't verified:
+// Access has already gated this request at the edge (see allowedModerationHost).
+function emailFromAccessJwt(token) {
+  const parts = String(token || '').split('.');
+  if (parts.length < 2) return '';
+  try {
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    const claims = JSON.parse(atob(padded));
+    return trimmedString(claims.email).toLowerCase();
+  } catch {
+    return '';
+  }
+}
 
 export const REJECTION_CODES = Object.freeze([
   'incomplete_or_low_quality',
@@ -97,8 +120,8 @@ export async function requireModerationContext(request, env = {}) {
   if (!allowedModerationHost(request, env)) return { response: error(404, 'not_found') };
   if (!hasD1Binding(env.METRICS_DB)) return { response: error(503, 'community_moderation_unavailable') };
 
-  console.log('TEMP_DEBUG_HEADERS', JSON.stringify(Array.from(request.headers.keys())));
-  const moderatorEmail = trimmedString(request.headers.get(ACCESS_EMAIL_HEADER)).toLowerCase();
+  const moderatorEmail = trimmedString(request.headers.get(ACCESS_EMAIL_HEADER)).toLowerCase()
+    || emailFromAccessJwt(request.headers.get(ACCESS_JWT_HEADER));
   if (!moderatorEmail || !EMAIL_PATTERN.test(moderatorEmail)) {
     return { response: error(401, 'moderator_identity_required') };
   }

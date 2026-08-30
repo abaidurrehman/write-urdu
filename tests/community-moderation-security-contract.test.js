@@ -64,6 +64,24 @@ assert.match(osScript, /credentials: 'same-origin'/, 'OS moderation client must 
   assert.strictEqual(response.status, 401);
   assert.strictEqual((await response.json()).error.code, 'moderator_identity_required');
 
+  // Access sometimes forwards only Cf-Access-Jwt-Assertion without the
+  // pre-parsed email header (observed in production on this Pages domain) --
+  // moderation must fall back to the email claim inside the already-validated JWT.
+  const jwtPayload = Buffer.from(JSON.stringify({ email: 'mod@write-urdu.com' })).toString('base64url');
+  response = await moderation.handleModerationQueue(
+    req('https://os.write-urdu.com/api/internal/community/moderation', { 'cf-access-jwt-assertion': `header.${jwtPayload}.sig` }),
+    { PRODUCT_OS_HOST: 'os.write-urdu.com', METRICS_DB: { prepare() { return {}; } } },
+    { repositoryFactory() { return { async listQueue() { return []; } }; } }
+  );
+  assert.strictEqual(response.status, 200, 'Missing email header must fall back to the Cf-Access-Jwt-Assertion email claim');
+
+  // A malformed/garbage JWT assertion must not be trusted blindly -- fails closed.
+  response = await moderation.handleModerationQueue(
+    req('https://os.write-urdu.com/api/internal/community/moderation', { 'cf-access-jwt-assertion': 'not-a-jwt' }),
+    { PRODUCT_OS_HOST: 'os.write-urdu.com', METRICS_DB: { prepare() { return {}; } } }
+  );
+  assert.strictEqual(response.status, 401);
+
   // Malformed header value (not an email) fails closed rather than trusting it blindly.
   response = await moderation.handleModerationQueue(
     req('https://os.write-urdu.com/api/internal/community/moderation', { 'cf-access-authenticated-user-email': 'not-an-email' }),
