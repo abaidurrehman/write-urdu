@@ -11,7 +11,6 @@ const guidePage = read('how-to-write-urdu-on-photo.html');
 const llms = read('llms.txt');
 const sitemap = read('sitemap.xml');
 const redirects = read('_redirects');
-const spec = read('specs/archive/implemented/WU-SEO-CS-001-card-studio-acquisition.md');
 
 const card = seo.byPath['/urdu-card-studio'];
 const guide = seo.byPath['/how-to-write-urdu-on-photo'];
@@ -23,6 +22,7 @@ assert.match(card.searchTitle || '', /Poetry|Post Maker/i, 'Card Studio acquisit
 assert.match(card.searchDescription || '', /photo/i, 'Card Studio acquisition description must explain photo creation');
 assert.match(card.searchDescription || '', /Nastaliq|Naskh/i, 'Card Studio acquisition description should surface Urdu font differentiation');
 assert.strictEqual(card.lastmod, '2026-08-17', 'Card Studio acquisition freshness date is missing');
+assert.strictEqual(Boolean(seo.byPath['/urdu-post-maker']), false, 'Keyword-clone Card Studio doorway route must not exist');
 
 const escapedCardTitle = (card.searchTitle || '').replace(/&/g, '&amp;');
 assert.ok(cardPage.includes(`<title>${escapedCardTitle}</title>`), 'Initial Card Studio HTML must expose the acquisition title without waiting for JavaScript');
@@ -50,6 +50,5 @@ assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/urdu-card-studio<\/loc>[\
 assert.match(redirects, /\/how-to-write-urdu-on-photo\/ \/how-to-write-urdu-on-photo 301/, 'Guide trailing-slash normalization is missing');
 assert.match(llms, /How to write Urdu on a photo/i, 'Guide is missing from llms.txt');
 assert.match(llms, /Urdu Card Studio[\s\S]*text or poetry on a photo/i, 'Card Studio acquisition role is missing from llms.txt');
-assert.match(spec, /No `\/urdu-post-maker`/, 'Doorway-page guardrail is missing from the acquisition spec');
 
 console.log('Card Studio SEO acquisition contract passed.');
