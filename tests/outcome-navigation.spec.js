@@ -86,9 +86,10 @@ test('footer is compact and organized around Write Urdu / Create / Help', async 
   await expect(page.locator('.wu-footer-privacy-note')).toHaveText('Your writing is yours. See Privacy for details.');
   await expect(page.locator('.wu-footer-privacy-note')).not.toContainText('stays in this browser');
   const utility = page.locator('.wu-footer-utility-links');
-  await expect(utility.locator('a')).toHaveCount(4);
+  await expect(utility.locator('a')).toHaveCount(5);
   await expect(utility).toContainText('Feedback');
   await expect(utility).toContainText('What’s new');
+  await expect(utility).toContainText('Community guidelines');
   await expect(utility).toContainText('Sitemap');
   await expect(utility).toContainText('Terms');
 });
@@ -139,5 +140,6 @@ test('language switch re-renders the outcome categories and compact footer in Ur
   await expect(page.locator('[data-wu-footer-group="write-urdu"] h2')).toHaveText('اردو لکھیں');
   await expect(page.locator('[data-wu-footer-group="help"] h2')).toHaveText('مدد');
   await expect(page.locator('.wu-footer-utility-links')).toContainText('نیا کیا ہے');
+  await expect(page.locator('.wu-footer-utility-links')).toContainText('کمیونٹی رہنما اصول');
   await expect(page.locator('.wu-footer-utility-links')).toContainText('شرائط');
 });
