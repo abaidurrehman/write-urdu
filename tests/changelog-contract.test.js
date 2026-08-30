@@ -30,17 +30,15 @@ assert.match(html, /<link rel="canonical" href="https:\/\/write-urdu\.com\/chang
 assert.match(html, /<h1[^>]*>New in Write Urdu<\/h1>/, 'Customer changelog H1 missing');
 
 const releases = html.match(/<article class="changelog-release"/g) || [];
-assert.ok(releases.length >= 8, 'Changelog must contain the verified customer-facing release history');
-const aug24 = html.indexOf('datetime="2026-08-24"');
-const aug22 = html.indexOf('datetime="2026-08-22"');
-const aug20 = html.indexOf('datetime="2026-08-20"');
-const aug19 = html.indexOf('datetime="2026-08-19"');
-const aug18 = html.indexOf('datetime="2026-08-18"');
-const aug17 = html.indexOf('datetime="2026-08-17"');
-assert.ok(
-    aug24 >= 0 && aug22 > aug24 && aug20 > aug22 && aug19 > aug20 && aug18 > aug19 && aug17 > aug18,
-    'Changelog releases must appear newest first'
-);
+assert.ok(releases.length >= 8, 'Changelog must retain meaningful customer-facing release history');
+const releaseDates = [...html.matchAll(/<time\b[^>]*datetime="(\d{4}-\d{2}-\d{2})"[^>]*>/g)].map(match => match[1]);
+assert.ok(releaseDates.length >= 8, 'Changelog releases must expose machine-readable dates');
+for (let index = 1; index < releaseDates.length; index += 1) {
+  assert.ok(
+    Date.parse(releaseDates[index - 1]) >= Date.parse(releaseDates[index]),
+    `Changelog releases must remain newest first: ${releaseDates[index - 1]} before ${releaseDates[index]}`
+  );
+}
 assert.match(html, /What changed/i, 'Changelog must explain what changed');
 assert.match(html, /Why it helps/i, 'Changelog must explain customer benefit');
 assert.match(html, /How to use it/i, 'Changelog must explain how to use shipped changes');
