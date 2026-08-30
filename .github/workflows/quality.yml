@@ -59,7 +59,23 @@ jobs:
         run: npx playwright test tests/inpage.spec.js
 
       - name: Run focused product browser acceptance
-        run: npx playwright test tests/sua.spec.js tests/journey.spec.js tests/outcome-navigation.spec.js tests/workspace-next-step.spec.js tests/core-workspace-convergence.spec.js tests/capture-continuity.spec.js tests/create-publish-boundaries.spec.js tests/v2-creation.spec.js tests/seo-acquisition.spec.js tests/role-journeys.spec.js tests/sitemap-directory.spec.js tests/account-documents-editors.spec.js tests/voice-mobile-acceptance.spec.js tests/urdu-locale.spec.js
+        run: >-
+          npx playwright test
+          tests/sua.spec.js
+          tests/journey.spec.js
+          tests/outcome-navigation.spec.js
+          tests/workspace-next-step.spec.js
+          tests/core-workspace-convergence.spec.js
+          tests/capture-continuity.spec.js
+          tests/create-publish-boundaries.spec.js
+          tests/v2-creation.spec.js
+          tests/seo-acquisition.spec.js
+          tests/role-journeys.spec.js
+          tests/sitemap-directory.spec.js
+          tests/account-documents-editors.spec.js
+          tests/voice-mobile-acceptance.spec.js
+          tests/writer-voice-input.spec.js
+          tests/urdu-locale.spec.js
 
       - name: Run V3 production visual-quality audit
         run: npx playwright test tests/v3-visual-quality.spec.js --project=desktop-chromium
