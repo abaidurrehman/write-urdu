@@ -57,12 +57,11 @@ Already-shipped SEO foundations still need operational verification:
 ## P0.4 — Community staged-launch acceptance
 
 **Spec:** [`WU-COMMUNITY-001`](WU-COMMUNITY-001-moderated-urdu-writing-publishing.md)  
-**State:** Slices A–F are shipped and test-covered. Submission/moderation/read/revise/withdraw code exists; public discovery remains deliberately staged.
+**State:** Slices A–F are shipped and test-covered. Submission/moderation/read/revise/withdraw code exists. `COMMUNITY_PUBLIC_ENABLED` is now on in production (2026-08-30) — `/urdu-writers` and its `/urdu/urdu-writers` counterpart are live and in normal nav/footer discovery (self-activating `Explore` group, gated by a runtime probe of `/api/community/publications`).
 
 Human/product gates still open:
 
 - [ ] Review Community Guidelines / Terms wording before broad promotion.
-- [ ] Decide when `COMMUNITY_PUBLIC_ENABLED` should be enabled and when `/urdu-writers` should enter normal navigation/discovery.
 - [ ] Decide the eventual ad-density policy for community reading pages.
 - [ ] Verify production rollback flags/toggles as part of the launch decision.
 
