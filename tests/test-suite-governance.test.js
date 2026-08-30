@@ -14,27 +14,13 @@ const runnerSource = read('scripts/run-contract-tests.js');
 const contractEntries = [...runnerSource.matchAll(/['"]tests\/([^'"]+\.test\.js)['"]/g)].map(match => match[1]);
 assert.deepEqual(duplicates(contractEntries), [], 'Contract runner must not list the same test twice');
 
-// This file is the body of the long-lived static compatibility wrapper. It is
-// intentionally required by static.test.js rather than executed standalone.
-const embeddedContractHelpers = new Set(['static-regression-core.test.js']);
-const diskContractTests = fs.readdirSync(testsDir)
-  .filter(file => file.endsWith('.test.js') && !embeddedContractHelpers.has(file))
-  .sort();
+const diskContractTests = fs.readdirSync(testsDir).filter(file => file.endsWith('.test.js')).sort();
 const ownedContractTests = contractEntries.map(file => path.basename(file)).sort();
 assert.deepEqual(
   ownedContractTests,
   diskContractTests,
-  'Every standalone .test.js file must be owned exactly once by the contract runner'
+  'Every .test.js file must be owned exactly once by the contract runner'
 );
-
-const staticWrapper = read('tests/static.test.js');
-for (const helper of embeddedContractHelpers) {
-  assert.match(
-    staticWrapper,
-    new RegExp(`require\\(['"]\\./${helper.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]\\)`),
-    `${helper} must remain explicitly owned by static.test.js until the legacy static suite is retired`
-  );
-}
 
 const playwrightConfig = require('../playwright.config.js');
 const configuredSpecs = (Array.isArray(playwrightConfig.testMatch) ? playwrightConfig.testMatch : [playwrightConfig.testMatch])
