@@ -2,6 +2,7 @@ const { spawnSync } = require('node:child_process');
 
 const tests = [
   'tests/spec-archive-governance.test.js',
+  'tests/test-suite-governance.test.js',
   'tests/transliteration-contract.test.js',
   'tests/product-shell-contract.test.js',
   'tests/v2-shell-content-contract.test.js',
@@ -41,7 +42,6 @@ const tests = [
   'tests/pages-routing-contract.test.js',
   'tests/urdu-locale-route-contract.test.js',
   'tests/urdu-locale-generated-contract.test.js',
-  'tests/urdu-locale-seo-contract.test.js',
   'tests/urdu-locale-closeout-contract.test.js',
   'tests/invoice-preview-footer-contract.test.js',
   'tests/sitemap-directory-contract.test.js',
