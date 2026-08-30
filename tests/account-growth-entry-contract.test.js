@@ -38,7 +38,7 @@ assert.match(growth, /documentsClient\.create\(\{ content: text, text \}, \{ edi
 assert.match(growth, /Save to My Documents/, 'Signed-in Voice users must have an explicit save action');
 assert.match(growth, /href="\/my-documents"/, 'Signed-in Voice users must be able to open My Documents');
 
-assert.match(serviceWorker, /write-urdu-shell-v37/, 'PWA generation must remain compatible with the current account-document shell');
+assert.match(serviceWorker, /write-urdu-shell-v38/, 'PWA generation must remain compatible with the current account-document shell');
 assert.match(serviceWorker, /\.\/js\/account-growth-entry\.mjs/, 'PWA shell must cache the new account/share growth controller');
 assert.match(registry, /`WU-GROWTH-002` \| Account Save \+ Share Entry Points/, 'Feature registry must include the growth entry-point contract');
 assert.match(spec, /Sharing remains available without an account\./, 'Spec must prohibit account-gating the viral share loop');

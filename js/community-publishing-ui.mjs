@@ -14,7 +14,7 @@ import {
 import {
   categoryLabel,
   tagLabel,
-  categoryOptionsMarkup,
+  categoryCardsMarkup,
   tagCheckboxesMarkup,
   formErrorMessage
 } from './community-publishing-taxonomy-ui.mjs';
@@ -133,12 +133,12 @@ function readFormState(form, state) {
 function formDialog(state) {
   const node = openDialog(`
     <form class="wu-community-form" data-wu-community-form>
-      <div class="wu-community-dialog-head">
-        <div>
-          <h2>Publish to Urdu Writers</h2>
-          <p>Share this writing with the WriteUrdu community. It will be reviewed before anyone else can see it.</p>
-        </div>
+      <div class="wu-community-hero">
         <button type="button" class="wu-community-dialog-close" aria-label="Close" data-wu-community-close>×</button>
+        <div class="wu-community-hero-art" aria-hidden="true"><i class="fas fa-feather-alt"></i></div>
+        <h2 class="wu-community-hero-urdu" lang="ur" dir="rtl">اپنی تحریر شائع کریں</h2>
+        <p class="wu-community-hero-en">Publish your writing</p>
+        <p class="wu-community-hero-copy">Share your poetry, essay, story or thoughts with the WriteUrdu community. Every submission is reviewed before publication.</p>
       </div>
       <label class="wu-community-field">
         <span>Title</span>
@@ -149,30 +149,28 @@ function formDialog(state) {
         <small>Type in English letters, then convert to Urdu script — or type Urdu directly.</small>
       </label>
       <label class="wu-community-field">
-        <span>Name shown with your writing</span>
+        <span>Published as</span>
         <input type="text" name="publicAuthorName" value="${escapeHtml(state.publicAuthorName)}" maxlength="${COMMUNITY_CONTENT_LIMITS.maxPublicAuthorChars}" required>
         <small>Use your name or a pen name. Readers never see your account email.</small>
       </label>
-      <label class="wu-community-field">
-        <span>Category</span>
-        <select name="primaryCategory" required>
-          <option value="" disabled${state.primaryCategory ? '' : ' selected'}>Choose one</option>
-          ${categoryOptionsMarkup(state.primaryCategory)}
-        </select>
-      </label>
       <fieldset class="wu-community-field">
-        <legend>Tags (choose 1 to 5)</legend>
+        <legend>What kind of writing is this?</legend>
+        <div class="wu-community-categories">${categoryCardsMarkup(state.primaryCategory)}</div>
+      </fieldset>
+      <fieldset class="wu-community-field">
+        <legend>Add 1 to 5 topics</legend>
         <div class="wu-community-tags">${tagCheckboxesMarkup(state.tags)}</div>
+        <small>You can select up to 5 topics.</small>
       </fieldset>
       <div class="wu-community-confirms">
-        <label><input type="checkbox" name="rightsConfirmed"${state.rightsConfirmed ? ' checked' : ''} required> I wrote this, or I have permission to publish it.</label>
-        <label><input type="checkbox" name="publicConfirmed"${state.publicConfirmed ? ' checked' : ''} required> I understand approved writing will be publicly readable on WriteUrdu.</label>
-        <label><input type="checkbox" name="guidelinesConfirmed"${state.guidelinesConfirmed ? ' checked' : ''} required> I agree to the <a href="/community-guidelines" target="_blank" rel="noopener">Community Publishing Guidelines</a>.</label>
+        <label><input type="checkbox" name="rightsConfirmed"${state.rightsConfirmed ? ' checked' : ''} required><span>I wrote this, or I have permission to publish it.</span></label>
+        <label><input type="checkbox" name="publicConfirmed"${state.publicConfirmed ? ' checked' : ''} required><span>I understand approved writing will be publicly readable on WriteUrdu.</span></label>
+        <label><input type="checkbox" name="guidelinesConfirmed"${state.guidelinesConfirmed ? ' checked' : ''} required><span>I agree to the <a href="/community-guidelines" target="_blank" rel="noopener">Community Publishing Guidelines</a>.</span></label>
       </div>
       <p class="wu-community-error" data-wu-community-form-error hidden></p>
       <div class="wu-community-dialog-actions">
         <button type="button" data-wu-community-close>Cancel</button>
-        <button type="submit" class="primary">Preview submission</button>
+        <button type="submit" class="primary"><i class="fas fa-feather-alt" aria-hidden="true"></i> Preview submission</button>
       </div>
     </form>`);
   bindClose(node);
