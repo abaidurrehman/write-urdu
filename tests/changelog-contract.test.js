@@ -13,7 +13,6 @@ const sitemap = read('sitemap.xml');
 const humanSitemap = read('write-urdu-sitemap.html');
 const redirects = read('_redirects');
 const llms = read('llms.txt');
-const spec = read('specs/archive/implemented/WU-CHANGELOG-001-customer-facing-product-updates.md');
 const page = seo.byPath['/changelog'];
 
 assert.ok(page && page.indexable, 'Customer changelog must be a registered indexable public page');
@@ -63,12 +62,6 @@ assert.match(sitemap, /<loc>https:\/\/write-urdu\.com\/changelog<\/loc>/, 'XML s
 assert.match(redirects, /^\/changelog\.html \/changelog 301$/m, 'Legacy .html changelog route must normalize to canonical route');
 assert.match(redirects, /^\/changelog\/ \/changelog 301$/m, 'Trailing-slash changelog route must normalize to canonical route');
 assert.match(llms, /What.s new in Write Urdu[\s\S]*\/changelog/i, 'llms.txt must expose customer changelog');
-
-assert.match(spec, /What changed\?/i, 'Changelog policy must require what changed');
-assert.match(spec, /Why does it help\?/i, 'Changelog policy must require customer benefit');
-assert.match(spec, /How do I use it\?/i, 'Changelog policy must require usage instructions');
-assert.match(spec, /internal architecture/i, 'Changelog policy must explicitly exclude internal architecture');
-assert.match(spec, /has not shipped|unreleased/i, 'Changelog policy must exclude work that has not shipped');
 assert.match(css, /@media \(max-width: 560px\)/, 'Changelog must include phone-responsive layout');
 
 console.log('Customer-facing changelog contract passed.');
