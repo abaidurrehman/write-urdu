@@ -5,8 +5,8 @@ This checklist is subordinate to `WU-PLAT-002H-core-activation-feature-discovery
 ## Gate A — Baseline and instrumentation
 
 - [ ] Confirm current Product Pulse event definitions for writing depth, active use, handoffs, Voice and Share.
-- [ ] Add/validate first-value funnel: eligible/visible -> focus -> input -> first Urdu success -> depth -> first outcome.
-- [ ] Add device/workspace/input-mode breakdown without collecting content.
+- [x] Add/validate first-value funnel: eligible/visible -> focus -> input -> first Urdu success -> depth -> first outcome.
+- [x] Add device/workspace/input-mode breakdown without collecting content.
 - [ ] Add continuation funnel: shown -> clicked -> destination ready -> meaningful start -> outcome.
 - [ ] Add Share referral trace through destination ready and referred start.
 - [ ] Add/validate Card Studio completion stages.

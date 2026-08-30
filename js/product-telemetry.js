@@ -7,6 +7,8 @@
     var FLUSH_DELAY = 4500;
     var ACTIVE_WINDOW_MS = 15000;
     var CORE_EDITOR_ROUTES = ['/', '/urdu-editor', '/urdu-keyboard'];
+    var URDU_CHAR_PATTERN = /[؀-ۿݐ-ݿ]/;
+    var DEPTH_THRESHOLDS = [20, 100, 500, 1000];
     var queue = [];
     var flushTimer = null;
     var engaged = false;
@@ -194,8 +196,32 @@
         lastActivityAt = Date.now();
     }
 
+    function writerFunnelEligible() {
+        return CORE_EDITOR_ROUTES.indexOf(route) >= 0;
+    }
+
+    function trackWriterFunnel() {
+        if (!writerFunnelEligible()) return;
+        trackOnce('writer-first-input', 'writer_first_input');
+        var text = textLength() === null ? '' : String(editorReader() || '');
+        var trimmedLength = text.trim().length;
+        if (URDU_CHAR_PATTERN.test(text)) {
+            trackOnce('writer-first-urdu-success', 'writer_first_urdu_success', {
+                input_mode: currentInputMode !== 'unknown' ? currentInputMode : null
+            });
+        }
+        DEPTH_THRESHOLDS.forEach(function (threshold) {
+            if (trimmedLength >= threshold) {
+                trackOnce('writer-depth-' + threshold, 'writer_depth_' + threshold, {
+                    length_bucket: lengthBucket(trimmedLength)
+                });
+            }
+        });
+    }
+
     function markEngaged() {
         noteActivity();
+        trackWriterFunnel();
         if (engaged) return;
         engaged = true;
         var detail = {};
@@ -205,13 +231,18 @@
         track(CORE_EDITOR_ROUTES.indexOf(route) >= 0 ? 'editor_engaged' : 'tool_engaged', detail);
     }
 
+    function noteWriterFocus() {
+        noteActivity();
+        if (writerFunnelEligible()) trackOnce('writer-focused', 'writer_focused');
+    }
+
     function attachTextarea(node) {
         if (!node) return false;
         editorReader = function () { return node.value; };
         ['input', 'keyup', 'paste', 'change'].forEach(function (name) {
             node.addEventListener(name, markEngaged, { passive: true });
         });
-        node.addEventListener('focus', noteActivity, { passive: true });
+        node.addEventListener('focus', noteWriterFocus, { passive: true });
         return true;
     }
 
@@ -228,7 +259,7 @@
         var editor = window.tinymce.activeEditor;
         editorReader = function () { return editor.getContent({ format: 'text' }); };
         editor.on('input change keyup paste', markEngaged);
-        editor.on('focus', noteActivity);
+        editor.on('focus', noteWriterFocus);
         return true;
     }
 
@@ -266,6 +297,7 @@
         }
         if (detail.input_mode === 'voice') currentInputMode = 'voice';
         track(name, detail);
+        if (writerFunnelEligible()) trackOnce('writer-outcome-first', 'writer_outcome_first');
         if (typeof document !== 'undefined' && document.dispatchEvent) {
             document.dispatchEvent(new CustomEvent('write-urdu:outcome', { detail: { name: name, detail: detail } }));
         }
@@ -500,6 +532,7 @@
         installOutcomeHooks();
         startActiveTimer();
         track('page_session_started');
+        if (writerFunnelEligible()) trackOnce('writer-viewed', 'writer_viewed');
         document.addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'hidden') flush(true);
         });

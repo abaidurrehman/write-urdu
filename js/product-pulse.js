@@ -260,6 +260,88 @@
     }
   }
 
+  function renderActivation(data) {
+    var activation = data.activation || {};
+    var panel = q('#activationFunnelPanel');
+    if (!panel) return;
+
+    var funnel = activation.funnel || {};
+    var conversion = activation.conversion || {};
+    var classification = activation.session_classification || {};
+
+    var kpis = {
+      writer_viewed: q('[data-activation-kpi="writer_viewed"]'),
+      focused_rate: q('[data-activation-kpi="focused_rate"]'),
+      first_input_rate: q('[data-activation-kpi="first_input_rate"]'),
+      first_urdu_success_rate: q('[data-activation-kpi="first_urdu_success_rate"]'),
+      outcome_rate: q('[data-activation-kpi="outcome_rate"]')
+    };
+
+    if (!activation.ready) {
+      Object.keys(kpis).forEach(function (key) { if (kpis[key]) kpis[key].textContent = '—'; });
+      renderBars('#activationFunnelBars', [], 'label', 'value');
+      renderBars('#activationClassificationBars', [], 'label', 'value');
+      renderBars('#activationDeviceBars', [], 'device_class', 'sessions');
+      var body = q('#activationWorkspaceRows');
+      if (body) body.innerHTML = '<tr><td colspan="6" class="os-empty">No writer activity yet for this period.</td></tr>';
+      return;
+    }
+
+    if (kpis.writer_viewed) kpis.writer_viewed.textContent = fmt(funnel.writer_viewed);
+    if (kpis.focused_rate) kpis.focused_rate.textContent = percent(conversion.focused_rate);
+    if (kpis.first_input_rate) kpis.first_input_rate.textContent = percent(conversion.first_input_rate);
+    if (kpis.first_urdu_success_rate) kpis.first_urdu_success_rate.textContent = percent(conversion.first_urdu_success_rate);
+    if (kpis.outcome_rate) kpis.outcome_rate.textContent = percent(conversion.outcome_rate);
+
+    renderBars('#activationFunnelBars', [
+      { label: 'Viewed', value: funnel.writer_viewed },
+      { label: 'Focused', value: funnel.writer_focused },
+      { label: 'First input', value: funnel.writer_first_input },
+      { label: 'First Urdu success', value: funnel.writer_first_urdu_success },
+      { label: 'First outcome', value: funnel.writer_outcome_first }
+    ], 'label', 'value');
+
+    renderBars('#activationClassificationBars', [
+      { label: 'Visible, never focused', value: classification.visible_not_focused },
+      { label: 'Focused, no input', value: classification.focused_no_input },
+      { label: 'Input, no Urdu success', value: classification.input_no_urdu_success },
+      { label: 'Urdu success, no outcome', value: classification.success_no_outcome },
+      { label: 'Success with outcome', value: classification.success_with_outcome }
+    ], 'label', 'value');
+
+    renderBars('#activationDeviceBars', activation.eligible_workspace_devices || [], 'device_class', 'sessions', function (label) {
+      return safeText(label).replace(/^./, function (c) { return c.toUpperCase(); });
+    });
+
+    var rows = q('#activationWorkspaceRows');
+    if (rows) {
+      rows.innerHTML = '';
+      var workspaces = activation.by_workspace || [];
+      if (!workspaces.length) {
+        rows.innerHTML = '<tr><td colspan="6" class="os-empty">No workspace has writer activity yet for this period.</td></tr>';
+      } else {
+        workspaces.forEach(function (item) {
+          var row = document.createElement('tr');
+          var values = [
+            toolLabels[item.tool] || item.tool,
+            fmt(item.writer_viewed),
+            fmt(item.writer_focused),
+            fmt(item.writer_first_input),
+            fmt(item.writer_first_urdu_success),
+            fmt(item.writer_outcome_first)
+          ];
+          values.forEach(function (value, index) {
+            var cell = document.createElement('td');
+            cell.className = index === 0 ? 'os-tool-name' : 'num';
+            cell.textContent = value;
+            row.appendChild(cell);
+          });
+          rows.appendChild(row);
+        });
+      }
+    }
+  }
+
   function orderedBuckets(items, order) {
     var map = {};
     (items || []).forEach(function (item) { map[item.bucket] = item; });
@@ -356,6 +438,7 @@
     renderKpis(data);
     renderOutcomes(data);
     renderVoiceCrossWorkspace(data);
+    renderActivation(data);
     renderShareLoop(data);
     renderDistributions(data);
     renderTools(data);

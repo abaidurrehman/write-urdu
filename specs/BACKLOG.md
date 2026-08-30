@@ -41,9 +41,9 @@ Execution gates:
 
 ### P0.1A — First-value measurement
 
-- [ ] Validate `writer eligible/visible → focus → first input → first successful Urdu → depth → first outcome`.
-- [ ] Split at minimum by mobile/desktop, workspace and input mode.
-- [ ] Distinguish true pre-input loss from non-writing intent/telemetry classification; do not call every zero-char visit abandonment.
+- [x] Validate `writer eligible/visible → focus → first input → first successful Urdu → depth → first outcome`.
+- [x] Split at minimum by mobile/desktop, workspace and input mode.
+- [x] Distinguish true pre-input loss from non-writing intent/telemetry classification; do not call every zero-char visit abandonment.
 - [ ] Add continuation and Share-referral destination-ready/meaningful-start measurement.
 - [ ] Add/validate Card Studio completion funnel.
 - [ ] Fix misleading dashboard `rate` labels that can exceed 100% because repeated events are used as numerators.

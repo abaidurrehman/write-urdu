@@ -69,6 +69,25 @@ assert.match(html, /id="voiceCrossWorkspacePanel"/, 'Dashboard must expose a cro
 assert.match(html, /Voice adoption across workspaces/, 'Cross-workspace Voice panel must be labelled distinctly from the Voice Typing signup funnel panel');
 assert.match(client, /function renderVoiceCrossWorkspace\(/, 'Dashboard client must render the cross-workspace Voice section');
 
+// WU-PLAT-002H Gate A: extend the existing Product Pulse reporting with the
+// H1 first-value funnel (visit -> focus -> first input -> first Urdu success
+// -> outcome) so the zero-character session population can be explained more
+// precisely than "abandoned" — sourced from the existing per-tool
+// product_hourly_metrics counters (migration 0015), no session-level join.
+assert.match(telemetry, /writer_viewed/, 'Telemetry collector must emit the writer_viewed first-value event');
+assert.match(telemetry, /writer_focused/, 'Telemetry collector must emit the writer_focused first-value event');
+assert.match(telemetry, /writer_first_input/, 'Telemetry collector must emit the writer_first_input first-value event');
+assert.match(telemetry, /writer_first_urdu_success/, 'Telemetry collector must emit the writer_first_urdu_success first-value event');
+assert.match(telemetry, /writer_depth_/, 'Telemetry collector must emit writer depth checkpoints');
+assert.match(telemetry, /writer_outcome_first/, 'Telemetry collector must emit the writer_outcome_first first-value event');
+assert.match(api, /function activationSection\(/, 'Product Pulse API must build a first-value funnel section');
+assert.match(api, /session_classification/, 'First-value section must classify sessions instead of labelling all zero-char sessions abandoned');
+assert.match(api, /visible_not_focused/, 'First-value section must expose the visible-but-unfocused session state');
+assert.doesNotMatch(api, /editor_text|roman_urdu_text|urdu_text|filename|clipboard_content|user_agent|referrer/i, 'First-value funnel must not introduce content or identity fields');
+assert.match(html, /id="activationFunnelPanel"/, 'Dashboard must expose a first-value funnel panel');
+assert.match(html, /First value/, 'First-value panel must be labelled distinctly from other panels');
+assert.match(client, /function renderActivation\(/, 'Dashboard client must render the first-value funnel section');
+
 // Product Pulse itself must not load the public telemetry collector and create
 // founder/admin visits in product metrics.
 assert.doesNotMatch(html, /product-telemetry\.js/, 'Product Pulse must not measure its own founder usage');

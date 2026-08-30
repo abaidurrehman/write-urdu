@@ -4,6 +4,10 @@ const VOICE_METRIC_COLUMNS = [
   'voice_error_permission_denied', 'voice_error_audio_capture', 'voice_error_no_speech',
   'voice_error_network', 'voice_error_language_unsupported', 'voice_error_unknown'
 ];
+const WRITER_FUNNEL_METRIC_COLUMNS = [
+  'writer_viewed', 'writer_focused', 'writer_first_input', 'writer_first_urdu_success',
+  'writer_depth_20', 'writer_depth_100', 'writer_depth_500', 'writer_depth_1000', 'writer_outcome_first'
+];
 const METRIC_COLUMNS = [
   'visits', 'engaged_visits', 'copies', 'exports',
   'export_pdf', 'export_png', 'export_png_transparent', 'export_jpeg', 'export_doc', 'export_txt', 'export_svg',
@@ -14,7 +18,7 @@ const METRIC_COLUMNS = [
   'active_0_10', 'active_11_30', 'active_31_60', 'active_61_180', 'active_181_600', 'active_600_plus',
   'input_roman', 'input_direct', 'input_unknown', 'input_voice',
   'device_mobile', 'device_tablet', 'device_desktop'
-].concat(VOICE_METRIC_COLUMNS);
+].concat(VOICE_METRIC_COLUMNS).concat(WRITER_FUNNEL_METRIC_COLUMNS);
 const SHARE_METRIC_COLUMNS = [
   'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
   'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
@@ -181,6 +185,83 @@ function voiceSection(current, toolRows) {
   };
 }
 
+// WU-PLAT-002H Gate A: first-value funnel (H1). Answers whether the
+// zero-character session population is UX abandonment, telemetry noise, or
+// non-writing intent by exposing session-state counts between page visit and
+// first useful outcome. Reads only the existing per-tool product_hourly_metrics
+// counters from migration 0015 -- no session-level join, no content.
+const WRITER_ELIGIBLE_TOOLS = ['basic_editor', 'rich_editor', 'urdu_keyboard'];
+
+function activationSection(current, toolRows) {
+  const viewed = n(current, 'writer_viewed');
+  const focused = n(current, 'writer_focused');
+  const firstInput = n(current, 'writer_first_input');
+  const firstUrduSuccess = n(current, 'writer_first_urdu_success');
+  const outcomeFirst = n(current, 'writer_outcome_first');
+
+  const byWorkspace = (toolRows || [])
+    .filter((row) => WRITER_ELIGIBLE_TOOLS.indexOf(row.tool) >= 0 && n(row, 'writer_viewed') > 0)
+    .map((row) => ({
+      tool: row.tool,
+      writer_viewed: n(row, 'writer_viewed'),
+      writer_focused: n(row, 'writer_focused'),
+      writer_first_input: n(row, 'writer_first_input'),
+      writer_first_urdu_success: n(row, 'writer_first_urdu_success'),
+      writer_outcome_first: n(row, 'writer_outcome_first'),
+      device_mobile: n(row, 'device_mobile'),
+      device_tablet: n(row, 'device_tablet'),
+      device_desktop: n(row, 'device_desktop')
+    }))
+    .sort((a, b) => b.writer_viewed - a.writer_viewed);
+
+  const eligibleDevices = byWorkspace.reduce((totals, row) => {
+    totals.mobile += row.device_mobile;
+    totals.tablet += row.device_tablet;
+    totals.desktop += row.device_desktop;
+    return totals;
+  }, { mobile: 0, tablet: 0, desktop: 0 });
+
+  return {
+    ready: viewed > 0,
+    funnel: {
+      writer_viewed: viewed,
+      writer_focused: focused,
+      writer_first_input: firstInput,
+      writer_first_urdu_success: firstUrduSuccess,
+      writer_depth_20: n(current, 'writer_depth_20'),
+      writer_depth_100: n(current, 'writer_depth_100'),
+      writer_depth_500: n(current, 'writer_depth_500'),
+      writer_depth_1000: n(current, 'writer_depth_1000'),
+      writer_outcome_first: outcomeFirst
+    },
+    conversion: {
+      focused_rate: ratio(focused, viewed),
+      first_input_rate: ratio(firstInput, focused),
+      first_urdu_success_rate: ratio(firstUrduSuccess, firstInput),
+      outcome_rate: ratio(outcomeFirst, firstUrduSuccess)
+    },
+    // Session classification per the H1 acceptance contract: replaces the
+    // blanket "abandoned" label for zero-character sessions with the point
+    // in the funnel where the session actually stopped.
+    session_classification: {
+      visible_not_focused: Math.max(0, viewed - focused),
+      focused_no_input: Math.max(0, focused - firstInput),
+      input_no_urdu_success: Math.max(0, firstInput - firstUrduSuccess),
+      success_no_outcome: Math.max(0, firstUrduSuccess - outcomeFirst),
+      success_with_outcome: outcomeFirst
+    },
+    by_workspace: byWorkspace,
+    // Device is captured on page visits, not on individual writer-funnel
+    // events, so this is the device mix of writer-eligible traffic, not a
+    // per-funnel-step device split.
+    eligible_workspace_devices: [
+      { device_class: 'desktop', sessions: eligibleDevices.desktop },
+      { device_class: 'mobile', sessions: eligibleDevices.mobile },
+      { device_class: 'tablet', sessions: eligibleDevices.tablet }
+    ].filter((item) => item.sessions > 0)
+  };
+}
+
 async function shareLoopForWindow(db, bounds) {
   const [hasMetrics, hasArtifacts] = await Promise.all([
     tableExists(db, 'share_hourly_metrics'),
@@ -332,11 +413,16 @@ export async function onRequestGet(context) {
              SUM(voice_selected) AS voice_selected,
              SUM(voice_started) AS voice_started,
              SUM(voice_final) AS voice_final,
-             SUM(voice_switch_continued) AS voice_switch_continued
+             SUM(voice_switch_continued) AS voice_switch_continued,
+             SUM(writer_viewed) AS writer_viewed,
+             SUM(writer_focused) AS writer_focused,
+             SUM(writer_first_input) AS writer_first_input,
+             SUM(writer_first_urdu_success) AS writer_first_urdu_success,
+             SUM(writer_outcome_first) AS writer_outcome_first
       FROM product_hourly_metrics
       WHERE tool <> 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
       GROUP BY tool
-      HAVING SUM(visits) > 0 OR SUM(engaged_visits) > 0 OR SUM(copies) > 0 OR SUM(exports) > 0 OR SUM(voice_exposed) > 0
+      HAVING SUM(visits) > 0 OR SUM(engaged_visits) > 0 OR SUM(copies) > 0 OR SUM(exports) > 0 OR SUM(voice_exposed) > 0 OR SUM(writer_viewed) > 0
       ORDER BY sessions DESC, engaged_sessions DESC
     `).bind(bounds.currentStart, bounds.currentEnd).all(),
     db.prepare(`
@@ -434,7 +520,8 @@ export async function onRequestGet(context) {
     daily: rows(dailyResult),
     locale_breakdown: rows(localeResult),
     share_loop: shareLoop,
-    voice: voiceSection(current, rows(toolResult))
+    voice: voiceSection(current, rows(toolResult)),
+    activation: activationSection(current, rows(toolResult))
   });
 }
 

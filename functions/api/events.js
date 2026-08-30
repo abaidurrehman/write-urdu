@@ -41,7 +41,16 @@ const EVENT_NAMES = new Set([
     'community_my_publications_viewed',
     'community_revision_started',
     'community_revision_submitted',
-    'community_publication_withdrawn'
+    'community_publication_withdrawn',
+    'writer_viewed',
+    'writer_focused',
+    'writer_first_input',
+    'writer_first_urdu_success',
+    'writer_depth_20',
+    'writer_depth_100',
+    'writer_depth_500',
+    'writer_depth_1000',
+    'writer_outcome_first'
 ]);
 
 const TOOLS = new Set([
@@ -74,7 +83,9 @@ const METRIC_COLUMNS = [
     'voice_exposed', 'voice_selected', 'voice_started', 'voice_final', 'voice_switch_continued',
     'voice_error_permission_denied', 'voice_error_audio_capture', 'voice_error_no_speech',
     'voice_error_network', 'voice_error_language_unsupported', 'voice_error_unknown',
-    'community_views', 'community_cta_clicks'
+    'community_views', 'community_cta_clicks',
+    'writer_viewed', 'writer_focused', 'writer_first_input', 'writer_first_urdu_success',
+    'writer_depth_20', 'writer_depth_100', 'writer_depth_500', 'writer_depth_1000', 'writer_outcome_first'
 ];
 
 const SHARE_METRIC_COLUMNS = [
@@ -409,6 +420,15 @@ function applyEvent(delta, event) {
     }
     if (event.eventName === 'community_publication_viewed') delta.community_views += 1;
     if (event.eventName === 'community_write_cta_clicked') delta.community_cta_clicks += 1;
+    if (event.eventName === 'writer_viewed') delta.writer_viewed += 1;
+    if (event.eventName === 'writer_focused') delta.writer_focused += 1;
+    if (event.eventName === 'writer_first_input') delta.writer_first_input += 1;
+    if (event.eventName === 'writer_first_urdu_success') delta.writer_first_urdu_success += 1;
+    if (event.eventName === 'writer_depth_20') delta.writer_depth_20 += 1;
+    if (event.eventName === 'writer_depth_100') delta.writer_depth_100 += 1;
+    if (event.eventName === 'writer_depth_500') delta.writer_depth_500 += 1;
+    if (event.eventName === 'writer_depth_1000') delta.writer_depth_1000 += 1;
+    if (event.eventName === 'writer_outcome_first') delta.writer_outcome_first += 1;
 }
 
 function applyShareEvent(delta, event) {

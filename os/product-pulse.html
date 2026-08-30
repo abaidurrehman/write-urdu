@@ -104,6 +104,29 @@
         <div class="os-panel-note" style="margin-top:12px">Aggregate hourly counters only — no voice transcript, audio or session-level join. Switch-to-manual is a correction/continuation proxy, never proof that speech was wrong.</div>
       </article>
 
+      <article class="os-card os-panel span-12" id="activationFunnelPanel">
+        <div class="os-panel-head"><h2>First value</h2><span class="os-panel-note">Visit → focus → first input → first Urdu success → outcome — WU-PLAT-002H Gate A</span></div>
+        <section class="os-kpis" aria-label="First-value funnel metrics">
+          <article class="os-card os-kpi"><div class="os-kpi-label">Writer viewed</div><div class="os-kpi-value" data-activation-kpi="writer_viewed">—</div><div class="os-kpi-meta">Basic/Rich/Keyboard visits</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Focused</div><div class="os-kpi-value" data-activation-kpi="focused_rate">—</div><div class="os-kpi-meta">Focused ÷ viewed</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">First input</div><div class="os-kpi-value" data-activation-kpi="first_input_rate">—</div><div class="os-kpi-meta">First input ÷ focused</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">First Urdu success</div><div class="os-kpi-value" data-activation-kpi="first_urdu_success_rate">—</div><div class="os-kpi-meta">Urdu produced ÷ first input</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">First outcome</div><div class="os-kpi-value" data-activation-kpi="outcome_rate">—</div><div class="os-kpi-meta">Copy/export/share/save ÷ Urdu success</div></article>
+        </section>
+        <div class="os-grid">
+          <div class="span-5"><div class="os-panel-head"><h2>Funnel volume</h2><span class="os-panel-note">Current period</span></div><div class="os-bars" id="activationFunnelBars"></div></div>
+          <div class="span-4"><div class="os-panel-head"><h2>Where sessions stop</h2><span class="os-panel-note">Not all zero-character sessions are "abandoned"</span></div><div class="os-bars" id="activationClassificationBars"></div></div>
+          <div class="span-3"><div class="os-panel-head"><h2>Writer-eligible traffic by device</h2><span class="os-panel-note">Visits to writer workspaces</span></div><div class="os-bars" id="activationDeviceBars"></div></div>
+        </div>
+        <div class="os-table-wrap" style="margin-top:18px">
+          <table>
+            <thead><tr><th>Workspace</th><th class="num">Viewed</th><th class="num">Focused</th><th class="num">First input</th><th class="num">First Urdu success</th><th class="num">First outcome</th></tr></thead>
+            <tbody id="activationWorkspaceRows"></tbody>
+          </table>
+        </div>
+        <div class="os-panel-note" style="margin-top:12px">Aggregate hourly counters only — no typed text, transcript, filename or document ID. A click is never counted as the final outcome.</div>
+      </article>
+
       <article class="os-card os-panel span-12" id="shareLoopPanel">
         <div class="os-panel-head"><h2>Share Loop</h2><span class="os-panel-note">Publish → visit → create → republish</span></div>
         <section class="os-kpis" aria-label="Share loop metrics">
