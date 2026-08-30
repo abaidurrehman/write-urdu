@@ -26,7 +26,8 @@ assert.match(backlog, /P0\.1 — Core Activation & Feature Discovery/, 'Core act
 assert.match(backlog, /Do not start another major unrelated feature/i, 'Backlog must preserve the activation roadmap gate');
 assert.match(backlog, /P0\.2 — Mature-domain growth baseline and authority\/revenue map/, 'AdSense/revenue baseline must continue in parallel');
 
-assert.match(activation, /1,000 sessions with zero characters is different|1,000 zero-character|1,000 measured zero-character/i, 'Activation contract must retain the zero-character evidence trigger');
+assert.match(activation, /- 0 chars: \*\*1,000\*\*/, 'Activation contract must retain the measured 1,000-session zero-character baseline');
+assert.match(activation, /0-character bucket is \*\*55\.6%\*\*/i, 'Activation contract must retain the zero-character population context');
 assert.match(activation, /Do not label all zero-char sessions `abandonment`/i, 'Activation contract must not treat the entire zero-char bucket as proven abandonment');
 assert.match(activation, /one growth request at a time/i, 'Activation contract must arbitrate growth prompts');
 assert.match(activation, /Mobile first-screen contract/i, 'Activation contract must include mobile-first acceptance');
