@@ -95,7 +95,7 @@ const revisionDates = {
   '/urdu-name-art-maker': '2026-08-13',
   '/urdu-card-studio': '2026-08-17',
   '/how-to-share-urdu-writing-online': '2026-08-17',
-  '/write-urdu-privacy': '2026-08-22',
+  '/write-urdu-privacy': '2026-08-29',
   '/contact': '2026-08-22',
   '/write-urdu-sitemap': '2026-08-15'
 };
