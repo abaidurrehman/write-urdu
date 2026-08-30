@@ -325,28 +325,45 @@ export function pageResponse(html, status, robots) {
   });
 }
 
+// Verbatim copies of the site's static nav/footer shell (js/site-header-core.js
+// upgrades whichever <nav>/<footer> it finds at runtime; scripts/sync-static-shell.js
+// keeps every real HTML page's copy current). This route has no static HTML source
+// (it's a Function), so it sits outside that sync and must be updated by hand if the
+// site nav/footer registry changes -- same accepted tradeoff already noted for why
+// `/urdu-writers` has no `source` entry in locale.config.js.
+const STATIC_NAV_EN = '<nav class="navbar wu-static-site-nav" data-wu-static-shell="nav" aria-label="Primary navigation"><a class="wu-static-brand" href="/">Write Urdu</a><div class="wu-static-nav-groups"><div class="wu-static-nav-group" data-wu-static-nav-group="write"><strong>Write</strong><a href="/">Start writing in Urdu</a><a href="/urdu-keyboard">Type directly in Urdu</a><a href="/urdu-editor">Format an assignment or document</a><a href="/tools/urdu-voice-typing">Speak and turn it into Urdu text</a><a href="/urdu-ocr">Extract Urdu text from an image</a><a href="/urdu-text-cleaner">Fix broken or messy Urdu text</a><a href="/tools/inpage-unicode-converter">Convert older InPage Urdu</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="create"><strong>Create</strong><a href="/urdu-card-studio">Make a poetry, quote or announcement image</a><a href="/urdu-whatsapp-status-maker">Create a WhatsApp Status</a><a href="/urdu-instagram-post-maker">Create an Instagram post</a><a href="/urdu-name-art-maker">Make Urdu Name Art or a profile image</a><a href="/stylish-urdu-text-generator">Create stylish copyable Urdu text</a><a href="/urdu-templates">Start from a ready-made design</a><a href="/qr-code-generator">Turn text or a link into a QR code</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="work"><strong>Work</strong><a href="/urdu-invoice-generator">Create an Urdu or English invoice</a><a href="/urdu-editor">Prepare a formal Urdu document</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="learn"><strong>Learn</strong><a href="/urdu-alphabet">Learn the Urdu alphabet</a><a href="/roman-urdu-transliteration">How English to Urdu typing works</a><a href="/urdu-fonts-nastaliq-vs-naskh">Choose an Urdu font</a><a href="/english-urdu-typing-tutorial">Learn English-to-Urdu typing</a><a href="/how-to-write-urdu-on-photo">Learn to put Urdu on a photo</a><a href="/how-to-share-urdu-writing-online">Learn to share Urdu writing online</a><a href="/write-urdu-documentation">Use Write Urdu documentation</a><a href="/urdu-faq">Get answers to common questions</a></div></div></nav>';
+const STATIC_NAV_UR = '<nav class="navbar wu-static-site-nav" data-wu-static-shell="nav" aria-label="بنیادی نیویگیشن"><a class="wu-static-brand" href="/urdu/">رائٹ اردو</a><div class="wu-static-nav-groups"><div class="wu-static-nav-group" data-wu-static-nav-group="write"><strong>لکھیں</strong><a href="/urdu/">اردو لکھنا شروع کریں</a><a href="/urdu/urdu-keyboard">اردو براہِ راست ٹائپ کریں</a><a href="/urdu/urdu-editor">اسائنمنٹ یا دستاویز فارمیٹ کریں</a><a href="/urdu/tools/urdu-voice-typing">بول کر اردو متن بنائیں</a><a href="/urdu-ocr">تصویر سے اردو متن نکالیں</a><a href="/urdu-text-cleaner">خراب یا بکھرا ہوا اردو متن درست کریں</a><a href="/tools/inpage-unicode-converter">پرانا InPage متن تبدیل کریں</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="create"><strong>بنائیں</strong><a href="/urdu/urdu-card-studio">شاعری، اقتباس یا اعلان کی تصویر بنائیں</a><a href="/urdu-whatsapp-status-maker">واٹس ایپ اسٹیٹس بنائیں</a><a href="/urdu-instagram-post-maker">انسٹاگرام پوسٹ بنائیں</a><a href="/urdu-name-art-maker">اردو نام آرٹ یا پروفائل تصویر بنائیں</a><a href="/stylish-urdu-text-generator">خوب صورت کاپی ہونے والا اردو متن بنائیں</a><a href="/urdu-templates">تیار ڈیزائن سے شروع کریں</a><a href="/qr-code-generator">متن یا لنک کو QR کوڈ بنائیں</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="work"><strong>کام</strong><a href="/urdu-invoice-generator">اردو یا انگریزی انوائس بنائیں</a><a href="/urdu/urdu-editor">رسمی اردو دستاویز تیار کریں</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="learn"><strong>سیکھیں</strong><a href="/urdu/urdu-alphabet">اردو حروف تہجی سیکھیں</a><a href="/roman-urdu-transliteration">انگریزی سے اردو ٹائپنگ کیسے کام کرتی ہے</a><a href="/urdu-fonts-nastaliq-vs-naskh">اردو فونٹ منتخب کریں</a><a href="/english-urdu-typing-tutorial">انگریزی سے اردو ٹائپنگ سیکھیں</a><a href="/urdu/how-to-write-urdu-on-photo">تصویر پر اردو لکھنا سیکھیں</a><a href="/how-to-share-urdu-writing-online">اردو تحریر آن لائن شیئر کرنا سیکھیں</a><a href="/write-urdu-documentation">رائٹ اردو دستاویزات دیکھیں</a><a href="/urdu/urdu-faq">عام سوالات کے جواب حاصل کریں</a></div></div></nav>';
+const STATIC_FOOTER_EN = '<footer data-wu-static-shell="footer"><nav class="wu-static-footer-nav" aria-label="Footer navigation"><div class="wu-static-footer-group" data-wu-static-footer-group="write-urdu"><strong>Write Urdu</strong><a href="/">English to Urdu typing</a><a href="/urdu-keyboard">Urdu keyboard</a><a href="/urdu-editor">Urdu editor</a><a href="/tools/urdu-voice-typing">Voice to Urdu</a><a href="/urdu-text-cleaner">Fix Urdu text</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="create"><strong>Create</strong><a href="/urdu-card-studio">Urdu image maker</a><a href="/urdu-whatsapp-status-maker">WhatsApp status</a><a href="/urdu-instagram-post-maker">Instagram post</a><a href="/urdu-name-art-maker">Urdu name art</a><a href="/qr-code-generator">QR code</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="help"><strong>Help</strong><a href="/english-urdu-typing-tutorial">How to type Urdu</a><a href="/urdu-alphabet">Urdu alphabet</a><a href="/urdu-faq">FAQ</a><a href="/why-write-urdu">About</a><a href="/write-urdu-privacy">Privacy</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="trust"><strong>Help & trust</strong><a href="/urdu-writing-templates">Writing templates</a><a href="/why-write-urdu">About Write Urdu</a><a href="/contact">Contact</a><a href="/write-urdu-privacy">Privacy and terms</a><a href="/write-urdu-sitemap">Sitemap</a></div></nav></footer>';
+const STATIC_FOOTER_UR = '<footer data-wu-static-shell="footer"><nav class="wu-static-footer-nav" aria-label="فوٹر نیویگیشن"><div class="wu-static-footer-group" data-wu-static-footer-group="write-urdu"><strong>اردو لکھیں</strong><a href="/urdu/">انگریزی سے اردو ٹائپنگ</a><a href="/urdu/urdu-keyboard">اردو کی بورڈ</a><a href="/urdu/urdu-editor">اردو ایڈیٹر</a><a href="/urdu/tools/urdu-voice-typing">آواز سے اردو</a><a href="/urdu-text-cleaner">اردو متن درست کریں</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="create"><strong>بنائیں</strong><a href="/urdu/urdu-card-studio">اردو تصویر بنائیں</a><a href="/urdu-whatsapp-status-maker">واٹس ایپ اسٹیٹس</a><a href="/urdu-instagram-post-maker">انسٹاگرام پوسٹ</a><a href="/urdu-name-art-maker">اردو نام آرٹ</a><a href="/qr-code-generator">QR کوڈ</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="help"><strong>مدد</strong><a href="/english-urdu-typing-tutorial">اردو کیسے ٹائپ کریں</a><a href="/urdu/urdu-alphabet">اردو حروف تہجی</a><a href="/urdu/urdu-faq">عام سوالات</a><a href="/why-write-urdu">تعارف</a><a href="/write-urdu-privacy">رازداری</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="trust"><strong>مدد اور اعتماد</strong><a href="/urdu/urdu-writing-templates">اردو تحریری سانچے</a><a href="/why-write-urdu">رائٹ اردو کے بارے میں</a><a href="/contact">رابطہ</a><a href="/write-urdu-privacy">رازداری اور شرائط</a><a href="/write-urdu-sitemap">سائٹ میپ</a></div></nav></footer>';
+
 function chrome(inner, locale) {
   locale = locale === 'ur' ? 'ur' : 'en';
   const strings = UI_STRINGS[locale];
   const htmlLang = locale === 'ur' ? '<html lang="ur" dir="rtl">' : '<html lang="en">';
-  const hubHref = withLocale('/urdu-writers', locale);
   const editorHref = withLocale('/urdu-editor', locale);
+  const staticNav = locale === 'ur' ? STATIC_NAV_UR : STATIC_NAV_EN;
+  const staticFooter = locale === 'ur' ? STATIC_FOOTER_UR : STATIC_FOOTER_EN;
   return `<!doctype html>
 ${htmlLang}
 <head>
 ${inner.head}
   <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/site-header.css">
   <link rel="stylesheet" href="/css/community-writers.css">
+  <script src="/locale.config.js" defer></script>
+  <script src="/js/locale-route.js" defer></script>
+  <script src="/site-header.js" defer></script>
 </head>
-<body>
+<body class="content-page">
+${staticNav}
   <main class="cw-shell">
-    <header class="cw-topbar">
-      <a class="cw-brand" href="${escapeHtml(hubHref)}" aria-label="${escapeHtml(strings.brandLabel)}"><span class="cw-brand-mark" aria-hidden="true">اردو</span><span>${escapeHtml(strings.brandLabel)}</span></a>
+    <div class="cw-topbar">
+      <a class="cw-guidelines-link" href="/community-guidelines">${escapeHtml(strings.footerGuidelines)}</a>
       <a class="cw-write-link" href="${escapeHtml(editorHref)}" data-cw-write-cta>${escapeHtml(strings.writeCta)}</a>
-    </header>
+    </div>
     ${inner.body}
-    <footer class="cw-footer"><span>${escapeHtml(strings.footerPublishedWith)} <a href="/">${escapeHtml(strings.footerSiteName)}</a></span><span><a href="/community-guidelines">${escapeHtml(strings.footerGuidelines)}</a> &middot; <a href="/write-urdu-privacy">${escapeHtml(strings.footerPrivacy)}</a> &middot; <a href="/contact">${escapeHtml(strings.footerContact)}</a></span></footer>
   </main>
+${staticFooter}
   <script src="/js/community-writers.js"></script>
 </body>
 </html>`;

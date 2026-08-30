@@ -83,6 +83,7 @@ function ensureDialog() {
   if (dialog) return dialog;
   dialog = document.createElement('dialog');
   dialog.className = 'wu-community-dialog';
+  dialog.dir = 'ltr';
   dialog.setAttribute('aria-label', 'Publish to Urdu Writers');
   dialog.addEventListener('click', (event) => { if (event.target === dialog) closeDialog(); });
   document.body.appendChild(dialog);
