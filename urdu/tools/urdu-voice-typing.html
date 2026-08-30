@@ -15,6 +15,7 @@
     <link rel="icon" href="/image/logo10.png" type="image/png">
     <link rel="stylesheet" href="/css/site-header.css">
     <link rel="stylesheet" href="/css/urdu-voice-typing.css">
+    <link rel="stylesheet" href="/css/input-mode.css">
     <script src="/seo.config.js" defer></script>
     <script src="/js/seo.js" defer></script>
     <script src="/locale.config.js" defer></script>
@@ -24,6 +25,7 @@
     <script src="/js/text-handoff.js" defer></script>
     <script src="/js/voice-input-core.js" defer></script>
     <script src="/js/unified-urdu-input.js" defer></script>
+    <script src="/js/batch-transliteration.js" defer></script>
     <script src="/js/urdu-voice-typing.js" defer></script>
     <script src="/js/product-telemetry.js" defer></script>
     <script src="/js/voice-account-analytics.js" defer></script>
@@ -90,6 +92,14 @@
                     <div class="urdu-tool-label-row">
                         <label id="voice-result-title" for="voiceTranscript" data-wu-l10n="tools.urdu-voice-typing.transcriptLabel">آپ کی اردو تحریر</label>
                         <span class="urdu-tool-helper" data-wu-l10n="tools.urdu-voice-typing.transcriptHelper">مکمل طور پر قابلِ ترمیم</span>
+                    </div>
+                    <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#voiceTranscript" role="region" aria-labelledby="batch-transliteration-title-voice">
+                        <strong data-batch-title id="batch-transliteration-title-voice" data-wu-l10n="home.batchTitle">Two ways to write Urdu</strong>
+                        <span data-batch-guide data-wu-l10n="home.batchGuide">Type Urdu words using English letters and press Space after each word, or paste a longer passage and convert it to Urdu script in one step.</span>
+                        <small data-batch-note data-wu-l10n="home.batchNote">Use English letters to write Urdu words. This does not translate English sentences into Urdu.</small>
+                        <strong data-batch-prompt hidden data-wu-l10n="home.batchPrompt">Long English-letter Urdu text detected. Convert this passage to Urdu script?</strong>
+                        <button type="button" data-batch-action hidden data-wu-l10n="home.batchAction">Convert passage to Urdu script</button>
+                        <span data-batch-status role="status" aria-live="polite"></span>
                     </div>
                     <textarea id="voiceTranscript" class="urdu-tool-textarea" dir="rtl" lang="ur" spellcheck="true" maxlength="100000" placeholder="آپ کی اردو یہاں نظر آئے گی۔"></textarea>
                     <div class="urdu-tool-actions">

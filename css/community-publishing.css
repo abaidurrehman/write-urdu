@@ -144,6 +144,25 @@
 
 .wu-community-field small { display: block; margin-top: 4px; color: var(--wu-color-muted); font-size: .72rem; }
 
+.wu-community-field-row { display: flex; gap: 8px; align-items: stretch; }
+.wu-community-field-row input[type="text"] { flex: 1 1 auto; }
+
+.wu-community-convert {
+  flex: none;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #d4e0da;
+  border-radius: 9px;
+  background: #fff;
+  color: var(--wu-color-ink);
+  font: inherit;
+  font-size: .78rem;
+  font-weight: var(--wu-weight-semibold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.wu-community-convert:disabled { cursor: wait; opacity: .68; }
+
 .wu-community-tags {
   display: flex;
   flex-wrap: wrap;

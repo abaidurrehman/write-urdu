@@ -142,7 +142,11 @@ function formDialog(state) {
       </div>
       <label class="wu-community-field">
         <span>Title</span>
-        <input type="text" name="title" value="${escapeHtml(state.title)}" maxlength="${COMMUNITY_CONTENT_LIMITS.maxTitleChars}" required>
+        <div class="wu-community-field-row">
+          <input type="text" name="title" value="${escapeHtml(state.title)}" maxlength="${COMMUNITY_CONTENT_LIMITS.maxTitleChars}" required data-wu-community-title>
+          <button type="button" class="wu-community-convert" data-wu-community-convert-title>Convert to Urdu</button>
+        </div>
+        <small>Type in English letters, then convert to Urdu script — or type Urdu directly.</small>
       </label>
       <label class="wu-community-field">
         <span>Name shown with your writing</span>
@@ -172,6 +176,7 @@ function formDialog(state) {
       </div>
     </form>`);
   bindClose(node);
+  bindTitleConvert(node);
   const form = node.querySelector('[data-wu-community-form]');
   form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -186,6 +191,22 @@ function formDialog(state) {
     previewDialog(next);
   });
   return node;
+}
+
+function bindTitleConvert(node) {
+  const button = node.querySelector('[data-wu-community-convert-title]');
+  const input = node.querySelector('[data-wu-community-title]');
+  if (!button || !input) return;
+  button.addEventListener('click', () => {
+    const value = String(input.value || '').trim();
+    if (!value) { input.focus(); return; }
+    const service = runtime.WriteUrduBatchTransliteration;
+    if (!service || typeof service.transliterate !== 'function') return;
+    button.disabled = true;
+    service.transliterate(value)
+      .then((converted) => { input.value = converted; input.focus(); })
+      .finally(() => { button.disabled = false; });
+  });
 }
 
 function previewDialog(state) {
