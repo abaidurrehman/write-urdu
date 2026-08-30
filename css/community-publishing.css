@@ -129,6 +129,7 @@
   display: block;
   margin-bottom: 5px;
   padding: 0;
+  font-size: inherit;
   font-weight: var(--wu-weight-semibold);
 }
 
