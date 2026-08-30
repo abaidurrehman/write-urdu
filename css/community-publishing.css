@@ -128,7 +128,15 @@
 .wu-community-field > legend {
   display: block;
   margin-bottom: 5px;
+  padding: 0;
   font-weight: var(--wu-weight-semibold);
+}
+
+fieldset.wu-community-field {
+  min-width: 0;
+  margin: 16px 0 0;
+  border: none;
+  padding: 0;
 }
 
 .wu-community-field input[type="text"],
