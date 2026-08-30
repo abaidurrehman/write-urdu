@@ -3,7 +3,7 @@ export const COMMUNITY_MEANINGFUL_THRESHOLDS = Object.freeze({
   minWhitespaceDelimitedWords: 90
 });
 
-export const COMMUNITY_EDITOR_KINDS = Object.freeze(['basic', 'rich', 'keyboard', 'voice']);
+export const COMMUNITY_EDITOR_KINDS = Object.freeze(['basic', 'rich', 'keyboard', 'voice', 'card']);
 
 export const COMMUNITY_TAXONOMY = Object.freeze({
   primaryCategories: Object.freeze(['poetry', 'essay', 'prose', 'thought', 'story']),

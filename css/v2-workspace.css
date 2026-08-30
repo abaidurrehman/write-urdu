@@ -58,6 +58,7 @@
   background: transparent !important;
 }
 .rich-editor-page .home-actions-group-export { order: 1; margin-left: 0 !important; }
+.rich-editor-page .home-actions-group-community { order: 2; }
 .rich-editor-page .tool-actions .btn,
 .rich-editor-page .tool-actions summary,
 .keyboard-page .tool-actions .btn,

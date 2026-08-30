@@ -17,11 +17,18 @@
   var busy = false;
 
   function ensureStyles() {
-    if (document.querySelector('link[href$="/css/card-studio-publish.css"],link[href$="css/card-studio-publish.css"]')) return;
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '/css/card-studio-publish.css';
-    document.head.appendChild(link);
+    if (!document.querySelector('link[href$="/css/card-studio-publish.css"],link[href$="css/card-studio-publish.css"]')) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/css/card-studio-publish.css';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('link[href$="/css/community-publishing.css"],link[href$="css/community-publishing.css"]')) {
+      var communityLink = document.createElement('link');
+      communityLink.rel = 'stylesheet';
+      communityLink.href = '/css/community-publishing.css';
+      document.head.appendChild(communityLink);
+    }
   }
 
   function ensureTelemetry() {
@@ -46,6 +53,25 @@
   }
 
   function track(name, detail) { if (telemetry && telemetry.track) telemetry.track(name, detail || {}); }
+
+  function ensureCommunityAssetUi() {
+    return new Promise(function (resolve) {
+      if (window.WriteUrduCommunityAssetPublish) { resolve(window.WriteUrduCommunityAssetPublish); return; }
+      var existing = document.querySelector('script[data-wu-community-asset-ui]');
+      if (existing) {
+        existing.addEventListener('load', function () { resolve(window.WriteUrduCommunityAssetPublish || null); }, { once: true });
+        window.setTimeout(function () { resolve(window.WriteUrduCommunityAssetPublish || null); }, 1600);
+        return;
+      }
+      var script = document.createElement('script');
+      script.type = 'module';
+      script.src = '/js/community-publishing-asset-ui.mjs';
+      script.setAttribute('data-wu-community-asset-ui', '');
+      script.onload = function () { resolve(window.WriteUrduCommunityAssetPublish || null); };
+      script.onerror = function () { resolve(null); };
+      document.head.appendChild(script);
+    });
+  }
 
   function toast(message, error) {
     var current = document.querySelector('.wu-share-toast');
@@ -421,6 +447,23 @@
     });
   }
 
+  function bindCommunityPublishButton(button) {
+    if (!button || button.dataset.wuCommunityPublishBound) return;
+    button.dataset.wuCommunityPublishBound = 'true';
+    button.addEventListener('click', function () {
+      var state = app.getState && app.getState();
+      var text = state && state.text ? String(state.text.value || '').trim() : '';
+      if (!text || text === String(core.DEFAULT_TEXT || '').trim()) {
+        toast('Add your own Urdu text before submitting.', true);
+        return;
+      }
+      ensureCommunityAssetUi().then(function (publisher) {
+        if (publisher && publisher.open) publisher.open(text);
+        else toast('Could not open the community submission form. Please try again.', true);
+      });
+    });
+  }
+
   function normalizeLocalExportActions(container) {
     if (!container) return;
     var imageShare = container.querySelector('[data-card-action="share"]');
@@ -454,6 +497,17 @@
       group.appendChild(publishButton);
     }
     bindPublishButton(publishButton, false);
+
+    var communityButton = group.querySelector('[data-card-action="publish-community"]');
+    if (!communityButton) {
+      communityButton = document.createElement('button');
+      communityButton.type = 'button';
+      communityButton.className = 'card-studio-button wu-community-toolbar-button';
+      communityButton.setAttribute('data-card-action', 'publish-community');
+      communityButton.innerHTML = '<i class="fas fa-feather-alt" aria-hidden="true"></i> Submit to Urdu Writers';
+      group.appendChild(communityButton);
+    }
+    bindCommunityPublishButton(communityButton);
 
     var help = group.parentElement.querySelector('.wu-share-help-row');
     if (!help) {

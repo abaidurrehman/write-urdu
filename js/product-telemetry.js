@@ -266,6 +266,9 @@
         }
         if (detail.input_mode === 'voice') currentInputMode = 'voice';
         track(name, detail);
+        if (typeof document !== 'undefined' && document.dispatchEvent) {
+            document.dispatchEvent(new CustomEvent('write-urdu:outcome', { detail: { name: name, detail: detail } }));
+        }
     }
 
     function watchCopyConfirmation() {

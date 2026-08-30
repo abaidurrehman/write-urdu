@@ -1,12 +1,9 @@
-import { ACCOUNT_STATE, fetchAccountState, flushLocalWriting } from './account-session.mjs';
+import { ACCOUNT_STATE, fetchAccountState } from './account-session.mjs';
 import {
   COMMUNITY_CONTENT_LIMITS,
   createCommunityClient,
   buildSubmissionPayload,
   validateSubmissionForm,
-  shouldShowPrompt,
-  suppressPrompt,
-  promptSignature,
   writePublishIntent,
   readPublishIntent,
   CommunityApiError
@@ -21,15 +18,10 @@ import {
 
 const runtime = window;
 const client = createCommunityClient();
-const ROUTE_EDITOR_KIND = Object.freeze({
-  '/': 'basic',
-  '/urdu-editor': 'rich',
-  '/urdu-keyboard': 'keyboard',
-  '/tools/urdu-voice-typing': 'voice'
-});
+const EDITOR_KIND = 'card';
+const PREFILL_KEY = 'write-urdu:community-asset-prefill:v1';
 
 let dialog = null;
-let editorKind = null;
 let account = { state: ACCOUNT_STATE.DISABLED, user: null };
 
 function normalizedPath() {
@@ -48,31 +40,6 @@ function track(eventName, detail) {
   if (runtime.WriteUrduTelemetry && typeof runtime.WriteUrduTelemetry.track === 'function') runtime.WriteUrduTelemetry.track(eventName, detail || {});
 }
 
-function currentText() {
-  if (editorKind === 'voice') {
-    const field = document.getElementById('voiceTranscript');
-    return field ? String(field.value || '') : '';
-  }
-  const adapter = runtime.WriteUrduTools && runtime.WriteUrduTools.adapter;
-  return adapter && adapter.kind === editorKind ? String(adapter.getText() || '') : '';
-}
-
-function waitForReady() {
-  return new Promise((resolve) => {
-    let attempts = 0;
-    const timer = runtime.setInterval(() => {
-      attempts += 1;
-      const ready = editorKind === 'voice'
-        ? Boolean(document.getElementById('voiceTranscript'))
-        : Boolean(runtime.WriteUrduTools && runtime.WriteUrduTools.adapter && runtime.WriteUrduTools.adapter.kind === editorKind);
-      if (ready || attempts >= 180) {
-        runtime.clearInterval(timer);
-        resolve(ready);
-      }
-    }, 50);
-  });
-}
-
 function escapeHtml(value) {
   return String(value == null ? '' : value)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -83,7 +50,7 @@ function ensureDialog() {
   if (dialog) return dialog;
   dialog = document.createElement('dialog');
   dialog.className = 'wu-community-dialog';
-  dialog.setAttribute('aria-label', 'Publish to Urdu Writers');
+  dialog.setAttribute('aria-label', 'Submit to Urdu Writers');
   dialog.addEventListener('click', (event) => { if (event.target === dialog) closeDialog(); });
   document.body.appendChild(dialog);
   return dialog;
@@ -113,7 +80,7 @@ function submitErrorMessage(error) {
     if (error.code === 'community_submission_rate_limited') return 'Too many submissions were made recently. Please try again later.';
     if (error.status === 401) return 'Please sign in again to submit for review.';
   }
-  return 'Could not submit — your writing is still safe.';
+  return 'Could not submit — your card is still safe.';
 }
 
 function readFormState(form, state) {
@@ -124,9 +91,23 @@ function readFormState(form, state) {
     publicAuthorName: String(data.get('publicAuthorName') || '').trim(),
     primaryCategory: String(data.get('primaryCategory') || ''),
     tags: data.getAll('tags').map(String),
+    plainText: String(data.get('plainText') || ''),
     rightsConfirmed: data.get('rightsConfirmed') === 'on',
     publicConfirmed: data.get('publicConfirmed') === 'on',
     guidelinesConfirmed: data.get('guidelinesConfirmed') === 'on'
+  };
+}
+
+function emptyFormState(prefillText) {
+  return {
+    title: '',
+    publicAuthorName: account.state === ACCOUNT_STATE.SIGNED_IN ? (account.user.name || '') : '',
+    primaryCategory: '',
+    tags: [],
+    plainText: String(prefillText || ''),
+    rightsConfirmed: false,
+    publicConfirmed: false,
+    guidelinesConfirmed: false
   };
 }
 
@@ -135,8 +116,8 @@ function formDialog(state) {
     <form class="wu-community-form" data-wu-community-form>
       <div class="wu-community-dialog-head">
         <div>
-          <h2>Publish to Urdu Writers</h2>
-          <p>Share this writing with the WriteUrdu community. It will be reviewed before anyone else can see it.</p>
+          <h2>Submit to Urdu Writers</h2>
+          <p>Add a short piece of writing to go with this image. It will be reviewed before anyone else can see it.</p>
         </div>
         <button type="button" class="wu-community-dialog-close" aria-label="Close" data-wu-community-close>×</button>
       </div>
@@ -148,6 +129,11 @@ function formDialog(state) {
         <span>Name shown with your writing</span>
         <input type="text" name="publicAuthorName" value="${escapeHtml(state.publicAuthorName)}" maxlength="${COMMUNITY_CONTENT_LIMITS.maxPublicAuthorChars}" required>
         <small>Use your name or a pen name. Readers never see your account email.</small>
+      </label>
+      <label class="wu-community-field">
+        <span>Caption / writing</span>
+        <textarea name="plainText" rows="5" required>${escapeHtml(state.plainText)}</textarea>
+        <small>Add a short piece of writing or context (at least ${COMMUNITY_CONTENT_LIMITS.minPlainTextChars} characters) to go with this image.</small>
       </label>
       <label class="wu-community-field">
         <span>Category</span>
@@ -176,7 +162,6 @@ function formDialog(state) {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     const next = readFormState(form, state);
-    next.plainText = currentText();
     const { valid, errors } = validateSubmissionForm(next);
     if (!valid) {
       const errorNode = form.querySelector('[data-wu-community-form-error]');
@@ -189,7 +174,6 @@ function formDialog(state) {
 }
 
 function previewDialog(state) {
-  const frozenText = state.plainText;
   const node = openDialog(`
     <div class="wu-community-dialog-head">
       <div>
@@ -201,7 +185,7 @@ function previewDialog(state) {
     <div class="wu-community-preview" lang="ur" dir="rtl">
       <h3>${escapeHtml(state.title)}</h3>
       <p class="wu-community-preview-meta">${escapeHtml(state.publicAuthorName)} · ${escapeHtml(categoryLabel(state.primaryCategory))} · ${state.tags.map((tag) => escapeHtml(tagLabel(tag))).join('، ')}</p>
-      <div class="wu-community-preview-body">${escapeHtml(frozenText).replace(/\n/g, '<br>')}</div>
+      <div class="wu-community-preview-body">${escapeHtml(state.plainText).replace(/\n/g, '<br>')}</div>
     </div>
     <p class="wu-community-error" data-wu-community-form-error hidden></p>
     <div class="wu-community-dialog-actions">
@@ -210,7 +194,7 @@ function previewDialog(state) {
     </div>`);
   bindClose(node);
   node.querySelector('[data-wu-community-back]').addEventListener('click', () => formDialog(state));
-  node.querySelector('[data-wu-community-submit]').addEventListener('click', () => submitSnapshot(state, frozenText, node));
+  node.querySelector('[data-wu-community-submit]').addEventListener('click', () => submitSnapshot(state, node));
 }
 
 function successDialog(submission, reused) {
@@ -224,30 +208,24 @@ function successDialog(submission, reused) {
       <button type="button" class="wu-community-dialog-close" aria-label="Close" data-wu-community-close>×</button>
     </div>
     <div class="wu-community-dialog-actions">
-      <button type="button" class="primary" data-wu-community-close>Keep writing</button>
+      <button type="button" class="primary" data-wu-community-close>Keep creating</button>
     </div>`);
   bindClose(node);
 }
 
-async function submitSnapshot(state, frozenText, previewNode) {
-  if (currentText() !== frozenText) {
-    const errorNode = previewNode.querySelector('[data-wu-community-form-error]');
-    if (errorNode) { errorNode.hidden = false; errorNode.textContent = 'Your writing changed — refresh preview and try again.'; }
-    return;
-  }
-
+async function submitSnapshot(state, previewNode) {
   const submitButton = previewNode.querySelector('[data-wu-community-submit]');
   submitButton.disabled = true;
   submitButton.textContent = 'Submitting…';
-  track('community_submission_started');
+  track('community_submission_started', { tool: 'card_studio' });
 
   try {
-    const payload = buildSubmissionPayload({ ...state, plainText: frozenText, editorKind });
+    const payload = buildSubmissionPayload({ ...state, editorKind: EDITOR_KIND });
     const { submission, reused } = await client.submit(payload);
-    track('community_submission_completed', { success: true });
+    track('community_submission_completed', { success: true, tool: 'card_studio' });
     successDialog(submission, reused);
   } catch (error) {
-    track('community_submission_failed', { success: false });
+    track('community_submission_failed', { success: false, tool: 'card_studio' });
     submitButton.disabled = false;
     submitButton.textContent = 'Submit for review';
     const errorNode = previewNode.querySelector('[data-wu-community-form-error]');
@@ -255,162 +233,36 @@ async function submitSnapshot(state, frozenText, previewNode) {
   }
 }
 
-function emptyFormState() {
-  return {
-    title: '',
-    publicAuthorName: account.state === ACCOUNT_STATE.SIGNED_IN ? (account.user.name || '') : '',
-    primaryCategory: '',
-    tags: [],
-    rightsConfirmed: false,
-    publicConfirmed: false,
-    guidelinesConfirmed: false
-  };
-}
-
-async function beginPublishFlow(entryPoint) {
+async function beginPublishFlow(prefillText) {
   if (account.state !== ACCOUNT_STATE.SIGNED_IN) {
-    flushLocalWriting(runtime);
-    writePublishIntent(sessionStore(), { workspaceKind: editorKind, editorKind, entryPoint });
-    track(entryPoint === 'prompt' ? 'community_publish_prompt_clicked' : 'community_publish_manual_clicked');
+    writePublishIntent(sessionStore(), { workspaceKind: EDITOR_KIND, editorKind: EDITOR_KIND, entryPoint: 'manual' });
+    const store = sessionStore();
+    if (store) { try { store.setItem(PREFILL_KEY, String(prefillText || '').slice(0, 4000)); } catch {} }
+    track('community_publish_manual_clicked', { tool: 'card_studio' });
     location.href = `/sign-in?returnTo=${encodeURIComponent(normalizedPath())}`;
     return;
   }
-  track(entryPoint === 'prompt' ? 'community_publish_prompt_clicked' : 'community_publish_manual_clicked');
-  formDialog(emptyFormState());
-}
-
-function addManualAction(actionsContainer) {
-  if (!actionsContainer || actionsContainer.querySelector('[data-community-publish-manual]')) return;
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'wu-community-toolbar-button';
-  button.setAttribute('data-community-publish-manual', '');
-  button.innerHTML = '<i class="fas fa-feather-alt" aria-hidden="true"></i> Publish to Urdu Writers';
-  button.addEventListener('click', () => beginPublishFlow('manual'));
-  actionsContainer.appendChild(button);
-}
-
-function promptBanner() {
-  let banner = document.querySelector('[data-community-publish-prompt]');
-  if (banner) return banner;
-  banner = document.createElement('aside');
-  banner.className = 'wu-community-prompt';
-  banner.setAttribute('data-community-publish-prompt', '');
-  banner.setAttribute('role', 'status');
-  banner.hidden = true;
-  banner.innerHTML = `
-    <div class="wu-community-prompt-copy">
-      <strong>Share your writing with more readers</strong>
-      <span>Publish this poem, essay or idea in Urdu Writers and show your creativity to the WriteUrdu community.</span>
-    </div>
-    <div class="wu-community-prompt-actions">
-      <button type="button" class="primary" data-community-prompt-submit>Submit for publishing</button>
-      <button type="button" class="is-secondary" data-community-prompt-dismiss>Not now</button>
-    </div>`;
-  return banner;
-}
-
-function attachPromptBanner(anchor) {
-  if (!anchor) return null;
-  const banner = promptBanner();
-  if (!banner.isConnected) anchor.insertAdjacentElement('afterend', banner);
-  const submit = banner.querySelector('[data-community-prompt-submit]');
-  const dismiss = banner.querySelector('[data-community-prompt-dismiss]');
-  submit.onclick = () => { banner.hidden = true; beginPublishFlow('prompt'); };
-  dismiss.onclick = () => {
-    banner.hidden = true;
-    suppressPrompt(sessionStore(), promptSignature(editorKind, currentText()));
-  };
-  return banner;
-}
-
-let promptTrackedSignature = null;
-
-function checkAutomaticPrompt(anchor) {
-  const text = currentText();
-  const banner = attachPromptBanner(anchor);
-  if (!banner) return;
-  const eligible = shouldShowPrompt(sessionStore(), editorKind, text);
-  banner.hidden = !eligible;
-  if (!eligible) return;
-  const signature = promptSignature(editorKind, text);
-  if (promptTrackedSignature === signature) return;
-  promptTrackedSignature = signature;
-  track('community_publish_prompt_shown');
-}
-
-const PANEL_SELECTOR = Object.freeze({
-  basic: '[data-home-account-continuity]',
-  rich: '[data-editor-account-documents]',
-  keyboard: '[data-editor-account-documents]',
-  voice: '[data-voice-account-growth]'
-});
-
-const TOOLBAR_SLOT_SELECTOR = Object.freeze({
-  basic: '[data-wu-basic-command-surface] [data-wu-community-toolbar-slot]',
-  rich: '[data-wu-community-toolbar-slot]',
-  keyboard: '[data-wu-community-toolbar-slot]',
-  voice: '[data-wu-community-toolbar-slot]'
-});
-
-function waitFor(selector) {
-  return new Promise((resolve) => {
-    let attempts = 0;
-    const check = () => {
-      attempts += 1;
-      const node = document.querySelector(selector);
-      if (node || attempts >= 160) { resolve(node || null); return; }
-      runtime.setTimeout(check, 50);
-    };
-    check();
-  });
+  track('community_publish_manual_clicked', { tool: 'card_studio' });
+  formDialog(emptyFormState(prefillText));
 }
 
 async function resumeIntentIfSignedIn() {
   if (account.state !== ACCOUNT_STATE.SIGNED_IN) return;
   const intent = readPublishIntent(sessionStore());
-  if (!intent || intent.editorKind !== editorKind) return;
-  formDialog(emptyFormState());
+  if (!intent || intent.editorKind !== EDITOR_KIND) return;
+  const store = sessionStore();
+  let prefill = '';
+  if (store) { try { prefill = store.getItem(PREFILL_KEY) || ''; store.removeItem(PREFILL_KEY); } catch {} }
+  formDialog(emptyFormState(prefill));
 }
 
-async function start() {
-  editorKind = ROUTE_EDITOR_KIND[normalizedPath()];
-  if (!editorKind) return;
-
-  let feature;
-  try { feature = await client.probe(); } catch { return; }
-  if (!feature.available) return;
-
-  const ready = await waitForReady();
-  if (!ready) return;
-
+async function init() {
   try { account = await fetchAccountState(); } catch { account = { state: ACCOUNT_STATE.DISABLED, user: null }; }
-  if (account.state === ACCOUNT_STATE.DISABLED) return;
-
-  await resumeIntentIfSignedIn();
-
-  const toolbarSlot = await waitFor(TOOLBAR_SLOT_SELECTOR[editorKind]);
-  if (toolbarSlot) addManualAction(toolbarSlot);
-
-  const anchor = await waitFor(PANEL_SELECTOR[editorKind]);
-  if (!anchor) return;
-
-  const evaluate = () => checkAutomaticPrompt(anchor);
-  evaluate();
-
-  document.addEventListener('write-urdu:outcome', (event) => {
-    const name = event.detail && event.detail.name;
-    if (name !== 'export_completed' && name !== 'print_started') return;
-    evaluate();
-  });
-
-  if (editorKind === 'voice') {
-    const field = document.getElementById('voiceTranscript');
-    if (field) field.addEventListener('input', evaluate);
-  } else {
-    const adapter = runtime.WriteUrduTools && runtime.WriteUrduTools.adapter;
-    if (adapter && typeof adapter.onChange === 'function') adapter.onChange(evaluate);
-  }
+  if (account.state !== ACCOUNT_STATE.DISABLED) await resumeIntentIfSignedIn();
 }
 
-void start();
+void init();
+
+runtime.WriteUrduCommunityAssetPublish = Object.freeze({
+  open(prefillText) { beginPublishFlow(prefillText || ''); }
+});

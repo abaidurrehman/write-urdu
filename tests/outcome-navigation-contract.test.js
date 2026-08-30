@@ -63,11 +63,27 @@ assert.match(css, /body\.wu-v2-shell footer\.wu-footer\{color:#b9ccc1!important;
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer a,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group a\{color:#dce9e1!important\}/, 'Footer links must retain explicit light contrast');
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer \.wu-footer-brand,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group h2,body\.wu-v2-shell footer\.wu-footer strong\{color:#f4faf6!important\}/, 'Footer headings/brand must retain explicit high contrast');
 assert.match(css, /prefers-reduced-motion:reduce/, 'Outcome navigation must respect reduced-motion preferences');
-assert.match(sw, /write-urdu-shell-v35/, 'PWA cache version must include the compact footer and account-shell assets');
+assert.match(sw, /write-urdu-shell-v36/, 'PWA cache version must include the compact footer and account-shell assets');
 assert.match(sw, /js\/site-header-core\.js/, 'Preserved shell core must be cached for offline use');
 assert.match(sw, /js\/outcome-navigation\.js/, 'Outcome navigation runtime must be cached for offline use');
 assert.match(sw, /js\/core-workspace-convergence\.js/, 'Core workspace convergence runtime must be cached for offline use');
 assert.match(sw, /css\/outcome-navigation\.css/, 'Outcome navigation styles must be cached for offline use');
 assert.match(sw, /css\/core-workspace-convergence\.css/, 'Core workspace convergence styles must be cached for offline use');
+
+// --- Discovery pillar (WriteUrdu Community / Urdu Writers): design-ready, but must stay
+// inert until COMMUNITY_PUBLIC_ENABLED is actually on. It must NOT appear in the static
+// GROUPS/FOOTER_GROUPS array literals (verified live: with no probe response, the
+// rendered nav exposes exactly write/create/work/learn, no explore group) — it is only
+// spliced in after a live runtime probe of the public reader API confirms availability. ---
+const groupsLiteral = navigation.slice(navigation.indexOf('var GROUPS ='), navigation.indexOf('var EXPLORE_GROUP ='));
+assert.doesNotMatch(groupsLiteral, /id:\s*'explore'/, 'Explore/discovery group must not be statically listed in GROUPS — it activates only via a runtime probe');
+assert.match(navigation, /var EXPLORE_GROUP = \{/, 'A design-ready discovery group must exist, ready to splice in');
+assert.match(navigation, /href:\s*'\/urdu-writers'/, 'Discovery group must link to the public community reader route');
+assert.match(navigation, /function probeCommunityPublicDiscovery\(\)/, 'Nav must probe for public discovery availability rather than assuming it');
+assert.match(navigation, /root\.fetch\('\/api\/community\/publications'/, 'Probe must reuse the same public-reader API the community feature already exposes, not a new endpoint');
+assert.match(navigation, /available = response\.status === 200/, 'Probe must gate strictly on a successful (200) response, not merely a non-error one');
+assert.match(navigation, /sessionStorage\.setItem\(EXPLORE_PROBE_KEY/, 'Probe result must be cached per-session so the discovery pillar is not re-fetched on every navigation');
+assert.match(navigation, /function addExploreGroup\(\)/, 'Adding the group must be idempotent (safe to call once the probe resolves)');
+assert.match(navigation, /groupIndex\(GROUPS, 'explore'\) === -1/, 'Group insertion must guard against double-insertion');
 
 console.log('Outcome-led navigation contract passed.');

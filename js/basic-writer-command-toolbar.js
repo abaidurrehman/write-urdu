@@ -376,6 +376,20 @@
         });
     }
 
+    function mountCommunitySlot(surface) {
+        if (!surface) return null;
+        var primary = surface.querySelector('.wu-basic-command-primary') || surface;
+        var slot = surface.querySelector('[data-wu-community-toolbar-slot]');
+        if (slot) return slot;
+        slot = root.document.createElement('div');
+        slot.className = 'wu-basic-command-group wu-basic-command-community';
+        slot.setAttribute('data-wu-community-toolbar-slot', '');
+        slot.setAttribute('role', 'group');
+        slot.setAttribute('aria-label', 'Publish to the community');
+        primary.parentNode.insertBefore(slot, primary.nextSibling);
+        return slot;
+    }
+
     function runAuthoringShare() {
         if (!hasContent()) return false;
         ensurePublicSharePublisher().then(function (publisher) {
@@ -529,6 +543,7 @@
             syncModeHelper(existing);
             syncState(existing);
             syncResponsiveOutputs(existing);
+            mountCommunitySlot(existing);
             mountAiWriting(existing, existingEditor);
             return existing;
         }
@@ -705,6 +720,7 @@
         syncState(surface);
         syncResponsiveOutputs(surface);
         syncModeHelper(surface);
+        mountCommunitySlot(surface);
         mountAiWriting(surface, editor);
         root.setTimeout(function () { syncModeHelper(surface); syncState(surface); }, 100);
         root.setTimeout(function () { syncModeHelper(surface); syncState(surface); }, 700);

@@ -296,7 +296,7 @@ assert.doesNotMatch(taxonomySource, /console\.(?:log|info|warn|error)/, 'Taxonom
   assert.strictEqual(conflict.error.code, 'community_submission_revision_conflict');
   assert.strictEqual(conflict.error.currentRevision, 2);
 
-  assert.deepStrictEqual(community.COMMUNITY_SUBMISSION_LIMITS.allowedEditorKinds, ['basic', 'rich', 'keyboard', 'voice']);
+  assert.deepStrictEqual(community.COMMUNITY_SUBMISSION_LIMITS.allowedEditorKinds, ['basic', 'rich', 'keyboard', 'voice', 'card']);
   assert.strictEqual(community.COMMUNITY_SUBMISSION_LIMITS.maxPendingPerUser, 5);
   assert.strictEqual(community.COMMUNITY_SUBMISSION_LIMITS.maxSubmissionsPer24h, 10);
 

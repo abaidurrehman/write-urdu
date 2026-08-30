@@ -55,6 +55,27 @@
         }
     ];
 
+    /* Public discovery of community-submitted writing (`/urdu-writers`) is design-ready
+       but gated behind the `COMMUNITY_PUBLIC_ENABLED` server flag (a legal/rollout
+       decision, out of scope here). This group is intentionally left out of GROUPS/
+       FOOTER_GROUPS above and only spliced in once a probe confirms the public reader
+       API is actually serving — see probeCommunityPublicDiscovery() below. This means
+       the nav self-activates the moment the flag flips, with no further code change. */
+    var EXPLORE_GROUP = {
+        id: 'explore', icon: 'book',
+        label: { en: 'Explore', ur: 'دریافت کریں' },
+        items: [
+            { href: '/urdu-writers', icon: 'book', label: { en: 'Read Urdu writing from the community', ur: 'کمیونٹی کی اردو تحریر پڑھیں' }, tool: { en: 'Urdu Writers', ur: 'اردو رائٹرز' } }
+        ]
+    };
+    var FOOTER_EXPLORE_GROUP = {
+        id: 'explore',
+        label: { en: 'Explore', ur: 'دریافت کریں' },
+        items: [
+            { href: '/urdu-writers', label: { en: 'Urdu Writers', ur: 'اردو رائٹرز' } }
+        ]
+    };
+
     var FOOTER_GROUPS = [
         {
             id: 'write-urdu',
@@ -288,9 +309,45 @@
         root.setTimeout(function () { start((attempt || 0) + 1); }, 25);
     }
 
+    function groupIndex(list, id) {
+        for (var i = 0; i < list.length; i += 1) {
+            if (list[i].id === id) return i;
+        }
+        return -1;
+    }
+
+    function addExploreGroup() {
+        if (groupIndex(GROUPS, 'explore') === -1) {
+            var learnAt = groupIndex(GROUPS, 'learn');
+            if (learnAt === -1) GROUPS.push(EXPLORE_GROUP);
+            else GROUPS.splice(learnAt, 0, EXPLORE_GROUP);
+        }
+        if (groupIndex(FOOTER_GROUPS, 'explore') === -1) {
+            var helpAt = groupIndex(FOOTER_GROUPS, 'help');
+            if (helpAt === -1) FOOTER_GROUPS.push(FOOTER_EXPLORE_GROUP);
+            else FOOTER_GROUPS.splice(helpAt, 0, FOOTER_EXPLORE_GROUP);
+        }
+        render();
+    }
+
+    var EXPLORE_PROBE_KEY = 'write-urdu:community-public-available:v1';
+
+    function probeCommunityPublicDiscovery() {
+        var cached = null;
+        try { cached = root.sessionStorage.getItem(EXPLORE_PROBE_KEY); } catch (error) { cached = null; }
+        if (cached === 'true') { addExploreGroup(); return; }
+        if (cached === 'false' || typeof root.fetch !== 'function') return;
+        root.fetch('/api/community/publications', { credentials: 'same-origin', cache: 'no-store' }).then(function (response) {
+            var available = response.status === 200;
+            try { root.sessionStorage.setItem(EXPLORE_PROBE_KEY, available ? 'true' : 'false'); } catch (error) {}
+            if (available) addExploreGroup();
+        }).catch(function () {});
+    }
+
     document.addEventListener('write-urdu:locale-change', function () { root.setTimeout(function () { render(); }, 0); });
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { start(0); });
     else start(0);
+    probeCommunityPublicDiscovery();
 
     root.WriteUrduOutcomeNavigation = {
         groups: GROUPS,

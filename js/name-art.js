@@ -331,6 +331,33 @@
             });
     }
 
+    function ensureCommunityAssetEntry() {
+        return new Promise(function (resolve) {
+            if (window.WriteUrduCommunityAssetEntry) { resolve(window.WriteUrduCommunityAssetEntry); return; }
+            var existing = document.querySelector('script[data-wu-community-asset-entry]');
+            if (existing) {
+                existing.addEventListener('load', function () { resolve(window.WriteUrduCommunityAssetEntry || null); }, { once: true });
+                window.setTimeout(function () { resolve(window.WriteUrduCommunityAssetEntry || null); }, 1600);
+                return;
+            }
+            var script = document.createElement('script');
+            script.src = '/js/community-publishing-asset-entry.js';
+            script.setAttribute('data-wu-community-asset-entry', '');
+            script.onload = function () { resolve(window.WriteUrduCommunityAssetEntry || null); };
+            script.onerror = function () { resolve(null); };
+            document.head.appendChild(script);
+        });
+    }
+
+    function mountCommunityButton() {
+        var container = root.querySelector('.name-art-export-actions');
+        if (!container) return;
+        ensureCommunityAssetEntry().then(function (entry) {
+            if (!entry) return;
+            entry.mountButton(container, function () { return textInput.value; });
+        });
+    }
+
     function mirrorEngineExportStatus() {
         if (!engineStatus || !window.MutationObserver) return;
         new MutationObserver(function () {
@@ -363,6 +390,7 @@
 
     if (window.WriteUrduCardStudioApp) connectWorkspace();
     else document.addEventListener('write-urdu:card-studio-ready', connectWorkspace, { once: true });
+    mountCommunityButton();
 
     window.WriteUrduNameArtApp = {
         getWorkspaceApp: function () { return workspaceApp; },

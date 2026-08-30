@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v35';
+const CACHE_NAME = 'write-urdu-shell-v36';
 const APP_SHELL = [
   './',
   './index.html',
@@ -72,6 +72,9 @@ const APP_SHELL = [
   './js/account-growth-entry.mjs',
   './js/community-publishing.mjs',
   './js/community-publishing-ui.mjs',
+  './js/community-publishing-taxonomy-ui.mjs',
+  './js/community-publishing-asset-ui.mjs',
+  './js/community-publishing-asset-entry.js',
   './js/document-share.mjs',
   './js/my-documents-ui.mjs',
   './js/my-documents.mjs',

@@ -29,6 +29,42 @@
         ].join('');
     }
 
+    function ensureCommunityAssetEntry() {
+        return new Promise(function (resolve) {
+            if (window.WriteUrduCommunityAssetEntry) { resolve(window.WriteUrduCommunityAssetEntry); return; }
+            var existing = document.querySelector('script[data-wu-community-asset-entry]');
+            if (existing) {
+                existing.addEventListener('load', function () { resolve(window.WriteUrduCommunityAssetEntry || null); }, { once: true });
+                window.setTimeout(function () { resolve(window.WriteUrduCommunityAssetEntry || null); }, 1600);
+                return;
+            }
+            var script = document.createElement('script');
+            script.src = '/js/community-publishing-asset-entry.js';
+            script.setAttribute('data-wu-community-asset-entry', '');
+            script.onload = function () { resolve(window.WriteUrduCommunityAssetEntry || null); };
+            script.onerror = function () { resolve(null); };
+            document.head.appendChild(script);
+        });
+    }
+
+    function mountCommunityButton() {
+        var attempts = 0;
+        var timer = window.setInterval(function () {
+            attempts += 1;
+            var container = root.querySelector('.social-maker-direct-actions');
+            if (!container && attempts < 100) return;
+            window.clearInterval(timer);
+            if (!container) return;
+            ensureCommunityAssetEntry().then(function (entry) {
+                if (!entry) return;
+                entry.mountButton(container, function () {
+                    var field = document.getElementById('cardText');
+                    return field ? field.value : '';
+                });
+            });
+        }, 50);
+    }
+
     function preserveRoleShell() {
         if (document.body.classList.contains('social-maker-embedded')) document.body.classList.remove('social-maker-embedded');
         document.title = pageTitle;
@@ -59,6 +95,7 @@
     }
 
     if (mode === 'whatsapp') mountWhatsappWorkspace();
+    mountCommunityButton();
     preserveRoleShell();
     document.addEventListener('DOMContentLoaded', preserveRoleShell, { once: true });
     if (window.WriteUrduCardStudioApp) connect();

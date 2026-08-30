@@ -1,5 +1,32 @@
 @import url("./design-tokens.css");
 
+[data-wu-community-toolbar-slot] { display: inline-flex; align-items: center; }
+[data-wu-community-toolbar-slot]:empty { display: none; }
+
+/* Selectors are qualified with the data attribute (not just the bare class) so this
+   reliably outranks per-page toolbar rules like `.name-art-export-actions button`,
+   which target the element type and win on specificity against a single class alone. */
+.wu-community-toolbar-button[data-community-publish-manual],
+.wu-community-toolbar-button[data-card-action] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 1px solid #e3b341;
+  border-radius: 9px;
+  background: #fdf3dd;
+  color: #7a5b12;
+  font: inherit;
+  font-size: .85rem;
+  font-weight: var(--wu-weight-semibold);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.wu-community-toolbar-button[data-community-publish-manual]:hover,
+.wu-community-toolbar-button[data-card-action]:hover { background: #fbe8bd; }
+
 .wu-community-prompt {
   display: flex;
   flex-wrap: wrap;
