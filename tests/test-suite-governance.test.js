@@ -46,4 +46,30 @@ assert.deepEqual(
   'Every Playwright spec must protect pull requests in the Quality workflow'
 );
 
-console.log(`Test-suite governance passed for ${diskContractTests.length} contract files and ${diskSpecs.length} browser specs.`);
+const expectedEmbeddedPlaywrightModules = [
+  'facebook-role-journey.js',
+  'instagram-role-journey.js',
+  'v2-creation-regression-cases.js'
+].sort();
+const plainJsFiles = fs.readdirSync(testsDir)
+  .filter(file => file.endsWith('.js') && !file.endsWith('.test.js') && !file.endsWith('.spec.js'));
+const embeddedPlaywrightModules = plainJsFiles
+  .filter(file => /@playwright\/test/.test(read(`tests/${file}`)))
+  .sort();
+assert.deepEqual(
+  embeddedPlaywrightModules,
+  expectedEmbeddedPlaywrightModules,
+  'Plain .js files that declare Playwright tests must be explicitly governed; rename new suites to .spec.js or register an intentional embedded module here'
+);
+
+const v2CreationSpec = read('tests/v2-creation.spec.js');
+for (const moduleName of expectedEmbeddedPlaywrightModules) {
+  const escaped = moduleName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  assert.match(
+    v2CreationSpec,
+    new RegExp(`require\\(['"]\\./${escaped}['"]\\)`),
+    `${moduleName} must remain explicitly owned by v2-creation.spec.js`
+  );
+}
+
+console.log(`Test-suite governance passed for ${diskContractTests.length} contract files, ${diskSpecs.length} browser specs and ${embeddedPlaywrightModules.length} embedded browser modules.`);
