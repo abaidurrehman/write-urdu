@@ -135,6 +135,11 @@ function createContinuityCard() {
   return aside;
 }
 
+function syncCardVisibility() {
+  if (!card) return;
+  card.hidden = !hasWriting(currentSnapshot());
+}
+
 function revealCard() {
   if (!card) card = createContinuityCard();
   if (!card) return;
@@ -142,11 +147,11 @@ function revealCard() {
   const copyColumn = row && row.querySelector('.col-sm');
   if (row) row.classList.add('home-account-hero-layout');
   if (copyColumn) copyColumn.classList.add('home-account-hero-copy');
-  card.hidden = false;
   cardStatus = card.querySelector('[data-account-continuity-status]');
   saveButton = card.querySelector('[data-account-continuity-save]');
   signInLink = card.querySelector('[data-account-continuity-signin]');
   documentsLink = card.querySelector('[data-account-continuity-documents]');
+  syncCardVisibility();
 }
 
 function persistMetadata(document) {
@@ -233,13 +238,17 @@ function scheduleRemoteSync() {
 function bindEditor() {
   const textarea = document.getElementById('transliterateTextarea');
   if (!textarea) return;
-  textarea.addEventListener('input', scheduleRemoteSync);
+  textarea.addEventListener('input', () => {
+    scheduleRemoteSync();
+    syncCardVisibility();
+  });
 
   const clearButton = document.getElementById('clear');
   if (clearButton) {
     clearButton.addEventListener('click', () => {
       runtime.setTimeout(() => {
         if (adapter && !adapter.hasContent()) resetAssociation('Not saved to your account');
+        syncCardVisibility();
       }, 0);
     });
   }
@@ -294,6 +303,7 @@ function applyOpenHandoff() {
   metadata = null;
   conflictPaused = false;
   adapter.setContent(handoff.content || handoff.plainText || '');
+  syncCardVisibility();
   persistMetadata(handoff);
   setStatus('Opened from My Documents · Saved to your account', 'saved');
   notify('Saved document opened. Your browser-local history remains available.', 'success');

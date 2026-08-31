@@ -32,7 +32,6 @@ module.exports = {
         'home.batchPrompt': 'طویل رومن اردو متن معلوم ہوا۔ کیا اسے اردو رسم الخط میں تبدیل کیا جائے؟',
         'home.batchAction': 'حصے کو اردو رسم الخط میں تبدیل کریں',
         'home.editorLabel': 'اردو لکھنے کا ایڈیٹر',
-        'home.usageAlert': '<i class="fas fa-info-circle" aria-hidden="true"></i> رومن اردو لکھیں، مثلاً <em>mera</em>، اور ہر لفظ تبدیل کرنے کے لیے Space دبائیں۔ مطلوبہ متبادل چننے کے لیے Backspace دو بار دبائیں۔',
         'home.cardSubtitle': 'آن لائن اردو لکھیں — رومن اردو اور اردو ان پٹ کے درمیان تبدیل کرنے کے لیے Ctrl+G دبائیں',
         'home.howToTitle': 'انگریزی حروف کی مدد سے اردو کیسے لکھیں',
         'home.howToList': '<li>ایڈیٹر میں انگریزی حروف کی مدد سے اردو کا کوئی لفظ لکھیں، مثلاً <em>mera</em>۔</li>' +

@@ -52,12 +52,12 @@ Execution gates:
 
 **Owner:** revised [`WU-PLAT-004`](WU-PLAT-004-basic-writer-command-toolbar.md)
 
-- [ ] Empty state is dominated by simple input choices + writer, not a disabled Share/export command wall.
-- [ ] Preserve intent language: `English to Urdu Typing`, simple conversion example, no technical acquisition jargon.
-- [ ] Present `English letters → Urdu`, `Type Urdu directly`, and `Speak Urdu` coherently.
-- [ ] Reveal Copy/Continue after useful text without interrupting first success.
-- [ ] Retire duplicate/superseded Basic action UI rather than layering another toolbar.
-- [ ] Mobile first screen keeps input choice + writer primary.
+- [x] Empty state is dominated by simple input choices + writer, not a disabled Share/export command wall.
+- [x] Preserve intent language: `English to Urdu Typing`, simple conversion example, no technical acquisition jargon.
+- [x] Present `English letters → Urdu`, `Type Urdu directly`, and `Speak Urdu` coherently.
+- [x] Reveal Copy/Continue after useful text without interrupting first success.
+- [x] Retire duplicate/superseded Basic action UI rather than layering another toolbar.
+- [x] Mobile first screen keeps input choice + writer primary.
 
 ### P0.1C — Contextual continuation
 

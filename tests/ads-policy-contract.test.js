@@ -59,7 +59,7 @@ assert.doesNotMatch(adsSource, /data-ad-channel\s*=/, 'Do not invent AdSense cus
 // bringing back legacy sidebar/page-level ad initialization.
 assert.match(writeMonetization, /CORE_ROUTES\s*=\s*\['\/', '\/urdu-editor', '\/urdu-keyboard'\]/, 'All three core Write routes must participate in monetization restoration');
 assert.match(writeMonetization, /data-wu-ad-boundary["']?,?\s*['"]post-workspace|setAttribute\('data-wu-ad-boundary', 'post-workspace'\)/, 'Core Write ads must remain behind an explicit post-workspace boundary');
-assert.match(writeMonetization, /id\('UsageAlert'\)|getElementById\('UsageAlert'\)/, 'Homepage ad boundary must remain after the active writing workspace');
+assert.match(writeMonetization, /getElementById\('demo'\)/, 'Homepage ad boundary must remain after the active writing workspace');
 assert.match(writeMonetization, /getElementById\('basic-example'\)/, 'Rich Editor ad boundary must remain after the editor mount');
 assert.match(writeMonetization, /getElementById\('key1'\)/, 'Urdu Keyboard ad boundary must remain after the on-screen keyboard');
 assert.match(writeMonetization, /data-ad-slot=\\?"['"]?\s*\+?\s*SHARED_SLOT|data-ad-slot/, 'Core Write restoration must use the shared responsive AdSense unit');

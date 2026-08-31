@@ -18,7 +18,7 @@ const css = read('css', 'community-publishing.css');
 // not buried inside the signed-in account/My-Documents side panel. ---
 assert.match(ui, /const TOOLBAR_SLOT_SELECTOR = Object\.freeze\(/, 'UI must define per-editor toolbar slot selectors');
 assert.match(ui, /const toolbarSlot = await waitFor\(TOOLBAR_SLOT_SELECTOR\[editorKind\]\)/, 'Start must resolve the toolbar slot');
-assert.match(ui, /if \(toolbarSlot\) addManualAction\(toolbarSlot\)/, 'Manual action must be inserted into the toolbar slot');
+assert.match(ui, /if \(toolbarSlot && currentText\(\)\.trim\(\)\) addManualAction\(toolbarSlot\)/, 'Manual action must be inserted into the toolbar slot only once there is content (no promotion in the empty E0 state)');
 assert.doesNotMatch(ui, /actionsHostFor/, 'Manual action must no longer target the buried account-panel actions host');
 assert.match(ui, /wu-community-toolbar-button/, 'Manual action must use the dedicated, disambiguated toolbar button style');
 

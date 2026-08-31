@@ -337,8 +337,11 @@
             discoveryContainer = root.document.createElement('div');
             discoveryContainer.className = 'wu-basic-command-group wu-basic-command-ai-entry';
             discoveryContainer.setAttribute('data-wu-ai-writing-discovery', '');
+            discoveryContainer.setAttribute('data-wu-basic-reveal-on-content', '');
             discoveryContainer.setAttribute('role', 'group');
             discoveryContainer.setAttribute('aria-label', aiWritingLocale() === 'ur' ? 'AI تحریری مدد' : 'AI writing help');
+            discoveryContainer.hidden = !hasContent();
+            discoveryContainer.setAttribute('aria-hidden', hasContent() ? 'false' : 'true');
             primary.parentNode.insertBefore(discoveryContainer, primary.nextSibling);
         }
         var host = root.document.querySelector('[data-wu-ai-writing-host]');
@@ -400,7 +403,7 @@
         return true;
     }
 
-    function createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel) {
+    function createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel, shareButton, outputButtons, clearButton) {
         var wrapper = root.document.createElement('div');
         wrapper.className = 'wu-basic-command-more';
         wrapper.setAttribute('data-wu-basic-more', '');
@@ -419,11 +422,39 @@
         panel.setAttribute('data-wu-basic-more-panel', '');
         panel.hidden = true;
 
+        var outputSection = root.document.createElement('div');
+        outputSection.className = 'wu-basic-command-more-section';
+        outputSection.setAttribute('data-wu-basic-output-section', '');
+        var outputHeading = root.document.createElement('strong');
+        outputHeading.className = 'wu-basic-command-more-heading';
+        outputHeading.textContent = 'Document actions';
+        outputSection.appendChild(outputHeading);
+        var outputGroup = root.document.createElement('div');
+        outputGroup.className = 'wu-basic-command-group wu-basic-command-outputs';
+        outputGroup.setAttribute('data-wu-basic-output-group', '');
+        outputGroup.setAttribute('role', 'group');
+        outputGroup.setAttribute('aria-label', 'Document actions');
+        (outputButtons || []).forEach(function (button) { if (button) outputGroup.appendChild(button); });
+        outputSection.appendChild(outputGroup);
+        panel.appendChild(outputSection);
+
         var mobileOutputs = root.document.createElement('div');
         mobileOutputs.className = 'wu-basic-command-more-section wu-basic-command-mobile-outputs';
         mobileOutputs.setAttribute('data-wu-basic-mobile-outputs', '');
         mobileOutputs.setAttribute('aria-label', 'Document actions');
         panel.appendChild(mobileOutputs);
+
+        if (shareButton) {
+            var shareSection = root.document.createElement('div');
+            shareSection.className = 'wu-basic-command-more-section';
+            shareSection.setAttribute('data-wu-basic-share-section', '');
+            var shareHeading = root.document.createElement('strong');
+            shareHeading.className = 'wu-basic-command-more-heading';
+            shareHeading.textContent = 'Sharing';
+            shareSection.appendChild(shareHeading);
+            shareSection.appendChild(shareButton);
+            panel.appendChild(shareSection);
+        }
 
         var fileSection = root.document.createElement('div');
         fileSection.className = 'wu-basic-command-more-section';
@@ -442,6 +473,7 @@
             textExport.innerHTML = '<i class="far fa-file-alt" aria-hidden="true"></i><span>Text file</span>';
             fileSection.appendChild(textExport);
         }
+        if (clearButton) fileSection.appendChild(clearButton);
         panel.appendChild(fileSection);
 
         if (settingsPanel) {
@@ -501,6 +533,10 @@
         surface.querySelectorAll('[data-wu-basic-content-action]').forEach(function (button) {
             if ('disabled' in button) button.disabled = !enabled;
             button.setAttribute('aria-disabled', enabled ? 'false' : 'true');
+        });
+        surface.querySelectorAll('[data-wu-basic-reveal-on-content]').forEach(function (element) {
+            element.hidden = !enabled;
+            element.setAttribute('aria-hidden', enabled ? 'false' : 'true');
         });
         return enabled;
     }
@@ -601,24 +637,18 @@
         var primaryGroup = root.document.createElement('div');
         primaryGroup.className = 'wu-basic-command-group wu-basic-command-primary';
         primaryGroup.setAttribute('role', 'group');
-        primaryGroup.setAttribute('aria-label', 'Share and copy');
+        primaryGroup.setAttribute('aria-label', 'Copy');
         setAction(share, 'share', 'Share', 'fas fa-share-alt', 'share');
         share.setAttribute('title', 'Create a short Write Urdu link');
         setAction(copy, 'copy', 'Copy', 'far fa-copy', 'copy');
-        primaryGroup.appendChild(share);
+        copy.setAttribute('data-wu-basic-reveal-on-content', '');
         primaryGroup.appendChild(copy);
 
-        var outputGroup = root.document.createElement('div');
-        outputGroup.className = 'wu-basic-command-group wu-basic-command-outputs';
-        outputGroup.setAttribute('data-wu-basic-output-group', '');
-        outputGroup.setAttribute('role', 'group');
-        outputGroup.setAttribute('aria-label', 'Document actions');
         setAction(pdf, 'pdf', 'PDF', 'far fa-file-pdf', 'utility');
         setAction(word, 'word', 'Word', 'far fa-file-word', 'utility');
         setAction(png, 'png', 'PNG', 'far fa-image', 'utility');
         setAction(preview, 'preview', 'Preview', 'far fa-eye', 'utility');
         setAction(print, 'print', 'Print', 'fas fa-print', 'utility');
-        [pdf, word, png, preview, print].forEach(function (button) { outputGroup.appendChild(button); });
 
         var modeGroup = root.document.createElement('div');
         modeGroup.className = 'wu-basic-command-group wu-basic-command-mode';
@@ -629,21 +659,15 @@
         if (sourceNote) sourceNote.classList.add('wu-basic-mode-note-source');
         modeGroup.appendChild(modeControl);
 
-        var more = createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel);
+        setAction(clear, 'clear', 'Clear', 'far fa-trash-alt', 'clear');
+        var more = createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel, share, [pdf, word, png, preview, print], clear);
         var moreGroup = root.document.createElement('div');
         moreGroup.className = 'wu-basic-command-group wu-basic-command-overflow';
         moreGroup.appendChild(more);
 
-        var clearGroup = root.document.createElement('div');
-        clearGroup.className = 'wu-basic-command-group wu-basic-command-destructive';
-        setAction(clear, 'clear', 'Clear', 'far fa-trash-alt', 'clear');
-        clearGroup.appendChild(clear);
-
         actions.appendChild(primaryGroup);
-        actions.appendChild(outputGroup);
         actions.appendChild(modeGroup);
         actions.appendChild(moreGroup);
-        actions.appendChild(clearGroup);
 
         var helper = root.document.createElement('div');
         helper.className = 'wu-basic-command-helper';
@@ -677,8 +701,6 @@
         demo.parentNode.insertBefore(surface, demo);
 
         editorChrome.remove();
-        var usageHint = root.document.getElementById('UsageAlert');
-        if (usageHint) usageHint.setAttribute('data-wu-basic-legacy-hint', '');
         root.document.body.setAttribute('data-wu-basic-command-toolbar', 'true');
         removeEmptyLegacyContainer(legacyContainer);
 

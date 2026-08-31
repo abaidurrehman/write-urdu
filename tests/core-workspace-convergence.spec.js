@@ -44,7 +44,7 @@ async function installRecognitionStub(page) {
   });
 }
 
-test('Basic Writer exposes one share-first command toolbar directly above the canvas', async ({ page }) => {
+test('Basic Writer keeps E0 to input choices + writer and reveals Copy after first value', async ({ page }) => {
   let publishBody = '';
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'share', {
@@ -80,6 +80,12 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   const copy = toolbar.locator('[data-wu-command-action="copy"]');
   const clear = toolbar.locator('[data-wu-command-action="clear"]');
   const mode = toolbar.locator('[data-input-mode-control]');
+  const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
+  const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
+  const ensureMoreOpen = async () => {
+    if (await moreToggle.getAttribute('aria-expanded') !== 'true') await moreToggle.click();
+    await expect(morePanel).toBeVisible();
+  };
 
   await expect(editor).toBeVisible();
   await expect(surface).toBeVisible();
@@ -90,9 +96,6 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   await expect(toolbar.getByText('Export', { exact: true })).toHaveCount(0);
   await expect(toolbar.getByText('Share text only', { exact: true })).toHaveCount(0);
 
-  const commandOrder = await toolbar.locator('[data-wu-command-action]').evaluateAll(nodes => nodes.map(node => node.getAttribute('data-wu-command-action')));
-  expect(commandOrder.slice(0, 2)).toEqual(['share', 'copy']);
-
   const toolbarBeforeCanvas = await page.evaluate(() => {
     const surface = document.querySelector('[data-wu-basic-command-surface]');
     const canvas = document.querySelector('#demo');
@@ -100,52 +103,60 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   });
   expect(toolbarBeforeCanvas).toBe(true);
 
-  await expect(share).toBeDisabled();
-  await expect(copy).toBeDisabled();
-  await expect(clear).toBeDisabled();
+  // E0 (empty): only the input-mode choices and the More disclosure are visible at the top
+  // level. Copy and every content-dependent command stay tucked away rather than rendering
+  // as a disabled command wall (WU-PLAT-004 §5).
+  await expect(copy).toBeHidden();
+  await expect(share).toBeHidden();
+  await expect(clear).toBeHidden();
   await expect(mode.locator('[data-input-mode-option="roman"]')).toBeEnabled();
-  await expect(toolbar.locator('[data-wu-basic-more-toggle]')).toBeEnabled();
+  await expect(moreToggle).toBeEnabled();
   await expect(page.locator('[data-wu-basic-mode-helper]')).toContainText('Type Urdu words using English letters');
 
   await editor.fill('میرا خیال ہے');
-  await expect(share).toBeEnabled();
+
+  // E1 (first useful text): Copy is promoted to a direct, visible primary action.
+  await expect(copy).toBeVisible();
   await expect(copy).toBeEnabled();
-  await expect(clear).toBeEnabled();
-  await expect(share).toHaveText('Share');
   await expect(copy).toHaveText('Copy');
+
+  // Share/PDF/Word/PNG/Preview/Print/Clear remain inside More even at E1 — their promotion
+  // to a direct/substantial-writing state is Slice C's job, out of scope for this slice.
+  await expect(share).toBeHidden();
+  await expect(clear).toBeHidden();
+
+  await ensureMoreOpen();
+  await expect(share).toBeVisible();
+  await expect(share).toBeEnabled();
+  await expect(share).toHaveText('Share');
+  await expect(clear).toBeVisible();
+  await expect(clear).toBeEnabled();
 
   const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
   const outputs = ['pdf', 'word', 'png', 'preview', 'print'];
   const outputLabels = { pdf: 'PDF', word: 'Word', png: 'PNG', preview: 'Preview', print: 'Print' };
   if (compact) {
-    await expect(toolbar.locator('[data-wu-basic-output-group]')).toBeHidden();
-    const toggle = toolbar.locator('[data-wu-basic-more-toggle]');
-    await toggle.click();
-    const panel = toolbar.locator('[data-wu-basic-more-panel]');
-    await expect(panel).toBeVisible();
+    await expect(morePanel.locator('[data-wu-basic-output-group]')).toBeHidden();
     for (const action of outputs) {
-      const control = panel.locator(`[data-wu-command-action="${action}"]`);
+      const control = morePanel.locator(`[data-wu-command-action="${action}"]`);
       await expect(control).toBeVisible();
       await expect(control).toHaveText(outputLabels[action]);
     }
   } else {
-    await expect(toolbar.locator('[data-wu-basic-output-group]')).toBeVisible();
+    await expect(morePanel.locator('[data-wu-basic-output-group]')).toBeVisible();
     for (const action of outputs) {
-      const control = toolbar.locator(`[data-wu-command-action="${action}"]`);
+      const control = morePanel.locator(`[data-wu-command-action="${action}"]`);
       await expect(control).toBeVisible();
       await expect(control).toHaveText(outputLabels[action]);
     }
   }
 
-  const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
-  if (await moreToggle.getAttribute('aria-expanded') !== 'true') await moreToggle.click();
-  const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
-  await expect(morePanel).toBeVisible();
   await expect(morePanel.locator('#inputFileNameToSaveAs')).toBeVisible();
   await expect(morePanel.getByText('Text file', { exact: true })).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(morePanel).toBeHidden();
 
+  await ensureMoreOpen();
   await share.click();
   const publishDialog = page.locator('.wu-share-dialog');
   await expect(publishDialog).toBeVisible();
@@ -170,11 +181,11 @@ test('Basic Writer exposes one share-first command toolbar directly above the ca
   expect(payload.text).not.toContain('میرا خیال ہے');
 
   await publishDialog.locator('[data-wu-share-close]').click();
+  await ensureMoreOpen();
   await clear.click();
   await expect(editor).toHaveValue('');
-  await expect(share).toBeDisabled();
-  await expect(copy).toBeDisabled();
-  await expect(clear).toBeDisabled();
+  await expect(copy).toBeHidden();
+  await page.keyboard.press('Escape');
 
   const nextStep = page.locator('[data-wu-next-step-version="2"]');
   await editor.fill('ایک نئی تحریر');
@@ -222,11 +233,11 @@ test('Basic Writer makes AI writing help discoverable and keeps review below the
   const editor = page.locator('#transliterateTextarea');
   const host = page.locator('[data-wu-ai-writing-host]');
   const jump = page.locator('[data-wu-ai-writing-jump]');
-  await expect(host).toBeVisible();
-  await expect(host).toContainText('AI writing assistant');
-  await expect(host).toContainText('Make your Urdu clearer');
-  await expect(jump).toBeVisible();
-  await expect(jump).toContainText('AI writing');
+
+  // E0: the AI writing entry point stays tucked away until there is text to improve — its
+  // own click handler already treats empty content as a precondition failure, so the state
+  // model gates it the same way as Copy (WU-PLAT-004 §5).
+  await expect(jump).toBeHidden();
 
   const hierarchy = await page.evaluate(() => {
     const editorFrame = document.querySelector('#demo');
@@ -240,6 +251,11 @@ test('Basic Writer makes AI writing help discoverable and keeps review below the
   expect(hierarchy).toEqual({ afterEditor: true, outsideToolbar: true });
 
   await editor.fill(original);
+  await expect(host).toBeVisible();
+  await expect(host).toContainText('AI writing assistant');
+  await expect(host).toContainText('Make your Urdu clearer');
+  await expect(jump).toBeVisible();
+  await expect(jump).toContainText('AI writing');
   await jump.click();
   await expect(host.getByRole('button', { name: 'Fix Urdu' })).toBeFocused();
 
@@ -504,6 +520,9 @@ test('phone outcome navigation and Basic Writer toolbar stay inside the viewport
 
   const editor = page.locator('#transliterateTextarea');
   await editor.fill('ایک موبائل تحریر');
+  const moreToggle = page.locator('[data-wu-basic-more-toggle]');
+  await moreToggle.click();
+  await expect(page.locator('[data-wu-basic-more-panel]')).toBeVisible();
   const toolbarGeometry = await page.evaluate(() => {
     const surface = document.querySelector('[data-wu-basic-command-surface]');
     const share = document.querySelector('[data-wu-command-action="share"]');

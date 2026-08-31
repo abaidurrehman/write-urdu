@@ -43,81 +43,6 @@ body[data-wu-core-workspace="basic"] .home-actions-group-secondary {
   margin-left: auto;
 }
 
-body[data-wu-core-workspace="basic"] .wu-basic-more {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more.is-open {
-  flex: 1 1 100%;
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel {
-  flex: 1 1 100%;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 6px;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-md);
-  background: #fff;
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel[hidden] {
-  display: none !important;
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel label,
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel input {
-  width: 100%;
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel input {
-  min-height: 40px;
-  padding: 7px 10px;
-  border: 1px solid var(--wu-color-border);
-  border-radius: var(--wu-radius-sm);
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel button,
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel a {
-  display: flex;
-  min-height: 40px;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: var(--wu-radius-sm);
-  color: var(--wu-color-ink-soft);
-  background: var(--wu-color-surface-soft);
-  text-align: left;
-  text-decoration: none;
-}
-
-body.wu-v2-shell[data-wu-core-workspace="basic"] .wu-basic-more.is-open .wu-basic-more-panel:not([hidden]) [data-wu-basic-share-action] {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel button:hover,
-body[data-wu-core-workspace="basic"] .wu-basic-more-panel a:hover {
-  background: var(--wu-color-brand-softer);
-}
-
-body[data-wu-core-workspace="basic"] #UsageAlert {
-  margin-bottom: 0;
-}
-
 body[data-wu-taxonomy-synced] .docs-card-grid {
   align-items: stretch;
 }
@@ -161,8 +86,7 @@ body[data-wu-taxonomy-synced] #work {
     min-width: 150px;
   }
 
-  body[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] .wu-basic-command-overflow,
-  body[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] .wu-basic-command-destructive {
+  body[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] .wu-basic-command-overflow {
     flex: 0 0 auto !important;
     min-width: max-content;
   }

@@ -17,15 +17,15 @@ This checklist is subordinate to `WU-PLAT-002H-core-activation-feature-discovery
 
 ## Gate B — Basic Writer empty/early state
 
-- [ ] Remove/demote content-dependent command wall from empty state.
-- [ ] Preserve intent-matched heading and one simple conversion example.
-- [ ] Present English-letter, direct-Urdu and Voice choices coherently.
-- [ ] Keep writing canvas dominant on mobile.
-- [ ] Do not add an account/share/community promo in empty state.
-- [ ] Reveal Copy after useful text.
-- [ ] Keep lower-frequency outputs reachable through a stable progressive control.
-- [ ] Remove superseded/duplicate legacy action nodes rather than hiding a second generation indefinitely.
-- [ ] Browser-test keyboard, touch, screen-reader labels and focus behavior.
+- [x] Remove/demote content-dependent command wall from empty state.
+- [x] Preserve intent-matched heading and one simple conversion example.
+- [x] Present English-letter, direct-Urdu and Voice choices coherently.
+- [x] Keep writing canvas dominant on mobile.
+- [x] Do not add an account/share/community promo in empty state.
+- [x] Reveal Copy after useful text.
+- [x] Keep lower-frequency outputs reachable through a stable progressive control.
+- [x] Remove superseded/duplicate legacy action nodes rather than hiding a second generation indefinitely.
+- [x] Browser-test keyboard, touch, screen-reader labels and focus behavior.
 
 **Exit gate:** first-value funnel is no worse on guardrails and the pre-value UI has materially fewer competing commands.
 

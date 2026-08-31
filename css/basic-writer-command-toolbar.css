@@ -29,17 +29,13 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-group {
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs,
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-destructive {
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
   position: relative;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs,
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-destructive {
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
   padding-left: 12px;
   margin-left: 4px;
   border-left: 1px solid var(--wu-color-border);
@@ -85,22 +81,6 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
   justify-content: center;
   gap: 7px;
   padding: 0 14px;
-}
-
-/* The legacy Basic Writer deliberately hid [data-write-urdu-share] while
-   Share lived in More. WU-PLAT-004 promotes that same proven control to the
-   primary command surface, so this layer explicitly owns its visibility. */
-body[data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] [data-write-urdu-share].wu-basic-command--share {
-  display: inline-flex !important;
-  visibility: visible !important;
-}
-
-body[data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] [data-write-urdu-share].wu-basic-command--share:not(:disabled) {
-  opacity: 1 !important;
-}
-
-body[data-wu-basic-command-toolbar="true"] .home-actions[data-wu-basic-command-toolbar] [data-write-urdu-share].wu-basic-command--share:disabled {
-  opacity: 0.42 !important;
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share {
@@ -379,8 +359,14 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section {
   background: #fff;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs[hidden] {
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs[hidden],
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs[hidden],
+body[data-wu-basic-command-toolbar="true"] [data-wu-basic-reveal-on-content][hidden] {
   display: none !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section .wu-basic-command-outputs {
+  flex-wrap: wrap;
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-heading {
@@ -429,10 +415,6 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs .wu-
   background: #f2f8f4;
 }
 
-body[data-wu-basic-command-toolbar="true"] [data-wu-basic-legacy-hint] {
-  display: none !important;
-}
-
 body[data-wu-basic-command-toolbar="true"] #demo {
   margin-top: 0;
 }
@@ -467,8 +449,7 @@ body[data-wu-basic-command-toolbar="true"] #demo {
     padding: 0 11px;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-destructive {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
     padding-left: 7px;
     margin-left: 0;
   }
@@ -548,8 +529,7 @@ body[data-wu-basic-command-toolbar="true"] #demo {
     width: 100%;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share,
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary .wu-basic-command--copy {
     flex: 1 1 0;
   }
 

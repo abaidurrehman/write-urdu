@@ -410,12 +410,15 @@ async function start() {
   await resumeIntentIfSignedIn();
 
   const toolbarSlot = await waitFor(TOOLBAR_SLOT_SELECTOR[editorKind]);
-  if (toolbarSlot) addManualAction(toolbarSlot);
+  if (toolbarSlot && currentText().trim()) addManualAction(toolbarSlot);
 
   const anchor = await waitFor(PANEL_SELECTOR[editorKind]);
   if (!anchor) return;
 
-  const evaluate = () => checkAutomaticPrompt(anchor);
+  const evaluate = () => {
+    checkAutomaticPrompt(anchor);
+    if (toolbarSlot && currentText().trim()) addManualAction(toolbarSlot);
+  };
   evaluate();
 
   document.addEventListener('write-urdu:outcome', (event) => {

@@ -15,7 +15,7 @@
     }
 
     function workspaceBoundary(path) {
-        if (path === '/') return document.getElementById('UsageAlert');
+        if (path === '/') return document.getElementById('demo');
         if (path === '/urdu-editor') {
             var richEditor = document.getElementById('basic-example');
             return richEditor ? richEditor.parentElement : null;
