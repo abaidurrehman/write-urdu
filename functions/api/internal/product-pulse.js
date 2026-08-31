@@ -12,7 +12,8 @@ const CARD_STUDIO_METRIC_COLUMNS = [
   'card_studio_export_step_reached', 'card_studio_export_attempted', 'card_studio_export_quick', 'card_studio_export_advanced'
 ];
 const CONTINUATION_METRIC_COLUMNS = [
-  'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored'
+  'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored',
+  'continuation_destination_meaningful_start'
 ];
 const METRIC_COLUMNS = [
   'visits', 'engaged_visits', 'copies', 'exports',
@@ -318,6 +319,7 @@ function continuationSection(current) {
   const stored = n(current, 'continuation_stored');
   const destinationReady = n(current, 'continuation_destination_ready');
   const payloadRestored = n(current, 'continuation_payload_restored');
+  const meaningfulStart = n(current, 'continuation_destination_meaningful_start');
   return {
     ready: shown > 0 || selected > 0,
     funnel: {
@@ -325,13 +327,15 @@ function continuationSection(current) {
       selected,
       stored,
       destination_ready: destinationReady,
-      payload_restored: payloadRestored
+      payload_restored: payloadRestored,
+      meaningful_start: meaningfulStart
     },
     conversion: {
       selected_rate: ratio(selected, shown),
       stored_rate: ratio(stored, selected),
       destination_ready_rate: ratio(destinationReady, stored),
-      payload_restored_rate: ratio(payloadRestored, destinationReady)
+      payload_restored_rate: ratio(payloadRestored, destinationReady),
+      meaningful_start_rate: ratio(meaningfulStart, payloadRestored)
     }
   };
 }

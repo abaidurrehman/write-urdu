@@ -23,6 +23,14 @@ assert.match(entry, /write-urdu:draft:v1:rich/, 'Rich Editor current-draft prese
 assert.match(entry, /write-urdu:history:v1:rich/, 'Rich Editor history preservation key is missing');
 assert.match(entry, /preserveRichSnapshot/, 'Existing Rich Editor work must be preserved before continuation');
 assert.match(entry, /stageRichDraft/, 'Incoming student text must be staged as the current Rich Editor draft');
+
+// WU-PLAT-002H Gate C: the destination must not silently overwrite an existing
+// Rich Editor draft (WU-PLAT-004 section 9 / Acceptance Scenario 4). The prior
+// draft is always snapshotted to history first; a confirm gate decides whether
+// the visible editor is actually replaced.
+assert.match(entry, /window\.confirm\(/, 'Gate C: replacing a differing Rich Editor draft must ask for confirmation');
+assert.match(entry, /if \(!replace\) return;/, 'Gate C: declining the confirm must not overwrite the existing draft');
+assert.match(entry, /attempt >= 120\) \{[\s\S]*?WriteUrduUI\.notify/, 'Gate C: a stuck/failed handoff load must notify the user instead of failing silently');
 assert.match(entry, /\['\/', '\/urdu-editor', '\/urdu-keyboard'\]/, 'Core Write route guard changed unexpectedly');
 assert.match(entry, /\.homepage-seo/, 'Homepage journey must remain below the writing task');
 assert.match(entry, /\.fb-comments/, 'Rich Editor journey insertion boundary is missing');

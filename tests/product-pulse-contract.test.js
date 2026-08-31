@@ -96,6 +96,7 @@ assert.match(client, /function renderActivation\(/, 'Dashboard client must rende
 for (const name of [
   'card_studio_export_step_reached', 'card_studio_export_attempted',
   'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored',
+  'continuation_destination_meaningful_start',
   'share_destination_ready', 'share_referral_recognized'
 ]) {
   assert.ok(events.includes(`'${name}'`), `EVENT_NAMES must include ${name}`);
@@ -108,12 +109,14 @@ assert.match(api, /function cardStudioSection\(/, 'Product Pulse API must build 
 assert.match(api, /function continuationSection\(/, 'Product Pulse API must build a continuation funnel section');
 assert.match(api, /card_studio_export_step_reached/, 'Card Studio section must expose the export-step-reached stage');
 assert.match(api, /continuation_payload_restored/, 'Continuation section must expose the payload-restored stage');
+assert.match(api, /continuation_destination_meaningful_start/, 'Continuation section must expose the destination-meaningful-start stage');
 assert.doesNotMatch(api, /editor_text|roman_urdu_text|urdu_text|filename|clipboard_content|user_agent|referrer/i, 'Gate A completion sections must not introduce content or identity fields');
 
 assert.match(html, /id="cardStudioFunnelPanel"/, 'Dashboard must expose a Card Studio completion funnel panel');
 assert.match(html, /id="continuationFunnelPanel"/, 'Dashboard must expose a continuation funnel panel');
 assert.match(client, /function renderCardStudioFunnel\(/, 'Dashboard client must render the Card Studio completion funnel');
 assert.match(client, /function renderContinuationFunnel\(/, 'Dashboard client must render the continuation funnel');
+assert.match(client, /meaningful_start_rate/, 'Continuation funnel client must render the meaningful-start stage');
 
 // A "rate" built from an uncapped, repeatable-per-session numerator over a
 // ~1-per-session denominator must not be displayed as a bounded percent.

@@ -361,8 +361,15 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section {
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs[hidden],
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs[hidden],
-body[data-wu-basic-command-toolbar="true"] [data-wu-basic-reveal-on-content][hidden] {
+body[data-wu-basic-command-toolbar="true"] [data-wu-basic-reveal-on-content][hidden],
+body[data-wu-basic-command-toolbar="true"] [data-wu-basic-promoted-outputs][hidden] {
   display: none !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-promoted-outputs {
+  padding-left: 12px;
+  margin-left: 4px;
+  border-left: 1px solid var(--wu-color-border);
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section .wu-basic-command-outputs {
@@ -449,7 +456,8 @@ body[data-wu-basic-command-toolbar="true"] #demo {
     padding: 0 11px;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-promoted-outputs {
     padding-left: 7px;
     margin-left: 0;
   }

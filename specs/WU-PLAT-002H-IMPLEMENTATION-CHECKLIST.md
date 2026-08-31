@@ -31,12 +31,12 @@ This checklist is subordinate to `WU-PLAT-002H-core-activation-feature-discovery
 
 ## Gate C — Contextual continuation
 
-- [ ] Implement no-more-than-three visible next actions.
-- [ ] Promote Basic -> Rich for substantial writing with safe state transfer.
-- [ ] Make PDF/Word appropriately discoverable for substantial writing.
-- [ ] Do not infer recommendation from private text content.
-- [ ] Instrument destination ready + destination meaningful start.
-- [ ] Validate no source draft is destroyed on handoff conflicts/failures.
+- [x] Implement no-more-than-three visible next actions.
+- [x] Promote Basic -> Rich for substantial writing with safe state transfer.
+- [x] Make PDF/Word appropriately discoverable for substantial writing.
+- [x] Do not infer recommendation from private text content.
+- [x] Instrument destination ready + destination meaningful start.
+- [x] Validate no source draft is destroyed on handoff conflicts/failures.
 
 **Exit gate:** useful continuation can be measured end-to-end, not only by click.
 

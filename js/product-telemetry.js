@@ -201,6 +201,11 @@
         track('share_referred_creation_started', {});
     }
 
+    function trackContinuationMeaningfulStart() {
+        if (route !== '/urdu-editor' || !document.body.hasAttribute('data-rich-handoff-imported')) return;
+        trackOnce('continuation-destination-meaningful-start', 'continuation_destination_meaningful_start', { target_route: '/urdu-editor' });
+    }
+
     function send(events, beacon) {
         if (!events.length) return;
         var body = JSON.stringify({ events: events });
@@ -303,6 +308,7 @@
         var editor = window.tinymce.activeEditor;
         editorReader = function () { return editor.getContent({ format: 'text' }); };
         editor.on('input change keyup paste', markEngaged);
+        editor.on('input keyup paste', trackContinuationMeaningfulStart);
         editor.on('focus', noteWriterFocus);
         return true;
     }

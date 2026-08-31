@@ -57,6 +57,7 @@ const EVENT_NAMES = new Set([
     'continuation_stored',
     'continuation_destination_ready',
     'continuation_payload_restored',
+    'continuation_destination_meaningful_start',
     'share_destination_ready',
     'share_referral_recognized'
 ]);
@@ -96,7 +97,8 @@ const METRIC_COLUMNS = [
     'writer_viewed', 'writer_focused', 'writer_first_input', 'writer_first_urdu_success',
     'writer_depth_20', 'writer_depth_100', 'writer_depth_500', 'writer_depth_1000', 'writer_outcome_first',
     'card_studio_export_step_reached', 'card_studio_export_attempted', 'card_studio_export_quick', 'card_studio_export_advanced',
-    'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored'
+    'continuation_shown', 'continuation_stored', 'continuation_destination_ready', 'continuation_payload_restored',
+    'continuation_destination_meaningful_start'
 ];
 
 const SHARE_METRIC_COLUMNS = [
@@ -315,6 +317,7 @@ function legacyMetricSelect(toolExpression) {
                0 AS continuation_stored,
                0 AS continuation_destination_ready,
                0 AS continuation_payload_restored,
+               0 AS continuation_destination_meaningful_start,
                MAX(received_at) AS latest_event_at
         FROM product_events
         WHERE received_at < strftime('%Y-%m-%dT%H:00:00Z', 'now')
@@ -482,6 +485,7 @@ function applyEvent(delta, event) {
     if (event.eventName === 'continuation_stored') delta.continuation_stored += 1;
     if (event.eventName === 'continuation_destination_ready') delta.continuation_destination_ready += 1;
     if (event.eventName === 'continuation_payload_restored') delta.continuation_payload_restored += 1;
+    if (event.eventName === 'continuation_destination_meaningful_start') delta.continuation_destination_meaningful_start += 1;
 }
 
 function applyShareEvent(delta, event) {

@@ -195,6 +195,71 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
 });
 
+test('Basic Writer promotes PDF/Word directly once writing is substantial (WU-PLAT-002H Gate C)', async ({ page }) => {
+  await page.goto('/');
+  await waitForConvergence(page);
+  await waitForBasicToolbar(page);
+
+  const editor = page.locator('#transliterateTextarea');
+  const toolbar = page.locator('.home-actions[data-wu-basic-command-toolbar]');
+  const promoted = toolbar.locator('[data-wu-basic-promoted-outputs]');
+  const promotedPdf = promoted.locator('[data-wu-command-action="pdf"]');
+  const promotedWord = promoted.locator('[data-wu-command-action="word"]');
+  const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
+  const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
+  const ensureMoreOpen = async () => {
+    if (await moreToggle.getAttribute('aria-expanded') !== 'true') await moreToggle.click();
+    await expect(morePanel).toBeVisible();
+  };
+
+  const shortText = 'میرا خیال ہے';
+  await editor.fill(shortText);
+
+  // E1/E2 (under ~500 chars): PDF/Word stay inside More alongside PNG/Preview/Print, same as
+  // Gate B — promotion is state-gated, not a permanent layout change.
+  await expect(promoted).toBeHidden();
+  await ensureMoreOpen();
+  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toBeVisible();
+  await expect(morePanel.locator('[data-wu-command-action="png"]')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(morePanel).toBeHidden();
+
+  const longText = 'میرا خیال ہے کہ یہ ایک لمبی تحریر ہے۔ '.repeat(20);
+  await editor.fill(longText);
+
+  // E3+ (substantial writing, ~500+ chars): PDF/Word become direct, visible primary actions
+  // (WU-PLAT-004 §7; UX-STATE-MATRIX.md "PDF/Word: E3+").
+  await expect(promoted).toBeVisible();
+  await expect(promotedPdf).toBeVisible();
+  await expect(promotedPdf).toBeEnabled();
+  await expect(promotedPdf).toHaveText('PDF');
+  await expect(promotedWord).toBeVisible();
+  await expect(promotedWord).toBeEnabled();
+  await expect(promotedWord).toHaveText('Word');
+
+  // PNG/Preview/Print remain inside More even for long-form writing — they are not promoted
+  // alongside PDF/Word (UX-STATE-MATRIX.md: "PNG ... not equal to PDF/Word for long writing").
+  // No duplicate nodes: the same PDF/Word buttons that were inside More moved out, they were
+  // not cloned.
+  await ensureMoreOpen();
+  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toHaveCount(0);
+  await expect(morePanel.locator('[data-wu-command-action="word"]')).toHaveCount(0);
+  await expect(morePanel.locator('[data-wu-command-action="png"]')).toBeVisible();
+  await expect(morePanel.locator('[data-wu-command-action="preview"]')).toBeVisible();
+  await expect(morePanel.locator('[data-wu-command-action="print"]')).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  // Dropping back under the threshold demotes PDF/Word back into More, still as the same
+  // single nodes (never duplicated).
+  await editor.fill(shortText);
+  await expect(promoted).toBeHidden();
+  await ensureMoreOpen();
+  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toBeVisible();
+  await expect(morePanel.locator('[data-wu-command-action="word"]')).toBeVisible();
+  await expect(page.locator('[data-wu-command-action="pdf"]')).toHaveCount(1);
+  await expect(page.locator('[data-wu-command-action="word"]')).toHaveCount(1);
+});
+
 test('Basic Writer makes AI writing help discoverable and keeps review below the editor', async ({ page }) => {
   const original = 'مجھے معلوم تھا کہ مجھے اس کا مسکرانا پسند ہے۔';
   const improved = 'مجھے معلوم تھا کہ مجھے اس کی مسکراہٹ پسند ہے۔';

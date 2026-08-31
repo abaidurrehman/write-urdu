@@ -95,6 +95,156 @@ test('homepage assignment continues into Rich Editor without losing an older ric
   expect(page.url()).not.toContain('اسائنمنٹ');
 });
 
+test('a stuck Rich Editor load keeps the handed-off text safely staged instead of losing it (WU-PLAT-002H Gate C)', async ({ page }) => {
+  await open(page, '/');
+  await page.locator('#transliterateTextarea').fill('یہ ایک اہم اسائنمنٹ ہے');
+  const richAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-rich"]');
+  await expect(richAction).toBeVisible({ timeout: 10000 });
+
+  // Make TinyMCE appear to never initialize (window.tinymce.get() always reports no editor
+  // found) so waitForRichEditor exhausts its 120-attempt (6s) retry budget. Blocking the real
+  // network request is unreliable here because the service worker serves it from its own
+  // cache, bypassing page.route(); trapping the global instead is deterministic regardless
+  // of caching.
+  await page.addInitScript(() => {
+    let real;
+    Object.defineProperty(window, 'tinymce', {
+      configurable: true,
+      get() { return { get: () => null }; },
+      set(value) { real = value; }
+    });
+  });
+
+  await richAction.click();
+  await page.waitForURL(/urdu-editor/, { timeout: 10000 });
+  await page.waitForTimeout(7000);
+
+  // The incoming text must still be recoverable even though the visible editor never loaded.
+  const staged = await page.evaluate(() => JSON.parse(localStorage.getItem('write-urdu:draft:v1:rich') || 'null'));
+  expect(staged).not.toBeNull();
+  expect(staged.text).toBe('یہ ایک اہم اسائنمنٹ ہے');
+  await expect(page.locator('body')).not.toHaveAttribute('data-rich-handoff-imported', 'true');
+});
+
+test('Rich Editor asks before replacing a different in-progress draft, and keeps it if declined (WU-PLAT-002H Gate C)', async ({ page }) => {
+  await open(page, '/');
+  await page.locator('#transliterateTextarea').fill('نیا اردو متن جو بیسک رائٹر سے آیا');
+  const richAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-rich"]');
+  await expect(richAction).toBeVisible({ timeout: 10000 });
+
+  // Simulate a Rich Editor that is already initialized with different, live unsaved content
+  // at the moment the handoff is consumed (WU-PLAT-004 §9 / Acceptance Scenario 4).
+  await page.addInitScript(() => {
+    let real;
+    const fakeEditor = {
+      initialized: true,
+      getContent: opts => (opts && opts.format === 'text') ? 'پہلے سے موجود مختلف مسودہ' : '<p>پہلے سے موجود مختلف مسودہ</p>',
+      setContent: html => {
+        window.__wuFakeEditorSetContentCalls = (window.__wuFakeEditorSetContentCalls || 0) + 1;
+        window.__wuFakeEditorLastSetContent = html;
+      },
+      focus: () => {}
+    };
+    Object.defineProperty(window, 'tinymce', {
+      configurable: true,
+      get() { return { get: () => fakeEditor }; },
+      set(value) { real = value; }
+    });
+  });
+
+  let dialogMessage = null;
+  page.on('dialog', async dialog => {
+    dialogMessage = dialog.message();
+    await dialog.dismiss();
+  });
+
+  await richAction.click();
+  await page.waitForURL(/urdu-editor/, { timeout: 10000 });
+  await page.waitForTimeout(500);
+
+  expect(dialogMessage).toContain('Replace your current Rich Editor draft');
+  expect(await page.evaluate(() => window.__wuFakeEditorSetContentCalls || 0)).toBe(0);
+  await expect(page.locator('body')).not.toHaveAttribute('data-rich-handoff-imported', 'true');
+
+  // Declining does not lose the incoming text -- it was already staged before the prompt.
+  const staged = await page.evaluate(() => JSON.parse(localStorage.getItem('write-urdu:draft:v1:rich') || 'null'));
+  expect(staged.text).toBe('نیا اردو متن جو بیسک رائٹر سے آیا');
+
+  // The differing existing draft was preserved to history before the prompt, regardless of
+  // the user's answer.
+  const history = await page.evaluate(() => JSON.parse(localStorage.getItem('write-urdu:history:v1:rich') || '[]'));
+  expect(history.some(item => item.text === 'پہلے سے موجود مختلف مسودہ')).toBe(true);
+});
+
+test('accepting the replacement prompt applies the handed-off text and preserves the old draft in history (WU-PLAT-002H Gate C)', async ({ page }) => {
+  await open(page, '/');
+  await page.locator('#transliterateTextarea').fill('نیا اردو متن جو بیسک رائٹر سے آیا');
+  const richAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-rich"]');
+  await expect(richAction).toBeVisible({ timeout: 10000 });
+
+  await page.addInitScript(() => {
+    let real;
+    const fakeEditor = {
+      initialized: true,
+      getContent: opts => (opts && opts.format === 'text') ? 'پہلے سے موجود مختلف مسودہ' : '<p>پہلے سے موجود مختلف مسودہ</p>',
+      setContent: html => {
+        window.__wuFakeEditorSetContentCalls = (window.__wuFakeEditorSetContentCalls || 0) + 1;
+        window.__wuFakeEditorLastSetContent = html;
+      },
+      focus: () => {}
+    };
+    Object.defineProperty(window, 'tinymce', {
+      configurable: true,
+      get() { return { get: () => fakeEditor }; },
+      set(value) { real = value; }
+    });
+  });
+
+  page.on('dialog', dialog => dialog.accept());
+
+  await richAction.click();
+  await page.waitForURL(/urdu-editor/, { timeout: 10000 });
+  await page.waitForTimeout(500);
+
+  expect(await page.evaluate(() => window.__wuFakeEditorSetContentCalls || 0)).toBe(1);
+  expect(await page.evaluate(() => window.__wuFakeEditorLastSetContent || '')).toContain('نیا اردو متن جو بیسک رائٹر سے آیا');
+  await expect(page.locator('body')).toHaveAttribute('data-rich-handoff-imported', 'true');
+
+  const history = await page.evaluate(() => JSON.parse(localStorage.getItem('write-urdu:history:v1:rich') || '[]'));
+  expect(history.some(item => item.text === 'پہلے سے موجود مختلف مسودہ')).toBe(true);
+});
+
+test('Basic to Rich continuation measures destination meaningful start on the first real edit, not on the handoff import itself (WU-PLAT-002H Gate C)', async ({ page }) => {
+  const events = [];
+  await page.route('**/api/events', async route => {
+    const body = route.request().postDataJSON();
+    for (const event of (body && body.events) || []) events.push(event.event_name);
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+  });
+
+  await open(page, '/');
+  await page.locator('#transliterateTextarea').fill('میرا اردو اسائنمنٹ تیار ہے');
+  const richAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-rich"]');
+  await expect(richAction).toBeVisible({ timeout: 10000 });
+  await richAction.click();
+  await page.waitForURL(/urdu-editor/, { timeout: 10000 });
+
+  await page.waitForFunction(() => Boolean(document.body.getAttribute('data-rich-handoff-imported') === 'true'), null, { timeout: 10000 });
+  await page.waitForFunction(() => Boolean(window.WriteUrduTelemetry), null, { timeout: 10000 });
+
+  // The import itself (editor.setContent) must not count as a meaningful start.
+  await page.evaluate(() => window.WriteUrduTelemetry.flush(false));
+  await page.waitForTimeout(300);
+  expect(events).not.toContain('continuation_destination_meaningful_start');
+
+  // A real edit after the import does count.
+  const richBody = page.frameLocator('#basic-example_ifr').locator('body');
+  await richBody.fill('میرا اردو اسائنمنٹ تیار ہے مزید');
+  await page.evaluate(() => window.WriteUrduTelemetry.flush(false));
+  await page.waitForTimeout(300);
+  expect(events).toContain('continuation_destination_meaningful_start');
+});
+
 test('selected homepage text becomes a QR while the full Basic draft remains saved', async ({ page }) => {
   await open(page, '/');
   const fullText = 'پہلا حصہ اور دوسرا حصہ';

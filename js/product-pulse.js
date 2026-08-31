@@ -399,7 +399,8 @@
       shown: q('[data-continuation-kpi="shown"]'),
       selected_rate: q('[data-continuation-kpi="selected_rate"]'),
       destination_ready_rate: q('[data-continuation-kpi="destination_ready_rate"]'),
-      payload_restored_rate: q('[data-continuation-kpi="payload_restored_rate"]')
+      payload_restored_rate: q('[data-continuation-kpi="payload_restored_rate"]'),
+      meaningful_start_rate: q('[data-continuation-kpi="meaningful_start_rate"]')
     };
 
     if (!continuation.ready) {
@@ -412,13 +413,15 @@
     if (kpis.selected_rate) kpis.selected_rate.textContent = percent(conversion.selected_rate);
     if (kpis.destination_ready_rate) kpis.destination_ready_rate.textContent = percent(conversion.destination_ready_rate);
     if (kpis.payload_restored_rate) kpis.payload_restored_rate.textContent = percent(conversion.payload_restored_rate);
+    if (kpis.meaningful_start_rate) kpis.meaningful_start_rate.textContent = percent(conversion.meaningful_start_rate);
 
     renderBars('#continuationFunnelBars', [
       { label: 'Shown', value: funnel.shown },
       { label: 'Selected', value: funnel.selected },
       { label: 'Stored', value: funnel.stored },
       { label: 'Destination ready', value: funnel.destination_ready },
-      { label: 'Payload restored', value: funnel.payload_restored }
+      { label: 'Payload restored', value: funnel.payload_restored },
+      { label: 'Meaningful start', value: funnel.meaningful_start }
     ], 'label', 'value');
   }
 

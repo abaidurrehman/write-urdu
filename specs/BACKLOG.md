@@ -61,11 +61,11 @@ Execution gates:
 
 ### P0.1C — Contextual continuation
 
-- [ ] Maximum three visible continuation actions.
-- [ ] Promote Basic → Rich for substantial writing with safe state transfer.
-- [ ] Promote PDF/Word for substantial writing based on observed output usage.
-- [ ] Measure recommendation → click → destination ready → meaningful start, not click alone.
-- [ ] No private text inspection for recommendation logic.
+- [x] Maximum three visible continuation actions.
+- [x] Promote Basic → Rich for substantial writing with safe state transfer.
+- [x] Promote PDF/Word for substantial writing based on observed output usage.
+- [x] Measure recommendation → click → destination ready → meaningful start, not click alone.
+- [x] No private text inspection for recommendation logic.
 
 ### P0.1D — Growth CTA arbitration
 

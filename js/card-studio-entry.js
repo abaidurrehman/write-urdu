@@ -189,6 +189,10 @@
             var currentText = String(editor.getContent({ format: 'text' }) || '').trim();
             if (currentText && currentText !== incoming.text.trim()) {
                 preserveRichSnapshot({ content: editor.getContent() || '', text: currentText, savedAt: Date.now() });
+                var replace = window.confirm(isUrduLocale()
+                    ? 'اپنا موجودہ رچ ایڈیٹر مسودہ بیسک رائٹر کے متن سے تبدیل کریں؟ آپ کا موجودہ مسودہ پہلے مقامی ہسٹری میں محفوظ کر دیا گیا ہے۔'
+                    : 'Replace your current Rich Editor draft with the text from Basic Writer? Your current draft is already saved to local history.');
+                if (!replace) return;
             }
             editor.setContent(html);
             track('continuation_payload_restored', { target_route: '/urdu-editor' });
@@ -199,7 +203,14 @@
             editor.focus();
             return;
         }
-        if (attempt >= 120) return;
+        if (attempt >= 120) {
+            if (window.WriteUrduUI && typeof window.WriteUrduUI.notify === 'function') {
+                window.WriteUrduUI.notify(isUrduLocale()
+                    ? 'رچ ایڈیٹر لوڈ ہونے میں وقت لگ رہا ہے۔ آپ کا متن بطور ڈرافٹ محفوظ ہے۔'
+                    : 'Rich Editor is taking longer than expected to load. Your text is safely saved as a draft.', 'info');
+            }
+            return;
+        }
         window.setTimeout(function () { waitForRichEditor(incoming, html, attempt + 1); }, 50);
     }
 

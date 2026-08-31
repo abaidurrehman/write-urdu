@@ -68,6 +68,9 @@ assert.match(endpoint, /png_transparent/, 'Telemetry endpoint must support trans
 assert.match(endpoint, /jpeg/, 'Telemetry endpoint must support JPEG social exports');
 assert.match(endpoint, /svg/, 'Telemetry endpoint must support QR SVG exports');
 assert.match(endpoint, /EVENT_NAMES = new Set/, 'Telemetry endpoint must use an event allowlist');
+assert.match(endpoint, /continuation_destination_meaningful_start/, 'WU-PLAT-002H Gate C: destination-meaningful-start event must be in the allowlist');
+assert.match(client, /trackContinuationMeaningfulStart/, 'WU-PLAT-002H Gate C: Rich Editor destination must track meaningful start after a handoff');
+assert.match(client, /editor\.on\('input keyup paste', trackContinuationMeaningfulStart\)/, 'Gate C: meaningful start must not fire on the programmatic setContent import itself');
 assert.match(endpoint, /LENGTH_BUCKETS = new Set/, 'Telemetry endpoint must validate length buckets');
 assert.match(endpoint, /ACTIVE_BUCKETS = new Set/, 'Telemetry endpoint must validate active-time buckets');
 assert.match(endpoint, /LOCALES = new Set\(\['en', 'ur'\]\)/, 'Telemetry endpoint must bound locale to en/ur');

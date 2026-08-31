@@ -143,12 +143,13 @@
       </article>
 
       <article class="os-card os-panel span-6" id="continuationFunnelPanel">
-        <div class="os-panel-head"><h2>Continuation</h2><span class="os-panel-note">Shown → selected → stored → destination ready → restored — WU-PLAT-002H Gate A</span></div>
+        <div class="os-panel-head"><h2>Continuation</h2><span class="os-panel-note">Shown → selected → stored → destination ready → restored → meaningful start — WU-PLAT-002H Gate A/C</span></div>
         <section class="os-kpis" aria-label="Continuation funnel metrics">
           <article class="os-card os-kpi"><div class="os-kpi-label">Shown</div><div class="os-kpi-value" data-continuation-kpi="shown">—</div><div class="os-kpi-meta">Sessions where a next-step control was present</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">Selected</div><div class="os-kpi-value" data-continuation-kpi="selected_rate">—</div><div class="os-kpi-meta">Selected ÷ shown</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">Destination ready</div><div class="os-kpi-value" data-continuation-kpi="destination_ready_rate">—</div><div class="os-kpi-meta">Destination ready ÷ stored</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">Payload restored</div><div class="os-kpi-value" data-continuation-kpi="payload_restored_rate">—</div><div class="os-kpi-meta">Restored ÷ destination ready</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Meaningful start</div><div class="os-kpi-value" data-continuation-kpi="meaningful_start_rate">—</div><div class="os-kpi-meta">Meaningful start ÷ restored</div></article>
         </section>
         <div class="os-bars" id="continuationFunnelBars"></div>
         <div class="os-panel-note" style="margin-top:12px">Instrumented across two independent handoff code paths (legacy and v2); a known consolidation gap is tracked separately. No text content in any step.</div>
