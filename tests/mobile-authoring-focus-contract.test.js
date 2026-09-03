@@ -24,6 +24,7 @@ assert.match(css, /\.wu-voice-discovery-copy[\s\S]*?display:\s*none !important/,
 assert.match(css, /label\.sr-only\[for="basic-example"\][\s\S]*?position:\s*static !important/, 'Rich Editor must make its existing semantic label visible on phones');
 assert.match(css, /\.tox\.tox-tinymce[\s\S]*?height:\s*clamp\(320px, 58dvh, 460px\) !important/, 'TinyMCE must use a dynamic mobile height instead of a fixed 500px canvas');
 assert.match(css, /\.tox\.tox-tinymce:focus-within/, 'Rich document surface must expose a visible focus state');
+assert.match(css, /rich-editor-page #clear[\s\S]*?position:\s*static !important/, 'Legacy absolute Clear placement must be neutralized once the completion toolbar moves after TinyMCE');
 
 for (const page of [rich, urduRich]) {
   assert.match(page, /label class="sr-only" for="basic-example"/, 'Rich Editor must retain the semantic label that the mobile layer reveals');
