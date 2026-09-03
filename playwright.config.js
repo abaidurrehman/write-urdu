@@ -17,6 +17,7 @@ module.exports = defineConfig({
     'account-documents-editors.spec.js',
     'voice-mobile-acceptance.spec.js',
     'writer-voice-input.spec.js',
+    'mobile-editor-activation.spec.js',
     'urdu-locale.spec.js',
     'v3-visual-quality.spec.js',
     'inpage.spec.js'
