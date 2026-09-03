@@ -1,5 +1,15 @@
 # WU-PLAT-002H — Decision Log
 
+## 2026-09-03 — Reopen mobile first-screen acceptance
+
+**Decision:** treat direct user reports that the editing area is difficult to spot on mobile as a P0 first-value defect. The earlier Gate B command-surface simplification remains shipped history, but its broad “mobile writer primary” acceptance is no longer sufficient.
+
+**Action:** execute `WU-PLAT-002H-MOBILE-ACTIVATION-REPAIR.md` as Gate B2 with hard viewport, visual-affordance, software-keyboard and first-value telemetry acceptance before intensifying major homepage/SERP acquisition work.
+
+**Evidence:** the 2026-09-02 GSC export shows mobile represents about 68% of search impressions; mobile average position is stronger than desktop while mobile CTR is lower; direct user feedback specifically identifies editor discoverability. GSC alone does not prove UI causality, so the repair is measured through Product Pulse first-value steps rather than CTR alone.
+
+**Boundary:** this is hierarchy/viewport/focus repair, not a rebrand, editor-engine rewrite, new Voice implementation, new tool directory or new English-to-Urdu doorway page.
+
 ## 2026-08-30 — Freeze major feature breadth temporarily
 
 **Decision:** Complete the P0 activation/discovery programme before prioritizing another major unrelated feature.
