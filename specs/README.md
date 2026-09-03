@@ -30,9 +30,9 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-ANALYTICS-003` | Acquisition and Returning Signal | **Implemented core** — acquisition signal shipped; `WU-PLAT-002H` adds first-value/continuation acceptance requirements using the approved telemetry boundary |
 | `WU-RW-001` | Role-owned direct workspaces | **Active** — product architecture boundary |
 | `WU-PLAT-002` | V2 Product Journey & Workspace Handoffs | **Implemented core / acceptance pending** — A–G shipped; H is now the evidence-backed core activation/usability closeout |
-| `WU-PLAT-002H` | Core Activation & Feature Discovery Acceptance | **Active / P0 roadmap gate** — first value, adaptive Basic Writer, mobile activation, contextual continuation, growth CTA arbitration, referral continuity and Card completion |
+| `WU-PLAT-002H` | Core Activation & Feature Discovery Acceptance | **Active / P0 roadmap gate** — first value, adaptive Basic Writer, **reopened mobile editor visibility/keyboard acceptance**, contextual continuation, growth CTA arbitration, referral continuity and Card completion |
 | `WU-PLAT-003` | Core Workspace Convergence | **Active** |
-| `WU-PLAT-004` | Basic Writer Adaptive Command Surface | **Active / revised** — persistent pre-value command wall superseded; implementation follows `WU-PLAT-002H` state model |
+| `WU-PLAT-004` | Basic Writer Adaptive Command Surface | **Active / revised** — persistent pre-value command wall superseded; implementation follows `WU-PLAT-002H` state model; mobile first-screen acceptance is reopened under the 2026-09-03 repair contract |
 | `WU-PLAT-004A` | Basic Writer Public Share Short Link | **Active** — public-share command behavior remains, but prompt timing/discovery is governed by `WU-PLAT-002H` |
 | `WU-SEO-CTR-001` | SERP CTR and intent optimization | **Active** — evidence-gated metadata/CTR work; coordinates with mobile/first-screen activation without destabilizing query ownership |
 | `WU-TOOLS-EXPANSION-001` | Browser-first Urdu Tools Program | **Active umbrella** — implemented children are archived; new breadth is paused behind core activation evidence |
@@ -47,12 +47,17 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 - [`WU-PLAT-002H-METRICS-CONTRACT.md`](WU-PLAT-002H-METRICS-CONTRACT.md) — privacy-safe funnels/denominators;
 - [`WU-PLAT-002H-UX-STATE-MATRIX.md`](WU-PLAT-002H-UX-STATE-MATRIX.md) — E0–E5 visibility/arbitration model;
 - [`WU-PLAT-002H-ACCEPTANCE-SCENARIOS.md`](WU-PLAT-002H-ACCEPTANCE-SCENARIOS.md) — browser/manual outcomes;
+- [`WU-PLAT-002H-MOBILE-ACTIVATION-REPAIR.md`](WU-PLAT-002H-MOBILE-ACTIVATION-REPAIR.md) — **P0 reopened mobile editor-visibility, viewport and software-keyboard repair contract**;
+- [`WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md`](WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md) — hard viewport/device/focus/keyboard acceptance for the repair;
 - [`WU-PLAT-002H-DECISION-LOG.md`](WU-PLAT-002H-DECISION-LOG.md) — durable product decisions;
 - [`WU-PLAT-002H-SCOPE-FREEZE.md`](WU-PLAT-002H-SCOPE-FREEZE.md) — what waits while activation is open;
 - [`WU-SHARE-001R-recipient-start-continuity.md`](WU-SHARE-001R-recipient-start-continuity.md) — focused referral-loop acceptance child;
-- [`../docs/WU-CORE-ACTIVATION-EVIDENCE-2026-08-30.md`](../docs/WU-CORE-ACTIVATION-EVIDENCE-2026-08-30.md) — dated evidence baseline.
+- [`../docs/WU-CORE-ACTIVATION-EVIDENCE-2026-08-30.md`](../docs/WU-CORE-ACTIVATION-EVIDENCE-2026-08-30.md) — original dated evidence baseline;
+- [`../docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md`](../docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md) — fresh Search Console + direct user-feedback evidence reopening mobile acceptance.
 
 These are one programme, not separate feature initiatives. The commercial target remains governed by `WU-GROWTH-001`; `WU-PLAT-002H` must not fabricate an RPM or direct revenue promise.
+
+The 2026-09-03 mobile repair intentionally **does not erase the earlier Gate B implementation history**. The command-wall simplification shipped; the harder mobile discoverability/viewport/keyboard acceptance is a new Gate B2 because direct user feedback demonstrates that the prior broad mobile acceptance was insufficient.
 
 ## Archived contracts
 
