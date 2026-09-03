@@ -113,6 +113,20 @@
     border-radius: 12px !important;
   }
 
+  /* v2-workspace used absolute positioning to float Clear near the old
+     pre-editor toolbar. Once the toolbar moves after TinyMCE that escape hatch
+     would put Clear back over the authoring surface, so return it to flow. */
+  body.wu-v2-shell.rich-editor-page #clear {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    width: auto !important;
+    min-width: 44px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    color: #8b2f2f !important;
+  }
+
   body.wu-v2-shell.rich-editor-page .batch-transliteration-panel {
     order: 5 !important;
   }
