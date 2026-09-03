@@ -56,6 +56,6 @@ test('Gate B2 keeps the real Basic Writer visible and obvious across required ph
 
     await editor.focus();
     await expect(editor).toBeFocused();
-    await expect(page.locator('#demo')).toHaveCSS('border-top-color', 'rgb(23, 114, 69)');
+    await expect(page.locator('#demo')).toHaveCSS('border-top-color', 'rgb(21, 147, 77)');
   }
 });
