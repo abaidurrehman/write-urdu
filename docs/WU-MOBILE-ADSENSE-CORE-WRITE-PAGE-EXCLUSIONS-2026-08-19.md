@@ -3,7 +3,7 @@
 **Original date:** 2026-08-19  
 **Last reviewed:** 2026-09-04  
 **Status:** P0 required production configuration — re-verify now  
-**Scope:** `/`, `/urdu-editor`, `/urdu-keyboard`
+**Scope:** English and Urdu-locale versions of `/`, `/urdu-editor`, `/urdu-keyboard`
 
 ## Why this exists
 
@@ -17,7 +17,7 @@ The application code cannot reliably turn account-level Auto Ads off for one URL
 
 ## Required AdSense account configuration
 
-Use **Page exclusions** for the core writing routes. This is deliberately stronger than an area-only exclusion.
+Use **Page exclusions** for every core writing URL. This is deliberately stronger than an area-only exclusion.
 
 In the Google AdSense site settings for `write-urdu.com`:
 
@@ -28,8 +28,13 @@ In the Google AdSense site settings for `write-urdu.com`:
    - `https://write-urdu.com/`
    - `https://write-urdu.com/urdu-editor`
    - `https://write-urdu.com/urdu-keyboard`
+   - `https://write-urdu.com/urdu/`
+   - `https://write-urdu.com/urdu/urdu-editor`
+   - `https://write-urdu.com/urdu/urdu-keyboard`
 5. Apply/save the site changes.
-6. Re-open the site settings and verify all three exclusions are still present after saving.
+6. Re-open the site settings and verify all six exclusions are still present after saving.
+
+The last three exclusions matter because the application normalizes Urdu-locale routes internally, but AdSense account URL rules do not inherit that application routing logic.
 
 These exclusions are for **Auto Ads only**. They must not remove the intentional manual responsive unit placed by Write Urdu after the active workspace.
 
@@ -42,7 +47,7 @@ Google's AdSense controls distinguish page exclusions from excluded areas:
 - A selector-based exclusion can also stop working if the page structure/selectors later change.
 - **Page exclusions** are therefore the required control on core writing routes because these pages already have a deliberate manual post-workspace monetization boundary.
 
-Area exclusions may still be used on other mixed content/tool pages where Auto Ads remain enabled, but they are not the primary protection for `/`, `/urdu-editor` or `/urdu-keyboard`.
+Area exclusions may still be used on other mixed content/tool pages where Auto Ads remain enabled, but they are not the primary protection for core writing routes.
 
 ### `google-anno-skip` is not the production control
 
@@ -82,8 +87,9 @@ After AdSense has applied the exclusions, verify in a private/incognito mobile s
 4. Confirm the intentional **ADVERTISEMENT** unit after the active workspace can still render.
 5. Repeat on `/urdu-editor`; verify no ad appears inside/over TinyMCE, its toolbar or active caret area.
 6. Repeat on `/urdu-keyboard`; verify no ad appears between the text input and the on-screen keyboard or covers either keyboard.
-7. Confirm no large blank Auto Ad reservation appears inside the active task.
-8. Do not treat a temporary empty manual post-workspace slot as an application defect; AdSense fill can vary.
+7. Repeat the same three checks on `/urdu/`, `/urdu/urdu-editor` and `/urdu/urdu-keyboard`.
+8. Confirm no large blank Auto Ad reservation appears inside the active task.
+9. Do not treat a temporary empty manual post-workspace slot as an application defect; AdSense fill can vary.
 
 ## Mobile Gate B2 release rule
 
@@ -91,11 +97,11 @@ After AdSense has applied the exclusions, verify in a private/incognito mobile s
 
 Production evidence must confirm:
 
-- all three AdSense Page Exclusions are active;
-- no uncontrolled Auto Ad is observed on the three core writing routes;
+- all six AdSense Page Exclusions are active;
+- no uncontrolled Auto Ad is observed on English or Urdu-locale core writing routes;
 - the single approved manual post-workspace placement remains outside the active authoring task;
 - editor visibility, focus/keyboard behavior and Core Web Vitals are not degraded by advertising.
 
 ## Regression rule
 
-Future monetization work must not re-enable uncontrolled Auto Ads on the three core writing routes merely to increase impression count. If monetization needs to change, add/reposition explicit design-system ad boundaries and measure the effect without degrading the writing task.
+Future monetization work must not re-enable uncontrolled Auto Ads on core writing routes merely to increase impression count. Any new localized core-writing route must be added to the account-level Page Exclusion set before it is considered production-ready. If monetization needs to change, add/reposition explicit design-system ad boundaries and measure the effect without degrading the writing task.
