@@ -68,16 +68,16 @@ assert.doesNotMatch(writeMonetization, /enable_page_level_ads|3607727011|6402857
 assert.match(mainSource, /js\/write-monetization\.js/, 'Homepage/keyboard runtime must load the core Write monetization module');
 assert.match(inputModeSource, /js\/write-monetization\.js/, 'Rich editor runtime must load the core Write monetization module');
 
-// Auto Ads are account-level behavior and must be explicitly excluded from the
-// three core writing URLs. The application keeps the intentional manual unit;
-// it must not hide Google-injected ads after rendering as a workaround.
-['https://write-urdu.com/', 'https://write-urdu.com/urdu-editor', 'https://write-urdu.com/urdu-keyboard'].forEach(url => {
-  assert.ok(coreWriteAutoAdsPolicy.includes(url), `Core Write Auto Ads exclusion policy is missing ${url}`);
-});
-assert.match(coreWriteAutoAdsPolicy, /Page exclusions/, 'Operational AdSense page-exclusion steps are missing');
-assert.match(coreWriteAutoAdsPolicy, /This page only/, 'Core Write exclusions must be exact-page rules');
-assert.match(coreWriteAutoAdsPolicy, /manual responsive unit|manual ad unit/i, 'Policy must preserve the intentional post-workspace manual ad');
-assert.match(coreWriteAutoAdsPolicy, /Do not attempt to solve this by hiding already-rendered Google ad iframes or containers with CSS\/JavaScript/, 'Policy must forbid brittle client-side hiding of Auto Ads');
+// Core Write pages stay monetized. The production contract protects the active
+// authoring zone from in-page Auto Ads while retaining side rails, a bottom-only
+// anchor and the intentional post-workspace manual responsive unit.
+assert.match(coreWriteAutoAdsPolicy, /Core Write pages must remain monetized/i, 'Core Write pages must remain monetized');
+assert.match(coreWriteAutoAdsPolicy, /Side rail position:[\s\S]*Left and right/i, 'Desktop side rails must be left/right');
+assert.match(coreWriteAutoAdsPolicy, /Anchor position:[\s\S]*Bottom only/i, 'Anchor ads must be bottom-only');
+assert.match(coreWriteAutoAdsPolicy, /Excluded areas/i, 'Policy must define protected areas for in-page Auto Ads');
+assert.match(coreWriteAutoAdsPolicy, /Banner Auto Ads:[\s\S]*OFF/i, 'Conservative writer policy must disable automatic in-page banners');
+assert.match(coreWriteAutoAdsPolicy, /manual responsive unit after the active workspace/i, 'Policy must preserve the intentional post-workspace manual ad');
+assert.match(coreWriteAutoAdsPolicy, /Do not solve this by hiding already-rendered Google ad iframes or containers with CSS\/JavaScript/i, 'Policy must forbid brittle client-side hiding of Auto Ads');
 
 // V3 design-system contract: every route gets the visual layer through the
 // already-global V2 shell, so individual HTML files do not need duplicate CSS
