@@ -75,6 +75,9 @@ assert.match(endpoint, /LENGTH_BUCKETS = new Set/, 'Telemetry endpoint must vali
 assert.match(endpoint, /ACTIVE_BUCKETS = new Set/, 'Telemetry endpoint must validate active-time buckets');
 assert.match(endpoint, /LOCALES = new Set\(\['en', 'ur'\]\)/, 'Telemetry endpoint must bound locale to en/ur');
 assert.match(endpoint, /product_hourly_locale_metrics/, 'Telemetry endpoint must maintain locale rollups in the existing METRICS_DB');
+assert.match(endpoint, /product_hourly_device_metrics/, 'WU-PLAT-002H Gate B2 M1: telemetry endpoint must maintain device-class rollups so mobile-specific writer funnel can be computed');
+assert.match(endpoint, /PRIMARY KEY \(bucket_hour, device_class, tool\)/, 'Device rollups need bounded hour/device/tool cardinality');
+assert.match(endpoint, /deviceMetricUpsert/, 'Device deltas must be upserted alongside the tool/locale rollups');
 assert.match(endpoint, /originAllowed/, 'Telemetry endpoint must restrict browser origins');
 assert.match(endpoint, /www\.write-urdu\.com/, 'Telemetry endpoint must keep accepting the legacy www origin during canonical-host migration');
 assert.match(endpoint, /host === 'write-urdu\.com'/, 'Telemetry endpoint must accept the canonical apex origin');

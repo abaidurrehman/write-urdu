@@ -89,6 +89,16 @@ assert.match(html, /id="activationFunnelPanel"/, 'Dashboard must expose a first-
 assert.match(html, /First value/, 'First-value panel must be labelled distinctly from other panels');
 assert.match(client, /function renderActivation\(/, 'Dashboard client must render the first-value funnel section');
 
+// WU-PLAT-002H Gate B2 M1: the base writer funnel (product_hourly_metrics)
+// cannot answer the mobile-only primary metric because writer_viewed and
+// device_mobile are independent counters on the same row, not cross-tabbed.
+// A dedicated product_hourly_device_metrics rollup (device_class dimension,
+// mirroring the existing locale rollup) closes that gap.
+assert.match(api, /function deviceActivationSection\(/, 'Product Pulse API must build a mobile-specific first-value funnel section');
+assert.match(api, /product_hourly_device_metrics/, 'Mobile activation section must read the device-class rollup');
+assert.match(api, /mobile_writer_first_input_rate/, 'Mobile activation section must expose the Gate B2 9.2 primary metric');
+assert.doesNotMatch(api, /FROM product_hourly_device_metrics[\s\S]{0,400}editor_text|roman_urdu_text|urdu_text|filename|clipboard_content/i, 'Device funnel query must not introduce content or identity fields');
+
 // WU-PLAT-002H Gate A completion: Card Studio completion funnel, continuation
 // funnel, share-referral trace for all three CTA destinations, and misleading
 // rate-label fixes (event counts that can exceed starts must not render as a

@@ -200,7 +200,45 @@ function voiceSection(current, toolRows) {
 // counters from migration 0015 -- no session-level join, no content.
 const WRITER_ELIGIBLE_TOOLS = ['basic_editor', 'rich_editor', 'urdu_keyboard'];
 
-function activationSection(current, toolRows) {
+// WU-PLAT-002H Gate B2 M1: mobile-specific first-value funnel, sourced from
+// product_hourly_device_metrics (migration adding a device_class dimension to
+// the existing writer funnel columns). The base product_hourly_metrics/
+// toolRows rollup cannot answer this -- device_mobile and writer_viewed are
+// independent counters in the same row, not cross-tabbed -- so the spec 9.2
+// primary metric (mobile writer_first_input / mobile writer_eligible) needs
+// this dedicated device rollup.
+function deviceActivationSection(deviceRows) {
+  const eligible = (deviceRows || []).filter((row) => WRITER_ELIGIBLE_TOOLS.indexOf(row.tool) >= 0);
+  const byDeviceClass = new Map();
+  eligible.forEach((row) => {
+    const key = row.device_class;
+    if (!byDeviceClass.has(key)) {
+      byDeviceClass.set(key, { device_class: key, writer_viewed: 0, writer_focused: 0, writer_first_input: 0, writer_first_urdu_success: 0, writer_outcome_first: 0 });
+    }
+    const totals = byDeviceClass.get(key);
+    totals.writer_viewed += n(row, 'writer_viewed');
+    totals.writer_focused += n(row, 'writer_focused');
+    totals.writer_first_input += n(row, 'writer_first_input');
+    totals.writer_first_urdu_success += n(row, 'writer_first_urdu_success');
+    totals.writer_outcome_first += n(row, 'writer_outcome_first');
+  });
+  const byDevice = Array.from(byDeviceClass.values()).map((totals) => ({
+    ...totals,
+    focused_rate: ratio(totals.writer_focused, totals.writer_viewed),
+    first_input_rate: ratio(totals.writer_first_input, totals.writer_viewed),
+    first_urdu_success_rate: ratio(totals.writer_first_urdu_success, totals.writer_first_input),
+    outcome_rate: ratio(totals.writer_outcome_first, totals.writer_first_urdu_success)
+  }));
+  const mobile = byDeviceClass.get('mobile');
+  return {
+    ready: byDevice.length > 0,
+    by_device: byDevice,
+    // Spec WU-PLAT-002H-MOBILE-ACTIVATION-REPAIR.md 9.2 primary metric.
+    mobile_writer_first_input_rate: mobile ? ratio(mobile.writer_first_input, mobile.writer_viewed) : null
+  };
+}
+
+function activationSection(current, toolRows, deviceRows) {
   const viewed = n(current, 'writer_viewed');
   const focused = n(current, 'writer_focused');
   const firstInput = n(current, 'writer_first_input');
@@ -266,7 +304,8 @@ function activationSection(current, toolRows) {
       { device_class: 'desktop', sessions: eligibleDevices.desktop },
       { device_class: 'mobile', sessions: eligibleDevices.mobile },
       { device_class: 'tablet', sessions: eligibleDevices.tablet }
-    ].filter((item) => item.sessions > 0)
+    ].filter((item) => item.sessions > 0),
+    device_funnel: deviceActivationSection(deviceRows)
   };
 }
 
@@ -467,7 +506,20 @@ export async function onRequestGet(context) {
       GROUP BY locale
       ORDER BY sessions DESC
     `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
-  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop, localeResult] = await Promise.all([
+  const deviceFunnelReady = await tableExists(db, 'product_hourly_device_metrics');
+  const deviceFunnelPromise = deviceFunnelReady ? db.prepare(`
+      SELECT device_class, tool,
+             SUM(writer_viewed) AS writer_viewed,
+             SUM(writer_focused) AS writer_focused,
+             SUM(writer_first_input) AS writer_first_input,
+             SUM(writer_first_urdu_success) AS writer_first_urdu_success,
+             SUM(writer_outcome_first) AS writer_outcome_first
+      FROM product_hourly_device_metrics
+      WHERE tool <> 'all' AND bucket_hour >= ?1 AND bucket_hour < ?2
+      GROUP BY device_class, tool
+      HAVING SUM(writer_viewed) > 0
+    `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
+  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop, localeResult, deviceFunnelResult] = await Promise.all([
     summaryForWindow(db, bounds.currentStart, bounds.currentEnd),
     summaryForWindow(db, bounds.previousStart, bounds.previousEnd),
     db.prepare(`
@@ -524,7 +576,8 @@ export async function onRequestGet(context) {
       ORDER BY day ASC
     `).bind(bounds.currentStart, bounds.currentEnd).all(),
     shareLoopForWindow(db, bounds),
-    localePromise
+    localePromise,
+    deviceFunnelPromise
   ]);
 
   const sessions = n(current, 'visits');
@@ -608,7 +661,7 @@ export async function onRequestGet(context) {
     locale_breakdown: rows(localeResult),
     share_loop: shareLoop,
     voice: voiceSection(current, rows(toolResult)),
-    activation: activationSection(current, rows(toolResult)),
+    activation: activationSection(current, rows(toolResult), rows(deviceFunnelResult)),
     card_studio_funnel: cardStudioSection(rows(toolResult)),
     continuation: continuationSection(current)
   });

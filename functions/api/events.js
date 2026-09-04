@@ -146,6 +146,14 @@ const SCHEMA_STATEMENTS = [
         latest_event_at TEXT,
         PRIMARY KEY (bucket_hour, locale, tool)
     )`,
+    `CREATE TABLE IF NOT EXISTS product_hourly_device_metrics (
+        bucket_hour TEXT NOT NULL,
+        device_class TEXT NOT NULL,
+        tool TEXT NOT NULL,
+        ${METRIC_DEFINITIONS},
+        latest_event_at TEXT,
+        PRIMARY KEY (bucket_hour, device_class, tool)
+    )`,
     `CREATE TABLE IF NOT EXISTS product_hourly_handoffs (
         bucket_hour TEXT NOT NULL,
         tool TEXT NOT NULL,
@@ -516,6 +524,7 @@ function isShareLoopEvent(event) {
 function aggregateEvents(events, now) {
     const byTool = new Map();
     const localeByTool = new Map();
+    const deviceByTool = new Map();
     const shareByTool = new Map();
     const handoffs = new Map();
     const getDelta = (tool) => {
@@ -531,6 +540,15 @@ function aggregateEvents(events, now) {
         }
         return localeByTool.get(key);
     };
+    const getDeviceDelta = (deviceClass, tool) => {
+        const key = deviceClass + '|' + tool;
+        if (!deviceByTool.has(key)) {
+            const delta = emptyDelta(tool, now);
+            delta.device_class = deviceClass;
+            deviceByTool.set(key, delta);
+        }
+        return deviceByTool.get(key);
+    };
     const getShareDelta = (tool) => {
         if (!shareByTool.has(tool)) shareByTool.set(tool, emptyShareDelta(tool, now));
         return shareByTool.get(tool);
@@ -541,6 +559,10 @@ function aggregateEvents(events, now) {
         applyEvent(getDelta('all'), event);
         applyEvent(getLocaleDelta(event.locale, event.tool), event);
         applyEvent(getLocaleDelta(event.locale, 'all'), event);
+        if (event.deviceClass) {
+            applyEvent(getDeviceDelta(event.deviceClass, event.tool), event);
+            applyEvent(getDeviceDelta(event.deviceClass, 'all'), event);
+        }
         if (isShareLoopEvent(event)) {
             applyShareEvent(getShareDelta(event.tool), event);
             applyShareEvent(getShareDelta('all'), event);
@@ -552,7 +574,13 @@ function aggregateEvents(events, now) {
             });
         }
     });
-    return { byTool: Array.from(byTool.values()), localeByTool: Array.from(localeByTool.values()), shareByTool: Array.from(shareByTool.values()), handoffs: Array.from(handoffs.values()) };
+    return {
+        byTool: Array.from(byTool.values()),
+        localeByTool: Array.from(localeByTool.values()),
+        deviceByTool: Array.from(deviceByTool.values()),
+        shareByTool: Array.from(shareByTool.values()),
+        handoffs: Array.from(handoffs.values())
+    };
 }
 
 function metricUpsert(db, bucket, delta) {
@@ -573,6 +601,16 @@ function localeMetricUpsert(db, bucket, delta) {
     const values = [bucket, delta.locale, delta.tool].concat(METRIC_COLUMNS.map((column) => delta[column])).concat([delta.latest_event_at]);
     return db.prepare(`INSERT INTO product_hourly_locale_metrics (${columns.join(', ')}) VALUES (${placeholders})
                        ON CONFLICT(bucket_hour, locale, tool) DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
+}
+
+function deviceMetricUpsert(db, bucket, delta) {
+    const columns = ['bucket_hour', 'device_class', 'tool'].concat(METRIC_COLUMNS).concat(['latest_event_at']);
+    const placeholders = columns.map(() => '?').join(', ');
+    const assignments = METRIC_COLUMNS.map((column) => `${column} = ${column} + excluded.${column}`)
+        .concat(['latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)']);
+    const values = [bucket, delta.device_class, delta.tool].concat(METRIC_COLUMNS.map((column) => delta[column])).concat([delta.latest_event_at]);
+    return db.prepare(`INSERT INTO product_hourly_device_metrics (${columns.join(', ')}) VALUES (${placeholders})
+                       ON CONFLICT(bucket_hour, device_class, tool) DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
 }
 
 function shareMetricUpsert(db, bucket, delta) {
@@ -624,6 +662,7 @@ export async function onRequestPost(context) {
         const aggregated = aggregateEvents(events, now.toISOString());
         const statements = aggregated.byTool.map((delta) => metricUpsert(db, bucket, delta))
             .concat(aggregated.localeByTool.map((delta) => localeMetricUpsert(db, bucket, delta)))
+            .concat(aggregated.deviceByTool.map((delta) => deviceMetricUpsert(db, bucket, delta)))
             .concat(aggregated.shareByTool.map((delta) => shareMetricUpsert(db, bucket, delta)))
             .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)));
         await db.batch(statements);
