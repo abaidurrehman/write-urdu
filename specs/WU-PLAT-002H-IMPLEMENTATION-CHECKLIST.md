@@ -35,27 +35,44 @@ This checklist is subordinate to `WU-PLAT-002H-core-activation-feature-discovery
 **Acceptance:** [`WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md`](WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md)  
 **Evidence:** [`../docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md`](../docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md)
 
-- [ ] Capture comparable mobile first-value baseline before layout changes.
-- [ ] Audit actual DOM/runtime injection order above the editable surface on `/`, `/urdu-editor` and `/urdu-keyboard`.
-- [ ] Capture before screenshots at 360x800, 375x667, 390x844 and 412x915.
-- [ ] On `/`, make the real writer begin in the initial visual viewport without requiring scroll/panel discovery.
-- [ ] At 375x667, expose at least 160 CSS px of usable writing surface before user scroll.
-- [ ] On >=800px-tall required mobile viewports, expose at least 220 CSS px of usable writing surface before user scroll.
-- [ ] Demote/move any large Voice promo, tool directory, account/community/growth banner, command wall, long help or ad block that displaces first value.
-- [ ] Keep English-letter typing, direct Urdu and Voice as compact input choices; do not create three large pre-editor cards.
-- [ ] Do not autofocus on load merely to improve activation metrics.
-- [ ] Verify user-initiated focus keeps active line/caret usable when the iOS/Android software keyboard opens.
-- [ ] Avoid repeated forced-scroll/`scrollIntoView()` loops that fight user scrolling.
-- [ ] Make editor affordance/focus state visually obvious without introducing a broad rebrand.
-- [ ] Apply equivalent first-action hierarchy to `/urdu-editor` without breaking TinyMCE, exports, handoff or draft-conflict protection.
+**Current state (2026-09-04):** M2 Basic Writer first-viewport repair shipped on 2026-09-03 (`155b0e84...`); M3 focus/keyboard resilience + M4 Rich Editor hierarchy shipped on 2026-09-04 (`d8763df...`). The 2026-09-04 GSC export covers only 2026-08-05 through 2026-09-01 and is therefore a **pre-repair acquisition baseline**, not a post-change verdict. Gate B2 remains open for remaining route/manual acceptance and post-release Product Pulse evidence.
+
+- [ ] Capture comparable mobile **Product Pulse first-value** baseline around the release. The refreshed GSC baseline is recorded, but Search CTR is not a substitute for activation telemetry.
+- [x] Audit actual DOM/runtime injection order above the editable surface on `/` and `/urdu-editor` as part of M2–M4 implementation.
+- [ ] Complete/reconcile before screenshots at 360x800, 375x667, 390x844 and 412x915 where not already retained with the implementation evidence.
+- [x] On `/`, make the real writer begin in the initial visual viewport without requiring scroll/panel discovery.
+- [x] At 375x667, enforce the acceptance contract that exposes at least 160 CSS px of usable writing surface before user scroll.
+- [x] On >=800px-tall required mobile viewports, enforce the acceptance contract that exposes at least 220 CSS px of usable writing surface before user scroll.
+- [x] Demote/move large Voice promo, duplicate hero/action chrome and other pre-value UI that displaced first value on Basic Writer.
+- [x] Keep English-letter typing, direct Urdu and Voice as compact input choices; do not create three large pre-editor cards.
+- [x] Do not autofocus on load merely to improve activation metrics.
+- [x] Ship M3 focus/visual-viewport resilience so user-initiated writing remains usable as the software keyboard reduces available height.
+- [x] Avoid repeated forced-scroll/`scrollIntoView()` loops that fight user scrolling.
+- [x] Make Basic/Rich editor affordance/focus state visually obvious without introducing a broad rebrand.
+- [x] Apply equivalent first-action hierarchy to `/urdu-editor` without breaking TinyMCE, exports, handoff or draft-conflict protection.
 - [ ] Audit `/urdu-keyboard`; fix only reproduced mobile first-action failures.
-- [ ] Preserve existing transliteration, Voice and input-mode engines.
-- [ ] Preserve SEO support content below the task and do not create a new near-duplicate English-to-Urdu landing page.
-- [ ] Instrument/verify `eligible -> visible -> focus -> first input -> first Urdu -> first outcome` by route/device/release marker with no writing content.
+- [x] Preserve existing transliteration, Voice and input-mode engines through M2–M4.
+- [x] Preserve SEO support content below the task and do not create a new near-duplicate English-to-Urdu landing page.
+- [x] Preserve the existing `eligible -> visible -> focus -> first input -> first Urdu -> first outcome` instrumentation by route/device; verify the release marker is usable for the post-change comparison.
 - [ ] Add/verify bounded time-to-first-input measurement if an equivalent aggregate does not already exist.
-- [ ] Run automated viewport acceptance plus manual iOS Safari / Android Chrome checks where available.
-- [ ] Include before/after mobile screenshots, removed/moved UI, metric, guardrails, release marker and rollback path in each implementation PR.
-- [ ] Hold a stable release long enough for a comparable post-change review; record Keep / Iterate / Rollback.
+- [x] Run automated viewport/contract acceptance for the shipped Basic/Rich changes.
+- [ ] Complete manual/real-device iOS Safari and Android Chrome checks where available and record any remaining browser-specific defect.
+- [ ] Reconcile before/after mobile screenshots, removed/moved UI, metric, guardrails, release marker and rollback evidence into the closeout record.
+- [ ] Hold a stable post-change measurement window and compare mobile activation after 2026-09-04; record Keep / Iterate / Rollback.
+
+### Gate B2 measurement discipline — added 2026-09-04
+
+Do not use Search Console CTR as the causal success metric for the editor repair.
+
+The refreshed external baseline is:
+
+- mobile: **148,783 impressions / 3,960 clicks / 2.66% CTR / avg position 6.43**;
+- desktop: **70,878 impressions / 4,839 clicks / 6.83% CTR / avg position 8.66**;
+- mobile share: **67.3% of all impressions**;
+- latest 14 days vs prior 14 days: impressions **+60.0%**, clicks **-10.2%**, CTR 5.47% -> 3.07%;
+- `english to urdu typing`: **52,768 impressions / 35 clicks / 0.07% CTR / position 7.12**.
+
+These numbers establish opportunity and sequencing. They do **not** prove that landing-page UX caused the Search CTR gap, and they predate the Gate B2 implementation. Primary closure remains Product Pulse first-value activation plus viewport/manual acceptance.
 
 **Exit gate:** the founder/user-reported “cannot spot the editing area on mobile” problem cannot be reproduced on the required viewports; focused keyboard use remains stable; mobile first-value metrics are stable/improved; no content/privacy/CWV/desktop/input-engine guardrail regresses.
 
