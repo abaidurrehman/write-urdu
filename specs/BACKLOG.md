@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Active Backlog
 
 **Status:** Active  
-**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-03  
+**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-04  
 **Purpose:** One source of truth for work that is still genuinely open.
 
 The previous long-form backlog is preserved at [`archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md`](archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md). Completed implementation contracts remain in [`archive/`](archive/README.md).
@@ -36,8 +36,9 @@ Why it is first:
 - PDF + Word are 82.9% of exports and should be promoted after value rather than as a pre-value command wall;
 - Share loop currently shows 8 reader CTA clicks → 0 referred starts, pointing to post-click continuity/telemetry;
 - Card Studio activates users (40 canvas edits) but only 3 exports, so acquisition expansion must wait for completion diagnosis;
-- fresh direct user feedback on 2026-09-03 says mobile visitors can struggle to spot the editing area;
-- the 2026-09-02 GSC export shows mobile is about 68% of search impressions, so unresolved first-screen mobile friction is now a P0 activation issue rather than cosmetic polish.
+- direct user feedback on 2026-09-03 says mobile visitors can struggle to spot the editing area;
+- the 2026-09-04 GSC export shows mobile is **67.3% of search impressions (148,783 impressions)**, mobile average position is stronger than desktop (6.43 vs 8.66), and the export predates the Gate B2 implementation;
+- latest-14-day impressions are **+60.0%** vs the preceding 14 days, increasing the value of fixing activation before broadening acquisition.
 
 Execution gates:
 
@@ -61,7 +62,7 @@ Execution gates:
 - [x] Retire duplicate/superseded Basic action UI rather than layering another toolbar.
 - [x] Mobile first screen keeps input choice + writer primary.
 
-**Historical note:** this broad simplification shipped. Its mobile acceptance is no longer considered sufficient because fresh direct user feedback reports that the editor remains hard to spot on mobile. The new P0.1B2 gate below reopens mobile acceptance without undoing the shipped command-surface work.
+**Historical note:** this broad simplification shipped. Its mobile acceptance is no longer considered sufficient because fresh direct user feedback reports that the editor remains hard to spot on mobile. The P0.1B2 gate below reopened mobile acceptance without undoing the shipped command-surface work.
 
 ### P0.1B2 — Mobile editor visibility & keyboard repair
 
@@ -69,22 +70,28 @@ Execution gates:
 **Acceptance:** [`WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md`](WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md)  
 **Evidence:** [`docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md`](../docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md)
 
-- [ ] Capture comparable mobile first-value baseline before layout changes.
-- [ ] Audit actual DOM/runtime-injected content before the editable surface on `/`, `/urdu-editor`, `/urdu-keyboard`.
-- [ ] Capture baseline screenshots at 360x800, 375x667, 390x844 and 412x915.
-- [ ] On `/`, expose the real writer in the initial visual viewport without requiring scroll or panel discovery.
-- [ ] Meet the mobile acceptance floors: >=160 CSS px usable editor at 375x667 and >=220 CSS px on required >=800px-tall viewports.
-- [ ] Demote/move promotional, directory, account/community, export/help or ad UI that displaces first value.
-- [ ] Keep English-letter, direct-Urdu and Voice choices compact; Voice must reuse the unified Voice platform.
-- [ ] Do not autofocus on load merely to improve activation metrics.
-- [ ] Verify iOS Safari / Android Chrome keyboard focus keeps the active line/caret usable and avoids forced-scroll loops.
-- [ ] Make the editor visually unmistakable without a broad rebrand.
-- [ ] Apply equivalent first-action hierarchy to `/urdu-editor` while preserving TinyMCE, exports, handoff and draft protection.
-- [ ] Audit `/urdu-keyboard`; fix only reproduced violations.
-- [ ] Verify `eligible → visible → focus → first input → first Urdu → first outcome` by route/device/release marker with no content leakage.
-- [ ] Hold a stable post-change measurement window and record Keep / Iterate / Rollback.
+**State:** M2 Basic Writer first-viewport implementation shipped 2026-09-03; M3 focus/keyboard + M4 Rich Editor hierarchy shipped 2026-09-04. Remaining work is evidence closeout, real-device/manual validation and `/urdu-keyboard` audit — not another speculative redesign.
 
-**Gate rule:** do not intensify major homepage/SERP acquisition experiments until the mobile writer entry experience is no longer demonstrably confusing. It is wasteful to buy/earn more arrivals into an unresolved first-action defect.
+- [ ] Reconcile a comparable mobile **Product Pulse first-value** baseline around the release. The 2026-09-04 GSC export is a pre-repair acquisition baseline, not an activation substitute.
+- [x] Audit actual DOM/runtime-injected content before the editable surface on `/` and `/urdu-editor` during M2–M4 implementation.
+- [ ] Reconcile retained baseline screenshots at 360x800, 375x667, 390x844 and 412x915 where evidence is incomplete.
+- [x] On `/`, expose the real writer in the initial visual viewport without requiring scroll or panel discovery.
+- [x] Enforce the mobile acceptance floors: >=160 CSS px usable editor at 375x667 and >=220 CSS px on required >=800px-tall viewports.
+- [x] Demote/move promotional, duplicate hero/action, export/help or other UI that displaced first value on the repaired routes.
+- [x] Keep English-letter, direct-Urdu and Voice choices compact; Voice reuses the unified Voice platform.
+- [x] Do not autofocus on load merely to improve activation metrics.
+- [x] Ship mobile focus/visual-viewport resilience without forced-scroll loops.
+- [x] Make the editor visually unmistakable without a broad rebrand.
+- [x] Apply equivalent first-action hierarchy to `/urdu-editor` while preserving TinyMCE, exports, handoff and draft protection.
+- [ ] Audit `/urdu-keyboard`; fix only reproduced violations.
+- [x] Preserve `eligible → visible → focus → first input → first Urdu → first outcome` instrumentation by route/device; verify release-marker comparability for closeout.
+- [ ] Verify bounded time-to-first-input measurement or add it if no equivalent aggregate exists.
+- [ ] Complete real-device/manual iOS Safari and Android Chrome closeout where available.
+- [ ] Hold a stable post-change measurement window after 2026-09-04 and record Keep / Iterate / Rollback.
+
+**Measurement discipline:** mobile Search CTR (2.66% in the pre-repair export) and the `english to urdu typing` CTR opportunity are acquisition evidence owned with `WU-SEO-CTR-001`. They do not prove landing-page UX causality. Gate B2 closes on Product Pulse first-value activation + viewport/manual acceptance + guardrails.
+
+**Gate rule:** do not intensify major homepage/SERP acquisition experiments until the shipped mobile writer entry experience has a stable post-change review. Do not churn M2–M4 from pre-release GSC numbers.
 
 ### P0.1C — Contextual continuation
 
