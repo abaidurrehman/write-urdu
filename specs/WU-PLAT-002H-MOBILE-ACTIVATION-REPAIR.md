@@ -1,33 +1,35 @@
 # WU-PLAT-002H — Mobile Editor Activation Repair
 
-**Status:** Active — P0 acceptance repair  
-**Priority:** P0 — execute before additional core-UI/growth expansion  
+**Status:** Active — implementation shipped for M2–M4; evidence closeout pending  
+**Priority:** P0 — hold hierarchy stable until post-change review  
 **Parent programme:** `WU-PLAT-002H` Core Activation & Feature Discovery Acceptance  
 **Route owner dependency:** `WU-PLAT-004` Basic Writer Adaptive Command Surface  
 **Measurement owner:** `WU-PLAT-002H-METRICS-CONTRACT.md` / Product Pulse  
 **SEO coordination:** `WU-SEO-CTR-001` — do not combine this UX repair with repeated SERP metadata experiments  
-**Evidence:** `docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md`  
+**Evidence:** `docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md` (refreshed 2026-09-04)  
 **Acceptance matrix:** `WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md`  
-**Decision date:** 2026-09-03
+**Decision date:** 2026-09-03  
+**Evidence refresh:** 2026-09-04
 
 ---
 
 ## 1. Why this repair exists
 
-The broad Basic Writer simplification shipped under `WU-PLAT-002H` and the earlier implementation checklist recorded that the writing canvas was dominant on mobile. Fresh founder/user feedback now contradicts that acceptance assumption: **mobile users report that they cannot easily spot the editing area**.
+The broad Basic Writer simplification shipped under `WU-PLAT-002H` and the earlier implementation checklist recorded that the writing canvas was dominant on mobile. Fresh founder/user feedback then contradicted that acceptance assumption: **mobile users reported that they could not easily spot the editing area**.
 
 This is a first-value defect, not a cosmetic preference.
 
-The current growth evidence makes the defect commercially important:
+The refreshed 2026-09-04 growth evidence makes the defect commercially important:
 
-- mobile accounts for the majority of Search Console exposure;
-- mobile average position is stronger than desktop while mobile CTR is materially lower;
-- `english to urdu typing` and adjacent English-to-Urdu intent already receive very large impression volume;
+- mobile accounts for **148,783 of 221,081 Search Console impressions (67.3%)**;
+- mobile average position is **6.43**, stronger than desktop at **8.66**, while mobile Search CTR is only **2.66%** versus **6.83%** desktop;
+- `english to urdu typing` alone receives **52,768 impressions** at average position **7.12**;
+- overall impressions in the latest 14 days are **+60.0%** versus the preceding 14 days, while clicks are **-10.2%**;
 - the product's first value depends on the visitor finding the writing surface and producing Urdu immediately.
 
-Therefore the previous generic mobile acceptance is **reopened**. This child contract is the authoritative mobile acceptance repair under `WU-PLAT-002H` until its exit gates pass.
+These Search Console numbers establish **exposure and opportunity**, not causality. Search CTR happens before landing-page interaction and is affected by query mix, snippet/intent fit, SERP layout and competitors. The editor repair must therefore be judged on **post-click activation**, not on Search CTR alone.
 
-A checked historical item saying the writer was mobile-primary does not override observed user difficulty.
+The previous generic mobile acceptance remains **reopened** until the Gate B2 post-release evidence closes it. A checked historical item saying the writer was mobile-primary does not override observed user difficulty.
 
 ---
 
@@ -47,6 +49,15 @@ The editor is the product. A visitor must not need to hunt, scroll through promo
 
 This is a **hierarchy + viewport + focus/keyboard repair**, not a site redesign.
 
+### 2.1 Implementation state as of 2026-09-04
+
+The core repair is no longer only planned:
+
+- **M2 / Basic Writer first viewport shipped 2026-09-03** in `155b0e84...`;
+- **M3 focus/keyboard resilience + M4 Rich Editor hierarchy shipped 2026-09-04** in `d8763df...`.
+
+The contract now protects the shipped hierarchy and governs remaining acceptance, `/urdu-keyboard` audit, real-device validation and post-change measurement.
+
 ---
 
 ## 3. Primary hypothesis
@@ -57,21 +68,32 @@ If the writing surface is visibly present and visually dominant in the initial m
 
 and median/bucketed time to first input will improve without harming successful completion, Core Web Vitals, SEO ownership, privacy, or desktop behavior.
 
+### 3.1 Chronology guardrail
+
+The 2026-09-04 Search Console export covers **2026-08-05 through 2026-09-01**. It ends before the M2–M4 implementation shipped.
+
+Therefore:
+
+- treat that export as a **pre-repair acquisition baseline**;
+- do not claim the mobile repair caused the observed Search CTR gap;
+- do not reopen the UI again because the pre-repair export still looks weak;
+- first collect post-release Product Pulse activation evidence and a later GSC window that actually contains the new release.
+
 ---
 
 ## 4. Route priority
 
 ### P0 route A — `/`
 
-The homepage/Basic Writer owns the highest-value acquisition journey and must be repaired first.
+The homepage/Basic Writer owns the highest-value acquisition journey. M2 implementation has shipped; preserve it long enough to measure.
 
 ### P0 route B — `/urdu-editor`
 
-The Rich Editor has strong observed engagement and is the natural continuation for substantial writing. Its mobile workspace must not bury the editable canvas below toolbars, export controls, help, account, or discovery chrome.
+The Rich Editor has strong observed engagement and is the natural continuation for substantial writing. M4 implementation has shipped; completion controls must remain after the authoring surface on mobile.
 
 ### P1 route C — `/urdu-keyboard`
 
-Audit after `/` and `/urdu-editor`. Apply the same first-action rule where the primary job is typing/writing.
+Audit after `/` and `/urdu-editor`. Apply the same first-action rule where the primary job is typing/writing. Do not assume a failure without reproducing it.
 
 ### Audit-only routes
 
@@ -278,9 +300,27 @@ Secondary:
 - `writer_first_outcome / writer_first_input`;
 - time-to-first-input distribution.
 
-### 9.3 Success/guardrail decision
+### 9.3 Acquisition diagnostics — not causal acceptance
 
-Before UI change, capture a comparable baseline.
+Record Search Console alongside the activation review, but keep ownership clear.
+
+Pre-repair GSC baseline from the 2026-09-04 export:
+
+| Device | Impressions | Clicks | CTR | Avg position |
+| --- | ---: | ---: | ---: | ---: |
+| Mobile | 148,783 | 3,960 | 2.66% | 6.43 |
+| Desktop | 70,878 | 4,839 | 6.83% | 8.66 |
+
+Additional context:
+
+- mobile = **67.3% of impressions**;
+- latest 14 days: **136,065 impressions / 4,178 clicks / 3.07% CTR**;
+- prior 14 days: **85,016 impressions / 4,653 clicks / 5.47% CTR**;
+- `english to urdu typing`: **52,768 impressions / 35 clicks / 0.07% CTR / position 7.12**.
+
+These figures justify keeping mobile first-value work at P0 and make future CTR work high leverage. They do **not** establish that editor UX caused Search CTR, and they cannot measure the M2–M4 release because they predate it.
+
+### 9.4 Success/guardrail decision
 
 A strong result is a **>=10% relative improvement** in mobile first-input activation with stable downstream success. Lower uplift can still be kept when direct user testing clearly resolves the visibility defect and guardrails are neutral; do not fabricate statistical certainty from low volume.
 
@@ -293,11 +333,20 @@ Guardrails:
 - no loss of input-mode/Voice accessibility;
 - no change to search ownership/metadata bundled into the same experiment unless explicitly coordinated with `WU-SEO-CTR-001`.
 
+### 9.5 Required causal discipline
+
+- Product Pulse activation = primary Gate B2 verdict.
+- Viewport/manual acceptance = required qualitative/functional verdict.
+- Search Console = exposure/acquisition context and later cross-check.
+- Do not use Search CTR alone to Keep / Iterate / Rollback the editor layout.
+
 ---
 
 ## 10. Implementation slices
 
 ### Slice M1 — Baseline + DOM/layout audit
+
+**State:** substantially completed for Basic/Rich implementation; Product Pulse baseline reconciliation still open.
 
 - confirm the actual DOM order and CSS for `/`, `/urdu-editor`, `/urdu-keyboard`;
 - identify every block that appears before the first editable surface at mobile breakpoints;
@@ -310,6 +359,8 @@ Guardrails:
 
 ### Slice M2 — Homepage first viewport
 
+**State:** **shipped 2026-09-03** (`155b0e84...`).
+
 - reorder/demote above-editor content as needed;
 - keep intent + one example + compact input choice;
 - make the real writer visible and unmistakable;
@@ -321,6 +372,8 @@ Guardrails:
 
 ### Slice M3 — Focus/keyboard behavior
 
+**State:** **implementation shipped 2026-09-04** (`d8763df...`); manual real-device closeout remains.
+
 - verify iOS Safari and Android Chrome behavior;
 - fix sticky-header/caret/visual-viewport conflicts;
 - avoid forced-scroll loops;
@@ -331,6 +384,8 @@ Guardrails:
 
 ### Slice M4 — Rich Editor hierarchy
 
+**State:** **shipped 2026-09-04** (`d8763df...`).
+
 - ensure the editable TinyMCE/workspace surface is immediately recognizable;
 - demote toolbar/export/help/discovery chrome that obscures first action on small screens;
 - preserve formatting/export capability through progressive/stable controls;
@@ -340,15 +395,20 @@ Guardrails:
 
 ### Slice M5 — Remaining input surfaces
 
+**State:** open.
+
 - audit `/urdu-keyboard` and other writing-first routes;
 - fix only confirmed violations of the shared mobile contract;
 - do not broaden into unrelated tool redesign.
 
 ### Slice M6 — Post-change evidence review
 
-- hold a stable release marker;
+**State:** open and now the principal Gate B2 closure task.
+
+- hold a stable release marker from the M2–M4 implementation;
 - compare at least 7 days where volume supports it;
-- review mobile first-input, first-Urdu-success, first-outcome, device CTR and CWV;
+- review mobile first-input, first-Urdu-success, first-outcome, time-to-first-input and CWV;
+- review device Search CTR only as contextual acquisition evidence, not the causal editor verdict;
 - record Keep / Iterate / Rollback decision;
 - only then proceed to the next major acquisition/CTR experiment.
 
@@ -398,6 +458,8 @@ It must not:
 
 The first mobile viewport is product UI; crawlable supporting depth can live after first value.
 
+The large Search CTR opportunity around `english to urdu typing` belongs to `WU-SEO-CTR-001`; do not turn this mobile contract into an unbounded metadata experiment.
+
 ---
 
 ## 14. Non-goals
@@ -434,6 +496,8 @@ Every implementation PR under this repair must state:
 
 A PR that only **adds another mobile card/control/promo** without removing or demoting competing pre-value UI fails this contract.
 
+For any follow-up after 2026-09-04, the PR must also explain why the existing M2–M4 implementation is insufficient using post-release evidence. Do not churn the hierarchy from pre-release GSC numbers.
+
 ---
 
 ## 16. Definition of done
@@ -445,7 +509,8 @@ This mobile acceptance repair can close only when:
 - software-keyboard behavior is stable on target mobile browsers;
 - `/urdu-editor` exposes its primary editable surface without a pre-editor command wall;
 - confirmed violations on `/urdu-keyboard` are resolved or explicitly documented as non-blocking;
-- Product Pulse can compare `eligible -> visible -> focus -> first input -> first Urdu -> first outcome` by device/route;
+- Product Pulse can compare `eligible -> visible -> focus -> first input -> first Urdu -> first outcome` by device/route/release;
+- a comparable post-2026-09-04 mobile activation window is reviewed;
 - no writing content enters telemetry/URLs;
 - CWV/desktop/input-engine guardrails pass;
 - a post-change evidence review records Keep / Iterate / Rollback;
