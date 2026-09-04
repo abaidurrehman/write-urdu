@@ -346,7 +346,7 @@ Guardrails:
 
 ### Slice M1 — Baseline + DOM/layout audit
 
-**State:** substantially completed for Basic/Rich implementation; Product Pulse baseline reconciliation still open.
+**State:** substantially completed for Basic/Rich implementation. Product Pulse could not compute the mobile `writer_first_input / writer_eligible` primary metric (9.2) — `product_hourly_metrics`/`product_hourly_locale_metrics` never cross-tabbed device against the writer funnel. Fixed 2026-09-04 (`9c50e85`): new `product_hourly_device_metrics` rollup, `activation.device_funnel.mobile_writer_first_input_rate` exposed in Product Pulse. Deployed 2026-09-04; data collection started at deploy. Reconciliation itself stays open until enough post-deploy mobile volume accumulates (see M6/P0.1G 7-day window).
 
 - confirm the actual DOM order and CSS for `/`, `/urdu-editor`, `/urdu-keyboard`;
 - identify every block that appears before the first editable surface at mobile breakpoints;

@@ -72,7 +72,7 @@ Execution gates:
 
 **State:** M2 Basic Writer first-viewport implementation shipped 2026-09-03; M3 focus/keyboard + M4 Rich Editor hierarchy shipped 2026-09-04. Remaining work is evidence closeout, real-device/manual validation and `/urdu-keyboard` audit — not another speculative redesign.
 
-- [ ] Reconcile a comparable mobile **Product Pulse first-value** baseline around the release. The 2026-09-04 GSC export is a pre-repair acquisition baseline, not an activation substitute.
+- [ ] Reconcile a comparable mobile **Product Pulse first-value** baseline around the release. The 2026-09-04 GSC export is a pre-repair acquisition baseline, not an activation substitute. Blocking gap fixed 2026-09-04 (`9c50e85`): `product_hourly_device_metrics` rollup ships mobile-tagged `writer_first_input`/`writer_eligible` counters; deployed same day, data collection started at deploy. Item stays open until post-deploy mobile volume is enough to reconcile (see P0.1G 7-day window).
 - [x] Audit actual DOM/runtime-injected content before the editable surface on `/` and `/urdu-editor` during M2–M4 implementation.
 - [ ] Reconcile retained baseline screenshots at 360x800, 375x667, 390x844 and 412x915 where evidence is incomplete.
 - [x] On `/`, expose the real writer in the initial visual viewport without requiring scroll or panel discovery.
