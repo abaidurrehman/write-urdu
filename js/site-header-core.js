@@ -55,7 +55,7 @@
     var dictionary = {
         en: {
             brand: 'Write Urdu',
-            tagline: 'Write Urdu, simply',
+            tagline: 'Write Urdu, simply · English to Urdu typing',
             nav: {
                 home: 'Write Urdu', editor: 'Rich Text Editor', keyboard: 'Urdu Keyboard',
                 alphabet: 'Urdu Alphabet', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', whatsappMaker: 'WhatsApp Status Maker', instagramMaker: 'Instagram Post Maker', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Fix Urdu Text', urduOcr: 'Image to Urdu Text', documentation: 'Help & Guides', photoGuide: 'Write Urdu on a Photo', shareGuide: 'Share Urdu Writing', features: 'Features',
@@ -591,7 +591,7 @@
         }
         header.innerHTML =
                 '<div class="wu-header-inner">' +
-                '<a class="wu-brand" href="/" aria-label="Write Urdu home"><img class="wu-brand-mark" src="/image/logo10.png" alt="" width="42" height="42"><span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply</small></span></a>' +
+                '<a class="wu-brand" href="/" aria-label="Write Urdu home"><img class="wu-brand-mark" src="/image/logo10.png" alt="" width="42" height="42"><span><strong data-wu-i18n-key="brand">Write Urdu</strong><small data-wu-i18n-key="tagline">Write Urdu, simply · English to Urdu typing</small></span></a>' +
                 '<button class="wu-menu-toggle" type="button" aria-expanded="false" aria-controls="wu-primary-nav"><span class="wu-menu-icon" aria-hidden="true"></span><span class="wu-menu-label">Menu</span></button>' +
                 '<nav class="wu-primary-nav" id="wu-primary-nav" aria-label="Primary navigation">' + primaryLinks.map(renderLink).join('') +
                     '<details class="wu-nav-more wu-nav-create"' + (creativeActive ? ' open' : '') + '><summary' + (creativeActive ? ' class="is-active"' : '') + '>' + navIcon('sparkle') + '<span data-wu-i18n-key="nav.create">Create</span><span aria-hidden="true">⌄</span></summary><div class="wu-nav-more-menu">' + creativeLinks.map(renderLink).join('') + '</div></details>' +

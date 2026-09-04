@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="body" x1="120" y1="440" x2="392" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B4A30"/>
+      <stop offset="0.55" stop-color="#12633D"/>
+      <stop offset="1" stop-color="#2AA96B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- flame / nib body -->
+  <path fill="url(#body)" d="
+    M256,462
+    C182,462 124,394 124,308
+    C124,224 168,168 208,118
+    C238,80 258,44 296,14
+    C304,8 314,10 316,20
+    C320,42 300,64 292,86
+    C282,114 296,142 328,166
+    C368,196 388,246 388,304
+    C388,392 330,462 256,462
+    Z"/>
+
+  <!-- soft highlight edge for depth -->
+  <path fill="#ffffff" opacity="0.10" d="
+    M232,110
+    C210,150 180,200 176,260
+    C173,300 182,340 200,368
+    C182,344 168,306 168,262
+    C168,196 200,144 232,110
+    Z"/>
+
+  <!-- waw glyph knockout -->
+  <g fill="#F5FBF7">
+    <rect x="322" y="188" width="20" height="20" rx="4" transform="rotate(45 332 198)"/>
+    <circle cx="300" cy="272" r="44"/>
+    <path d="
+      M272,300
+      C230,320 198,342 188,372
+      C185,381 187,389 193,396
+      C185,386 184,375 188,364
+      C198,336 228,312 264,294
+      Z"/>
+  </g>
+
+  <!-- base cap -->
+  <rect x="222" y="452" width="68" height="16" rx="8" fill="#F5FBF7"/>
+</svg>
