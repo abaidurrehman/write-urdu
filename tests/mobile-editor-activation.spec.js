@@ -59,3 +59,39 @@ test('Gate B2 keeps the real Basic Writer visible and obvious across required ph
     await expect(page.locator('#demo')).toHaveCSS('border-top-color', 'rgb(21, 147, 77)');
   }
 });
+
+test('Gate B2 M3 keeps focused Basic Writer usable when the effective viewport shrinks like a software keyboard', async ({ page }) => {
+  await openMobileHome(page, { width: 390, height: 844 });
+  const editor = page.locator('#transliterateTextarea');
+
+  await editor.focus();
+  await editor.fill('میرا اردو متن');
+  await page.setViewportSize({ width: 390, height: 480 });
+  await page.waitForTimeout(80);
+
+  const focused = await editor.evaluate(node => {
+    const rect = node.getBoundingClientRect();
+    const viewportHeight = document.documentElement.clientHeight;
+    const style = getComputedStyle(node);
+    return {
+      top: rect.top,
+      bottom: rect.bottom,
+      height: rect.height,
+      visible: Math.max(0, Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0)),
+      maxHeight: style.maxHeight,
+      active: document.activeElement === node,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+    };
+  });
+
+  expect(focused.active).toBe(true);
+  expect(focused.visible).toBeGreaterThanOrEqual(150);
+  expect(focused.height).toBeLessThanOrEqual(320);
+  expect(focused.maxHeight).not.toBe('none');
+  expect(focused.overflow).toBeLessThanOrEqual(1);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(80);
+  await expect(editor).toBeFocused();
+  await expect(editor).toHaveValue('میرا اردو متن');
+});

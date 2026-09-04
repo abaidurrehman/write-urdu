@@ -1,0 +1,150 @@
+/* WU-PLAT-002H Gate B2 — M3/M4 mobile authoring focus.
+   Source-owned mobile overrides for the two highest-value writing surfaces.
+   Keep the real editor/caret dominant when the software keyboard reduces the
+   visual viewport, and keep Rich Editor completion actions after authoring. */
+
+@media (max-width: 767px) {
+  html {
+    scroll-padding-top: 72px;
+  }
+
+  /* M3 — Basic Writer keyboard/focus resilience.
+     Dynamic viewport units allow the real textarea to shrink when a mobile
+     software keyboard consumes screen height instead of leaving a 300px+
+     canvas fighting the keyboard and browser chrome. */
+  body.wu-v2-shell[data-wu-core-workspace="basic"] #transliterateTextarea {
+    scroll-margin-block: 12px 20px !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] #transliterateTextarea:focus {
+    min-height: clamp(180px, 48dvh, 320px) !important;
+    max-height: 62dvh !important;
+  }
+
+  /* M4 — Rich Editor mobile hierarchy.
+     Keep only intent + compact input method before the document. Export/share
+     are completion actions and belong after the editor on phones. */
+  body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > div[style*="margin-top:15px"] {
+    order: 4 !important;
+    margin-top: 8px !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .input-mode-control-rich {
+    order: 2 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    margin: 0 0 6px !important;
+    padding: 6px !important;
+    border: 1px solid var(--wu-color-border) !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .input-mode-control-rich .input-mode-title,
+  body.wu-v2-shell.rich-editor-page .input-mode-control-rich .input-mode-note,
+  body.wu-v2-shell.rich-editor-page .input-mode-control-rich .wu-voice-discovery-copy {
+    display: none !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .input-mode-control-rich .input-mode-option {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    padding: 5px 6px !important;
+    overflow: hidden !important;
+    font-size: .68rem !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .input-mode-control-rich .wu-voice-panel,
+  body.wu-v2-shell.rich-editor-page .input-mode-control-rich .input-mode-alert {
+    grid-column: 1 / -1 !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > div[style*="min-height:300px"] {
+    order: 3 !important;
+    margin-top: 0 !important;
+  }
+
+  /* Reuse the real semantic label rather than inventing a second input. */
+  body.wu-v2-shell.rich-editor-page .col-12.col-md-9 > div[style*="min-height:300px"] > label.sr-only[for="basic-example"] {
+    position: static !important;
+    display: flex !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 7px 12px !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+    align-items: center !important;
+    border: 1px solid #b9d8c5 !important;
+    border-bottom: 0 !important;
+    border-radius: 14px 14px 0 0 !important;
+    color: var(--wu-color-brand-strong) !important;
+    background: var(--wu-color-brand-soft) !important;
+    font-size: .78rem !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .tox.tox-tinymce {
+    height: clamp(320px, 58dvh, 460px) !important;
+    min-height: 320px !important;
+    margin-top: 0 !important;
+    scroll-margin-block: 12px 20px !important;
+    border: 2px solid #b9d8c5 !important;
+    border-radius: 0 0 14px 14px !important;
+    box-shadow: 0 10px 28px rgb(13 74 43 / 10%) !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .tox.tox-tinymce:focus-within {
+    border-color: var(--wu-color-brand) !important;
+    box-shadow: 0 0 0 4px rgb(23 114 69 / 13%), 0 12px 30px rgb(13 74 43 / 12%) !important;
+  }
+
+  /* External completion controls stay available, but only after the document
+     on mobile. TinyMCE's own formatting toolbar remains part of the editor. */
+  body.wu-v2-shell.rich-editor-page .tool-actions {
+    margin-top: 8px !important;
+    border-radius: 12px !important;
+  }
+
+  /* v2-workspace used absolute positioning to float Clear near the old
+     pre-editor toolbar. Once the toolbar moves after TinyMCE that escape hatch
+     would put Clear back over the authoring surface, so return it to flow. */
+  body.wu-v2-shell.rich-editor-page #clear {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    width: auto !important;
+    min-width: 44px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    color: #8b2f2f !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .batch-transliteration-panel {
+    order: 5 !important;
+  }
+}
+
+/* Keyboard-open / landscape-like effective viewport. These rules are
+   intentionally focus-sensitive where possible so ordinary first view keeps a
+   generous canvas while the active writing surface can contract safely. */
+@media (max-width: 767px) and (max-height: 560px) {
+  body.wu-v2-shell[data-wu-core-workspace="basic"] #transliterateTextarea:focus {
+    min-height: clamp(170px, 44dvh, 230px) !important;
+    max-height: 54dvh !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page .tox.tox-tinymce {
+    height: clamp(220px, 54dvh, 300px) !important;
+    min-height: 220px !important;
+  }
+}
