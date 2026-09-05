@@ -1,6 +1,6 @@
 :root{--tool-ink:var(--wu-color-ink,#14231c);--tool-muted:var(--wu-color-muted,#627069);--tool-green:var(--wu-color-brand-strong,#177245);--tool-line:var(--wu-color-border,#dfe7e2);--tool-surface:var(--wu-color-surface,#fff);--tool-bg:var(--wu-color-page,#fbfaf6)}
 html,body.tool-page{max-width:100%;overflow-x:clip}
-body.tool-page{min-width:0!important;margin:0!important;padding:0!important;color:var(--tool-ink);background:radial-gradient(circle at 8% 8%,rgba(23,114,69,.08),transparent 24rem),var(--tool-bg);font-family:Inter,"Segoe UI",Arial,sans-serif}
+body.tool-page{min-width:0!important;margin:0!important;padding:0!important;color:var(--tool-ink);background:radial-gradient(circle at 8% 8%,rgba(23,114,69,.08),transparent 24rem),var(--tool-bg);font-family:var(--wu-font-ui,Inter,"Segoe UI",Arial,sans-serif)}
 body.tool-page *,body.tool-page *::before,body.tool-page *::after{box-sizing:border-box}
 body.tool-page .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 body.tool-page>.container-fluid{padding:0}
@@ -9,7 +9,7 @@ body.tool-page>.container-fluid>.row:nth-of-type(2){display:grid;grid-template-c
 body.tool-page>.container-fluid>.row:nth-of-type(2)>.col-6{display:none!important}
 body.tool-page>.container-fluid>.row:nth-of-type(2)>.col-12{width:100%;max-width:none!important;padding:0!important}
 body.tool-page .logo{width:68px;height:68px;margin:0 18px 16px 0;object-fit:contain;border-radius:18px}
-body.tool-page h1{margin:4px 0 8px;font-size:clamp(2rem,5vw,3rem);font-weight:760;letter-spacing:-.045em;line-height:1.08}
+body.tool-page h1{margin:0 0 3px;font-size:var(--wu-text-tool-h1,clamp(1.55rem,3.2vw,2.3rem));font-weight:760;letter-spacing:-.045em;line-height:1.08}
 body.tool-page mark.sm{padding:0;color:var(--tool-green);background:transparent;font-size:.95rem;font-weight:650}
 body.tool-page hr.solid{clear:both;margin:26px 0;border-top:1px solid var(--tool-line)}
 body.tool-page .tool-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0!important;padding:14px;border:1px solid var(--tool-line);border-radius:14px;background:rgba(255,255,255,.86)}
@@ -46,7 +46,6 @@ body.tool-page .spacebar{min-height:42px;border:1px solid #cfd8d2;border-radius:
 /* Compact task-first rhythm shared by the rich editor and keyboard. */
 body.tool-page>.container-fluid>.row:nth-of-type(2){padding:20px 0 56px}
 body.tool-page .logo{width:48px;height:48px;margin:0 12px 8px 0;border-radius:12px}
-body.tool-page h1{margin:0 0 3px;font-size:clamp(1.8rem,3.5vw,2.5rem)}
 body.tool-page mark.sm{font-size:.84rem}
 body.tool-page hr.solid{margin:13px 0}
 body.tool-page .tool-actions{gap:6px;margin:8px 0!important;padding:7px;border-radius:10px}
@@ -60,7 +59,7 @@ body.tool-page #write{min-height:clamp(180px,34vh,330px)!important}
 body.tool-page #key1{margin-top:10px;padding:12px}
 body.tool-page .tool-actions+br,body.tool-page .tool-actions+br+br{display:none}
 body.tool-page #write+br,body.tool-page #write+br+br{display:none}
-@media(max-width:767px){body.tool-page>.container-fluid>.row:nth-of-type(2){padding:15px 0 48px}body.tool-page .logo{width:42px;height:42px;margin-right:9px}body.tool-page h1{font-size:1.7rem}body.tool-page .tool-actions{display:flex;flex-wrap:nowrap;overflow:visible}body.tool-page .tool-actions label{display:none}body.tool-page .tool-actions input{flex:1 1 120px;width:auto!important}body.tool-page .tool-actions .btn,body.tool-page .tool-actions summary{flex:0 1 auto;width:auto;white-space:nowrap}body.tool-page .action-menu-panel{position:fixed;top:auto;right:12px;bottom:12px;left:12px;width:auto;grid-template-columns:1fr 1fr}body.tool-page .tox-tinymce{min-height:62vh}}
+@media(max-width:767px){body.tool-page>.container-fluid>.row:nth-of-type(2){padding:15px 0 48px}body.tool-page .logo{width:42px;height:42px;margin-right:9px}body.tool-page .tool-actions{display:flex;flex-wrap:nowrap;overflow:visible}body.tool-page .tool-actions label{display:none}body.tool-page .tool-actions input{flex:1 1 120px;width:auto!important}body.tool-page .tool-actions .btn,body.tool-page .tool-actions summary{flex:0 1 auto;width:auto;white-space:nowrap}body.tool-page .action-menu-panel{position:fixed;top:auto;right:12px;bottom:12px;left:12px;width:auto;grid-template-columns:1fr 1fr}body.tool-page .tox-tinymce{min-height:62vh}}
 @media(max-width:767px){.rich-editor-page .tool-actions>a.btn,.rich-editor-page .tool-actions>button.btn{flex:0 0 36px;width:36px;padding:0!important;font-size:0}.rich-editor-page .tool-actions>a.btn i,.rich-editor-page .tool-actions>button.btn i{font-size:.85rem}.rich-editor-page .tool-actions #spinner{margin-left:auto}}
 @media(max-width:767px){body.keyboard-page #write{height:120px!important;min-height:120px!important}.keyboard-page .tool-actions{flex-wrap:wrap}.keyboard-page .tool-actions input{flex:1 1 100px}.keyboard-page #key1{margin-top:7px}}
 
@@ -89,7 +88,6 @@ body.tool-page #write+br,body.tool-page #write+br+br{display:none}
 /* Tool branding is already present in the persistent header. */
 body.tool-page .logo{display:none}
 body.tool-page>.container-fluid>.row:nth-of-type(2){padding-top:10px}
-body.tool-page h1{font-size:clamp(1.45rem,3vw,2rem)}
 body.tool-page h4.small{display:none}
 body.tool-page hr.solid{margin:8px 0}
 @media(max-width:767px){body.tool-page>.container-fluid>.row:nth-of-type(2){padding-top:7px}body.tool-page h1{font-size:1.35rem}body.tool-page div.tool-promo-grid{grid-template-columns:1fr}}

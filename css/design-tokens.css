@@ -13,6 +13,7 @@
   --wu-text-xl: 1.375rem;
   --wu-text-2xl: clamp(1.65rem, 2.5vw, 2.15rem);
   --wu-text-display: clamp(2rem, 4.4vw, 3.45rem);
+  --wu-text-tool-h1: clamp(1.55rem, 3.2vw, 2.3rem);
 
   /* Color */
   --wu-color-ink: #17221c;
