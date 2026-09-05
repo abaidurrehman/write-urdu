@@ -488,11 +488,8 @@ body[data-wu-basic-command-toolbar="true"] #demo {
 
   body[data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-option {
     flex: 1 1 145px;
+    min-height: 44px;
     white-space: normal;
-  }
-
-  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-input-mode .input-mode-option {
-    min-height: 44px !important;
   }
 
   body[data-wu-basic-command-toolbar="true"] .wu-basic-voice-panel {

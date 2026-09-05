@@ -54,3 +54,10 @@
     background-color: var(--wu-color-surface-soft) !important;
     color: var(--wu-color-ink) !important;
 }
+
+@media (max-width: 767px) {
+    .tox .tox-tbtn {
+        width: 44px;
+        height: 44px;
+    }
+}

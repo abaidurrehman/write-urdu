@@ -139,10 +139,10 @@
         order: 10;
     }
     .input-mode-option {
-        min-height: 34px;
+        min-height: 44px;
     }
     .input-mode-alert { align-items: flex-start; flex-direction: column; }
-    .input-mode-alert-action { width: 100%; }
+    .input-mode-alert-action { width: 100%; min-height: 44px; }
     .batch-transliteration-panel { grid-template-columns: 1fr; }
-    .batch-transliteration-panel button { grid-column: 1; grid-row: auto; width: 100%; }
+    .batch-transliteration-panel button { grid-column: 1; grid-row: auto; width: 100%; min-height: 44px; }
 }
