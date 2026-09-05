@@ -1,4 +1,4 @@
-:root{--tool-ink:#14231c;--tool-muted:#627069;--tool-green:#177245;--tool-line:#dfe7e2;--tool-surface:#fff;--tool-bg:#fbfaf6}
+:root{--tool-ink:var(--wu-color-ink,#14231c);--tool-muted:var(--wu-color-muted,#627069);--tool-green:var(--wu-color-brand-strong,#177245);--tool-line:var(--wu-color-border,#dfe7e2);--tool-surface:var(--wu-color-surface,#fff);--tool-bg:var(--wu-color-page,#fbfaf6)}
 html,body.tool-page{max-width:100%;overflow-x:clip}
 body.tool-page{min-width:0!important;margin:0!important;padding:0!important;color:var(--tool-ink);background:radial-gradient(circle at 8% 8%,rgba(23,114,69,.08),transparent 24rem),var(--tool-bg);font-family:Inter,"Segoe UI",Arial,sans-serif}
 body.tool-page *,body.tool-page *::before,body.tool-page *::after{box-sizing:border-box}
@@ -17,10 +17,10 @@ body.tool-page .tool-actions label{margin:0;color:var(--tool-muted);font-weight:
 body.tool-page .tool-actions input{height:40px;padding:7px 11px;border:1px solid var(--tool-line);border-radius:9px}
 body.tool-page .tool-actions .btn{min-height:40px;margin:0!important;padding:.55rem .75rem!important;border:0;border-radius:9px;font-weight:650}
 body.tool-page .tool-actions .btn-success{color:#fff;background:var(--tool-green)}
-body.tool-page .tool-actions .btn-success:hover,body.tool-page .tool-actions .btn-success:focus{background:#125934}
-body.tool-page .tool-actions .btn-dark{color:var(--tool-ink);background:#eef2ef;border:1px solid var(--tool-line)}
+body.tool-page .tool-actions .btn-success:hover,body.tool-page .tool-actions .btn-success:focus{background:#125934}/* hover-darken shade, no token equivalent */
+body.tool-page .tool-actions .btn-dark{color:var(--tool-ink);background:var(--wu-color-surface-muted,#eef2ef);border:1px solid var(--tool-line)}
 body.tool-page .tool-actions .btn-dark:hover,body.tool-page .tool-actions .btn-dark:focus{background:#e3ebe6}
-body.tool-page .tool-actions .btn-danger{color:#fff;background:#a93636}
+body.tool-page .tool-actions .btn-danger{color:#fff;background:var(--wu-color-danger,#a93636)}
 body.tool-page .tool-actions .btn-danger:hover,body.tool-page .tool-actions .btn-danger:focus{background:#8c2c2c}
 body.tool-page textarea{max-width:100%;border-radius:14px!important;background:var(--tool-surface)}
 body.tool-page .tox-tinymce{max-width:100%;border:1px solid var(--tool-line)!important;border-radius:14px!important;box-shadow:0 18px 45px rgba(20,35,28,.08)}
@@ -45,8 +45,8 @@ body.tool-page hr.solid{margin:13px 0}
 body.tool-page .tool-actions{gap:6px;margin:8px 0!important;padding:7px;border-radius:10px}
 body.tool-page .tool-actions .btn{min-height:36px;padding:.42rem .62rem!important;font-size:.8rem}
 body.tool-page .tool-actions input{height:36px}
-body.tool-page .tool-actions .action-menu{position:relative}body.tool-page .tool-actions .action-menu summary{display:inline-flex;align-items:center;gap:6px;list-style:none;cursor:pointer}body.tool-page .tool-actions .action-menu summary::-webkit-details-marker{display:none}body.tool-page .tool-actions .action-menu[open]>summary{color:#fff;background:var(--tool-green)!important}
-body.tool-page .action-menu-panel{position:absolute;top:calc(100% + 7px);left:0;z-index:1300;display:grid;grid-template-columns:1fr 1fr;gap:5px;width:290px;padding:10px;border:1px solid var(--tool-line);border-radius:12px;background:#fff;box-shadow:0 18px 45px rgba(20,35,28,.18)}body.tool-page .action-menu-panel button,body.tool-page .action-menu-panel a{display:flex;align-items:center;gap:7px;min-height:38px;padding:7px 9px;border:0;border-radius:8px;color:var(--tool-ink);background:#f3f6f4;text-align:left;text-decoration:none}body.tool-page .action-menu-panel button:hover,body.tool-page .action-menu-panel a:hover{background:#e9f7ef}.compact-menu-panel{width:220px!important;grid-template-columns:1fr!important}
+body.tool-page .tool-actions .action-menu{position:relative}body.tool-page .tool-actions .action-menu summary{display:inline-flex;align-items:center;gap:6px;list-style:none;cursor:pointer}body.tool-page .tool-actions .action-menu summary::-webkit-details-marker{display:none}body.tool-page .tool-actions .action-menu[open]>summary{color:#fff;background:var(--wu-color-brand-strong,var(--tool-green))!important}
+body.tool-page .action-menu-panel{position:absolute;top:calc(100% + 7px);left:0;z-index:1300;display:grid;grid-template-columns:1fr 1fr;gap:5px;width:290px;padding:10px;border:1px solid var(--tool-line);border-radius:12px;background:#fff;box-shadow:0 18px 45px rgba(20,35,28,.18)}body.tool-page .action-menu-panel button,body.tool-page .action-menu-panel a{display:flex;align-items:center;gap:7px;min-height:38px;padding:7px 9px;border:0;border-radius:8px;color:var(--tool-ink);background:var(--wu-color-surface-soft,#f3f6f4);text-align:left;text-decoration:none}body.tool-page .action-menu-panel button:hover,body.tool-page .action-menu-panel a:hover{background:var(--wu-color-brand-soft,#e9f7ef)}.compact-menu-panel{width:220px!important;grid-template-columns:1fr!important}
 body.tool-page .tool-actions #spinner{width:1rem;height:1rem;margin:0 0 0 auto}
 body.tool-page .tox-tinymce{min-height:56vh}
 body.tool-page #write{min-height:clamp(180px,34vh,330px)!important}

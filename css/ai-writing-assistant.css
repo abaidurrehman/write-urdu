@@ -324,8 +324,8 @@ body[data-wu-ai-writing-available="true"] .wu-basic-command--ai:focus-visible {
 }
 
 .wu-ai-writing-command--fix {
-    border-color: #6d28d9;
-    background: #6d28d9;
+    border-color: var(--wu-color-accent, #6d28d9);
+    background: var(--wu-color-accent, #6d28d9);
     color: #fff;
     box-shadow: 0 8px 18px rgba(109, 40, 217, 0.2);
 }
@@ -384,7 +384,7 @@ body[data-wu-ai-writing-available="true"] .wu-basic-command--ai:focus-visible {
 }
 
 .wu-ai-writing-menu-item:hover,
-.wu-ai-writing-menu-item:focus-visible { background: #f6f1ff; }
+.wu-ai-writing-menu-item:focus-visible { background: var(--wu-color-accent-soft, #f6f1ff); }
 
 .wu-ai-writing-scope {
     max-width: 420px;
@@ -420,7 +420,7 @@ body[data-wu-ai-writing-available="true"] .wu-basic-command--ai:hover {
 body[data-wu-ai-writing-available="true"] .wu-basic-command--ai small {
     padding: 2px 5px;
     border-radius: 999px;
-    background: #6d28d9;
+    background: var(--wu-color-accent, #6d28d9);
     color: #fff;
     font-size: 0.61rem;
     font-weight: 800;
@@ -441,7 +441,7 @@ body[data-wu-ai-writing-available="true"] .wu-basic-command--ai small {
 .wu-ai-writing-status {
     min-height: 1.2em;
     margin-bottom: 5px;
-    color: #6d28d9;
+    color: var(--wu-color-accent, #6d28d9);
     font-size: 0.78rem;
     line-height: 1.45;
 }
@@ -476,7 +476,7 @@ body[data-wu-ai-writing-available="true"] .wu-basic-command--ai small {
 .wu-ai-writing-panel-action:hover { border-color: rgba(109, 40, 217, 0.42); background: #f7f2ff; }
 
 .wu-ai-writing-panel-action--primary,
-.wu-ai-writing-panel-action--primary:hover { border-color: #6d28d9; background: #6d28d9; color: #fff; }
+.wu-ai-writing-panel-action--primary:hover { border-color: var(--wu-color-accent, #6d28d9); background: var(--wu-color-accent, #6d28d9); color: #fff; }
 
 .wu-ai-writing-age-gate { background: rgba(24, 16, 35, 0.62); backdrop-filter: blur(4px); }
 
@@ -494,7 +494,7 @@ body[data-wu-ai-writing-available="true"] .wu-basic-command--ai small {
 .wu-ai-writing-age-gate-confirm,
 .wu-ai-writing-age-gate-cancel { border-radius: 10px; color: #38224e; font: inherit; font-weight: 680; }
 
-.wu-ai-writing-age-gate-confirm { border-color: #6d28d9; background: #6d28d9; color: #fff; }
+.wu-ai-writing-age-gate-confirm { border-color: var(--wu-color-accent, #6d28d9); background: var(--wu-color-accent, #6d28d9); color: #fff; }
 
 @media (max-width: 767px) {
     .wu-ai-writing-host { margin-top: 9px; }

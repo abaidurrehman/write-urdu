@@ -497,6 +497,15 @@ html[lang="ur"] body.wu-v2-shell {
   box-shadow: var(--wu-shadow-sm);
 }
 
+.card--elevated {
+  box-shadow: var(--wu-shadow-md);
+}
+
+.card--nested {
+  background: var(--wu-color-surface-soft);
+  border-radius: var(--wu-radius-lg);
+}
+
 .wu-v2-shell .tool-promo-card,
 .wu-v2-shell .home-how-it-works-list li {
   border-color: var(--wu-color-border);

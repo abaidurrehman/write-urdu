@@ -32,6 +32,8 @@
   --wu-color-brand-softer: #f4fbf6;
   --wu-color-danger: #a93636;
   --wu-color-focus: #0b6fc2;
+  --wu-color-accent: #6d28d9;
+  --wu-color-accent-soft: #f6f1ff;
 
   /* Shared shell palette. site-header.css may reference these as a no-JS
      fallback, but it must not define an independent header colour scheme. */

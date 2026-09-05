@@ -83,7 +83,7 @@ Execution gates:
 - [x] Ship mobile focus/visual-viewport resilience without forced-scroll loops.
 - [x] Make the editor visually unmistakable without a broad rebrand.
 - [x] Apply equivalent first-action hierarchy to `/urdu-editor` while preserving TinyMCE, exports, handoff and draft protection.
-- [ ] Audit `/urdu-keyboard`; fix only reproduced violations.
+- [x] Audit `/urdu-keyboard`; fix only reproduced violations.
 - [x] Preserve `eligible → visible → focus → first input → first Urdu → first outcome` instrumentation by route/device; verify release-marker comparability for closeout.
 - [ ] Verify bounded time-to-first-input measurement or add it if no equivalent aggregate exists.
 - [ ] Complete real-device/manual iOS Safari and Android Chrome closeout where available.

@@ -1,0 +1,56 @@
+@import url('./design-tokens.css');
+
+/* Brand-tokenize the default TinyMCE oxide skin toolbar; the outer
+   .tox-tinymce wrapper is already styled in tools-modern.css. */
+
+.tox .tox-editor-header,
+.tox .tox-toolbar-overlord {
+    background-color: var(--wu-color-surface-soft) !important;
+    border-bottom: 1px solid var(--wu-color-border) !important;
+}
+
+.tox .tox-tbtn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--wu-radius-sm);
+}
+
+.tox .tox-tbtn:hover,
+.tox .tox-tbtn:focus {
+    background: var(--wu-color-surface);
+    outline: none;
+}
+
+.tox .tox-tbtn--enabled,
+.tox .tox-tbtn--enabled:hover {
+    background: var(--wu-color-brand-soft) !important;
+}
+.tox .tox-tbtn--enabled svg {
+    fill: var(--wu-color-brand-strong) !important;
+}
+
+.tox .tox-toolbar__group {
+    border-color: var(--wu-color-border);
+}
+
+.tox .tox-tbtn--select,
+.tox .tox-listboxfield .tox-listbox--select {
+    border-color: var(--wu-color-border);
+    background-color: var(--wu-color-surface);
+}
+.tox .tox-tbtn--select:hover {
+    background-color: var(--wu-color-surface-soft);
+}
+
+/* TinyMCE portals menus/dropdowns into a sibling .tox-tinymce-aux node,
+   so these must be scoped by the shared .tox ancestor, not .tox-tinymce. */
+.tox .tox-menu,
+.tox .tox-collection--list {
+    border-color: var(--wu-color-border);
+    background-color: var(--wu-color-surface);
+}
+.tox .tox-collection__item--active,
+.tox .tox-collection__item--enabled {
+    background-color: var(--wu-color-surface-soft) !important;
+    color: var(--wu-color-ink) !important;
+}

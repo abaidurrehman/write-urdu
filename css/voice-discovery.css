@@ -8,7 +8,7 @@
   align-items: center;
   width: 100%;
   padding: 1rem 1.1rem;
-  border: 1px solid #bcdcc8;
+  border: 1px solid var(--wu-color-border-strong, #bcdcc8);
   border-radius: var(--wu-radius-lg);
   background: linear-gradient(118deg, #eefaf3 0%, #ffffff 58%, #f7fbf8 100%);
   color: var(--wu-color-ink);
