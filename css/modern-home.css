@@ -197,6 +197,15 @@ hr.solid { margin: 18px 0; border: 0; border-top: 1px solid var(--line); }
   caret-color: var(--green);
 }
 #transliterateTextarea:focus { box-shadow: inset 0 0 0 3px rgb(23 114 69 / 16%); }
+html[lang="en"] #transliterateTextarea[data-input-mode="roman"]::placeholder {
+  font-family: var(--wu-font-ui);
+  font-style: normal;
+  font-weight: var(--wu-weight-medium);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--wu-color-subtle);
+  opacity: 1;
+  unicode-bidi: plaintext;
+}
 .editor-hint { margin: 10px 2px 0; color: var(--muted); font-size: .82rem; }
 #UsageAlert { margin: 20px 0 14px; padding: 14px 16px; border: 1px solid #cdebd9; border-radius: var(--wu-radius-md); color: var(--deep); background: var(--mint); font-size: .9rem; }
 
