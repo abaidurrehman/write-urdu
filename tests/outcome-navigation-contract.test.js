@@ -21,6 +21,12 @@ assert.match(core, /WriteUrduLocale/, 'Preserved shared-shell core lost locale b
 });
 assert.strictEqual((primaryNavigation.match(/\bid: '(?:write|create|work|learn)'/g) || []).length, 4, 'Top-level product IA must contain exactly Write / Create / Work / Learn');
 assert.doesNotMatch(primaryNavigation, /id: ['"](?:drafts|my-drafts)['"]/, 'My drafts must not become a fifth product category');
+assert.match(primaryNavigation, /label: \{ en: 'Tools', ur: 'ٹولز' \}/, 'Work group must be relabeled Tools for the mega-menu redesign');
+assert.doesNotMatch(primaryNavigation, /label: \{ en: 'Work', ur: 'کام' \}/, 'Old Work label must not remain alongside the new Tools label');
+['write', 'create', 'work', 'learn'].forEach((group) => {
+  const groupSource = primaryNavigation.slice(primaryNavigation.indexOf("id: '" + group + "'"));
+  assert.match(groupSource.slice(0, groupSource.indexOf("\n        },") + 1), /preview: \{[\s\S]*?theme: '[a-z]+'/, `Missing mega-menu preview data on the ${group} group`);
+});
 assert.match(navigation, /data-wu-drafts-utility-slot/, 'My drafts utility/account position must remain reserved outside product categories');
 
 assert.match(primaryNavigation, /Start writing in Urdu/, 'Write menu must lead with the user outcome, not Basic Writer');

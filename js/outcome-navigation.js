@@ -7,6 +7,12 @@
         {
             id: 'write', icon: 'write',
             label: { en: 'Write', ur: 'لکھیں' },
+            preview: {
+                headline: { en: 'Type Urdu, instantly', ur: 'فوری طور پر اردو ٹائپ کریں' },
+                caption: { en: 'From English keys to perfect Urdu script.', ur: 'انگریزی کی بورڈ سے مکمل اردو رسم الخط تک۔' },
+                ctaHref: '/',
+                theme: 'write'
+            },
             items: [
                 { href: '/', icon: 'write', label: { en: 'Start writing in Urdu', ur: 'اردو لکھنا شروع کریں' }, tool: { en: 'English to Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ' } },
                 { href: '/urdu-keyboard', icon: 'keyboard', label: { en: 'Type directly in Urdu', ur: 'اردو براہِ راست ٹائپ کریں' }, tool: { en: 'Urdu Keyboard', ur: 'اردو کی بورڈ' } },
@@ -20,6 +26,12 @@
         {
             id: 'create', icon: 'create',
             label: { en: 'Create', ur: 'بنائیں' },
+            preview: {
+                headline: { en: 'Turn words into art', ur: 'الفاظ کو فن میں بدلیں' },
+                caption: { en: 'Cards, posts and status images in Urdu.', ur: 'اردو میں کارڈز، پوسٹس اور اسٹیٹس امیجز۔' },
+                ctaHref: '/urdu-card-studio',
+                theme: 'create'
+            },
             items: [
                 { href: '/urdu-card-studio', icon: 'card', label: { en: 'Make a poetry, quote or announcement image', ur: 'شاعری، اقتباس یا اعلان کی تصویر بنائیں' }, tool: { en: 'Card Studio', ur: 'کارڈ اسٹوڈیو' }, excludeRole: 'facebook' },
                 { href: '/urdu-whatsapp-status-maker', icon: 'phone', label: { en: 'Create a WhatsApp Status', ur: 'واٹس ایپ اسٹیٹس بنائیں' }, tool: { en: 'WhatsApp Status Maker', ur: 'واٹس ایپ اسٹیٹس میکر' } },
@@ -33,7 +45,13 @@
         },
         {
             id: 'work', icon: 'work',
-            label: { en: 'Work', ur: 'کام' },
+            label: { en: 'Tools', ur: 'ٹولز' },
+            preview: {
+                headline: { en: 'Get it done in Urdu', ur: 'اردو میں کام مکمل کریں' },
+                caption: { en: 'Invoices, documents, and formal writing.', ur: 'انوائسز، دستاویزات اور رسمی تحریر۔' },
+                ctaHref: '/urdu-invoice-generator',
+                theme: 'tools'
+            },
             items: [
                 { href: '/urdu-invoice-generator', icon: 'invoice', label: { en: 'Create an Urdu or English invoice', ur: 'اردو یا انگریزی انوائس بنائیں' }, tool: { en: 'Invoice Generator', ur: 'انوائس جنریٹر' } },
                 { href: '/urdu-editor', icon: 'document', label: { en: 'Prepare a formal Urdu document', ur: 'رسمی اردو دستاویز تیار کریں' }, tool: { en: 'Rich Text Editor', ur: 'رچ ٹیکسٹ ایڈیٹر' }, activeOwner: false }
@@ -42,6 +60,12 @@
         {
             id: 'learn', icon: 'learn',
             label: { en: 'Learn', ur: 'سیکھیں' },
+            preview: {
+                headline: { en: 'Master Urdu typing', ur: 'اردو ٹائپنگ میں مہارت حاصل کریں' },
+                caption: { en: 'Guides for the alphabet, fonts and tools.', ur: 'حروفِ تہجی، فونٹس اور ٹولز کے لیے رہنما۔' },
+                ctaHref: '/urdu-alphabet',
+                theme: 'learn'
+            },
             items: [
                 { href: '/urdu-alphabet', icon: 'alphabet', label: { en: 'Learn the Urdu alphabet', ur: 'اردو حروف تہجی سیکھیں' }, tool: { en: 'Alphabet guide', ur: 'حروف تہجی گائیڈ' } },
                 { href: '/roman-urdu-transliteration', icon: 'convert', label: { en: 'How English to Urdu typing works', ur: 'انگریزی سے اردو ٹائپنگ کیسے کام کرتی ہے' }, tool: { en: 'Typing guide', ur: 'ٹائپنگ گائیڈ' } },
@@ -64,6 +88,12 @@
     var EXPLORE_GROUP = {
         id: 'explore', icon: 'book',
         label: { en: 'Explore', ur: 'دریافت کریں' },
+        preview: {
+            headline: { en: 'Read real Urdu writing', ur: 'حقیقی اردو تحریر پڑھیں' },
+            caption: { en: 'Stories and posts from the community.', ur: 'کمیونٹی کی کہانیاں اور پوسٹس۔' },
+            ctaHref: '/urdu-writers',
+            theme: 'explore'
+        },
         items: [
             { href: '/urdu-writers', icon: 'book', label: { en: 'Read Urdu writing from the community', ur: 'کمیونٹی کی اردو تحریر پڑھیں' }, tool: { en: 'Urdu Writers', ur: 'اردو رائٹرز' } }
         ]
