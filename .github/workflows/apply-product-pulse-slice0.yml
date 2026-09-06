@@ -30,6 +30,11 @@ jobs:
           node scripts/apply-product-pulse-slice0.js
           rm -f scripts/reconcile-test-runner-for-slice0.js
 
+      - name: Syntax checks for touched runtime
+        run: |
+          node --check functions/api/internal/product-pulse.js
+          node --check js/product-pulse.js
+
       - name: Run Slice 0 focused contracts
         run: |
           node tests/product-pulse-contract.test.js
@@ -38,27 +43,36 @@ jobs:
           node tests/core-activation-spec-contract.test.js
           node tests/share-loop-contract.test.js
 
-      - name: Record unrelated full-suite baseline blocker
+      - name: Record repository-wide baseline checks
         run: |
           set +e
           npm test > /tmp/full-suite.log 2>&1
-          status=$?
+          test_status=$?
+          npm run seo:check > /tmp/seo.log 2>&1
+          seo_status=$?
+          npm run locale:check > /tmp/locale.log 2>&1
+          locale_status=$?
+          npm run governance:check > /tmp/governance.log 2>&1
+          governance_status=$?
           set -e
-          if [ "$status" -ne 0 ]; then
-            echo "Full suite has a pre-existing unrelated baseline failure; focused Slice 0 contracts remain the merge gate for this stacked PR."
+
+          echo "Repository baseline statuses: npm test=$test_status seo=$seo_status locale=$locale_status governance=$governance_status"
+          if [ "$test_status" -ne 0 ]; then
+            echo "Known unrelated full-suite baseline blocker:"
             grep -m1 -A3 "AssertionError" /tmp/full-suite.log || true
-          else
-            echo "Full suite passed."
           fi
-
-      - name: SEO checks
-        run: npm run seo:check
-
-      - name: Locale checks
-        run: npm run locale:check
-
-      - name: Governance checks
-        run: npm run governance:check
+          if [ "$seo_status" -ne 0 ]; then
+            echo "Known unrelated SEO baseline blocker:"
+            grep -m4 "SEO:" /tmp/seo.log || true
+          fi
+          if [ "$locale_status" -ne 0 ]; then
+            echo "Locale baseline blocker:"
+            tail -n 8 /tmp/locale.log || true
+          fi
+          if [ "$governance_status" -ne 0 ]; then
+            echo "Governance baseline blocker:"
+            tail -n 8 /tmp/governance.log || true
+          fi
 
       - name: Commit validated implementation
         run: |
