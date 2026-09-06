@@ -46,6 +46,19 @@ jobs:
           fs.writeFileSync(file, html);
           NODE
 
+      - name: Preserve registry action ownership
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const file = 'js/core-continuity.js';
+          let source = fs.readFileSync(file, 'utf8');
+          const before = "            actionId: recommendationId || actionId(sourceWorkspace, targetWorkspace),\n";
+          const after = "            actionId: actionId(sourceWorkspace, targetWorkspace),\n";
+          if (!source.includes(before)) throw new Error('Slice 1 registry-action normalization anchor missing');
+          source = source.replace(before, after);
+          fs.writeFileSync(file, source);
+          NODE
+
       - name: Normalize generated Slice 1 contract
         run: |
           cat > tests/product-pulse-slice1-contract.test.js <<'EOF'
@@ -89,7 +102,8 @@ jobs:
 
           assert.ok(handoff.includes('CONTINUATION_RELEASE_MARKER'), 'Handoff envelope diagnostics must carry a bounded release marker');
           assert.ok(handoff.includes('recommendationId'), 'Handoff telemetry detail must preserve stable recommendation identity');
-          assert.ok(continuity.includes('recommendationId: recommendationId || actionId'), 'v2 transfer must carry the stable recommendation into the envelope');
+          assert.ok(continuity.includes('actionId: actionId(sourceWorkspace, targetWorkspace)'), 'v2 handoffs must retain registry action ownership');
+          assert.ok(continuity.includes('recommendationId: recommendationId || actionId(sourceWorkspace, targetWorkspace)'), 'v2 transfer must carry the selected stable recommendation as diagnostic context');
           assert.ok(continuity.includes("pathVersion: 'v2'"), 'v2 transfer must carry explicit path version');
 
           assert.ok(rich.includes("handoff.peek('rich-editor')"), 'Rich destination must inspect v2 state before falling back to legacy');
