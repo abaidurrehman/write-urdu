@@ -1,0 +1,50 @@
+name: Apply Product Pulse Slice 0
+
+on:
+  push:
+    branches:
+      - fix/product-pulse-slice0
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, '[slice0-applied]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply bounded Slice 0 patch
+        run: node scripts/apply-product-pulse-slice0.js
+
+      - name: Contract tests
+        run: npm test
+
+      - name: SEO checks
+        run: npm run seo:check
+
+      - name: Locale checks
+        run: npm run locale:check
+
+      - name: Governance checks
+        run: npm run governance:check
+
+      - name: Commit validated implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Implement Product Pulse Slice 0 [slice0-applied]"
+          git push origin HEAD:fix/product-pulse-slice0
