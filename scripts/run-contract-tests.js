@@ -29,6 +29,7 @@ const tests = [
   'tests/documents-contract.test.js',
   'tests/inpage-unicode-api-contract.test.js',
   'tests/community-submission-api-contract.test.js',
+  'tests/community-publishing-ui-contract.test.js',
   'tests/community-publishing-editor-contract.test.js',
   'tests/community-publishing-toolbar-promotion-contract.test.js',
   'tests/community-publishing-asset-ui-contract.test.js',
