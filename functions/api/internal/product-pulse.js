@@ -442,6 +442,29 @@ function continuationPathSection(pathRows) {
   return { ready: paths.length > 0, paths, loss_summary, dominant_loss: loss_summary[0] || null };
 }
 
+function growthRequestSection(growthRows) {
+  const families = new Map();
+  const suppression = new Map();
+  (growthRows || []).forEach((row) => {
+    const family = row.request_family;
+    if (!families.has(family)) families.set(family, { request_family: family, eligible: 0, shown: 0, opened: 0, completed: 0, dismissed: 0, suppressed_due_to_arbitration: 0 });
+    const item = families.get(family);
+    ['eligible', 'shown', 'opened', 'completed', 'dismissed', 'suppressed_due_to_arbitration'].forEach((field) => { item[field] += n(row, field); });
+    const suppressed = n(row, 'suppressed_due_to_arbitration');
+    if (suppressed > 0) {
+      const key = [family, row.suppression_winner, row.suppression_reason].join('|');
+      if (!suppression.has(key)) suppression.set(key, { suppressed_family: family, winner: row.suppression_winner, reason: row.suppression_reason, count: 0 });
+      suppression.get(key).count += suppressed;
+    }
+  });
+  return {
+    ready: families.size > 0,
+    release_marker: 'wu-plat-002h-s2-2026-09-06-v1',
+    families: Array.from(families.values()).sort((a, b) => b.shown - a.shown || b.eligible - a.eligible),
+    suppression: Array.from(suppression.values()).sort((a, b) => b.count - a.count)
+  };
+}
+
 function continuationSection(current) {
   const shown = n(current, 'continuation_shown');
   const selected = n(current, 'handoffs');
@@ -616,6 +639,15 @@ export async function onRequestGet(context) {
       WHERE bucket_hour >= ?1 AND bucket_hour < ?2
       GROUP BY recommendation_id, source_workspace, destination_workspace, path_version, release_marker, device_class
     `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
+  const growthRequestsReady = await tableExists(db, 'growth_hourly_requests');
+  const growthRequestsPromise = growthRequestsReady ? db.prepare(`
+      SELECT request_family, growth_workspace, writer_state, account_state, release_marker, suppression_winner, suppression_reason,
+             SUM(eligible) AS eligible, SUM(shown) AS shown, SUM(opened) AS opened, SUM(completed) AS completed, SUM(dismissed) AS dismissed,
+             SUM(suppressed_due_to_arbitration) AS suppressed_due_to_arbitration
+      FROM growth_hourly_requests
+      WHERE bucket_hour >= ?1 AND bucket_hour < ?2
+      GROUP BY request_family, growth_workspace, writer_state, account_state, release_marker, suppression_winner, suppression_reason
+    `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
   const deviceFunnelReady = await tableExists(db, 'product_hourly_device_metrics');
   const deviceFunnelPromise = deviceFunnelReady ? db.prepare(`
       SELECT device_class, tool,
@@ -629,7 +661,7 @@ export async function onRequestGet(context) {
       GROUP BY device_class, tool
       HAVING SUM(writer_viewed) > 0
     `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
-  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop, localeResult, deviceFunnelResult, continuationPathResult] = await Promise.all([
+  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop, localeResult, deviceFunnelResult, continuationPathResult, growthRequestResult] = await Promise.all([
     summaryForWindow(db, bounds.currentStart, bounds.currentEnd),
     summaryForWindow(db, bounds.previousStart, bounds.previousEnd),
     db.prepare(`
@@ -688,7 +720,8 @@ export async function onRequestGet(context) {
     shareLoopForWindow(db, bounds),
     localePromise,
     deviceFunnelPromise,
-    continuationPathsPromise
+    continuationPathsPromise,
+    growthRequestsPromise
   ]);
 
   const sessions = n(current, 'visits');
@@ -776,7 +809,8 @@ export async function onRequestGet(context) {
     activation: activationSection(current, rows(toolResult), rows(deviceFunnelResult)),
     card_studio_funnel: cardStudioSection(rows(toolResult)),
     continuation: continuationSection(current),
-    continuation_paths: continuationPathSection(rows(continuationPathResult))
+    continuation_paths: continuationPathSection(rows(continuationPathResult)),
+    growth_requests: growthRequestSection(rows(growthRequestResult))
   });
 }
 

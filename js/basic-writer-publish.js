@@ -425,6 +425,7 @@
       rememberShare(result);
       saveLast(hash, result);
       track('share_publish_completed', { tool: 'basic_editor', success: true });
+      root.document.dispatchEvent(new CustomEvent('write-urdu:growth-family-completed', { detail: { family: 'share' } }));
       successDialog(result, false);
     } catch (error) {
       track('share_publish_failed', { tool: 'basic_editor', success: false });

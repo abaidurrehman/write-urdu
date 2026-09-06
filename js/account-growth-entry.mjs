@@ -1,6 +1,7 @@
-import { ACCOUNT_STATE, fetchAccountState } from './account-session.mjs';
+import { ACCOUNT_STATE, fetchAccountState, flushLocalWriting } from './account-session.mjs';
 import { createDocumentsClient } from './account-documents.mjs';
 import { publishDocumentShare, shareLink } from './document-share.mjs';
+import { GROWTH_REQUEST, createGrowthRequestArbiter, writerStateFromLength } from './growth-request-arbiter.mjs';
 
 const runtime = window;
 const path = normalizedPath();
@@ -9,6 +10,13 @@ const VOICE_DRAFT_KEY = 'writeUrdu.accountGrowth.voiceDraft.v1';
 const VOICE_DRAFT_MAX_AGE_MS = 30 * 60 * 1000;
 const WAIT_ATTEMPTS = 160;
 const WAIT_DELAY_MS = 50;
+const WORKSPACE = Object.freeze({ '/': 'basic-writer', '/urdu-editor': 'rich-editor', '/urdu-keyboard': 'urdu-keyboard', '/tools/urdu-voice-typing': 'voice-typing' });
+
+let account = { state: ACCOUNT_STATE.DISABLED, user: null };
+let feature = { available: false, authenticated: false };
+let meaningfulOutcome = false;
+let localProtected = false;
+let lastSavedState = false;
 
 function normalizedPath() {
   if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(location.pathname || '/');
@@ -20,20 +28,15 @@ function normalizedPath() {
 }
 
 function notify(message, type) {
-  if (runtime.WriteUrduUI && typeof runtime.WriteUrduUI.notify === 'function') {
-    runtime.WriteUrduUI.notify(message, type);
-  }
+  if (runtime.WriteUrduUI && typeof runtime.WriteUrduUI.notify === 'function') runtime.WriteUrduUI.notify(message, type);
 }
 
 function track(eventName, detail = {}) {
-  if (runtime.WriteUrduTelemetry && typeof runtime.WriteUrduTelemetry.track === 'function') {
-    runtime.WriteUrduTelemetry.track(eventName, detail);
-  }
+  if (runtime.WriteUrduTelemetry && typeof runtime.WriteUrduTelemetry.track === 'function') runtime.WriteUrduTelemetry.track(eventName, detail);
 }
 
-function trackAccountEntry() {
-  track('tool_handoff', { target_route: '/sign-in' });
-}
+const growthArbiter = WORKSPACE[path] ? createGrowthRequestArbiter({ workspace: WORKSPACE[path], telemetry: track }) : null;
+if (growthArbiter) runtime.WriteUrduGrowthRequestArbiter = growthArbiter;
 
 function waitFor(selector) {
   return new Promise((resolve) => {
@@ -41,44 +44,87 @@ function waitFor(selector) {
     const check = () => {
       attempts += 1;
       const node = document.querySelector(selector);
-      if (node || attempts >= WAIT_ATTEMPTS) {
-        resolve(node || null);
-        return;
-      }
+      if (node || attempts >= WAIT_ATTEMPTS) { resolve(node || null); return; }
       runtime.setTimeout(check, WAIT_DELAY_MS);
     };
     check();
   });
 }
 
-function rewriteSignedOutStatus(node) {
+function currentLength() {
+  if (path === '/') return String(document.getElementById('transliterateTextarea')?.value || '').trim().length;
+  if (path === '/tools/urdu-voice-typing') return voiceText().length;
+  const adapter = runtime.WriteUrduTools?.adapter;
+  return adapter ? String(adapter.getText?.() || '').trim().length : 0;
+}
+
+function syncWriterState() {
+  if (!growthArbiter) return;
+  growthArbiter.update({ writerState: writerStateFromLength(currentLength(), meaningfulOutcome), meaningfulOutcome, localProtected });
+}
+
+function onWritingChanged() {
+  if (meaningfulOutcome) { meaningfulOutcome = false; localProtected = false; }
+  syncWriterState();
+}
+
+function protectLocalWriting() {
+  if (path === '/tools/urdu-voice-typing') { preserveVoiceDraft(); return Boolean(voiceText()); }
+  return flushLocalWriting(runtime);
+}
+
+function statusSelector() {
+  if (path === '/') return '[data-account-continuity-status]';
+  if (path === '/urdu-editor' || path === '/urdu-keyboard') return '[data-editor-account-status]';
+  return '[data-voice-account-status]';
+}
+
+function syncSavedStatus(node) {
+  if (!growthArbiter || !node) return;
+  const saved = node.dataset.state === 'saved';
+  if (saved && !lastSavedState) growthArbiter.completed(GROWTH_REQUEST.KEEP);
+  lastSavedState = saved;
+  growthArbiter.update({ safelySaved: saved });
+}
+
+function bindSavedStatus() {
+  const node = document.querySelector(statusSelector());
   if (!node) return;
-  const rewrite = () => {
-    const value = String(node.textContent || '').trim();
-    if (value === 'Sign in to save across devices') node.textContent = 'Create an account to save this writing';
-  };
-  rewrite();
+  syncSavedStatus(node);
   if (!runtime.MutationObserver) return;
-  const observer = new MutationObserver(rewrite);
-  observer.observe(node, { childList: true, characterData: true, subtree: true });
-  runtime.setTimeout(() => observer.disconnect(), 8000);
+  const observer = new MutationObserver(() => syncSavedStatus(node));
+  observer.observe(node, { attributes: true, attributeFilter: ['data-state'], childList: true, characterData: true, subtree: true });
+}
+
+function bindGrowthSignals() {
+  if (!growthArbiter) return;
+  if (path === '/') document.getElementById('transliterateTextarea')?.addEventListener('input', onWritingChanged);
+  else if (path === '/tools/urdu-voice-typing') document.getElementById('voiceTranscript')?.addEventListener('input', onWritingChanged);
+  else {
+    const adapter = runtime.WriteUrduTools?.adapter;
+    if (adapter && typeof adapter.onChange === 'function') adapter.onChange(onWritingChanged);
+  }
+  document.addEventListener('write-urdu:outcome', (event) => {
+    const name = event.detail && event.detail.name;
+    if (!['copy_completed', 'export_completed', 'print_started'].includes(name) || currentLength() === 0) return;
+    meaningfulOutcome = true;
+    localProtected = protectLocalWriting();
+    syncWriterState();
+  });
+  document.addEventListener('write-urdu:growth-family-completed', (event) => {
+    const family = event.detail && event.detail.family;
+    if (family === GROWTH_REQUEST.SHARE) growthArbiter.completed(GROWTH_REQUEST.SHARE);
+  });
+  syncWriterState();
+  bindSavedStatus();
 }
 
 function ensureBasicPublish() {
-  if (runtime.WriteUrduBasicPublish && typeof runtime.WriteUrduBasicPublish.open === 'function') {
-    return Promise.resolve(runtime.WriteUrduBasicPublish);
-  }
+  if (runtime.WriteUrduBasicPublish && typeof runtime.WriteUrduBasicPublish.open === 'function') return Promise.resolve(runtime.WriteUrduBasicPublish);
   return new Promise((resolve, reject) => {
     let script = document.querySelector('script[src$="/js/basic-writer-publish.js"]');
-    const done = () => {
-      if (runtime.WriteUrduBasicPublish && typeof runtime.WriteUrduBasicPublish.open === 'function') resolve(runtime.WriteUrduBasicPublish);
-      else reject(new Error('share_unavailable'));
-    };
-    if (script) {
-      script.addEventListener('load', done, { once: true });
-      runtime.setTimeout(done, 1200);
-      return;
-    }
+    const done = () => runtime.WriteUrduBasicPublish?.open ? resolve(runtime.WriteUrduBasicPublish) : reject(new Error('share_unavailable'));
+    if (script) { script.addEventListener('load', done, { once: true }); runtime.setTimeout(done, 1200); return; }
     script = document.createElement('script');
     script.src = '/js/basic-writer-publish.js';
     script.addEventListener('load', done, { once: true });
@@ -89,79 +135,132 @@ function ensureBasicPublish() {
 
 function addHomeShareAction(panel) {
   const actions = panel.querySelector('.home-account-continuity-actions');
-  if (!actions || actions.querySelector('[data-account-growth-share]')) return;
-  const button = document.createElement('button');
+  if (!actions) return null;
+  let button = actions.querySelector('[data-account-growth-share]');
+  if (button) return button;
+  button = document.createElement('button');
   button.type = 'button';
   button.className = 'home-account-continuity-button is-secondary';
   button.setAttribute('data-account-growth-share', 'basic');
   button.textContent = 'Share link';
+  button.hidden = true;
   button.addEventListener('click', async () => {
+    growthArbiter?.opened(GROWTH_REQUEST.SHARE);
     track('share_clicked');
-    try {
-      const publisher = await ensureBasicPublish();
-      await publisher.open();
-    } catch {
-      notify('Sharing is temporarily unavailable. Please try again.', 'error');
-    }
+    try { const publisher = await ensureBasicPublish(); await publisher.open(); }
+    catch { notify('Sharing is temporarily unavailable. Please try again.', 'error'); }
   });
   actions.appendChild(button);
+  return button;
+}
+
+function renderHome(panel, share) {
+  if (!growthArbiter || !panel) return;
+  const winner = growthArbiter.current();
+  const signedIn = growthArbiter.snapshot().signedIn;
+  const eyebrow = panel.querySelector('.home-account-continuity-eyebrow');
+  const description = panel.querySelector('.home-account-continuity-copy > p:not(.home-account-continuity-eyebrow):not(.home-account-continuity-status)');
+  const benefits = panel.querySelector('.home-account-benefits');
+  const signIn = panel.querySelector('[data-account-continuity-signin]');
+  const save = panel.querySelector('[data-account-continuity-save]');
+  const library = panel.querySelector('[data-account-continuity-documents]');
+  const status = panel.querySelector('[data-account-continuity-status]');
+  panel.dataset.growthWinner = winner;
+  panel.hidden = winner !== GROWTH_REQUEST.KEEP && winner !== GROWTH_REQUEST.SHARE;
+  if (panel.hidden) return;
+  if (winner === GROWTH_REQUEST.KEEP) {
+    if (eyebrow) eyebrow.textContent = 'Keep this writing';
+    if (description) description.textContent = signedIn ? 'Save this writing in My Documents so you can continue later.' : 'Create a free account to keep this writing in My Documents.';
+    if (benefits) benefits.innerHTML = '<span>Keep your writing safe</span><span>Continue later</span>';
+    if (signIn) { signIn.hidden = signedIn; signIn.textContent = 'Create free account'; }
+    if (save) save.hidden = !signedIn;
+    if (library) library.hidden = !signedIn;
+    if (share) share.hidden = true;
+    if (status) status.hidden = false;
+  } else {
+    if (eyebrow) eyebrow.textContent = 'Share this writing';
+    if (description) description.textContent = 'Create a public snapshot link to send this writing to someone.';
+    if (benefits) benefits.innerHTML = '<span>Public snapshot</span><span>Easy link sharing</span>';
+    if (signIn) signIn.hidden = true;
+    if (save) save.hidden = true;
+    if (library) library.hidden = true;
+    if (share) share.hidden = false;
+    if (status) status.hidden = true;
+  }
+  growthArbiter.shown(winner);
 }
 
 async function enhanceHome() {
   const panel = await waitFor('[data-home-account-continuity]');
   if (!panel) return;
   panel.setAttribute('data-account-growth-entry', 'basic');
-  const eyebrow = panel.querySelector('.home-account-continuity-eyebrow');
-  const description = panel.querySelector('.home-account-continuity-copy > p:not(.home-account-continuity-eyebrow):not(.home-account-continuity-status)');
-  const benefits = panel.querySelector('.home-account-benefits');
+  const share = addHomeShareAction(panel);
   const signIn = panel.querySelector('[data-account-continuity-signin]');
-  if (eyebrow) eyebrow.textContent = 'Free account';
-  if (description) description.textContent = 'Create a free account to save this Urdu writing in My Documents. Share a public snapshot with a link whenever you want.';
-  if (benefits) benefits.innerHTML = '<span>Save in My Documents</span><span>Share with a link</span>';
-  if (signIn) {
-    signIn.textContent = 'Create free account';
-    signIn.addEventListener('click', trackAccountEntry);
-  }
-  addHomeShareAction(panel);
-  rewriteSignedOutStatus(panel.querySelector('[data-account-continuity-status]'));
+  const save = panel.querySelector('[data-account-continuity-save]');
+  signIn?.addEventListener('click', () => { growthArbiter?.opened(GROWTH_REQUEST.KEEP); track('tool_handoff', { target_route: '/sign-in' }); });
+  save?.addEventListener('click', () => growthArbiter?.opened(GROWTH_REQUEST.KEEP));
+  const render = () => renderHome(panel, share);
+  growthArbiter?.subscribe(render);
+  render();
 }
 
 function editorSnapshot(adapter) {
-  return {
-    content: String(adapter?.getContent?.() || ''),
-    text: String(adapter?.getText?.() || '')
-  };
+  return { content: String(adapter?.getContent?.() || ''), text: String(adapter?.getText?.() || '') };
 }
 
 async function shareEditorWriting(adapter, button) {
   const current = editorSnapshot(adapter);
-  if (!current.text.trim()) {
-    notify('Add some writing before sharing.', 'error');
-    return;
-  }
+  if (!current.text.trim()) { notify('Add some writing before sharing.', 'error'); return; }
   if (!runtime.confirm('Create a public Write Urdu link? Anyone with the link can view this snapshot.')) return;
+  growthArbiter?.opened(GROWTH_REQUEST.SHARE);
   button.disabled = true;
   const oldLabel = button.textContent;
   button.textContent = 'Creating link…';
   track('share_publish_started');
   try {
-    const result = await publishDocumentShare({
-      plainText: current.text,
-      content: current.content,
-      editorKind: adapter.kind,
-      title: adapter.kind === 'rich' ? 'Urdu formatted writing' : 'Urdu writing'
-    });
+    const result = await publishDocumentShare({ plainText: current.text, content: current.content, editorKind: adapter.kind, title: adapter.kind === 'rich' ? 'Urdu formatted writing' : 'Urdu writing' });
     track('share_publish_completed', { success: true });
+    growthArbiter?.completed(GROWTH_REQUEST.SHARE);
     const outcome = await shareLink(result.url);
     if (outcome !== 'cancelled') track('share_completed', { success: true });
     notify(outcome === 'shared' ? 'Write Urdu link shared.' : outcome === 'copied' ? 'Write Urdu link copied.' : 'Public link created.', 'success');
   } catch {
     track('share_publish_failed', { success: false });
     notify('Could not create a share link right now. Your writing is unchanged.', 'error');
-  } finally {
-    button.disabled = false;
-    button.textContent = oldLabel;
+  } finally { button.disabled = false; button.textContent = oldLabel; }
+}
+
+function renderEditor(panel, adapter, share) {
+  if (!growthArbiter || !panel) return;
+  const winner = growthArbiter.current();
+  const signedIn = growthArbiter.snapshot().signedIn;
+  const title = panel.querySelector('.editor-account-documents-copy strong');
+  const description = panel.querySelector('.editor-account-documents-copy span');
+  const signIn = panel.querySelector('[data-editor-account-signin]');
+  const save = panel.querySelector('[data-editor-account-save]');
+  const library = panel.querySelector('[data-editor-account-library]');
+  const status = panel.querySelector('[data-editor-account-status]');
+  panel.dataset.growthWinner = winner;
+  panel.hidden = winner !== GROWTH_REQUEST.KEEP && winner !== GROWTH_REQUEST.SHARE;
+  if (panel.hidden) return;
+  if (winner === GROWTH_REQUEST.KEEP) {
+    if (title) title.textContent = adapter.kind === 'rich' ? 'Keep this formatted writing' : 'Keep this writing';
+    if (description) description.textContent = signedIn ? 'Save this writing in My Documents so you can continue later.' : 'Create a free account to keep this writing in My Documents.';
+    if (signIn) { signIn.hidden = signedIn; signIn.textContent = 'Create free account'; }
+    if (save) save.hidden = !signedIn;
+    if (library) library.hidden = !signedIn;
+    if (share) share.hidden = true;
+    if (status) status.hidden = false;
+  } else {
+    if (title) title.textContent = 'Share this writing';
+    if (description) description.textContent = 'Create a public snapshot link to send this writing to someone.';
+    if (signIn) signIn.hidden = true;
+    if (save) save.hidden = true;
+    if (library) library.hidden = true;
+    if (share) share.hidden = false;
+    if (status) status.hidden = true;
   }
+  growthArbiter.shown(winner);
 }
 
 async function enhanceEditor() {
@@ -170,26 +269,23 @@ async function enhanceEditor() {
   const adapter = runtime.WriteUrduTools?.adapter;
   if (!adapter || (adapter.kind !== 'rich' && adapter.kind !== 'keyboard')) return;
   panel.setAttribute('data-account-growth-entry', adapter.kind);
-  const title = panel.querySelector('.editor-account-documents-copy strong');
-  const description = panel.querySelector('.editor-account-documents-copy span');
-  const signIn = panel.querySelector('[data-editor-account-signin]');
   const actions = panel.querySelector('.editor-account-documents-actions');
-  if (title) title.textContent = adapter.kind === 'rich' ? 'Keep this formatted writing' : 'Keep this writing';
-  if (description) description.textContent = 'Create a free account to save it in My Documents, or share a public snapshot with a link.';
-  if (signIn) {
-    signIn.textContent = 'Create free account';
-    signIn.addEventListener('click', trackAccountEntry);
+  let share = actions?.querySelector('[data-account-growth-share]') || null;
+  if (actions && !share) {
+    share = document.createElement('button');
+    share.type = 'button';
+    share.className = 'is-secondary';
+    share.setAttribute('data-account-growth-share', adapter.kind);
+    share.textContent = 'Share link';
+    share.hidden = true;
+    share.addEventListener('click', () => shareEditorWriting(adapter, share));
+    actions.appendChild(share);
   }
-  if (actions && !actions.querySelector('[data-account-growth-share]')) {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'is-secondary';
-    button.setAttribute('data-account-growth-share', adapter.kind);
-    button.textContent = 'Share link';
-    button.addEventListener('click', () => shareEditorWriting(adapter, button));
-    actions.appendChild(button);
-  }
-  rewriteSignedOutStatus(panel.querySelector('[data-editor-account-status]'));
+  panel.querySelector('[data-editor-account-signin]')?.addEventListener('click', () => { growthArbiter?.opened(GROWTH_REQUEST.KEEP); track('tool_handoff', { target_route: '/sign-in' }); });
+  panel.querySelector('[data-editor-account-save]')?.addEventListener('click', () => growthArbiter?.opened(GROWTH_REQUEST.KEEP));
+  const render = () => renderEditor(panel, adapter, share);
+  growthArbiter?.subscribe(render);
+  render();
 }
 
 function voiceText() {
@@ -200,9 +296,7 @@ function voiceText() {
 function preserveVoiceDraft() {
   const text = voiceText();
   if (!text) return;
-  try {
-    runtime.sessionStorage.setItem(VOICE_DRAFT_KEY, JSON.stringify({ text, savedAt: Date.now() }));
-  } catch {}
+  try { runtime.sessionStorage.setItem(VOICE_DRAFT_KEY, JSON.stringify({ text, savedAt: Date.now() })); } catch {}
 }
 
 function restoreVoiceDraft(field) {
@@ -215,9 +309,7 @@ function restoreVoiceDraft(field) {
     field.value = value.text;
     field.dispatchEvent(new Event('input', { bubbles: true }));
     return true;
-  } catch {
-    return false;
-  }
+  } catch { return false; }
 }
 
 function voicePanel() {
@@ -232,15 +324,12 @@ function voicePanel() {
   panel.setAttribute('data-account-growth-entry', 'voice');
   panel.hidden = true;
   panel.innerHTML = `
-    <div class="editor-account-documents-copy">
-      <strong>Keep this transcript</strong>
-      <span data-voice-account-copy>Create a free account to save a copy in My Documents, or share it with a link.</span>
-    </div>
+    <div class="editor-account-documents-copy"><strong>Keep this transcript</strong><span data-voice-account-copy>Keep or share this transcript when it is ready.</span></div>
     <div class="editor-account-documents-actions">
-      <a href="/sign-in?returnTo=%2Ftools%2Furdu-voice-typing" data-voice-account-signin>Create free account</a>
+      <a href="/sign-in?returnTo=%2Ftools%2Furdu-voice-typing" data-voice-account-signin hidden>Create free account</a>
       <button type="button" data-voice-account-save hidden>Save to My Documents</button>
       <a href="/my-documents" class="is-secondary" data-voice-account-library hidden>My Documents</a>
-      <button type="button" class="is-secondary" data-voice-account-share>Share link</button>
+      <button type="button" class="is-secondary" data-voice-account-share hidden>Share link</button>
     </div>
     <p class="editor-account-documents-status" data-voice-account-status aria-live="polite"></p>`;
   actions.insertAdjacentElement('afterend', panel);
@@ -251,28 +340,56 @@ async function shareVoiceTranscript(button) {
   const text = voiceText();
   if (!text) return;
   if (!runtime.confirm('Create a public Write Urdu link? Anyone with the link can view this transcript snapshot.')) return;
+  growthArbiter?.opened(GROWTH_REQUEST.SHARE);
   button.disabled = true;
   const oldLabel = button.textContent;
   button.textContent = 'Creating link…';
   track('share_publish_started');
   try {
-    const result = await publishDocumentShare({
-      plainText: text,
-      content: text,
-      editorKind: 'basic',
-      title: 'Urdu voice transcript'
-    });
+    const result = await publishDocumentShare({ plainText: text, content: text, editorKind: 'basic', title: 'Urdu voice transcript' });
     track('share_publish_completed', { success: true });
+    growthArbiter?.completed(GROWTH_REQUEST.SHARE);
     const outcome = await shareLink(result.url);
     if (outcome !== 'cancelled') track('share_completed', { success: true });
     notify(outcome === 'shared' ? 'Transcript link shared.' : outcome === 'copied' ? 'Transcript link copied.' : 'Public transcript link created.', 'success');
-  } catch {
-    track('share_publish_failed', { success: false });
-    notify('Could not create a share link right now. Your transcript is unchanged.', 'error');
-  } finally {
-    button.disabled = false;
-    button.textContent = oldLabel;
+  } catch { track('share_publish_failed', { success: false }); notify('Could not create a share link right now. Your transcript is unchanged.', 'error'); }
+  finally { button.disabled = false; button.textContent = oldLabel; }
+}
+
+function renderVoice(panel) {
+  if (!growthArbiter || !panel) return;
+  const winner = growthArbiter.current();
+  const signedIn = growthArbiter.snapshot().signedIn;
+  const hasText = Boolean(voiceText());
+  const copy = panel.querySelector('[data-voice-account-copy]');
+  const signIn = panel.querySelector('[data-voice-account-signin]');
+  const save = panel.querySelector('[data-voice-account-save]');
+  const library = panel.querySelector('[data-voice-account-library]');
+  const share = panel.querySelector('[data-voice-account-share]');
+  const status = panel.querySelector('[data-voice-account-status]');
+  const shareWins = winner === GROWTH_REQUEST.SHARE;
+  const showSignedInSaveUtility = signedIn && feature.available && hasText && !shareWins;
+  panel.dataset.growthWinner = shareWins ? winner : GROWTH_REQUEST.NONE;
+  panel.hidden = !(shareWins || showSignedInSaveUtility);
+  if (panel.hidden) return;
+
+  if (shareWins) {
+    if (copy) copy.textContent = 'Create a public snapshot link to share this transcript.';
+    if (signIn) signIn.hidden = true;
+    if (save) save.hidden = true;
+    if (library) library.hidden = true;
+    if (share) share.hidden = false;
+    if (status) status.hidden = true;
+    growthArbiter.shown(GROWTH_REQUEST.SHARE);
+    return;
   }
+
+  if (copy) copy.textContent = 'Save a copy in My Documents so you can continue later.';
+  if (signIn) signIn.hidden = true;
+  if (save) save.hidden = false;
+  if (library) library.hidden = false;
+  if (share) share.hidden = true;
+  if (status) status.hidden = false;
 }
 
 async function enhanceVoice() {
@@ -281,50 +398,33 @@ async function enhanceVoice() {
   if (!field || !panel) return;
   restoreVoiceDraft(field);
 
-  const copy = panel.querySelector('[data-voice-account-copy]');
   const status = panel.querySelector('[data-voice-account-status]');
-  const signIn = panel.querySelector('[data-voice-account-signin]');
   const save = panel.querySelector('[data-voice-account-save]');
-  const library = panel.querySelector('[data-voice-account-library]');
   const share = panel.querySelector('[data-voice-account-share]');
   let lastSavedText = '';
 
-  const syncVisibility = () => {
-    const hasText = Boolean(voiceText());
-    panel.hidden = !hasText;
-    if (hasText && save && lastSavedText !== voiceText()) {
+  const render = () => {
+    renderVoice(panel);
+    if (save && voiceText() && lastSavedText !== voiceText()) {
       save.disabled = false;
       if (save.textContent === 'Saved') save.textContent = 'Save to My Documents';
     }
   };
-  field.addEventListener('input', syncVisibility);
-  syncVisibility();
 
-  if (signIn) {
-    signIn.addEventListener('click', () => {
-      preserveVoiceDraft();
-      trackAccountEntry();
-    });
-  }
-  if (share) share.addEventListener('click', () => shareVoiceTranscript(share));
+  field.addEventListener('input', render);
+  share?.addEventListener('click', () => shareVoiceTranscript(share));
 
-  let account = { state: ACCOUNT_STATE.DISABLED, user: null };
-  let feature = { available: false, authenticated: false };
-  try { account = await fetchAccountState(); } catch {}
-  try { feature = await documentsClient.probe(); } catch {}
-
-  if (account.state === ACCOUNT_STATE.SIGNED_IN && feature.available) {
-    if (signIn) signIn.hidden = true;
-    if (save) save.hidden = false;
-    if (library) library.hidden = false;
-    if (copy) copy.textContent = 'Save a copy in My Documents, or share a public snapshot with a link.';
-    if (status) status.textContent = 'Not saved to My Documents yet';
-    save?.addEventListener('click', async () => {
+  if (account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) {
+    save.addEventListener('click', async () => {
       const text = voiceText();
       if (!text || text === lastSavedText) return;
       save.disabled = true;
       save.textContent = 'Saving…';
-      if (status) status.textContent = 'Saving to My Documents…';
+      if (status) {
+        status.hidden = false;
+        status.textContent = 'Saving to My Documents…';
+        status.dataset.state = 'saving';
+      }
       try {
         await documentsClient.create({ content: text, text }, { editorKind: 'basic' });
         lastSavedText = text;
@@ -337,25 +437,37 @@ async function enhanceVoice() {
       } catch {
         save.disabled = false;
         save.textContent = 'Save to My Documents';
-        if (status) status.textContent = 'Could not save right now — your transcript is unchanged';
+        if (status) {
+          status.textContent = 'Could not save right now — your transcript is unchanged';
+          status.dataset.state = 'paused';
+        }
         notify('Could not save to My Documents right now.', 'error');
       }
+      render();
     });
-  } else if (account.state === ACCOUNT_STATE.SIGNED_OUT && feature.available) {
-    if (signIn) signIn.hidden = false;
-    if (copy) copy.textContent = 'Create a free account to save a copy in My Documents, or share it with a link.';
-    if (status) status.textContent = 'Create an account to save this transcript';
-  } else {
-    if (signIn) signIn.hidden = true;
-    if (copy) copy.textContent = 'Share this transcript with a public Write Urdu link.';
-    if (status) status.textContent = '';
   }
+
+  growthArbiter?.subscribe(render);
+  render();
 }
 
 async function start() {
+  if (!growthArbiter) return;
+  try { account = await fetchAccountState(); } catch { account = { state: ACCOUNT_STATE.DISABLED, user: null }; }
+  try { feature = await documentsClient.probe(); } catch { feature = { available: false, authenticated: false }; }
+  growthArbiter.update({
+    ready: true,
+    signedIn: account.state === ACCOUNT_STATE.SIGNED_IN,
+    accountState: account.state === ACCOUNT_STATE.SIGNED_IN ? 'signed-in' : account.state === ACCOUNT_STATE.SIGNED_OUT ? 'signed-out' : 'disabled',
+    keepEnabled: path !== '/tools/urdu-voice-typing' && feature.available,
+    shareEnabled: true,
+    communityEnabled: true
+  });
+
   if (path === '/') await enhanceHome();
   else if (path === '/urdu-editor' || path === '/urdu-keyboard') await enhanceEditor();
   else if (path === '/tools/urdu-voice-typing') await enhanceVoice();
+  bindGrowthSignals();
 }
 
 void start();

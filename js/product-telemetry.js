@@ -144,7 +144,15 @@
             path_version: detail.path_version || null,
             release_marker: detail.release_marker || null,
             handoff_required: typeof detail.handoff_required === 'boolean' ? detail.handoff_required : null,
-            restore_required: typeof detail.restore_required === 'boolean' ? detail.restore_required : null
+            restore_required: typeof detail.restore_required === 'boolean' ? detail.restore_required : null,
+            request_family: detail.request_family || null,
+            growth_stage: detail.growth_stage || null,
+            writer_state: detail.writer_state || null,
+            growth_workspace: detail.growth_workspace || null,
+            growth_account_state: detail.growth_account_state || null,
+            suppression_winner: detail.suppression_winner || null,
+            suppression_reason: detail.suppression_reason || null,
+            growth_release_marker: detail.growth_release_marker || null
         };
     }
 

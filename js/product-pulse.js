@@ -453,6 +453,29 @@
     }
   }
 
+  function renderGrowthRequests(data) {
+    var growth = data.growth_requests || {};
+    var rows = q('#growthRequestRows');
+    var suppression = (growth.suppression || []).map(function (item) {
+      return { label: item.suppressed_family + ' ← ' + item.winner, count: item.count };
+    });
+    renderBars('#growthSuppressionBars', suppression, 'label', 'count');
+    if (!rows) return;
+    rows.innerHTML = '';
+    var families = growth.families || [];
+    if (!families.length) { rows.innerHTML = '<tr><td colspan="7" class="os-empty">No Slice 2 growth-request data yet for this period.</td></tr>'; return; }
+    families.forEach(function (item) {
+      var row = document.createElement('tr');
+      [item.request_family, fmt(item.eligible), fmt(item.shown), fmt(item.opened), fmt(item.completed), fmt(item.dismissed), fmt(item.suppressed_due_to_arbitration)].forEach(function (value, index) {
+        var cell = document.createElement('td');
+        cell.className = index === 0 ? 'os-tool-name' : 'num';
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+      rows.appendChild(row);
+    });
+  }
+
   function orderedBuckets(items, order) {
     var map = {};
     (items || []).forEach(function (item) { map[item.bucket] = item; });
@@ -552,6 +575,7 @@
     renderActivation(data);
     renderCardStudioFunnel(data);
     renderContinuationFunnel(data);
+    renderGrowthRequests(data);
     renderShareLoop(data);
     renderDistributions(data);
     renderTools(data);

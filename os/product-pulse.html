@@ -164,6 +164,15 @@
         <div class="os-panel-note" style="margin-top:12px">No text content in any step. Path diagnostics use bounded aggregate counters only: recommendation/source/destination enums, path version, release marker and device class. No editor text, transcript, audio, filename, document/share ID or account identity is collected. N/A steps are excluded from loss calculations.</div>
       </article>
 
+      <article class="os-card os-panel span-12" id="growthRequestPanel">
+        <div class="os-panel-head"><h2>Growth request arbiter</h2><span class="os-panel-note">Slice 2 · exactly one promoted family: Keep, Share or Community Publish</span></div>
+        <div class="os-grid">
+          <div class="span-5"><div class="os-panel-head"><h2>Arbitration suppression</h2><span class="os-panel-note">Eligible families hidden by a higher-priority winner</span></div><div class="os-bars" id="growthSuppressionBars"></div></div>
+          <div class="span-7"><div class="os-table-wrap"><table><thead><tr><th>Family</th><th class="num">Eligible</th><th class="num">Shown</th><th class="num">Opened</th><th class="num">Completed</th><th class="num">Dismissed</th><th class="num">Suppressed</th></tr></thead><tbody id="growthRequestRows"></tbody></table></div></div>
+        </div>
+        <div class="os-panel-note" style="margin-top:12px">Bounded aggregate state only: request family, writer state E0–E5, workspace, account-state enum, winner/reason, release marker and device class. No writing text, transcript, filename, document/share ID, email or account identity is collected.</div>
+      </article>
+
       <article class="os-card os-panel span-12" id="shareLoopPanel">
         <div class="os-panel-head"><h2>Share Loop</h2><span class="os-panel-note">Publish → visit → create → republish</span></div>
         <section class="os-kpis" aria-label="Share loop metrics">

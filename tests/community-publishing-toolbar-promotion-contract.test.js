@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, '..');
 const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
 
 const ui = read('js', 'community-publishing-ui.mjs');
+const accountGrowth = read('js', 'account-growth-entry.mjs');
 const basicToolbar = read('js', 'basic-writer-command-toolbar.js');
 const telemetry = read('js', 'product-telemetry.js');
 const v2Workspace = read('css', 'v2-workspace.css');
@@ -14,11 +15,15 @@ const keyboard = read('urdu-keyboard.html');
 const voice = read('tools', 'urdu-voice-typing.html');
 const css = read('css', 'community-publishing.css');
 
-// --- The manual "Publish to Urdu Writers" action must live in the primary toolbar,
-// not buried inside the signed-in account/My-Documents side panel. ---
+// --- The manual "Publish to Urdu Writers" executor lives in the primary toolbar,
+// but Slice 2 arbitration owns whether that executor is promoted or hidden. ---
 assert.match(ui, /const TOOLBAR_SLOT_SELECTOR = Object\.freeze\(/, 'UI must define per-editor toolbar slot selectors');
 assert.match(ui, /const toolbarSlot = await waitFor\(TOOLBAR_SLOT_SELECTOR\[editorKind\]\)/, 'Start must resolve the toolbar slot');
-assert.match(ui, /if \(toolbarSlot && currentText\(\)\.trim\(\)\) addManualAction\(toolbarSlot\)/, 'Manual action must be inserted into the toolbar slot only once there is content (no promotion in the empty E0 state)');
+assert.match(ui, /const toolbarButton = toolbarSlot \? addManualAction\(toolbarSlot\) : null/, 'Community toolbar executor must be mounted idempotently into the approved slot');
+assert.match(ui, /const familyEligible = isMeaningfulWriting\(text\)/, 'Community eligibility must still reject empty or trivial E0 writing');
+assert.match(ui, /owner\.current\(\) === 'community_publish'/, 'Community promotion must appear only when it wins shared arbitration');
+assert.match(ui, /toolbarButton\.hidden = !wins \|\| promptEligible/, 'Community toolbar executor must be hidden when another request wins or the automatic prompt is active');
+assert.match(ui, /owner\.subscribe\(evaluate\)/, 'Community visibility must react to the one shared growth-request owner');
 assert.doesNotMatch(ui, /actionsHostFor/, 'Manual action must no longer target the buried account-panel actions host');
 assert.match(ui, /wu-community-toolbar-button/, 'Manual action must use the dedicated, disambiguated toolbar button style');
 
@@ -33,30 +38,26 @@ assert.match(basicToolbar, /data-wu-community-toolbar-slot/, 'Basic toolbar must
 assert.match(basicToolbar, /mountCommunitySlot\(existing\)/, 'Community slot must mount on the fast (existing-surface) rebuild path');
 assert.match(basicToolbar, /mountCommunitySlot\(surface\)/, 'Community slot must mount on the fresh-build path');
 
-// --- Share-label disambiguation: `card-studio-entry.js` (loaded dynamically via
-// workspace-journey-registry.js, not a static <script> tag — verified live, not just by
-// reading source) relabels [data-write-urdu-share] to "Share text only" at runtime on
-// both Rich Editor and Keyboard, to disambiguate it from the "Create & Share" button it
-// injects into the site header. Static markup must match that final state so there is no
-// pre-hydration flash of a different label/icon. ---
+// --- Share-label disambiguation remains unchanged. ---
 assert.doesNotMatch(richEditor, /data-write-urdu-share[\s\S]{0,40}>\s*Share\s*</, 'Rich Editor share-text button must not reuse the bare generic "Share" label');
 assert.match(richEditor, /Share text only/, 'Rich Editor share-text button must match the runtime-final disambiguated label');
 assert.doesNotMatch(keyboard, /data-write-urdu-share[\s\S]{0,40}>\s*Share\s*</, 'Keyboard share-text button must not reuse the bare generic "Share" label');
 assert.match(keyboard, /Share text only/, 'Keyboard share-text button must match the runtime-final disambiguated label');
-assert.match(keyboard, /fas fa-share-alt/, 'Keyboard share-text button icon must match Rich Editor\'s (both are relabeled identically at runtime)');
+assert.match(keyboard, /fas fa-share-alt/, 'Keyboard share-text button icon must match Rich Editor\'s');
 
-// --- Post-export nudge: reuse the existing telemetry funnel, do not re-instrument every surface ---
+// --- Outcome-driven promotion now enters through the shared arbiter owner instead of
+// a second Community-owned outcome listener. ---
 assert.match(telemetry, /document\.dispatchEvent\(new CustomEvent\('write-urdu:outcome'/, 'trackOutcome must dispatch a single outcome event other modules can listen for');
-assert.match(ui, /document\.addEventListener\('write-urdu:outcome'/, 'Community UI must listen for the shared outcome event');
-assert.match(ui, /name !== 'export_completed' && name !== 'print_started'/, 'Nudge must trigger only on export/print outcomes, not every copy');
+assert.match(accountGrowth, /document\.addEventListener\('write-urdu:outcome'/, 'Shared growth owner must listen for the outcome signal');
+assert.match(accountGrowth, /meaningfulOutcome = true/, 'Shared growth owner must elevate post-outcome writer state');
+assert.match(ui, /owner\.subscribe\(evaluate\)/, 'Community UI must derive promotion changes from shared arbitration rather than duplicate outcome logic');
 
-// --- Rich Editor's toolbar deliberately reorders children via CSS `order` (v2-workspace.css);
-// a dynamically-inserted group with no explicit order defaults to 0 and jumps to the front,
-// ahead of Export/Share. The community slot must be explicitly ordered into place. ---
+// --- Rich Editor's toolbar deliberately reorders children via CSS `order`; the
+// community slot must remain explicitly ordered into place. ---
 assert.match(v2Workspace, /\.rich-editor-page \.home-actions-group-community \{ order: 2; \}/,
   'Community toolbar slot must be explicitly ordered between Export/Share (order 1) and Basic editor (order 3)');
 
-// --- CSS: the community button must be visually distinct, not a 3rd share variant ---
+// --- CSS: the community button must be visually distinct, not a 3rd share variant. ---
 assert.match(css, /\.wu-community-toolbar-button/, 'Community toolbar button must have its own dedicated style');
 assert.match(css, /\[data-wu-community-toolbar-slot\]:empty \{ display: none/, 'Empty slots must not reserve visible layout space before the module loads');
 
