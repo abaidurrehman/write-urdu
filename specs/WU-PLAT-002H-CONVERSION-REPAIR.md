@@ -311,6 +311,10 @@ No content.
 
 ---
 
+## Slice 2 implementation note — 2026-09-06
+
+Implemented on branch `feature/product-pulse-slice2-growth-arbiter` for review. The shared owner now returns exactly one promoted family (`none`, `keep`, `share`, `community_publish`), keeps normal task commands independent, suppresses losing growth families, keeps signed-in copy free of account-acquisition wording, and emits aggregate-only Slice 2 diagnostics under release marker `wu-plat-002h-s2-2026-09-06-v1`. Voice-success Keep prompting remains explicitly deferred to Slice 3.
+
 ## Slice 3 — Voice-success → Keep/account experiment
 
 ### Goal

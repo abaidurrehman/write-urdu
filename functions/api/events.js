@@ -66,6 +66,7 @@ const EVENT_NAMES = new Set([
     'continuation_path_payload_restored',
     'continuation_path_meaningful_start',
     'continuation_path_destination_outcome',
+    'growth_request_stage',
     'share_destination_ready',
     'share_referral_recognized'
 ]);
@@ -112,6 +113,15 @@ const CONTINUATION_PATH_EVENTS = new Set([
     'continuation_path_destination_outcome'
 ]);
 const CONTINUATION_PATH_COLUMNS = ['eligible', 'shown', 'selected', 'handoff_created', 'destination_ready', 'payload_restored', 'meaningful_start', 'destination_outcome'];
+const GROWTH_REQUEST_FAMILIES = new Set(['keep', 'share', 'community_publish']);
+const GROWTH_STAGES = new Set(['eligible', 'shown', 'opened', 'completed', 'dismissed', 'suppressed_due_to_arbitration']);
+const GROWTH_WRITER_STATES = new Set(['E0', 'E1', 'E2', 'E3', 'E4', 'E5']);
+const GROWTH_WORKSPACES = new Set(['basic-writer', 'rich-editor', 'urdu-keyboard', 'voice-typing']);
+const GROWTH_ACCOUNT_STATES = new Set(['signed-in', 'signed-out', 'disabled']);
+const GROWTH_SUPPRESSION_WINNERS = new Set(['none', 'keep', 'share', 'community_publish']);
+const GROWTH_SUPPRESSION_REASONS = new Set(['none', 'higher_priority']);
+const GROWTH_RELEASE_MARKERS = new Set(['${RELEASE}']);
+const GROWTH_STAGE_COLUMNS = ['eligible', 'shown', 'opened', 'completed', 'dismissed', 'suppressed_due_to_arbitration'];
 
 const METRIC_COLUMNS = [
     'visits', 'engaged_visits', 'copies', 'exports',
@@ -222,6 +232,25 @@ const SCHEMA_STATEMENTS = [
         latest_event_at TEXT,
         PRIMARY KEY (bucket_hour, recommendation_id, source_workspace, destination_workspace, path_version, release_marker, device_class)
     )`,
+    `CREATE TABLE IF NOT EXISTS growth_hourly_requests (
+        bucket_hour TEXT NOT NULL,
+        request_family TEXT NOT NULL,
+        growth_workspace TEXT NOT NULL,
+        writer_state TEXT NOT NULL,
+        account_state TEXT NOT NULL,
+        release_marker TEXT NOT NULL,
+        suppression_winner TEXT NOT NULL,
+        suppression_reason TEXT NOT NULL,
+        device_class TEXT NOT NULL,
+        eligible INTEGER NOT NULL DEFAULT 0,
+        shown INTEGER NOT NULL DEFAULT 0,
+        opened INTEGER NOT NULL DEFAULT 0,
+        completed INTEGER NOT NULL DEFAULT 0,
+        dismissed INTEGER NOT NULL DEFAULT 0,
+        suppressed_due_to_arbitration INTEGER NOT NULL DEFAULT 0,
+        latest_event_at TEXT,
+        PRIMARY KEY (bucket_hour, request_family, growth_workspace, writer_state, account_state, release_marker, suppression_winner, suppression_reason, device_class)
+    )`,
     `CREATE TABLE IF NOT EXISTS product_telemetry_meta (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL,
@@ -281,6 +310,16 @@ function cleanEvent(input) {
     const pathVersion = enumValue(input.path_version, CONTINUATION_PATH_VERSIONS);
     const releaseMarker = enumValue(input.release_marker, CONTINUATION_RELEASE_MARKERS);
     if (isContinuationPath && (!recommendationId || !sourceWorkspace || !destinationWorkspace || !pathVersion || !releaseMarker)) return null;
+    const isGrowthRequest = eventName === 'growth_request_stage';
+    const requestFamily = enumValue(input.request_family, GROWTH_REQUEST_FAMILIES);
+    const growthStage = enumValue(input.growth_stage, GROWTH_STAGES);
+    const writerState = enumValue(input.writer_state, GROWTH_WRITER_STATES);
+    const growthWorkspace = enumValue(input.growth_workspace, GROWTH_WORKSPACES);
+    const growthAccountState = enumValue(input.growth_account_state, GROWTH_ACCOUNT_STATES);
+    const suppressionWinner = enumValue(input.suppression_winner || 'none', GROWTH_SUPPRESSION_WINNERS);
+    const suppressionReason = enumValue(input.suppression_reason || 'none', GROWTH_SUPPRESSION_REASONS);
+    const growthReleaseMarker = enumValue(input.growth_release_marker, GROWTH_RELEASE_MARKERS);
+    if (isGrowthRequest && (!requestFamily || !growthStage || !writerState || !growthWorkspace || !growthAccountState || !suppressionWinner || !suppressionReason || !growthReleaseMarker)) return null;
 
     return {
         eventId,
@@ -304,7 +343,15 @@ function cleanEvent(input) {
         pathVersion,
         releaseMarker,
         handoffRequired: typeof input.handoff_required === 'boolean' ? (input.handoff_required ? 1 : 0) : 1,
-        restoreRequired: typeof input.restore_required === 'boolean' ? (input.restore_required ? 1 : 0) : 1
+        restoreRequired: typeof input.restore_required === 'boolean' ? (input.restore_required ? 1 : 0) : 1,
+        requestFamily,
+        growthStage,
+        writerState,
+        growthWorkspace,
+        growthAccountState,
+        suppressionWinner,
+        suppressionReason,
+        growthReleaseMarker
     };
 }
 
@@ -600,6 +647,7 @@ function aggregateEvents(events, now) {
     const shareByTool = new Map();
     const handoffs = new Map();
     const continuationPaths = new Map();
+    const growthRequests = new Map();
     const getDelta = (tool) => {
         if (!byTool.has(tool)) byTool.set(tool, emptyDelta(tool, now));
         return byTool.get(tool);
@@ -655,6 +703,16 @@ function aggregateEvents(events, now) {
             const stage = continuationPathStage(event.eventName);
             if (CONTINUATION_PATH_COLUMNS.indexOf(stage) >= 0) delta[stage] += 1;
         }
+        if (event.eventName === 'growth_request_stage') {
+            const key = [event.requestFamily, event.growthWorkspace, event.writerState, event.growthAccountState, event.growthReleaseMarker, event.suppressionWinner, event.suppressionReason, event.deviceClass || 'unknown'].join('|');
+            if (!growthRequests.has(key)) {
+                const delta = { requestFamily: event.requestFamily, growthWorkspace: event.growthWorkspace, writerState: event.writerState, accountState: event.growthAccountState, releaseMarker: event.growthReleaseMarker, suppressionWinner: event.suppressionWinner, suppressionReason: event.suppressionReason, deviceClass: event.deviceClass || 'unknown', latest_event_at: now };
+                GROWTH_STAGE_COLUMNS.forEach((column) => { delta[column] = 0; });
+                growthRequests.set(key, delta);
+            }
+            const delta = growthRequests.get(key);
+            if (GROWTH_STAGE_COLUMNS.indexOf(event.growthStage) >= 0) delta[event.growthStage] += 1;
+        }
         if (event.eventName === 'tool_handoff' && event.targetRoute) {
             [event.tool, 'all'].forEach((tool) => {
                 const key = tool + '|' + event.targetRoute;
@@ -668,7 +726,8 @@ function aggregateEvents(events, now) {
         deviceByTool: Array.from(deviceByTool.values()),
         shareByTool: Array.from(shareByTool.values()),
         handoffs: Array.from(handoffs.values()),
-        continuationPaths: Array.from(continuationPaths.values())
+        continuationPaths: Array.from(continuationPaths.values()),
+        growthRequests: Array.from(growthRequests.values())
     };
 }
 
@@ -735,6 +794,19 @@ function continuationPathUpsert(db, bucket, item) {
                        DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
 }
 
+function growthRequestUpsert(db, bucket, item) {
+    const dimensions = ['bucket_hour', 'request_family', 'growth_workspace', 'writer_state', 'account_state', 'release_marker', 'suppression_winner', 'suppression_reason', 'device_class'];
+    const columns = dimensions.concat(GROWTH_STAGE_COLUMNS).concat(['latest_event_at']);
+    const placeholders = columns.map(() => '?').join(', ');
+    const assignments = GROWTH_STAGE_COLUMNS.map((column) => `${column} = ${column} + excluded.${column}`)
+      .concat(['latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)']);
+    const values = [bucket, item.requestFamily, item.growthWorkspace, item.writerState, item.accountState, item.releaseMarker, item.suppressionWinner, item.suppressionReason, item.deviceClass]
+      .concat(GROWTH_STAGE_COLUMNS.map((column) => item[column])).concat([item.latest_event_at]);
+    return db.prepare(`INSERT INTO growth_hourly_requests (${columns.join(', ')} ) VALUES (${placeholders})
+                       ON CONFLICT(bucket_hour, request_family, growth_workspace, writer_state, account_state, release_marker, suppression_winner, suppression_reason, device_class)
+                       DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
+}
+
 export async function onRequestPost(context) {
     const { request, env } = context;
     if (!originAllowed(request)) return json(403, { error: 'origin_not_allowed' });
@@ -770,7 +842,8 @@ export async function onRequestPost(context) {
             .concat(aggregated.deviceByTool.map((delta) => deviceMetricUpsert(db, bucket, delta)))
             .concat(aggregated.shareByTool.map((delta) => shareMetricUpsert(db, bucket, delta)))
             .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)))
-            .concat(aggregated.continuationPaths.map((item) => continuationPathUpsert(db, bucket, item)));
+            .concat(aggregated.continuationPaths.map((item) => continuationPathUpsert(db, bucket, item)))
+            .concat(aggregated.growthRequests.map((item) => growthRequestUpsert(db, bucket, item)));
         await db.batch(statements);
         return json(202, { accepted: events.length, rollup_rows: statements.length });
     } catch (error) {
