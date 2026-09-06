@@ -33,7 +33,7 @@ Do the same check for npm packaging: the UMD wrapper already supports `require()
 
 - New `package.json` for `@write-urdu/inpage-unicode` — `main` points at the existing core file (or the `.mjs` re-export from Step 1); zero new dependencies.
 - README: both-direction usage examples, explain `converted`/`unsupported`/`warnings` fields, link to the live browser tool and (later) the hosted API.
-- Confirm npm org/scope and license with the founder before publishing — do not assume MIT.
+- npm scope/org and license are resolved: published under the `write-urdu` org, MIT licensed (see `packages/inpage-unicode/LICENSE`). Keep both in sync on any future version bump.
 - Do not publish until `tests/inpage-unicode-core.test.js` passes against the packaged entry point exactly as it does today.
 
 ## Step 3 — beta API route

@@ -51,4 +51,4 @@ for beta access.
 
 ## License
 
-TBD — this package is not yet published to the public registry.
+MIT © Write Urdu
