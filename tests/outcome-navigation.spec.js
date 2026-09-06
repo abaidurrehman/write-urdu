@@ -143,3 +143,21 @@ test('language switch re-renders the outcome categories and compact footer in Ur
   await expect(page.locator('.wu-footer-utility-links')).toContainText('کمیونٹی رہنما اصول');
   await expect(page.locator('.wu-footer-utility-links')).toContainText('شرائط');
 });
+
+test('opening a mega-menu group closes any other open group', async ({ page }) => {
+  await open(page, '/');
+  await openMobileMenuIfNeeded(page);
+
+  const write = page.locator('[data-wu-nav-group="write"] > .wu-outcome-toggle');
+  const create = page.locator('[data-wu-nav-group="create"] > .wu-outcome-toggle');
+
+  await write.click();
+  await expect(write).toHaveAttribute('aria-expanded', 'true');
+
+  await create.click();
+  await expect(create).toHaveAttribute('aria-expanded', 'true');
+  await expect(write).toHaveAttribute('aria-expanded', 'false');
+
+  await page.keyboard.press('Escape');
+  await expect(create).toHaveAttribute('aria-expanded', 'false');
+});

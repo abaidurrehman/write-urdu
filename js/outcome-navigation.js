@@ -253,6 +253,40 @@
         '</div>';
     }
 
+    var OPEN_TRANSITION_MS = 160;
+
+    function reducedMotion() {
+        return !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+
+    function closeGroup(group, immediate) {
+        if (!group || !group.classList.contains('is-open')) return;
+        var toggle = group.querySelector('.wu-outcome-toggle');
+        var panel = group.querySelector('.wu-outcome-menu-panel');
+        if (!toggle || !panel) return;
+        toggle.setAttribute('aria-expanded', 'false');
+        group.classList.remove('is-open');
+        var hide = function () { panel.hidden = true; };
+        if (immediate || reducedMotion()) hide();
+        else root.setTimeout(hide, OPEN_TRANSITION_MS);
+    }
+
+    function closeAllGroups() {
+        var nav = document.querySelector('.wu-primary-nav');
+        if (!nav) return;
+        Array.prototype.forEach.call(nav.querySelectorAll('.wu-nav-more.is-open'), function (group) { closeGroup(group); });
+    }
+
+    function openGroup(group) {
+        var toggle = group.querySelector('.wu-outcome-toggle');
+        var panel = group.querySelector('.wu-outcome-menu-panel');
+        if (!toggle || !panel) return;
+        closeAllGroups();
+        panel.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+        root.requestAnimationFrame(function () { group.classList.add('is-open'); });
+    }
+
     function ensureStyles() {
         if (document.querySelector('link[data-wu-outcome-navigation-style]')) return;
         var link = document.createElement('link');
@@ -379,6 +413,27 @@
             if (available) addExploreGroup();
         }).catch(function () {});
     }
+
+    document.addEventListener('click', function (event) {
+        var toggle = event.target.closest ? event.target.closest('.wu-outcome-toggle') : null;
+        if (toggle) {
+            event.preventDefault();
+            var group = toggle.closest('.wu-nav-more');
+            if (group.classList.contains('is-open')) closeGroup(group);
+            else openGroup(group);
+            return;
+        }
+        if (!event.target.closest || !event.target.closest('.wu-nav-more')) closeAllGroups();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        var group = document.querySelector('.wu-nav-more.is-open');
+        if (!group) return;
+        closeGroup(group, true);
+        var toggle = group.querySelector('.wu-outcome-toggle');
+        if (toggle) toggle.focus();
+    });
 
     document.addEventListener('write-urdu:locale-change', function () { root.setTimeout(function () { render(); }, 0); });
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { start(0); });
