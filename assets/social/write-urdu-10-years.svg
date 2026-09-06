@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">10 Years of Write Urdu</title>
+  <desc id="desc">Write Urdu anniversary artwork: 2016 to 2026, ten years of writing Urdu together.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbf8f0"/>
+      <stop offset="1" stop-color="#eef7f1"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d783e"/>
+      <stop offset="1" stop-color="#15934d"/>
+    </linearGradient>
+    <pattern id="lines" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M0 41.5H42" stroke="#0d783e" stroke-opacity=".045"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#paper)"/>
+  <rect width="1200" height="630" rx="36" fill="url(#lines)"/>
+  <circle cx="1030" cy="110" r="245" fill="#15934d" fill-opacity=".07"/>
+  <circle cx="1080" cy="560" r="180" fill="#0d783e" fill-opacity=".05"/>
+
+  <g transform="translate(76 74)">
+    <rect width="174" height="44" rx="22" fill="#ffffff" stroke="#cfe2d6"/>
+    <text x="87" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#0d783e">WRITE URDU</text>
+  </g>
+
+  <g transform="translate(76 166)">
+    <text x="0" y="118" font-family="Georgia, 'Times New Roman', serif" font-size="152" font-weight="700" fill="url(#green)">10</text>
+    <text x="190" y="54" font-family="Arial, sans-serif" font-size="27" font-weight="700" letter-spacing="3" fill="#0d783e">YEARS</text>
+    <text x="190" y="103" font-family="Arial, sans-serif" font-size="24" fill="#52675b">2016 → 2026</text>
+  </g>
+
+  <g transform="translate(76 370)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="49" font-weight="700" fill="#17221c">A decade of writing Urdu together</text>
+    <text x="0" y="58" font-family="Arial, sans-serif" font-size="24" fill="#52675b">Online since July 2016 · impact estimated transparently</text>
+  </g>
+
+  <g transform="translate(1120 418)">
+    <text x="0" y="0" direction="rtl" unicode-bidi="bidi-override" text-anchor="end" font-family="'Noto Nastaliq Urdu', 'Noto Naskh Arabic', serif" font-size="42" fill="#0d783e">دس سال، لاکھوں الفاظ، بے شمار کہانیاں</text>
+  </g>
+
+  <g transform="translate(76 545)">
+    <line x1="0" x2="1048" y1="0" y2="0" stroke="#cadbd1"/>
+    <text x="0" y="36" font-family="Arial, sans-serif" font-size="19" fill="#66766d">write-urdu.com/10-years-of-write-urdu</text>
+    <text x="1048" y="36" text-anchor="end" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#0d783e">Since 2016</text>
+  </g>
+</svg>

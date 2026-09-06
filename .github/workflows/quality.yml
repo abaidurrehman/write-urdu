@@ -63,7 +63,9 @@ jobs:
           npx playwright test
           tests/sua.spec.js
           tests/journey.spec.js
+          tests/mobile-editor-activation.spec.js
           tests/outcome-navigation.spec.js
+          tests/rich-editor-mobile-activation.spec.js
           tests/workspace-next-step.spec.js
           tests/core-workspace-convergence.spec.js
           tests/capture-continuity.spec.js

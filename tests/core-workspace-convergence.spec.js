@@ -46,6 +46,7 @@ async function installRecognitionStub(page) {
 
 test('Basic Writer keeps E0 to input choices + writer and reveals Copy after first value', async ({ page }) => {
   let publishBody = '';
+  await blockExternalServices(page);
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'share', {
       configurable: true,
@@ -196,6 +197,7 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
 });
 
 test('Basic Writer promotes PDF/Word directly once writing is substantial (WU-PLAT-002H Gate C)', async ({ page }) => {
+  await blockExternalServices(page);
   await page.goto('/');
   await waitForConvergence(page);
   await waitForBasicToolbar(page);
@@ -521,6 +523,7 @@ test('Urdu Basic Writer voice controls use Urdu labels', async ({ page }) => {
 });
 
 test('phone outcome navigation and Basic Writer toolbar stay inside the viewport', async ({ page }) => {
+  await blockExternalServices(page);
   await page.goto('/');
   await waitForConvergence(page);
   await waitForBasicToolbar(page);
@@ -614,6 +617,7 @@ test('phone outcome navigation and Basic Writer toolbar stay inside the viewport
 });
 
 test('legacy follow/comment chrome and premature header creation are retired from core workspaces', async ({ page }) => {
+  await blockExternalServices(page);
   for (const route of ['/', '/urdu-keyboard', '/urdu-editor']) {
     await page.goto(route);
     await waitForConvergence(page);
@@ -627,6 +631,7 @@ test('legacy follow/comment chrome and premature header creation are retired fro
 });
 
 test('global navigation uses user-first language for cleaner and image capture', async ({ page }) => {
+  await blockExternalServices(page);
   await page.goto('/');
   await waitForConvergence(page);
   await expect(page.locator('[data-wu-outcome-nav="v2"]')).toContainText('Fix broken or badly formatted Urdu text');
@@ -634,6 +639,7 @@ test('global navigation uses user-first language for cleaner and image capture',
 });
 
 test('human sitemap follows Write Create Work Learn taxonomy', async ({ page }) => {
+  await blockExternalServices(page);
   await page.goto('/write-urdu-sitemap');
   await expect(page.locator('main')).toContainText('Write');
   await expect(page.locator('main')).toContainText('Create');
@@ -644,6 +650,7 @@ test('human sitemap follows Write Create Work Learn taxonomy', async ({ page }) 
 });
 
 test('documentation includes all current ways to start with Urdu text', async ({ page }) => {
+  await blockExternalServices(page);
   await page.goto('/write-urdu-documentation');
   await expect(page.locator('main')).toContainText('Choose how your Urdu starts');
   await expect(page.locator('main')).toContainText('Speak Urdu');

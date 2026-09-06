@@ -65,7 +65,20 @@ assert.ok(handoff.validate(handoff.build(plainTransfer({ kind: 'unknown-kind', p
 assert.ok(handoff.validate(handoff.build(plainTransfer({ payload: { text: 'x'.repeat(handoff.MAX_TEXT_LENGTH + 1) } })), 'rich-editor', 1000001).includes('payload-too-large'));
 
 const telemetry = handoff.telemetryDetail(envelope, 'stored', null);
-assert.deepStrictEqual(Object.keys(telemetry).sort(), ['actionId', 'destinationWorkspace', 'failureReason', 'hasContent', 'outcome', 'payloadKind', 'sourceWorkspace'].sort());
+assert.deepStrictEqual(Object.keys(telemetry).sort(), [
+    'actionId',
+    'destinationWorkspace',
+    'failureReason',
+    'handoffRequired',
+    'hasContent',
+    'outcome',
+    'pathVersion',
+    'payloadKind',
+    'recommendationId',
+    'releaseMarker',
+    'restoreRequired',
+    'sourceWorkspace'
+].sort());
 assert.strictEqual(Object.prototype.hasOwnProperty.call(telemetry, 'text'), false, 'telemetry must never expose user text');
 assert.strictEqual(JSON.stringify(telemetry).includes('سلام دنیا'), false, 'telemetry values must never contain payload content');
 

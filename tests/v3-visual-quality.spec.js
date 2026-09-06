@@ -143,7 +143,7 @@ async function captureMetrics(page, route, viewport) {
 }
 
 test.describe('V3 production visual-quality audit', () => {
-  test('capture representative routes across production viewports', async ({ browser }, testInfo) => {
+  test('capture representative routes across production viewports', async ({ browser, baseURL }, testInfo) => {
     test.skip(testInfo.project.name !== 'desktop-chromium', 'Single audit run controls its own viewport matrix.');
     test.setTimeout(180000);
 
@@ -157,11 +157,14 @@ test.describe('V3 production visual-quality audit', () => {
     fs.writeFileSync(path.join(auditDir, 'report.json'), JSON.stringify(report, null, 2));
 
     for (const viewport of viewports) {
-      const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
+      const context = await browser.newContext({
+        baseURL,
+        viewport: { width: viewport.width, height: viewport.height }
+      });
       const page = await context.newPage();
       page.setDefaultTimeout(2500);
 
-      await page.route(/doubleclick|googlesyndication|google-analytics|googletagmanager|addthis|google\.com\/(?:jsapi|cse|afsonline)/, routeRequest => routeRequest.abort());
+      await page.route(/doubleclick|googlesyndication|google-analytics|googletagmanager|addthis|fonts\.googleapis\.com|fonts\.gstatic\.com|google\.com\/(?:jsapi|cse|afsonline)/, routeRequest => routeRequest.abort());
 
       for (const route of routes) {
         await page.goto(route.path, { waitUntil: 'domcontentloaded', timeout: 8000 }).catch(() => null);
@@ -211,13 +214,13 @@ test.describe('V3 production visual-quality audit', () => {
           report.criticalFailures.push(`${viewport.name} ${route.path}: advertisement must remain after the authoring surface`);
         }
 
+        fs.writeFileSync(path.join(auditDir, 'report.json'), JSON.stringify(report, null, 2));
         await page.screenshot({
           path: path.join(auditDir, `${viewport.name}-${route.slug}.png`),
           fullPage: true,
           animations: 'disabled',
-          timeout: 8000
+          timeout: 15000
         });
-        fs.writeFileSync(path.join(auditDir, 'report.json'), JSON.stringify(report, null, 2));
       }
 
       await context.close();

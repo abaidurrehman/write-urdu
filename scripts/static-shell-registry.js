@@ -10,6 +10,7 @@ const runtimePath = path.join(root, 'js', 'outcome-navigation.js');
 const STATIC_UTILITY_LINKS = [
   { href: '/urdu-writing-templates', label: { en: 'Writing templates', ur: 'اردو تحریری سانچے' } },
   { href: '/why-write-urdu', label: { en: 'About Write Urdu', ur: 'رائٹ اردو کے بارے میں' } },
+  { href: '/10-years-of-write-urdu', label: { en: '10 Years of Write Urdu', ur: 'رائٹ اردو کے دس سال' } },
   { href: '/contact', label: { en: 'Contact', ur: 'رابطہ' } },
   { href: '/write-urdu-privacy', label: { en: 'Privacy and terms', ur: 'رازداری اور شرائط' } },
   { href: '/write-urdu-sitemap', label: { en: 'Sitemap', ur: 'سائٹ میپ' } }

@@ -30,7 +30,7 @@ assert.match(mobileCss, /min-height:\s*44px !important/, 'Mobile input methods m
 
 assert.match(serviceWorker, /write-urdu-shell-v42/, 'Mobile activation release must advance the app-shell cache generation');
 assert.match(serviceWorker, /\.\/css\/mobile-home-task-first\.css/, 'Mobile activation CSS must be explicitly precached for a deterministic rollout');
-assert.match(mobileSpec, /375x667[\s\S]*160 CSS px/i, 'Repair spec must retain the hardest first-viewport acceptance floor');
+assert.match(mobileSpec, /160 CSS px[\s\S]*375x667/i, 'Repair spec must retain the hardest first-viewport acceptance floor');
 assert.match(mobileSpec, /Do not autofocus on page load/i, 'Repair must not game activation by forcing the software keyboard open');
 
 console.log('Mobile editor activation source contract passed.');

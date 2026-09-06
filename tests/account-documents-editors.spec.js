@@ -73,14 +73,14 @@ test('Urdu Keyboard keeps local-first behavior and saves to account only after e
   const panel = page.locator('[data-editor-account-documents="keyboard"]');
   const save = panel.locator('[data-editor-account-save]');
   const editor = page.locator('#write');
+  await expect(panel).toBeHidden();
+  expect(writes).toHaveLength(0);
+
+  const urdu = 'یہ اردو کی بورڈ سے لکھی ہوئی تحریر ہے۔ ۱۲۳ '.repeat(20);
+  await editor.fill(urdu);
   await expect(panel).toBeVisible();
   await expect(save).toHaveText('Save to my account');
   await expect(panel.locator('[data-editor-account-library]')).toBeVisible();
-  expect(writes).toHaveLength(0);
-
-  const urdu = 'یہ اردو کی بورڈ سے لکھی ہوئی تحریر ہے۔ ۱۲۳';
-  await editor.fill(urdu);
-  await page.waitForTimeout(100);
   expect(writes).toHaveLength(0);
 
   await save.click();
@@ -93,8 +93,9 @@ test('Urdu Keyboard keeps local-first behavior and saves to account only after e
 
 test('Rich Editor account save uses the shared adapter and preserves exact HTML', async ({ page }) => {
   const writes = [];
-  const richHtml = '<p dir="rtl" style="text-align: right;"><strong>میری تحریر</strong> — اردو ۱۲۳</p><ul><li>پہلا نکتہ</li></ul>';
-  const richText = 'میری تحریر — اردو ۱۲۳\nپہلا نکتہ';
+  const longUrdu = 'یہ میری تفصیلی اردو تحریر ہے جسے میں بعد میں جاری رکھنا چاہتا ہوں۔ '.repeat(12);
+  const richHtml = `<p dir="rtl" style="text-align: right;"><strong>میری تحریر</strong> — اردو ۱۲۳ ${longUrdu}</p><ul><li>پہلا نکتہ</li></ul>`;
+  const richText = `میری تحریر — اردو ۱۲۳ ${longUrdu}\nپہلا نکتہ`;
 
   await blockExternalServices(page);
   await serveDocDModules(page);
