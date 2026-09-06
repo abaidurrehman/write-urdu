@@ -59,8 +59,8 @@ assert.match(css, /@media\(min-width:1367px\)/, 'Expanded outcome navigation mus
 assert.match(css, /@media\(max-width:1366px\)/, 'Outcome navigation must collapse safely at common 1366px laptop widths');
 assert.match(css, /max-height:calc\(100dvh - 84px\)/, 'Compact navigation must be bounded to the visible viewport');
 assert.match(css, /overflow-y:auto!important/, 'Compact navigation must scroll internally instead of stretching the page');
-assert.match(css, /\.wu-outcome-menu>summary\{height:auto!important;min-height:48px/, 'Compact outcome summaries must keep intrinsic height');
-assert.doesNotMatch(css, /\.wu-outcome-menu>summary\{height:100%/, 'Outcome summaries must never stretch across an expanded details panel');
+assert.match(css, /\.wu-outcome-menu>\.wu-outcome-toggle\{height:auto!important;min-height:48px/, 'Compact outcome toggles must keep intrinsic height');
+assert.doesNotMatch(css, /\.wu-outcome-menu>\.wu-outcome-toggle\{height:100%/, 'Outcome toggles must never stretch across an expanded panel');
 assert.match(css, /@media\(max-width:560px\)[\s\S]*display:flex!important;flex-direction:column/, 'Phone navigation must use a single normal-flow column');
 assert.match(css, /body\[data-wu-basic-command-toolbar="true"\] \.wu-basic-command-primary\{flex:1 1 100%!important;width:100%/, 'Phone toolbar must keep Share and Copy on a stable full-width row');
 assert.match(css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/, 'Footer must use exactly three compact link columns');

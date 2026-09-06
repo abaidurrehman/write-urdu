@@ -241,10 +241,16 @@
 
     function renderGroup(group, lang) {
         var isActive = group.items.some(active);
-        return '<details class="wu-nav-more wu-outcome-menu" data-wu-nav-group="' + group.id + '">' +
-            '<summary' + (isActive ? ' class="is-active"' : '') + '>' + icon(group.icon) + '<span>' + group.label[lang] + '</span><span class="wu-nav-chevron" aria-hidden="true">⌄</span></summary>' +
-            '<div class="wu-nav-more-menu wu-outcome-menu-panel">' + group.items.map(function (item) { return renderItem(item, lang); }).join('') + '</div>' +
-        '</details>';
+        var panelId = 'wu-nav-panel-' + group.id;
+        var hasPreview = !!group.preview;
+        return '<div class="wu-nav-more wu-outcome-menu" data-wu-nav-group="' + group.id + '">' +
+            '<button type="button" class="wu-outcome-toggle' + (isActive ? ' is-active' : '') + '" aria-expanded="false" aria-controls="' + panelId + '">' +
+                icon(group.icon) + '<span>' + group.label[lang] + '</span><span class="wu-nav-chevron" aria-hidden="true">⌄</span>' +
+            '</button>' +
+            '<div id="' + panelId + '" class="wu-nav-more-menu wu-outcome-menu-panel' + (hasPreview ? ' has-preview' : '') + '" hidden>' +
+                '<div class="wu-nav-panel-list">' + group.items.map(function (item) { return renderItem(item, lang); }).join('') + '</div>' +
+            '</div>' +
+        '</div>';
     }
 
     function ensureStyles() {
