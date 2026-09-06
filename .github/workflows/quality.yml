@@ -37,6 +37,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Diagnose inherited static SEO drift
+        run: |
+          npm run seo:graph:sync
+          git diff -- english-urdu-typing-tutorial.html index.html urdu-keyboard.html
+
       - name: Validate static source shell
         run: npm run shell:check
 
