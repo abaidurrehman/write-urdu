@@ -43,7 +43,7 @@
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-more{grid-column:auto!important}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-more-menu{position:absolute!important;width:auto!important;margin-top:0!important;border:1px solid var(--wu-shell-header-border)!important;background:var(--wu-shell-menu-bg)!important;box-shadow:var(--wu-shadow-float)!important;grid-template-columns:1fr!important}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview{grid-template-columns:minmax(240px,1fr) minmax(220px,300px)!important}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview .wu-nav-panel-preview{height:100%}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview .wu-nav-panel-preview{align-self:start;height:280px}
 }
 
 @media(max-width:1366px){

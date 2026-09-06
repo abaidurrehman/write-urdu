@@ -9,7 +9,7 @@
             label: { en: 'Write', ur: 'لکھیں' },
             preview: {
                 headline: { en: 'Type Urdu, instantly', ur: 'فوری طور پر اردو ٹائپ کریں' },
-                caption: { en: 'From English keys to perfect Urdu script.', ur: 'انگریزی کی بورڈ سے مکمل اردو رسم الخط تک۔' },
+                caption: { en: 'From English keys to perfect Urdu script — no new keyboard to learn, no habits to break.', ur: 'انگریزی کی بورڈ سے مکمل اردو رسم الخط تک — نئی کی بورڈ سیکھنے کی ضرورت نہیں۔' },
                 ctaHref: '/',
                 theme: 'write'
             },
@@ -28,7 +28,7 @@
             label: { en: 'Create', ur: 'بنائیں' },
             preview: {
                 headline: { en: 'Turn words into art', ur: 'الفاظ کو فن میں بدلیں' },
-                caption: { en: 'Cards, posts and status images in Urdu.', ur: 'اردو میں کارڈز، پوسٹس اور اسٹیٹس امیجز۔' },
+                caption: { en: 'Cards, status updates and posts — carry your voice into every design, in Urdu.', ur: 'کارڈز، اسٹیٹس اور پوسٹس — اپنی آواز کو ہر ڈیزائن میں اردو کے ساتھ شامل کریں۔' },
                 ctaHref: '/urdu-card-studio',
                 theme: 'create'
             },
@@ -48,7 +48,7 @@
             label: { en: 'Tools', ur: 'ٹولز' },
             preview: {
                 headline: { en: 'Get it done in Urdu', ur: 'اردو میں کام مکمل کریں' },
-                caption: { en: 'Invoices, documents, and formal writing.', ur: 'انوائسز، دستاویزات اور رسمی تحریر۔' },
+                caption: { en: 'Invoices, documents and formal writing — professional Urdu, ready when you are.', ur: 'انوائسز، دستاویزات اور رسمی تحریر — جب بھی ضرورت ہو، پیشہ ورانہ اردو تیار۔' },
                 ctaHref: '/urdu-invoice-generator',
                 theme: 'tools'
             },
@@ -62,7 +62,7 @@
             label: { en: 'Learn', ur: 'سیکھیں' },
             preview: {
                 headline: { en: 'Master Urdu typing', ur: 'اردو ٹائپنگ میں مہارت حاصل کریں' },
-                caption: { en: 'Guides for the alphabet, fonts and tools.', ur: 'حروفِ تہجی، فونٹس اور ٹولز کے لیے رہنما۔' },
+                caption: { en: 'From the alphabet to advanced tools — everything you need to write with confidence.', ur: 'حروفِ تہجی سے لے کر جدید ٹولز تک — اعتماد کے ساتھ لکھنے کے لیے سب کچھ۔' },
                 ctaHref: '/urdu-alphabet',
                 theme: 'learn'
             },
@@ -90,7 +90,7 @@
         label: { en: 'Explore', ur: 'دریافت کریں' },
         preview: {
             headline: { en: 'Read real Urdu writing', ur: 'حقیقی اردو تحریر پڑھیں' },
-            caption: { en: 'Stories and posts from the community.', ur: 'کمیونٹی کی کہانیاں اور پوسٹس۔' },
+            caption: { en: 'Stories, posts and voices from writers just like you.', ur: 'آپ جیسے لکھاریوں کی کہانیاں، پوسٹس اور آوازیں۔' },
             ctaHref: '/urdu-writers',
             theme: 'explore'
         },
