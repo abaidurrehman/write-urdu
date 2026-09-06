@@ -45,6 +45,19 @@ jobs:
       - name: Apply bounded Slice 2 patch
         run: node scripts/apply-product-pulse-slice2.js
 
+      - name: Repair generated Slice 2 contract syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tests/product-pulse-slice2-contract.test.js')
+          source = path.read_text()
+          bad = "assert.match(account, /keepEnabled: path !== '/tools/urdu-voice-typing'/, 'Slice 2 must not pre-empt the Slice 3 Voice Keep experiment');"
+          good = "assert.ok(account.includes(\"keepEnabled: path !== '/tools/urdu-voice-typing'\"), 'Slice 2 must not pre-empt the Slice 3 Voice Keep experiment');"
+          if bad not in source:
+              raise SystemExit('expected generated Voice Keep assertion was not found')
+          path.write_text(source.replace(bad, good))
+          PY
+
       - name: Syntax checks for touched runtime
         run: |
           node --check js/growth-request-arbiter.mjs
