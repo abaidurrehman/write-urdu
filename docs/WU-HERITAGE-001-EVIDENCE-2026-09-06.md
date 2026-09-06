@@ -171,6 +171,7 @@ Preferred supporting line:
 | Online since July 2016 | founder-confirmed history | yes | no exact day |
 | 10 years of Write Urdu | derived calendar statement | yes | July 2016 → 2026 |
 | 4,408 engaged visits across all tools in one recent week | measured | yes | broader than writing-length buckets, does not imply all wrote text |
+| Online since July 2016 — see 10 years of Write Urdu (About page link) | navigation | yes | HERITAGE-B About integration; also linked site-wide from footer |
 | 1,132 recent non-zero writing sessions | derived | yes | from bucket sum |
 | 140 recent sessions over 2,500 characters | measured | yes | current sample |
 | roughly 0.65–1.0m characters in recent sample | derived estimate | yes | midpoint/open-bucket assumptions disclosed |
