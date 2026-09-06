@@ -30,7 +30,7 @@
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link:hover .wu-outcome-link-copy small,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link.is-active .wu-outcome-link-copy small{color:var(--wu-color-brand-strong)}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-icon{margin-top:1px}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-chevron{margin-left:1px;font-size:.9rem;opacity:.68}
-.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="learn"]>.wu-outcome-menu-panel,.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="work"]>.wu-outcome-menu-panel{right:0;left:auto}
+.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="learn"]>.wu-outcome-menu-panel:not(.has-preview),.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="work"]>.wu-outcome-menu-panel:not(.has-preview){right:0;left:auto}
 
 /* The taxonomy is smaller, but the complete header also contains brand,
    language/install/share utilities. Keep the proven 1366px laptop safety rule:
@@ -87,7 +87,18 @@
 
 html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link-copy{text-align:right}
 html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-chevron{margin-right:1px;margin-left:0}
-html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="write"]>.wu-outcome-menu-panel,html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="create"]>.wu-outcome-menu-panel{right:0;left:auto}
+html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="write"]>.wu-outcome-menu-panel:not(.has-preview),html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="create"]>.wu-outcome-menu-panel:not(.has-preview){right:0;left:auto}
+
+/* The 560px .has-preview panel is much wider than the legacy 360px single-column
+   panel the rules above were tuned for. In RTL, .wu-primary-nav{direction:rtl}
+   packs the toggle cluster toward the visual left of the header, so anchoring
+   a wide preview panel to its own right edge (opening further leftward) pushes
+   it off the left edge of the viewport for every group but the visually
+   rightmost one (Write). Anchor all .has-preview panels to their own left
+   edge in RTL instead, so they open rightward into the available space. */
+@media(min-width:1367px){
+  html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview{right:auto;left:0}
+}
 
 /* Compact product footer.
    The full product taxonomy belongs in the header, contextual handoffs and
