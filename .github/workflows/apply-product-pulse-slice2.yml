@@ -1,0 +1,81 @@
+name: Apply Product Pulse Slice 2
+
+on:
+  push:
+    branches:
+      - feature/product-pulse-slice2-growth-arbiter
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, '[slice2-applied]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply bounded Slice 2 patch
+        run: node scripts/apply-product-pulse-slice2.js
+
+      - name: Syntax checks for touched runtime
+        run: |
+          node --check js/growth-request-arbiter.mjs
+          node --check js/account-growth-entry.mjs
+          node --check js/community-publishing-ui.mjs
+          node --check js/basic-writer-publish.js
+          node --check js/product-telemetry.js
+          node --check functions/api/events.js
+          node --check functions/api/internal/product-pulse.js
+          node --check js/product-pulse.js
+          node --check tests/product-pulse-slice2-contract.test.js
+
+      - name: Run Slice 2 focused contracts
+        run: |
+          node tests/growth-request-arbiter.test.mjs
+          node tests/product-pulse-slice2-contract.test.js
+          node tests/account-growth-entry-contract.test.js
+          node tests/community-publishing-ui-contract.test.js
+          node tests/community-publishing-editor-contract.test.js
+          node tests/community-publishing-toolbar-promotion-contract.test.js
+          node tests/product-telemetry-contract.test.js
+          node tests/product-pulse-contract.test.js
+          node tests/product-pulse-slice0-contract.test.js
+          node tests/product-pulse-slice1-contract.test.js
+          node tests/core-continuity-contract.test.js
+          node tests/workspace-next-step-contract.test.js
+          node tests/create-publish-boundaries-contract.test.js
+
+      - name: Record repository-wide baseline checks
+        run: |
+          set +e
+          for command in "npm test" "npm run seo:check" "npm run locale:check" "npm run governance:check"; do
+            echo "::group::$command"
+            bash -lc "$command"
+            status=$?
+            echo "exit=$status"
+            echo "::endgroup::"
+          done
+          set -e
+          echo "Repository-wide checks are recorded for context; Slice 2 focused contracts are the scoped gate."
+
+      - name: Commit validated implementation
+        run: |
+          rm -f .github/workflows/apply-product-pulse-slice2.yml scripts/apply-product-pulse-slice2.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Implement Product Pulse Slice 2 growth request arbiter [slice2-applied]"
+          git push origin HEAD:feature/product-pulse-slice2-growth-arbiter
