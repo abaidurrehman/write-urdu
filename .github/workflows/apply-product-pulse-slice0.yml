@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Reconcile pre-existing contract runner ownership
+        run: node scripts/reconcile-test-runner-for-slice0.js
+
       - name: Apply bounded Slice 0 patch
         run: node scripts/apply-product-pulse-slice0.js
 
