@@ -26,6 +26,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Repair generator template literals
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/apply-product-pulse-slice2.js')
+          source = path.read_text()
+          replacements = {
+              "`${family}|${next.winner}|${stateKey()}`": "String(family) + '|' + String(next.winner) + '|' + stateKey()",
+              "`${family}|${stateKey()}`": "String(family) + '|' + stateKey()",
+          }
+          for old, new in replacements.items():
+              source = source.replace(old, new)
+          path.write_text(source)
+          PY
+          node --check scripts/apply-product-pulse-slice2.js
+
       - name: Apply bounded Slice 2 patch
         run: node scripts/apply-product-pulse-slice2.js
 
