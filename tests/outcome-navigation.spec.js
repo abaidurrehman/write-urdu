@@ -13,34 +13,34 @@ async function openMobileMenuIfNeeded(page) {
   if (await toggle.isVisible()) await toggle.click();
 }
 
-test('global navigation is organized by Write / Create / Work / Learn outcomes', async ({ page }) => {
+test('global navigation is organized by Write / Create / Tools / Learn outcomes', async ({ page }) => {
   await open(page, '/');
   await openMobileMenuIfNeeded(page);
 
   const nav = page.locator('[data-wu-outcome-nav="v2"]');
   const groups = nav.locator(':scope > [data-wu-nav-group]');
   await expect(groups).toHaveCount(4);
-  await expect(groups.nth(0).locator('summary')).toContainText('Write');
-  await expect(groups.nth(1).locator('summary')).toContainText('Create');
-  await expect(groups.nth(2).locator('summary')).toContainText('Work');
-  await expect(groups.nth(3).locator('summary')).toContainText('Learn');
+  await expect(groups.nth(0).locator('.wu-outcome-toggle')).toContainText('Write');
+  await expect(groups.nth(1).locator('.wu-outcome-toggle')).toContainText('Create');
+  await expect(groups.nth(2).locator('.wu-outcome-toggle')).toContainText('Tools');
+  await expect(groups.nth(3).locator('.wu-outcome-toggle')).toContainText('Learn');
 
-  await groups.nth(0).locator('summary').click();
+  await groups.nth(0).locator('.wu-outcome-toggle').click();
   const firstWrite = groups.nth(0).locator('.wu-outcome-link').first();
   await expect(firstWrite.locator('strong')).toHaveText('Start writing in Urdu');
   await expect(firstWrite.locator('small')).toHaveText('English to Urdu typing');
   await expect(groups.nth(0).locator('a[href="/tools/urdu-voice-typing"]')).toContainText('Speak and turn it into Urdu text');
   await expect(groups.nth(0).locator('a[href="/tools/inpage-unicode-converter"]')).toContainText('Convert older InPage Urdu');
 
-  await groups.nth(1).locator('summary').click();
+  await groups.nth(1).locator('.wu-outcome-toggle').click();
   await expect(groups.nth(1).locator('a[href="/urdu-card-studio"] strong')).toContainText('Make a poetry, quote or announcement image');
   await expect(groups.nth(1).locator('a[href="/urdu-card-studio?role=facebook"]')).toContainText('Create a Facebook post');
 
-  await groups.nth(2).locator('summary').click();
+  await groups.nth(2).locator('.wu-outcome-toggle').click();
   await expect(groups.nth(2).locator('a[href="/urdu-invoice-generator"] strong')).toHaveText('Create an Urdu or English invoice');
   await expect(groups.nth(2).locator('a[href="/urdu-editor"] strong')).toHaveText('Prepare a formal Urdu document');
 
-  await groups.nth(3).locator('summary').click();
+  await groups.nth(3).locator('.wu-outcome-toggle').click();
   await expect(groups.nth(3).locator('a[href="/urdu-alphabet"] strong')).toHaveText('Learn the Urdu alphabet');
   await expect(groups.nth(3).locator('a[href="/roman-urdu-transliteration"] strong')).toHaveText('How English to Urdu typing works');
   await expect(groups.nth(3).locator('a[href="/urdu-faq"] strong')).toHaveText('Get answers to common questions');
@@ -65,7 +65,7 @@ test('outcome navigation keeps established route owners and active category stat
   for (const [route, group] of cases) {
     await open(page, route);
     await openMobileMenuIfNeeded(page);
-    await expect(page.locator(`[data-wu-nav-group="${group}"] > summary`)).toHaveClass(/is-active/);
+    await expect(page.locator(`[data-wu-nav-group="${group}"] > .wu-outcome-toggle`)).toHaveClass(/is-active/);
     expect(page.url()).not.toMatch(/\/(write|create|work|learn)(?:\/|$)/);
   }
 });
@@ -133,13 +133,55 @@ test('shared footer keeps a dark readable surface on desktop and mobile', async 
 test('language switch re-renders the outcome categories and compact footer in Urdu', async ({ page }) => {
   await open(page, '/');
   await page.locator('[data-wu-language-toggle]').click();
-  await expect(page.locator('[data-wu-nav-group="write"] > summary')).toContainText('لکھیں');
-  await expect(page.locator('[data-wu-nav-group="create"] > summary')).toContainText('بنائیں');
-  await expect(page.locator('[data-wu-nav-group="work"] > summary')).toContainText('کام');
-  await expect(page.locator('[data-wu-nav-group="learn"] > summary')).toContainText('سیکھیں');
+  await expect(page.locator('[data-wu-nav-group="write"] > .wu-outcome-toggle')).toContainText('لکھیں');
+  await expect(page.locator('[data-wu-nav-group="create"] > .wu-outcome-toggle')).toContainText('بنائیں');
+  await expect(page.locator('[data-wu-nav-group="work"] > .wu-outcome-toggle')).toContainText('ٹولز');
+  await expect(page.locator('[data-wu-nav-group="learn"] > .wu-outcome-toggle')).toContainText('سیکھیں');
   await expect(page.locator('[data-wu-footer-group="write-urdu"] h2')).toHaveText('اردو لکھیں');
   await expect(page.locator('[data-wu-footer-group="help"] h2')).toHaveText('مدد');
   await expect(page.locator('.wu-footer-utility-links')).toContainText('نیا کیا ہے');
   await expect(page.locator('.wu-footer-utility-links')).toContainText('کمیونٹی رہنما اصول');
   await expect(page.locator('.wu-footer-utility-links')).toContainText('شرائط');
+});
+
+test('opening a mega-menu group closes any other open group', async ({ page }) => {
+  await open(page, '/');
+  await openMobileMenuIfNeeded(page);
+
+  const write = page.locator('[data-wu-nav-group="write"] > .wu-outcome-toggle');
+  const create = page.locator('[data-wu-nav-group="create"] > .wu-outcome-toggle');
+
+  await write.click();
+  await expect(write).toHaveAttribute('aria-expanded', 'true');
+
+  await create.click();
+  await expect(create).toHaveAttribute('aria-expanded', 'true');
+  await expect(write).toHaveAttribute('aria-expanded', 'false');
+
+  await page.keyboard.press('Escape');
+  await expect(create).toHaveAttribute('aria-expanded', 'false');
+});
+
+test('desktop mega-menu panel shows an illustrated preview card', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, '/');
+
+  const write = page.locator('[data-wu-nav-group="write"]');
+  await write.locator('.wu-outcome-toggle').click();
+
+  const preview = write.locator('.wu-nav-panel-preview');
+  await expect(preview).toBeVisible();
+  await expect(preview.locator('.wu-nav-preview-headline')).toHaveText('Type Urdu, instantly');
+  await expect(preview.locator('.wu-nav-preview-cta')).toHaveAttribute('href', '/');
+});
+
+test('mobile mega-menu panel hides the preview card', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, '/');
+  await openMobileMenuIfNeeded(page);
+
+  const write = page.locator('[data-wu-nav-group="write"]');
+  await write.locator('.wu-outcome-toggle').click();
+  await expect(write.locator('.wu-nav-panel-preview')).toBeHidden();
+  await expect(write.locator('.wu-nav-panel-list')).toBeVisible();
 });

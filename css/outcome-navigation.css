@@ -1,7 +1,28 @@
 /* WU-PLAT-002 Slice D: outcome-led product navigation. */
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav{gap:5px}
-.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>summary{padding:10px 13px;font-size:.82rem}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-toggle{position:relative;display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border:1px solid transparent;border-radius:var(--wu-radius-md);color:var(--wu-shell-nav-text)!important;background:transparent;font:inherit;font-size:.82rem;font-weight:var(--wu-weight-semibold);line-height:1;cursor:pointer;white-space:nowrap;transition:background-color var(--wu-transition-fast),color var(--wu-transition-fast),border-color var(--wu-transition-fast)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-toggle:hover{border-color:var(--wu-shell-nav-hover-border);background:var(--wu-color-brand-softer);color:var(--wu-color-brand-strong)!important}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-toggle:hover .wu-outcome-icon{color:var(--wu-color-brand-strong);transform:translateY(-1px)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-toggle.is-active{border-color:var(--wu-shell-nav-active-border);background:var(--wu-color-brand-soft);color:var(--wu-color-brand-strong)!important}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-toggle:focus-visible{outline:3px solid var(--wu-shell-focus-ring);outline-offset:2px}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel[hidden]{display:none!important}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel:not([hidden]){display:grid!important;gap:2px;opacity:0;transform:translateY(-6px);transition:opacity .16s ease-out,transform .16s ease-out}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-more.is-open>.wu-outcome-menu-panel{opacity:1;transform:translateY(0)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-panel-list{display:grid;gap:2px;min-width:0}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{min-width:360px;padding:9px}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview{min-width:560px}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-panel-preview{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:18px;border-radius:var(--wu-radius-lg);color:#fff;overflow:hidden;min-height:150px}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-icon{position:absolute;top:12px;right:12px;width:64px;height:64px;opacity:.22}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-icon svg{width:100%;height:100%;fill:none;stroke:#fff;stroke-width:1.2}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-headline{position:relative;font-size:1.3rem;font-weight:700;line-height:1.25}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-caption{position:relative;font-size:.78rem;color:rgba(255,255,255,.82);line-height:1.4}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-cta{position:relative;display:inline-flex;align-items:center;gap:5px;align-self:flex-start;margin-top:4px;padding:8px 14px;border:1px solid rgba(255,255,255,.32);border-radius:var(--wu-radius-pill);background:rgba(255,255,255,.16);color:#fff!important;font-size:.76rem;font-weight:600;text-decoration:none!important;transition:background var(--wu-transition-fast)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-cta:hover{background:rgba(255,255,255,.26)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview--write{background:linear-gradient(135deg,#0f3d2a,#1c6b46)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview--create{background:linear-gradient(135deg,#4a1942,#8a2f6d)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview--tools{background:linear-gradient(135deg,#1c2b4a,#2f5c8a)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview--learn{background:linear-gradient(135deg,#4a3a12,#8a6a2f)}
+.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview--explore{background:linear-gradient(135deg,#123d3d,#2f8a7a)}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link{align-items:flex-start!important;gap:10px!important;padding:11px 12px!important;white-space:normal!important}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link-copy{display:grid;min-width:0;gap:3px;text-align:left}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link-copy strong{color:inherit;font-size:.82rem;font-weight:700;line-height:1.25}
@@ -9,7 +30,7 @@
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link:hover .wu-outcome-link-copy small,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link.is-active .wu-outcome-link-copy small{color:var(--wu-color-brand-strong)}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-icon{margin-top:1px}
 .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-chevron{margin-left:1px;font-size:.9rem;opacity:.68}
-.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="learn"]>.wu-outcome-menu-panel,.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="work"]>.wu-outcome-menu-panel{right:0;left:auto}
+.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="learn"]>.wu-outcome-menu-panel:not(.has-preview),.wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="work"]>.wu-outcome-menu-panel:not(.has-preview){right:0;left:auto}
 
 /* The taxonomy is smaller, but the complete header also contains brand,
    language/install/share utilities. Keep the proven 1366px laptop safety rule:
@@ -21,6 +42,8 @@
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{display:flex!important}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-more{grid-column:auto!important}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-more-menu{position:absolute!important;width:auto!important;margin-top:0!important;border:1px solid var(--wu-shell-header-border)!important;background:var(--wu-shell-menu-bg)!important;box-shadow:var(--wu-shadow-float)!important;grid-template-columns:1fr!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview{grid-template-columns:minmax(240px,1fr) minmax(220px,300px)!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview .wu-nav-panel-preview{height:100%}
 }
 
 @media(max-width:1366px){
@@ -29,15 +52,16 @@
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav{position:absolute!important;top:calc(100% + 8px)!important;right:0!important;left:0!important;display:none!important;align-items:stretch!important;max-height:calc(100dvh - 84px);overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;padding:10px!important;box-sizing:border-box;border:1px solid var(--wu-shell-header-border)!important;border-radius:var(--wu-radius-lg)!important;background:var(--wu-shell-menu-bg)!important;box-shadow:var(--wu-shadow-float)!important;-webkit-overflow-scrolling:touch}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu{grid-column:auto;min-width:0}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>summary{height:auto!important;min-height:48px;justify-content:flex-start;padding:13px;box-sizing:border-box}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>.wu-outcome-toggle{height:auto!important;min-height:48px;justify-content:flex-start;padding:13px;box-sizing:border-box}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{position:static;min-width:0;width:auto;max-width:100%;margin-top:6px;box-sizing:border-box;grid-template-columns:1fr;background:var(--wu-color-surface-soft);box-shadow:none}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu[open]{grid-column:1/-1}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu.is-open{grid-column:1/-1}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-panel-preview{display:none!important}
 }
 
 @media(max-width:560px){
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-primary-nav.is-open{display:flex!important;flex-direction:column;grid-template-columns:none!important;gap:4px;width:100%;max-height:calc(100dvh - 76px)}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu[open]{width:100%;grid-column:auto!important}
-  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>summary{width:100%;height:auto!important;min-height:46px}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu.is-open{width:100%;grid-column:auto!important}
+  .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu>.wu-outcome-toggle{width:100%;height:auto!important;min-height:46px}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{width:100%;max-width:100%;padding:6px;box-sizing:border-box}
   .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link{width:100%;max-width:100%;padding:10px!important;box-sizing:border-box}
 }
@@ -63,7 +87,18 @@
 
 html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link-copy{text-align:right}
 html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-chevron{margin-right:1px;margin-left:0}
-html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="write"]>.wu-outcome-menu-panel,html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="create"]>.wu-outcome-menu-panel{right:0;left:auto}
+html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="write"]>.wu-outcome-menu-panel:not(.has-preview),html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] [data-wu-nav-group="create"]>.wu-outcome-menu-panel:not(.has-preview){right:0;left:auto}
+
+/* The 560px .has-preview panel is much wider than the legacy 360px single-column
+   panel the rules above were tuned for. In RTL, .wu-primary-nav{direction:rtl}
+   packs the toggle cluster toward the visual left of the header, so anchoring
+   a wide preview panel to its own right edge (opening further leftward) pushes
+   it off the left edge of the viewport for every group but the visually
+   rightmost one (Write). Anchor all .has-preview panels to their own left
+   edge in RTL instead, so they open rightward into the available space. */
+@media(min-width:1367px){
+  html[dir="rtl"] .wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel.has-preview{right:auto;left:0}
+}
 
 /* Compact product footer.
    The full product taxonomy belongs in the header, contextual handoffs and
@@ -108,4 +143,4 @@ html[dir="rtl"] body.wu-v2-shell footer.wu-footer,html[dir="rtl"] body.wu-v2-she
 html[dir="rtl"] body.wu-v2-shell footer.wu-footer .wu-footer-group a{margin-right:0!important;margin-left:auto!important}
 html[dir="rtl"] body.wu-v2-shell footer.wu-footer .wu-footer-utility-links{justify-content:flex-end}
 
-@media(prefers-reduced-motion:reduce){.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-icon{transition:none}}
+@media(prefers-reduced-motion:reduce){.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-icon{transition:none}.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{transition:none;opacity:1;transform:none}.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-cta{transition:none}}

@@ -537,19 +537,19 @@ test('phone outcome navigation and Basic Writer toolbar stay inside the viewport
   await expect(nav).toBeVisible();
 
   const create = nav.locator('[data-wu-nav-group="create"]');
-  const createSummary = create.locator('summary');
+  const createSummary = create.locator('.wu-outcome-toggle');
   const createPanel = create.locator('.wu-outcome-menu-panel');
-  const workSummary = nav.locator('[data-wu-nav-group="work"] > summary');
+  const workSummary = nav.locator('[data-wu-nav-group="work"] > .wu-outcome-toggle');
   await createSummary.click();
-  await expect(create).toHaveAttribute('open', '');
+  await expect(create).toHaveClass(/is-open/);
   await expect(createPanel).toBeVisible();
 
   const geometry = await page.evaluate(() => {
     const navNode = document.querySelector('[data-wu-outcome-nav="v2"]');
     const createNode = document.querySelector('[data-wu-nav-group="create"]');
-    const summary = createNode && createNode.querySelector('summary');
+    const summary = createNode && createNode.querySelector('.wu-outcome-toggle');
     const panel = createNode && createNode.querySelector('.wu-outcome-menu-panel');
-    const work = document.querySelector('[data-wu-nav-group="work"] > summary');
+    const work = document.querySelector('[data-wu-nav-group="work"] > .wu-outcome-toggle');
     const navRect = navNode.getBoundingClientRect();
     const summaryRect = summary.getBoundingClientRect();
     const panelRect = panel.getBoundingClientRect();

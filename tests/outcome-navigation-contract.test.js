@@ -21,6 +21,12 @@ assert.match(core, /WriteUrduLocale/, 'Preserved shared-shell core lost locale b
 });
 assert.strictEqual((primaryNavigation.match(/\bid: '(?:write|create|work|learn)'/g) || []).length, 4, 'Top-level product IA must contain exactly Write / Create / Work / Learn');
 assert.doesNotMatch(primaryNavigation, /id: ['"](?:drafts|my-drafts)['"]/, 'My drafts must not become a fifth product category');
+assert.match(primaryNavigation, /label: \{ en: 'Tools', ur: 'ٹولز' \}/, 'Work group must be relabeled Tools for the mega-menu redesign');
+assert.doesNotMatch(primaryNavigation, /label: \{ en: 'Work', ur: 'کام' \}/, 'Old Work label must not remain alongside the new Tools label');
+['write', 'create', 'work', 'learn'].forEach((group) => {
+  const groupSource = primaryNavigation.slice(primaryNavigation.indexOf("id: '" + group + "'"));
+  assert.match(groupSource.slice(0, groupSource.indexOf("\n        },") + 1), /preview: \{[\s\S]*?theme: '[a-z]+'/, `Missing mega-menu preview data on the ${group} group`);
+});
 assert.match(navigation, /data-wu-drafts-utility-slot/, 'My drafts utility/account position must remain reserved outside product categories');
 
 assert.match(primaryNavigation, /Start writing in Urdu/, 'Write menu must lead with the user outcome, not Basic Writer');
@@ -53,8 +59,8 @@ assert.match(css, /@media\(min-width:1367px\)/, 'Expanded outcome navigation mus
 assert.match(css, /@media\(max-width:1366px\)/, 'Outcome navigation must collapse safely at common 1366px laptop widths');
 assert.match(css, /max-height:calc\(100dvh - 84px\)/, 'Compact navigation must be bounded to the visible viewport');
 assert.match(css, /overflow-y:auto!important/, 'Compact navigation must scroll internally instead of stretching the page');
-assert.match(css, /\.wu-outcome-menu>summary\{height:auto!important;min-height:48px/, 'Compact outcome summaries must keep intrinsic height');
-assert.doesNotMatch(css, /\.wu-outcome-menu>summary\{height:100%/, 'Outcome summaries must never stretch across an expanded details panel');
+assert.match(css, /\.wu-outcome-menu>\.wu-outcome-toggle\{height:auto!important;min-height:48px/, 'Compact outcome toggles must keep intrinsic height');
+assert.doesNotMatch(css, /\.wu-outcome-menu>\.wu-outcome-toggle\{height:100%/, 'Outcome toggles must never stretch across an expanded panel');
 assert.match(css, /@media\(max-width:560px\)[\s\S]*display:flex!important;flex-direction:column/, 'Phone navigation must use a single normal-flow column');
 assert.match(css, /body\[data-wu-basic-command-toolbar="true"\] \.wu-basic-command-primary\{flex:1 1 100%!important;width:100%/, 'Phone toolbar must keep Share and Copy on a stable full-width row');
 assert.match(css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/, 'Footer must use exactly three compact link columns');
@@ -63,7 +69,7 @@ assert.match(css, /body\.wu-v2-shell footer\.wu-footer\{color:#b9ccc1!important;
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer a,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group a\{color:#dce9e1!important\}/, 'Footer links must retain explicit light contrast');
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer \.wu-footer-brand,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group h2,body\.wu-v2-shell footer\.wu-footer strong\{color:#f4faf6!important\}/, 'Footer headings/brand must retain explicit high contrast');
 assert.match(css, /prefers-reduced-motion:reduce/, 'Outcome navigation must respect reduced-motion preferences');
-assert.match(sw, /write-urdu-shell-v42/, 'PWA cache version must include the compact footer, account-shell and mobile activation assets');
+assert.match(sw, /write-urdu-shell-v43/, 'PWA cache version must include the mega-menu nav JS/CSS assets');
 assert.match(sw, /js\/site-header-core\.js/, 'Preserved shell core must be cached for offline use');
 assert.match(sw, /js\/outcome-navigation\.js/, 'Outcome navigation runtime must be cached for offline use');
 assert.match(sw, /js\/core-workspace-convergence\.js/, 'Core workspace convergence runtime must be cached for offline use');
