@@ -1,0 +1,45 @@
+name: Repair Slice 3 Apply Workflow
+
+on:
+  push:
+    branches:
+      - feature/product-pulse-slice3-voice-keep
+    paths:
+      - .github/workflows/fix-slice3-workflow.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/product-pulse-slice3-voice-keep
+          fetch-depth: 0
+      - name: Repair unique Voice auto-save matcher
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('.github/workflows/apply-product-pulse-slice3.yml')
+          text = p.read_text(encoding='utf-8')
+          old = '''              "  growthArbiter?.subscribe(render);\\n  render();\\n}",
+              "  growthArbiter?.subscribe(render);\\n  render();\\n  if (restoredFromAccountFlow && account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) save.click();\\n}",
+              'voice restored draft auto-save'
+          )'''
+          new = '''              "  growthArbiter?.subscribe(render);\\n  render();\\n}\\n\\nasync function start() {",
+              "  growthArbiter?.subscribe(render);\\n  render();\\n  if (restoredFromAccountFlow && account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) save.click();\\n}\\n\\nasync function start() {",
+              'voice restored draft auto-save'
+          )'''
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one workflow matcher block, found {text.count(old)}')
+          p.write_text(text.replace(old, new, 1), encoding='utf-8')
+          Path('.github/workflows/fix-slice3-workflow.yml').unlink()
+      - name: Commit repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Repair Slice 3 workflow matcher"
+          git push origin HEAD:feature/product-pulse-slice3-voice-keep
