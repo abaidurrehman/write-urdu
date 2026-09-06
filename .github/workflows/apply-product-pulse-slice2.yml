@@ -71,7 +71,7 @@ jobs:
 
           assert.ok(account.includes('WriteUrduGrowthRequestArbiter = growthArbiter'), 'account-growth entry must be the one runtime owner');
           assert.ok(account.includes("keepEnabled: path !== '/tools/urdu-voice-typing'"), 'Slice 2 must not pre-empt the Slice 3 Voice Keep experiment');
-          assert.ok(account.includes('Create free account to keep this writing'), 'signed-out Keep may use acquisition copy');
+          assert.ok(account.includes('Create a free account to keep this writing'), 'signed-out Keep may use acquisition copy');
           assert.ok(account.includes("signedIn ? 'Save this writing in My Documents"), 'signed-in Keep copy must not ask the user to create an account');
 
           assert.ok(community.includes("owner.current() === 'community_publish'"), 'Community promotion must render only when it wins arbitration');
