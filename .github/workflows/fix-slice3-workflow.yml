@@ -23,18 +23,16 @@ jobs:
         run: |
           from pathlib import Path
           p = Path('.github/workflows/apply-product-pulse-slice3.yml')
-          text = p.read_text(encoding='utf-8')
-          old = '''              "  growthArbiter?.subscribe(render);\\n  render();\\n}",
-              "  growthArbiter?.subscribe(render);\\n  render();\\n  if (restoredFromAccountFlow && account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) save.click();\\n}",
-              'voice restored draft auto-save'
-          )'''
-          new = '''              "  growthArbiter?.subscribe(render);\\n  render();\\n}\\n\\nasync function start() {",
-              "  growthArbiter?.subscribe(render);\\n  render();\\n  if (restoredFromAccountFlow && account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) save.click();\\n}\\n\\nasync function start() {",
-              'voice restored draft auto-save'
-          )'''
-          if text.count(old) != 1:
-              raise SystemExit(f'expected one workflow matcher block, found {text.count(old)}')
-          p.write_text(text.replace(old, new, 1), encoding='utf-8')
+          lines = p.read_text(encoding='utf-8').splitlines()
+          matches = [i for i, line in enumerate(lines) if "'voice restored draft auto-save'" in line]
+          if len(matches) != 1:
+              raise SystemExit(f'expected one Voice auto-save label, found {len(matches)}')
+          i = matches[0]
+          if i < 2 or 'growthArbiter?.subscribe(render)' not in lines[i - 2] or 'restoredFromAccountFlow' not in lines[i - 1]:
+              raise SystemExit('Voice auto-save matcher block shape changed')
+          lines[i - 2] = '              "  growthArbiter?.subscribe(render);\\n  render();\\n}\\n\\nasync function start() {",'
+          lines[i - 1] = '              "  growthArbiter?.subscribe(render);\\n  render();\\n  if (restoredFromAccountFlow && account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) save.click();\\n}\\n\\nasync function start() {",'
+          p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
           Path('.github/workflows/fix-slice3-workflow.yml').unlink()
       - name: Commit repair
         run: |
