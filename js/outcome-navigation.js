@@ -277,11 +277,18 @@
         var toggle = group.querySelector('.wu-outcome-toggle');
         var panel = group.querySelector('.wu-outcome-menu-panel');
         if (!toggle || !panel) return;
+        if (group._wuHideTimer) {
+            root.clearTimeout(group._wuHideTimer);
+            group._wuHideTimer = null;
+        }
         toggle.setAttribute('aria-expanded', 'false');
         group.classList.remove('is-open');
-        var hide = function () { panel.hidden = true; };
+        var hide = function () {
+            group._wuHideTimer = null;
+            panel.hidden = true;
+        };
         if (immediate || reducedMotion()) hide();
-        else root.setTimeout(hide, OPEN_TRANSITION_MS);
+        else group._wuHideTimer = root.setTimeout(hide, OPEN_TRANSITION_MS);
     }
 
     function closeAllGroups() {
@@ -294,6 +301,10 @@
         var toggle = group.querySelector('.wu-outcome-toggle');
         var panel = group.querySelector('.wu-outcome-menu-panel');
         if (!toggle || !panel) return;
+        if (group._wuHideTimer) {
+            root.clearTimeout(group._wuHideTimer);
+            group._wuHideTimer = null;
+        }
         closeAllGroups();
         panel.hidden = false;
         toggle.setAttribute('aria-expanded', 'true');

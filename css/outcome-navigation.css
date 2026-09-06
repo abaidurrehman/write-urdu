@@ -143,4 +143,4 @@ html[dir="rtl"] body.wu-v2-shell footer.wu-footer,html[dir="rtl"] body.wu-v2-she
 html[dir="rtl"] body.wu-v2-shell footer.wu-footer .wu-footer-group a{margin-right:0!important;margin-left:auto!important}
 html[dir="rtl"] body.wu-v2-shell footer.wu-footer .wu-footer-utility-links{justify-content:flex-end}
 
-@media(prefers-reduced-motion:reduce){.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-icon{transition:none}}
+@media(prefers-reduced-motion:reduce){.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-link,.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-icon{transition:none}.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-menu-panel{transition:none;opacity:1;transform:none}.wu-site-header[data-wu-outcome-navigation="v2"] .wu-nav-preview-cta{transition:none}}
