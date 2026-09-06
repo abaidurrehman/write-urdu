@@ -1,4 +1,5 @@
 const ALLOWED_DAYS = new Set([1, 7, 30]);
+const METRICS_SEMANTICS_VERSION = 'wu-plat-002h-s0-2026-09-06-v1';
 const VOICE_METRIC_COLUMNS = [
   'voice_exposed', 'voice_selected', 'voice_started', 'voice_final', 'voice_switch_continued',
   'voice_error_permission_denied', 'voice_error_audio_capture', 'voice_error_no_speech',
@@ -102,6 +103,24 @@ function n(row, key) {
 
 function ratio(numerator, denominator) {
   return denominator ? numerator / denominator : 0;
+}
+
+// Bounded rates are only emitted when numerator and denominator describe a
+// compatible population. Invalid historical/mixed-path pairs return null; we
+// never cap a mathematically invalid conversion at 100%.
+function boundedRate(numerator, denominator) {
+  const num = Number(numerator || 0);
+  const den = Number(denominator || 0);
+  if (!den) return num === 0 ? 0 : null;
+  if (num < 0 || num > den) return null;
+  return num / den;
+}
+
+function compatibleDifference(parent, child) {
+  const parentCount = Number(parent || 0);
+  const childCount = Number(child || 0);
+  if (parentCount < 0 || childCount < 0 || childCount > parentCount) return null;
+  return parentCount - childCount;
 }
 
 function distribution(items) {
@@ -224,10 +243,10 @@ function deviceActivationSection(deviceRows) {
   });
   const byDevice = Array.from(byDeviceClass.values()).map((totals) => ({
     ...totals,
-    focused_rate: ratio(totals.writer_focused, totals.writer_viewed),
-    first_input_rate: ratio(totals.writer_first_input, totals.writer_viewed),
-    first_urdu_success_rate: ratio(totals.writer_first_urdu_success, totals.writer_first_input),
-    outcome_rate: ratio(totals.writer_outcome_first, totals.writer_first_urdu_success)
+    focused_rate: boundedRate(totals.writer_focused, totals.writer_viewed),
+    first_input_rate: boundedRate(totals.writer_first_input, totals.writer_viewed),
+    first_urdu_success_rate: boundedRate(totals.writer_first_urdu_success, totals.writer_first_input),
+    outcome_rate: boundedRate(totals.writer_outcome_first, totals.writer_first_input)
   }));
   const mobile = byDeviceClass.get('mobile');
   return {
@@ -281,20 +300,29 @@ function activationSection(current, toolRows, deviceRows) {
       writer_outcome_first: outcomeFirst
     },
     conversion: {
-      focused_rate: ratio(focused, viewed),
-      first_input_rate: ratio(firstInput, focused),
-      first_urdu_success_rate: ratio(firstUrduSuccess, firstInput),
-      outcome_rate: ratio(outcomeFirst, firstUrduSuccess)
+      // Focus and first input are sibling coverage states under writer-viewed;
+      // input does not require the focus event to have fired first.
+      focused_rate: boundedRate(focused, viewed),
+      first_input_rate: boundedRate(firstInput, viewed),
+      // Urdu-success is meaningful after an input event; outcome can occur via
+      // direct Urdu/imported state and therefore uses first-input, not Urdu-success.
+      first_urdu_success_rate: boundedRate(firstUrduSuccess, firstInput),
+      outcome_rate: boundedRate(outcomeFirst, firstInput)
     },
-    // Session classification per the H1 acceptance contract: replaces the
-    // blanket "abandoned" label for zero-character sessions with the point
-    // in the funnel where the session actually stopped.
+    metric_definitions: {
+      focused_rate: { numerator: 'writer_focused', denominator: 'writer_viewed', semantics: 'bounded_state_coverage' },
+      first_input_rate: { numerator: 'writer_first_input', denominator: 'writer_viewed', semantics: 'bounded_state_coverage' },
+      first_urdu_success_rate: { numerator: 'writer_first_urdu_success', denominator: 'writer_first_input', semantics: 'bounded_state_coverage' },
+      outcome_rate: { numerator: 'writer_outcome_first', denominator: 'writer_first_input', semantics: 'bounded_state_coverage' }
+    },
+    // These are compatible state differences, not a strict sequential funnel.
+    // Null means the historical aggregates cannot support that subtraction.
     session_classification: {
-      visible_not_focused: Math.max(0, viewed - focused),
-      focused_no_input: Math.max(0, focused - firstInput),
-      input_no_urdu_success: Math.max(0, firstInput - firstUrduSuccess),
-      success_no_outcome: Math.max(0, firstUrduSuccess - outcomeFirst),
-      success_with_outcome: outcomeFirst
+      visible_not_focused: compatibleDifference(viewed, focused),
+      visible_no_input: compatibleDifference(viewed, firstInput),
+      input_no_urdu_success: compatibleDifference(firstInput, firstUrduSuccess),
+      input_no_outcome: compatibleDifference(firstInput, outcomeFirst),
+      input_with_outcome: outcomeFirst <= firstInput ? outcomeFirst : null
     },
     by_workspace: byWorkspace,
     // Device is captured on page visits, not on individual writer-funnel
@@ -334,15 +362,21 @@ function cardStudioSection(toolRows) {
       export_attempted: attempted
     },
     conversion: {
-      text_entered_rate: ratio(textEntered, visits),
-      canvas_change_rate: ratio(canvasChange, textEntered),
-      export_step_reached_rate: ratio(stepReached, canvasChange),
-      export_attempted_rate: ratio(attempted, stepReached)
+      text_entered_rate: boundedRate(textEntered, visits),
+      canvas_change_rate: boundedRate(canvasChange, textEntered),
+      // export_step_reached is optional/branch-specific and cannot be a
+      // denominator for all export attempts. Keep the raw count above.
+      export_step_reached_rate: null,
+      export_attempted_rate: boundedRate(attempted, textEntered)
+    },
+    branch_semantics: {
+      export_step_reached: 'optional_branch_counter',
+      export_attempted_denominator: 'text_entered'
     },
     mode_split: {
       quick,
       advanced,
-      advanced_rate: ratio(advanced, quick + advanced)
+      advanced_rate: boundedRate(advanced, quick + advanced)
     }
   };
 }
@@ -361,6 +395,11 @@ function continuationSection(current) {
   const meaningfulStart = n(current, 'continuation_destination_meaningful_start');
   return {
     ready: shown > 0 || selected > 0,
+    // Legacy and v2 currently emit different optional step subsets. Until
+    // Slice 1 gives every path a comparable identity, only shown→selected is
+    // safe as a bounded conversion. Downstream values remain useful raw counts.
+    path_version: 'mixed_legacy_v2_pre_slice1',
+    rate_status: 'raw_counts_only_after_selection',
     funnel: {
       shown,
       selected,
@@ -370,11 +409,15 @@ function continuationSection(current) {
       meaningful_start: meaningfulStart
     },
     conversion: {
-      selected_rate: ratio(selected, shown),
-      stored_rate: ratio(stored, selected),
-      destination_ready_rate: ratio(destinationReady, stored),
-      payload_restored_rate: ratio(payloadRestored, destinationReady),
-      meaningful_start_rate: ratio(meaningfulStart, payloadRestored)
+      selected_rate: boundedRate(selected, shown),
+      stored_rate: null,
+      destination_ready_rate: null,
+      payload_restored_rate: null,
+      meaningful_start_rate: null
+    },
+    metric_definitions: {
+      selected_rate: { numerator: 'selected', denominator: 'shown', semantics: 'bounded_state_coverage' },
+      downstream: { semantics: 'mixed_path_raw_counts', reason: 'legacy_v2_optional_steps_not_yet_comparable' }
     }
   };
 }
@@ -587,12 +630,13 @@ export async function onRequestGet(context) {
   return json({
     ready: true,
     storage: 'hourly_rollups',
+    metrics_version: METRICS_SEMANTICS_VERSION,
     days,
     generated_at: new Date().toISOString(),
     current: {
       sessions,
       engaged_sessions: engagedSessions,
-      engagement_rate: sessions ? engagedSessions / sessions : 0,
+      engagement_rate: boundedRate(engagedSessions, sessions),
       copies: n(current, 'copies'),
       exports: n(current, 'exports'),
       prints: n(current, 'prints'),
