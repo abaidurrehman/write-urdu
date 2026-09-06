@@ -40,6 +40,34 @@ In scope:
 - `tests/outcome-navigation-contract.test.js`: update the two assertions
   currently coupled to `<summary>` CSS text so they check the equivalent
   invariants against the new toggle-button markup.
+- `tests/outcome-navigation.spec.js`: this is a real Playwright browser test
+  (not a static-text contract check) that clicks `summary` elements directly
+  and asserts the `work` group's visible text is `Work` — both break under
+  this redesign regardless of animation. Update its selectors from
+  `summary`/`> summary` to the new toggle button, and its expected text from
+  `Work` to `Tools` (and the Urdu-locale test from `کام` to `ٹولز`).
+- `tests/v3-visual-quality.spec.js`: line ~61 has a dead-but-stale selector
+  fragment `.wu-nav-more > summary:not(.is-active)` inside a comma-separated
+  `querySelector` list used for a contrast check; update it to the new
+  toggle-button selector while touching this file (harmless if left, since
+  other alternatives in the same selector still match, but should not ship
+  referencing removed markup).
+
+Confirmed NOT in scope, and safe to leave untouched: `js/site-header-core.js`
+(lines ~597-622) and `js/v2-shell.js` (~line 71) also render their own
+`<details class="wu-nav-more ...">` menus and share the `.wu-nav-more`/
+`.wu-nav-more-menu`/`[open]` base CSS in `css/site-header.css`. Those are
+separate fallback/legacy renderers, not touched by this redesign. Because of
+this sharing, **`css/site-header.css`'s shared `.wu-nav-more>summary` /
+`.wu-nav-more[open] .wu-nav-more-menu` rules must not be edited** — the new
+toggle button must carry its own complete base look (position, padding,
+colors, hover/active/focus-visible states, icon hover transform) and its own
+open/closed visibility rules, fully scoped under
+`.wu-site-header[data-wu-outcome-navigation="v2"] .wu-outcome-toggle` /
+`.wu-nav-more.is-open > .wu-nav-more-menu` inside `css/outcome-navigation.css`
+— duplicating a handful of declarations already present in `site-header.css`
+rather than sharing them, matching this file's existing pattern of
+`!important`-scoped overrides layered on top of the shared base.
 
 Out of scope:
 - `Explore` group's rollout gating (`probeCommunityPublicDiscovery`,
@@ -136,9 +164,13 @@ MutationObserver checks these and must keep matching.
 A small module-level controller in the same file:
 - Click (or Enter/Space) on `.wu-outcome-toggle` toggles: flips
   `aria-expanded`, toggles the `hidden` attribute on its panel, and after
-  removing `hidden` adds `.is-open` on the next animation frame so the CSS
-  transition (opacity + translateY, ~160ms ease-out) actually runs instead of
-  jumping.
+  removing `hidden` adds `.is-open` on the container (`.wu-nav-more`) on the
+  next animation frame so the CSS transition (opacity + translateY, ~160ms
+  ease-out) actually runs instead of jumping. `.is-open` on the container,
+  not the panel, is what the new CSS keys its display/animation rules off —
+  see Scope note on why this stays self-contained in
+  `css/outcome-navigation.css` rather than reusing `site-header.css`'s
+  shared `[open]`-driven display toggle.
 - Opening one group's panel closes any other open panel first (single panel
   open at a time).
 - Closing triggers: click outside the nav, `Escape` key (returns focus to the
@@ -187,10 +219,22 @@ values decided during implementation against real content lengths).
   open) — same invariant, new selector.
 - Add: assertion that `.wu-nav-panel-preview` has `display:none` inside the
   existing mobile-breakpoint media query block.
-- Add: a DOM-level test (jsdom, matching existing test harness style) that
-  opening one group's toggle sets `aria-expanded="true"` and removes
-  `hidden` on its panel, and opening a second group closes the first
-  (`aria-expanded` back to `false`, `hidden` restored).
+- The repo has no jsdom/DOM-execution test tooling — its JS tests are either
+  plain regex/string contract checks (`node:assert` against file source, run
+  via `scripts/run-contract-tests.js`) or real-browser Playwright specs
+  (`*.spec.js`, not wired into `run-contract-tests.js`). Toggle *behavior*
+  (open/close, single-panel-at-a-time, Escape, outside-click) is exercised by
+  extending `tests/outcome-navigation.spec.js` (Playwright, already exists,
+  already drives this exact nav) rather than introducing a new test
+  framework — matches existing patterns, no new dependency.
+- Update `tests/outcome-navigation.spec.js`: swap `summary`/`> summary`
+  locators for the new toggle button, update the `work` group's expected
+  text `Work`/`کام` to `Tools`/`ٹولز`, and add one assertion that opening a
+  second group's panel closes the first (`aria-expanded` back to `false` on
+  the first toggle).
+- Update `tests/v3-visual-quality.spec.js`: replace the stale
+  `.wu-nav-more > summary:not(.is-active)` selector fragment with the new
+  toggle-button equivalent.
 - Manual/live check after implementation: render the real site (dev server),
   operate the menu in both `en` and `ur` locale, both LTR/RTL, and at mobile
   width, before calling this done — per project convention that shipped nav
