@@ -9,7 +9,7 @@ export const WRITER_STATE = Object.freeze({
   E0: 'E0', E1: 'E1', E2: 'E2', E3: 'E3', E4: 'E4', E5: 'E5'
 });
 
-export const GROWTH_RELEASE_MARKER = 'wu-plat-002h-s2-2026-09-06-v1';
+export const GROWTH_RELEASE_MARKER = 'wu-plat-002h-s3-2026-09-06-v1';
 
 const FAMILIES = Object.freeze([GROWTH_REQUEST.KEEP, GROWTH_REQUEST.SHARE, GROWTH_REQUEST.COMMUNITY_PUBLISH]);
 const WRITER_STATES = new Set(Object.values(WRITER_STATE));
@@ -37,6 +37,7 @@ function normalizeState(input = {}) {
     localProtected: input.localProtected === true,
     meaningfulOutcome: input.meaningfulOutcome === true,
     communityEligible: input.communityEligible === true,
+    keepMomentEligible: input.keepMomentEligible === true,
     keepEnabled: input.keepEnabled !== false,
     shareEnabled: input.shareEnabled !== false,
     communityEnabled: input.communityEnabled !== false
@@ -51,7 +52,7 @@ export function growthRequestDecision(input = {}) {
 
   const substantial = state.writerState === WRITER_STATE.E3 || state.writerState === WRITER_STATE.E4 || state.writerState === WRITER_STATE.E5;
   const safelyRetained = state.safelySaved || state.localProtected;
-  const keep = state.keepEnabled && substantial && !state.safelySaved && !(state.meaningfulOutcome && state.localProtected);
+  const keep = state.keepEnabled && (substantial || state.keepMomentEligible) && !state.safelySaved && !(state.meaningfulOutcome && state.localProtected);
   const share = state.shareEnabled && state.meaningfulOutcome && safelyRetained;
   const community = state.communityEnabled && state.communityEligible && (state.writerState === WRITER_STATE.E4 || state.writerState === WRITER_STATE.E5);
   const eligible = Object.freeze({ keep, share, community_publish: community });
@@ -72,7 +73,7 @@ export function decideGrowthRequest(input = {}) {
 export function createGrowthRequestArbiter({ workspace, telemetry } = {}) {
   const state = {
     ready: false, writerState: WRITER_STATE.E0, accountState: 'disabled', signedIn: false, safelySaved: false,
-    localProtected: false, meaningfulOutcome: false, communityEligible: false, keepEnabled: true, shareEnabled: true, communityEnabled: true
+    localProtected: false, meaningfulOutcome: false, communityEligible: false, keepMomentEligible: false, keepEnabled: true, shareEnabled: true, communityEnabled: true
   };
   const listeners = new Set();
   let lastDecision = growthRequestDecision(state);
@@ -95,7 +96,7 @@ export function createGrowthRequestArbiter({ workspace, telemetry } = {}) {
   }
 
   function stateKey() {
-    return [state.writerState, state.accountState, state.safelySaved ? 1 : 0, state.localProtected ? 1 : 0, state.meaningfulOutcome ? 1 : 0, state.communityEligible ? 1 : 0].join('|');
+    return [state.writerState, state.accountState, state.safelySaved ? 1 : 0, state.localProtected ? 1 : 0, state.meaningfulOutcome ? 1 : 0, state.communityEligible ? 1 : 0, state.keepMomentEligible ? 1 : 0].join('|');
   }
 
   function refresh() {

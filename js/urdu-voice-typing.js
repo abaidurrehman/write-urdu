@@ -22,6 +22,7 @@
     var startedAt = 0;
     var currentStateKey = 'checking-support';
     var currentNoticeKey = null;
+    var finalCommittedSinceStart = false;
 
     var STR = {
         'start-voice-typing': { en: 'Start voice typing', ur: 'آواز سے ٹائپنگ شروع کریں' },
@@ -112,6 +113,7 @@
         onStart: function () {
             listening = true;
             startedAt = Date.now();
+            finalCommittedSinceStart = false;
             startButton.hidden = true;
             stopButton.hidden = false;
             interim.textContent = t('listening-ellipsis');
@@ -124,6 +126,7 @@
         },
         onFinal: function (text) {
             transcriptTarget.insertText(text);
+            if (/[\u0600-\u06FF]/.test(String(text || ''))) finalCommittedSinceStart = true;
             interim.textContent = listening ? t('listening-ellipsis') : '';
             refreshActions();
         },
@@ -145,6 +148,11 @@
                 if (startedAt && hasText()) setNotice('done-edit', 'success');
             }
             refreshActions();
+            var successfulIdleCommit = finalCommittedSinceStart && hasText();
+            finalCommittedSinceStart = false;
+            if (successfulIdleCommit) {
+                document.dispatchEvent(new CustomEvent('write-urdu:voice-success-idle', { detail: { workspace: 'voice-typing' } }));
+            }
         }
     });
 

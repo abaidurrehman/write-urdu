@@ -17,6 +17,7 @@ let feature = { available: false, authenticated: false };
 let meaningfulOutcome = false;
 let localProtected = false;
 let lastSavedState = false;
+let voiceSuccessEligible = false;
 
 function normalizedPath() {
   if (window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(location.pathname || '/');
@@ -60,11 +61,15 @@ function currentLength() {
 
 function syncWriterState() {
   if (!growthArbiter) return;
-  growthArbiter.update({ writerState: writerStateFromLength(currentLength(), meaningfulOutcome), meaningfulOutcome, localProtected });
+  growthArbiter.update({ writerState: writerStateFromLength(currentLength(), meaningfulOutcome), meaningfulOutcome, localProtected, keepMomentEligible: path === '/tools/urdu-voice-typing' && voiceSuccessEligible });
 }
 
 function onWritingChanged() {
   if (meaningfulOutcome) { meaningfulOutcome = false; localProtected = false; }
+  if (path === '/tools/urdu-voice-typing' && currentLength() === 0) {
+    voiceSuccessEligible = false;
+    growthArbiter?.update({ keepEnabled: false, keepMomentEligible: false });
+  }
   syncWriterState();
 }
 
@@ -104,6 +109,13 @@ function bindGrowthSignals() {
     const adapter = runtime.WriteUrduTools?.adapter;
     if (adapter && typeof adapter.onChange === 'function') adapter.onChange(onWritingChanged);
   }
+  document.addEventListener('write-urdu:voice-success-idle', (event) => {
+    if (path !== '/tools/urdu-voice-typing' || event.detail?.workspace !== 'voice-typing' || currentLength() === 0) return;
+    if (account.state !== ACCOUNT_STATE.SIGNED_OUT || !feature.available) return;
+    voiceSuccessEligible = true;
+    growthArbiter.update({ keepEnabled: true, keepMomentEligible: true });
+    syncWriterState();
+  });
   document.addEventListener('write-urdu:outcome', (event) => {
     const name = event.detail && event.detail.name;
     if (!['copy_completed', 'export_completed', 'print_started'].includes(name) || currentLength() === 0) return;
@@ -324,7 +336,7 @@ function voicePanel() {
   panel.setAttribute('data-account-growth-entry', 'voice');
   panel.hidden = true;
   panel.innerHTML = `
-    <div class="editor-account-documents-copy"><strong>Keep this transcript</strong><span data-voice-account-copy>Keep or share this transcript when it is ready.</span></div>
+    <div class="editor-account-documents-copy"><strong data-voice-account-title>Keep this writing</strong><span data-voice-account-copy>Keep or share this writing when it is ready.</span></div>
     <div class="editor-account-documents-actions">
       <a href="/sign-in?returnTo=%2Ftools%2Furdu-voice-typing" data-voice-account-signin hidden>Create free account</a>
       <button type="button" data-voice-account-save hidden>Save to My Documents</button>
@@ -361,19 +373,22 @@ function renderVoice(panel) {
   const winner = growthArbiter.current();
   const signedIn = growthArbiter.snapshot().signedIn;
   const hasText = Boolean(voiceText());
+  const title = panel.querySelector('[data-voice-account-title]');
   const copy = panel.querySelector('[data-voice-account-copy]');
   const signIn = panel.querySelector('[data-voice-account-signin]');
   const save = panel.querySelector('[data-voice-account-save]');
   const library = panel.querySelector('[data-voice-account-library]');
   const share = panel.querySelector('[data-voice-account-share]');
   const status = panel.querySelector('[data-voice-account-status]');
+  const keepWins = winner === GROWTH_REQUEST.KEEP;
   const shareWins = winner === GROWTH_REQUEST.SHARE;
-  const showSignedInSaveUtility = signedIn && feature.available && hasText && !shareWins;
-  panel.dataset.growthWinner = shareWins ? winner : GROWTH_REQUEST.NONE;
-  panel.hidden = !(shareWins || showSignedInSaveUtility);
+  const showSignedInSaveUtility = signedIn && feature.available && hasText && !keepWins && !shareWins;
+  panel.dataset.growthWinner = keepWins || shareWins ? winner : GROWTH_REQUEST.NONE;
+  panel.hidden = !(keepWins || shareWins || showSignedInSaveUtility);
   if (panel.hidden) return;
 
   if (shareWins) {
+    if (title) title.textContent = 'Share this writing';
     if (copy) copy.textContent = 'Create a public snapshot link to share this transcript.';
     if (signIn) signIn.hidden = true;
     if (save) save.hidden = true;
@@ -384,6 +399,19 @@ function renderVoice(panel) {
     return;
   }
 
+  if (keepWins) {
+    if (title) title.textContent = 'Keep this writing';
+    if (copy) copy.textContent = signedIn ? 'Save this writing in My Documents so you can continue later.' : 'Create a free account to keep this writing in My Documents.';
+    if (signIn) { signIn.hidden = signedIn; signIn.textContent = 'Create free account'; }
+    if (save) save.hidden = !signedIn;
+    if (library) library.hidden = !signedIn;
+    if (share) share.hidden = true;
+    if (status) status.hidden = false;
+    growthArbiter.shown(GROWTH_REQUEST.KEEP);
+    return;
+  }
+
+  if (title) title.textContent = 'Keep this writing';
   if (copy) copy.textContent = 'Save a copy in My Documents so you can continue later.';
   if (signIn) signIn.hidden = true;
   if (save) save.hidden = false;
@@ -396,9 +424,10 @@ async function enhanceVoice() {
   const field = document.getElementById('voiceTranscript');
   const panel = voicePanel();
   if (!field || !panel) return;
-  restoreVoiceDraft(field);
+  const restoredFromAccountFlow = restoreVoiceDraft(field);
 
   const status = panel.querySelector('[data-voice-account-status]');
+  const signIn = panel.querySelector('[data-voice-account-signin]');
   const save = panel.querySelector('[data-voice-account-save]');
   const share = panel.querySelector('[data-voice-account-share]');
   let lastSavedText = '';
@@ -412,6 +441,11 @@ async function enhanceVoice() {
   };
 
   field.addEventListener('input', render);
+  signIn?.addEventListener('click', () => {
+    preserveVoiceDraft();
+    growthArbiter?.opened(GROWTH_REQUEST.KEEP);
+    track('tool_handoff', { target_route: '/sign-in' });
+  });
   share?.addEventListener('click', () => shareVoiceTranscript(share));
 
   if (account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) {
@@ -449,6 +483,7 @@ async function enhanceVoice() {
 
   growthArbiter?.subscribe(render);
   render();
+  if (restoredFromAccountFlow && account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) save.click();
 }
 
 async function start() {
