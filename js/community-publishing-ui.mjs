@@ -5,6 +5,7 @@ import {
   buildSubmissionPayload,
   validateSubmissionForm,
   shouldShowPrompt,
+  isMeaningfulWriting,
   suppressPrompt,
   promptSignature,
   writePublishIntent,
@@ -46,6 +47,23 @@ function sessionStore() {
 
 function track(eventName, detail) {
   if (runtime.WriteUrduTelemetry && typeof runtime.WriteUrduTelemetry.track === 'function') runtime.WriteUrduTelemetry.track(eventName, detail || {});
+}
+
+function growthArbiter() {
+  return runtime.WriteUrduGrowthRequestArbiter || null;
+}
+
+function waitForGrowthArbiter() {
+  return new Promise((resolve) => {
+    let attempts = 0;
+    const check = () => {
+      attempts += 1;
+      const owner = growthArbiter();
+      if (owner || attempts >= 160) { resolve(owner || null); return; }
+      runtime.setTimeout(check, 50);
+    };
+    check();
+  });
 }
 
 function currentText() {
@@ -265,6 +283,7 @@ async function submitSnapshot(state, frozenText, previewNode) {
     const payload = buildSubmissionPayload({ ...state, plainText: frozenText, editorKind });
     const { submission, reused } = await client.submit(payload);
     track('community_submission_completed', { success: true });
+    growthArbiter()?.completed('community_publish');
     successDialog(submission, reused);
   } catch (error) {
     track('community_submission_failed', { success: false });
@@ -288,6 +307,7 @@ function emptyFormState() {
 }
 
 async function beginPublishFlow(entryPoint) {
+  growthArbiter()?.opened('community_publish');
   if (account.state !== ACCOUNT_STATE.SIGNED_IN) {
     flushLocalWriting(runtime);
     writePublishIntent(sessionStore(), { workspaceKind: editorKind, editorKind, entryPoint });
@@ -307,7 +327,9 @@ function addManualAction(actionsContainer) {
   button.setAttribute('data-community-publish-manual', '');
   button.innerHTML = '<i class="fas fa-feather-alt" aria-hidden="true"></i> Publish to Urdu Writers';
   button.addEventListener('click', () => beginPublishFlow('manual'));
+  button.hidden = true;
   actionsContainer.appendChild(button);
+  return button;
 }
 
 function promptBanner() {
@@ -339,6 +361,7 @@ function attachPromptBanner(anchor) {
   submit.onclick = () => { banner.hidden = true; beginPublishFlow('prompt'); };
   dismiss.onclick = () => {
     banner.hidden = true;
+    growthArbiter()?.dismissed('community_publish');
     suppressPrompt(sessionStore(), promptSignature(editorKind, currentText()));
   };
   return banner;
@@ -346,13 +369,20 @@ function attachPromptBanner(anchor) {
 
 let promptTrackedSignature = null;
 
-function checkAutomaticPrompt(anchor) {
+function checkAutomaticPrompt(anchor, toolbarButton) {
   const text = currentText();
   const banner = attachPromptBanner(anchor);
   if (!banner) return;
-  const eligible = shouldShowPrompt(sessionStore(), editorKind, text);
-  banner.hidden = !eligible;
-  if (!eligible) return;
+  const owner = growthArbiter();
+  const familyEligible = isMeaningfulWriting(text);
+  if (owner) owner.update({ communityEligible: familyEligible });
+  const wins = Boolean(owner && owner.current() === 'community_publish');
+  const promptEligible = wins && shouldShowPrompt(sessionStore(), editorKind, text);
+  banner.hidden = !promptEligible;
+  if (toolbarButton) toolbarButton.hidden = !wins || promptEligible;
+  if (!wins) return;
+  owner.shown('community_publish');
+  if (!promptEligible) return;
   const signature = promptSignature(editorKind, text);
   if (promptTrackedSignature === signature) return;
   promptTrackedSignature = signature;
@@ -409,16 +439,16 @@ async function start() {
 
   await resumeIntentIfSignedIn();
 
+  const owner = await waitForGrowthArbiter();
+  if (!owner) return;
   const toolbarSlot = await waitFor(TOOLBAR_SLOT_SELECTOR[editorKind]);
-  if (toolbarSlot && currentText().trim()) addManualAction(toolbarSlot);
+  const toolbarButton = toolbarSlot ? addManualAction(toolbarSlot) : null;
 
   const anchor = await waitFor(PANEL_SELECTOR[editorKind]);
   if (!anchor) return;
 
-  const evaluate = () => {
-    checkAutomaticPrompt(anchor);
-    if (toolbarSlot && currentText().trim()) addManualAction(toolbarSlot);
-  };
+  const evaluate = () => checkAutomaticPrompt(anchor, toolbarButton);
+  owner.subscribe(evaluate);
   evaluate();
 
   document.addEventListener('write-urdu:outcome', (event) => {
