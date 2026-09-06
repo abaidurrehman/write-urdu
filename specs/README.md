@@ -11,6 +11,8 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-GROWTH-001` | Search Console + AdSense Growth System | **Active** — commercial control plane; current AdSense baseline/exclusions and authority/revenue map remain open |
 | `WU-GROWTH-002` | Account Save + Share Entry Points | **Active** — account/save/share behavior now uses value-triggered, single-growth-request arbitration governed by `WU-PLAT-002H` |
 | `WU-GROWTH-003` | Urdu Voice Typing Growth & SEO | **Active** — A/B/C/E shipped; evidence-gated Slice D expansion remains open; activation discovery is governed by `WU-PLAT-002H` |
+| `WU-HERITAGE-001` | Ten Years of Write Urdu: Heritage, Impact & User Stories | **Active** — founder-approved trust/authority programme; Slice A is implementation-active, About/home integration follows visual acceptance, dedicated moderated story collection remains separately gated |
+| `WU-HERITAGE-001A` | Ten-Year Heritage & Impact Page | **Active implementation slice** — `/10-years-of-write-urdu` + evidence methodology + SEO/ad-free/claim-safety acceptance are in progress without touching core writer UI |
 | `WU-COMMUNITY-001` | Moderated Urdu Writing Publishing / Urdu Writers | **Implemented core / acceptance pending** — A–F shipped; staged public/terms/ad-density/rollback acceptance remains |
 | `WU-VOICE-PLAT-001` | Unified Urdu Input Platform | **Implemented core / acceptance pending** — functional platform shipped; activation now treats Voice as a governed input choice rather than a separate duplicated engine |
 | `WU-VOICE-PLAT-001D` | Voice growth & measurement closure | **Active acceptance slice** — functional telemetry/reporting shipped; demonstration/acceptance work remains |
@@ -65,6 +67,8 @@ These are one programme, not separate feature initiatives. The commercial target
 The 2026-09-03 mobile repair intentionally **does not erase the earlier Gate B implementation history**. The command-wall simplification shipped; the harder mobile discoverability/viewport/keyboard acceptance is a new Gate B2 because direct user feedback demonstrates that the prior broad mobile acceptance was insufficient.
 
 The 2026-09-06 conversion child also **does not restart the mobile redesign**. The current Product Pulse window is too close to the 2026-09-04 B2 release for another broad layout conclusion. Mobile remains under the existing post-release evidence/real-device closeout while conversion work starts with telemetry denominator normalization.
+
+**Heritage exception:** `WU-HERITAGE-001A` is an isolated, ad-free trust/content surface approved on 2026-09-06. It does not modify Basic/Rich/Keyboard first-value UI and therefore does not relax the `WU-PLAT-002H` core-UI freeze. About/home promotion and the dedicated moderated story backend remain separate gated slices.
 
 ## Archived contracts
 
