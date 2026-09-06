@@ -9,6 +9,9 @@ This document defines the minimum measurement contract for the core activation p
 - Measure state transitions, not semantic content.
 - A click is an intermediate event, not the final success event when a downstream task exists.
 - Rates must have clear denominators and must not exceed 100% unless explicitly named as an event-per-start ratio rather than a success rate.
+- **A metric must declare whether its numerator is a unique session/attempt state or a repeatable event.** Repeatable events must never be divided by a unique-session denominator and labelled as conversion/success.
+- **Optional branch steps must be modelled as N/A when they do not apply.** A Quick path that legitimately bypasses a step must not make the later event look like an impossible >100% funnel conversion.
+- **Release/path markers are required when old and new instrumentation semantics coexist.** Do not blend incompatible code paths into one apparent funnel.
 
 ## Funnel 1 — Basic Writer first value
 
@@ -43,6 +46,12 @@ Minimum dimensions:
 - acquisition bucket;
 - experiment/release marker.
 
+### First-value denominator rule
+
+`writer_first_*` metrics used in conversion ladders are **unique session-state transitions**. If runtime code can emit the raw underlying event more than once, the rollup/dashboard must deduplicate/materialize the first state before using it as a conversion numerator.
+
+A current-period count may still be shown as a raw event total, but it must be explicitly named as an event count and must not be presented as `first input rate`, `first outcome conversion`, or equivalent.
+
 ## Funnel 2 — Voice
 
 1. voice eligible/exposed;
@@ -58,17 +67,42 @@ Minimum dimensions:
 
 Failure reasons should be a small reviewed enum such as permission denied, unsupported, no speech, network/vendor, initialization, aborted/user stop, unknown. Do not log browser/vendor error strings verbatim if they can contain uncontrolled data.
 
+### Voice frequency vs success
+
+Recognition may produce multiple final results for one voice start. Therefore:
+
+- `voice session success` / `produced Urdu ÷ voice tries` uses unique attempts/sessions;
+- repeated final recognition commits may be shown as `final results per start` or equivalent;
+- repeated final results must not be labelled a success rate.
+
 ## Funnel 3 — Contextual continuation
 
-1. recommendation shown;
-2. recommendation selected;
-3. handoff stored/created;
-4. destination loaded/ready;
-5. payload accepted/restored where applicable;
-6. destination meaningful start;
-7. destination outcome where already measurable.
+1. recommendation eligible;
+2. recommendation shown;
+3. recommendation selected;
+4. handoff stored/created when applicable;
+5. destination loaded/ready;
+6. payload accepted/restored where applicable;
+7. destination meaningful start;
+8. destination outcome where already measurable.
 
 Recommendation ID must be a stable enum; never derive it from user text.
+
+Minimum dimensions while legacy/v2 or other independent paths coexist:
+
+- recommendation ID;
+- source workspace;
+- destination workspace;
+- path/version;
+- release marker.
+
+### Continuation step semantics
+
+- `destination_ready` means the destination workspace is actually initialized/able to accept the handoff, not merely that navigation started.
+- `payload restored` is applicable only to journeys that carry payload; a no-payload journey is N/A, not failure.
+- `meaningful start` means destination-task interaction beyond page load.
+- A click alone must never be called handoff success.
+- If two implementation paths emit the same conceptual state, they must be safely deduplicated or separated by path/version before aggregate conversion is calculated.
 
 ## Funnel 4 — Growth requests
 
@@ -82,6 +116,17 @@ For each request family (`keep`, `share`, `community_publish`):
 - suppressed_due_to_arbitration.
 
 This allows us to determine whether arbitration is reducing clutter without making high-value actions undiscoverable.
+
+Minimum bounded dimensions:
+
+- request family;
+- workspace;
+- writer state/depth bucket;
+- signed-in state as an anonymous bounded boolean/state;
+- suppression winner/reason when applicable;
+- release/experiment marker.
+
+Do not send account identifiers or writing content in product-event payloads.
 
 ## Funnel 5 — Share referral
 
@@ -107,6 +152,17 @@ Do not expose public share IDs in the product dashboard. Aggregate by source typ
 7. export completed;
 8. quick/advanced mode.
 
+### Card branch semantics
+
+Quick and Advanced paths may legitimately bypass different UI steps. Before calculating a sequential conversion, define whether each step is:
+
+- common prerequisite;
+- Quick-only;
+- Advanced-only;
+- optional.
+
+Do not divide a downstream all-path event count by a branch-only step and call the result a conversion rate.
+
 ## Product Pulse views required
 
 ### Activation
@@ -121,6 +177,8 @@ Show 0 / 1–20 / 21–50 / 51–100 / 101–250 / 251–500 / 501–1000 / 1001
 
 Show recommendation impressions, clicks, destination starts and destination outcomes. Do not call raw click rate `handoff success`.
 
+When multiple handoff implementations coexist, expose path/version or report only a safely consolidated unique-state funnel.
+
 ### Growth
 
 Show Keep / Share / Community prompt eligibility, impressions and completions plus arbitration suppressions.
@@ -128,6 +186,8 @@ Show Keep / Share / Community prompt eligibility, impressions and completions pl
 ### Voice
 
 Show exposed -> try -> permission -> listening -> Urdu success and failure mix.
+
+Keep repeated final-recognition frequency in a separately named event-per-start metric.
 
 ### Share loop
 
@@ -137,10 +197,22 @@ Show publish -> view -> CTA -> destination ready -> referred start -> meaningful
 
 Show visit -> content -> edit -> export attempt -> export complete, split Quick/Advanced when relevant.
 
+Do not imply `export controls reached` is a universal prerequisite unless code inspection proves it is common to both paths.
+
 ## Data-quality checks
 
 - Counts should obey funnel ordering where steps are single-occurrence session states; document exceptions where repeated events are allowed.
 - A metric called `success rate` must use unique eligible attempts/sessions so it cannot exceed 100%.
+- A metric called `conversion` must use compatible eligible/converted populations from the same path semantics.
 - Repeated recognition-final events should be named `final results per start` or similar, not `final-speech rate`.
 - Dashboard footnotes must state when counts are anonymous aggregate/browser-session signals and not people/accounts.
 - Missing eligibility denominators must block confident conversion claims.
+- Optional branch steps must not be used as denominators for all-path downstream events.
+- Legacy/v2 path mixing must be explicitly separated or deduplicated before aggregate funnel rates are trusted.
+- Every materially changed funnel requires a bounded release marker so the first clean post-change window is identifiable.
+
+## 2026-09-06 repair trigger
+
+The 2026-09-06 Product Pulse snapshot showed concrete violations of the intended semantics, including first-input/outcome ratios above 100%, a Card Studio downstream count divided by a narrower branch step, and continuation restore counts exceeding destination-ready counts across independent handoff paths.
+
+These observations activate **Slice 0** of `WU-PLAT-002H-CONVERSION-REPAIR.md`. The fix is measurement normalization first, not a cosmetic dashboard clamp. Do not merely cap percentages at 100%; correct the numerator/denominator/path semantics.
