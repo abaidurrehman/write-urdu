@@ -1,4 +1,4 @@
-# @write-urdu/inpage-unicode
+# write-urdu-inpage-unicode
 
 Convert Urdu text between legacy InPage-style encoding and Unicode — in both
 directions. This is the exact engine behind
@@ -14,13 +14,13 @@ This package does not parse `.inp` binary document files; it converts plain text
 ## Install
 
 ```bash
-npm install @write-urdu/inpage-unicode
+npm install write-urdu-inpage-unicode
 ```
 
 ## Usage
 
 ```js
-const { decodeLegacyText, encodeUnicodeText, PROFILE } = require('@write-urdu/inpage-unicode');
+const { decodeLegacyText, encodeUnicodeText, PROFILE } = require('write-urdu-inpage-unicode');
 
 // Legacy InPage-style text -> Unicode
 const decoded = decodeLegacyText(legacyText);

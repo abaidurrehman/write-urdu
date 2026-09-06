@@ -25,7 +25,7 @@
 - **First, verify the module boundary.** Confirm Cloudflare Pages Functions' esbuild-based bundler can `import` the UMD file's `module.exports` via CJS interop from the new route (Step 3b). If it cannot cleanly:
   - add a thin `functions/lib/inpage-unicode.mjs` that `require()`s or re-exports the same functions;
   - it must call into the existing module — never redefine or copy the mapping tables into a second location.
-- Package name: `@write-urdu/inpage-unicode` (confirm npm org/scope availability with the founder before publishing).
+- Package name: `write-urdu-inpage-unicode` (confirm npm org/scope availability with the founder before publishing).
 - `package.json`: `main` (and `module`, if a `.mjs` wrapper is added) point at the existing core file; zero new runtime dependencies.
 - License: confirm with the founder before publishing (do not assume MIT).
 - README: usage examples for both directions, `converted`/`unsupported`/`warnings` fields explained, links to the live browser tool and the beta API reference doc.
@@ -81,7 +81,7 @@ No Worker, no service binding, no D1, no Durable Object — the entire handler r
 
 ## 7. Manual steps only the founder can perform
 
-1. Confirm npm org/scope for `@write-urdu/inpage-unicode` and the package license.
+1. Confirm npm org/scope for `write-urdu-inpage-unicode` and the package license.
 2. Set `INPAGE_API_ENABLED=true` and `INPAGE_API_BETA_SECRET=<value>` on the live Cloudflare Pages project.
 3. Wire the Cloudflare Rate Limiting binding (10 req/min) for the new route.
 4. Hand the beta secret to the first 2–3 external testers by hand (mirrors InvoiceCraftly's 102.3 distribution — no self-serve signup in this slice).
