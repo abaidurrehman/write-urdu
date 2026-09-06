@@ -30,7 +30,7 @@
             '/urdu-text-cleaner', '/urdu-ocr', '/tools/urdu-voice-typing', '/tools/inpage-unicode-converter'
         ],
         trust: [
-            '/why-write-urdu', '/contact', '/changelog', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
+            '/why-write-urdu', '/10-years-of-write-urdu', '/contact', '/changelog', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
             '/write-urdu-search', '/write-urdu-sitemap', '/sign-in', '/my-documents',
             '/community-guidelines', '/my-publications'
         ]
