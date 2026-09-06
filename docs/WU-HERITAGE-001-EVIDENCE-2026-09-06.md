@@ -18,46 +18,46 @@ Do **not** publish a precise July day unless a separate primary source verifies 
 
 ## 2. Recent measured Product Pulse snapshot
 
-The reviewed current-period snapshot contains:
+The reviewed current-period snapshot (trailing 7 days, ending 2026-09-06) contains:
 
-- Product visits: **5,323**
-- Engaged visits: **4,225**
-- Engagement rate: **79.4%**
-- Writer viewed: **3,147**
-- First input events: **2,880**
-- First Urdu success events: **1,262**
+- Product visits: **5,564**
+- Engaged visits: **4,408**
+- Engagement rate: **79.2%**
+- Writer viewed: **3,526**
+- First input events: **3,218**
+- First Urdu success events: **1,396**
 
 Writing-length buckets, labelled in Product Pulse as engaged writing sessions only:
 
 | Maximum observed writing length | Sessions |
 |---|---:|
-| 0 | 1,335 |
-| 1–20 | 443 |
-| 21–50 | 139 |
-| 51–100 | 70 |
-| 101–250 | 54 |
-| 251–500 | 56 |
-| 501–1,000 | 78 |
-| 1,001–2,500 | 99 |
-| 2,500+ | 128 |
+| 0 | 1,386 |
+| 1–20 | 471 |
+| 21–50 | 145 |
+| 51–100 | 72 |
+| 101–250 | 53 |
+| 251–500 | 59 |
+| 501–1,000 | 80 |
+| 1,001–2,500 | 112 |
+| 2,500+ | 140 |
 
 ### Derived non-zero session count
 
-`443 + 139 + 70 + 54 + 56 + 78 + 99 + 128 = 1,067`
+`471 + 145 + 72 + 53 + 59 + 80 + 112 + 140 = 1,132`
 
 Therefore the public page may say:
 
-> `In one recent week, 1,067 writing sessions contained text.`
+> `In one recent week, 1,132 writing sessions contained text.`
 
 Use `sessions`, not `unique people`, because the telemetry does not prove one person per session.
 
 ### Long-writing observation
 
-The open-ended `2,500+` bucket contains **128 sessions**.
+The open-ended `2,500+` bucket contains **140 sessions**.
 
 Public-safe wording:
 
-> `In one recent week, 128 writing sessions grew beyond 2,500 characters.`
+> `In one recent week, 140 writing sessions grew beyond 2,500 characters.`
 
 Do not call these `documents`, `essays`, `books` or `assignments`; the content purpose is not observed.
 
@@ -67,31 +67,31 @@ For bounded buckets, use the numerical midpoint:
 
 | Bucket | Midpoint assumption | Sessions | Estimated represented characters |
 |---|---:|---:|---:|
-| 1–20 | 10.5 | 443 | 4,651.5 |
-| 21–50 | 35.5 | 139 | 4,934.5 |
-| 51–100 | 75.5 | 70 | 5,285 |
-| 101–250 | 175.5 | 54 | 9,477 |
-| 251–500 | 375.5 | 56 | 21,028 |
-| 501–1,000 | 750.5 | 78 | 58,539 |
-| 1,001–2,500 | 1,750.5 | 99 | 173,299.5 |
+| 1–20 | 10.5 | 471 | 4,945.5 |
+| 21–50 | 35.5 | 145 | 5,147.5 |
+| 51–100 | 75.5 | 72 | 5,436 |
+| 101–250 | 175.5 | 53 | 9,301.5 |
+| 251–500 | 375.5 | 59 | 22,154.5 |
+| 501–1,000 | 750.5 | 80 | 60,040 |
+| 1,001–2,500 | 1,750.5 | 112 | 196,056 |
 
-Subtotal before the open-ended bucket: **277,214.5 characters**.
+Subtotal before the open-ended bucket: **303,081 characters**.
 
 For the `2,500+` bucket, retain a bounded scenario rather than inventing one average:
 
-- low scenario: `128 × 2,500 = 320,000`
-- central illustration: `128 × 3,750 = 480,000`
-- high bounded illustration: `128 × 5,000 = 640,000`
+- low scenario: `140 × 2,500 = 350,000`
+- central illustration: `140 × 3,750 = 525,000`
+- high bounded illustration: `140 × 5,000 = 700,000`
 
 Total represented current-period character scale:
 
-- low: **597,214.5**
-- central: **757,214.5**
-- high: **917,214.5**
+- low: **653,081**
+- central: **828,081**
+- high: **1,003,081**
 
 Public-safe rounded wording:
 
-> `The recent writing-length buckets represent roughly 0.6–0.9 million characters of writing.`
+> `The recent writing-length buckets represent roughly 0.65–1.0 million characters of writing.`
 
 This is a derived bucket estimate, not an exact character counter.
 
@@ -101,15 +101,15 @@ The first public heritage release deliberately avoids assuming historical traffi
 
 Use a simple constant-current-rate scale exercise as a transparent baseline:
 
-- 0.60–0.92 million characters/week
+- 0.65–1.0 million characters/week
 - × 52 weeks/year
 - × 10 years
-- ≈ **312–478 million characters**
+- ≈ **340–522 million characters**
 
 To translate that into a human-readable word equivalent, use an explicitly rough editorial assumption of **about 6 characters per word including spacing**. This is not a linguistic measurement of every Urdu writing style; it is a scale conversion only.
 
-- 312m / 6 ≈ **52 million word-equivalents**
-- 478m / 6 ≈ **80 million word-equivalents**
+- 340m / 6 ≈ **57 million word-equivalents**
+- 522m / 6 ≈ **87 million word-equivalents**
 
 Therefore the first release may say:
 
@@ -121,8 +121,8 @@ It should not publish a more precise lifetime number as fact.
 
 For an illustrative comparison only:
 
-- at 80,000 words per full-length book, 52–80 million words ≈ **650–1,000 books' worth of text**;
-- at 500 words per page, 52–80 million words ≈ **104,000–160,000 pages**.
+- at 80,000 words per full-length book, 57–87 million words ≈ **700–1,100 books' worth of text**;
+- at 500 words per page, 57–87 million words ≈ **114,000–174,000 pages**.
 
 Safe public wording:
 
@@ -166,9 +166,9 @@ Preferred supporting line:
 |---|---|---|---|
 | Online since July 2016 | founder-confirmed history | yes | no exact day |
 | 10 years of Write Urdu | derived calendar statement | yes | July 2016 → 2026 |
-| 1,067 recent non-zero writing sessions | derived | yes | from bucket sum |
-| 128 recent sessions over 2,500 characters | measured | yes | current sample |
-| roughly 0.6–0.9m characters in recent sample | derived estimate | yes | midpoint/open-bucket assumptions disclosed |
+| 1,132 recent non-zero writing sessions | derived | yes | from bucket sum |
+| 140 recent sessions over 2,500 characters | measured | yes | current sample |
+| roughly 0.65–1.0m characters in recent sample | derived estimate | yes | midpoint/open-bucket assumptions disclosed |
 | tens of millions of lifetime word-equivalents | estimate | yes | current-rate ten-year scale exercise |
 | hundreds of full-length books' worth | illustrative | yes | 80k words/book |
 | more popular before generative AI | historical hypothesis | **not yet as public fact** | needs historical evidence |

@@ -16,11 +16,11 @@ assert.match(page, /<h1 id="heritage-title">10 years of writing Urdu together<\/
 assert.match(page, /online since <strong>July 2016<\/strong>/, 'Founder-confirmed July 2016 launch month must remain visible');
 assert.match(page, /lang="ur" dir="rtl">دس سال، لاکھوں الفاظ، بے شمار کہانیاں/, 'Heritage hero must include meaningful Urdu copy with language/direction semantics');
 
-assert.match(page, /Derived · recent week[\s\S]*1,067/, 'Derived recent non-zero writing-session count must be visible and labelled as a weekly sample');
-assert.match(page, /Measured · recent week[\s\S]*128/, 'Measured 2500+ writing-session count must be visible and labelled as a weekly sample');
+assert.match(page, /Derived · recent week[\s\S]*1,132/, 'Derived recent non-zero writing-session count must be visible and labelled as a weekly sample');
+assert.match(page, /Measured · recent week[\s\S]*140/, 'Measured 2500+ writing-session count must be visible and labelled as a weekly sample');
 assert.match(page, /Estimated · lifetime scale[\s\S]*Tens of millions/, 'Lifetime scale must be visibly labelled as estimated');
-assert.match(page, /0\.6–0\.9 million characters/, 'Public methodology must disclose the bounded recent character estimate');
-assert.match(page, /52–80 million word-equivalents/, 'Public methodology must show the disclosed lifetime scale rather than a hidden magic number');
+assert.match(page, /0\.65–1\.0 million characters/, 'Public methodology must disclose the bounded recent character estimate');
+assert.match(page, /57–87 million word-equivalents/, 'Public methodology must show the disclosed lifetime scale rather than a hidden magic number');
 assert.doesNotMatch(page, /100 million words (?:written|were written)/i, 'Heritage page must not hard-claim an unsupported exact 100 million words');
 assert.doesNotMatch(page, /thousands of books were written/i, 'Illustrative book equivalents must not become false observed use cases');
 
@@ -54,9 +54,9 @@ assert.match(registry, /10-years-of-write-urdu\.html,\/10-years-of-write-urdu,Ab
 assert.match(redirects, /^\/10-years-of-write-urdu\.html \/10-years-of-write-urdu 301$/m, 'Legacy heritage HTML route must redirect to the canonical route');
 assert.match(redirects, /^\/10-years-of-write-urdu\/ \/10-years-of-write-urdu 301$/m, 'Trailing-slash heritage route must redirect to the canonical route');
 assert.match(humanSitemap, /href="\/10-years-of-write-urdu"/, 'Human sitemap must expose the heritage route');
-assert.match(evidence, /1,067/, 'Evidence ledger must retain the derived session basis');
-assert.match(evidence, /597,214\.5/, 'Evidence ledger must retain the low character calculation');
-assert.match(evidence, /917,214\.5/, 'Evidence ledger must retain the high bounded character calculation');
+assert.match(evidence, /1,132/, 'Evidence ledger must retain the derived session basis');
+assert.match(evidence, /653,081/, 'Evidence ledger must retain the low character calculation');
+assert.match(evidence, /1,003,081/, 'Evidence ledger must retain the high bounded character calculation');
 assert.match(evidence, /Tens of millions of Urdu words — estimated, not counted/, 'Evidence ledger must retain the approved public headline');
 
 console.log('Write Urdu heritage and impact contracts passed.');
