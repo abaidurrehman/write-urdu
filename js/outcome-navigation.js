@@ -239,6 +239,18 @@
         '</a>';
     }
 
+    function renderPreview(group, lang) {
+        var preview = group.preview;
+        if (!preview) return '';
+        var ctaLabel = lang === 'ur' ? 'شروع کریں' : 'Get started';
+        return '<div class="wu-nav-panel-preview wu-nav-preview--' + preview.theme + '">' +
+            '<span class="wu-nav-preview-icon" aria-hidden="true"><svg viewBox="0 0 24 24">' + (ICONS[group.icon] || ICONS.write) + '</svg></span>' +
+            '<span class="wu-nav-preview-headline">' + preview.headline[lang] + '</span>' +
+            '<span class="wu-nav-preview-caption">' + preview.caption[lang] + '</span>' +
+            '<a class="wu-nav-preview-cta" href="' + localizedHref(preview.ctaHref) + '">' + ctaLabel + '<span aria-hidden="true"> →</span></a>' +
+        '</div>';
+    }
+
     function renderGroup(group, lang) {
         var isActive = group.items.some(active);
         var panelId = 'wu-nav-panel-' + group.id;
@@ -249,6 +261,7 @@
             '</button>' +
             '<div id="' + panelId + '" class="wu-nav-more-menu wu-outcome-menu-panel' + (hasPreview ? ' has-preview' : '') + '" hidden>' +
                 '<div class="wu-nav-panel-list">' + group.items.map(function (item) { return renderItem(item, lang); }).join('') + '</div>' +
+                renderPreview(group, lang) +
             '</div>' +
         '</div>';
     }

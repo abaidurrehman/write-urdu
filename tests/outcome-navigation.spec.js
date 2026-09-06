@@ -161,3 +161,27 @@ test('opening a mega-menu group closes any other open group', async ({ page }) =
   await page.keyboard.press('Escape');
   await expect(create).toHaveAttribute('aria-expanded', 'false');
 });
+
+test('desktop mega-menu panel shows an illustrated preview card', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await open(page, '/');
+
+  const write = page.locator('[data-wu-nav-group="write"]');
+  await write.locator('.wu-outcome-toggle').click();
+
+  const preview = write.locator('.wu-nav-panel-preview');
+  await expect(preview).toBeVisible();
+  await expect(preview.locator('.wu-nav-preview-headline')).toHaveText('Type Urdu, instantly');
+  await expect(preview.locator('.wu-nav-preview-cta')).toHaveAttribute('href', '/');
+});
+
+test('mobile mega-menu panel hides the preview card', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, '/');
+  await openMobileMenuIfNeeded(page);
+
+  const write = page.locator('[data-wu-nav-group="write"]');
+  await write.locator('.wu-outcome-toggle').click();
+  await expect(write.locator('.wu-nav-panel-preview')).toBeHidden();
+  await expect(write.locator('.wu-nav-panel-list')).toBeVisible();
+});
