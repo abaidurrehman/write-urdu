@@ -40,7 +40,7 @@ This spec does not modify the mapping tables, the browser tool, or its route (`/
 
 ### Phase A — npm package (ship first)
 
-- Package the existing engine as `write-urdu-inpage-unicode`, no server, no ongoing cost.
+- Package the existing engine as `@write-urdu/inpage-unicode`, no server, no ongoing cost.
 - No logic changes — the UMD module already supports both `require()` and browser global use.
 
 ### Phase B — hosted beta API (ship second)

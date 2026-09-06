@@ -195,7 +195,7 @@ Human/product gates:
 **Skill:** `.claude/skills/wu-inpage-unicode-api/SKILL.md`
 **State:** Planned; explicitly approved 2026-09-06 as an exception to rule 7 because it is additive-only against the already-shipped `WU-TOOLS-EXPANSION-005` engine, has negligible compute cost, and does not touch any `WU-PLAT-002H`-owned file or surface.
 
-- [ ] Phase A — publish `write-urdu-inpage-unicode` npm package (no server, no cost).
+- [ ] Phase A — publish `@write-urdu/inpage-unicode` npm package (no server, no cost).
 - [ ] Phase B — ship beta API route (`/api/v1/inpage-unicode/convert`) behind a single shared secret.
 - [ ] Add cross-sell link on the existing `/tools/inpage-unicode-converter/` page only.
 - [ ] Hold real API keys/quota/billing/docs-portal work until Phase A/B show real external usage.
