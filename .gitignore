@@ -11,3 +11,4 @@ qa-*.png
 scripts/ai-writing-benchmark/results/
 .wrangler/
 packages/*/dist/
+.npmrc
