@@ -58,7 +58,7 @@ async function captureMetrics(page, route, viewport) {
     const urduStyle = urduSample ? getComputedStyle(urduSample) : null;
     const header = document.querySelector('.wu-site-header');
     const nav = document.querySelector('.wu-primary-nav');
-    const navItem = document.querySelector('.wu-primary-nav > a:not(.is-active), .wu-nav-more > summary:not(.is-active), .wu-primary-nav > a');
+    const navItem = document.querySelector('.wu-primary-nav > a:not(.is-active), .wu-nav-more > .wu-outcome-toggle:not(.is-active), .wu-primary-nav > a');
     const menuToggle = document.querySelector('.wu-menu-toggle');
     const neutralAction = document.querySelector('.home-actions summary.btn-dark, .tool-actions summary.btn-dark, .keyboard-actions summary.btn-dark');
 
