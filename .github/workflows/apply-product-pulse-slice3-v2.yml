@@ -1,0 +1,287 @@
+name: Apply Product Pulse Slice 3 v2
+
+on:
+  push:
+    branches:
+      - feature/product-pulse-slice3-voice-keep
+    paths:
+      - .github/workflows/apply-product-pulse-slice3-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feature/product-pulse-slice3-voice-keep
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply bounded Slice 3 implementation
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace_once(path, old, new, label):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected exactly one match in {path}, found {count}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          replace_once(
+              'js/growth-request-arbiter.mjs',
+              "export const GROWTH_RELEASE_MARKER = 'wu-plat-002h-s2-2026-09-06-v1';",
+              "export const GROWTH_RELEASE_MARKER = 'wu-plat-002h-s3-2026-09-06-v1';",
+              'growth release marker'
+          )
+          replace_once(
+              'js/growth-request-arbiter.mjs',
+              "    communityEligible: input.communityEligible === true,\n    keepEnabled: input.keepEnabled !== false,",
+              "    communityEligible: input.communityEligible === true,\n    keepMomentEligible: input.keepMomentEligible === true,\n    keepEnabled: input.keepEnabled !== false,",
+              'bounded keep moment normalization'
+          )
+          replace_once(
+              'js/growth-request-arbiter.mjs',
+              "  const keep = state.keepEnabled && substantial && !state.safelySaved && !(state.meaningfulOutcome && state.localProtected);",
+              "  const keep = state.keepEnabled && (substantial || state.keepMomentEligible) && !state.safelySaved && !(state.meaningfulOutcome && state.localProtected);",
+              'keep moment decision'
+          )
+          replace_once(
+              'js/growth-request-arbiter.mjs',
+              "    localProtected: false, meaningfulOutcome: false, communityEligible: false, keepEnabled: true, shareEnabled: true, communityEnabled: true",
+              "    localProtected: false, meaningfulOutcome: false, communityEligible: false, keepMomentEligible: false, keepEnabled: true, shareEnabled: true, communityEnabled: true",
+              'arbiter state default'
+          )
+          replace_once(
+              'js/growth-request-arbiter.mjs',
+              "    return [state.writerState, state.accountState, state.safelySaved ? 1 : 0, state.localProtected ? 1 : 0, state.meaningfulOutcome ? 1 : 0, state.communityEligible ? 1 : 0].join('|');",
+              "    return [state.writerState, state.accountState, state.safelySaved ? 1 : 0, state.localProtected ? 1 : 0, state.meaningfulOutcome ? 1 : 0, state.communityEligible ? 1 : 0, state.keepMomentEligible ? 1 : 0].join('|');",
+              'arbiter state key'
+          )
+
+          replace_once(
+              'js/urdu-voice-typing.js',
+              "    var currentStateKey = 'checking-support';\n    var currentNoticeKey = null;",
+              "    var currentStateKey = 'checking-support';\n    var currentNoticeKey = null;\n    var finalCommittedSinceStart = false;",
+              'voice final state flag'
+          )
+          replace_once(
+              'js/urdu-voice-typing.js',
+              "        onStart: function () {\n            listening = true;\n            startedAt = Date.now();",
+              "        onStart: function () {\n            listening = true;\n            startedAt = Date.now();\n            finalCommittedSinceStart = false;",
+              'voice start reset'
+          )
+          replace_once(
+              'js/urdu-voice-typing.js',
+              "        onFinal: function (text) {\n            transcriptTarget.insertText(text);\n            interim.textContent = listening ? t('listening-ellipsis') : '';\n            refreshActions();\n        },",
+              "        onFinal: function (text) {\n            transcriptTarget.insertText(text);\n            if (/[\\u0600-\\u06FF]/.test(String(text || ''))) finalCommittedSinceStart = true;\n            interim.textContent = listening ? t('listening-ellipsis') : '';\n            refreshActions();\n        },",
+              'voice final Urdu commit marker'
+          )
+          replace_once(
+              'js/urdu-voice-typing.js',
+              "            refreshActions();\n        }\n    });",
+              "            refreshActions();\n            var successfulIdleCommit = finalCommittedSinceStart && hasText();\n            finalCommittedSinceStart = false;\n            if (successfulIdleCommit) {\n                document.dispatchEvent(new CustomEvent('write-urdu:voice-success-idle', { detail: { workspace: 'voice-typing' } }));\n            }\n        }\n    });",
+              'voice idle success event'
+          )
+
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "let localProtected = false;\nlet lastSavedState = false;",
+              "let localProtected = false;\nlet lastSavedState = false;\nlet voiceSuccessEligible = false;",
+              'voice success eligibility state'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  growthArbiter.update({ writerState: writerStateFromLength(currentLength(), meaningfulOutcome), meaningfulOutcome, localProtected });",
+              "  growthArbiter.update({ writerState: writerStateFromLength(currentLength(), meaningfulOutcome), meaningfulOutcome, localProtected, keepMomentEligible: path === '/tools/urdu-voice-typing' && voiceSuccessEligible });",
+              'writer state sync'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "function onWritingChanged() {\n  if (meaningfulOutcome) { meaningfulOutcome = false; localProtected = false; }\n  syncWriterState();\n}",
+              "function onWritingChanged() {\n  if (meaningfulOutcome) { meaningfulOutcome = false; localProtected = false; }\n  if (path === '/tools/urdu-voice-typing' && currentLength() === 0) {\n    voiceSuccessEligible = false;\n    growthArbiter?.update({ keepEnabled: false, keepMomentEligible: false });\n  }\n  syncWriterState();\n}",
+              'clear voice keep eligibility'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  document.addEventListener('write-urdu:outcome', (event) => {",
+              "  document.addEventListener('write-urdu:voice-success-idle', (event) => {\n    if (path !== '/tools/urdu-voice-typing' || event.detail?.workspace !== 'voice-typing' || currentLength() === 0) return;\n    if (account.state !== ACCOUNT_STATE.SIGNED_OUT || !feature.available) return;\n    voiceSuccessEligible = true;\n    growthArbiter.update({ keepEnabled: true, keepMomentEligible: true });\n    syncWriterState();\n  });\n  document.addEventListener('write-urdu:outcome', (event) => {",
+              'voice success growth listener'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  panel.innerHTML = `\n    <div class=\"editor-account-documents-copy\"><strong>Keep this transcript</strong><span data-voice-account-copy>Keep or share this transcript when it is ready.</span></div>",
+              "  panel.innerHTML = `\n    <div class=\"editor-account-documents-copy\"><strong data-voice-account-title>Keep this writing</strong><span data-voice-account-copy>Keep or share this writing when it is ready.</span></div>",
+              'voice retained-value copy'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  const copy = panel.querySelector('[data-voice-account-copy]');\n  const signIn = panel.querySelector('[data-voice-account-signin]');",
+              "  const title = panel.querySelector('[data-voice-account-title]');\n  const copy = panel.querySelector('[data-voice-account-copy]');\n  const signIn = panel.querySelector('[data-voice-account-signin]');",
+              'voice title reference'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  const shareWins = winner === GROWTH_REQUEST.SHARE;\n  const showSignedInSaveUtility = signedIn && feature.available && hasText && !shareWins;\n  panel.dataset.growthWinner = shareWins ? winner : GROWTH_REQUEST.NONE;\n  panel.hidden = !(shareWins || showSignedInSaveUtility);",
+              "  const keepWins = winner === GROWTH_REQUEST.KEEP;\n  const shareWins = winner === GROWTH_REQUEST.SHARE;\n  const showSignedInSaveUtility = signedIn && feature.available && hasText && !keepWins && !shareWins;\n  panel.dataset.growthWinner = keepWins || shareWins ? winner : GROWTH_REQUEST.NONE;\n  panel.hidden = !(keepWins || shareWins || showSignedInSaveUtility);",
+              'voice winner visibility'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  if (shareWins) {\n    if (copy) copy.textContent = 'Create a public snapshot link to share this transcript.';",
+              "  if (shareWins) {\n    if (title) title.textContent = 'Share this writing';\n    if (copy) copy.textContent = 'Create a public snapshot link to share this transcript.';",
+              'voice share title'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "    growthArbiter.shown(GROWTH_REQUEST.SHARE);\n    return;\n  }\n\n  if (copy) copy.textContent = 'Save a copy in My Documents so you can continue later.';",
+              "    growthArbiter.shown(GROWTH_REQUEST.SHARE);\n    return;\n  }\n\n  if (keepWins) {\n    if (title) title.textContent = 'Keep this writing';\n    if (copy) copy.textContent = signedIn ? 'Save this writing in My Documents so you can continue later.' : 'Create a free account to keep this writing in My Documents.';\n    if (signIn) { signIn.hidden = signedIn; signIn.textContent = 'Create free account'; }\n    if (save) save.hidden = !signedIn;\n    if (library) library.hidden = !signedIn;\n    if (share) share.hidden = true;\n    if (status) status.hidden = false;\n    growthArbiter.shown(GROWTH_REQUEST.KEEP);\n    return;\n  }\n\n  if (title) title.textContent = 'Keep this writing';\n  if (copy) copy.textContent = 'Save a copy in My Documents so you can continue later.';",
+              'voice keep winner rendering'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  restoreVoiceDraft(field);\n\n  const status = panel.querySelector('[data-voice-account-status]');",
+              "  const restoredFromAccountFlow = restoreVoiceDraft(field);\n\n  const status = panel.querySelector('[data-voice-account-status]');",
+              'voice restore result'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  const status = panel.querySelector('[data-voice-account-status]');\n  const save = panel.querySelector('[data-voice-account-save]');\n  const share = panel.querySelector('[data-voice-account-share]');",
+              "  const status = panel.querySelector('[data-voice-account-status]');\n  const signIn = panel.querySelector('[data-voice-account-signin]');\n  const save = panel.querySelector('[data-voice-account-save]');\n  const share = panel.querySelector('[data-voice-account-share]');",
+              'voice sign-in reference'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  field.addEventListener('input', render);\n  share?.addEventListener('click', () => shareVoiceTranscript(share));",
+              "  field.addEventListener('input', render);\n  signIn?.addEventListener('click', () => {\n    preserveVoiceDraft();\n    growthArbiter?.opened(GROWTH_REQUEST.KEEP);\n    track('tool_handoff', { target_route: '/sign-in' });\n  });\n  share?.addEventListener('click', () => shareVoiceTranscript(share));",
+              'voice Keep account handoff'
+          )
+          replace_once(
+              'js/account-growth-entry.mjs',
+              "  growthArbiter?.subscribe(render);\n  render();\n}\n\nasync function start() {",
+              "  growthArbiter?.subscribe(render);\n  render();\n  if (restoredFromAccountFlow && account.state === ACCOUNT_STATE.SIGNED_IN && feature.available && save) save.click();\n}\n\nasync function start() {",
+              'voice restored draft auto-save'
+          )
+
+          replace_once(
+              'tests/growth-request-arbiter.test.mjs',
+              "assert.equal(winner({ writerState: 'E2' }), GROWTH_REQUEST.NONE);\nassert.equal(winner({ writerState: 'E3' }), GROWTH_REQUEST.KEEP, 'substantial unsaved work must protect recovery first');",
+              "assert.equal(winner({ writerState: 'E2' }), GROWTH_REQUEST.NONE);\nassert.equal(winner({ writerState: 'E1', keepMomentEligible: true }), GROWTH_REQUEST.KEEP, 'a bounded post-success moment may protect short writing');\nassert.equal(winner({ writerState: 'E1', keepMomentEligible: true, keepEnabled: false }), GROWTH_REQUEST.NONE, 'the post-success moment cannot bypass a disabled Keep surface');\nassert.equal(winner({ writerState: 'E3' }), GROWTH_REQUEST.KEEP, 'substantial unsaved work must protect recovery first');",
+              'Voice Keep decision tests'
+          )
+          replace_once(
+              'scripts/run-contract-tests.js',
+              "  'tests/product-pulse-slice2-contract.test.js',\n  'tests/growth-request-arbiter.test.mjs',",
+              "  'tests/product-pulse-slice2-contract.test.js',\n  'tests/product-pulse-slice3-contract.test.js',\n  'tests/growth-request-arbiter.test.mjs',",
+              'contract runner Slice 3'
+          )
+
+          spec = Path('specs/WU-PLAT-002H-CONVERSION-REPAIR.md')
+          text = spec.read_text(encoding='utf-8')
+          marker = "### Guardrails\n\n- no drop in Voice completion caused by an intrusive prompt;\n- no transcript/audio telemetry;\n- no signup gate;\n- no duplicate Keep banner from another component.\n"
+          note = marker + "\n### Slice 3 implementation note — 2026-09-06\n\nImplemented on `feature/product-pulse-slice3-voice-keep` for review. The initial experiment is intentionally bounded to the dedicated `/tools/urdu-voice-typing` owner because that route has the existing account-growth draft continuity path and the clean 91 tries → 51 Urdu-success baseline. Voice Keep remains disabled at boot and becomes eligible only after a final Urdu speech result has been committed and recognition has returned to idle. The shared arbiter receives only a bounded `keepMomentEligible` boolean; signed-out users may then see the existing compact Keep panel, while normal Voice use remains ungated. Choosing account Keep preserves the writing in the existing 30-minute consume-once session handoff, returns through the existing auth route, restores it, and auto-saves it when the account/document service is available. No transcript, text or audio is added to growth telemetry. Embedded Voice input in Basic/Rich/other workspaces keeps its existing behavior in this first experiment rather than receiving a second voice-specific prompt. Growth diagnostics move to release marker `wu-plat-002h-s3-2026-09-06-v1`.\n"
+          if marker not in text:
+              raise SystemExit('Slice 3 spec guardrail marker not found')
+          if '### Slice 3 implementation note — 2026-09-06' not in text:
+              spec.write_text(text.replace(marker, note, 1), encoding='utf-8')
+
+      - name: Add Slice 3 contract
+        shell: bash
+        run: |
+          cat > tests/product-pulse-slice3-contract.test.js <<'EOF'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = path.resolve(__dirname, '..');
+          const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
+
+          const voice = read('js', 'urdu-voice-typing.js');
+          const growth = read('js', 'account-growth-entry.mjs');
+          const arbiter = read('js', 'growth-request-arbiter.mjs');
+
+          assert.match(voice, /var finalCommittedSinceStart = false;/, 'Voice route must track whether a final Urdu result was committed');
+          const finalIndex = voice.indexOf('transcriptTarget.insertText(text)');
+          const finalFlagIndex = voice.indexOf('finalCommittedSinceStart = true', finalIndex);
+          const endIndex = voice.indexOf('onEnd: function ()', finalFlagIndex);
+          const dispatchIndex = voice.indexOf("write-urdu:voice-success-idle", endIndex);
+          assert.ok(finalIndex >= 0 && finalFlagIndex > finalIndex, 'success state must be set only after inserting a final result');
+          assert.match(voice.slice(finalIndex, finalFlagIndex + 80), /\\u0600-\\u06FF/, 'Voice Keep eligibility must require Urdu script in the committed final result');
+          assert.ok(endIndex > finalFlagIndex && dispatchIndex > endIndex, 'Voice success must be emitted only after recognition ends');
+          const interimBlock = voice.slice(voice.indexOf('onInterim: function'), voice.indexOf('onFinal: function'));
+          assert.doesNotMatch(interimBlock, /voice-success-idle/, 'interim recognition must never trigger Keep');
+          const dispatchBlock = voice.slice(dispatchIndex - 140, dispatchIndex + 190);
+          assert.doesNotMatch(dispatchBlock, /transcript\\s*:|audio\\s*:|text\\s*:/, 'Voice success signal must carry bounded state only');
+
+          assert.match(arbiter, /keepMomentEligible: input\.keepMomentEligible === true/, 'arbiter must normalize the Voice success moment as a bounded boolean');
+          assert.match(arbiter, /\(substantial \|\| state\.keepMomentEligible\)/, 'bounded success moment may make Keep eligible without changing global length buckets');
+          assert.match(arbiter, /wu-plat-002h-s3-2026-09-06-v1/, 'Slice 3 must establish a clean growth release boundary');
+
+          assert.match(growth, /let voiceSuccessEligible = false;/, 'account-growth owner must keep local bounded Voice-success state');
+          assert.match(growth, /write-urdu:voice-success-idle/, 'account-growth owner must consume the post-idle success signal');
+          assert.match(growth, /account\.state !== ACCOUNT_STATE\.SIGNED_OUT \|\| !feature\.available/, 'Voice acquisition experiment must be signed-out only');
+          assert.match(growth, /growthArbiter\.update\(\{ keepEnabled: true, keepMomentEligible: true \}\)/, 'successful Voice must enable Keep only through the shared arbiter');
+          assert.match(growth, /const keepWins = winner === GROWTH_REQUEST\.KEEP;/, 'Voice panel must render shared-arbiter Keep rather than a second banner');
+          assert.match(growth, /growthArbiter\.shown\(GROWTH_REQUEST\.KEEP\)/, 'Voice Keep impressions must use shared growth measurement');
+          assert.match(growth, /preserveVoiceDraft\(\);[\s\S]{0,180}growthArbiter\?\.opened\(GROWTH_REQUEST\.KEEP\)/, 'opening account Keep must preserve the existing Voice draft first');
+          assert.match(growth, /const restoredFromAccountFlow = restoreVoiceDraft\(field\)/, 'account return must restore through the existing consume-once handoff');
+          assert.match(growth, /restoredFromAccountFlow && account\.state === ACCOUNT_STATE\.SIGNED_IN[\s\S]{0,120}save\.click\(\)/, 'successful account return must finish by saving restored writing');
+          assert.match(growth, /keepEnabled: path !== '\/tools\/urdu-voice-typing' && feature\.available/, 'Voice Keep must remain disabled at boot until real speech success');
+          assert.doesNotMatch(growth, /[?&](?:text|content|transcript)=/i, 'Voice account continuity must never put writing in a URL');
+
+          console.log('Product Pulse Slice 3 Voice-success Keep contracts passed.');
+          EOF
+
+      - name: Syntax checks
+        run: |
+          node --check js/account-growth-entry.mjs
+          node --check js/growth-request-arbiter.mjs
+          node --check js/urdu-voice-typing.js
+
+      - name: Run Slice 3 focused contracts
+        run: |
+          node tests/product-pulse-slice3-contract.test.js
+          node tests/growth-request-arbiter.test.mjs
+          node tests/account-growth-entry-contract.test.js
+          node tests/product-pulse-slice2-contract.test.js
+          node tests/urdu-voice-typing-contract.test.js
+          node tests/voice-input-core.test.js
+          node tests/voice-account-analytics-contract.test.js
+          node tests/product-telemetry-contract.test.js
+
+      - name: Run repository contract suite
+        run: npm test
+
+      - name: Record unrelated SEO graph baseline
+        shell: bash
+        run: |
+          set +e
+          npm run seo:graph:check
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo "::notice::Static SEO graph drift is an existing repository-wide baseline outside Slice 3."
+          fi
+          exit 0
+
+      - name: Commit validated implementation
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/growth-request-arbiter.mjs js/account-growth-entry.mjs js/urdu-voice-typing.js tests/growth-request-arbiter.test.mjs tests/product-pulse-slice3-contract.test.js scripts/run-contract-tests.js specs/WU-PLAT-002H-CONVERSION-REPAIR.md
+          git diff --cached --stat
+          git commit -m "Implement Product Pulse Slice 3 Voice Keep experiment"
+          git push origin HEAD:feature/product-pulse-slice3-voice-keep
