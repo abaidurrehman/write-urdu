@@ -200,7 +200,7 @@
         }
     }
 
-    function transfer(targetWorkspace) {
+    function transfer(targetWorkspace, recommendationId) {
         var sourceWorkspace = workspaceId();
         if (!sourceWorkspace || CONTINUITY_SOURCES.indexOf(sourceWorkspace) < 0) return false;
         var route = targetRoute(targetWorkspace);
@@ -221,7 +221,14 @@
             targetRoute: route,
             actionId: actionId(sourceWorkspace, targetWorkspace),
             kind: 'plain-text',
-            payload: { text: text }
+            payload: { text: text },
+            context: {
+                recommendationId: recommendationId || actionId(sourceWorkspace, targetWorkspace),
+                pathVersion: 'v2',
+                releaseMarker: Handoff.CONTINUATION_RELEASE_MARKER || 'wu-plat-002h-s1-2026-09-06-v1',
+                handoffRequired: true,
+                restoreRequired: true
+            }
         });
         if (!result || !result.ok) {
             notify('This browser could not move your text safely. Copy it before opening the next tool.', 'error');
@@ -255,7 +262,8 @@
         if (!target) return;
         event.preventDefault();
         event.stopImmediatePropagation();
-        transfer(target);
+        var recommendationId = control.getAttribute('data-wu-next-step-action') || actionId(source, target);
+        transfer(target, recommendationId);
     }
 
     function installKeyboardQrAction() {

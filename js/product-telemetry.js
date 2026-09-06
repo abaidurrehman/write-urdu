@@ -22,6 +22,7 @@
     var trackedOnce = Object.create(null);
     var SHARE_REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
     var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true };
+    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-09-06-v1';
 
     function normalizedPath(value) {
         if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(value || '/');
@@ -136,7 +137,14 @@
             device_class: deviceClass(),
             error_category: detail.error_category || null,
             target_route: detail.target_route ? normalizedPath(detail.target_route) : null,
-            card_mode: detail.card_mode || null
+            card_mode: detail.card_mode || null,
+            recommendation_id: detail.recommendation_id || null,
+            source_workspace: detail.source_workspace || null,
+            destination_workspace: detail.destination_workspace || null,
+            path_version: detail.path_version || null,
+            release_marker: detail.release_marker || null,
+            handoff_required: typeof detail.handoff_required === 'boolean' ? detail.handoff_required : null,
+            restore_required: typeof detail.restore_required === 'boolean' ? detail.restore_required : null
         };
     }
 
@@ -160,6 +168,82 @@
         trackedOnce[key] = true;
         track(eventName, detail);
         return true;
+    }
+
+    function normalizeContinuationDetail(detail) {
+        detail = detail || {};
+        var source = detail.source_workspace || detail.sourceWorkspace || null;
+        var destination = detail.destination_workspace || detail.destinationWorkspace || null;
+        var recommendation = detail.recommendation_id || detail.recommendationId || detail.actionId || null;
+        if (!source || !destination || !recommendation) return null;
+        return {
+            recommendation_id: recommendation,
+            source_workspace: source,
+            destination_workspace: destination,
+            path_version: detail.path_version || detail.pathVersion || 'v2',
+            release_marker: detail.release_marker || detail.releaseMarker || CONTINUATION_RELEASE_MARKER,
+            handoff_required: detail.handoff_required !== false && detail.handoffRequired !== false,
+            restore_required: detail.restore_required !== false && detail.restoreRequired !== false
+        };
+    }
+
+    function continuationContextFromDocument() {
+        var node = document.documentElement;
+        if (!node) return null;
+        return normalizeContinuationDetail({
+            recommendation_id: node.getAttribute('data-wu-continuation-recommendation'),
+            source_workspace: node.getAttribute('data-wu-continuation-source'),
+            destination_workspace: node.getAttribute('data-wu-continuation-destination'),
+            path_version: node.getAttribute('data-wu-continuation-path-version'),
+            release_marker: node.getAttribute('data-wu-continuation-release'),
+            handoff_required: node.getAttribute('data-wu-continuation-handoff-required') !== 'false',
+            restore_required: node.getAttribute('data-wu-continuation-restore-required') !== 'false'
+        });
+    }
+
+    function rememberContinuationContext(detail) {
+        var meta = normalizeContinuationDetail(detail);
+        var node = document.documentElement;
+        if (!meta || !node) return false;
+        node.setAttribute('data-wu-continuation-recommendation', meta.recommendation_id);
+        node.setAttribute('data-wu-continuation-source', meta.source_workspace);
+        node.setAttribute('data-wu-continuation-destination', meta.destination_workspace);
+        node.setAttribute('data-wu-continuation-path-version', meta.path_version);
+        node.setAttribute('data-wu-continuation-release', meta.release_marker);
+        node.setAttribute('data-wu-continuation-handoff-required', meta.handoff_required ? 'true' : 'false');
+        node.setAttribute('data-wu-continuation-restore-required', meta.restore_required ? 'true' : 'false');
+        return true;
+    }
+
+    function trackContinuationPath(stage, detail) {
+        var meta = normalizeContinuationDetail(detail);
+        if (!meta || !/^(eligible|shown|selected|handoff_created|destination_ready|payload_restored|meaningful_start|destination_outcome)$/.test(String(stage || ''))) return false;
+        if (stage === 'payload_restored') rememberContinuationContext(meta);
+        var key = ['continuation-path', stage, meta.recommendation_id, meta.source_workspace, meta.destination_workspace, meta.path_version].join(':');
+        return trackOnce(key, 'continuation_path_' + stage, meta);
+    }
+
+    function recommendationDetail(control) {
+        if (!control || !control.getAttribute) return null;
+        var panel = control.closest && control.closest('[data-wu-next-step-version="2"]');
+        var recommendation = control.getAttribute('data-wu-next-step-action');
+        var source = panel && panel.getAttribute('data-wu-source-workspace');
+        var destination = control.getAttribute('data-wu-continuity-target');
+        if (!recommendation || !source || !destination) return null;
+        return normalizeContinuationDetail({
+            recommendation_id: recommendation,
+            source_workspace: source,
+            destination_workspace: destination,
+            path_version: 'v2',
+            release_marker: CONTINUATION_RELEASE_MARKER,
+            handoff_required: true,
+            restore_required: true
+        });
+    }
+
+    function trackContinuationMeaningfulInteraction() {
+        var meta = continuationContextFromDocument();
+        if (meta) trackContinuationPath('meaningful_start', meta);
     }
 
     // Generalizes the referral marker js/card-studio-publish.js already
@@ -204,6 +288,7 @@
     function trackContinuationMeaningfulStart() {
         if (route !== '/urdu-editor' || !document.body.hasAttribute('data-rich-handoff-imported')) return;
         trackOnce('continuation-destination-meaningful-start', 'continuation_destination_meaningful_start', { target_route: '/urdu-editor' });
+        trackContinuationMeaningfulInteraction();
     }
 
     function send(events, beacon) {
@@ -347,6 +432,8 @@
         }
         if (detail.input_mode === 'voice') currentInputMode = 'voice';
         track(name, detail);
+        var continuationContext = continuationContextFromDocument();
+        if (continuationContext) trackContinuationPath('destination_outcome', continuationContext);
         if (writerFunnelEligible()) trackOnce('writer-outcome-first', 'writer_outcome_first');
         if (typeof document !== 'undefined' && document.dispatchEvent) {
             document.dispatchEvent(new CustomEvent('write-urdu:outcome', { detail: { name: name, detail: detail } }));
@@ -414,6 +501,8 @@
             var handoff = closest('[data-create-card], [data-create-qr], [data-wu-next-step-action], .home-actions-group-create a');
             if (handoff) {
                 markEngaged();
+                var recommendation = recommendationDetail(handoff);
+                if (recommendation) trackContinuationPath('selected', recommendation);
                 var href = handoff.getAttribute('href');
                 var targetRoute = href || (handoff.hasAttribute('data-create-card') ? '/urdu-card-studio' : '/qr-code-generator');
                 track('tool_handoff', { target_route: targetRoute, length_bucket: lengthBucket(textLength()) });
@@ -429,23 +518,41 @@
         }, true);
     }
 
-    // WU-PLAT-002H Gate A completion: continuation funnel. Kept fully
-    // decoupled from js/card-studio-entry.js / js/core-continuity.js (two
-    // independent, order-dependent handoff-wiring systems -- see the Gate A
-    // completion plan) by listening for the v2 path's DOM events centrally
-    // and polling for the presence of any continuation control for "shown".
+    // Slice 1 keeps the coarse Gate A counters for historical continuity,
+    // while adding a bounded per-recommendation diagnostic path. Hidden
+    // overflow actions are eligible but are not counted as shown until their
+    // disclosure is opened. No recommendation identity is derived from text.
+    function trackRecommendationControls() {
+        var controls = Array.prototype.slice.call(document.querySelectorAll('[data-wu-next-step-action]'));
+        controls.forEach(function (control) {
+            var meta = recommendationDetail(control);
+            if (!meta) return;
+            trackContinuationPath('eligible', meta);
+            var details = control.closest && control.closest('details');
+            if (!details || details.open) trackContinuationPath('shown', meta);
+        });
+        document.querySelectorAll('[data-wu-next-step-version="2"] details').forEach(function (details) {
+            if (details.getAttribute('data-wu-continuation-toggle-bound') === 'true') return;
+            details.setAttribute('data-wu-continuation-toggle-bound', 'true');
+            details.addEventListener('toggle', function () { if (details.open) trackRecommendationControls(); });
+        });
+        return controls.length > 0;
+    }
+
     function bindContinuationSignals() {
-        document.addEventListener('write-urdu:handoff-started', function () { track('continuation_stored'); });
+        document.addEventListener('write-urdu:handoff-started', function (event) {
+            track('continuation_stored');
+            trackContinuationPath('handoff_created', event && event.detail || {});
+        });
         document.addEventListener('write-urdu:handoff-imported', function () { track('continuation_payload_restored'); });
         var attempts = 0;
         var timer = window.setInterval(function () {
             attempts += 1;
-            if (document.querySelector('[data-wu-next-step-action], [data-continue-rich], [data-create-card], [data-create-qr], .home-actions-group-create a')) {
+            var hasRecommendations = trackRecommendationControls();
+            if (hasRecommendations || document.querySelector('[data-continue-rich], [data-create-card], [data-create-qr], .home-actions-group-create a')) {
                 trackOnce('continuation-shown', 'continuation_shown');
-                window.clearInterval(timer);
-            } else if (attempts >= 40) {
-                window.clearInterval(timer);
             }
+            if (attempts >= 80) window.clearInterval(timer);
         }, 250);
     }
 
@@ -492,11 +599,15 @@
         if (!rootSelector) return;
 
         document.addEventListener('input', function (event) {
-            if (event.target && event.target.closest && event.target.closest(rootSelector)) markEngaged();
+            if (event.target && event.target.closest && event.target.closest(rootSelector)) {
+                markEngaged();
+                trackContinuationMeaningfulInteraction();
+            }
         }, true);
         document.addEventListener('change', function (event) {
             if (!event.target || !event.target.closest || !event.target.closest(rootSelector)) return;
             markEngaged();
+            trackContinuationMeaningfulInteraction();
             if (event.target.matches && event.target.matches('input[type="file"]') && event.target.files && event.target.files.length) {
                 track('background_image_used');
             }
@@ -510,7 +621,7 @@
                 return;
             }
             var action = event.target.closest('[data-stylish-generate], [data-stylish-surprise], [data-stylish-example], [data-name-art-purpose], [data-invoice-add-item], [data-invoice-sample], [data-qr-reset-colors]');
-            if (action && action.closest(rootSelector)) markEngaged();
+            if (action && action.closest(rootSelector)) { markEngaged(); trackContinuationMeaningfulInteraction(); }
         }, true);
 
         document.addEventListener('write-urdu:card-interaction-state', function (event) {
@@ -650,6 +761,9 @@
         trackOnce: trackOnce,
         engage: markEngaged,
         trackOutcome: trackOutcome,
+        trackContinuationPath: trackContinuationPath,
+        rememberContinuationContext: rememberContinuationContext,
+        continuationContextFromDocument: continuationContextFromDocument,
         lengthBucket: lengthBucket,
         activeTimeBucket: activeTimeBucket,
         flush: flush

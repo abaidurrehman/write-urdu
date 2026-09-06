@@ -72,6 +72,11 @@
         return true;
     }
 
+    function path(stage, handoff, envelope) {
+        if (!envelope || !root.WriteUrduTelemetry || !root.WriteUrduTelemetry.trackContinuationPath) return;
+        root.WriteUrduTelemetry.trackContinuationPath(stage, handoff.telemetryDetail(envelope));
+    }
+
     function consume() {
         if (normalizePath() !== '/urdu-card-studio') return null;
         var handoff = root.WriteUrduWorkspaceHandoff;
@@ -86,18 +91,22 @@
             if (!template) return null;
         } else if (kind !== 'plain-text') return null;
 
+        var app = root.WriteUrduCardStudioApp;
+        var core = root.WriteUrduCardStudio;
+        if (!app || !core || typeof app.getState !== 'function') return null;
+        path('destination_ready', handoff, preview);
+        if (template) applyTemplateRoute(template);
+        if (!applyToRunningApp(preview, template)) return null;
+
         var envelope = handoff.take(TARGET);
         if (!envelope || !envelope.payload) return null;
         if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_destination_ready', { target_route: '/urdu-card-studio' });
-        if (template) applyTemplateRoute(template);
-
-        var appliedLive = applyToRunningApp(envelope, template);
-        if (!appliedLive && !writeLegacyText(envelope)) return null;
         if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_payload_restored', { target_route: '/urdu-card-studio' });
+        path('payload_restored', handoff, envelope);
 
         if (root.document && root.document.documentElement) {
             root.document.documentElement.setAttribute('data-wu-card-seed-kind', kind);
-            root.document.documentElement.setAttribute('data-wu-card-seed-applied', appliedLive ? 'live' : 'staged');
+            root.document.documentElement.setAttribute('data-wu-card-seed-applied', 'live');
         }
         return envelope;
     }

@@ -386,6 +386,62 @@ function cardStudioSection(toolRows) {
 // the established name/dashboard usage is not disturbed. Instrumented on top
 // of both existing handoff-wiring code paths without unifying them -- see
 // the Gate A completion plan for the known dual-system caveat.
+function continuationPathSection(pathRows) {
+  const grouped = new Map();
+  (pathRows || []).forEach((row) => {
+    const key = [row.recommendation_id, row.source_workspace, row.destination_workspace, row.path_version, row.release_marker].join('|');
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        recommendation_id: row.recommendation_id, source_workspace: row.source_workspace, destination_workspace: row.destination_workspace,
+        path_version: row.path_version, release_marker: row.release_marker, handoff_required: Boolean(Number(row.handoff_required)),
+        restore_required: Boolean(Number(row.restore_required)), eligible: 0, shown: 0, selected: 0, handoff_created: 0,
+        destination_ready: 0, payload_restored: 0, meaningful_start: 0, destination_outcome: 0, by_device: []
+      });
+    }
+    const item = grouped.get(key);
+    ['eligible','shown','selected','handoff_created','destination_ready','payload_restored','meaningful_start','destination_outcome'].forEach((field) => { item[field] += n(row, field); });
+    item.by_device.push({
+      device_class: row.device_class, shown: n(row, 'shown'), selected: n(row, 'selected'), destination_ready: n(row, 'destination_ready'), meaningful_start: n(row, 'meaningful_start')
+    });
+  });
+
+  const lossSummary = new Map();
+  function addLoss(stage, parent, child, losses) {
+    const loss = compatibleDifference(parent, child);
+    if (loss === null) return;
+    losses.push({ stage, loss });
+    lossSummary.set(stage, (lossSummary.get(stage) || 0) + loss);
+  }
+
+  const paths = Array.from(grouped.values()).map((item) => {
+    const readyDenominator = item.handoff_required ? item.handoff_created : item.selected;
+    const startDenominator = item.restore_required ? item.payload_restored : item.destination_ready;
+    const losses = [];
+    addLoss('eligible → shown', item.eligible, item.shown, losses);
+    addLoss('shown → selected', item.shown, item.selected, losses);
+    if (item.handoff_required) addLoss('selected → handoff', item.selected, item.handoff_created, losses);
+    addLoss('handoff/navigation → ready', readyDenominator, item.destination_ready, losses);
+    if (item.restore_required) addLoss('ready → restored', item.destination_ready, item.payload_restored, losses);
+    addLoss('restored/ready → meaningful start', startDenominator, item.meaningful_start, losses);
+    if (item.destination_outcome > 0) addLoss('meaningful start → outcome', item.meaningful_start, item.destination_outcome, losses);
+    losses.sort((a, b) => b.loss - a.loss);
+    item.conversion = {
+      shown_rate: boundedRate(item.shown, item.eligible),
+      selected_rate: boundedRate(item.selected, item.shown),
+      handoff_created_rate: item.handoff_required ? boundedRate(item.handoff_created, item.selected) : null,
+      destination_ready_rate: boundedRate(item.destination_ready, readyDenominator),
+      payload_restored_rate: item.restore_required ? boundedRate(item.payload_restored, item.destination_ready) : null,
+      meaningful_start_rate: boundedRate(item.meaningful_start, startDenominator),
+      destination_outcome_rate: item.destination_outcome > 0 ? boundedRate(item.destination_outcome, item.meaningful_start) : null
+    };
+    item.dominant_loss = losses[0] || null;
+    return item;
+  }).sort((a, b) => b.shown - a.shown || b.selected - a.selected);
+
+  const loss_summary = Array.from(lossSummary.entries()).map(([stage, loss]) => ({ stage, loss })).sort((a, b) => b.loss - a.loss);
+  return { ready: paths.length > 0, paths, loss_summary, dominant_loss: loss_summary[0] || null };
+}
+
 function continuationSection(current) {
   const shown = n(current, 'continuation_shown');
   const selected = n(current, 'handoffs');
@@ -549,6 +605,17 @@ export async function onRequestGet(context) {
       GROUP BY locale
       ORDER BY sessions DESC
     `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
+  const continuationPathsReady = await tableExists(db, 'continuation_hourly_paths');
+  const continuationPathsPromise = continuationPathsReady ? db.prepare(`
+      SELECT recommendation_id, source_workspace, destination_workspace, path_version, release_marker, device_class,
+             MAX(handoff_required) AS handoff_required, MAX(restore_required) AS restore_required,
+             SUM(eligible) AS eligible, SUM(shown) AS shown, SUM(selected) AS selected, SUM(handoff_created) AS handoff_created,
+             SUM(destination_ready) AS destination_ready, SUM(payload_restored) AS payload_restored,
+             SUM(meaningful_start) AS meaningful_start, SUM(destination_outcome) AS destination_outcome
+      FROM continuation_hourly_paths
+      WHERE bucket_hour >= ?1 AND bucket_hour < ?2
+      GROUP BY recommendation_id, source_workspace, destination_workspace, path_version, release_marker, device_class
+    `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
   const deviceFunnelReady = await tableExists(db, 'product_hourly_device_metrics');
   const deviceFunnelPromise = deviceFunnelReady ? db.prepare(`
       SELECT device_class, tool,
@@ -562,7 +629,7 @@ export async function onRequestGet(context) {
       GROUP BY device_class, tool
       HAVING SUM(writer_viewed) > 0
     `).bind(bounds.currentStart, bounds.currentEnd).all() : Promise.resolve({ results: [] });
-  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop, localeResult, deviceFunnelResult] = await Promise.all([
+  const [current, previous, handoffResult, toolResult, dailyResult, shareLoop, localeResult, deviceFunnelResult, continuationPathResult] = await Promise.all([
     summaryForWindow(db, bounds.currentStart, bounds.currentEnd),
     summaryForWindow(db, bounds.previousStart, bounds.previousEnd),
     db.prepare(`
@@ -620,7 +687,8 @@ export async function onRequestGet(context) {
     `).bind(bounds.currentStart, bounds.currentEnd).all(),
     shareLoopForWindow(db, bounds),
     localePromise,
-    deviceFunnelPromise
+    deviceFunnelPromise,
+    continuationPathsPromise
   ]);
 
   const sessions = n(current, 'visits');
@@ -707,7 +775,8 @@ export async function onRequestGet(context) {
     voice: voiceSection(current, rows(toolResult)),
     activation: activationSection(current, rows(toolResult), rows(deviceFunnelResult)),
     card_studio_funnel: cardStudioSection(rows(toolResult)),
-    continuation: continuationSection(current)
+    continuation: continuationSection(current),
+    continuation_paths: continuationPathSection(rows(continuationPathResult))
   });
 }
 
