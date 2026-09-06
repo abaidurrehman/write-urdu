@@ -386,6 +386,10 @@ The final success is restored/saved writing, not signup page navigation.
 - no signup gate;
 - no duplicate Keep banner from another component.
 
+### Slice 3 implementation note — 2026-09-06
+
+Implemented on `feature/product-pulse-slice3-voice-keep` for review. The initial experiment is intentionally bounded to the dedicated `/tools/urdu-voice-typing` owner because that route has the existing account-growth draft continuity path and the clean 91 tries → 51 Urdu-success baseline. Voice Keep remains disabled at boot and becomes eligible only after a final Urdu speech result has been committed and recognition has returned to idle. The shared arbiter receives only a bounded `keepMomentEligible` boolean; signed-out users may then see the existing compact Keep panel, while normal Voice use remains ungated. Choosing account Keep preserves the writing in the existing 30-minute consume-once session handoff, returns through the existing auth route, restores it, and auto-saves it when the account/document service is available. No transcript, text or audio is added to growth telemetry. Embedded Voice input in Basic/Rich/other workspaces keeps its existing behavior in this first experiment rather than receiving a second voice-specific prompt. Growth diagnostics move to release marker `wu-plat-002h-s3-2026-09-06-v1`.
+
 ---
 
 ## Slice 4 — Long-form continuation and retention

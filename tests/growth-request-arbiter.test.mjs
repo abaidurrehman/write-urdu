@@ -14,6 +14,8 @@ assert.equal(writerStateFromLength(0, true), 'E0', 'empty writing must never bec
 
 assert.equal(winner({ writerState: 'E0' }), GROWTH_REQUEST.NONE);
 assert.equal(winner({ writerState: 'E2' }), GROWTH_REQUEST.NONE);
+assert.equal(winner({ writerState: 'E1', keepMomentEligible: true }), GROWTH_REQUEST.KEEP, 'a bounded post-success moment may protect short writing');
+assert.equal(winner({ writerState: 'E1', keepMomentEligible: true, keepEnabled: false }), GROWTH_REQUEST.NONE, 'the post-success moment cannot bypass a disabled Keep surface');
 assert.equal(winner({ writerState: 'E3' }), GROWTH_REQUEST.KEEP, 'substantial unsaved work must protect recovery first');
 assert.equal(winner({ writerState: 'E4', accountState: 'signed-in', signedIn: true, safelySaved: true, communityEligible: true }), GROWTH_REQUEST.COMMUNITY_PUBLISH, 'saved signed-in long form can promote Community Publish');
 assert.equal(winner({ writerState: 'E5', meaningfulOutcome: true, localProtected: false, communityEligible: true }), GROWTH_REQUEST.KEEP, 'unprotected completed work keeps recovery priority');
