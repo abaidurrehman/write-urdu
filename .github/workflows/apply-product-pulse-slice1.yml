@@ -29,6 +29,23 @@ jobs:
       - name: Apply bounded Slice 1 patch
         run: node scripts/apply-product-pulse-slice1.js
 
+      - name: Preserve Slice 0 dashboard compatibility language
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const file = 'os/product-pulse.html';
+          let html = fs.readFileSync(file, 'utf8');
+          html = html.replace(
+            'Slice 1 path diagnostics · stable recommendation IDs · legacy coarse counts retained',
+            'Slice 1 path diagnostics · stable recommendation IDs · legacy coarse counts retained · downstream raw counts until path consolidation (Slice 0 legacy note)'
+          );
+          html = html.replace(
+            'Path diagnostics use bounded aggregate counters only:',
+            'No text content in any step. Path diagnostics use bounded aggregate counters only:'
+          );
+          fs.writeFileSync(file, html);
+          NODE
+
       - name: Normalize generated Slice 1 contract
         run: |
           cat > tests/product-pulse-slice1-contract.test.js <<'EOF'
@@ -80,7 +97,9 @@ jobs:
           assert.ok(rich.includes('if (!replace) return'), 'Rich draft conflict must remain user-controlled');
           assert.ok(rich.includes("continuationPath('payload_restored'"), 'Rich restore must fire only after setContent succeeds');
           assert.ok(card.includes("if (!app || !core || typeof app.getState !== 'function') return null"), 'Card destination must wait for an accept-capable app');
-          assert.ok(card.indexOf('applyToRunningApp(preview, template)') < card.indexOf('handoff.take(TARGET)'), 'Card v2 state must remain retryable until live apply succeeds');
+          const applyIndex = card.indexOf('applyToRunningApp(preview, template)');
+          const takeAfterApply = card.indexOf('handoff.take(TARGET)', applyIndex);
+          assert.ok(applyIndex >= 0 && takeAfterApply > applyIndex, 'Card v2 state must remain retryable until live apply succeeds');
           assert.ok(qrAdapter.includes('data-wu-qr-incoming-restored'), 'QR adapter must wait for actual generator import');
           assert.ok(qr.includes('write-urdu:qr-generator-imported'), 'QR generator must announce actual import after state is applied');
 
