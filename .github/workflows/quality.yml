@@ -42,6 +42,16 @@ jobs:
           npm run seo:graph:sync
           git diff -- english-urdu-typing-tutorial.html index.html urdu-keyboard.html
 
+      - name: Upload inherited SEO sync artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inherited-seo-sync-${{ github.run_id }}
+          path: |
+            english-urdu-typing-tutorial.html
+            index.html
+            urdu-keyboard.html
+          retention-days: 1
+
       - name: Validate static source shell
         run: npm run shell:check
 
