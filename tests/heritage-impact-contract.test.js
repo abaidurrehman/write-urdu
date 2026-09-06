@@ -16,6 +16,7 @@ assert.match(page, /<h1 id="heritage-title">10 years of writing Urdu together<\/
 assert.match(page, /online since <strong>July 2016<\/strong>/, 'Founder-confirmed July 2016 launch month must remain visible');
 assert.match(page, /lang="ur" dir="rtl">دس سال، لاکھوں الفاظ، بے شمار کہانیاں/, 'Heritage hero must include meaningful Urdu copy with language/direction semantics');
 
+assert.match(page, /Measured · recent week[\s\S]*4,408/, 'Broader weekly engaged-visits count must be visible and labelled as measured');
 assert.match(page, /Derived · recent week[\s\S]*1,132/, 'Derived recent non-zero writing-session count must be visible and labelled as a weekly sample');
 assert.match(page, /Measured · recent week[\s\S]*140/, 'Measured 2500+ writing-session count must be visible and labelled as a weekly sample');
 assert.match(page, /Estimated · lifetime scale[\s\S]*Tens of millions/, 'Lifetime scale must be visibly labelled as estimated');

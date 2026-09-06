@@ -27,6 +27,10 @@ The reviewed current-period snapshot (trailing 7 days, ending 2026-09-06) contai
 - First input events: **3,218**
 - First Urdu success events: **1,396**
 
+Public-safe wording for the broader weekly engagement number (not limited to sessions with a recorded writing-length summary):
+
+> `4,408 engaged visits in one recent week across every Write Urdu tool — typing, canvas design, templates and more.`
+
 Writing-length buckets, labelled in Product Pulse as engaged writing sessions only:
 
 | Maximum observed writing length | Sessions |
@@ -166,6 +170,7 @@ Preferred supporting line:
 |---|---|---|---|
 | Online since July 2016 | founder-confirmed history | yes | no exact day |
 | 10 years of Write Urdu | derived calendar statement | yes | July 2016 → 2026 |
+| 4,408 engaged visits across all tools in one recent week | measured | yes | broader than writing-length buckets, does not imply all wrote text |
 | 1,132 recent non-zero writing sessions | derived | yes | from bucket sum |
 | 140 recent sessions over 2,500 characters | measured | yes | current sample |
 | roughly 0.65–1.0m characters in recent sample | derived estimate | yes | midpoint/open-bucket assumptions disclosed |
