@@ -1,0 +1,21 @@
+{
+  "name": "@write-urdu/inpage-unicode",
+  "version": "0.1.0-beta.1",
+  "description": "Convert Urdu text between legacy InPage-style encoding and Unicode. Same engine that powers the InPage ↔ Unicode Converter tool on write-urdu.com.",
+  "license": "UNLICENSED",
+  "main": "dist/inpage-unicode-core.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "prepack": "node ../../scripts/build-inpage-unicode-package.js"
+  },
+  "keywords": [
+    "urdu",
+    "inpage",
+    "unicode",
+    "transliteration",
+    "encoding"
+  ]
+}

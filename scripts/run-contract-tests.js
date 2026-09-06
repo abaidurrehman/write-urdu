@@ -23,6 +23,7 @@ const tests = [
   'tests/share-loop-contract.test.js',
   'tests/auth-foundation-contract.test.js',
   'tests/documents-contract.test.js',
+  'tests/inpage-unicode-api-contract.test.js',
   'tests/community-submission-api-contract.test.js',
   'tests/community-publishing-editor-contract.test.js',
   'tests/community-publishing-toolbar-promotion-contract.test.js',
