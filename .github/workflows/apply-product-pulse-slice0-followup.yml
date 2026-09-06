@@ -1,0 +1,41 @@
+name: Apply Product Pulse Slice 0 Follow-up
+
+on:
+  push:
+    branches:
+      - fix/product-pulse-slice0
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, '[slice0-followup]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Apply follow-up
+        run: node scripts/apply-product-pulse-slice0-followup.js
+
+      - name: Validate touched contracts
+        run: |
+          node --check functions/api/internal/product-pulse.js
+          node tests/product-pulse-contract.test.js
+          node tests/product-pulse-slice0-contract.test.js
+          node tests/product-telemetry-contract.test.js
+
+      - name: Commit validated follow-up
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Complete Product Pulse Slice 0 denominator coverage [slice0-followup]"
+          git push origin HEAD:fix/product-pulse-slice0
