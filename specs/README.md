@@ -37,6 +37,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-SEO-CTR-001` | SERP CTR and intent optimization | **Active** — evidence-gated metadata/CTR work; coordinates with mobile/first-screen activation without destabilizing query ownership |
 | `WU-TOOLS-EXPANSION-001` | Browser-first Urdu Tools Program | **Active umbrella** — implemented children are archived; new breadth is paused behind core activation evidence |
 | `WU-TOOLS-EXPANSION-006` | Urdu/Hindi Script Converter R&D | **Hold** — correctly unbuilt |
+| `WU-API-001` | InPage↔Unicode Developer API & npm Package | **Planned — founder-directed exception to the P0.1 freeze** — isolated, additive-only wrapper around the already-shipped `WU-TOOLS-EXPANSION-005` engine; Phase A (npm package) has no compute/infra cost and ships first, Phase B (beta API) follows |
 
 ## Current P0 product/UX programme
 

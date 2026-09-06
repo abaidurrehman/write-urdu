@@ -189,6 +189,19 @@ Human/product gates:
 - [ ] Keep dedicated keyword expansion under Search Console evidence gates.
 - [ ] Under P0.1, improve discovery/measurement and understand Voice failures before broad promotion.
 
+## P0.7 — InPage↔Unicode Developer API & npm package (founder-directed P0.1-freeze exception)
+
+**Specs:** [`WU-API-001`](WU-API-001-inpage-unicode-developer-api.md), [`WU-API-001A`](../docs/WU-API-001A-INPAGE-UNICODE-NPM-BETA-IMPLEMENTATION-PLAN-2026-09-06.md)
+**Skill:** `.claude/skills/wu-inpage-unicode-api/SKILL.md`
+**State:** Planned; explicitly approved 2026-09-06 as an exception to rule 7 because it is additive-only against the already-shipped `WU-TOOLS-EXPANSION-005` engine, has negligible compute cost, and does not touch any `WU-PLAT-002H`-owned file or surface.
+
+- [ ] Phase A — publish `@write-urdu/inpage-unicode` npm package (no server, no cost).
+- [ ] Phase B — ship beta API route (`/api/v1/inpage-unicode/convert`) behind a single shared secret.
+- [ ] Add cross-sell link on the existing `/tools/inpage-unicode-converter/` page only.
+- [ ] Hold real API keys/quota/billing/docs-portal work until Phase A/B show real external usage.
+
+**Guardrail:** if implementation ever requires touching a Basic/Rich Editor, mobile-activation, or telemetry file, stop — the isolation assumption behind this exception has broken and the work must be re-filed under normal backlog review.
+
 ## P0.6 — AI production external gate
 
 **Spec:** [`WU-AI-001`](WU-AI-001-urdu-ai-writing-assistant-platform.md)  
