@@ -41,6 +41,7 @@ const tests = [
   'tests/account-growth-entry-contract.test.js',
   'tests/v3-reference-pages-contract.test.js',
   'tests/v3-trust-pages-contract.test.js',
+  'tests/heritage-impact-contract.test.js',
   'tests/v3-utility-pages-contract.test.js',
   'tests/contact-feedback-trust-contract.test.js',
   'tests/contact-feedback-routing-contract.test.js',
