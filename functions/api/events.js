@@ -58,6 +58,14 @@ const EVENT_NAMES = new Set([
     'continuation_destination_ready',
     'continuation_payload_restored',
     'continuation_destination_meaningful_start',
+    'continuation_path_eligible',
+    'continuation_path_shown',
+    'continuation_path_selected',
+    'continuation_path_handoff_created',
+    'continuation_path_destination_ready',
+    'continuation_path_payload_restored',
+    'continuation_path_meaningful_start',
+    'continuation_path_destination_outcome',
     'share_destination_ready',
     'share_referral_recognized'
 ]);
@@ -79,6 +87,31 @@ const DEVICE_CLASSES = new Set(['mobile', 'tablet', 'desktop']);
 const LOCALES = new Set(['en', 'ur']);
 const ERROR_CATEGORIES = new Set(['permission-denied', 'audio-capture', 'no-speech', 'network', 'language-not-supported', 'unknown']);
 const CARD_MODES = new Set(['quick', 'advanced']);
+const CONTINUATION_RECOMMENDATIONS = new Set([
+    'basic-to-rich', 'basic-to-card', 'basic-to-qr',
+    'keyboard-to-rich', 'keyboard-to-card', 'keyboard-to-qr',
+    'rich-to-card', 'rich-to-qr',
+    'cleaner-to-basic', 'cleaner-to-rich', 'cleaner-to-card', 'cleaner-to-qr',
+    'image-text-to-cleaner', 'image-text-to-basic', 'image-text-to-rich',
+    'voice-to-basic', 'voice-to-rich', 'voice-to-card',
+    'inpage-to-cleaner', 'inpage-to-basic', 'inpage-to-rich',
+    'stylish-to-name-art', 'stylish-to-card', 'share-to-card', 'share-to-basic',
+    'legacy-compatibility'
+]);
+const CONTINUATION_WORKSPACES = new Set([
+    'basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner', 'image-to-urdu-text',
+    'voice-typing', 'inpage-converter', 'card-studio', 'qr-generator', 'stylish-text',
+    'name-art', 'public-share'
+]);
+const CONTINUATION_PATH_VERSIONS = new Set(['v2', 'legacy-v1']);
+const CONTINUATION_RELEASE_MARKERS = new Set(['wu-plat-002h-s1-2026-09-06-v1']);
+const CONTINUATION_PATH_EVENTS = new Set([
+    'continuation_path_eligible', 'continuation_path_shown', 'continuation_path_selected',
+    'continuation_path_handoff_created', 'continuation_path_destination_ready',
+    'continuation_path_payload_restored', 'continuation_path_meaningful_start',
+    'continuation_path_destination_outcome'
+]);
+const CONTINUATION_PATH_COLUMNS = ['eligible', 'shown', 'selected', 'handoff_created', 'destination_ready', 'payload_restored', 'meaningful_start', 'destination_outcome'];
 
 const METRIC_COLUMNS = [
     'visits', 'engaged_visits', 'copies', 'exports',
@@ -168,6 +201,27 @@ const SCHEMA_STATEMENTS = [
         latest_event_at TEXT,
         PRIMARY KEY (bucket_hour, tool)
     )`,
+    `CREATE TABLE IF NOT EXISTS continuation_hourly_paths (
+        bucket_hour TEXT NOT NULL,
+        recommendation_id TEXT NOT NULL,
+        source_workspace TEXT NOT NULL,
+        destination_workspace TEXT NOT NULL,
+        path_version TEXT NOT NULL,
+        release_marker TEXT NOT NULL,
+        device_class TEXT NOT NULL,
+        handoff_required INTEGER NOT NULL DEFAULT 1,
+        restore_required INTEGER NOT NULL DEFAULT 1,
+        eligible INTEGER NOT NULL DEFAULT 0,
+        shown INTEGER NOT NULL DEFAULT 0,
+        selected INTEGER NOT NULL DEFAULT 0,
+        handoff_created INTEGER NOT NULL DEFAULT 0,
+        destination_ready INTEGER NOT NULL DEFAULT 0,
+        payload_restored INTEGER NOT NULL DEFAULT 0,
+        meaningful_start INTEGER NOT NULL DEFAULT 0,
+        destination_outcome INTEGER NOT NULL DEFAULT 0,
+        latest_event_at TEXT,
+        PRIMARY KEY (bucket_hour, recommendation_id, source_workspace, destination_workspace, path_version, release_marker, device_class)
+    )`,
     `CREATE TABLE IF NOT EXISTS product_telemetry_meta (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL,
@@ -220,6 +274,13 @@ function cleanEvent(input) {
 
     const targetRoute = input.target_route ? cleanRoute(input.target_route) : null;
     if (input.target_route && !targetRoute) return null;
+    const isContinuationPath = CONTINUATION_PATH_EVENTS.has(eventName);
+    const recommendationId = enumValue(input.recommendation_id, CONTINUATION_RECOMMENDATIONS);
+    const sourceWorkspace = enumValue(input.source_workspace, CONTINUATION_WORKSPACES);
+    const destinationWorkspace = enumValue(input.destination_workspace, CONTINUATION_WORKSPACES);
+    const pathVersion = enumValue(input.path_version, CONTINUATION_PATH_VERSIONS);
+    const releaseMarker = enumValue(input.release_marker, CONTINUATION_RELEASE_MARKERS);
+    if (isContinuationPath && (!recommendationId || !sourceWorkspace || !destinationWorkspace || !pathVersion || !releaseMarker)) return null;
 
     return {
         eventId,
@@ -236,7 +297,14 @@ function cleanEvent(input) {
         deviceClass: enumValue(input.device_class, DEVICE_CLASSES),
         errorCategory: enumValue(input.error_category, ERROR_CATEGORIES),
         cardMode: enumValue(input.card_mode, CARD_MODES),
-        targetRoute
+        targetRoute,
+        recommendationId,
+        sourceWorkspace,
+        destinationWorkspace,
+        pathVersion,
+        releaseMarker,
+        handoffRequired: typeof input.handoff_required === 'boolean' ? (input.handoff_required ? 1 : 0) : 1,
+        restoreRequired: typeof input.restore_required === 'boolean' ? (input.restore_required ? 1 : 0) : 1
     };
 }
 
@@ -521,12 +589,17 @@ function isShareLoopEvent(event) {
     return event.eventName.indexOf('share_') === 0 || (event.eventName === 'share_clicked' && (event.tool === 'public_share' || event.tool === 'card_studio'));
 }
 
+function continuationPathStage(eventName) {
+    return String(eventName || '').replace(/^continuation_path_/, '');
+}
+
 function aggregateEvents(events, now) {
     const byTool = new Map();
     const localeByTool = new Map();
     const deviceByTool = new Map();
     const shareByTool = new Map();
     const handoffs = new Map();
+    const continuationPaths = new Map();
     const getDelta = (tool) => {
         if (!byTool.has(tool)) byTool.set(tool, emptyDelta(tool, now));
         return byTool.get(tool);
@@ -567,6 +640,21 @@ function aggregateEvents(events, now) {
             applyShareEvent(getShareDelta(event.tool), event);
             applyShareEvent(getShareDelta('all'), event);
         }
+        if (CONTINUATION_PATH_EVENTS.has(event.eventName)) {
+            const key = [event.recommendationId, event.sourceWorkspace, event.destinationWorkspace, event.pathVersion, event.releaseMarker, event.deviceClass || 'unknown'].join('|');
+            if (!continuationPaths.has(key)) {
+                const delta = {
+                    recommendationId: event.recommendationId, sourceWorkspace: event.sourceWorkspace, destinationWorkspace: event.destinationWorkspace,
+                    pathVersion: event.pathVersion, releaseMarker: event.releaseMarker, deviceClass: event.deviceClass || 'unknown',
+                    handoffRequired: event.handoffRequired, restoreRequired: event.restoreRequired, latest_event_at: now
+                };
+                CONTINUATION_PATH_COLUMNS.forEach((column) => { delta[column] = 0; });
+                continuationPaths.set(key, delta);
+            }
+            const delta = continuationPaths.get(key);
+            const stage = continuationPathStage(event.eventName);
+            if (CONTINUATION_PATH_COLUMNS.indexOf(stage) >= 0) delta[stage] += 1;
+        }
         if (event.eventName === 'tool_handoff' && event.targetRoute) {
             [event.tool, 'all'].forEach((tool) => {
                 const key = tool + '|' + event.targetRoute;
@@ -579,7 +667,8 @@ function aggregateEvents(events, now) {
         localeByTool: Array.from(localeByTool.values()),
         deviceByTool: Array.from(deviceByTool.values()),
         shareByTool: Array.from(shareByTool.values()),
-        handoffs: Array.from(handoffs.values())
+        handoffs: Array.from(handoffs.values()),
+        continuationPaths: Array.from(continuationPaths.values())
     };
 }
 
@@ -630,6 +719,22 @@ function handoffUpsert(db, bucket, item) {
         .bind(bucket, item.tool, item.targetRoute, item.events);
 }
 
+function continuationPathUpsert(db, bucket, item) {
+    const columns = ['bucket_hour', 'recommendation_id', 'source_workspace', 'destination_workspace', 'path_version', 'release_marker', 'device_class', 'handoff_required', 'restore_required']
+        .concat(CONTINUATION_PATH_COLUMNS).concat(['latest_event_at']);
+    const placeholders = columns.map(() => '?').join(', ');
+    const assignments = [
+        'handoff_required = MAX(handoff_required, excluded.handoff_required)',
+        'restore_required = MAX(restore_required, excluded.restore_required)'
+    ].concat(CONTINUATION_PATH_COLUMNS.map((column) => `${column} = ${column} + excluded.${column}`))
+      .concat(['latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)']);
+    const values = [bucket, item.recommendationId, item.sourceWorkspace, item.destinationWorkspace, item.pathVersion, item.releaseMarker, item.deviceClass, item.handoffRequired, item.restoreRequired]
+        .concat(CONTINUATION_PATH_COLUMNS.map((column) => item[column])).concat([item.latest_event_at]);
+    return db.prepare(`INSERT INTO continuation_hourly_paths (${columns.join(', ')}) VALUES (${placeholders})
+                       ON CONFLICT(bucket_hour, recommendation_id, source_workspace, destination_workspace, path_version, release_marker, device_class)
+                       DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
+}
+
 export async function onRequestPost(context) {
     const { request, env } = context;
     if (!originAllowed(request)) return json(403, { error: 'origin_not_allowed' });
@@ -664,7 +769,8 @@ export async function onRequestPost(context) {
             .concat(aggregated.localeByTool.map((delta) => localeMetricUpsert(db, bucket, delta)))
             .concat(aggregated.deviceByTool.map((delta) => deviceMetricUpsert(db, bucket, delta)))
             .concat(aggregated.shareByTool.map((delta) => shareMetricUpsert(db, bucket, delta)))
-            .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)));
+            .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)))
+            .concat(aggregated.continuationPaths.map((item) => continuationPathUpsert(db, bucket, item)));
         await db.batch(statements);
         return json(202, { accepted: events.length, rollup_rows: statements.length });
     } catch (error) {

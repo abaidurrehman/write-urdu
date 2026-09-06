@@ -17,11 +17,13 @@
     var MAX_TEXT_LENGTH = 100000;
     var MAX_SERIALIZED_BYTES = 220000;
     var KEY_PREFIX = 'write-urdu:workspace-handoff:v2:';
+    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-09-06-v1';
     var ALLOWED_KINDS = ['plain-text', 'rich-text', 'template-seed', 'visual-project-seed', 'structured-seed', 'draft-reference'];
 
     var LEGACY_TARGETS = {
         'rich-editor': { key: 'writeUrdu.richEditor.incoming.v1', shape: 'destination', route: '/urdu-editor' },
         'card-studio': { key: 'writeUrdu.cardStudio.incoming', shape: 'destination', route: '/urdu-card-studio' },
+        'qr-generator': { key: 'writeUrdu.qrGenerator.incoming', shape: 'destination', route: '/qr-code-generator' },
         'stylish-text': { key: 'writeUrdu.stylishText.incoming.v1', shape: 'destination', route: '/stylish-urdu-text-generator' },
         'name-art': { key: 'writeUrdu.nameArt.handoff.v1', shape: 'destination', route: '/urdu-name-art-maker' },
         'basic-writer': { key: 'write-urdu:text-handoff:v1', shape: 'generic', route: '/' },
@@ -143,10 +145,16 @@
     }
 
     function telemetryDetail(envelope, outcome, failureReason) {
+        var context = envelope && envelope.context && typeof envelope.context === 'object' ? envelope.context : {};
         return {
             sourceWorkspace: envelope && envelope.source ? envelope.source.workspace : null,
             destinationWorkspace: envelope && envelope.target ? envelope.target.workspace : null,
             actionId: envelope && envelope.actionId || null,
+            recommendationId: context.recommendationId || envelope && envelope.actionId || null,
+            pathVersion: context.pathVersion || 'v2',
+            releaseMarker: context.releaseMarker || CONTINUATION_RELEASE_MARKER,
+            handoffRequired: context.handoffRequired !== false,
+            restoreRequired: context.restoreRequired !== false,
             payloadKind: envelope && envelope.payload ? envelope.payload.kind : null,
             hasContent: Boolean(envelope && hasContent(envelope.payload)),
             outcome: outcome || null,
@@ -225,7 +233,25 @@
             targetRoute: config.route,
             kind: 'plain-text',
             payload: { text: legacy.text },
-            actionId: 'legacy-compatibility'
+            actionId: (function () {
+                var ids = {
+                    'basic-writer>rich-editor': 'basic-to-rich',
+                    'urdu-keyboard>rich-editor': 'keyboard-to-rich',
+                    'basic-writer>card-studio': 'basic-to-card',
+                    'urdu-keyboard>card-studio': 'keyboard-to-card',
+                    'rich-editor>card-studio': 'rich-to-card',
+                    'basic-writer>qr-generator': 'basic-to-qr',
+                    'urdu-keyboard>qr-generator': 'keyboard-to-qr',
+                    'rich-editor>qr-generator': 'rich-to-qr'
+                };
+                return ids[source + '>' + targetWorkspace] || 'legacy-compatibility';
+            }()),
+            context: {
+                pathVersion: 'legacy-v1',
+                releaseMarker: CONTINUATION_RELEASE_MARKER,
+                handoffRequired: true,
+                restoreRequired: true
+            }
         });
     }
 
@@ -340,6 +366,7 @@
         MAX_TEXT_LENGTH: MAX_TEXT_LENGTH,
         MAX_SERIALIZED_BYTES: MAX_SERIALIZED_BYTES,
         KEY_PREFIX: KEY_PREFIX,
+        CONTINUATION_RELEASE_MARKER: CONTINUATION_RELEASE_MARKER,
         ALLOWED_KINDS: ALLOWED_KINDS.slice(),
         LEGACY_TARGETS: JSON.parse(JSON.stringify(LEGACY_TARGETS)),
         build: build,

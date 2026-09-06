@@ -182,10 +182,16 @@
         } catch (error) { /* The handoff still works when local storage is unavailable. */ }
     }
 
+    function continuationPath(stage, envelope) {
+        if (!envelope || !window.WriteUrduWorkspaceHandoff || !window.WriteUrduTelemetry || !window.WriteUrduTelemetry.trackContinuationPath) return;
+        window.WriteUrduTelemetry.trackContinuationPath(stage, window.WriteUrduWorkspaceHandoff.telemetryDetail(envelope));
+    }
+
     function waitForRichEditor(incoming, html, attempt) {
         attempt = attempt || 0;
         var editor = window.tinymce && window.tinymce.get && window.tinymce.get('basic-example');
         if (editor && editor.initialized) {
+            if (incoming.__wuEnvelope) continuationPath('destination_ready', incoming.__wuEnvelope);
             var currentText = String(editor.getContent({ format: 'text' }) || '').trim();
             if (currentText && currentText !== incoming.text.trim()) {
                 preserveRichSnapshot({ content: editor.getContent() || '', text: currentText, savedAt: Date.now() });
@@ -194,8 +200,15 @@
                     : 'Replace your current Rich Editor draft with the text from Basic Writer? Your current draft is already saved to local history.');
                 if (!replace) return;
             }
+            if (incoming.__wuPendingV2 && window.WriteUrduWorkspaceHandoff && typeof window.WriteUrduWorkspaceHandoff.take === 'function') {
+                var consumed = window.WriteUrduWorkspaceHandoff.take('rich-editor');
+                if (!consumed) return;
+                incoming.__wuEnvelope = consumed;
+                incoming.__wuPendingV2 = false;
+            }
             editor.setContent(html);
             track('continuation_payload_restored', { target_route: '/urdu-editor' });
+            if (incoming.__wuEnvelope) continuationPath('payload_restored', incoming.__wuEnvelope);
             document.body.setAttribute('data-rich-handoff-imported', 'true');
             if (window.WriteUrduUI && typeof window.WriteUrduUI.notify === 'function') {
                 window.WriteUrduUI.notify(isUrduLocale() ? 'آپ کا اردو متن فارمیٹنگ کے لیے تیار ہے۔' : 'Your Urdu text is ready to format.', 'success');
@@ -216,9 +229,23 @@
 
     function consumeRichHandoff() {
         if (normalizePath() !== '/urdu-editor') return;
-        var incoming = readOneTimeHandoff('rich');
+        var handoff = window.WriteUrduWorkspaceHandoff;
+        var envelope = handoff && typeof handoff.peek === 'function' ? handoff.peek('rich-editor') : null;
+        var incoming = null;
+        if (envelope && envelope.payload && envelope.payload.kind === 'plain-text' && typeof envelope.payload.text === 'string' && envelope.payload.text.trim()) {
+            incoming = {
+                version: 1,
+                text: envelope.payload.text,
+                source: envelope.source && envelope.source.workspace || 'basic-writer',
+                createdAt: new Date(envelope.createdAt).toISOString(),
+                __wuEnvelope: envelope,
+                __wuPendingV2: true
+            };
+        } else {
+            incoming = readOneTimeHandoff('rich');
+            if (incoming && handoff && typeof handoff.fromLegacy === 'function') incoming.__wuEnvelope = handoff.fromLegacy('rich-editor', incoming);
+        }
         if (!incoming) return;
-        track('continuation_destination_ready', { target_route: '/urdu-editor' });
         var html = plainTextToHtml(incoming.text);
         stageRichDraft(incoming, html);
         waitForRichEditor(incoming, html, 0);

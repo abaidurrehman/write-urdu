@@ -284,4 +284,8 @@
         saved = core.normalizeQrProject(readSaved() || core.createDefaultQrProject());
     }
     setState(saved); bind(); applyLocale(); restoreIndexedLogo(saved);
+    if (incoming && document.documentElement) {
+        document.documentElement.setAttribute('data-wu-qr-incoming-restored', 'true');
+        document.dispatchEvent(new CustomEvent('write-urdu:qr-generator-imported'));
+    }
 }(window, document));

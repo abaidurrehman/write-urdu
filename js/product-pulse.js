@@ -427,6 +427,30 @@
       { label: 'Payload restored', value: funnel.payload_restored },
       { label: 'Meaningful start', value: funnel.meaningful_start }
     ], 'label', 'value');
+
+    var diagnostics = data.continuation_paths || {};
+    var note = q('#continuationDiagnosticNote');
+    var pathRows = q('#continuationPathRows');
+    renderBars('#continuationLossBars', diagnostics.loss_summary || [], 'stage', 'loss');
+    if (note) note.textContent = diagnostics.dominant_loss ? ('Largest aggregate loss: ' + diagnostics.dominant_loss.stage + ' (' + fmt(diagnostics.dominant_loss.loss) + ')') : 'No bounded path data yet';
+    if (pathRows) {
+      pathRows.innerHTML = '';
+      var paths = diagnostics.paths || [];
+      if (!paths.length) pathRows.innerHTML = '<tr><td colspan="9" class="os-empty">No Slice 1 continuation path data yet for this period.</td></tr>';
+      paths.forEach(function (item) {
+        var row = document.createElement('tr');
+        var pathLabel = item.source_workspace + ' → ' + item.destination_workspace + ' · ' + item.path_version;
+        var loss = item.dominant_loss ? (item.dominant_loss.stage + ' · ' + fmt(item.dominant_loss.loss)) : '—';
+        var values = [item.recommendation_id, pathLabel, fmt(item.eligible), fmt(item.shown), fmt(item.selected), fmt(item.destination_ready), item.restore_required ? fmt(item.payload_restored) : 'N/A', fmt(item.meaningful_start), loss];
+        values.forEach(function (value, index) {
+          var cell = document.createElement('td');
+          cell.className = index >= 2 && index <= 7 ? 'num' : (index === 0 ? 'os-tool-name' : '');
+          cell.textContent = value;
+          row.appendChild(cell);
+        });
+        pathRows.appendChild(row);
+      });
+    }
   }
 
   function orderedBuckets(items, order) {
