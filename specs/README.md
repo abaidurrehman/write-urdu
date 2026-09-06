@@ -37,7 +37,8 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-SEO-CTR-001` | SERP CTR and intent optimization | **Active** — evidence-gated metadata/CTR work; coordinates with mobile/first-screen activation without destabilizing query ownership |
 | `WU-TOOLS-EXPANSION-001` | Browser-first Urdu Tools Program | **Active umbrella** — implemented children are archived; new breadth is paused behind core activation evidence |
 | `WU-TOOLS-EXPANSION-006` | Urdu/Hindi Script Converter R&D | **Hold** — correctly unbuilt |
-| `WU-API-001` | InPage↔Unicode Developer API & npm Package | **Planned — founder-directed exception to the P0.1 freeze** — isolated, additive-only wrapper around the already-shipped `WU-TOOLS-EXPANSION-005` engine; Phase A (npm package) has no compute/infra cost and ships first, Phase B (beta API) follows |
+| `WU-API-001` | InPage↔Unicode Developer API & npm Package | **Implemented core** — npm package published, beta API route live behind shared-secret auth, kill switch, and rate limiting |
+| `WU-API-002` | InPage↔Unicode Developer Portal & Self-Serve API Keys | **Planned — founder-directed exception to rule 7, and an early pull-forward of `WU-API-001` §11** — reuses the existing `WU-AUTH-001` Google sign-in + `METRICS_DB`; adds one table and two session-gated routes, no new database |
 
 ## Current P0 product/UX programme
 

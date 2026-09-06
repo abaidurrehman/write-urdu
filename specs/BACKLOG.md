@@ -202,6 +202,20 @@ Human/product gates:
 
 **Guardrail:** if implementation ever requires touching a Basic/Rich Editor, mobile-activation, or telemetry file, stop — the isolation assumption behind this exception has broken and the work must be re-filed under normal backlog review.
 
+## P0.8 — InPage↔Unicode developer portal & self-serve API keys (founder-directed early pull-forward of WU-API-001 §11)
+
+**Specs:** [`WU-API-002`](WU-API-002-inpage-unicode-developer-portal-self-serve-keys.md), [`WU-API-002A`](../docs/WU-API-002A-DEVELOPER-PORTAL-SELF-SERVE-KEYS-IMPLEMENTATION-PLAN-2026-09-06.md)
+**Skill:** `.claude/skills/wu-api-002-developer-portal/SKILL.md`
+**State:** Planned; explicitly approved 2026-09-06 as both an exception to rule 7 and a deliberate early pull of `WU-API-001` §11's Hold item ahead of its stated "real external usage" gate — because self-serve access is the mechanism for finding demand, not a reward for having already proven it, and everything it needs (Google sign-in, `METRICS_DB`) already exists.
+
+- [ ] Add `inpage_api_keys` table to the existing `METRICS_DB` (no new database).
+- [ ] Session-gated key issue/revoke routes at `/api/account/inpage-api-keys*`.
+- [ ] Beta route (`/api/v1/inpage-unicode/convert`) accepts a valid per-user key alongside the existing shared secret — shared secret keeps working.
+- [ ] Public `/developers` page and signed-in `/account/developer-api` key-management page.
+- [ ] Hold: multiple keys, quotas/billing, teams, sunsetting the shared secret.
+
+**Guardrail:** same isolation rule as P0.7 — no `WU-PLAT-002H`-owned file, no change to the existing Google auth flow's behavior beyond additive use of its session helpers.
+
 ## P0.6 — AI production external gate
 
 **Spec:** [`WU-AI-001`](WU-AI-001-urdu-ai-writing-assistant-platform.md)  
