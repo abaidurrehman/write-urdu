@@ -253,7 +253,7 @@ function deviceActivationSection(deviceRows) {
     ready: byDevice.length > 0,
     by_device: byDevice,
     // Spec WU-PLAT-002H-MOBILE-ACTIVATION-REPAIR.md 9.2 primary metric.
-    mobile_writer_first_input_rate: mobile ? ratio(mobile.writer_first_input, mobile.writer_viewed) : null
+    mobile_writer_first_input_rate: mobile ? boundedRate(mobile.writer_first_input, mobile.writer_viewed) : null
   };
 }
 

@@ -12,6 +12,7 @@ assert.match(api, /function boundedRate\(/, 'Slice 0 must distinguish bounded co
 assert.match(api, /first_input_rate: boundedRate\(firstInput, viewed\)/, 'First input must use writer-viewed as the compatible denominator');
 assert.doesNotMatch(api, /first_input_rate: ratio\(firstInput, focused\)/, 'First input must not be divided by focus');
 assert.match(api, /outcome_rate: boundedRate\(outcomeFirst, firstInput\)/, 'First outcome must use first-input as the compatible denominator');
+assert.match(api, /mobile_writer_first_input_rate: mobile \? boundedRate\(mobile\.writer_first_input, mobile\.writer_viewed\) : null/, 'Mobile first-input rate must use the same bounded denominator semantics');
 assert.doesNotMatch(api, /outcome_rate: ratio\(outcomeFirst, firstUrduSuccess\)/, 'First outcome must not use Urdu-success as a universal denominator');
 assert.match(api, /export_attempted_rate: boundedRate\(attempted, textEntered\)/, 'Card export attempt must use the common text-entered population');
 assert.match(api, /export_step_reached_rate: null/, 'Optional Card export-step must not masquerade as a universal conversion');
