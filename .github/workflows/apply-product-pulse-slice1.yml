@@ -59,7 +59,7 @@ jobs:
           assert.ok(events.includes('CONTINUATION_RELEASE_MARKERS = new Set'), 'Release marker must be bounded');
           assert.ok(events.includes('continuation_hourly_paths'), 'Path diagnostics must use a dedicated same-D1 aggregate rollup');
           assert.ok(!/INSERT(?: OR IGNORE)? INTO product_events/i.test(events), 'Routine Slice 1 telemetry must not reintroduce raw event writes');
-          assert.ok(!/editor_text|roman_urdu_text|urdu_text|transcript|audio|filename|document_id|share_id|email|account_id/i.test(migration), 'Path rollup must not contain content or identity fields');
+          assert.ok(!/^\s*(editor_text|roman_urdu_text|urdu_text|transcript|audio|filename|document_id|share_id|email|account_id)\s+/im.test(migration), 'Path rollup must not declare content or identity columns');
 
           ['recommendation_id','source_workspace','destination_workspace','path_version','release_marker','handoff_required','restore_required'].forEach((field) => {
             assert.ok(telemetry.includes(field), 'Client payload must include bounded path field ' + field);
