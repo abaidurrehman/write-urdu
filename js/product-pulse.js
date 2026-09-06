@@ -22,6 +22,10 @@
   function qa(selector) { return Array.prototype.slice.call(document.querySelectorAll(selector)); }
   function fmt(value) { return number.format(Number(value || 0)); }
   function percent(value) { return (Number(value || 0) * 100).toFixed(1).replace(/\.0$/, '') + '%'; }
+  function boundedPercent(value) {
+    if (value === null || typeof value === 'undefined' || !Number.isFinite(Number(value))) return '—';
+    return percent(value);
+  }
   function ratio(value) { return Number(value || 0).toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1') + '×'; }
   function safeText(value) { return String(value == null ? '' : value); }
 
@@ -290,10 +294,10 @@
     }
 
     if (kpis.writer_viewed) kpis.writer_viewed.textContent = fmt(funnel.writer_viewed);
-    if (kpis.focused_rate) kpis.focused_rate.textContent = percent(conversion.focused_rate);
-    if (kpis.first_input_rate) kpis.first_input_rate.textContent = percent(conversion.first_input_rate);
-    if (kpis.first_urdu_success_rate) kpis.first_urdu_success_rate.textContent = percent(conversion.first_urdu_success_rate);
-    if (kpis.outcome_rate) kpis.outcome_rate.textContent = percent(conversion.outcome_rate);
+    if (kpis.focused_rate) kpis.focused_rate.textContent = boundedPercent(conversion.focused_rate);
+    if (kpis.first_input_rate) kpis.first_input_rate.textContent = boundedPercent(conversion.first_input_rate);
+    if (kpis.first_urdu_success_rate) kpis.first_urdu_success_rate.textContent = boundedPercent(conversion.first_urdu_success_rate);
+    if (kpis.outcome_rate) kpis.outcome_rate.textContent = boundedPercent(conversion.outcome_rate);
 
     renderBars('#activationFunnelBars', [
       { label: 'Viewed', value: funnel.writer_viewed },
@@ -305,11 +309,11 @@
 
     renderBars('#activationClassificationBars', [
       { label: 'Visible, never focused', value: classification.visible_not_focused },
-      { label: 'Focused, no input', value: classification.focused_no_input },
-      { label: 'Input, no Urdu success', value: classification.input_no_urdu_success },
-      { label: 'Urdu success, no outcome', value: classification.success_no_outcome },
-      { label: 'Success with outcome', value: classification.success_with_outcome }
-    ], 'label', 'value');
+      { label: 'Viewed, no first input', value: classification.visible_no_input },
+      { label: 'Input, no Urdu-success event', value: classification.input_no_urdu_success },
+      { label: 'Input, no first outcome', value: classification.input_no_outcome },
+      { label: 'Input with outcome', value: classification.input_with_outcome }
+    ].filter(function (item) { return item.value !== null && typeof item.value !== 'undefined'; }), 'label', 'value');
 
     renderBars('#activationDeviceBars', activation.eligible_workspace_devices || [], 'device_class', 'sessions', function (label) {
       return safeText(label).replace(/^./, function (c) { return c.toUpperCase(); });
@@ -368,9 +372,9 @@
     }
 
     if (kpis.visit) kpis.visit.textContent = fmt(funnel.visit);
-    if (kpis.canvas_change_rate) kpis.canvas_change_rate.textContent = percent(conversion.canvas_change_rate);
-    if (kpis.export_attempted_rate) kpis.export_attempted_rate.textContent = percent(conversion.export_attempted_rate);
-    if (kpis.advanced_rate) kpis.advanced_rate.textContent = percent(modeSplit.advanced_rate);
+    if (kpis.canvas_change_rate) kpis.canvas_change_rate.textContent = boundedPercent(conversion.canvas_change_rate);
+    if (kpis.export_attempted_rate) kpis.export_attempted_rate.textContent = boundedPercent(conversion.export_attempted_rate);
+    if (kpis.advanced_rate) kpis.advanced_rate.textContent = boundedPercent(modeSplit.advanced_rate);
 
     renderBars('#cardStudioFunnelBars', [
       { label: 'Visit', value: funnel.visit },
@@ -410,10 +414,10 @@
     }
 
     if (kpis.shown) kpis.shown.textContent = fmt(funnel.shown);
-    if (kpis.selected_rate) kpis.selected_rate.textContent = percent(conversion.selected_rate);
-    if (kpis.destination_ready_rate) kpis.destination_ready_rate.textContent = percent(conversion.destination_ready_rate);
-    if (kpis.payload_restored_rate) kpis.payload_restored_rate.textContent = percent(conversion.payload_restored_rate);
-    if (kpis.meaningful_start_rate) kpis.meaningful_start_rate.textContent = percent(conversion.meaningful_start_rate);
+    if (kpis.selected_rate) kpis.selected_rate.textContent = boundedPercent(conversion.selected_rate);
+    if (kpis.destination_ready_rate) kpis.destination_ready_rate.textContent = boundedPercent(conversion.destination_ready_rate);
+    if (kpis.payload_restored_rate) kpis.payload_restored_rate.textContent = boundedPercent(conversion.payload_restored_rate);
+    if (kpis.meaningful_start_rate) kpis.meaningful_start_rate.textContent = boundedPercent(conversion.meaningful_start_rate);
 
     renderBars('#continuationFunnelBars', [
       { label: 'Shown', value: funnel.shown },
@@ -528,7 +532,7 @@
     renderDistributions(data);
     renderTools(data);
     renderDaily(data);
-    q('#lastUpdated').textContent = 'Updated ' + new Date(data.generated_at).toLocaleString() + (data.current && data.current.latest_event_at ? ' · latest event ' + new Date(data.current.latest_event_at).toLocaleString() : '');
+    q('#lastUpdated').textContent = 'Updated ' + new Date(data.generated_at).toLocaleString() + (data.current && data.current.latest_event_at ? ' · latest event ' + new Date(data.current.latest_event_at).toLocaleString() : '') + (data.metrics_version ? ' · metrics ' + data.metrics_version : '');
     q('#dataStatus').textContent = data.storage === 'hourly_rollups' ? 'Rollups live' : (data.current && data.current.latest_event_at ? 'Telemetry live' : 'Telemetry ready');
   }
 

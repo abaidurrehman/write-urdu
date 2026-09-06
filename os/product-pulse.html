@@ -105,17 +105,17 @@
       </article>
 
       <article class="os-card os-panel span-12" id="activationFunnelPanel">
-        <div class="os-panel-head"><h2>First value</h2><span class="os-panel-note">Visit → focus → first input → first Urdu success → outcome — WU-PLAT-002H Gate A</span></div>
+        <div class="os-panel-head"><h2>First value</h2><span class="os-panel-note">Compatible state coverage + raw counts — WU-PLAT-002H Gate A / Slice 0</span></div>
         <section class="os-kpis" aria-label="First-value funnel metrics">
           <article class="os-card os-kpi"><div class="os-kpi-label">Writer viewed</div><div class="os-kpi-value" data-activation-kpi="writer_viewed">—</div><div class="os-kpi-meta">Basic/Rich/Keyboard visits</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">Focused</div><div class="os-kpi-value" data-activation-kpi="focused_rate">—</div><div class="os-kpi-meta">Focused ÷ viewed</div></article>
-          <article class="os-card os-kpi"><div class="os-kpi-label">First input</div><div class="os-kpi-value" data-activation-kpi="first_input_rate">—</div><div class="os-kpi-meta">First input ÷ focused</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">First input</div><div class="os-kpi-value" data-activation-kpi="first_input_rate">—</div><div class="os-kpi-meta">First input ÷ writer viewed</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">First Urdu success</div><div class="os-kpi-value" data-activation-kpi="first_urdu_success_rate">—</div><div class="os-kpi-meta">Urdu produced ÷ first input</div></article>
-          <article class="os-card os-kpi"><div class="os-kpi-label">First outcome</div><div class="os-kpi-value" data-activation-kpi="outcome_rate">—</div><div class="os-kpi-meta">Copy/export/share/save ÷ Urdu success</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">First outcome</div><div class="os-kpi-value" data-activation-kpi="outcome_rate">—</div><div class="os-kpi-meta">First outcome ÷ first input</div></article>
         </section>
         <div class="os-grid">
           <div class="span-5"><div class="os-panel-head"><h2>Funnel volume</h2><span class="os-panel-note">Current period</span></div><div class="os-bars" id="activationFunnelBars"></div></div>
-          <div class="span-4"><div class="os-panel-head"><h2>Where sessions stop</h2><span class="os-panel-note">Not all zero-character sessions are "abandoned"</span></div><div class="os-bars" id="activationClassificationBars"></div></div>
+          <div class="span-4"><div class="os-panel-head"><h2>State diagnostics</h2><span class="os-panel-note">Compatible differences; not a strict event ladder</span></div><div class="os-bars" id="activationClassificationBars"></div></div>
           <div class="span-3"><div class="os-panel-head"><h2>Writer-eligible traffic by device</h2><span class="os-panel-note">Visits to writer workspaces</span></div><div class="os-bars" id="activationDeviceBars"></div></div>
         </div>
         <div class="os-table-wrap" style="margin-top:18px">
@@ -132,7 +132,7 @@
         <section class="os-kpis" aria-label="Card Studio completion metrics">
           <article class="os-card os-kpi"><div class="os-kpi-label">Visits</div><div class="os-kpi-value" data-card-studio-kpi="visit">—</div><div class="os-kpi-meta">Card Studio page visits</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">Canvas edit</div><div class="os-kpi-value" data-card-studio-kpi="canvas_change_rate">—</div><div class="os-kpi-meta">First canvas change ÷ text entered</div></article>
-          <article class="os-card os-kpi"><div class="os-kpi-label">Export attempted</div><div class="os-kpi-value" data-card-studio-kpi="export_attempted_rate">—</div><div class="os-kpi-meta">Attempted ÷ reached export step</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Export attempted</div><div class="os-kpi-value" data-card-studio-kpi="export_attempted_rate">—</div><div class="os-kpi-meta">Attempted ÷ text entered · export step is optional</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">Advanced mode share</div><div class="os-kpi-value" data-card-studio-kpi="advanced_rate">—</div><div class="os-kpi-meta">Advanced ÷ all mode exports</div></article>
         </section>
         <div class="os-grid">
@@ -143,16 +143,16 @@
       </article>
 
       <article class="os-card os-panel span-6" id="continuationFunnelPanel">
-        <div class="os-panel-head"><h2>Continuation</h2><span class="os-panel-note">Shown → selected → stored → destination ready → restored → meaningful start — WU-PLAT-002H Gate A/C</span></div>
+        <div class="os-panel-head"><h2>Continuation</h2><span class="os-panel-note">Shown → selected conversion; downstream raw counts until path consolidation — Slice 0</span></div>
         <section class="os-kpis" aria-label="Continuation funnel metrics">
           <article class="os-card os-kpi"><div class="os-kpi-label">Shown</div><div class="os-kpi-value" data-continuation-kpi="shown">—</div><div class="os-kpi-meta">Sessions where a next-step control was present</div></article>
           <article class="os-card os-kpi"><div class="os-kpi-label">Selected</div><div class="os-kpi-value" data-continuation-kpi="selected_rate">—</div><div class="os-kpi-meta">Selected ÷ shown</div></article>
-          <article class="os-card os-kpi"><div class="os-kpi-label">Destination ready</div><div class="os-kpi-value" data-continuation-kpi="destination_ready_rate">—</div><div class="os-kpi-meta">Destination ready ÷ stored</div></article>
-          <article class="os-card os-kpi"><div class="os-kpi-label">Payload restored</div><div class="os-kpi-value" data-continuation-kpi="payload_restored_rate">—</div><div class="os-kpi-meta">Restored ÷ destination ready</div></article>
-          <article class="os-card os-kpi"><div class="os-kpi-label">Meaningful start</div><div class="os-kpi-value" data-continuation-kpi="meaningful_start_rate">—</div><div class="os-kpi-meta">Meaningful start ÷ restored</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Destination ready</div><div class="os-kpi-value" data-continuation-kpi="destination_ready_rate">—</div><div class="os-kpi-meta">Raw count below · mixed legacy/v2 paths</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Payload restored</div><div class="os-kpi-value" data-continuation-kpi="payload_restored_rate">—</div><div class="os-kpi-meta">Raw count below · restore is path-optional</div></article>
+          <article class="os-card os-kpi"><div class="os-kpi-label">Meaningful start</div><div class="os-kpi-value" data-continuation-kpi="meaningful_start_rate">—</div><div class="os-kpi-meta">Raw count below · denominator awaits Slice 1</div></article>
         </section>
         <div class="os-bars" id="continuationFunnelBars"></div>
-        <div class="os-panel-note" style="margin-top:12px">Instrumented across two independent handoff code paths (legacy and v2); a known consolidation gap is tracked separately. No text content in any step.</div>
+        <div class="os-panel-note" style="margin-top:12px">Slice 0 deliberately suppresses incompatible downstream percentages while legacy and v2 paths emit different optional steps. Raw counts remain visible; Slice 1 owns path consolidation. No text content in any step.</div>
       </article>
 
       <article class="os-card os-panel span-12" id="shareLoopPanel">
