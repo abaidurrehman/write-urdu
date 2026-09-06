@@ -1,5 +1,46 @@
 {
-  "generatedAt": "2026-08-25T18:10:35.866Z",
-  "routes": [],
+  "generatedAt": "2026-09-06T11:28:28.207Z",
+  "routes": [
+    {
+      "route": "/",
+      "slug": "home",
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 1000
+      },
+      "documentWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflow": 0,
+      "documentHeight": 1000,
+      "bodyFontSize": 16,
+      "headerHeight": null,
+      "headerBackground": null,
+      "navColor": null,
+      "navOpacity": null,
+      "navContrastRatio": null,
+      "navDisplay": null,
+      "menuToggleDisplay": null,
+      "menuToggleVisible": false,
+      "neutralActionText": null,
+      "neutralActionVisible": false,
+      "neutralActionColor": null,
+      "neutralActionBackground": null,
+      "neutralActionContrastRatio": null,
+      "mainTop": null,
+      "h1Top": null,
+      "primarySelector": null,
+      "primaryTop": null,
+      "primaryHeight": null,
+      "primaryBottom": null,
+      "primaryVisibleInInitialViewport": null,
+      "primaryStartsBeforeFoldRatio": null,
+      "journeyTop": null,
+      "adTop": null,
+      "visibleAds": 0,
+      "urduDirection": null,
+      "urduFontFamily": null
+    }
+  ],
   "criticalFailures": []
 }

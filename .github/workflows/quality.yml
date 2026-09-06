@@ -37,21 +37,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Diagnose inherited static SEO drift
-        run: |
-          npm run seo:graph:sync
-          git diff -- english-urdu-typing-tutorial.html index.html urdu-keyboard.html
-
-      - name: Upload inherited SEO sync artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: inherited-seo-sync-${{ github.run_id }}
-          path: |
-            english-urdu-typing-tutorial.html
-            index.html
-            urdu-keyboard.html
-          retention-days: 1
-
       - name: Validate static source shell
         run: npm run shell:check
 
@@ -78,7 +63,9 @@ jobs:
           npx playwright test
           tests/sua.spec.js
           tests/journey.spec.js
+          tests/mobile-editor-activation.spec.js
           tests/outcome-navigation.spec.js
+          tests/rich-editor-mobile-activation.spec.js
           tests/workspace-next-step.spec.js
           tests/core-workspace-convergence.spec.js
           tests/capture-continuity.spec.js

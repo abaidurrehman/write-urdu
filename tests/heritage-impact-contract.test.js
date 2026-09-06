@@ -7,6 +7,8 @@ const page = fs.readFileSync(path.join(root, '10-years-of-write-urdu.html'), 'ut
 const css = fs.readFileSync(path.join(root, 'css', 'heritage-impact.css'), 'utf8');
 const evidence = fs.readFileSync(path.join(root, 'docs', 'WU-HERITAGE-001-EVIDENCE-2026-09-06.md'), 'utf8');
 const registry = fs.readFileSync(path.join(root, 'docs', 'WU-PUBLIC-PAGE-REGISTRY.csv'), 'utf8');
+const redirects = fs.readFileSync(path.join(root, '_redirects'), 'utf8');
+const humanSitemap = fs.readFileSync(path.join(root, 'write-urdu-sitemap.html'), 'utf8');
 const seo = require(path.join(root, 'seo.config.js'));
 const ads = require(path.join(root, 'js', 'ads.js'));
 
@@ -14,8 +16,8 @@ assert.match(page, /<h1 id="heritage-title">10 years of writing Urdu together<\/
 assert.match(page, /online since <strong>July 2016<\/strong>/, 'Founder-confirmed July 2016 launch month must remain visible');
 assert.match(page, /lang="ur" dir="rtl">دس سال، لاکھوں الفاظ، بے شمار کہانیاں/, 'Heritage hero must include meaningful Urdu copy with language/direction semantics');
 
-assert.match(page, /Derived · recent sample[\s\S]*1,067/, 'Derived recent non-zero writing-session count must be visible and labelled');
-assert.match(page, /Measured · recent sample[\s\S]*128/, 'Measured 2500+ writing-session count must be visible and labelled');
+assert.match(page, /Derived · recent week[\s\S]*1,067/, 'Derived recent non-zero writing-session count must be visible and labelled as a weekly sample');
+assert.match(page, /Measured · recent week[\s\S]*128/, 'Measured 2500+ writing-session count must be visible and labelled as a weekly sample');
 assert.match(page, /Estimated · lifetime scale[\s\S]*Tens of millions/, 'Lifetime scale must be visibly labelled as estimated');
 assert.match(page, /0\.6–0\.9 million characters/, 'Public methodology must disclose the bounded recent character estimate');
 assert.match(page, /52–80 million word-equivalents/, 'Public methodology must show the disclosed lifetime scale rather than a hidden magic number');
@@ -49,6 +51,9 @@ assert.strictEqual(route.lastmod, '2026-09-06', 'Heritage page lastmod must matc
 
 assert.strictEqual(ads.resolvePageType('/10-years-of-write-urdu'), 'trust', 'Heritage route must remain an ad-free trust surface');
 assert.match(registry, /10-years-of-write-urdu\.html,\/10-years-of-write-urdu,About,[^\n]*,index,yes,keep,migrated,P1,/, 'Public page registry must contain the heritage route');
+assert.match(redirects, /^\/10-years-of-write-urdu\.html \/10-years-of-write-urdu 301$/m, 'Legacy heritage HTML route must redirect to the canonical route');
+assert.match(redirects, /^\/10-years-of-write-urdu\/ \/10-years-of-write-urdu 301$/m, 'Trailing-slash heritage route must redirect to the canonical route');
+assert.match(humanSitemap, /href="\/10-years-of-write-urdu"/, 'Human sitemap must expose the heritage route');
 assert.match(evidence, /1,067/, 'Evidence ledger must retain the derived session basis');
 assert.match(evidence, /597,214\.5/, 'Evidence ledger must retain the low character calculation');
 assert.match(evidence, /917,214\.5/, 'Evidence ledger must retain the high bounded character calculation');

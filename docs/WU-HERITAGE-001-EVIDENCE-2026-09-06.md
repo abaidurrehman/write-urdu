@@ -47,7 +47,7 @@ Writing-length buckets, labelled in Product Pulse as engaged writing sessions on
 
 Therefore the public page may say:
 
-> `In one recent measurement window, 1,067 writing sessions contained text.`
+> `In one recent week, 1,067 writing sessions contained text.`
 
 Use `sessions`, not `unique people`, because the telemetry does not prove one person per session.
 
@@ -57,7 +57,7 @@ The open-ended `2,500+` bucket contains **128 sessions**.
 
 Public-safe wording:
 
-> `128 recent writing sessions grew beyond 2,500 characters.`
+> `In one recent week, 128 writing sessions grew beyond 2,500 characters.`
 
 Do not call these `documents`, `essays`, `books` or `assignments`; the content purpose is not observed.
 
