@@ -4,6 +4,8 @@ playwright-report/
 .playwright/
 .qa-*/
 qa-*.png
+debug.log
+tmp-*.png
 .vs/
 .env
 .env.local
