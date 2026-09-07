@@ -14,3 +14,5 @@ scripts/ai-writing-benchmark/results/
 .wrangler/
 packages/*/dist/
 .npmrc
+marketing/video/captures/
+marketing/video/generated/

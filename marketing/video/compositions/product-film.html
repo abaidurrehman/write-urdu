@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Write Urdu product film</title>
+  <style>
+    html, body { margin: 0; min-height: 100%; background: #201b1d; display: grid; place-items: center; overflow: hidden; }
+    canvas { display: block; max-width: 100vw; max-height: 100vh; }
+  </style>
+</head>
+<body>
+  <canvas aria-label="Write Urdu product film preview"></canvas>
+  <script type="module">
+    const params = new URLSearchParams(location.search);
+    const formats = {
+      'website-16x9': [1920, 1080],
+      'social-4x5': [1080, 1350],
+      'vertical-9x16': [1080, 1920]
+    };
+    const format = formats[params.get('format')] ? params.get('format') : 'website-16x9';
+    const storyId = /^[a-z0-9][a-z0-9-]*$/.test(params.get('story') || '') ? params.get('story') : 'voice-typing';
+    const [width, height] = formats[format];
+    const portrait = height > width;
+    const canvas = document.querySelector('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = width;
+    canvas.height = height;
+
+    const story = await fetch(`/marketing/video/stories/${storyId}.json`).then((response) => {
+      if (!response.ok) throw new Error(`Unable to load story ${storyId}`);
+      return response.json();
+    });
+    const scenes = story.scenes;
+    const duration = scenes.at(-1).end;
+    const images = await Promise.all(scenes.map(({ id }) => new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve([id, image]);
+      image.onerror = reject;
+      image.src = `/marketing/video/captures/${storyId}/${id}.png`;
+    }))).then(Object.fromEntries);
+
+    function roundedRect(x, y, w, h, radius) {
+      context.beginPath();
+      context.roundRect(x, y, w, h, radius);
+    }
+
+    function wrapText(text, maxWidth) {
+      const words = text.split(' ');
+      const lines = [];
+      let line = '';
+      for (const word of words) {
+        const candidate = line ? `${line} ${word}` : word;
+        if (context.measureText(candidate).width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = candidate;
+        }
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    function drawCapture(image, panel, alpha = 1) {
+      const scale = portrait ? Math.min(panel.w / image.width, panel.h / image.height) : Math.max(panel.w / image.width, panel.h / image.height);
+      const drawW = image.width * scale;
+      const drawH = image.height * scale;
+      const drawX = panel.x + (panel.w - drawW) / 2;
+      const drawY = panel.y + (panel.h - drawH) / 2;
+      context.save();
+      context.globalAlpha = alpha;
+      roundedRect(panel.x, panel.y, panel.w, panel.h, portrait ? 28 : 22);
+      context.clip();
+      context.drawImage(image, drawX, drawY, drawW, drawH);
+      context.restore();
+    }
+
+    function drawCaption(scene, panel) {
+      const boxMargin = portrait ? 26 : 30;
+      const boxX = panel.x + boxMargin;
+      const boxY = panel.y + boxMargin;
+      const boxW = portrait ? panel.w - boxMargin * 2 : Math.min(760, panel.w * 0.48);
+      const boxH = portrait ? 220 : 154;
+      context.save();
+      context.shadowColor = 'rgba(32, 16, 20, 0.25)';
+      context.shadowBlur = 24;
+      context.fillStyle = 'rgba(255, 252, 248, 0.96)';
+      roundedRect(boxX, boxY, boxW, boxH, 20);
+      context.fill();
+      context.shadowBlur = 0;
+      context.fillStyle = '#7b2f3b';
+      roundedRect(boxX, boxY, portrait ? 10 : 8, boxH, 5);
+      context.fill();
+      const textX = boxX + (portrait ? 42 : 36);
+      context.fillStyle = '#7b2f3b';
+      context.font = `700 ${portrait ? 21 : 17}px Arial, sans-serif`;
+      context.fillText(scene.kicker.toUpperCase(), textX, boxY + (portrait ? 52 : 39));
+      context.fillStyle = '#271f22';
+      context.font = `700 ${portrait ? 46 : 39}px Arial, sans-serif`;
+      const lines = wrapText(scene.caption, boxW - (portrait ? 84 : 72));
+      lines.slice(0, 3).forEach((line, index) => {
+        context.fillText(line, textX, boxY + (portrait ? 116 : 92) + index * (portrait ? 51 : 44));
+      });
+      context.restore();
+    }
+
+    function drawBrand() {
+      const x = portrait ? 48 : 64;
+      const y = portrait ? 67 : 48;
+      context.fillStyle = '#fffaf5';
+      context.font = `700 ${portrait ? 31 : 27}px Georgia, serif`;
+      context.fillText('Write Urdu', x, y);
+      context.fillStyle = 'rgba(255,250,245,0.72)';
+      context.font = `600 ${portrait ? 17 : 14}px Arial, sans-serif`;
+      const label = 'REAL PRODUCT UI · DEMO TEXT';
+      const labelWidth = context.measureText(label).width;
+      context.fillText(label, width - x - labelWidth, y);
+    }
+
+    function draw(time) {
+      const sceneIndex = Math.max(0, scenes.findIndex((scene) => time < scene.end));
+      const scene = scenes[Math.min(sceneIndex, scenes.length - 1)];
+      const progress = Math.max(0, Math.min(1, (time - scene.start) / (scene.end - scene.start)));
+      const panel = portrait
+        ? { x: 38, y: 105, w: width - 76, h: height - 250 }
+        : { x: 52, y: 76, w: width - 104, h: height - 142 };
+
+      const gradient = context.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, '#351f28');
+      gradient.addColorStop(1, '#6f3849');
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, width, height);
+
+      context.fillStyle = 'rgba(255,250,245,0.12)';
+      roundedRect(panel.x - 8, panel.y - 8, panel.w + 16, panel.h + 16, portrait ? 34 : 28);
+      context.fill();
+      context.fillStyle = '#fffaf5';
+      roundedRect(panel.x, panel.y, panel.w, panel.h, portrait ? 28 : 22);
+      context.fill();
+
+      if (sceneIndex > 0 && progress < 0.22) {
+        drawCapture(images[scenes[sceneIndex - 1].id], panel, 1);
+        drawCapture(images[scene.id], panel, progress / 0.22);
+      } else {
+        drawCapture(images[scene.id], panel, 1);
+      }
+      drawCaption(scene, panel);
+      drawBrand();
+
+      context.fillStyle = 'rgba(255,250,245,0.78)';
+      context.font = `600 ${portrait ? 19 : 15}px Arial, sans-serif`;
+      context.fillText('Captions-first · works with sound off', portrait ? 48 : 64, height - (portrait ? 45 : 28));
+
+      if (scene.id === scenes.at(-1).id) {
+        const label = `${story.cta || 'Try Write Urdu'}  →`;
+        context.font = `700 ${portrait ? 25 : 21}px Arial, sans-serif`;
+        const boxW = context.measureText(label).width + (portrait ? 54 : 46);
+        const boxH = portrait ? 62 : 50;
+        const boxX = width - (portrait ? 48 : 64) - boxW;
+        const boxY = height - (portrait ? 78 : 52);
+        context.fillStyle = '#fffaf5';
+        roundedRect(boxX, boxY, boxW, boxH, 12);
+        context.fill();
+        context.fillStyle = '#5b2736';
+        context.fillText(label, boxX + (portrait ? 27 : 23), boxY + boxH * 0.66);
+      }
+    }
+
+    const fixedTime = Number(params.get('time'));
+    if (Number.isFinite(fixedTime)) {
+      draw(Math.max(0, Math.min(duration - 0.01, fixedTime)));
+      document.documentElement.dataset.videoReady = 'true';
+    } else {
+      draw(0);
+      document.documentElement.dataset.videoReady = 'true';
+    }
+
+    async function render() {
+      const frameRate = 24;
+      const stream = canvas.captureStream(frameRate);
+      const preferredMimeType = 'video/webm;codecs=vp9';
+      const mimeType = MediaRecorder.isTypeSupported(preferredMimeType) ? preferredMimeType : 'video/webm';
+      const recorder = new MediaRecorder(stream, {
+        mimeType,
+        videoBitsPerSecond: portrait ? 6500000 : 8000000
+      });
+      const chunks = [];
+      recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+      const stopped = new Promise((resolve) => { recorder.onstop = resolve; });
+      recorder.start(1000);
+      const startedAt = performance.now();
+
+      await new Promise((resolve) => {
+        function frame(now) {
+          const elapsed = Math.min(duration, (now - startedAt) / 1000);
+          draw(elapsed);
+          if (elapsed >= duration) return resolve();
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      });
+      recorder.stop();
+      await stopped;
+      const blob = new Blob(chunks, { type: mimeType });
+      await fetch('/render-output', { method: 'POST', headers: { 'content-type': blob.type }, body: blob });
+    }
+
+    if (params.get('render') === '1') await render();
+  </script>
+</body>
+</html>
