@@ -1,0 +1,80 @@
+{
+  "storyId": "urdu-card-studio",
+  "title": "اپنی اردو کو خوبصورت تصویر بنائیں۔",
+  "captureViewport": { "width": 1440, "height": 1000 },
+  "cta": "اردو کارڈ بنائیں",
+  "scenes": [
+    {
+      "id": "start",
+      "route": "/urdu-card-studio",
+      "start": 0,
+      "end": 3,
+      "kicker": "شعر، قول یا پیغام",
+      "caption": "اپنی اردو کو خوبصورت تصویر بنائیں۔",
+      "highlight": "#cardText"
+    },
+    {
+      "id": "write",
+      "route": "/urdu-card-studio",
+      "start": 3,
+      "end": 8,
+      "kicker": "پہلا قدم · متن لکھیں",
+      "caption": "اپنا شعر، قول یا پیغام اردو میں لکھیں۔",
+      "setValues": {
+        "#cardText": "لفظ دل سے نکلیں\nتو تصویر بن جاتے ہیں"
+      },
+      "highlight": "#cardText"
+    },
+    {
+      "id": "format",
+      "route": "/urdu-card-studio",
+      "start": 8,
+      "end": 14,
+      "kicker": "دوسرا قدم · انداز چنیں",
+      "caption": "تیار لے آؤٹ اور خوبصورت سانچہ منتخب کریں۔",
+      "setValues": {
+        "#cardText": "لفظ دل سے نکلیں\nتو تصویر بن جاتے ہیں"
+      },
+      "click": [
+        "button.card-studio-step[data-card-step=\"format\"]",
+        "[data-card-use-case=\"quote\"]",
+        "[data-card-template=\"emerald\"]"
+      ],
+      "highlight": "[data-card-templates]"
+    },
+    {
+      "id": "style",
+      "route": "/urdu-card-studio",
+      "start": 14,
+      "end": 20,
+      "kicker": "تیسرا قدم · اپنی پسند دیں",
+      "caption": "فونٹ اور پس منظر بدلیں، نتیجہ فوراً دیکھیں۔",
+      "setValues": {
+        "#cardText": "لفظ دل سے نکلیں\nتو تصویر بن جاتے ہیں"
+      },
+      "click": [
+        "button.card-studio-step[data-card-step=\"format\"]",
+        "[data-card-template=\"emerald\"]",
+        "button.card-studio-step[data-card-step=\"style\"]"
+      ],
+      "highlight": "#cardBackgroundType"
+    },
+    {
+      "id": "export",
+      "route": "/urdu-card-studio",
+      "start": 20,
+      "end": 25,
+      "kicker": "چوتھا قدم · تصویر محفوظ کریں",
+      "caption": "تیار کارڈ PNG میں ڈاؤن لوڈ کریں یا شیئر کریں۔",
+      "setValues": {
+        "#cardText": "لفظ دل سے نکلیں\nتو تصویر بن جاتے ہیں"
+      },
+      "click": [
+        "button.card-studio-step[data-card-step=\"format\"]",
+        "[data-card-template=\"emerald\"]",
+        "button.card-studio-step[data-card-step=\"export\"]"
+      ],
+      "highlight": ".card-studio-export-section [data-card-action=\"download\"]"
+    }
+  ]
+}

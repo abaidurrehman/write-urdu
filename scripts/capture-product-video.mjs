@@ -45,7 +45,8 @@ const browser = await chromium.launch({ headless: true });
 try {
   for (const scene of story.scenes) {
     const viewport = scene.viewport || story.captureViewport || { width: 1440, height: 1000 };
-    const page = await browser.newPage({ viewport, deviceScaleFactor: 2 });
+    const context = await browser.newContext({ viewport, deviceScaleFactor: 2 });
+    const page = await context.newPage();
     await page.goto(`http://127.0.0.1:${port}${scene.route}`, { waitUntil: 'networkidle' });
 
     for (const selector of story.hide || []) {
@@ -61,6 +62,10 @@ try {
         }, value);
       }
     }
+    for (const selector of scene.click || []) {
+      await page.locator(selector).click();
+      await page.waitForTimeout(150);
+    }
     if (scene.highlight) {
       await page.locator(scene.highlight).evaluate((element) => {
         element.style.outline = '4px solid #7b2f3b';
@@ -74,7 +79,7 @@ try {
     const outputPath = path.join(captureDirectory, `${scene.id}.png`);
     await page.screenshot({ path: outputPath, fullPage: false });
     process.stdout.write(`Captured ${scene.id}: ${path.relative(root, outputPath)}\n`);
-    await page.close();
+    await context.close();
   }
 } finally {
   await browser.close();

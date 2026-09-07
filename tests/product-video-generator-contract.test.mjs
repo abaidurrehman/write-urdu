@@ -10,6 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relative) => readFileSync(path.join(root, relative), 'utf8');
 const story = JSON.parse(read('marketing/video/stories/voice-typing.json'));
 const typingStory = JSON.parse(read('marketing/video/stories/english-to-urdu-typing.json'));
+const cardStory = JSON.parse(read('marketing/video/stories/urdu-card-studio.json'));
 
 test('video runtime exposes the three approved responsive formats', () => {
   assert.deepEqual(Object.keys(VIDEO_FORMATS), ['website-16x9', 'social-4x5', 'vertical-9x16']);
@@ -53,6 +54,20 @@ test('English-to-Urdu story shows the real homepage typing journey with fictiona
   assert.equal(typingStory.scenes.at(-1).highlight, '[data-copy-target="#transliterateTextarea"]');
 });
 
+test('Card Studio story shows the real create and export journey', () => {
+  assert.equal(cardStory.storyId, 'urdu-card-studio');
+  assert.equal(cardStory.scenes.length, 5);
+  assert.ok(cardStory.scenes.every((scene) => scene.route === '/urdu-card-studio'));
+  assert.ok(cardStory.scenes.every((scene) => /[\u0600-\u06ff]/.test(`${scene.kicker} ${scene.caption}`)));
+  assert.match(cardStory.scenes[1].setValues['#cardText'], /[\u0600-\u06ff]/);
+  assert.deepEqual(cardStory.scenes[2].click, [
+    'button.card-studio-step[data-card-step="format"]',
+    '[data-card-use-case="quote"]',
+    '[data-card-template="emerald"]'
+  ]);
+  assert.equal(cardStory.scenes.at(-1).highlight, '.card-studio-export-section [data-card-action="download"]');
+});
+
 test('capture and renderer stay local and use the existing Playwright dependency', () => {
   const capture = read('scripts/capture-product-video.mjs');
   const renderer = read('scripts/render-product-video.mjs');
@@ -61,6 +76,7 @@ test('capture and renderer stay local and use the existing Playwright dependency
   assert.match(renderer, /from '@playwright\/test'/);
   assert.match(capture, /127\.0\.0\.1/);
   assert.match(capture, /deviceScaleFactor: 2/);
+  assert.match(capture, /scene\.click/);
   assert.match(renderer, /127\.0\.0\.1/);
   assert.match(composition, /MediaRecorder/);
   assert.match(composition, /canvas\.captureStream/);
