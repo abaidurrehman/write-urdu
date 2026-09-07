@@ -16,11 +16,3 @@ export function normalizeVideoStory(value, fallback = 'voice-typing') {
   }
   return candidate;
 }
-
-export function videoPaths(root, storyId) {
-  return Object.freeze({
-    story: new URL(`../marketing/video/stories/${storyId}.json`, `file://${root.replaceAll('\\', '/')}/`).pathname,
-    captures: new URL(`../marketing/video/captures/${storyId}/`, `file://${root.replaceAll('\\', '/')}/`).pathname,
-    generated: new URL('../marketing/video/generated/', `file://${root.replaceAll('\\', '/')}/`).pathname
-  });
-}
