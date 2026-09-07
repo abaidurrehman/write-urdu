@@ -1,0 +1,50 @@
+{
+  "storyId": "voice-typing",
+  "title": "Speak Urdu. Get editable Urdu text.",
+  "captureViewport": { "width": 1440, "height": 1000 },
+  "cta": "Try Urdu Voice Typing",
+  "scenes": [
+    {
+      "id": "problem",
+      "route": "/tools/urdu-voice-typing",
+      "start": 0,
+      "end": 3,
+      "kicker": "When typing slows you down",
+      "caption": "Need to write Urdu, but speaking is easier?",
+      "highlight": "[data-voice-start]"
+    },
+    {
+      "id": "speak",
+      "route": "/tools/urdu-voice-typing",
+      "start": 3,
+      "end": 7,
+      "kicker": "Step 1 · Speak",
+      "caption": "Open Voice Typing and speak naturally in Urdu.",
+      "highlight": "[data-voice-start]"
+    },
+    {
+      "id": "text",
+      "route": "/tools/urdu-voice-typing",
+      "start": 7,
+      "end": 13,
+      "kicker": "Step 2 · Your words appear",
+      "caption": "Your Urdu becomes editable text you can review and refine.",
+      "setValues": {
+        "#voiceTranscript": "السلام علیکم، آج میں اپنی آواز سے اردو لکھ رہا ہوں۔ یہ متن فوراً قابلِ تدوین ہے۔"
+      },
+      "highlight": "#voiceTranscript"
+    },
+    {
+      "id": "use",
+      "route": "/tools/urdu-voice-typing",
+      "start": 13,
+      "end": 18,
+      "kicker": "Step 3 · Use it anywhere",
+      "caption": "Copy it, continue writing, clean it, or share it.",
+      "setValues": {
+        "#voiceTranscript": "السلام علیکم، آج میں اپنی آواز سے اردو لکھ رہا ہوں۔ یہ متن فوراً قابلِ تدوین ہے۔"
+      },
+      "highlight": ".urdu-tool-actions"
+    }
+  ]
+}
