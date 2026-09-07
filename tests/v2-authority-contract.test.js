@@ -60,7 +60,8 @@ assert.match(tutorial, /class="content-page guide-page v2-content-page authority
 assert.match(tutorial, /<title>Write Urdu Video Tutorial – Roman Urdu Typing & Rich Editor<\/title>/, 'Tutorial must own a product-walkthrough intent rather than broad Urdu typing');
 assert.match(tutorial, /<h1 id="tutorial-title">Write Urdu video tutorials<\/h1>/, 'Tutorial H1 must preserve the product-tutorial job');
 assert.match(tutorial, /\/roman-urdu-transliteration/, 'Tutorial must distinguish itself from the Roman Urdu language guide');
-assert.ok((tutorial.match(/facebook\.com\/plugins\/video\.php/g) || []).length === 2, 'Tutorial must retain exactly the two useful video embeds');
+assert.ok((tutorial.match(/facebook\.com\/plugins\/video\.php/g) || []).length === 1, 'Tutorial must retain the useful Rich Editor video embed');
+assert.ok((tutorial.match(/<video\b/g) || []).length === 1 && /english-to-urdu-typing\.webm/.test(tutorial), 'Tutorial must use the current self-hosted basic typing video');
 assert.match(tutorial, /data-wu-ad-boundary="after-answer"/, 'Tutorial must expose the Learn-page ad boundary after useful content');
 assert.doesNotMatch(tutorial, /<meta name="Keywords"|UA-80884320-1|google-analytics\.com\/analytics\.js|bootstrap|jquery|clipboard\.js|jspdf|html2canvas|fb-customerchat|adsbygoogle/i, 'Tutorial must not retain legacy SEO, analytics, framework, editor or manual-ad baggage');
 assert.doesNotMatch(tutorial, /href="[^"]+\.html(?:[?#][^"]*)?"/, 'Tutorial must use extensionless internal links');

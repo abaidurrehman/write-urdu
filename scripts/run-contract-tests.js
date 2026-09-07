@@ -19,6 +19,7 @@ const tests = [
   'tests/core-write-auto-ads-locale-exclusions-contract.test.js',
   'tests/shell-style-ownership-contract.test.js',
   'tests/product-telemetry-contract.test.js',
+  'tests/product-video-embed-contract.test.js',
   'tests/acquisition-revenue-contract.test.js',
   'tests/product-pulse-contract.test.js',
   'tests/product-pulse-slice0-contract.test.js',

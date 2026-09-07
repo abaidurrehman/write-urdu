@@ -77,32 +77,69 @@
     }
 
     function drawCaption(scene, panel) {
-      const boxMargin = portrait ? 26 : 30;
-      const boxX = panel.x + boxMargin;
-      const boxY = panel.y + boxMargin;
-      const boxW = portrait ? panel.w - boxMargin * 2 : Math.min(760, panel.w * 0.48);
-      const boxH = portrait ? 220 : 154;
+      const boxMargin = portrait ? 30 : 34;
+      const boxW = portrait ? panel.w - boxMargin * 2 : Math.min(1180, panel.w - boxMargin * 2);
+      const boxH = portrait ? 250 : 190;
+      const boxX = panel.x + (panel.w - boxW) / 2;
+      const boxY = panel.y + panel.h - boxH - boxMargin;
       context.save();
       context.shadowColor = 'rgba(32, 16, 20, 0.25)';
       context.shadowBlur = 24;
-      context.fillStyle = 'rgba(255, 252, 248, 0.96)';
+      context.fillStyle = 'rgba(32, 20, 25, 0.9)';
       roundedRect(boxX, boxY, boxW, boxH, 20);
       context.fill();
       context.shadowBlur = 0;
-      context.fillStyle = '#7b2f3b';
-      roundedRect(boxX, boxY, portrait ? 10 : 8, boxH, 5);
-      context.fill();
-      const textX = boxX + (portrait ? 42 : 36);
-      context.fillStyle = '#7b2f3b';
-      context.font = `700 ${portrait ? 21 : 17}px Arial, sans-serif`;
-      context.fillText(scene.kicker.toUpperCase(), textX, boxY + (portrait ? 52 : 39));
-      context.fillStyle = '#271f22';
-      context.font = `700 ${portrait ? 46 : 39}px Arial, sans-serif`;
-      const lines = wrapText(scene.caption, boxW - (portrait ? 84 : 72));
+      const textX = boxX + boxW / 2;
+      context.direction = 'rtl';
+      context.textAlign = 'center';
+      context.fillStyle = '#f0cbd3';
+      context.font = `700 ${portrait ? 25 : 20}px "Noto Naskh Arabic", "Noto Nastaliq Urdu", serif`;
+      context.fillText(scene.kicker, textX, boxY + (portrait ? 55 : 43));
+      context.fillStyle = '#fffaf5';
+      context.font = `700 ${portrait ? 52 : 46}px "Noto Naskh Arabic", "Noto Nastaliq Urdu", serif`;
+      const lines = wrapText(scene.caption, boxW - (portrait ? 90 : 110));
       lines.slice(0, 3).forEach((line, index) => {
-        context.fillText(line, textX, boxY + (portrait ? 116 : 92) + index * (portrait ? 51 : 44));
+        context.fillText(line, textX, boxY + (portrait ? 126 : 108) + index * (portrait ? 61 : 54));
       });
       context.restore();
+    }
+
+    async function createSoundtrack(totalDuration) {
+      const audioContext = new AudioContext({ sampleRate: 48000 });
+      await audioContext.resume();
+      const destination = audioContext.createMediaStreamDestination();
+      const master = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+      master.gain.value = 0.16;
+      filter.type = 'lowpass';
+      filter.frequency.value = 900;
+      master.connect(filter).connect(destination);
+
+      const chords = [
+        [146.83, 185, 220],
+        [130.81, 164.81, 196],
+        [110, 146.83, 174.61],
+        [130.81, 164.81, 196]
+      ];
+      const barDuration = totalDuration / chords.length;
+      chords.forEach((chord, chordIndex) => {
+        chord.forEach((frequency) => {
+          const oscillator = audioContext.createOscillator();
+          const envelope = audioContext.createGain();
+          const start = audioContext.currentTime + chordIndex * barDuration;
+          const end = audioContext.currentTime + Math.min(totalDuration, (chordIndex + 1) * barDuration + 0.4);
+          oscillator.type = 'sine';
+          oscillator.frequency.value = frequency;
+          envelope.gain.setValueAtTime(0.001, start);
+          envelope.gain.exponentialRampToValueAtTime(0.11, start + 0.55);
+          envelope.gain.setValueAtTime(0.11, Math.max(start + 0.56, end - 0.7));
+          envelope.gain.exponentialRampToValueAtTime(0.001, end);
+          oscillator.connect(envelope).connect(master);
+          oscillator.start(start);
+          oscillator.stop(end);
+        });
+      });
+      return { audioContext, stream: destination.stream };
     }
 
     function drawBrand() {
@@ -178,12 +215,15 @@
 
     async function render() {
       const frameRate = 24;
-      const stream = canvas.captureStream(frameRate);
-      const preferredMimeType = 'video/webm;codecs=vp9';
+      const videoStream = canvas.captureStream(frameRate);
+      const soundtrack = await createSoundtrack(duration);
+      const stream = new MediaStream([...videoStream.getVideoTracks(), ...soundtrack.stream.getAudioTracks()]);
+      const preferredMimeType = 'video/webm;codecs=vp9,opus';
       const mimeType = MediaRecorder.isTypeSupported(preferredMimeType) ? preferredMimeType : 'video/webm';
       const recorder = new MediaRecorder(stream, {
         mimeType,
-        videoBitsPerSecond: portrait ? 6500000 : 8000000
+        videoBitsPerSecond: portrait ? 6500000 : 8000000,
+        audioBitsPerSecond: 128000
       });
       const chunks = [];
       recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
@@ -202,6 +242,7 @@
       });
       recorder.stop();
       await stopped;
+      await soundtrack.audioContext.close();
       const blob = new Blob(chunks, { type: mimeType });
       await fetch('/render-output', { method: 'POST', headers: { 'content-type': blob.type }, body: blob });
     }

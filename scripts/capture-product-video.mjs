@@ -45,8 +45,12 @@ const browser = await chromium.launch({ headless: true });
 try {
   for (const scene of story.scenes) {
     const viewport = scene.viewport || story.captureViewport || { width: 1440, height: 1000 };
-    const page = await browser.newPage({ viewport });
+    const page = await browser.newPage({ viewport, deviceScaleFactor: 2 });
     await page.goto(`http://127.0.0.1:${port}${scene.route}`, { waitUntil: 'networkidle' });
+
+    for (const selector of story.hide || []) {
+      await page.locator(selector).evaluate((element) => { element.hidden = true; });
+    }
 
     if (scene.setValues) {
       for (const [selector, value] of Object.entries(scene.setValues)) {

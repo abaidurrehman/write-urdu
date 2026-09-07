@@ -1,16 +1,16 @@
 {
   "storyId": "voice-typing",
-  "title": "Speak Urdu. Get editable Urdu text.",
+  "title": "بولیں۔ قابلِ تدوین اردو متن پائیں۔",
   "captureViewport": { "width": 1440, "height": 1000 },
-  "cta": "Try Urdu Voice Typing",
+  "cta": "اردو وائس ٹائپنگ آزمائیں",
   "scenes": [
     {
       "id": "problem",
       "route": "/tools/urdu-voice-typing",
       "start": 0,
       "end": 3,
-      "kicker": "When typing slows you down",
-      "caption": "Need to write Urdu, but speaking is easier?",
+      "kicker": "جب ٹائپنگ مشکل لگے",
+      "caption": "اردو لکھنی ہے، مگر بولنا زیادہ آسان ہے؟",
       "highlight": "[data-voice-start]"
     },
     {
@@ -18,8 +18,8 @@
       "route": "/tools/urdu-voice-typing",
       "start": 3,
       "end": 7,
-      "kicker": "Step 1 · Speak",
-      "caption": "Open Voice Typing and speak naturally in Urdu.",
+      "kicker": "پہلا قدم · بولیں",
+      "caption": "وائس ٹائپنگ کھولیں اور اردو میں قدرتی انداز سے بولیں۔",
       "highlight": "[data-voice-start]"
     },
     {
@@ -27,8 +27,8 @@
       "route": "/tools/urdu-voice-typing",
       "start": 7,
       "end": 13,
-      "kicker": "Step 2 · Your words appear",
-      "caption": "Your Urdu becomes editable text you can review and refine.",
+      "kicker": "دوسرا قدم · الفاظ سامنے",
+      "caption": "آپ کی آواز قابلِ تدوین اردو متن میں بدل جاتی ہے۔",
       "setValues": {
         "#voiceTranscript": "السلام علیکم، آج میں اپنی آواز سے اردو لکھ رہا ہوں۔ یہ متن فوراً قابلِ تدوین ہے۔"
       },
@@ -39,12 +39,12 @@
       "route": "/tools/urdu-voice-typing",
       "start": 13,
       "end": 18,
-      "kicker": "Step 3 · Use it anywhere",
-      "caption": "Copy it, continue writing, clean it, or share it.",
+      "kicker": "تیسرا قدم · جہاں چاہیں استعمال کریں",
+      "caption": "متن کاپی کریں، مزید لکھیں، صاف کریں یا شیئر کریں۔",
       "setValues": {
         "#voiceTranscript": "السلام علیکم، آج میں اپنی آواز سے اردو لکھ رہا ہوں۔ یہ متن فوراً قابلِ تدوین ہے۔"
       },
-      "highlight": ".urdu-tool-actions"
+      "highlight": ".urdu-voice-transcript > .urdu-tool-actions"
     }
   ]
 }

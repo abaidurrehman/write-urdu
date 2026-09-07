@@ -1,0 +1,54 @@
+{
+  "storyId": "english-to-urdu-typing",
+  "title": "انگریزی حروف سے اردو لکھیں۔",
+  "captureViewport": { "width": 1440, "height": 1000 },
+  "hide": ["#spinner"],
+  "cta": "اب اردو لکھیں",
+  "scenes": [
+    {
+      "id": "start",
+      "route": "/",
+      "start": 0,
+      "end": 3,
+      "kicker": "اردو کی بورڈ کی ضرورت نہیں",
+      "caption": "انگریزی حروف میں اردو لکھنا شروع کریں۔",
+      "highlight": "[data-input-mode-option=\"roman\"]"
+    },
+    {
+      "id": "type",
+      "route": "/",
+      "start": 3,
+      "end": 8,
+      "kicker": "پہلا قدم · انگریزی حروف میں لکھیں",
+      "caption": "mera khayal hai لکھیں اور ہر لفظ کے بعد Space دبائیں۔",
+      "setValues": {
+        "#transliterateTextarea": "mera khayal hai"
+      },
+      "highlight": "#transliterateTextarea"
+    },
+    {
+      "id": "convert",
+      "route": "/",
+      "start": 8,
+      "end": 14,
+      "kicker": "دوسرا قدم · اردو رسم الخط حاصل کریں",
+      "caption": "آپ کے الفاظ اردو رسم الخط میں نظر آتے ہیں۔",
+      "setValues": {
+        "#transliterateTextarea": "میرا خیال ہے"
+      },
+      "highlight": "#transliterateTextarea"
+    },
+    {
+      "id": "use",
+      "route": "/",
+      "start": 14,
+      "end": 20,
+      "kicker": "تیسرا قدم · اپنا متن استعمال کریں",
+      "caption": "متن کاپی کریں یا PDF، Word اور PNG میں محفوظ کریں۔",
+      "setValues": {
+        "#transliterateTextarea": "میرا خیال ہے کہ اردو لکھنا آسان ہونا چاہیے۔"
+      },
+      "highlight": "[data-copy-target=\"#transliterateTextarea\"]"
+    }
+  ]
+}

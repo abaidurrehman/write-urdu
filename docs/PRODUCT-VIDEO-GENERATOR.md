@@ -69,4 +69,4 @@ The same story, captions, claims, and captured product state are reused across f
 
 Use only fictional/demo content in public captures. Do not capture account data, community drafts belonging to users, private documents, contact submissions, authentication state, or analytics identifiers. Review representative frames before publishing. The product action shown by the caption must be visible in the real UI; do not use generated scenes to imply functionality that Write Urdu does not provide.
 
-The baseline output is silent and captions-first. Audio, narration, MP4 delivery encoding, automatic manifests/checksums, and website-player integration should be added as later slices only where they improve distribution or product understanding.
+The baseline output is captions-first with a quiet, original instrumental soundtrack and no narration. MP4 delivery encoding, automatic manifests/checksums, and website-player integration should be added as later slices only where they improve distribution or product understanding.

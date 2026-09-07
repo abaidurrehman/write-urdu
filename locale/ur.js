@@ -74,6 +74,10 @@ module.exports = {
         'home.toolCard3Title': 'رچ ٹیکسٹ ایڈیٹر',
         'home.toolCard3Copy': 'اردو دستاویزات فارمیٹ کریں، عنوانات شامل کریں اور اسکول، دفتر یا سوشل استعمال کے لیے تیار متن برآمد کریں۔',
         'home.toolCard3Link': 'رچ ایڈیٹر کھولیں',
+        'home.videoEyebrow': 'مختصر ویڈیو گائیڈ',
+        'home.videoTitle': 'انگریزی حروف سے اردو ٹائپنگ عملی طور پر دیکھیں',
+        'home.videoCopy': 'انگریزی حروف میں اردو الفاظ لکھیں، اردو نتیجہ دیکھیں، پھر اسے کاپی کریں یا لکھنا جاری رکھیں۔',
+        'home.videoLink': 'انگریزی سے اردو ٹائپنگ گائیڈ پڑھیں ←',
         'home.howEyebrow': 'اردو رسم الخط تک آسان راستہ',
         'home.howTitle': 'طریقہ کار',
         'home.stepOneTitle': 'انگریزی حروف میں لکھیں۔',
@@ -196,6 +200,9 @@ module.exports = {
         'tools.urdu-voice-typing.linkContinue': 'رائٹ اردو میں جاری رکھیں',
         'tools.urdu-voice-typing.linkKeyboard': 'اردو کی بورڈ استعمال کریں',
         'tools.urdu-voice-typing.linkTyping': 'ٹائپ کرنا پسند ہے؟ انگریزی حروف سے اردو ٹائپ کریں',
+        'tools.urdu-voice-typing.videoEyebrow': 'مختصر ویڈیو گائیڈ',
+        'tools.urdu-voice-typing.videoTitle': 'اردو وائس ٹائپنگ عملی طور پر دیکھیں',
+        'tools.urdu-voice-typing.videoCopy': 'اردو بولیں، قابلِ تدوین متن دیکھیں، پھر اسے کاپی، صاف یا مزید مکمل کریں۔',
         'tools.urdu-voice-typing.privacyNote': 'آواز سے ٹائپنگ کی دستیابی اور پروسیسنگ آپ کے براؤزر یا آلے پر منحصر ہے۔ <a href="/write-urdu-privacy#voice-typing">آواز سے ٹائپنگ کی رازداری اور براؤزر تفصیلات دیکھیں</a>۔'
       }
     },

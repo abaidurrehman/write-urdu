@@ -63,7 +63,7 @@ const port = server.address().port;
 const query = new URLSearchParams({ story: storyId, format, ...(posterMode ? { time: '1.5' } : { render: '1' }) });
 const url = `http://127.0.0.1:${port}/marketing/video/compositions/product-film.html?${query}`;
 
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true, args: ['--autoplay-policy=no-user-gesture-required'] });
 try {
   const page = await browser.newPage({ viewport: { width, height } });
   await page.goto(url, { waitUntil: 'networkidle' });
