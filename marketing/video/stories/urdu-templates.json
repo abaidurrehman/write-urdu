@@ -1,0 +1,68 @@
+{
+  "storyId": "urdu-templates",
+  "title": "تیار سانچے سے خوبصورت اردو کارڈ بنائیں۔",
+  "captureViewport": { "width": 1440, "height": 1000 },
+  "cta": "اردو ٹیمپلیٹس دیکھیں",
+  "scenes": [
+    {
+      "id": "browse",
+      "route": "/urdu-templates",
+      "start": 0,
+      "end": 4,
+      "kicker": "تیار اردو ڈیزائن",
+      "caption": "اپنے پیغام کے لیے تیار اردو ٹیمپلیٹس دیکھیں۔",
+      "highlight": "[data-template-grid]"
+    },
+    {
+      "id": "filter",
+      "route": "/urdu-templates",
+      "start": 4,
+      "end": 9,
+      "kicker": "پہلا قدم · پسند کا سانچہ ڈھونڈیں",
+      "caption": "شاعری تلاش کریں یا زمرہ اور سائز سے نتائج محدود کریں۔",
+      "setValues": {
+        "[data-template-search]": "poetry"
+      },
+      "highlight": "[data-template-id=\"urdu-template-poetry-04\"]"
+    },
+    {
+      "id": "choose",
+      "route": "/urdu-templates",
+      "start": 9,
+      "end": 14,
+      "kicker": "دوسرا قدم · ڈیزائن منتخب کریں",
+      "caption": "اپنا پسندیدہ سانچہ کارڈ اسٹوڈیو میں کھولیں۔",
+      "click": [
+        "[data-template-open=\"classic-couplets\"]"
+      ],
+      "highlight": "[data-card-library-template]"
+    },
+    {
+      "id": "edit",
+      "route": "/urdu-card-studio?template=classic-couplets",
+      "start": 14,
+      "end": 20,
+      "kicker": "تیسرا قدم · اپنا متن لکھیں",
+      "caption": "سانچے میں اپنا شعر، قول یا پیغام شامل کریں۔",
+      "setValues": {
+        "#cardText": "دل سے لکھی بات\nدل تک پہنچتی ہے"
+      },
+      "highlight": "#cardText"
+    },
+    {
+      "id": "export",
+      "route": "/urdu-card-studio?template=classic-couplets",
+      "start": 20,
+      "end": 25,
+      "kicker": "چوتھا قدم · تصویر محفوظ کریں",
+      "caption": "تیار ڈیزائن PNG میں ڈاؤن لوڈ کریں یا شیئر کریں۔",
+      "setValues": {
+        "#cardText": "دل سے لکھی بات\nدل تک پہنچتی ہے"
+      },
+      "click": [
+        "button.card-studio-step[data-card-step=\"export\"]"
+      ],
+      "highlight": ".card-studio-export-section [data-card-action=\"download\"]"
+    }
+  ]
+}

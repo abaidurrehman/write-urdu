@@ -11,6 +11,7 @@ const read = (relative) => readFileSync(path.join(root, relative), 'utf8');
 const story = JSON.parse(read('marketing/video/stories/voice-typing.json'));
 const typingStory = JSON.parse(read('marketing/video/stories/english-to-urdu-typing.json'));
 const cardStory = JSON.parse(read('marketing/video/stories/urdu-card-studio.json'));
+const templatesStory = JSON.parse(read('marketing/video/stories/urdu-templates.json'));
 
 test('video runtime exposes the three approved responsive formats', () => {
   assert.deepEqual(Object.keys(VIDEO_FORMATS), ['website-16x9', 'social-4x5', 'vertical-9x16']);
@@ -66,6 +67,16 @@ test('Card Studio story shows the real create and export journey', () => {
     '[data-card-template="emerald"]'
   ]);
   assert.equal(cardStory.scenes.at(-1).highlight, '.card-studio-export-section [data-card-action="download"]');
+});
+
+test('Urdu Templates story continues from discovery into Card Studio export', () => {
+  assert.equal(templatesStory.storyId, 'urdu-templates');
+  assert.equal(templatesStory.scenes.length, 5);
+  assert.ok(templatesStory.scenes.every((scene) => /[\u0600-\u06ff]/.test(`${scene.kicker} ${scene.caption}`)));
+  assert.equal(templatesStory.scenes[1].setValues['[data-template-search]'], 'poetry');
+  assert.equal(templatesStory.scenes[2].click[0], '[data-template-open="classic-couplets"]');
+  assert.match(templatesStory.scenes[3].route, /template=classic-couplets/);
+  assert.equal(templatesStory.scenes.at(-1).highlight, '.card-studio-export-section [data-card-action="download"]');
 });
 
 test('capture and renderer stay local and use the existing Playwright dependency', () => {
