@@ -162,3 +162,29 @@ html[dir="rtl"] body footer.wu-footer .wu-footer-bottom{direction:rtl}
 .font-sample-naskh { font-family: "Noto Naskh Arabic", "Noto Nastaliq Urdu", serif; line-height: 1.8; }
 @media (max-width: 700px) { .seo-content { margin-top: 2rem; padding: 1.25rem; } .seo-content-grid { grid-template-columns: 1fr; } }
 @media (max-width: 700px) { .guide-example-grid { grid-template-columns: 1fr; } }
+
+/* Site-wide hard containment: no ad slot may ever render inside any authoring
+   input, canvas, or generator workspace, regardless of any future DOM-ordering
+   regression in ads.js/write-monetization.js. Loaded on nearly every page via
+   site-header.css so coverage does not depend on a per-page opt-in. */
+.tox.tox-tinymce .adsbygoogle, .tox.tox-tinymce .wu-header-ad, .tox.tox-tinymce ins[data-ad-client],
+.tox.tox-tinymce iframe[id^="aswift_"], .tox.tox-tinymce iframe[id^="google_ads_iframe"],
+#write .adsbygoogle, #write .wu-header-ad, #key1 .adsbygoogle, #key1 .wu-header-ad,
+.name-art-workspace .adsbygoogle, .name-art-workspace .wu-header-ad,
+.social-maker-workspace .adsbygoogle, .social-maker-workspace .wu-header-ad,
+.invoice-workspace .adsbygoogle, .invoice-workspace .wu-header-ad,
+.card-studio-workspace .adsbygoogle, .card-studio-workspace .wu-header-ad,
+.card-studio-shell .adsbygoogle, .card-studio-shell .wu-header-ad,
+.qr-workspace .adsbygoogle, .qr-workspace .wu-header-ad,
+.qr-generator-shell .adsbygoogle, .qr-generator-shell .wu-header-ad,
+[data-card-studio] .adsbygoogle, [data-card-studio] .wu-header-ad,
+[data-invoice-generator] .adsbygoogle, [data-invoice-generator] .wu-header-ad,
+[data-stylish-generator] .adsbygoogle, [data-stylish-generator] .wu-header-ad,
+[data-template-library] .adsbygoogle, [data-template-library] .wu-header-ad,
+[data-writing-templates] .adsbygoogle, [data-writing-templates] .wu-header-ad,
+[data-urdu-text-cleaner] .adsbygoogle, [data-urdu-text-cleaner] .wu-header-ad,
+[data-urdu-ocr] .adsbygoogle, [data-urdu-ocr] .wu-header-ad,
+[data-urdu-voice-typing] .adsbygoogle, [data-urdu-voice-typing] .wu-header-ad,
+[data-inpage-converter] .adsbygoogle, [data-inpage-converter] .wu-header-ad,
+[contenteditable="true"] .adsbygoogle, [contenteditable="true"] .wu-header-ad
+{ display: none !important; }

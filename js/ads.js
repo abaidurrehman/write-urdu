@@ -173,6 +173,66 @@
         return protectedCount;
     }
 
+    var PROTECTED_CANVAS_SELECTORS = CREATE_PROTECTED_AREAS.concat([
+        '.tox.tox-tinymce', '#write', '#key1', '[contenteditable="true"]'
+    ]);
+    var MISPLACED_AD_SELECTOR = 'ins.adsbygoogle, .wu-header-ad, ins[data-ad-client], ' +
+        'iframe[id^="aswift_"], iframe[id^="google_ads_iframe"]';
+
+    // Belt-and-suspenders runtime guard: if a future regression ever inserts an
+    // ad node inside an authoring canvas/workspace, remove it from the DOM
+    // before it can render (not just hide it), so no impression is served and
+    // wasted. Sweeps are idempotent (a clean DOM produces no removals), so a
+    // sweep triggered by our own removal finds nothing left to do and stops —
+    // no feedback loop. A removal-rate circuit breaker still guards against a
+    // pathological case (e.g. a third-party script fighting to re-insert).
+    function guardProtectedCanvases(root, document) {
+        if (!root || !root.MutationObserver || !document || !document.body) return null;
+        var scheduled = false;
+        var disconnected = false;
+        var removalWindowStart = Date.now();
+        var removalsInWindow = 0;
+        var WINDOW_MS = 5000;
+        var MAX_REMOVALS_PER_WINDOW = 25;
+
+        function sweep() {
+            scheduled = false;
+            if (disconnected) return;
+            var containers = document.querySelectorAll(PROTECTED_CANVAS_SELECTORS.join(','));
+            for (var i = 0; i < containers.length; i += 1) {
+                var offenders = containers[i].querySelectorAll(MISPLACED_AD_SELECTOR);
+                for (var j = 0; j < offenders.length; j += 1) {
+                    var node = offenders[j];
+                    if (!node.parentNode) continue;
+                    node.parentNode.removeChild(node);
+                    var now = Date.now();
+                    if (now - removalWindowStart > WINDOW_MS) { removalWindowStart = now; removalsInWindow = 0; }
+                    removalsInWindow += 1;
+                    if (removalsInWindow > MAX_REMOVALS_PER_WINDOW) {
+                        disconnected = true;
+                        observer.disconnect();
+                        if (root.console && typeof root.console.warn === 'function') {
+                            root.console.warn('WriteUrduAds: disabled protected-canvas guard after repeated misplaced-ad removals; investigate ad placement regression.');
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+
+        function scheduleSweep() {
+            if (scheduled || disconnected) return;
+            scheduled = true;
+            if (typeof root.requestAnimationFrame === 'function') root.requestAnimationFrame(sweep);
+            else root.setTimeout(sweep, 0);
+        }
+
+        var observer = new root.MutationObserver(scheduleSweep);
+        observer.observe(document.body, { childList: true, subtree: true });
+        sweep();
+        return observer;
+    }
+
     function createCanonicalRegion(document, pageType) {
         if (!document || document.querySelector('.wu-header-ad')) return document && document.querySelector('.wu-header-ad');
         if (pageType !== 'learn' && pageType !== 'create') return null;
@@ -238,6 +298,7 @@
             document.body.classList.add('wu-monetization-' + pageType);
         }
         var protectedAutoAds = protectAutoAds(document, pageType);
+        guardProtectedCanvases(root, document);
         ensureAcquisitionTelemetry(root);
         if (pageType === 'trust') {
             removeAllAds(document);
@@ -267,6 +328,7 @@
         placementName: placementName,
         createCanonicalRegion: createCanonicalRegion,
         protectAutoAds: protectAutoAds,
+        guardProtectedCanvases: guardProtectedCanvases,
         init: init
     };
 }));
