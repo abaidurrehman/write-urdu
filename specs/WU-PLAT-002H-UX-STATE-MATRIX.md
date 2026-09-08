@@ -4,11 +4,11 @@ This matrix is the source of truth for what may be visually promoted in the Basi
 
 | State | Definition | Primary UI | Eligible secondary UI | Growth request | Must not dominate |
 | --- | --- | --- | --- | --- | --- |
-| E0 Empty | No meaningful text | Input choices + editor | quiet help/settings | none | Share, exports, account, publish, tool grid |
-| E1 First value | First useful text exists | Copy + editor | Continue/More | none by default | full export row, community promo |
-| E2 Short | ~20–499 chars | Copy + context | Stylish/Card only when appropriate; More | usually none | generic all-tools directory |
-| E3 Substantial | ~500–999 chars | Continue with formatting | PDF, Word, More | Keep if unsaved/signed out | simultaneous Share + Publish promos |
-| E4 Long form | 1000+ chars | Rich/document completion | PDF, Word, save state | Keep or Publish according to arbitration | design-tool clutter |
+| E0 Empty | No meaningful text | Input choices + editor | disabled desktop Download group; quiet help/settings | none | Share, full export wall, account, publish, tool grid |
+| E1 First value | First useful text exists | Copy + editor | desktop PDF/Word/PNG; Continue/More | none by default | full export row, community promo |
+| E2 Short | ~20–499 chars | Copy + context | desktop PDF/Word/PNG; Stylish/Card only when appropriate; More | usually none | generic all-tools directory |
+| E3 Substantial | ~500–999 chars | Continue with formatting | desktop PDF/Word/PNG; More | Keep if unsaved/signed out | simultaneous Share + Publish promos |
+| E4 Long form | 1000+ chars | Rich/document completion | desktop PDF/Word/PNG; save state | Keep or Publish according to arbitration | design-tool clutter |
 | E5 Post-completion | successful copy/export/save | completed outcome feedback | relevant next action | Share or Publish (one) | another pre-task acquisition wall |
 
 Thresholds are measurement buckets, not semantic truth. Implementation may tune exact character boundaries from evidence while preserving the state purposes.
@@ -32,8 +32,8 @@ Capabilities may remain reachable through stable progressive navigation (`More`,
 ### Directly promoted only when eligible
 
 - Copy: E1+
-- PDF/Word: E3+
-- PNG: output menu/E2+ when relevant, not equal to PDF/Word for long writing
+- PDF/Word/PNG: visible but disabled in the desktop Download group at E0; enabled E1+
+- PDF/Word/PNG on compact layouts: reachable through `More`
 - Share: E5 or explicit user request
 - Keep: E3/E4 when value protection is relevant
 - Community Publish: E4/E5 and only when rollout/eligibility permits

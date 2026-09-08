@@ -22,6 +22,7 @@
             toolbar: 'Writing and document actions',
             primary: 'Share and copy',
             outputs: 'Document actions',
+            download: 'Download',
             mode: 'Input mode',
             share: 'Share',
             copy: 'Copy',
@@ -37,6 +38,7 @@
             toolbar: 'تحریر اور دستاویز کی کارروائیاں',
             primary: 'شیئر اور کاپی',
             outputs: 'دستاویز کی کارروائیاں',
+            download: 'ڈاؤن لوڈ',
             mode: 'لکھنے کا طریقہ',
             share: 'شیئر کریں',
             copy: 'متن کاپی کریں',
@@ -164,9 +166,11 @@
         actions.setAttribute('aria-label', copy.toolbar);
 
         var primary = actions.querySelector('.wu-basic-command-primary');
+        var directExports = actions.querySelector('[data-wu-basic-direct-exports]');
         var outputs = actions.querySelector('[data-wu-basic-output-group]');
         var mode = actions.querySelector('.wu-basic-command-mode');
         if (primary) primary.setAttribute('aria-label', copy.primary);
+        if (directExports) directExports.setAttribute('aria-label', copy.download);
         if (outputs) outputs.setAttribute('aria-label', copy.outputs);
         if (mode) mode.setAttribute('aria-label', copy.mode);
 
@@ -177,6 +181,7 @@
         setCommandLabel(actions, '[data-wu-command-action="preview"]', copy.preview);
         setCommandLabel(actions, '[data-wu-command-action="print"]', copy.print);
         setCommandLabel(actions, '[data-wu-command-action="text"]', copy.textFile);
+        setCommandLabel(actions, '[data-wu-basic-export-label]', copy.download);
 
         var mobileOutputs = actions.querySelector('[data-wu-basic-mobile-outputs]');
         if (mobileOutputs) mobileOutputs.setAttribute('aria-label', copy.outputs);

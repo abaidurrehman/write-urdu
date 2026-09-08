@@ -8,8 +8,7 @@
 
     var MOBILE_QUERY = '(max-width: 767px)';
     var OUTPUT_ACTIONS = ['pdf', 'word', 'png', 'preview', 'print'];
-    var PROMOTABLE_OUTPUT_ACTIONS = ['pdf', 'word'];
-    var SUBSTANTIAL_CHAR_THRESHOLD = 500;
+    var DIRECT_EXPORT_ACTIONS = ['pdf', 'word', 'png'];
     var mediaQuery = null;
     var publishLoader = null;
     var voiceController = null;
@@ -34,11 +33,6 @@
     function hasContent() {
         var editor = root && root.document && root.document.getElementById('transliterateTextarea');
         return Boolean(editor && String(editor.value || '').trim());
-    }
-
-    function hasSubstantialContent() {
-        var editor = root && root.document && root.document.getElementById('transliterateTextarea');
-        return Boolean(editor && String(editor.value || '').trim().length >= SUBSTANTIAL_CHAR_THRESHOLD);
     }
 
     function ensureStyles() {
@@ -533,25 +527,6 @@
         if (source && target) target.textContent = source.textContent || '';
     }
 
-    function syncPromotedOutputs(surface) {
-        var promotedGroup = surface.querySelector('[data-wu-basic-promoted-outputs]');
-        if (!promotedGroup) return;
-        var substantial = hasSubstantialContent();
-        surface.setAttribute('data-wu-has-substantial-content', substantial ? 'true' : 'false');
-        var moreOutputGroup = surface.querySelector('[data-wu-basic-output-group]');
-        PROMOTABLE_OUTPUT_ACTIONS.forEach(function (action) {
-            var button = surface.querySelector('[data-wu-command-action="' + action + '"]');
-            if (!button) return;
-            if (substantial) {
-                if (button.parentElement !== promotedGroup) promotedGroup.appendChild(button);
-            } else if (moreOutputGroup && promotedGroup.contains(button)) {
-                moreOutputGroup.appendChild(button);
-            }
-        });
-        promotedGroup.hidden = !substantial;
-        promotedGroup.setAttribute('aria-hidden', substantial ? 'false' : 'true');
-    }
-
     function syncState(surface) {
         if (!surface) return false;
         var enabled = hasContent();
@@ -564,7 +539,6 @@
             element.hidden = !enabled;
             element.setAttribute('aria-hidden', enabled ? 'false' : 'true');
         });
-        syncPromotedOutputs(surface);
         syncResponsiveOutputs(surface);
         return enabled;
     }
@@ -575,16 +549,21 @@
         var compact = Boolean(mediaQuery && mediaQuery.matches);
         var desktopGroup = surface.querySelector('[data-wu-basic-output-group]');
         var mobileGroup = surface.querySelector('[data-wu-basic-mobile-outputs]');
-        var promotedGroup = surface.querySelector('[data-wu-basic-promoted-outputs]');
+        var directGroup = surface.querySelector('[data-wu-basic-direct-exports]');
         if (!desktopGroup || !mobileGroup) return;
         OUTPUT_ACTIONS.forEach(function (action) {
             var button = surface.querySelector('[data-wu-command-action="' + action + '"]');
             if (!button) return;
-            if (promotedGroup && promotedGroup.contains(button)) return;
-            (compact ? mobileGroup : desktopGroup).appendChild(button);
+            var direct = DIRECT_EXPORT_ACTIONS.indexOf(action) >= 0;
+            var destination = compact ? mobileGroup : (direct && directGroup ? directGroup : desktopGroup);
+            if (button.parentElement !== destination) destination.appendChild(button);
         });
         desktopGroup.hidden = compact;
         mobileGroup.hidden = !compact;
+        if (directGroup) {
+            directGroup.hidden = compact;
+            directGroup.setAttribute('aria-hidden', compact ? 'true' : 'false');
+        }
         surface.setAttribute('data-wu-output-layout', compact ? 'overflow' : 'direct');
     }
 
@@ -690,13 +669,16 @@
         if (sourceNote) sourceNote.classList.add('wu-basic-mode-note-source');
         modeGroup.appendChild(modeControl);
 
-        var promotedOutputGroup = root.document.createElement('div');
-        promotedOutputGroup.className = 'wu-basic-command-group wu-basic-command-promoted-outputs';
-        promotedOutputGroup.setAttribute('data-wu-basic-promoted-outputs', '');
-        promotedOutputGroup.setAttribute('role', 'group');
-        promotedOutputGroup.setAttribute('aria-label', 'Document formats');
-        promotedOutputGroup.hidden = true;
-        promotedOutputGroup.setAttribute('aria-hidden', 'true');
+        var directExportGroup = root.document.createElement('div');
+        directExportGroup.className = 'wu-basic-command-group wu-basic-command-direct-exports';
+        directExportGroup.setAttribute('data-wu-basic-direct-exports', '');
+        directExportGroup.setAttribute('role', 'group');
+        directExportGroup.setAttribute('aria-label', 'Download document');
+        var directExportLabel = root.document.createElement('span');
+        directExportLabel.className = 'wu-basic-command-export-label';
+        directExportLabel.setAttribute('data-wu-basic-export-label', '');
+        directExportLabel.innerHTML = '<i class="fas fa-download" aria-hidden="true"></i><span>Download</span>';
+        directExportGroup.appendChild(directExportLabel);
 
         setAction(clear, 'clear', 'Clear', 'far fa-trash-alt', 'clear');
         var more = createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel, share, [pdf, word, png, preview, print], clear);
@@ -705,7 +687,7 @@
         moreGroup.appendChild(more);
 
         actions.appendChild(primaryGroup);
-        actions.appendChild(promotedOutputGroup);
+        actions.appendChild(directExportGroup);
         actions.appendChild(modeGroup);
         actions.appendChild(moreGroup);
 
@@ -803,11 +785,9 @@
     return {
         MOBILE_QUERY: MOBILE_QUERY,
         OUTPUT_ACTIONS: OUTPUT_ACTIONS.slice(),
-        PROMOTABLE_OUTPUT_ACTIONS: PROMOTABLE_OUTPUT_ACTIONS.slice(),
-        SUBSTANTIAL_CHAR_THRESHOLD: SUBSTANTIAL_CHAR_THRESHOLD,
+        DIRECT_EXPORT_ACTIONS: DIRECT_EXPORT_ACTIONS.slice(),
         normalizeRoute: normalizeRoute,
         hasContent: hasContent,
-        hasSubstantialContent: hasSubstantialContent,
         syncState: syncState,
         syncModeHelper: syncModeHelper,
         syncResponsiveOutputs: syncResponsiveOutputs,

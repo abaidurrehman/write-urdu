@@ -80,6 +80,7 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   const share = toolbar.locator('[data-wu-command-action="share"]');
   const copy = toolbar.locator('[data-wu-command-action="copy"]');
   const clear = toolbar.locator('[data-wu-command-action="clear"]');
+  const directExports = toolbar.locator('[data-wu-basic-direct-exports]');
   const mode = toolbar.locator('[data-input-mode-control]');
   const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
   const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
@@ -104,12 +105,22 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   });
   expect(toolbarBeforeCanvas).toBe(true);
 
-  // E0 (empty): only the input-mode choices and the More disclosure are visible at the top
-  // level. Copy and every content-dependent command stay tucked away rather than rendering
-  // as a disabled command wall (WU-PLAT-004 §5).
+  const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
+
+  // Common downloads stay discoverable in the spare desktop space, but remain safely
+  // disabled until writing exists. Compact layouts keep the same nodes in More.
   await expect(copy).toBeHidden();
   await expect(share).toBeHidden();
   await expect(clear).toBeHidden();
+  if (compact) {
+    await expect(directExports).toBeHidden();
+  } else {
+    await expect(directExports).toBeVisible();
+    await expect(directExports.locator('[data-wu-basic-export-label]')).toHaveText('Download');
+    for (const action of ['pdf', 'word', 'png']) {
+      await expect(directExports.locator(`[data-wu-command-action="${action}"]`)).toBeDisabled();
+    }
+  }
   await expect(mode.locator('[data-input-mode-option="roman"]')).toBeEnabled();
   await expect(moreToggle).toBeEnabled();
   await expect(page.locator('[data-wu-basic-mode-helper]')).toContainText('Type Urdu words using English letters');
@@ -121,8 +132,6 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   await expect(copy).toBeEnabled();
   await expect(copy).toHaveText('Copy');
 
-  // Share/PDF/Word/PNG/Preview/Print/Clear remain inside More even at E1 — their promotion
-  // to a direct/substantial-writing state is Slice C's job, out of scope for this slice.
   await expect(share).toBeHidden();
   await expect(clear).toBeHidden();
 
@@ -133,7 +142,6 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   await expect(clear).toBeVisible();
   await expect(clear).toBeEnabled();
 
-  const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
   const outputs = ['pdf', 'word', 'png', 'preview', 'print'];
   const outputLabels = { pdf: 'PDF', word: 'Word', png: 'PNG', preview: 'Preview', print: 'Print' };
   if (compact) {
@@ -145,7 +153,14 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
     }
   } else {
     await expect(morePanel.locator('[data-wu-basic-output-group]')).toBeVisible();
-    for (const action of outputs) {
+    for (const action of ['pdf', 'word', 'png']) {
+      const control = directExports.locator(`[data-wu-command-action="${action}"]`);
+      await expect(control).toBeVisible();
+      await expect(control).toBeEnabled();
+      await expect(control).toHaveText(outputLabels[action]);
+      await expect(morePanel.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(0);
+    }
+    for (const action of ['preview', 'print']) {
       const control = morePanel.locator(`[data-wu-command-action="${action}"]`);
       await expect(control).toBeVisible();
       await expect(control).toHaveText(outputLabels[action]);
@@ -196,7 +211,7 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
 });
 
-test('Basic Writer promotes PDF/Word directly once writing is substantial (WU-PLAT-002H Gate C)', async ({ page }) => {
+test('Basic Writer keeps common downloads obvious on desktop and compact in More on mobile', async ({ page }) => {
   await blockExternalServices(page);
   await page.goto('/');
   await waitForConvergence(page);
@@ -204,9 +219,7 @@ test('Basic Writer promotes PDF/Word directly once writing is substantial (WU-PL
 
   const editor = page.locator('#transliterateTextarea');
   const toolbar = page.locator('.home-actions[data-wu-basic-command-toolbar]');
-  const promoted = toolbar.locator('[data-wu-basic-promoted-outputs]');
-  const promotedPdf = promoted.locator('[data-wu-command-action="pdf"]');
-  const promotedWord = promoted.locator('[data-wu-command-action="word"]');
+  const directExports = toolbar.locator('[data-wu-basic-direct-exports]');
   const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
   const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
   const ensureMoreOpen = async () => {
@@ -214,52 +227,27 @@ test('Basic Writer promotes PDF/Word directly once writing is substantial (WU-PL
     await expect(morePanel).toBeVisible();
   };
 
-  const shortText = 'میرا خیال ہے';
-  await editor.fill(shortText);
+  await editor.fill('میرا خیال ہے');
+  const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
 
-  // E1/E2 (under ~500 chars): PDF/Word stay inside More alongside PNG/Preview/Print, same as
-  // Gate B — promotion is state-gated, not a permanent layout change.
-  await expect(promoted).toBeHidden();
+  if (compact) {
+    await expect(directExports).toBeHidden();
+  } else {
+    await expect(directExports).toBeVisible();
+    for (const action of ['pdf', 'word', 'png']) {
+      await expect(directExports.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
+      await expect(directExports.locator(`[data-wu-command-action="${action}"]`)).toBeEnabled();
+    }
+  }
+
   await ensureMoreOpen();
-  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toBeVisible();
-  await expect(morePanel.locator('[data-wu-command-action="png"]')).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(morePanel).toBeHidden();
-
-  const longText = 'میرا خیال ہے کہ یہ ایک لمبی تحریر ہے۔ '.repeat(20);
-  await editor.fill(longText);
-
-  // E3+ (substantial writing, ~500+ chars): PDF/Word become direct, visible primary actions
-  // (WU-PLAT-004 §7; UX-STATE-MATRIX.md "PDF/Word: E3+").
-  await expect(promoted).toBeVisible();
-  await expect(promotedPdf).toBeVisible();
-  await expect(promotedPdf).toBeEnabled();
-  await expect(promotedPdf).toHaveText('PDF');
-  await expect(promotedWord).toBeVisible();
-  await expect(promotedWord).toBeEnabled();
-  await expect(promotedWord).toHaveText('Word');
-
-  // PNG/Preview/Print remain inside More even for long-form writing — they are not promoted
-  // alongside PDF/Word (UX-STATE-MATRIX.md: "PNG ... not equal to PDF/Word for long writing").
-  // No duplicate nodes: the same PDF/Word buttons that were inside More moved out, they were
-  // not cloned.
-  await ensureMoreOpen();
-  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toHaveCount(0);
-  await expect(morePanel.locator('[data-wu-command-action="word"]')).toHaveCount(0);
-  await expect(morePanel.locator('[data-wu-command-action="png"]')).toBeVisible();
+  for (const action of ['pdf', 'word', 'png']) {
+    if (compact) await expect(morePanel.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
+    else await expect(morePanel.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(0);
+    await expect(page.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(1);
+  }
   await expect(morePanel.locator('[data-wu-command-action="preview"]')).toBeVisible();
   await expect(morePanel.locator('[data-wu-command-action="print"]')).toBeVisible();
-  await page.keyboard.press('Escape');
-
-  // Dropping back under the threshold demotes PDF/Word back into More, still as the same
-  // single nodes (never duplicated).
-  await editor.fill(shortText);
-  await expect(promoted).toBeHidden();
-  await ensureMoreOpen();
-  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toBeVisible();
-  await expect(morePanel.locator('[data-wu-command-action="word"]')).toBeVisible();
-  await expect(page.locator('[data-wu-command-action="pdf"]')).toHaveCount(1);
-  await expect(page.locator('[data-wu-command-action="word"]')).toHaveCount(1);
 });
 
 test('Basic Writer makes AI writing help discoverable and keeps review below the editor', async ({ page }) => {

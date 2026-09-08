@@ -55,9 +55,7 @@ assert.match(runtime, /loadBasicCommandToolbar\(\)/, 'Core convergence must load
 assert.doesNotMatch(runtime, /parent\.insertBefore\(actions, hint\.nextSibling\)/, 'Legacy post-editor action-bar relocation must be retired');
 
 assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'word', 'png', 'preview', 'print'], 'Current direct output action order changed unexpectedly');
-assert.deepStrictEqual(Toolbar.PROMOTABLE_OUTPUT_ACTIONS, ['pdf', 'word'], 'WU-PLAT-002H Gate C: only PDF/Word are promoted for substantial writing');
-assert.strictEqual(Toolbar.SUBSTANTIAL_CHAR_THRESHOLD, 500, 'WU-PLAT-002H Gate C: substantial-writing threshold changed unexpectedly');
-assert.strictEqual(typeof Toolbar.hasSubstantialContent, 'function', 'Toolbar must expose the character-count substantial-writing check');
+assert.deepStrictEqual(Toolbar.DIRECT_EXPORT_ACTIONS, ['pdf', 'word', 'png'], 'Desktop download dock must expose the three common export formats');
 assert.strictEqual(Toolbar.MOBILE_QUERY, '(max-width: 767px)');
 assert.match(toolbarRuntime, /setAction\(share, 'share', 'Share'/, 'Current Share action is missing');
 assert.match(toolbarRuntime, /setAction\(copy, 'copy', 'Copy'/, 'Current Copy action is missing');
@@ -69,10 +67,10 @@ assert.match(toolbarRuntime, /setAction\(print, 'print', 'Print'/, 'Current Prin
 assert.match(toolbarRuntime, /data-wu-basic-content-action/, 'Current content-dependent toolbar state contract is missing');
 assert.match(toolbarRuntime, /button\.disabled = !enabled/, 'Current empty-state commands must use the real disabled property');
 assert.match(toolbarRuntime, /data-wu-basic-mobile-outputs/, 'Mobile overflow destination is missing');
-assert.match(toolbarRuntime, /compact \? mobileGroup : desktopGroup/, 'Document actions must move into More on small screens');
-assert.match(toolbarRuntime, /data-wu-basic-promoted-outputs/, 'WU-PLAT-002H Gate C: promoted-outputs group for substantial writing is missing');
-assert.match(toolbarRuntime, /function syncPromotedOutputs/, 'WU-PLAT-002H Gate C: PDF/Word promotion sync is missing');
-assert.match(toolbarRuntime, /promotedGroup && promotedGroup\.contains\(button\)/, 'Responsive output relocation must not fight PDF/Word promotion');
+assert.match(toolbarRuntime, /data-wu-basic-direct-exports/, 'Desktop download dock is missing');
+assert.match(toolbarRuntime, /direct && directGroup \? directGroup : desktopGroup/, 'Desktop outputs must split between the download dock and More');
+assert.match(toolbarRuntime, /compact \? mobileGroup/, 'Document actions must move into More on small screens');
+assert.match(toolbarRuntime, /data-wu-basic-export-label/, 'Desktop download dock needs an obvious text label');
 assert.match(toolbarRuntime, /data-input-mode-control/, 'Existing input-mode control must be reused');
 assert.match(toolbarRuntime, /data-wu-basic-mode-helper/, 'Input-mode helper row is missing');
 assert.match(toolbarRuntime, /basic-writer-publish\.js/, 'Toolbar Share must load the first-party Basic Writer publisher');
@@ -98,10 +96,10 @@ assert.match(toolbarCss, /wu-basic-command--share/, 'Share-first toolbar styling
 assert.match(toolbarCss, /wu-basic-command--copy/, 'Copy secondary styling is missing');
 assert.match(toolbarCss, /wu-basic-command--utility/, 'Direct utility styling is missing');
 assert.match(toolbarCss, /wu-basic-command--clear/, 'Destructive Clear styling is missing');
-assert.match(toolbarCss, /\[data-wu-basic-promoted-outputs\]\[hidden\]/, 'Promoted-outputs group must guarantee real hiding against the display:flex cascade');
+assert.match(toolbarCss, /\[data-wu-basic-direct-exports\]\[hidden\]/, 'Download dock must guarantee real hiding on compact screens');
 assert.match(toolbarCss, /@media \(max-width: 767px\)/, 'Pixel/mobile toolbar behavior is missing');
 assert.doesNotMatch(toolbarCss, /position\s*:\s*(?:fixed|sticky)/, 'Basic Writer toolbar must not become fixed/sticky');
-assert.match(serviceWorker, /write-urdu-shell-v43/, 'PWA cache must include the latest shared-shell, account-control and mobile activation production fixes');
+assert.match(serviceWorker, /write-urdu-shell-v44/, 'PWA cache must include the desktop export discovery update');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.css/, 'Toolbar CSS must be cached');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.js/, 'Toolbar runtime must be cached');
 assert.match(serviceWorker, /basic-writer-publish\.js/, 'Basic public-link publisher must be cached');
@@ -123,7 +121,8 @@ assert.match(spec, /Slice E — Rich Editor convergence/, 'Rich Editor convergen
 
 // The specification is now intentionally ahead of the shipped toolbar. Guard the revised product decision rather than
 // pinning the 2026-08-18 command wall and forcing future UX research to preserve it forever.
-assert.match(toolbarSpec, /visibility\/priority model is superseded by `WU-PLAT-002H`/i, 'WU-PLAT-004 must record the evidence-driven visibility reversal');
+assert.match(toolbarSpec, /moving every export under `More` reduced export use/i, 'WU-PLAT-004 must record the latest export-discovery evidence');
+assert.match(toolbarSpec, /PDF, Word and PNG as disabled until/i, 'WU-PLAT-004 must define the compact desktop Download group');
 assert.match(toolbarSpec, /E0 — Empty/, 'WU-PLAT-004 must define the empty-state activation contract');
 assert.match(toolbarSpec, /English letters -> Urdu/, 'WU-PLAT-004 must lead with the proven English-letter input job');
 assert.match(toolbarSpec, /Copy becomes directly visible\/obvious/, 'WU-PLAT-004 must reveal Copy after first value');

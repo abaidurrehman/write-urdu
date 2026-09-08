@@ -1,7 +1,7 @@
 # WU-PLAT-004 — Basic Writer Adaptive Command Surface
 
 **Priority:** P0  
-**Status:** Active — revised by 2026-08-30 product evidence  
+**Status:** Active — revised by 2026-09-08 export-discovery evidence
 **Route owner:** `/`  
 **Area:** Core authoring UX / completion actions  
 **Parent initiative:** `WU-PLAT-003` Core Workspace Convergence  
@@ -9,7 +9,7 @@
 **Journey dependency:** `WU-PLAT-002` V2 Product Journey & Workspace Handoffs  
 **Share dependency:** `WU-SHARE-001` Public Share Pages & Viral Publishing Loop  
 **Original design decision:** 2026-08-18  
-**Evidence-driven revision:** 2026-08-30
+**Evidence-driven revision:** 2026-09-08
 
 ---
 
@@ -21,13 +21,16 @@ The 2026-08-18 version proposed a persistent desktop command row:
 
 and required content-dependent commands to remain visible while the editor was empty.
 
-**That visibility/priority model is superseded by `WU-PLAT-002H`.**
+**That full command-wall model is superseded by `WU-PLAT-002H`.** A 2026-09-08
+follow-up found that moving every export under `More` reduced export use. The available
+desktop space should therefore expose a compact, clearly labelled Download group without
+restoring the original wall of actions.
 
 The new Product Pulse evidence shows:
 
 - 1,000 measured zero-character writing sessions that require first-value investigation;
 - strong concentration in Basic/Rich/Voice/Stylish rather than broad tool usage;
-- PDF + Word account for 82.9% of exports, but those are post-value outputs;
+- PDF + Word account for 82.9% of exports, and hiding exports under `More` reduced discovery;
 - Rich Editor has 85.1% engagement and is the preferred substantial-writing escalation;
 - Voice adoption is 20.5% in Rich Editor but about 0.2% in Basic Editor, making input discovery a stronger pre-value need than an export command wall.
 
@@ -109,7 +112,9 @@ Primary visible UI:
 - compact mode/status/help;
 - a quiet stable `More`/settings path if needed.
 
-Content-dependent actions such as Share, Copy, PDF, Word, PNG, Preview and Print must **not** appear as a large disabled command wall.
+On desktop, a compact labelled Download group may show PDF, Word and PNG as disabled until
+content exists. It must use otherwise empty toolbar space and must not become a large command
+wall. Share, Copy, Preview and Print remain progressive.
 
 No account, save or community-publish promotion in E0.
 
@@ -118,6 +123,7 @@ No account, save or community-publish promotion in E0.
 Once meaningful content exists:
 
 - Copy becomes directly visible/obvious;
+- desktop PDF, Word and PNG downloads become enabled in their stable labelled group;
 - a compact contextual `Continue` entry becomes eligible;
 - input mode remains available;
 - More remains the stable route to less-common outputs/settings;
@@ -129,18 +135,19 @@ Suggested measurement bucket: about 20–499 chars.
 
 - Copy remains primary;
 - contextual transformation may surface when evidence supports it;
-- lower-frequency output commands remain reachable without dominating the canvas;
+- desktop PDF, Word and PNG remain directly reachable; lower-frequency actions remain in `More`;
 - do not show a generic all-tools grid.
 
 ### E3 — Substantial writing
 
 Suggested measurement bucket: about 500–999 chars.
 
-Promote:
+Keep prominent:
 
 - `Continue with formatting` -> Rich Editor;
 - PDF;
 - Word;
+- PNG in the stable desktop Download group;
 - Keep/save request when eligible under `WU-PLAT-002H` / `WU-GROWTH-002` arbitration.
 
 ### E4 — Long-form writing
@@ -205,15 +212,18 @@ If voice is unsupported/unavailable:
 
 - **Copy** — E1+
 
-### Direct/promoted for substantial writing
+### Direct downloads on desktop after value
 
-- **PDF** — E3+
-- **Word** — E3+
+- **PDF** — visible but disabled at E0; enabled E1+
+- **Word** — visible but disabled at E0; enabled E1+
+- **PNG** — visible but disabled at E0; enabled E1+
+
+### Promoted for substantial writing
+
 - **Continue with formatting** — E3/E4, owned by WU-PLAT-002 handoff runtime
 
 ### Progressive/secondary
 
-- PNG;
 - Preview;
 - Print;
 - Text file;
@@ -242,12 +252,11 @@ Public publishing must never happen implicitly.
 It may contain:
 
 **Outputs**
-- PNG;
 - Preview;
 - Print;
 - Text file;
 - filename configuration;
-- PDF/Word on narrow layouts if state/space requires it while preserving strong discovery for substantial writing.
+- PDF/Word/PNG on narrow layouts, where the compact layout cannot support the direct group.
 
 **Editor options**
 - existing page/background/productivity settings owned by their current engines;
@@ -334,14 +343,14 @@ After value:
 
 - Copy directly visible;
 - Continue/More reachable;
-- PDF/Word promoted when substantial writing makes them relevant;
+- PDF/Word/PNG remain reachable in `More`;
 - no horizontal row of all exports.
 
 ### Desktop
 
-More room does **not** mean every available command must be visible in E0.
-
-Desktop may expose additional direct output commands in E3/E4, but state relevance still governs priority.
+Use otherwise empty toolbar space for one clearly labelled Download group containing PDF,
+Word and PNG. Keep these controls visible but disabled in E0, then enable them at E1+. Preview,
+Print and configuration stay in `More`.
 
 ### Accessibility
 

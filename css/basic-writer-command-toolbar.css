@@ -29,6 +29,7 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-group {
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports,
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode,
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
   position: relative;
@@ -362,14 +363,39 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section {
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs[hidden],
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs[hidden],
 body[data-wu-basic-command-toolbar="true"] [data-wu-basic-reveal-on-content][hidden],
-body[data-wu-basic-command-toolbar="true"] [data-wu-basic-promoted-outputs][hidden] {
+body[data-wu-basic-command-toolbar="true"] [data-wu-basic-direct-exports][hidden] {
   display: none !important;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-promoted-outputs {
-  padding-left: 12px;
-  margin-left: 4px;
-  border-left: 1px solid var(--wu-color-border);
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports {
+  min-height: 52px;
+  padding: 5px 7px 5px 10px;
+  border: 1px solid #cce4d6;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f0faf4 0%, #f9fdfb 100%);
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 3px 0 1px;
+  color: #176b45;
+  font-size: 0.78rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--utility {
+  min-width: 58px;
+  min-height: 40px;
+  border-color: #d7e9df;
+  background: #fff;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--utility:not(:disabled):hover {
+  border-color: #78bd98;
+  background: #eaf8f0;
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section .wu-basic-command-outputs {
@@ -456,8 +482,7 @@ body[data-wu-basic-command-toolbar="true"] #demo {
     padding: 0 11px;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow,
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-promoted-outputs {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
     padding-left: 7px;
     margin-left: 0;
   }
