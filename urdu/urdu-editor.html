@@ -195,23 +195,14 @@
                             <i class="fas fa-qrcode" aria-hidden="true"></i> QR کوڈ بنائیں</button>
                         </div>
                         <div class="home-actions-group home-actions-group-export" role="group" aria-label="محفوظ اور شیئر کریں">
-                        <details class="action-menu rich-action-menu">
-                            <summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> برآمد کریں</summary>
-                            <div class="action-menu-panel">
-                                <button type="button" class="ExportToWord" id="exportWord" onclick="DownloadAsWord()">
-                                    <i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز</button>
-                                <button type="button" id="exportPdf" onclick="DownloadAsPdf()">
-                                    <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز</button>
-                                <button type="button" id="exportImage" onclick="DownloadAsImage()">
-                                    <i class="far fa-image" aria-hidden="true"></i> PNG تصویر</button>
-                                <button type="button" id="exportSvg" onclick="DownloadAsSvg()">
-                                    <i class="far fa-file-image" aria-hidden="true"></i> SVG تصویر</button>
-                                <button type="button" id="PrintCurrentText" onclick="PrintText()">
-                                    <i class="fas fa-print" aria-hidden="true"></i> پرنٹ کریں</button>
-                                <button type="button" id="previewExport" onclick="PreviewCurrentText()">
-                                    <i class="far fa-eye" aria-hidden="true"></i> پیش منظر</button>
-                            </div>
-                        </details>
+                        <button type="button" class="btn btn-outline-editor btn-sm" id="exportWord" onclick="DownloadAsWord()">
+                            <i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز</button>
+                        <button type="button" class="btn btn-outline-editor btn-sm" id="exportPdf" onclick="DownloadAsPdf()">
+                            <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز</button>
+                        <button type="button" class="btn btn-outline-editor btn-sm" id="exportImage" onclick="DownloadAsImage()">
+                            <i class="far fa-image" aria-hidden="true"></i> PNG تصویر</button>
+                        <button type="button" class="btn btn-outline-editor btn-sm" id="exportSvg" onclick="DownloadAsSvg()">
+                            <i class="far fa-file-image" aria-hidden="true"></i> SVG تصویر</button>
                         <button type="button" class="btn btn-dark btn-sm" data-write-urdu-share
                             title="عوامی Write Urdu لنک بنائے بغیر صرف اردو متن شیئر کریں">
                             <i class="fas fa-share-alt" aria-hidden="true"></i> صرف متن شیئر کریں
@@ -219,6 +210,10 @@
                         <details class="action-menu rich-action-menu">
                             <summary class="btn btn-light"><i class="fas fa-ellipsis-h" aria-hidden="true"></i> مزید</summary>
                             <div class="action-menu-panel compact-menu-panel">
+                                <button type="button" id="previewExport" onclick="PreviewCurrentText()">
+                                    <i class="far fa-eye" aria-hidden="true"></i> پیش منظر</button>
+                                <button type="button" id="PrintCurrentText" onclick="PrintText()">
+                                    <i class="fas fa-print" aria-hidden="true"></i> پرنٹ کریں</button>
                                 <a href="/english-urdu-typing-tutorial"><i class="fas fa-question-circle"
                                         aria-hidden="true"></i> ٹائپنگ مدد</a>
                                 <button type="button" data-toggle="modal" data-target="#exampleModal">
