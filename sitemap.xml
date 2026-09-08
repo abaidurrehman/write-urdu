@@ -19,6 +19,12 @@
     <priority>0.90</priority>
   </url>
   <url>
+    <loc>https://write-urdu.com/urdu-typing-practice</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.92</priority>
+  </url>
+  <url>
     <loc>https://write-urdu.com/urdu-text-cleaner</loc>
     <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
