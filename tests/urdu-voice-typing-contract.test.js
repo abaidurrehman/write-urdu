@@ -25,6 +25,8 @@ assert.match(html, /data-wu-ad-boundary="post-workspace"/, 'voice page should ex
 assert.match(html, /href="\/write-urdu-privacy#voice-typing"/, 'detailed voice processing disclosure should live on the privacy page');
 assert.doesNotMatch(html, /speech-recognition interface|browser-vendor|vendor service|session-only browser storage/i, 'voice landing page should avoid implementation-heavy privacy copy');
 assert.match(html, /\/js\/text-handoff\.js/, 'voice page should use session-only tool handoff support');
+assert.match(html, /\/js\/site-runtime\.js[\s\S]*\/js\/urdu-voice-typing\.js/, 'English voice page should load the shared export runtime before route UI');
+assert.match(urduHtml, /\/js\/site-runtime\.js[\s\S]*\/js\/urdu-voice-typing\.js/, 'Urdu voice page should load the same shared export runtime');
 assert.match(html, /\/js\/voice-input-core\.js[\s\S]*\/js\/unified-urdu-input\.js[\s\S]*\/js\/urdu-voice-typing\.js/, 'English voice page should load shared core and adapter before route UI');
 assert.match(urduHtml, /\/js\/voice-input-core\.js[\s\S]*\/js\/unified-urdu-input\.js[\s\S]*\/js\/urdu-voice-typing\.js/, 'Urdu voice page should load the same shared core and adapter');
 
@@ -55,6 +57,19 @@ assert.match(core, /pagehide[\s\S]*handlePageHide/, 'shared core should clean up
 assert.match(core, /visibilitychange[\s\S]*handleVisibilityChange/, 'shared core should stop recognition when the page becomes hidden');
 assert.match(js, /handoff\('\/urdu-text-cleaner'\)/, 'voice transcript should hand off to the cleaner');
 assert.match(js, /handoff\('\/'\)/, 'voice transcript should hand off to the core editor');
+
+// Voice transcript exports reuse the same shared renderer/runtime as the basic
+// and rich editors. Keep these first-level actions available without adding a
+// second Urdu rendering implementation to the voice route.
+assert.match(js, /\['pdf', 'png', 'svg'\]/, 'voice transcript should expose PDF, PNG and SVG export actions');
+assert.match(js, /data-voice-export/, 'voice transcript should expose stable export action hooks');
+assert.match(js, /WriteUrduExport/, 'voice transcript exports should reuse the shared export runtime');
+assert.match(js, /runtime\.renderCanvas\(transcript, options\)/, 'voice transcript should render through the shared textarea-to-canvas path');
+assert.match(js, /runtime\.downloadData\(canvas\.toDataURL\('image\/png'\)/, 'PNG export should reuse the established canvas download path');
+assert.match(js, /runtime\.downloadSvg\(canvas, filename\)/, 'SVG export should reuse the established shared SVG download path');
+assert.match(js, /runtime\.downloadPdf\(canvas, filename\)/, 'PDF export should reuse the established shared PDF download path');
+assert.match(js, /format === 'pdf' \? \{ skipCredit: true \} : undefined/, 'PDF export should preserve the editor PDF capture behavior');
+assert.match(js, /exportButtons\.forEach\(function \(button\) \{ button\.disabled = !ready; \}\)/, 'voice exports should remain disabled until transcript text exists');
 
 // WU-VOICE-PLAT-001D §4: Speak an Urdu message -> edit/correct -> Copy or Share
 // to WhatsApp, distinct from the Status Maker's image outcome. Reuses the
