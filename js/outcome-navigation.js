@@ -63,10 +63,11 @@
             preview: {
                 headline: { en: 'Master Urdu typing', ur: 'اردو ٹائپنگ میں مہارت حاصل کریں' },
                 caption: { en: 'From the alphabet to advanced tools — everything you need to write with confidence.', ur: 'حروفِ تہجی سے لے کر جدید ٹولز تک — اعتماد کے ساتھ لکھنے کے لیے سب کچھ۔' },
-                ctaHref: '/urdu-alphabet',
+                ctaHref: '/urdu-typing-practice',
                 theme: 'learn'
             },
             items: [
+                { href: '/urdu-typing-practice', icon: 'keyboard', label: { en: 'Practise Urdu typing and measure your speed', ur: 'اردو ٹائپنگ کی مشق کریں اور رفتار ناپیں' }, tool: { en: 'Typing Practice & Speed Test', ur: 'ٹائپنگ مشق اور رفتار ٹیسٹ' } },
                 { href: '/urdu-alphabet', icon: 'alphabet', label: { en: 'Learn the Urdu alphabet', ur: 'اردو حروف تہجی سیکھیں' }, tool: { en: 'Alphabet guide', ur: 'حروف تہجی گائیڈ' } },
                 { href: '/roman-urdu-transliteration', icon: 'convert', label: { en: 'How English to Urdu typing works', ur: 'انگریزی سے اردو ٹائپنگ کیسے کام کرتی ہے' }, tool: { en: 'Typing guide', ur: 'ٹائپنگ گائیڈ' } },
                 { href: '/urdu-fonts-nastaliq-vs-naskh', icon: 'document', label: { en: 'Choose an Urdu font', ur: 'اردو فونٹ منتخب کریں' }, tool: { en: 'Nastaliq vs Naskh guide', ur: 'نستعلیق بمقابلہ نسخ گائیڈ' } },
@@ -133,6 +134,7 @@
             id: 'help',
             label: { en: 'Help', ur: 'مدد' },
             items: [
+                { href: '/urdu-typing-practice', label: { en: 'Urdu typing practice', ur: 'اردو ٹائپنگ مشق' } },
                 { href: '/english-urdu-typing-tutorial', label: { en: 'How to type Urdu', ur: 'اردو کیسے ٹائپ کریں' } },
                 { href: '/urdu-alphabet', label: { en: 'Urdu alphabet', ur: 'اردو حروف تہجی' } },
                 { href: '/urdu-faq', label: { en: 'FAQ', ur: 'عام سوالات' } },
