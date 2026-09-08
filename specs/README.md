@@ -30,6 +30,13 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-DOC-001D` | Scanned/image/layout R&D | **Hold / gated R&D** |
 | `WU-AI-001` | Urdu AI Writing Assistant Platform | **Implemented core / acceptance pending** — A–C built/tested; provider-terms gate blocks production enablement; later expansion remains evidence-gated |
 | `WU-ANALYTICS-003` | Acquisition and Returning Signal | **Implemented core** — acquisition signal shipped; `WU-PLAT-002H` adds first-value/continuation acceptance requirements using the approved telemetry boundary |
+| `WU-JOURNEY-001` | Pakistan Urdu Intent & Destination Journey Programme | **Planned / evidence-gated** — connects existing input, social, document, practice and print capabilities around real user destination intent; must remain behind the active `WU-PLAT-002H` core-UI gate |
+| `WU-JOURNEY-001A` | Destination Intent Measurement | **Planned evidence foundation** — privacy-safe bounded destination categories + Product Pulse reporting; visible prompt only after first value and P0 gate approval |
+| `WU-JOURNEY-001B` | Roman Urdu Resilience & Code-Switching Benchmark | **Planned benchmark** — establish fixture corpus/current baseline before any production transliteration change |
+| `WU-JOURNEY-001C` | Social, Copy & Card Outcome Continuity | **Planned / Card-gated** — reuse Copy/WhatsApp/social makers/Card Studio; no Card acquisition expansion before P0.1F completion evidence |
+| `WU-JOURNEY-001D` | School, Formal & Everyday Writing Jobs | **Planned / evidence-gated** — extend the shipped writing-template/document journey around real jobs; no thin template-page expansion |
+| `WU-JOURNEY-001E` | Typing Practice Career & Test Pathway | **Planned evidence experiment** — position the already-shipped WPM/practice product around credible job/test intent without official-affiliation claims |
+| `WU-JOURNEY-001F` | Professional Print, Word, PDF & InPage Journey | **Planned / evidence-gated** — connect existing Rich Editor, exports, Cleaner and InPage conversion into a specialist professional workflow |
 | `WU-RW-001` | Role-owned direct workspaces | **Active** — product architecture boundary |
 | `WU-PLAT-002` | V2 Product Journey & Workspace Handoffs | **Implemented core / acceptance pending** — A–G shipped; H is now the evidence-backed core activation/usability closeout |
 | `WU-PLAT-002H` | Core Activation & Feature Discovery Acceptance | **Active / P0 roadmap gate** — first value, adaptive Basic Writer, **reopened mobile editor visibility/keyboard acceptance**, contextual continuation, growth CTA arbitration, referral continuity and Card completion; the 2026-09-06 conversion-repair child now sequences measurement → transport → arbitration → experiments |
@@ -69,6 +76,12 @@ The 2026-09-03 mobile repair intentionally **does not erase the earlier Gate B i
 The 2026-09-06 conversion child also **does not restart the mobile redesign**. The current Product Pulse window is too close to the 2026-09-04 B2 release for another broad layout conclusion. Mobile remains under the existing post-release evidence/real-device closeout while conversion work starts with telemetry denominator normalization.
 
 **Heritage exception:** `WU-HERITAGE-001A` is an isolated, ad-free trust/content surface approved on 2026-09-06. It does not modify Basic/Rich/Keyboard first-value UI and therefore does not relax the `WU-PLAT-002H` core-UI freeze. About/home promotion and the dedicated moderated story backend remain separate gated slices.
+
+## Planned Pakistan usage journey programme
+
+The 2026-09-08 Pakistan Urdu usage research is captured in [`../docs/WU-PAKISTAN-URDU-USAGE-GAP-ANALYSIS-2026-09-08.md`](../docs/WU-PAKISTAN-URDU-USAGE-GAP-ANALYSIS-2026-09-08.md). `WU-JOURNEY-001` and children are intentionally **planned behind the active P0 gate**, not a permission to restart homepage/core-workspace redesign.
+
+The programme's first principle is reuse: WriteUrdu already ships Roman/direct/Voice input, Rich Editor exports, Card/social makers, writing templates, typing practice and InPage conversion. New work should connect these capabilities around destination intent and only add new mechanics where evidence proves a real unmet job.
 
 ## Archived contracts
 
