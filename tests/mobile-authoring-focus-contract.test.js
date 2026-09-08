@@ -14,6 +14,7 @@ assert.match(shell, /@import url\("\.\/mobile-authoring-focus\.css"\);/, 'V2 she
 
 assert.match(css, /#transliterateTextarea:focus[\s\S]*?48dvh/, 'Focused Basic Writer must respond to dynamic viewport height');
 assert.match(css, /@media \(max-width: 767px\) and \(max-height: 560px\)/, 'Keyboard-like small effective viewport needs a bounded fallback');
+assert.match(css, /rich-editor-page:has\(#basic-example_ifr:focus\) \.input-mode-control-rich[\s\S]*?display:\s*none !important/, 'Focused Rich Editor must collapse the input chooser when the software keyboard constrains the viewport');
 assert.match(css, /scroll-margin-block:/, 'Focused authoring surfaces need safe scroll margins around browser chrome');
 assert.doesNotMatch(css, /position:\s*(?:fixed|sticky)/, 'Mobile authoring repair must not pin writing chrome over the caret');
 
@@ -31,7 +32,7 @@ for (const page of [rich, urduRich]) {
   assert.match(page, /id="basic-example"/, 'Rich Editor must keep the source-owned TinyMCE target');
 }
 
-assert.match(sw, /write-urdu-shell-v45/, 'M3/M4 must stay on the current shell generation while changing the worker manifest itself');
+assert.match(sw, /write-urdu-shell-v46/, 'M3/M4 must stay on the current shell generation while changing the worker manifest itself');
 assert.match(sw, /\.\/css\/v2-shell\.css/, 'PWA shell must explicitly refresh the stylesheet that imports mobile authoring focus');
 assert.match(sw, /\.\/css\/mobile-authoring-focus\.css/, 'PWA shell must cache the M3/M4 mobile authoring layer');
 
