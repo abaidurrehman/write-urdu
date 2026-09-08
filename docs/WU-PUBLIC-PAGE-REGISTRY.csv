@@ -2,6 +2,7 @@ source_file,canonical_route,area,primary_intent,indexability,sitemap,status,desi
 index.html,/,Write,English to Urdu typing / Urdu typing / Urdu writing,index,yes,keep,migrated,P0,Protected transliteration owner for English-letter Roman Urdu to Urdu script and broad typing acquisition
 urdu-editor.html,/urdu-editor,Write,rich Urdu text editing,index,yes,keep,migrated,P0,V2 workspace applied without changing TinyMCE or export bindings
 urdu-keyboard.html,/urdu-keyboard,Write,direct Urdu keyboard,index,yes,keep,migrated,P0,V2 workspace applied without changing keyboard input bindings
+urdu-typing-practice.html,/urdu-typing-practice,Learn,Urdu typing practice speed test WPM accuracy and keyboard fluency,index,yes,keep,migrated,P0,Primary practice and retention workspace with 12 progressive lessons timed 1 2 and 5 minute tests CRULP-style phonetic guidance native Urdu keyboard mode and private local progress
 urdu-text-cleaner.html,/urdu-text-cleaner,Create,Urdu text cleaning Unicode normalization and RTL diagnostics,index,yes,keep,migrated,P0,Browser-local utility with conservative safe fixes review-only bidi diagnostics and editor handoff
 urdu-ocr.html,/urdu-ocr,Create,Urdu image to text / screenshot or photo to editable Urdu text,index,yes,keep,migrated,P0,Browser-based image-to-text tool for clear printed Urdu with explicit accuracy limits and cleaner/editor handoffs; OCR is a secondary technical term
 urdu-card-studio.html,/urdu-card-studio,Create,Urdu text poetry and posts on photos,index,yes,keep,migrated,P1,Primary creation acquisition owner after P1.5
