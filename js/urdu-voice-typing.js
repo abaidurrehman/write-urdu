@@ -17,6 +17,7 @@
     var notice = root.querySelector('[data-voice-notice]');
     var supportNote = root.querySelector('[data-voice-support-note]');
     var transcriptTarget = window.WriteUrduUnifiedInput.createTextControlAdapter(transcript);
+    var exportButtons = [];
 
     var listening = false;
     var startedAt = 0;
@@ -53,7 +54,17 @@
         'network-error': { en: 'Voice typing could not connect. Check your internet connection and try again.', ur: 'آواز سے ٹائپنگ منسلک نہیں ہو سکی۔ اپنا انٹرنیٹ کنکشن چیک کر کے دوبارہ کوشش کریں۔' },
         'lang-not-supported': { en: 'Urdu voice typing is not available in this browser.', ur: 'اس براؤزر میں اردو آواز سے ٹائپنگ دستیاب نہیں۔' },
         aborted: { en: 'Voice typing stopped.', ur: 'آواز سے ٹائپنگ رک گئی۔' },
-        'generic-error': { en: 'Voice typing could not continue. You can still type Urdu normally in WriteUrdu.', ur: 'آواز سے ٹائپنگ جاری نہیں رہ سکی۔ آپ اب بھی رائٹ اردو میں معمول کے مطابق اردو ٹائپ کر سکتے ہیں۔' }
+        'generic-error': { en: 'Voice typing could not continue. You can still type Urdu normally in WriteUrdu.', ur: 'آواز سے ٹائپنگ جاری نہیں رہ سکی۔ آپ اب بھی رائٹ اردو میں معمول کے مطابق اردو ٹائپ کر سکتے ہیں۔' },
+        'export-pdf-title': { en: 'Export PDF', ur: 'PDF ایکسپورٹ کریں' },
+        'export-png-title': { en: 'Export PNG', ur: 'PNG ایکسپورٹ کریں' },
+        'export-svg-title': { en: 'Export SVG', ur: 'SVG ایکسپورٹ کریں' },
+        'export-pdf-success': { en: 'PDF exported successfully.', ur: 'PDF کامیابی سے ایکسپورٹ ہو گئی۔' },
+        'export-png-success': { en: 'PNG image exported successfully.', ur: 'PNG تصویر کامیابی سے ایکسپورٹ ہو گئی۔' },
+        'export-svg-success': { en: 'SVG image exported successfully.', ur: 'SVG تصویر کامیابی سے ایکسپورٹ ہو گئی۔' },
+        'export-pdf-error': { en: 'PDF export failed. Please try again.', ur: 'PDF ایکسپورٹ نہیں ہو سکی۔ دوبارہ کوشش کریں۔' },
+        'export-png-error': { en: 'PNG export failed. Please try again.', ur: 'PNG ایکسپورٹ نہیں ہو سکی۔ دوبارہ کوشش کریں۔' },
+        'export-svg-error': { en: 'SVG export failed. Please try again.', ur: 'SVG ایکسپورٹ نہیں ہو سکی۔ دوبارہ کوشش کریں۔' },
+        'export-unavailable': { en: 'Export is unavailable right now. Please try again.', ur: 'ایکسپورٹ اس وقت دستیاب نہیں۔ دوبارہ کوشش کریں۔' }
     };
 
     function isUrduLocale() { return document.documentElement.lang === 'ur'; }
@@ -82,6 +93,56 @@
         cleanButton.disabled = !ready;
         editorButton.disabled = !ready;
         clearButton.disabled = !ready && !listening;
+        exportButtons.forEach(function (button) { button.disabled = !ready; });
+    }
+
+    function mountExportActions() {
+        var actionBar = transcript.parentNode && transcript.parentNode.querySelector('.urdu-tool-actions');
+        if (!actionBar || actionBar.querySelector('[data-voice-export]')) return;
+        var insertionPoint = whatsappButton || actionBar.querySelector('[data-wu-community-toolbar-slot]') || null;
+        ['pdf', 'png', 'svg'].forEach(function (format) {
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'urdu-tool-button';
+            button.setAttribute('data-voice-export', format);
+            button.textContent = format.toUpperCase();
+            button.title = t('export-' + format + '-title');
+            button.setAttribute('aria-label', t('export-' + format + '-title'));
+            button.disabled = true;
+            button.addEventListener('click', function () { exportTranscript(format, button); });
+            actionBar.insertBefore(button, insertionPoint);
+            exportButtons.push(button);
+        });
+    }
+
+    async function exportTranscript(format, button) {
+        if (!hasText()) return;
+        var runtime = window.WriteUrduExport;
+        if (!runtime || typeof runtime.renderCanvas !== 'function' || typeof runtime.withBusyButton !== 'function') {
+            setNotice('export-unavailable', 'error');
+            return;
+        }
+        try {
+            await runtime.withBusyButton(button, async function () {
+                var options = format === 'pdf' ? { skipCredit: true } : undefined;
+                var canvas = await runtime.renderCanvas(transcript, options);
+                var filename = typeof runtime.safeFilename === 'function' ? runtime.safeFilename('write-urdu', 'write-urdu') : 'write-urdu';
+                if (format === 'png') {
+                    runtime.downloadData(canvas.toDataURL('image/png'), filename + '.png');
+                } else if (format === 'svg') {
+                    runtime.downloadSvg(canvas, filename);
+                } else {
+                    await runtime.downloadPdf(canvas, filename);
+                }
+            });
+            setNotice('export-' + format + '-success', 'success');
+            if (format === 'svg' && window.WriteUrduTelemetry && typeof window.WriteUrduTelemetry.trackOutcome === 'function') {
+                window.WriteUrduTelemetry.trackOutcome('export_completed', { format: 'svg', success: true });
+            }
+        } catch (error) {
+            console.error(error);
+            setNotice('export-' + format + '-error', 'error');
+        }
     }
 
     function friendlyErrorKey(category) {
@@ -162,6 +223,11 @@
         supportNote.textContent = t(controller.isSupported() ? 'ready-note' : 'unsupported-note');
         if (currentNoticeKey) notice.textContent = t(currentNoticeKey);
         if (listening && !interim.textContent) interim.textContent = t('listening-ellipsis');
+        exportButtons.forEach(function (button) {
+            var format = button.getAttribute('data-voice-export');
+            button.title = t('export-' + format + '-title');
+            button.setAttribute('aria-label', t('export-' + format + '-title'));
+        });
     }
 
     function startRecognition() {
@@ -239,6 +305,8 @@
         setStatus('ready');
         supportNote.textContent = t('ready-note');
     }
+
+    mountExportActions();
 
     document.addEventListener('write-urdu:locale-change', restorePageIdentity);
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
