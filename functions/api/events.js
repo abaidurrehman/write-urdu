@@ -120,7 +120,7 @@ const GROWTH_WORKSPACES = new Set(['basic-writer', 'rich-editor', 'urdu-keyboard
 const GROWTH_ACCOUNT_STATES = new Set(['signed-in', 'signed-out', 'disabled']);
 const GROWTH_SUPPRESSION_WINNERS = new Set(['none', 'keep', 'share', 'community_publish']);
 const GROWTH_SUPPRESSION_REASONS = new Set(['none', 'higher_priority']);
-const GROWTH_RELEASE_MARKERS = new Set(['${RELEASE}']);
+const GROWTH_RELEASE_MARKERS = new Set(['wu-plat-002h-s3-2026-09-06-v1']);
 const GROWTH_STAGE_COLUMNS = ['eligible', 'shown', 'opened', 'completed', 'dismissed', 'suppressed_due_to_arbitration'];
 
 const METRIC_COLUMNS = [
