@@ -11,10 +11,12 @@ let source = fs.readFileSync(localePath, 'utf8');
 const marker = "    '/urdu-editor': [";
 const start = source.indexOf(marker, source.indexOf('literalReplacements'));
 if (start < 0) throw new Error('Could not find /urdu-editor literal replacement section.');
-const end = source.indexOf("\n    ],\n    '/", start);
+const closing = "\n    ]\n  }\n};";
+const end = source.indexOf(closing, start);
 if (end < 0) throw new Error('Could not find end of /urdu-editor literal replacement section.');
+const sectionEnd = end + "\n    ]".length;
 
-let section = source.slice(start, end + 7);
+let section = source.slice(start, sectionEnd);
 
 function replacePair(oldPair, newPair) {
   if (section.includes(oldPair)) {
@@ -46,7 +48,7 @@ replacePair(
   "      ['<i class=\"far fa-file-image\" aria-hidden=\"true\"></i> SVG</button>', '<i class=\"far fa-file-image\" aria-hidden=\"true\"></i> SVG تصویر</button>'],"
 );
 
-source = source.slice(0, start) + section + source.slice(end + 7);
+source = source.slice(0, start) + section + source.slice(sectionEnd);
 fs.writeFileSync(localePath, source, 'utf8');
 
 execFileSync(process.execPath, ['scripts/generate-urdu-locale.js'], { cwd: root, stdio: 'inherit' });
