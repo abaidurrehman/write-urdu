@@ -140,7 +140,8 @@
      navigation and input choices available before/after writing, but let the
      focused editor own the constrained viewport while the keyboard is open. */
   body.wu-v2-shell[data-wu-core-workspace="basic"]:has(#transliterateTextarea:focus) .wu-site-header,
-  body.wu-v2-shell.rich-editor-page:has(.tox.tox-tinymce.tox-edit-focus) .wu-site-header {
+  body.wu-v2-shell.rich-editor-page:has(.tox.tox-tinymce.tox-edit-focus) .wu-site-header,
+  body.wu-v2-shell.rich-editor-page:has(#basic-example_ifr:focus) .wu-site-header {
     display: none !important;
   }
 
@@ -148,6 +149,11 @@
      Temporarily collapse that chooser in a keyboard-sized viewport so growth
      in shared navigation/discovery cannot squeeze the real writing surface. */
   body.wu-v2-shell[data-wu-core-workspace="basic"]:has(#transliterateTextarea:focus) .wu-basic-command-surface {
+    display: none !important;
+  }
+
+  body.wu-v2-shell.rich-editor-page:has(.tox.tox-tinymce.tox-edit-focus) .input-mode-control-rich,
+  body.wu-v2-shell.rich-editor-page:has(#basic-example_ifr:focus) .input-mode-control-rich {
     display: none !important;
   }
 
