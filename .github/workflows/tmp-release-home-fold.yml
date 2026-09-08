@@ -1,0 +1,50 @@
+name: Temporary release fold validation
+
+on:
+  push:
+    branches:
+      - feature/urdu-typing-practice
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/urdu-typing-practice
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Compact short laptop homepage hero
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('css/v3-production-polish.css')
+          source = path.read_text()
+          marker = 'body.wu-v2-shell:not(.content-page) hr.solid {'
+          block = '''/* Short laptop viewports need the real writing task in the first screen.\n   Keep Voice Typing prominent, but collapse its sample output once vertical\n   space is constrained; tall desktop and tablet layouts keep the full card. */\n@media (min-width: 768px) and (max-width: 1400px) and (max-height: 820px) {\n  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home {\n    grid-template-columns: auto minmax(0, 1fr) auto;\n    align-items: center;\n  }\n\n  body.wu-v2-shell:not(.content-page) .wu-voice-entry-home .wu-voice-entry-output {\n    display: none;\n  }\n\n  body.wu-v2-shell:not(.content-page) .home-hero-actions {\n    margin-top: 8px;\n    margin-bottom: 10px;\n  }\n}\n\n'''
+          if block not in source:
+              if marker not in source:
+                  raise SystemExit('homepage polish insertion marker not found')
+              source = source.replace(marker, block + marker, 1)
+              path.write_text(source)
+          PY
+      - name: Validate production visual audit
+        run: npx playwright test tests/v3-visual-quality.spec.js --project=desktop-chromium
+      - name: Commit release polish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add css/v3-production-polish.css
+          if git diff --cached --quiet; then
+            echo "No release polish changes to commit."
+          else
+            git commit -m "Keep homepage writer above laptop fold"
+            git push origin HEAD:feature/urdu-typing-practice
+          fi
