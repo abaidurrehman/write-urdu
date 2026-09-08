@@ -18,7 +18,7 @@
     var PAGE_TYPES = {
         write: ['/', '/urdu-editor', '/urdu-keyboard'],
         learn: [
-            '/roman-urdu-transliteration', '/urdu-alphabet', '/urdu-fonts-nastaliq-vs-naskh',
+            '/urdu-typing-practice', '/roman-urdu-transliteration', '/urdu-alphabet', '/urdu-fonts-nastaliq-vs-naskh',
             '/english-urdu-typing-tutorial', '/urdu-faq', '/write-urdu-documentation',
             '/write-urdu-features', '/urdu-editor-features', '/how-to-write-urdu-on-photo',
             '/how-to-share-urdu-writing-online'

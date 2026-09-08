@@ -109,6 +109,7 @@ function websiteNode(config) {
 }
 
 function applicationCategory(pageId) {
+  if (pageId === 'urdu-typing-practice') return 'EducationalApplication';
   if (['urdu-card-studio', 'urdu-instagram-post-maker', 'urdu-whatsapp-status-maker', 'urdu-name-art-maker'].includes(pageId)) return 'DesignApplication';
   if (['home', 'urdu-editor', 'urdu-writing-templates'].includes(pageId)) return 'WritingApplication';
   if (pageId === 'urdu-invoice-generator') return 'BusinessApplication';
@@ -120,6 +121,7 @@ function applicationFeatures(pageId) {
     home: ['Type Urdu with English letters', 'Urdu word suggestions', 'Direct Urdu typing', 'Copy and save drafts', 'Download text'],
     'urdu-editor': ['Format Urdu documents', 'Urdu fonts and alignment', 'Download Word, PDF and PNG'],
     'urdu-keyboard': ['On-screen Urdu keyboard', 'Physical keyboard input', 'Copy and download text'],
+    'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Progress history, streaks and personal bests'],
     'urdu-card-studio': ['Create Urdu quote and poetry images', 'Urdu fonts and templates', 'Use your own background image', 'Move and edit text on the design', 'Download PNG'],
     'qr-code-generator': ['QR codes for Urdu text and links', 'Wi-Fi and WhatsApp QR codes', 'Download PNG and SVG'],
     'stylish-urdu-text-generator': ['Ready-made Urdu text styles', 'English-letter and direct Urdu input', 'Save favourites and copy text', 'Continue to Urdu Name Art'],

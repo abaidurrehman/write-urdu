@@ -264,7 +264,8 @@ footer .text-center { margin: 24px 0 0; padding: 18px 0 !important; border-top: 
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
     align-items: center;
-    gap: clamp(24px, 4vw, 56px);
+    column-gap: clamp(24px, 4vw, 56px);
+    row-gap: 8px;
   }
   .col-sm > h1,
   .col-sm > .page-intro,
