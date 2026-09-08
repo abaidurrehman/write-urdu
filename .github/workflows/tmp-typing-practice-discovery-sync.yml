@@ -32,6 +32,26 @@ jobs:
             fs.writeFileSync(file, after);
           }
 
+          edit('seo.config.js', source => {
+            const oldText = "description: 'Practice Urdu typing online with guided lessons, a CRULP-style phonetic keyboard, timed speed tests, WPM, accuracy and private progress saved on your device.'";
+            const newText = "description: 'Practice Urdu typing online with 12 guided lessons, CRULP-style phonetic key guidance, timed speed tests, live WPM, accuracy and personal bests.'";
+            if (!source.includes(oldText)) throw new Error('Typing practice SEO description not found');
+            return source.replace(oldText, newText);
+          });
+
+          edit('urdu-typing-practice.html', source => {
+            let out = source;
+            const heroOld = 'Your best scores, completed lessons and practice streak stay in this browser.';
+            const heroNew = 'Your best scores, completed lessons and practice streak are remembered between visits.';
+            if (!out.includes(heroOld)) throw new Error('Typing practice hero progress copy not found');
+            out = out.replace(heroOld, heroNew);
+            const privacyOld = '<p class="privacy-note"><strong>Private by default:</strong> lesson completion, recent scores and your streak are saved in this browser. Your practice passage is not published as a document. Clearing this browser’s site data will clear the local practice history too.</p>';
+            const privacyNew = '<p class="privacy-note"><strong>Your practice stays private:</strong> your scores and lesson progress are for your practice history, and the Urdu you type here is not published or added to the public Writers area.</p>';
+            if (!out.includes(privacyOld)) throw new Error('Typing practice privacy note not found');
+            out = out.replace(privacyOld, privacyNew);
+            return out;
+          });
+
           edit('js/outcome-navigation.js', source => {
             const learnMarker = "headline: { en: 'Master Urdu typing', ur: 'اردو ٹائپنگ میں مہارت حاصل کریں' }";
             const start = source.indexOf(learnMarker);
@@ -75,14 +95,14 @@ jobs:
             );
             const featureNeedle = "    'urdu-keyboard': ['On-screen Urdu keyboard', 'Physical keyboard input', 'Copy and download text'],";
             if (!out.includes(featureNeedle)) throw new Error('Static schema feature insertion point not found');
-            out = out.replace(featureNeedle, featureNeedle + "\n    'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Private on-device progress'],");
+            out = out.replace(featureNeedle, featureNeedle + "\n    'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Progress history, streaks and personal bests'],");
             return out;
           });
 
           edit('js/seo.js', source => {
             const featureNeedle = "                'urdu-keyboard': ['On-screen Urdu character input', 'Physical keyboard input', 'Copy and text-file export'],";
             if (!source.includes(featureNeedle)) throw new Error('Runtime schema feature insertion point not found');
-            let out = source.replace(featureNeedle, featureNeedle + "\n                'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Private on-device progress'],");
+            let out = source.replace(featureNeedle, featureNeedle + "\n                'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Progress history, streaks and personal bests'],");
             const categoryNeedle = "applicationCategory: page.id === 'urdu-card-studio' ? 'DesignApplication' : page.id === 'urdu-editor' || page.id === 'home' ? 'WritingApplication' : 'UtilitiesApplication',";
             if (!out.includes(categoryNeedle)) throw new Error('Runtime schema category insertion point not found');
             out = out.replace(categoryNeedle, "applicationCategory: page.id === 'urdu-typing-practice' ? 'EducationalApplication' : page.id === 'urdu-card-studio' ? 'DesignApplication' : page.id === 'urdu-editor' || page.id === 'home' ? 'WritingApplication' : 'UtilitiesApplication',");
@@ -92,7 +112,7 @@ jobs:
           edit('llms.txt', source => {
             const needle = '- [English to Urdu typing guide](https://write-urdu.com/roman-urdu-transliteration): Shows how Urdu words written with English letters become Urdu script, why spellings can vary and how to review suggestions.\n';
             if (!source.includes(needle)) throw new Error('llms typing guide entry not found');
-            return source.replace(needle, needle + '- [Urdu typing practice and speed test](https://write-urdu.com/urdu-typing-practice): Guided Urdu keyboard lessons with WPM, accuracy, timed tests and private on-device progress.\n');
+            return source.replace(needle, needle + '- [Urdu typing practice and speed test](https://write-urdu.com/urdu-typing-practice): Guided Urdu keyboard lessons with WPM, accuracy, timed tests, streaks and personal bests.\n');
           });
           NODE
       - name: Regenerate governed static sources
@@ -115,7 +135,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add js/outcome-navigation.js write-urdu-sitemap.html scripts/static-seo-graph.js js/seo.js llms.txt urdu-typing-practice.html sitemap.xml robots.txt *.html urdu/*.html urdu/tools/*.html
+          git add seo.config.js js/outcome-navigation.js write-urdu-sitemap.html scripts/static-seo-graph.js js/seo.js llms.txt urdu-typing-practice.html sitemap.xml robots.txt *.html urdu/*.html urdu/tools/*.html
           if git diff --cached --quiet; then
             echo "No synchronized changes to commit."
           else
