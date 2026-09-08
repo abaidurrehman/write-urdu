@@ -1,0 +1,122 @@
+name: Temporary typing practice discovery sync
+
+on:
+  push:
+    branches:
+      - feature/urdu-typing-practice
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/urdu-typing-practice
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Promote typing practice in governed discovery and schema
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          function edit(file, transform) {
+            const before = fs.readFileSync(file, 'utf8');
+            const after = transform(before);
+            if (after === before) throw new Error(file + ': expected edit did not apply');
+            fs.writeFileSync(file, after);
+          }
+
+          edit('js/outcome-navigation.js', source => {
+            const learnMarker = "headline: { en: 'Master Urdu typing', ur: 'اردو ٹائپنگ میں مہارت حاصل کریں' }";
+            const start = source.indexOf(learnMarker);
+            if (start < 0) throw new Error('Learn navigation block not found');
+            let out = source;
+            const ctaAt = out.indexOf("ctaHref: '/urdu-alphabet'", start);
+            if (ctaAt < 0) throw new Error('Learn CTA not found');
+            out = out.slice(0, ctaAt) + "ctaHref: '/urdu-typing-practice'" + out.slice(ctaAt + "ctaHref: '/urdu-alphabet'".length);
+            const itemsAt = out.indexOf('items: [', ctaAt);
+            if (itemsAt < 0) throw new Error('Learn items not found');
+            const insertionAt = itemsAt + 'items: ['.length;
+            const item = "\n                { href: '/urdu-typing-practice', icon: 'keyboard', label: { en: 'Practise Urdu typing and measure your speed', ur: 'اردو ٹائپنگ کی مشق کریں اور رفتار ناپیں' }, tool: { en: 'Typing Practice & Speed Test', ur: 'ٹائپنگ مشق اور رفتار ٹیسٹ' } },";
+            out = out.slice(0, insertionAt) + item + out.slice(insertionAt);
+            const footerNeedle = "{ href: '/english-urdu-typing-tutorial', label: { en: 'How to type Urdu', ur: 'اردو کیسے ٹائپ کریں' } },";
+            const footerAt = out.indexOf(footerNeedle);
+            if (footerAt < 0) throw new Error('Help footer typing link not found');
+            const footerItem = "{ href: '/urdu-typing-practice', label: { en: 'Urdu typing practice', ur: 'اردو ٹائپنگ مشق' } },\n                ";
+            out = out.slice(0, footerAt) + footerItem + out.slice(footerAt);
+            return out;
+          });
+
+          edit('write-urdu-sitemap.html', source => {
+            let out = source.replace(
+              'Find clear guides for typing Urdu with English letters, using Urdu script, choosing fonts, formatting documents and sharing finished work.',
+              'Practise Urdu typing, measure your speed and find clear guides for English-letter input, Urdu script, fonts, formatting and sharing.'
+            );
+            const roman = '<a class="sitemap-directory-card is-featured" href="/roman-urdu-transliteration">';
+            if (!out.includes(roman)) throw new Error('Featured Roman Urdu sitemap card not found');
+            out = out.replace(roman, '<a class="sitemap-directory-card" href="/roman-urdu-transliteration">');
+            const gridNeedle = '<div class="sitemap-directory-grid">\n                <a class="sitemap-directory-card" href="/roman-urdu-transliteration">';
+            if (!out.includes(gridNeedle)) throw new Error('Learn sitemap grid insertion point not found');
+            const card = '<div class="sitemap-directory-grid">\n                <a class="sitemap-directory-card is-featured" href="/urdu-typing-practice"><span class="sitemap-directory-card-icon" aria-hidden="true">WPM</span><span class="sitemap-directory-card-kicker">Guided practice + speed tests</span><h3>Urdu Typing Practice &amp; Speed Test</h3><p>Build keyboard fluency with 12 guided lessons, live accuracy and 1, 2 or 5 minute WPM tests.</p><span class="sitemap-directory-card-link">Start typing practice <span aria-hidden="true">→</span></span></a>\n                <a class="sitemap-directory-card" href="/roman-urdu-transliteration">';
+            out = out.replace(gridNeedle, card);
+            return out;
+          });
+
+          edit('scripts/static-seo-graph.js', source => {
+            let out = source.replace(
+              "function applicationCategory(pageId) {\n  if (['urdu-card-studio', 'urdu-instagram-post-maker', 'urdu-whatsapp-status-maker', 'urdu-name-art-maker'].includes(pageId)) return 'DesignApplication';",
+              "function applicationCategory(pageId) {\n  if (pageId === 'urdu-typing-practice') return 'EducationalApplication';\n  if (['urdu-card-studio', 'urdu-instagram-post-maker', 'urdu-whatsapp-status-maker', 'urdu-name-art-maker'].includes(pageId)) return 'DesignApplication';"
+            );
+            const featureNeedle = "    'urdu-keyboard': ['On-screen Urdu keyboard', 'Physical keyboard input', 'Copy and download text'],";
+            if (!out.includes(featureNeedle)) throw new Error('Static schema feature insertion point not found');
+            out = out.replace(featureNeedle, featureNeedle + "\n    'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Private on-device progress'],");
+            return out;
+          });
+
+          edit('js/seo.js', source => {
+            const featureNeedle = "                'urdu-keyboard': ['On-screen Urdu character input', 'Physical keyboard input', 'Copy and text-file export'],";
+            if (!source.includes(featureNeedle)) throw new Error('Runtime schema feature insertion point not found');
+            let out = source.replace(featureNeedle, featureNeedle + "\n                'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Private on-device progress'],");
+            const categoryNeedle = "applicationCategory: page.id === 'urdu-card-studio' ? 'DesignApplication' : page.id === 'urdu-editor' || page.id === 'home' ? 'WritingApplication' : 'UtilitiesApplication',";
+            if (!out.includes(categoryNeedle)) throw new Error('Runtime schema category insertion point not found');
+            out = out.replace(categoryNeedle, "applicationCategory: page.id === 'urdu-typing-practice' ? 'EducationalApplication' : page.id === 'urdu-card-studio' ? 'DesignApplication' : page.id === 'urdu-editor' || page.id === 'home' ? 'WritingApplication' : 'UtilitiesApplication',");
+            return out;
+          });
+
+          edit('llms.txt', source => {
+            const needle = '- [English to Urdu typing guide](https://write-urdu.com/roman-urdu-transliteration): Shows how Urdu words written with English letters become Urdu script, why spellings can vary and how to review suggestions.\n';
+            if (!source.includes(needle)) throw new Error('llms typing guide entry not found');
+            return source.replace(needle, needle + '- [Urdu typing practice and speed test](https://write-urdu.com/urdu-typing-practice): Guided Urdu keyboard lessons with WPM, accuracy, timed tests and private on-device progress.\n');
+          });
+          NODE
+      - name: Regenerate governed static sources
+        run: |
+          npm run shell:sync
+          npm run seo:graph:sync
+          npm run seo:generate
+          npm run seo:sync-heads
+      - name: Validate full launch governance
+        run: |
+          npm run shell:check
+          npm run seo:graph:check
+          npm run collections:check
+          npm test
+          npm run seo:check
+          npm run governance:check
+      - name: Commit synchronized discovery sources
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/outcome-navigation.js write-urdu-sitemap.html scripts/static-seo-graph.js js/seo.js llms.txt urdu-typing-practice.html sitemap.xml robots.txt *.html urdu/*.html urdu/tools/*.html
+          if git diff --cached --quiet; then
+            echo "No synchronized changes to commit."
+          else
+            git commit -m "Integrate typing practice into discovery and SEO governance"
+            git push origin HEAD:feature/urdu-typing-practice
+          fi
