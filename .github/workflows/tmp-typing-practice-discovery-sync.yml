@@ -98,12 +98,14 @@ jobs:
       - name: Regenerate governed static sources
         run: |
           npm run shell:sync
+          npm run locale:generate
           npm run seo:graph:sync
           npm run seo:generate
           npm run seo:sync-heads
       - name: Validate full launch governance
         run: |
           npm run shell:check
+          npm run locale:check
           npm run seo:graph:check
           npm run collections:check
           npm test
