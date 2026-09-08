@@ -204,6 +204,8 @@
                                     <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز</button>
                                 <button type="button" id="exportImage" onclick="DownloadAsImage()">
                                     <i class="far fa-image" aria-hidden="true"></i> PNG تصویر</button>
+                                <button type="button" id="exportSvg" onclick="DownloadAsSvg()">
+                                    <i class="far fa-file-image" aria-hidden="true"></i> SVG تصویر</button>
                                 <button type="button" id="PrintCurrentText" onclick="PrintText()">
                                     <i class="fas fa-print" aria-hidden="true"></i> پرنٹ کریں</button>
                                 <button type="button" id="previewExport" onclick="PreviewCurrentText()">
@@ -390,6 +392,21 @@
         }
 
 
+        async function DownloadAsSvg() {
+            var element = getRichEditorElement();
+            try {
+                await WriteUrduExport.withBusyButton(document.getElementById('exportSvg'), async function () {
+                    var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
+                    WriteUrduExport.downloadSvg(canvas, 'write-urdu');
+                });
+                WriteUrduUI.notify('SVG تصویر محفوظ ہو گئی ہے۔', 'success');
+            } catch (error) {
+                console.error(error);
+                WriteUrduUI.notify('SVG تصویر محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
+            }
+        }
+
+
         async function DownloadAsWord() {
             try {
                 await WriteUrduExport.withBusyButton(document.getElementById('exportWord'), function () {
@@ -407,7 +424,7 @@
             var element = getRichEditorElement();
             try {
                 await WriteUrduExport.withBusyButton(document.getElementById('exportPdf'), async function () {
-                    var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
+                    var canvas = await WriteUrduExport.renderCanvas(element, { richText: true, skipCredit: true });
                     await WriteUrduExport.downloadPdf(canvas, 'write-urdu');
                 });
                 WriteUrduUI.notify('PDF محفوظ ہو گئی ہے۔', 'success');

@@ -54,7 +54,7 @@ assert.match(runtime, /data-wu-core-actionbar', 'pre-editor'/, 'Basic Writer act
 assert.match(runtime, /loadBasicCommandToolbar\(\)/, 'Core convergence must load the dedicated Basic Writer command toolbar');
 assert.doesNotMatch(runtime, /parent\.insertBefore\(actions, hint\.nextSibling\)/, 'Legacy post-editor action-bar relocation must be retired');
 
-assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'word', 'png', 'preview', 'print'], 'Current direct output action order changed unexpectedly');
+assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'word', 'png', 'svg', 'preview', 'print'], 'Current direct output action order changed unexpectedly');
 assert.deepStrictEqual(Toolbar.DIRECT_EXPORT_ACTIONS, ['pdf', 'word', 'png'], 'Desktop download dock must expose the three common export formats');
 assert.strictEqual(Toolbar.MOBILE_QUERY, '(max-width: 767px)');
 assert.match(toolbarRuntime, /setAction\(share, 'share', 'Share'/, 'Current Share action is missing');

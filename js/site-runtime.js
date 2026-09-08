@@ -163,58 +163,60 @@
         if (richText) content.innerHTML = source.innerHTML;
         else content.textContent = source.value || source.textContent || '';
 
-        credit.className = 'wu-export-credit';
-        var creditMark = document.createElement('span');
-        var creditLogo = document.createElement('img');
-        var creditLabel = document.createElement('span');
-        creditMark.className = 'wu-export-credit-mark';
-        creditLogo.alt = '';
-        creditLogo.setAttribute('aria-hidden', 'true');
-        creditLogo.width = 22;
-        creditLogo.height = 22;
-        creditLabel.textContent = 'Generated with Write Urdu · Write-Urdu.com';
-        creditMark.appendChild(creditLogo);
-        creditMark.appendChild(creditLabel);
-        credit.appendChild(creditMark);
-        try {
-            creditLogo.src = new URL('image/logo10.png', document.baseURI).href;
-        } catch (error) {
-            creditLogo.src = '/image/logo10.png';
-        }
-        Object.assign(credit.style, {
-            position: 'static',
-            width: '100%',
-            margin: '28px 0 0',
-            padding: '10px 0 0',
-            borderTop: '1px solid rgba(23, 114, 69, .18)',
-            color: '#6b7d73',
-            background: 'transparent',
-            fontFamily: 'Arial, sans-serif',
-            fontSize: '10px',
-            lineHeight: '1.3',
-            textAlign: 'left',
-            direction: 'ltr'
-        });
-        Object.assign(creditMark.style, {
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '7px',
-            minHeight: '22px'
-        });
-        Object.assign(creditLogo.style, {
-            display: 'block',
-            width: '22px',
-            height: '22px',
-            objectFit: 'contain',
-            borderRadius: '5px',
-            opacity: '.92'
-        });
-        Object.assign(creditLabel.style, {
-            letterSpacing: '.01em',
-            whiteSpace: 'nowrap'
-        });
         surface.appendChild(content);
-        surface.appendChild(credit);
+        if (!options.skipCredit) {
+            credit.className = 'wu-export-credit';
+            var creditMark = document.createElement('span');
+            var creditLogo = document.createElement('img');
+            var creditLabel = document.createElement('span');
+            creditMark.className = 'wu-export-credit-mark';
+            creditLogo.alt = '';
+            creditLogo.setAttribute('aria-hidden', 'true');
+            creditLogo.width = 22;
+            creditLogo.height = 22;
+            creditLabel.textContent = 'Generated with Write Urdu · Write-Urdu.com';
+            creditMark.appendChild(creditLogo);
+            creditMark.appendChild(creditLabel);
+            credit.appendChild(creditMark);
+            try {
+                creditLogo.src = new URL('image/logo10.png', document.baseURI).href;
+            } catch (error) {
+                creditLogo.src = '/image/logo10.png';
+            }
+            Object.assign(credit.style, {
+                position: 'static',
+                width: '100%',
+                margin: '28px 0 0',
+                padding: '10px 0 0',
+                borderTop: '1px solid rgba(23, 114, 69, .18)',
+                color: '#6b7d73',
+                background: 'transparent',
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '10px',
+                lineHeight: '1.3',
+                textAlign: 'left',
+                direction: 'ltr'
+            });
+            Object.assign(creditMark.style, {
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '7px',
+                minHeight: '22px'
+            });
+            Object.assign(creditLogo.style, {
+                display: 'block',
+                width: '22px',
+                height: '22px',
+                objectFit: 'contain',
+                borderRadius: '5px',
+                opacity: '.92'
+            });
+            Object.assign(creditLabel.style, {
+                letterSpacing: '.01em',
+                whiteSpace: 'nowrap'
+            });
+            surface.appendChild(credit);
+        }
         document.body.appendChild(surface);
         return surface;
     }
@@ -325,6 +327,53 @@
         window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     }
 
+    var creditLogoDataUrlPromise = null;
+
+    function getCreditLogoDataUrl() {
+        if (creditLogoDataUrlPromise) return creditLogoDataUrlPromise;
+        var src;
+        try {
+            src = new URL('image/logo10.png', document.baseURI).href;
+        } catch (error) {
+            src = '/image/logo10.png';
+        }
+        creditLogoDataUrlPromise = new Promise(function (resolve) {
+            var image = new Image();
+            image.crossOrigin = 'anonymous';
+            image.onload = function () {
+                try {
+                    var size = 64;
+                    var logoCanvas = document.createElement('canvas');
+                    logoCanvas.width = size;
+                    logoCanvas.height = size;
+                    logoCanvas.getContext('2d').drawImage(image, 0, 0, size, size);
+                    resolve(logoCanvas.toDataURL('image/png'));
+                } catch (error) {
+                    resolve(null);
+                }
+            };
+            image.onerror = function () { resolve(null); };
+            image.src = src;
+        });
+        return creditLogoDataUrlPromise;
+    }
+
+    function drawPdfFooter(doc, logoDataUrl, pageWidth, pageHeight, margin) {
+        var baseline = pageHeight - margin + 2.5;
+        doc.setDrawColor(203, 224, 212);
+        doc.setLineWidth(0.2);
+        doc.line(margin, baseline - 4.5, pageWidth - margin, baseline - 4.5);
+        var textX = margin;
+        if (logoDataUrl) {
+            doc.addImage(logoDataUrl, 'PNG', margin, baseline - 3.6, 3.6, 3.6);
+            textX = margin + 5;
+        }
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(107, 125, 115);
+        doc.text('Generated with Write Urdu · Write-Urdu.com', textX, baseline);
+    }
+
     function createPdf(canvas, filename, jsPDF) {
         var doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
         var pageWidth = doc.internal.pageSize.getWidth();
@@ -337,18 +386,21 @@
         var offset = 0;
         var page = 0;
 
-        while (offset < canvas.height) {
-            var currentHeight = Math.min(sliceHeight, canvas.height - offset);
-            var pageCanvas = document.createElement('canvas');
-            pageCanvas.width = canvas.width;
-            pageCanvas.height = currentHeight;
-            pageCanvas.getContext('2d').drawImage(canvas, 0, offset, canvas.width, currentHeight, 0, 0, canvas.width, currentHeight);
-            if (page > 0) doc.addPage();
-            doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', margin, margin, imageWidth, currentHeight * scale);
-            offset += currentHeight;
-            page += 1;
-        }
-        doc.save(safeFilename(filename, 'write-urdu') + '.pdf');
+        return getCreditLogoDataUrl().then(function (logoDataUrl) {
+            while (offset < canvas.height) {
+                var currentHeight = Math.min(sliceHeight, canvas.height - offset);
+                var pageCanvas = document.createElement('canvas');
+                pageCanvas.width = canvas.width;
+                pageCanvas.height = currentHeight;
+                pageCanvas.getContext('2d').drawImage(canvas, 0, offset, canvas.width, currentHeight, 0, 0, canvas.width, currentHeight);
+                if (page > 0) doc.addPage();
+                doc.addImage(pageCanvas.toDataURL('image/jpeg', 0.82), 'JPEG', margin, margin, imageWidth, currentHeight * scale);
+                drawPdfFooter(doc, logoDataUrl, pageWidth, pageHeight, margin);
+                offset += currentHeight;
+                page += 1;
+            }
+            doc.save(safeFilename(filename, 'write-urdu') + '.pdf');
+        });
     }
 
     function downloadPdf(canvas, filename) {
@@ -358,6 +410,19 @@
             });
         }
         return createPdf(canvas, filename, window.jspdf.jsPDF);
+    }
+
+    function downloadSvg(canvas, filename) {
+        var width = canvas.width;
+        var height = canvas.height;
+        var dataUrl = canvas.toDataURL('image/png');
+        var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height +
+            '" viewBox="0 0 ' + width + ' ' + height + '">' +
+            '<image width="' + width + '" height="' + height + '" href="' + dataUrl + '"/></svg>';
+        var blob = new Blob([svg], { type: 'image/svg+xml' });
+        var url = URL.createObjectURL(blob);
+        downloadData(url, safeFilename(filename, 'write-urdu') + '.svg');
+        window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
     }
 
     function printCanvas(printWindow, canvas) {
@@ -438,6 +503,7 @@
         previewCanvas: previewCanvas,
         downloadWord: downloadWord,
         downloadPdf: downloadPdf,
+        downloadSvg: downloadSvg,
         printCanvas: printCanvas,
         safeFilename: safeFilename
     };

@@ -202,6 +202,8 @@
                                     <i class="far fa-file-pdf" aria-hidden="true"></i> PDF document</button>
                                 <button type="button" id="exportImage" onclick="DownloadAsImage()">
                                     <i class="far fa-image" aria-hidden="true"></i> PNG image</button>
+                                <button type="button" id="exportSvg" onclick="DownloadAsSvg()">
+                                    <i class="far fa-file-image" aria-hidden="true"></i> SVG image</button>
                                 <button type="button" id="PrintCurrentText" onclick="PrintText()">
                                     <i class="fas fa-print" aria-hidden="true"></i> Print</button>
                                 <button type="button" id="previewExport" onclick="PreviewCurrentText()">
@@ -388,6 +390,21 @@
         }
 
 
+        async function DownloadAsSvg() {
+            var element = getRichEditorElement();
+            try {
+                await WriteUrduExport.withBusyButton(document.getElementById('exportSvg'), async function () {
+                    var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
+                    WriteUrduExport.downloadSvg(canvas, 'write-urdu');
+                });
+                WriteUrduUI.notify('SVG image exported successfully.', 'success');
+            } catch (error) {
+                console.error(error);
+                WriteUrduUI.notify('SVG export failed. Please try again.', 'error');
+            }
+        }
+
+
         async function DownloadAsWord() {
             try {
                 await WriteUrduExport.withBusyButton(document.getElementById('exportWord'), function () {
@@ -405,7 +422,7 @@
             var element = getRichEditorElement();
             try {
                 await WriteUrduExport.withBusyButton(document.getElementById('exportPdf'), async function () {
-                    var canvas = await WriteUrduExport.renderCanvas(element, { richText: true });
+                    var canvas = await WriteUrduExport.renderCanvas(element, { richText: true, skipCredit: true });
                     await WriteUrduExport.downloadPdf(canvas, 'write-urdu');
                 });
                 WriteUrduUI.notify('PDF exported successfully.', 'success');
