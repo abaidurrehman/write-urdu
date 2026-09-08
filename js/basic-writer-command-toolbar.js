@@ -7,7 +7,7 @@
     'use strict';
 
     var MOBILE_QUERY = '(max-width: 767px)';
-    var OUTPUT_ACTIONS = ['pdf', 'word', 'png', 'preview', 'print'];
+    var OUTPUT_ACTIONS = ['pdf', 'word', 'png', 'svg', 'preview', 'print'];
     var DIRECT_EXPORT_ACTIONS = ['pdf', 'word', 'png'];
     var mediaQuery = null;
     var publishLoader = null;
@@ -619,6 +619,7 @@
         var pdf = exportPanel && exportPanel.querySelector('#exportPdf');
         var word = exportPanel && exportPanel.querySelector('#exportWord');
         var png = exportPanel && exportPanel.querySelector('#exportImage');
+        var svg = exportPanel && exportPanel.querySelector('#exportSvg');
         var preview = exportPanel && exportPanel.querySelector('#previewExport');
         var print = exportPanel && exportPanel.querySelector('#PrintCurrentText');
         var filenameLabel = exportPanel && exportPanel.querySelector('label[for="inputFileNameToSaveAs"]');
@@ -657,6 +658,7 @@
         setAction(pdf, 'pdf', 'PDF', 'fas fa-file-pdf', 'utility');
         setAction(word, 'word', 'Word', 'fas fa-file-word', 'utility');
         setAction(png, 'png', 'PNG', 'fas fa-image', 'utility');
+        if (svg) setAction(svg, 'svg', 'SVG', 'far fa-file-image', 'utility');
         setAction(preview, 'preview', 'Preview', 'far fa-eye', 'utility');
         setAction(print, 'print', 'Print', 'fas fa-print', 'utility');
 
@@ -681,7 +683,7 @@
         directExportGroup.appendChild(directExportLabel);
 
         setAction(clear, 'clear', 'Clear', 'far fa-trash-alt', 'clear');
-        var more = createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel, share, [pdf, word, png, preview, print], clear);
+        var more = createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel, share, [pdf, word, png, svg, preview, print], clear);
         var moreGroup = root.document.createElement('div');
         moreGroup.className = 'wu-basic-command-group wu-basic-command-overflow';
         moreGroup.appendChild(more);
