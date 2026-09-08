@@ -1,7 +1,7 @@
 # Write Urdu — Pakistan Urdu Usage, Product Gap & Opportunity Analysis
 
 **Date:** 2026-09-08  
-**Status:** Strategy input / evidence synthesis  
+**Status:** Strategy input / evidence synthesis — feedback reconciled  
 **Purpose:** Compare observed Pakistani Urdu-writing behaviour with the shipped WriteUrdu product, identify real capability gaps vs discovery/journey gaps, and define a sequenced opportunity map without violating the active `WU-PLAT-002H` scope gate.
 
 ---
@@ -20,7 +20,7 @@ WriteUrdu already contains most of the capabilities the Pakistani Urdu-writing m
 - Card Studio and social-specific image makers;
 - ready-to-edit writing templates;
 - Urdu typing practice / speed testing;
-- Unicode / InPage bridge;
+- Unicode / legacy InPage text bridge;
 - text cleaning, OCR, public sharing and community publishing.
 
 The primary gap is therefore **not another generic Urdu tool**.
@@ -31,13 +31,21 @@ The stronger product model is:
 
 The biggest opportunity is to connect current capabilities around user intent and destination rather than presenting them as a catalogue.
 
+A second important conclusion from the feedback review is:
+
+> **Do not confuse a valuable market observation with a missing product feature.**
+
+Several ideas in the external feedback were already implemented in WriteUrdu and therefore need positioning, quality or journey work rather than a duplicate build.
+
 ---
 
 ## 2. Behaviour model from Pakistan research
 
 Public research does not provide a trustworthy national percentage split such as “X% social / Y% school / Z% print.” The product must not fabricate one.
 
-The evidence does support three recurring Urdu-writing worlds:
+Roman Urdu is strongly evidenced as a common digital communication style, especially for informal messaging, and spelling variation is real. However, statements such as “no one types Urdu directly” are too absolute. Direct Urdu keyboard input and phonetic Urdu keyboard layouts are real, established workflows, especially among users who already type Urdu professionally or have an Urdu keyboard configured.
+
+The evidence supports three recurring Urdu-writing worlds:
 
 ### 2.1 Conversational Urdu
 
@@ -123,6 +131,7 @@ These are **product opportunity segments, not measured national shares**.
 | Printers/designers | Unicode ↔ Word/PDF/InPage/print | Medium, high-value |
 | Typing-job candidates | Urdu WPM / exam/job preparation | Medium acquisition/retention opportunity |
 | Journalists/publishers | Long-form + publishing/legacy workflows | Smaller but specialist/high-value |
+| Overseas/family communicators | Proper-script messages, greetings, invitations | Plausible medium opportunity; validate with WriteUrdu evidence rather than treating as measured segment |
 
 ---
 
@@ -142,7 +151,11 @@ These are **product opportunity segments, not measured national shares**.
 
 **Research fit:** excellent.
 
-**Primary gap:** the product still mostly infers next steps from text length/workspace state, not from the user’s real destination/job.
+**Primary gaps:**
+
+- the product still mostly infers next steps from text length/workspace state, not from the user’s real destination/job;
+- there is no benchmark proving how well the current transliteration/suggestion flow tolerates high-frequency chat spelling variants, code-switching, names, numbers and long-paste formatting;
+- users who can speak/type Roman Urdu but are less confident reading Urdu script have no optional Roman-source companion after conversion.
 
 ### 4.2 Voice Typing `/tools/urdu-voice-typing`
 
@@ -160,7 +173,7 @@ These are **product opportunity segments, not measured national shares**.
 **Primary gaps:**
 
 - destination telemetry is too weak to tell whether voice users primarily copy, WhatsApp, continue to documents, or abandon after transcription;
-- voice → image/social-card handoff is not a first-class measured journey.
+- voice → image/social-card handoff is not yet a first-class measured journey.
 
 ### 4.3 Rich Editor `/urdu-editor`
 
@@ -176,9 +189,10 @@ These are **product opportunity segments, not measured national shares**.
 
 **Primary gaps:**
 
-- no task starter layer for common document jobs such as essay/application/letter/notice from inside the document journey;
+- no task starter layer for broader common document jobs such as essay/speech/story/notice from inside the document journey;
 - no explicit `screen readability` vs `beautiful Nastaliq/print` presentation mode;
-- professional print/InPage continuation is not yet a coherent end-to-end journey.
+- professional print/InPage continuation is not yet a coherent end-to-end journey;
+- current PDF output is created by rendering the document to a browser canvas and embedding image slices into jsPDF, so visual fidelity can be good while selectable/searchable Unicode text in the PDF is not guaranteed. This deserves a dedicated print-quality audit before any “InPage replacement” claim.
 
 ### 4.4 Writing Templates `/urdu-writing-templates`
 
@@ -186,6 +200,7 @@ These are **product opportunity segments, not measured national shares**.
 
 - 12 real ready-to-edit templates;
 - school, office, applications, business and personal categories;
+- current business coverage already includes payment reminder and meeting notice;
 - direct handoff to Basic Writer or Rich Editor;
 - clear safety wording that templates are starting points, not official forms.
 
@@ -193,9 +208,9 @@ These are **product opportunity segments, not measured national shares**.
 
 **Primary gaps:**
 
-- current catalogue under-represents broader school writing jobs: essays, speeches, stories, summaries, notices/classroom material;
-- no evidence-led template expansion system tied to search/product usage;
-- templates are not yet exposed contextually after the product detects/learns a user’s intended job.
+- current catalogue under-represents broader school writing jobs: essays, speeches, stories, summaries and assignment starters;
+- evidence-led expansion should include education and everyday formal jobs, but not duplicate existing leave/job/complaint/business-notice templates;
+- no destination-aware contextual entry after a user identifies school/formal intent.
 
 ### 4.5 Card Studio `/urdu-card-studio`
 
@@ -207,7 +222,8 @@ These are **product opportunity segments, not measured national shares**.
 - image upload;
 - social output dimensions;
 - PNG/share/caption completion;
-- Nastaliq/Naskh-aware design.
+- Nastaliq/Naskh-aware design;
+- Noto Nastaliq Urdu is already part of the current design/template font stack.
 
 **Research fit:** extremely strong.
 
@@ -215,17 +231,21 @@ These are **product opportunity segments, not measured national shares**.
 
 **Gap classification:** completion/discovery gap, **not missing-feature gap**.
 
+Poetry-specific framing/layout may still be valuable, but should extend Card Studio/Rich Editor rather than create a third image/export engine.
+
 ### 4.6 Social makers
 
-Existing dedicated routes cover WhatsApp Status, Instagram post, Facebook role and other shareable outcomes.
+Existing dedicated routes cover WhatsApp Status, Instagram post, Facebook Card Studio role and other shareable outcomes.
 
 **Research fit:** strong.
 
-**Primary gap:** social outcomes are spread across routes/products; users are not yet guided from “I have Urdu text” to the best social output based on their intended destination.
+**Primary gap:** messaging text and social image are different jobs. WriteUrdu has a strong WhatsApp Status image product and a Voice→WhatsApp text action, but the general Basic Writer does not yet present “message” vs “status/image” as a clear destination distinction.
+
+A new WhatsApp-message SEO route is **not automatically justified**. Existing `WU-VOICE-PLAT-001D` already requires product/search evidence before creating a dedicated message route.
 
 ### 4.7 Urdu Typing Practice `/urdu-typing-practice`
 
-**Already strong:**
+**Already strong and shipped:**
 
 - 12 guided lessons;
 - 1/2/5 minute tests;
@@ -234,28 +254,132 @@ Existing dedicated routes cover WhatsApp Status, Instagram post, Facebook role a
 - local progress/history/streaks/personal bests;
 - paste prevention for valid testing.
 
-**Research fit:** much stronger than the current backlog description suggests.
+**Research fit:** much stronger than older backlog assumptions suggested.
 
-**Primary gap:** positioning and acquisition. The product is generic practice rather than explicitly serving real Pakistani typing-test/job preparation intent.
+**Primary gap:** positioning and acquisition. The opportunity is career/job-test framing and repeat-use measurement, not building another `/urdu-typing-test` engine by default.
 
 ### 4.8 InPage ↔ Unicode
 
-**Already strong:**
+**Already strong and shipped:**
 
 - both-direction text conversion;
 - safe unsupported-character reporting;
 - continuity to cleaner / WriteUrdu;
-- explicit distinction between text conversion and `.inp` document conversion.
+- explicit distinction between text conversion and `.inp` document conversion;
+- a planned npm/API wrapper reuses the same engine.
 
 **Research fit:** strong for the professional/printing layer.
 
 **Primary gap:** the user journey stops at conversion. The product does not yet explain/measure common professional destinations such as Word/PDF/print/legacy handoff as a coherent flow.
 
+The useful opportunity is therefore **print companion / proof / handoff quality**, not “add InPage output from zero.”
+
 ---
 
-## 5. Gap classification
+## 5. Feedback reconciliation — what to accept, modify or reject
 
-### 5.1 Critical gaps — product intelligence / orchestration
+### 5.1 Accept strongly
+
+#### A — Print-grade Nastaliq fidelity audit
+
+This is one of the best additions in the feedback.
+
+WriteUrdu already uses Nastaliq fonts and browser rendering, but the current Rich/Basic PDF path rasterizes the rendered document through `html2canvas` and embeds image slices into jsPDF. Before positioning WriteUrdu as suitable for professional/simple print jobs, benchmark:
+
+- Nastaliq ligature/shaping fidelity;
+- line wrapping;
+- RTL alignment;
+- punctuation/numbers/mixed Latin text;
+- multi-page slicing;
+- print DPI/legibility;
+- font-loading failure behaviour;
+- PDF text selectability/accessibility;
+- visual consistency across Chrome/Edge/Safari where supported.
+
+Do **not** assume a HarfBuzz/WASM rewrite is required before auditing the browser’s existing complex-script shaping. Browser DOM shaping may already be sufficient for many jobs; the current bottleneck may instead be raster export, page slicing, font loading or layout presets.
+
+#### B — “Message” vs “Status image” distinction
+
+Strong product insight. A WhatsApp message is a copy/share-text job; a WhatsApp Status is an image-design job. Treat these as separate outcomes under `WU-JOURNEY-001C`.
+
+#### C — Dual-script confidence companion
+
+Useful hypothesis for users who can type/speak Roman Urdu but are less confident verifying the Urdu script. This should be a bounded, optional, local-only experiment—not a default second line on every editor.
+
+#### D — Mixed RTL / names / numbers reliability
+
+Strongly add to the Roman Urdu benchmark and messaging/document QA corpus.
+
+#### E — Trust as a competitive differentiator
+
+Yes, but the correct differentiator is **transparent, feature-specific processing**, not a blanket “nothing leaves your browser” claim.
+
+### 5.2 Accept with correction
+
+#### F — InPage / print opportunity
+
+Correct opportunity, incorrect current-state diagnosis.
+
+WriteUrdu already ships both-direction legacy InPage-text ↔ Unicode conversion. The next opportunity is:
+
+- coherent converter → Cleaner → Rich Editor → Word/PDF/Print journey;
+- optional print-proof output;
+- a “keep Unicode as your master” workflow;
+- quality comparison against professional Nastaliq expectations;
+- possibly a bounded `print pack` if usage proves demand.
+
+Do not call the first phase an InPage replacement.
+
+#### G — Education templates
+
+Correct opportunity, but the product already has 12 writing templates including school, office, business and personal jobs. Expansion should focus on missing categories such as essay/speech/story/summary/assignment structure and only create dedicated SEO pages when GSC proves distinct demand.
+
+#### H — Business notices
+
+Partially present already: payment reminder and meeting notice exist. Candidate additions such as shop/community announcements or event notices should be demand-driven, not a separate duplicate template system.
+
+#### I — Poetry formatting
+
+Valid emotionally sticky opportunity, but Card Studio already owns poetry/quote image output. Add poetry-specific presets/layout only by extending Card Studio/Rich Editor after Card completion health is understood.
+
+### 5.3 Reject as stated
+
+#### J — “No one types Urdu directly”
+
+Too absolute and contradicted by both the product and the wider Urdu keyboard ecosystem. Roman Urdu is highly important; direct Urdu remains a legitimate input path.
+
+#### K — “InPage-compatible output is not covered”
+
+Incorrect. Text conversion exists in both directions today; `.inp` binary document conversion does not.
+
+#### L — “Typing practice is missing”
+
+Incorrect. The shipped practice product is already substantial. Build positioning/retention, not another timer/WPM engine.
+
+#### M — “Phase 1 means no backend/API/accounts/server/database”
+
+Not a valid current platform constraint. The **core instant writing task** remains no-account/local-first, but WriteUrdu now also has optional account documents, community/public-share/server functions, telemetry, planned APIs and provider-dependent features. Future specs should preserve the core no-account path without pretending the entire product is static-only.
+
+#### N — Global “nothing leaves your browser” marketing
+
+Incorrect and unsafe. The current privacy contract correctly explains that:
+
+- Roman Urdu transliteration suggestions/whole-text conversion may send submitted words/passages to Google’s typing service;
+- browser/platform speech recognition may use provider-operated remote recognition;
+- public share/community/account features intentionally send/store data after explicit user action;
+- browser-local tools such as Card Studio/QR have different processing behaviour.
+
+Trust messaging must be route/capability-specific.
+
+#### O — Treat Unicode and InPage as two mutually exclusive modern output formats
+
+Over-simplified. Legacy InPage encodings remain a compatibility problem, but newer InPage versions can work with Unicode/OpenType too. WriteUrdu should describe **modern Unicode master + legacy compatibility/handoff** rather than claiming all print workflows require a separate “glyph format.”
+
+---
+
+## 6. Gap classification
+
+### 6.1 Critical gaps — product intelligence / orchestration
 
 #### G1 — Destination intent is unknown
 
@@ -277,80 +401,90 @@ This is the highest-value knowledge gap because it affects every future roadmap 
 
 Current adaptive logic is primarily driven by workspace/text length/state. That is appropriate for activation, but two 100-character texts can have completely different destinations:
 
-- a WhatsApp status;
+- a WhatsApp message;
 - a school application;
 - a poetry quote;
 - a formal notice.
 
 We need an optional, non-blocking destination/job signal after first value.
 
-### 5.2 High-value capability gaps
+### 6.2 High-value quality gaps
 
-#### G3 — Messy Roman Urdu / code-switching resilience is not a product contract
+#### G3 — Messy Roman Urdu / code-switching resilience is not benchmarked
 
-Pakistani Roman Urdu has spelling variation and frequent English code-switching. The current transliteration path is mature and protected, but we do not have a benchmark/contract for:
+The current transliteration path is mature and protected, but there is no explicit regression suite representing:
 
 - spelling variants;
 - shorthand;
 - mixed English terms;
 - names;
 - punctuation/numbers;
-- multi-word paste conversion quality.
+- URLs/handles;
+- multi-line passage conversion;
+- suggestion recovery/undo behaviour.
 
 This must begin as **benchmark/R&D**, not a risky provider rewrite.
 
-#### G4 — School/document job coverage is shallow relative to the opportunity
+#### G4 — Print/PDF typography quality is unbenchmarked
 
-Applications/letters are present, but the broader school writing ecosystem is not yet represented systematically.
+WriteUrdu can already render Nastaliq and export PDF/PNG/print, but there is no reference suite proving professional/simple-print fidelity against realistic Urdu documents. Current PDF is rasterized image content, which has implications for text selection/search/accessibility.
 
-#### G5 — Professional print workflow is fragmented
+#### G5 — Dual-script verification is missing
 
-Rich Editor + Word/PDF/Print + InPage converter exist, but the product does not connect them into a clear professional workflow.
+Some users may want to keep the Roman source visible while checking unfamiliar Urdu script. This is a plausible confidence feature, but needs measured validation before broad rollout.
 
-### 5.3 High-value discovery/completion gaps
+### 6.3 High-value capability/journey gaps
 
-#### G6 — Social completion is fragmented
+#### G6 — School/document job coverage is shallow relative to the opportunity
+
+Applications/letters are present; broader essay/speech/story/summary/assignment structure is not represented systematically.
+
+#### G7 — Professional print workflow is fragmented
+
+Rich Editor + Word/PDF/Print + InPage converter + Cleaner exist, but the product does not connect them into one clear specialist workflow.
+
+#### G8 — Message vs social-image completion is fragmented
 
 Copy, WhatsApp, cards and social-specific makers exist, but the correct outcome is not always surfaced contextually.
 
-#### G7 — Card Studio completion is weak
+### 6.4 Existing product needing positioning/completion rather than rebuild
 
-Already owned by P0.1F. Do not solve this with more templates/promotional links before completion diagnosis.
+#### G9 — Card Studio completion is weak
 
-#### G8 — Typing practice exists but lacks career/exam positioning
+Already owned by P0.1F. Do not solve this with more promotion before completion diagnosis.
 
-This is now a marketing/content/product-fit opportunity, not a greenfield feature.
+#### G10 — Typing practice lacks career/test positioning
 
-### 5.4 Cross-cutting UX gap
+The tool exists. Acquisition/retention is the gap.
 
-#### G9 — Urdu typography is treated mainly as formatting, not reading context
+### 6.5 Cross-cutting trust gap
 
-Research shows Nastaliq has strong cultural/aesthetic value while small-screen readability can vary. We should test a clear distinction between:
+#### G11 — Processing truth is complex and not a one-line privacy slogan
 
-- writing/readability view;
-- beautiful Nastaliq/print presentation.
-
-Do not impose one font ideology everywhere.
+WriteUrdu can compete on trust by explaining what each feature does with user data in plain language. Do not falsely collapse local, Google-assisted, browser-provider, public-share and account workflows into one claim.
 
 ---
 
-## 6. Opportunity map
+## 7. Opportunity map
 
 | Opportunity | Reuse level | New capability needed? | Risk | Recommended sequence |
 | --- | ---: | ---: | ---: | ---: |
-| Destination intent measurement | High | Small | Low | First |
-| Destination-aware continuation | High | Small/medium | Medium UX | After P0.1 review |
+| Destination intent measurement | High | Small | Low | First evidence layer |
 | Roman Urdu quality benchmark | High | Benchmark first | Low | Early research |
-| Roman/mixed-language improvement | Medium | Possibly | High regression risk | Only after benchmark |
-| Social copy → card/status flow | High | Mostly orchestration | Medium | After Card P0.1F |
+| Print/Nastaliq export fidelity benchmark | Very high | Audit first | Low/medium | Early research |
+| Trust/processing copy audit | Very high | Mostly content | Low | Early, under existing privacy/SEO governance |
+| Destination-aware continuation | High | Small/medium | Medium UX | After P0.1 review |
+| Message vs Status/image continuation | High | Mostly orchestration | Medium | After P0.1 / Card gates |
+| Dual-script confidence companion | Medium | Small/medium | Medium core-input risk | Evidence-gated experiment |
+| Roman/mixed-language production improvement | Medium | Possibly | High regression risk | Only after benchmark |
 | School writing-job expansion | High | Content/catalogue | Low | P1 |
-| Professional print/InPage journey | High | Orchestration/content | Low-medium | P1 |
+| Professional print/InPage journey | High | Orchestration/content + possible export work | Medium | P1 after fidelity spike |
 | Typing career/exam pathway | Very high | Mostly positioning/content | Low | P1 evidence experiment |
 | New generic Urdu mini-tools | Low | Yes | Medium | Hold |
 
 ---
 
-## 7. Product principle to adopt
+## 8. Revised product principle
 
 The future product architecture should optimize for:
 
@@ -376,17 +510,21 @@ The destination layer may include:
 
 This layer should **not** become a mandatory wizard before writing. First value remains primary.
 
+The trust layer should explain processing truthfully for the capability the user chose.
+
 ---
 
-## 8. Sequencing against the active P0 gate
+## 9. Sequencing against the active P0 gate
 
 `WU-PLAT-002H` remains authoritative. This research does not justify violating the current activation freeze.
 
 ### Allowed now
 
 - document the strategy;
-- add privacy-safe destination measurement design;
-- build benchmark datasets/tests that do not modify production transliteration;
+- add privacy-safe destination measurement support if isolated from visible core UI;
+- build Roman Urdu benchmark datasets/tests that do not modify production transliteration;
+- build a print/Nastaliq visual/reference audit harness or fixtures without changing core UI;
+- audit current privacy/trust copy against actual processing;
 - analyse existing Product Pulse/GSC data;
 - prepare content/SEO experiments that do not displace the core writer.
 
@@ -394,39 +532,53 @@ This layer should **not** become a mandatory wizard before writing. First value 
 
 - new homepage/core-writer destination prompts;
 - new contextual recommendation controller behaviour;
+- a persistent Roman companion inside Basic/Rich;
 - broader social/card promotion;
 - production transliteration changes;
-- major Rich Editor structure changes.
+- major Rich Editor structure/export changes.
 
 ---
 
-## 9. Research references
+## 10. Research and repository references
 
-Primary evidence classes used in the preceding research round:
+External evidence classes reviewed:
 
 - Pakistan Bureau of Statistics — 2023 census language distribution;
 - HEC/FBISE — Urdu curriculum/education context;
 - DataReportal — Pakistan internet/social reach;
-- academic Roman Urdu / code-switching NLP literature;
-- Google Play listings/reviews for high-volume Urdu keyboard, voice and Urdu-on-image products;
-- Pakistan government/recruitment documents referring to Urdu typing/InPage skill requirements;
-- current Urdu typing / practice competitors;
-- current WriteUrdu production routes and repository/product telemetry.
+- Roman Urdu texting/corpus studies showing widespread informal use and spelling variation;
+- 2026 small-sample studies on Roman Urdu digital habits — directional only, not national prevalence estimates;
+- Urdu keyboard/phonetic-layout documentation demonstrating direct Urdu input remains a legitimate workflow;
+- InPage/Urdu publishing references documenting its historic and continuing professional importance while modern Unicode/OpenType workflows also exist;
+- current government/recruitment examples referring to Urdu typing/InPage skill requirements;
+- current Urdu keyboard, voice, image and typing-practice products.
 
-Repository/runtime evidence remains authoritative for what WriteUrdu currently ships.
+Repository/runtime evidence used to correct the feedback:
+
+- `/urdu-typing-practice` already implements lessons + WPM/accuracy tests;
+- `/tools/inpage-unicode-converter` already implements both text-conversion directions;
+- `WU-API-001` plans npm/API exposure of the existing InPage conversion engine;
+- `WU-TPL-001` already shipped school/office/business/personal writing templates;
+- current PDF export uses browser rendering → `html2canvas` → raster image slices in jsPDF;
+- current privacy page explicitly distinguishes local processing, Google transliteration, browser/platform speech recognition, public sharing, accounts and analytics.
+
+Runtime code + regression tests remain authoritative for shipped behaviour.
 
 ---
 
-## 10. Recommended programme
+## 11. Recommended programme
 
-Create one coordinated programme rather than unrelated new tools:
+Keep one coordinated programme rather than unrelated new tools:
 
 - `WU-JOURNEY-001` — Pakistan Urdu Intent & Destination Journey Programme;
 - `WU-JOURNEY-001A` — Destination Intent Measurement;
 - `WU-JOURNEY-001B` — Roman Urdu Resilience & Code-Switching Benchmark;
-- `WU-JOURNEY-001C` — Social/Copy/Card Outcome Continuity;
+- `WU-JOURNEY-001C` — Messaging / Social / Copy / Card Outcome Continuity;
 - `WU-JOURNEY-001D` — School, Formal & Everyday Writing Jobs;
 - `WU-JOURNEY-001E` — Typing Practice Career / Test Positioning;
-- `WU-JOURNEY-001F` — Professional Print / Word / PDF / InPage Journey.
+- `WU-JOURNEY-001F` — Professional Print / Word / PDF / InPage Journey + print-fidelity spike;
+- `WU-JOURNEY-001G` — Dual-Script Confidence Companion (evidence-gated).
+
+Trust/processing positioning remains a cross-cutting requirement owned by the existing privacy/public-copy/SEO governance rather than a duplicate product epic.
 
 These children must reuse existing workspace/handoff architecture and respect the `WU-PLAT-002H` release gates.
