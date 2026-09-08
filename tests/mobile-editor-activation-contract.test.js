@@ -28,7 +28,7 @@ assert.match(mobileCss, /@media \(max-width: 767px\) and \(max-height: 700px\)[\
 assert.match(mobileCss, /grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/, 'English letters, direct Urdu and Voice must remain one compact input-choice row');
 assert.match(mobileCss, /min-height:\s*44px !important/, 'Mobile input methods must keep accessible touch targets');
 
-assert.match(serviceWorker, /write-urdu-shell-v44/, 'Mobile activation release must retain the current app-shell cache generation');
+assert.match(serviceWorker, /write-urdu-shell-v45/, 'Mobile activation release must retain the current app-shell cache generation');
 assert.match(serviceWorker, /\.\/css\/mobile-home-task-first\.css/, 'Mobile activation CSS must be explicitly precached for a deterministic rollout');
 assert.match(mobileSpec, /160 CSS px[\s\S]*375x667/i, 'Repair spec must retain the hardest first-viewport acceptance floor');
 assert.match(mobileSpec, /Do not autofocus on page load/i, 'Repair must not game activation by forcing the software keyboard open');

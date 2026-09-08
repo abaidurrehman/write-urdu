@@ -654,9 +654,9 @@
         copy.setAttribute('data-wu-basic-reveal-on-content', '');
         primaryGroup.appendChild(copy);
 
-        setAction(pdf, 'pdf', 'PDF', 'far fa-file-pdf', 'utility');
-        setAction(word, 'word', 'Word', 'far fa-file-word', 'utility');
-        setAction(png, 'png', 'PNG', 'far fa-image', 'utility');
+        setAction(pdf, 'pdf', 'PDF', 'fas fa-file-pdf', 'utility');
+        setAction(word, 'word', 'Word', 'fas fa-file-word', 'utility');
+        setAction(png, 'png', 'PNG', 'fas fa-image', 'utility');
         setAction(preview, 'preview', 'Preview', 'far fa-eye', 'utility');
         setAction(print, 'print', 'Print', 'fas fa-print', 'utility');
 

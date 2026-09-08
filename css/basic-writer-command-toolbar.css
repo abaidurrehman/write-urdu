@@ -393,6 +393,30 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-
   background: #fff;
 }
 
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--utility i {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="pdf"] i {
+  color: #c62828;
+  background: #fff0f0;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="word"] i {
+  color: #185abd;
+  background: #edf4ff;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="png"] i {
+  color: #7042a1;
+  background: #f5effc;
+}
+
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--utility:not(:disabled):hover {
   border-color: #78bd98;
   background: #eaf8f0;

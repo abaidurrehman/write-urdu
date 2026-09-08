@@ -31,7 +31,7 @@ for (const page of [rich, urduRich]) {
   assert.match(page, /id="basic-example"/, 'Rich Editor must keep the source-owned TinyMCE target');
 }
 
-assert.match(sw, /write-urdu-shell-v44/, 'M3/M4 must stay on the current shell generation while changing the worker manifest itself');
+assert.match(sw, /write-urdu-shell-v45/, 'M3/M4 must stay on the current shell generation while changing the worker manifest itself');
 assert.match(sw, /\.\/css\/v2-shell\.css/, 'PWA shell must explicitly refresh the stylesheet that imports mobile authoring focus');
 assert.match(sw, /\.\/css\/mobile-authoring-focus\.css/, 'PWA shell must cache the M3/M4 mobile authoring layer');
 

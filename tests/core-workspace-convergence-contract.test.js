@@ -62,6 +62,9 @@ assert.match(toolbarRuntime, /setAction\(copy, 'copy', 'Copy'/, 'Current Copy ac
 assert.match(toolbarRuntime, /setAction\(pdf, 'pdf', 'PDF'/, 'Current PDF action is missing');
 assert.match(toolbarRuntime, /setAction\(word, 'word', 'Word'/, 'Current Word action is missing');
 assert.match(toolbarRuntime, /setAction\(png, 'png', 'PNG'/, 'Current PNG action is missing');
+assert.match(toolbarRuntime, /'fas fa-file-pdf'/, 'PDF must use a strong solid format icon');
+assert.match(toolbarRuntime, /'fas fa-file-word'/, 'Word must use a strong solid format icon');
+assert.match(toolbarRuntime, /'fas fa-image'/, 'PNG must use a strong solid format icon');
 assert.match(toolbarRuntime, /setAction\(preview, 'preview', 'Preview'/, 'Current Preview action is missing');
 assert.match(toolbarRuntime, /setAction\(print, 'print', 'Print'/, 'Current Print action is missing');
 assert.match(toolbarRuntime, /data-wu-basic-content-action/, 'Current content-dependent toolbar state contract is missing');
@@ -97,9 +100,12 @@ assert.match(toolbarCss, /wu-basic-command--copy/, 'Copy secondary styling is mi
 assert.match(toolbarCss, /wu-basic-command--utility/, 'Direct utility styling is missing');
 assert.match(toolbarCss, /wu-basic-command--clear/, 'Destructive Clear styling is missing');
 assert.match(toolbarCss, /\[data-wu-basic-direct-exports\]\[hidden\]/, 'Download dock must guarantee real hiding on compact screens');
+assert.match(toolbarCss, /\[data-wu-command-action="pdf"\] i[\s\S]*#c62828/, 'PDF icon needs its familiar red accent');
+assert.match(toolbarCss, /\[data-wu-command-action="word"\] i[\s\S]*#185abd/, 'Word icon needs its familiar blue accent');
+assert.match(toolbarCss, /\[data-wu-command-action="png"\] i[\s\S]*#7042a1/, 'PNG icon needs a distinct image accent');
 assert.match(toolbarCss, /@media \(max-width: 767px\)/, 'Pixel/mobile toolbar behavior is missing');
 assert.doesNotMatch(toolbarCss, /position\s*:\s*(?:fixed|sticky)/, 'Basic Writer toolbar must not become fixed/sticky');
-assert.match(serviceWorker, /write-urdu-shell-v44/, 'PWA cache must include the desktop export discovery update');
+assert.match(serviceWorker, /write-urdu-shell-v45/, 'PWA cache must include the desktop export icon update');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.css/, 'Toolbar CSS must be cached');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.js/, 'Toolbar runtime must be cached');
 assert.match(serviceWorker, /basic-writer-publish\.js/, 'Basic public-link publisher must be cached');

@@ -350,7 +350,8 @@ After value:
 
 Use otherwise empty toolbar space for one clearly labelled Download group containing PDF,
 Word and PNG. Keep these controls visible but disabled in E0, then enable them at E1+. Preview,
-Print and configuration stay in `More`.
+Print and configuration stay in `More`. Use solid, format-specific icons with distinct familiar
+accents so the three export targets can be recognized at a glance without relying on color alone.
 
 ### Accessibility
 
