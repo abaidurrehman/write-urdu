@@ -106,6 +106,9 @@
         // The page includes the primary URL for normal loads. These lazy
         // fallbacks handle blocked, offline or failed CDN requests when the
         // user actually chooses PDF export.
+        // jsdelivr first: cdnjs's jspdf asset is blocked by Chrome's Opaque
+        // Response Blocking (ERR_BLOCKED_BY_ORB) in production, so it only
+        // works as a last-resort fallback, not a reliable primary source.
         var sources = [
             'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',
             'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js'
