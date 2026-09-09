@@ -29,7 +29,7 @@ const METRIC_COLUMNS = [
 ].concat(VOICE_METRIC_COLUMNS).concat(WRITER_FUNNEL_METRIC_COLUMNS).concat(CARD_STUDIO_METRIC_COLUMNS).concat(CONTINUATION_METRIC_COLUMNS);
 const SHARE_METRIC_COLUMNS = [
   'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
-  'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
+  'referred_creation_starts', 'referred_meaningful_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
   'device_mobile', 'device_tablet', 'device_desktop',
   'destination_ready', 'referral_recognized'
 ];
@@ -552,6 +552,7 @@ async function shareLoopForWindow(db, bounds) {
   const pageViews = n(metrics, 'page_views');
   const ctaClicks = n(metrics, 'cta_clicks');
   const referredStarts = n(metrics, 'referred_creation_starts');
+  const referredMeaningfulStarts = n(metrics, 'referred_meaningful_starts');
   const republishes = n(metrics, 'republish_completed');
   const destinationReady = n(metrics, 'destination_ready');
   const referralRecognized = n(metrics, 'referral_recognized');
@@ -578,8 +579,10 @@ async function shareLoopForWindow(db, bounds) {
     referral_recognized: referralRecognized,
     referred_creation_starts: referredStarts,
     referred_creation_rate: ratio(referredStarts, referralRecognized || ctaClicks),
+    referred_meaningful_starts: referredMeaningfulStarts,
+    referred_meaningful_start_rate: ratio(referredMeaningfulStarts, referredStarts),
     republish_completed: republishes,
-    republish_rate: ratio(republishes, referredStarts),
+    republish_rate: ratio(republishes, referredMeaningfulStarts || referredStarts),
     eligible_parent_shares: eligibleParents,
     activated_parent_shares: activatedParents,
     parent_activation_rate: ratio(activatedParents, eligibleParents),

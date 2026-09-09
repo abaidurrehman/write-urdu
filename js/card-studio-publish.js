@@ -148,6 +148,16 @@
     track('share_referred_creation_started', { tool: 'card_studio' });
   }
 
+  // A touched field is not proof of a meaningful start (WU-SHARE-001R
+  // section 5, step 8); an actual publish attempt is.
+  function markReferredMeaningfulStart() {
+    var referral = getReferral();
+    if (!referral || referral.meaningful) return;
+    referral.meaningful = true;
+    saveReferral(referral);
+    track('share_referred_meaningful_start', { tool: 'card_studio' });
+  }
+
   function bindReferralEngagement() {
     if (!getReferral()) return;
     var handler = function (event) {
@@ -369,6 +379,7 @@
     busy = true;
     setPublishBusy(true);
     markReferredCreationStarted();
+    markReferredMeaningfulStart();
     track('share_publish_started', { tool: 'card_studio' });
     loadingDialog();
     try {

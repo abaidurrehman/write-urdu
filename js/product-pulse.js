@@ -170,6 +170,7 @@
       { label: 'Destination ready', value: share.destination_ready },
       { label: 'Referral recognized', value: share.referral_recognized },
       { label: 'Referred starts', value: share.referred_creation_starts },
+      { label: 'Meaningful referred starts', value: share.referred_meaningful_starts },
       { label: 'Republished', value: share.republish_completed },
       { label: 'Child shares', value: share.child_share_artifacts }
     ], 'label', 'value');

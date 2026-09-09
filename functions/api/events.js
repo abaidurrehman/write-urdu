@@ -20,6 +20,7 @@ const EVENT_NAMES = new Set([
     'share_page_viewed',
     'share_page_cta_clicked',
     'share_referred_creation_started',
+    'share_referred_meaningful_start',
     'share_republish_completed',
     'share_deleted',
     'share_reported',
@@ -146,7 +147,7 @@ const METRIC_COLUMNS = [
 
 const SHARE_METRIC_COLUMNS = [
     'publish_started', 'publish_completed', 'publish_failed', 'page_views', 'cta_clicks',
-    'referred_creation_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
+    'referred_creation_starts', 'referred_meaningful_starts', 'republish_completed', 'deletions', 'reports', 'link_share_actions',
     'device_mobile', 'device_tablet', 'device_desktop',
     'destination_ready', 'referral_recognized'
 ];
@@ -619,6 +620,7 @@ function applyShareEvent(delta, event) {
         share_page_viewed: 'page_views',
         share_page_cta_clicked: 'cta_clicks',
         share_referred_creation_started: 'referred_creation_starts',
+        share_referred_meaningful_start: 'referred_meaningful_starts',
         share_republish_completed: 'republish_completed',
         share_deleted: 'deletions',
         share_reported: 'reports',

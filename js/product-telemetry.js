@@ -293,6 +293,20 @@
         track('share_referred_creation_started', {});
     }
 
+    // Meaningful referred start is stricter than "started": a first keystroke
+    // alone is not proof the recipient actually began creating (WU-SHARE-001R
+    // section 5, step 8). Writing workspaces require the same minimal
+    // non-empty/useful state as writer_depth_20; other referral-eligible
+    // tools use their existing outcome event (export/copy) instead.
+    function trackShareReferredMeaningfulStart() {
+        if (!REFERRAL_DESTINATION_TOOLS[tool]) return;
+        var referral = getShareReferral();
+        if (!referral || referral.meaningful) return;
+        referral.meaningful = true;
+        saveShareReferral(referral);
+        track('share_referred_meaningful_start', {});
+    }
+
     function trackContinuationMeaningfulStart() {
         if (route !== '/urdu-editor' || !document.body.hasAttribute('data-rich-handoff-imported')) return;
         trackOnce('continuation-destination-meaningful-start', 'continuation_destination_meaningful_start', { target_route: '/urdu-editor' });
@@ -356,6 +370,7 @@
                 trackOnce('writer-depth-' + threshold, 'writer_depth_' + threshold, {
                     length_bucket: lengthBucket(trimmedLength)
                 });
+                if (threshold === DEPTH_THRESHOLDS[0]) trackShareReferredMeaningfulStart();
             }
         });
     }
@@ -442,6 +457,7 @@
         }
         if (detail.input_mode === 'voice') currentInputMode = 'voice';
         track(name, detail);
+        trackShareReferredMeaningfulStart();
         var continuationContext = continuationContextFromDocument();
         if (continuationContext) trackContinuationPath('destination_outcome', continuationContext);
         if (writerFunnelEligible()) trackOnce('writer-outcome-first', 'writer_outcome_first');
