@@ -170,8 +170,13 @@
   }
 
   body.wu-v2-shell[data-wu-core-workspace="basic"] .page-intro.answer-summary {
+    display: -webkit-box !important;
+    margin-bottom: 4px !important;
+    overflow: hidden !important;
     font-size: .88rem !important;
     line-height: 1.35 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
   }
 
   body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-surface {
