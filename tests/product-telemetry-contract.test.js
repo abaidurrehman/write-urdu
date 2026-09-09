@@ -34,6 +34,8 @@ assert.match(client, /session_summary/, 'Session summary event is missing');
 assert.match(client, /locale:\s*locale/, 'Telemetry payload must include bounded locale context');
 assert.match(client, /copy_completed/, 'Copy outcome instrumentation is missing');
 assert.match(client, /export_completed/, 'Export outcome instrumentation is missing');
+assert.match(client, /runtime\.downloadSvg\s*=\s*function/, 'WU-PLAT-002H Slice 0: SVG export must be wrapped so Basic/Rich Writer SVG downloads are measured like PDF/Word/PNG');
+assert.match(client, /originalDownloadSvg\.apply\(this, arguments\)/, 'Wrapped SVG export must still call the real export runtime');
 assert.match(client, /batch_transliteration/, 'Batch transliteration instrumentation is missing');
 assert.match(client, /tool_handoff/, 'Product handoff instrumentation is missing');
 assert.match(client, /data-wu-next-step-action/, 'Shared workspace Continue-with panel handoffs must feed product telemetry');
