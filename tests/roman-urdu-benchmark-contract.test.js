@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const fixtures = require('../benchmarks/roman-urdu/fixtures');
 const core = require('../scripts/roman-urdu-benchmark/core');
+const protectedTokens = require('../scripts/roman-urdu-benchmark/protected-tokens');
 
 assert.ok(fixtures.length >= 100, 'Roman Urdu benchmark seed must contain at least 100 curated fixtures.');
 
@@ -56,5 +57,53 @@ const summary = core.summarize([
 assert.equal(summary.total, 3);
 assert.equal(summary.pass_rate, 0.5);
 assert.equal(summary.by_category.spelling_variant.total, 2);
+
+const protectedCases = [
+  ['https://write-urdu.com', 'url'],
+  ['admin@example.com', 'email'],
+  ['@ali', 'handle'],
+  ['PDF', 'acronym'],
+  ['PKR', 'acronym'],
+  ['PM', 'acronym'],
+  ['WhatsApp', 'mixed_case'],
+  ['iPhone', 'mixed_case'],
+  ['0300-1234567', 'numeric_shape'],
+  ['12/09/2026', 'numeric_shape'],
+  ['3:30', 'numeric_shape'],
+  ['2500', 'numeric_shape']
+];
+for (const [value, expectedType] of protectedCases) {
+  const part = protectedTokens.splitProtectedTokens(value).find(item => item.protected);
+  assert.ok(part, `${value} must be protected by the B3 structural candidate.`);
+  assert.equal(part.type, expectedType, `${value} must use the expected protected-token type.`);
+  assert.equal(part.value, value, `${value} must be preserved byte-for-byte.`);
+}
+
+for (const value of ['Facebook', 'Instagram', 'Word', 'Ali', 'Rs', 'kg', 'plz', 'thx', 'ok', 'bohat', 'mujhe']) {
+  assert.equal(
+    protectedTokens.hasProtectedToken(value),
+    false,
+    `${value} must remain outside the first B3 protected-token candidate.`
+  );
+}
+
+const segmented = protectedTokens.splitProtectedTokens('price PKR 2500 hai');
+assert.deepEqual(
+  segmented.map(part => [part.protected, part.type || null, part.value]),
+  [
+    [false, null, 'price '],
+    [true, 'acronym', 'PKR'],
+    [false, null, ' '],
+    [true, 'numeric_shape', '2500'],
+    [false, null, ' hai']
+  ],
+  'The B3 segmenter must preserve exact surrounding text while isolating structural tokens.'
+);
+
+assert.deepEqual(
+  protectedTokens.edgeWhitespace('  bhej do  '),
+  { leading: '  ', trailing: '  ', core: 'bhej do' },
+  'Segment conversion must preserve boundary whitespace around provider calls.'
+);
 
 console.log(`Roman Urdu benchmark contract checks passed (${fixtures.length} fixtures).`);
