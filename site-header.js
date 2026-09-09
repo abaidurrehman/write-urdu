@@ -82,6 +82,76 @@
         return root.WriteUrduLocaleRoute.href(productPath, locale) || productPath;
     }
 
+    function visibleText(node) {
+        return String(node && node.textContent || '').replace(/\s+/g, ' ').trim();
+    }
+
+    // Shared semantic repairs are intentionally small and bounded. They correct
+    // measured accessible-name mismatches without changing visible copy or the
+    // owning account/locale/AI/Voice behavior.
+    function repairAccessibleNames() {
+        var brand = document.querySelector('.wu-brand[aria-label]');
+        if (brand) brand.removeAttribute('aria-label');
+
+        var account = document.querySelector('.wu-account-trigger[aria-label]');
+        if (account) {
+            var accountText = visibleText(account);
+            if (accountText) account.setAttribute('aria-label', accountText + ' · Account menu');
+        }
+
+        var language = document.querySelector('.wu-language-toggle[aria-label]');
+        if (language) {
+            var languageText = visibleText(language);
+            if (languageText) language.setAttribute('aria-label', languageText + ' · Switch language');
+        }
+
+        Array.prototype.forEach.call(document.querySelectorAll('.wu-voice-entry[aria-label]'), function (entry) {
+            entry.removeAttribute('aria-label');
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('.wu-ai-writing-command--menu[aria-label]'), function (command) {
+            command.removeAttribute('aria-label');
+        });
+    }
+
+    function ensureMainLandmark() {
+        if (document.querySelector('main, [role="main"]')) return;
+        var selectors = [
+            '[data-wu-main]',
+            '.wu-v2-main',
+            '.alphabet-main',
+            '.content-main',
+            '.tool-main',
+            'body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9',
+            '.col-12.col-md-9',
+            'body > .container-fluid > .row:nth-of-type(2) > .col-12'
+        ];
+        for (var index = 0; index < selectors.length; index += 1) {
+            var candidate = document.querySelector(selectors[index]);
+            if (!candidate || candidate.closest('header, nav, footer')) continue;
+            candidate.setAttribute('role', 'main');
+            if (!candidate.id) candidate.id = 'main-content';
+            return;
+        }
+    }
+
+    function installAuditQuickWins() {
+        repairAccessibleNames();
+        ensureMainLandmark();
+        if (!root.MutationObserver || !document.body || document.body.getAttribute('data-wu-a11y-repair-observer') === 'true') return;
+        document.body.setAttribute('data-wu-a11y-repair-observer', 'true');
+        var observer = new MutationObserver(function () {
+            repairAccessibleNames();
+            ensureMainLandmark();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        root.setTimeout(function () {
+            observer.disconnect();
+            document.body.removeAttribute('data-wu-a11y-repair-observer');
+            repairAccessibleNames();
+            ensureMainLandmark();
+        }, 8000);
+    }
+
     function voiceEntryMarkup() {
         return '<span class="wu-voice-entry-icon" aria-hidden="true">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
@@ -113,7 +183,6 @@
         entry.href = localeHref('/tools/urdu-voice-typing');
         entry.className = 'wu-voice-entry wu-voice-entry-' + placement;
         entry.setAttribute('data-wu-voice-entry', placement);
-        entry.setAttribute('aria-label', 'Try Urdu Voice Typing');
         entry.innerHTML = voiceEntryMarkup();
         target.insertAdjacentElement('afterend', entry);
     }
@@ -260,12 +329,14 @@
         installAccountGrowthEntryPoints();
         installCommunityPublishing();
         installVoiceDiscovery();
+        installAuditQuickWins();
         restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
         loadScript('/js/outcome-navigation.js', 'WriteUrduOutcomeNavigation', function () {
             if (root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
                 root.WriteUrduOutcomeNavigation.render();
                 installWritingTemplatesFooterLink();
                 protectOutcomeNavigationDuringV2Start();
+                installAuditQuickWins();
             }
             loadScript('/js/core-workspace-convergence.js', 'WriteUrduCoreWorkspaceConvergence', function () {
                 if (root.WriteUrduCoreWorkspaceConvergence && typeof root.WriteUrduCoreWorkspaceConvergence.run === 'function') {
@@ -274,6 +345,7 @@
                 restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
                 installVoiceDiscovery();
                 installWritingTemplatesFooterLink();
+                installAuditQuickWins();
                 loadContextualNextSteps();
                 loadCreationDestinationAdapters();
             });
