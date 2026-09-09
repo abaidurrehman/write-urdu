@@ -9,6 +9,16 @@ on:
       - 'tests/roman-urdu-benchmark-contract.test.js'
       - 'tests/batch-transliteration-protected-tokens.test.js'
       - 'tests/service-worker-navigation-freshness-contract.test.js'
+      - 'tests/account-documents-editors-contract.test.js'
+      - 'tests/account-growth-entry-contract.test.js'
+      - 'tests/mobile-authoring-focus-contract.test.js'
+      - 'tests/capture-continuity-contract.test.js'
+      - 'tests/mobile-editor-activation-contract.test.js'
+      - 'tests/basic-writer-voice-input-contract.test.js'
+      - 'tests/rich-editor-keyboard-voice-input-contract.test.js'
+      - 'tests/outcome-navigation-contract.test.js'
+      - 'tests/create-publish-boundaries-contract.test.js'
+      - 'tests/core-workspace-convergence-contract.test.js'
       - 'js/batch-transliteration.js'
       - 'sw.js'
       - '.github/workflows/roman-urdu-benchmark.yml'
@@ -34,6 +44,19 @@ jobs:
           node tests/roman-urdu-benchmark-contract.test.js
           node tests/batch-transliteration-protected-tokens.test.js
           node tests/service-worker-navigation-freshness-contract.test.js
+
+      - name: Validate B4 PWA cache generation contracts
+        run: |
+          node tests/account-documents-editors-contract.test.js
+          node tests/account-growth-entry-contract.test.js
+          node tests/mobile-authoring-focus-contract.test.js
+          node tests/capture-continuity-contract.test.js
+          node tests/mobile-editor-activation-contract.test.js
+          node tests/basic-writer-voice-input-contract.test.js
+          node tests/rich-editor-keyboard-voice-input-contract.test.js
+          node tests/outcome-navigation-contract.test.js
+          node tests/create-publish-boundaries-contract.test.js
+          node tests/core-workspace-convergence-contract.test.js
 
       - name: Run baseline and B4 production candidate
         run: |
