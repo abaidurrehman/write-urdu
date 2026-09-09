@@ -7,6 +7,10 @@ on:
       - 'benchmarks/roman-urdu/fixtures.js'
       - 'scripts/roman-urdu-benchmark/**'
       - 'tests/roman-urdu-benchmark-contract.test.js'
+      - 'tests/batch-transliteration-protected-tokens.test.js'
+      - 'tests/service-worker-navigation-freshness-contract.test.js'
+      - 'js/batch-transliteration.js'
+      - 'sw.js'
       - '.github/workflows/roman-urdu-benchmark.yml'
 
 permissions:
@@ -25,40 +29,43 @@ jobs:
         with:
           node-version: 20
 
-      - name: Validate B3 structural candidate
-        run: node tests/roman-urdu-benchmark-contract.test.js
+      - name: Validate B4 production boundaries
+        run: |
+          node tests/roman-urdu-benchmark-contract.test.js
+          node tests/batch-transliteration-protected-tokens.test.js
+          node tests/service-worker-navigation-freshness-contract.test.js
 
-      - name: Run baseline and B3 candidate
+      - name: Run baseline and B4 production candidate
         run: |
           mkdir -p benchmark-results/roman-urdu
           node scripts/roman-urdu-benchmark/run.js \
             --delay 150 \
-            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-baseline.json
+            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-baseline.json
           node scripts/roman-urdu-benchmark/run.js \
             --delay 150 \
-            --candidate protected-tokens \
-            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-protected-tokens.json
+            --candidate production-batch \
+            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-production.json
           node scripts/roman-urdu-benchmark/run.js \
             --delay 150 \
-            --candidate protected-tokens \
-            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-protected-tokens.md
+            --candidate production-batch \
+            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-production.md
           node scripts/roman-urdu-benchmark/compare.js \
-            benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-baseline.json \
-            benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-protected-tokens.json \
-            benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-delta.md
+            benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-baseline.json \
+            benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-production.json \
+            benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-delta.md
 
-      - name: Print B3 delta
+      - name: Print B4 delta
         if: always()
         run: |
-          if [ -f benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-delta.md ]; then
-            cat benchmark-results/roman-urdu/WU-JOURNEY-001B-B3-delta.md
+          if [ -f benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-delta.md ]; then
+            cat benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-delta.md
           fi
 
-      - name: Upload B3 artifacts
+      - name: Upload B4 artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: wu-journey-001b-b3
+          name: wu-journey-001b-b4
           path: benchmark-results/roman-urdu/
           retention-days: 30
           if-no-files-found: error
