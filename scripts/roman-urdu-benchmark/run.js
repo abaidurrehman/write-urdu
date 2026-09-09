@@ -22,12 +22,47 @@ function args(argv) {
 }
 
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+function hasRomanText(value) { return /[A-Za-z]{3,}/.test(String(value || '')); }
+
+function splitParagraph(value, limit) {
+  let remaining = String(value || '');
+  const chunks = [];
+  while (remaining.length > limit) {
+    let cut = remaining.lastIndexOf(' ', limit);
+    if (cut < Math.floor(limit * 0.45)) cut = limit;
+    chunks.push(remaining.slice(0, cut));
+    remaining = remaining.slice(cut).replace(/^\s+/, '');
+  }
+  if (remaining) chunks.push(remaining);
+  return chunks;
+}
 
 async function requestGoogle(input) {
   const query = ENDPOINT + '?text=' + encodeURIComponent(input) + '&itc=ur-t-i0-und&num=5&cp=0&cs=1&ie=utf-8&oe=utf-8';
   const response = await fetch(query, { headers: { 'user-agent': 'WriteUrdu-RomanBenchmark/1.0' } });
   if (!response.ok) throw new Error('HTTP ' + response.status);
   return core.parseGoogleResponse(await response.json());
+}
+
+async function requestProductionLikeBatch(input, delay) {
+  const lines = String(input || '').replace(/\r\n?/g, '\n').split('\n');
+  const output = [];
+  for (const line of lines) {
+    if (!hasRomanText(line)) {
+      output.push(line);
+      continue;
+    }
+    const chunks = splitParagraph(line, 900);
+    const converted = [];
+    for (const chunk of chunks) {
+      const result = await requestGoogle(chunk);
+      converted.push(result.primary || chunk);
+      if (delay > 0) await sleep(delay);
+    }
+    output.push(converted.join(' '));
+  }
+  const primary = output.join('\n');
+  return { primary, suggestions: [primary] };
 }
 
 function localDirectResult(input) {
@@ -81,6 +116,7 @@ async function main() {
     let score;
     try {
       if (fixture.category === 'direct_urdu_protection') provider = localDirectResult(fixture.input);
+      else if (fixture.category === 'long_paste') provider = await requestProductionLikeBatch(fixture.input, options.delay);
       else provider = await requestGoogle(fixture.input);
       score = core.scoreFixture(fixture, provider);
     } catch (error) {
@@ -89,12 +125,12 @@ async function main() {
     }
     results.push({ fixture, provider, score });
     process.stdout.write(`[${index + 1}/${selected.length}] ${fixture.id}: ${score.status}\n`);
-    if (fixture.category !== 'direct_urdu_protection' && options.delay > 0) await sleep(options.delay);
+    if (fixture.category !== 'direct_urdu_protection' && fixture.category !== 'long_paste' && options.delay > 0) await sleep(options.delay);
   }
 
   const report = {
     generated_at: new Date().toISOString(),
-    provider: 'Google Input Tools ur-t-i0-und + local direct-mode protection',
+    provider: 'Google Input Tools ur-t-i0-und + production-like line/chunk handling + local direct-mode protection',
     endpoint: ENDPOINT,
     fixture_version: 'wu-journey-001b-v1',
     summary: core.summarize(results),
