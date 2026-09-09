@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'benchmarks/roman-urdu/**'
+      - 'benchmarks/roman-urdu/fixtures.js'
       - 'scripts/roman-urdu-benchmark/**'
       - '.github/workflows/roman-urdu-benchmark.yml'
 
