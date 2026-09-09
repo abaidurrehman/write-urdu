@@ -103,7 +103,7 @@ assert.match(toolbarCss, /\[data-wu-command-action="word"\] i[\s\S]*#185abd/, 'W
 assert.match(toolbarCss, /\[data-wu-command-action="png"\] i[\s\S]*#7042a1/, 'PNG icon needs a distinct image accent');
 assert.match(toolbarCss, /@media \(max-width: 767px\)/, 'Pixel/mobile toolbar behavior is missing');
 assert.doesNotMatch(toolbarCss, /position\s*:\s*(?:fixed|sticky)/, 'Basic Writer toolbar must not become fixed/sticky');
-assert.match(serviceWorker, /write-urdu-shell-v46/, 'PWA cache must include the desktop export icon update and B4 batch runtime');
+assert.match(serviceWorker, /write-urdu-shell-v47/, 'PWA cache must include the desktop export icon update and B4 batch runtime');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.css/, 'Toolbar CSS must be cached');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.js/, 'Toolbar runtime must be cached');
 assert.match(serviceWorker, /basic-writer-publish\.js/, 'Basic public-link publisher must be cached');
