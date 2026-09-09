@@ -11,6 +11,8 @@ const siteHeaderRuntime = read('site-header.js');
 const v2Shell = read('css/v2-shell.css');
 const productionPolish = read('css/v3-production-polish.css');
 const headerBootstrap = siteHeader.split('/* Shared editorial typography')[0];
+const staticNavRule = (siteHeader.match(/\.wu-static-site-nav\{([^}]*)\}/) || [null, ''])[1];
+const staticNavMobileRule = (siteHeader.match(/@media\(max-width:520px\)\{\.wu-static-site-nav\{([^}]*)\}/) || [null, ''])[1];
 
 assert.doesNotMatch(designTokens, /@import\s+url/, 'Design tokens must remain dependency-free and must not load production CSS');
 assert.match(designTokens, /--wu-shell-header-bg:/, 'Shared header background must live in design tokens');
@@ -27,10 +29,11 @@ assert.doesNotMatch(
   'Header bootstrap must not carry the retired dark-header palette'
 );
 
-assert.match(siteHeader, /\.wu-static-site-nav\{[^}]*height:\s*60px\s*!important[^}]*flex-wrap:\s*nowrap\s*!important/s, 'Static crawlable navigation must reserve the enhanced desktop header height without wrapping');
+assert.match(staticNavRule, /height:\s*60px\s*!important/, 'Static crawlable navigation must reserve the enhanced desktop header height');
+assert.match(staticNavRule, /flex-wrap:\s*nowrap\s*!important/, 'Static crawlable navigation must not wrap before enhancement');
 assert.match(siteHeader, /\.wu-static-nav-groups\{[^}]*overflow-x:\s*auto/s, 'Static crawlable navigation links must remain reachable instead of being hidden to prevent CLS');
 assert.doesNotMatch(siteHeader, /\.wu-static-nav-groups\s*\{[^}]*display:\s*none/s, 'Static crawlable navigation must not hide its links');
-assert.match(siteHeader, /@media\(max-width:520px\)[\s\S]*\.wu-static-site-nav\{[^}]*height:\s*56px\s*!important/, 'Static mobile navigation must reserve the same compact shell height as the enhanced header');
+assert.match(staticNavMobileRule, /height:\s*56px\s*!important/, 'Static mobile navigation must reserve the same compact shell height as the enhanced header');
 assert.match(siteHeader, /\.input-mode-option\.is-active\{[^}]*#117a43/s, 'Active input mode must use the measured higher-contrast green');
 assert.match(siteHeader, /\.editor-quick-label\{color:#53645a!important\}/, 'Editor quick label must use the measured higher-contrast text colour');
 
