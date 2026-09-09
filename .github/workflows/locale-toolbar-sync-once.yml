@@ -34,38 +34,32 @@ jobs:
           const file = 'locale/ur.js';
           let source = fs.readFileSync(file, 'utf8');
 
+          const literalsStart = source.indexOf('  literalReplacements: {');
+          if (literalsStart < 0) throw new Error('literalReplacements block not found');
+          const editorStart = source.indexOf("    '/urdu-editor': [", literalsStart);
+          if (editorStart < 0) throw new Error('Rich Editor literal block not found');
+          const editorEnd = source.indexOf('\n    ]', editorStart);
+          if (editorEnd < 0) throw new Error('Rich Editor literal block end not found');
+
+          let block = source.slice(editorStart, editorEnd);
+
           function replaceOnce(from, to, label) {
-            const count = source.split(from).length - 1;
+            const count = block.split(from).length - 1;
             if (count !== 1) throw new Error(`${label}: expected exactly one match, found ${count}`);
-            source = source.replace(from, to);
+            block = block.replace(from, to);
           }
 
-          replaceOnce(
-            `      ['<summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> Export</summary>', '<summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> برآمد کریں</summary>'],\n`,
-            '',
-            'retired Export dropdown literal'
-          );
-          replaceOnce(
-            `['<i class="far fa-file-word" aria-hidden="true"></i> Word document', '<i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز']`,
-            `['<i class="far fa-file-word" aria-hidden="true"></i> Word', '<i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز']`,
-            'Word button literal'
-          );
-          replaceOnce(
-            `['<i class="far fa-file-pdf" aria-hidden="true"></i> PDF document', '<i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز']`,
-            `['<i class="far fa-file-pdf" aria-hidden="true"></i> PDF', '<i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز']`,
-            'PDF button literal'
-          );
-          replaceOnce(
-            `['<i class="far fa-image" aria-hidden="true"></i> PNG image', '<i class="far fa-image" aria-hidden="true"></i> PNG تصویر']`,
-            `['<i class="far fa-image" aria-hidden="true"></i> PNG', '<i class="far fa-image" aria-hidden="true"></i> PNG تصویر']`,
-            'PNG button literal'
-          );
-          replaceOnce(
-            `['<i class="far fa-file-image" aria-hidden="true"></i> SVG image', '<i class="far fa-file-image" aria-hidden="true"></i> SVG تصویر']`,
-            `['<i class="far fa-file-image" aria-hidden="true"></i> SVG', '<i class="far fa-file-image" aria-hidden="true"></i> SVG تصویر']`,
-            'SVG button literal'
-          );
+          const lines = block.split('\n');
+          const exportLines = lines.filter(line => line.includes('Export</summary>') && line.includes('برآمد کریں</summary>'));
+          if (exportLines.length !== 1) throw new Error(`retired Export dropdown literal: expected exactly one line, found ${exportLines.length}`);
+          block = lines.filter(line => line !== exportLines[0]).join('\n');
 
+          replaceOnce('> Word document', '> Word', 'Word button literal');
+          replaceOnce('> PDF document', '> PDF', 'PDF button literal');
+          replaceOnce('> PNG image', '> PNG', 'PNG button literal');
+          replaceOnce('> SVG image', '> SVG', 'SVG button literal');
+
+          source = source.slice(0, editorStart) + block + source.slice(editorEnd);
           fs.writeFileSync(file, source, 'utf8');
           NODE
 
