@@ -5,9 +5,10 @@ const path = require('node:path');
 const fixtures = require('../../benchmarks/roman-urdu/fixtures');
 const core = require('./core');
 const protectedTokens = require('./protected-tokens');
+const productionBatch = require('./production-batch');
 
 const ENDPOINT = 'https://inputtools.google.com/request';
-const VALID_CANDIDATES = new Set(['protected-tokens']);
+const VALID_CANDIDATES = new Set(['protected-tokens', 'production-batch']);
 
 function args(argv) {
   const parsed = { category: null, limit: null, out: null, delay: 150, candidate: null };
@@ -127,6 +128,17 @@ async function requestProtectedBatch(input, delay) {
   return { primary, suggestions: [primary], protected: protectedSummary };
 }
 
+function createProductionTransliterator(delay) {
+  return productionBatch.create(async function (query, options) {
+    const response = await fetch(query, {
+      ...(options || {}),
+      headers: { 'user-agent': 'WriteUrdu-RomanBenchmark/1.0' }
+    });
+    if (delay > 0) await sleep(delay);
+    return response;
+  });
+}
+
 function localDirectResult(input) {
   return { primary: core.normalize(input), suggestions: [core.normalize(input)] };
 }
@@ -160,7 +172,7 @@ function markdown(report) {
 async function main() {
   const options = args(process.argv);
   if (options.help) {
-    console.log('Usage: node scripts/roman-urdu-benchmark/run.js [--category name] [--limit n] [--out path] [--delay ms] [--candidate protected-tokens]');
+    console.log('Usage: node scripts/roman-urdu-benchmark/run.js [--category name] [--limit n] [--out path] [--delay ms] [--candidate protected-tokens|production-batch]');
     return;
   }
   if (options.category && !core.VALID_CATEGORIES.has(options.category)) throw new Error('Unknown category: ' + options.category);
@@ -173,6 +185,10 @@ async function main() {
   const invalid = selected.flatMap(fixture => core.validateFixture(fixture).map(error => `${fixture.id}: ${error}`));
   if (invalid.length) throw new Error('Invalid fixture corpus:\n' + invalid.join('\n'));
 
+  const productionTransliterate = options.candidate === 'production-batch'
+    ? createProductionTransliterator(options.delay)
+    : null;
+
   const results = [];
   for (let index = 0; index < selected.length; index += 1) {
     const fixture = selected[index];
@@ -181,6 +197,12 @@ async function main() {
     try {
       if (fixture.category === 'direct_urdu_protection') {
         provider = localDirectResult(fixture.input);
+      } else if (
+        productionTransliterate &&
+        (fixture.category === 'long_paste' || protectedTokens.hasProtectedToken(fixture.input))
+      ) {
+        const primary = await productionTransliterate(fixture.input);
+        provider = { primary, suggestions: [primary] };
       } else if (options.candidate === 'protected-tokens' && protectedTokens.hasProtectedToken(fixture.input)) {
         provider = await requestProtectedBatch(fixture.input, options.delay);
       } else if (fixture.category === 'long_paste') {
@@ -200,7 +222,9 @@ async function main() {
 
   const report = {
     generated_at: new Date().toISOString(),
-    provider: 'Google Input Tools ur-t-i0-und + production-like line/chunk handling + local direct-mode protection',
+    provider: options.candidate === 'production-batch'
+      ? 'Actual js/batch-transliteration.js runtime + Google Input Tools ur-t-i0-und + local direct-mode protection'
+      : 'Google Input Tools ur-t-i0-und + production-like line/chunk handling + local direct-mode protection',
     candidate: options.candidate,
     endpoint: ENDPOINT,
     fixture_version: 'wu-journey-001b-v1',
