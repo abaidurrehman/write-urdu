@@ -27,6 +27,7 @@
     "collections:sync": "node scripts/sync-static-collection-content.js --write",
     "collections:check": "node scripts/sync-static-collection-content.js --check",
     "benchmark:ai-writing": "node scripts/ai-writing-benchmark/run.js",
+    "benchmark:roman-urdu": "node scripts/roman-urdu-benchmark/run.js",
     "video:capture": "node scripts/capture-product-video.mjs",
     "video:render": "node scripts/render-product-video.mjs",
     "video:poster": "node scripts/render-product-video.mjs voice-typing website-16x9 --poster",
