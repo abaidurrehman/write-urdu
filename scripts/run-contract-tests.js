@@ -5,6 +5,7 @@ const tests = [
   'tests/core-activation-spec-contract.test.js',
   'tests/test-suite-governance.test.js',
   'tests/transliteration-contract.test.js',
+  'tests/roman-urdu-benchmark-contract.test.js',
   'tests/product-shell-contract.test.js',
   'tests/v2-shell-content-contract.test.js',
   'tests/v2-authority-contract.test.js',
