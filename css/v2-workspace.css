@@ -100,9 +100,9 @@
 .keyboard-page .batch-transliteration-panel {
   order: 5;
   display: flex;
-  min-height: 42px;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 4px 10px;
   margin: 10px 0 0;
   padding: 8px 12px;
   border: 0;
@@ -110,12 +110,12 @@
   background: transparent;
   box-shadow: none;
 }
-.rich-editor-page .batch-transliteration-panel [data-batch-guide],
 .rich-editor-page .batch-transliteration-panel [data-batch-note],
-.keyboard-page .batch-transliteration-panel [data-batch-guide],
 .keyboard-page .batch-transliteration-panel [data-batch-note] { display: none; }
 .rich-editor-page .batch-transliteration-panel [data-batch-title],
 .keyboard-page .batch-transliteration-panel [data-batch-title] { color: var(--wu-shell-muted); font-size: .78rem; font-weight: 500; }
+.rich-editor-page .batch-transliteration-panel [data-batch-guide],
+.keyboard-page .batch-transliteration-panel [data-batch-guide] { flex-basis: 100%; color: var(--wu-shell-muted); font-size: .78rem; line-height: 1.4; }
 .rich-editor-page .batch-transliteration-panel [data-batch-prompt]:not([hidden]),
 .keyboard-page .batch-transliteration-panel [data-batch-prompt]:not([hidden]) { color: var(--wu-shell-ink); font-size: .8rem; }
 

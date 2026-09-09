@@ -203,15 +203,7 @@ body.wu-v2-shell:not(.content-page) .batch-transliteration-panel {
   gap: 8px;
 }
 
-body.wu-v2-shell:not(.content-page) .batch-transliteration-panel [data-batch-guide],
 body.wu-v2-shell:not(.content-page) .batch-transliteration-panel [data-batch-note] {
-  display: none;
-}
-
-/* The normal typing hint below the editor already explains the basic flow.
-   Reserve this pre-editor panel for the moment its long-passage action is
-   actually useful. */
-body.wu-v2-shell:not(.content-page) .batch-transliteration-panel:not(:has([data-batch-prompt]:not([hidden]))) {
   display: none;
 }
 

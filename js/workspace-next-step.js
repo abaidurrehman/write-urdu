@@ -138,7 +138,11 @@
 
     function mountFor(workspaceId) {
         if (!root || !root.document) return null;
-        if (workspaceId === 'basic-writer') return root.document.querySelector('.homepage-seo');
+        if (workspaceId === 'basic-writer') {
+            var seo = root.document.querySelector('.homepage-seo');
+            var beforeSeo = seo && seo.previousElementSibling;
+            return (beforeSeo && beforeSeo.classList.contains('card')) ? beforeSeo : seo;
+        }
         if (workspaceId === 'urdu-keyboard') return root.document.querySelector('.keyboard-supporting-content');
         if (workspaceId === 'rich-editor') return root.document.querySelector('.rich-editor-page .col-12.col-md-9 > .card');
         if (workspaceId === 'text-cleaner' || CAPTURE_WORKSPACES.indexOf(workspaceId) >= 0) {
