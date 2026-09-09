@@ -3,6 +3,7 @@
 
     var endpoint = 'https://inputtools.google.com/request';
     var activeRequest = 0;
+    var protectedTokenPattern = /(https?:\/\/[^\s<>"']+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|(@[A-Za-z0-9_]+)|(\b[A-Z]{2,6}\b)|(\b(?:[a-z][A-Za-z]*[A-Z][A-Za-z]*|[A-Z][A-Za-z]*[A-Z][A-Za-z]*)\b)|(\b\d+(?:[-\/:.]\d+)*\b)/g;
     var copy = {
         en: {
             title: 'Two ways to write Urdu',
@@ -53,6 +54,34 @@
         return chunks;
     }
 
+    // Bulk conversion can contain values that must remain byte-for-byte usable
+    // (for example URLs, email addresses, handles and phone numbers). Keep this
+    // classifier deliberately structural: Roman Urdu itself uses Latin letters,
+    // so ordinary English-looking words must continue through the provider.
+    function splitProtectedTokens(value) {
+        var input = String(value == null ? '' : value);
+        var parts = [];
+        var cursor = 0;
+        var match;
+        protectedTokenPattern.lastIndex = 0;
+        while ((match = protectedTokenPattern.exec(input))) {
+            if (match.index > cursor) parts.push({ protected: false, value: input.slice(cursor, match.index) });
+            parts.push({ protected: true, value: match[0] });
+            cursor = match.index + match[0].length;
+        }
+        if (cursor < input.length) parts.push({ protected: false, value: input.slice(cursor) });
+        if (!parts.length) parts.push({ protected: false, value: input });
+        return parts;
+    }
+
+    function edgeWhitespace(value) {
+        var input = String(value == null ? '' : value);
+        var leading = (input.match(/^\s+/) || [''])[0];
+        var trailing = (input.match(/\s+$/) || [''])[0];
+        var end = trailing ? input.length - trailing.length : input.length;
+        return { leading: leading, trailing: trailing, core: input.slice(leading.length, end) };
+    }
+
     function requestChunk(value) {
         var query = endpoint + '?text=' + encodeURIComponent(value) + '&itc=ur-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8';
         if (!window.fetch) return Promise.reject(new Error('fetch unavailable'));
@@ -64,6 +93,30 @@
             var entries = data[1];
             if (entries.length === 1 && Array.isArray(entries[0]) && Array.isArray(entries[0][1]) && entries[0][1][0]) return String(entries[0][1][0]);
             return entries.map(function (entry) { return entry && Array.isArray(entry[1]) && entry[1][0] ? entry[1][0] : entry && entry[0] || ''; }).join(' ').trim();
+        });
+    }
+
+    function requestProtectedChunk(value) {
+        var parts = splitProtectedTokens(value);
+        if (!parts.some(function (part) { return part.protected; })) return requestChunk(value);
+        var converted = [];
+        return parts.reduce(function (promise, part, index) {
+            return promise.then(function () {
+                if (part.protected || !hasRomanText(part.value)) {
+                    converted[index] = part.value;
+                    return;
+                }
+                var edge = edgeWhitespace(part.value);
+                if (!edge.core) {
+                    converted[index] = part.value;
+                    return;
+                }
+                return requestChunk(edge.core).then(function (result) {
+                    converted[index] = edge.leading + (result || edge.core) + edge.trailing;
+                });
+            });
+        }, Promise.resolve()).then(function () {
+            return converted.join('');
         });
     }
 
@@ -81,7 +134,7 @@
         var completed = 0;
         return jobs.reduce(function (promise, job) {
             return promise.then(function () {
-                return requestChunk(job.value).then(function (result) {
+                return requestProtectedChunk(job.value).then(function (result) {
                     if (!grouped[job.line]) grouped[job.line] = [];
                     grouped[job.line][job.chunk] = result;
                     completed += 1;
