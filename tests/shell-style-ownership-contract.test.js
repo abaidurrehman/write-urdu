@@ -7,9 +7,12 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const designTokens = read('css/design-tokens.css');
 const siteHeader = read('css/site-header.css');
+const siteHeaderRuntime = read('site-header.js');
 const v2Shell = read('css/v2-shell.css');
 const productionPolish = read('css/v3-production-polish.css');
 const headerBootstrap = siteHeader.split('/* Shared editorial typography')[0];
+const staticNavRule = (siteHeader.match(/\.wu-static-site-nav\{([^}]*)\}/) || [null, ''])[1];
+const staticNavMobileRule = (siteHeader.match(/@media\(max-width:520px\)\{\.wu-static-site-nav\{([^}]*)\}/) || [null, ''])[1];
 
 assert.doesNotMatch(designTokens, /@import\s+url/, 'Design tokens must remain dependency-free and must not load production CSS');
 assert.match(designTokens, /--wu-shell-header-bg:/, 'Shared header background must live in design tokens');
@@ -25,6 +28,20 @@ assert.doesNotMatch(
   /#eff8f2|#a9c3b3|#1b7047|#0d3523|#0b3422|rgba\(10\s*,\s*42\s*,\s*27|rgba\(239\s*,\s*248\s*,\s*242/i,
   'Header bootstrap must not carry the retired dark-header palette'
 );
+
+assert.match(staticNavRule, /height:\s*60px\s*!important/, 'Static crawlable navigation must reserve the enhanced desktop header height');
+assert.match(staticNavRule, /flex-wrap:\s*nowrap\s*!important/, 'Static crawlable navigation must not wrap before enhancement');
+assert.match(siteHeader, /\.wu-static-nav-groups\{[^}]*overflow-x:\s*auto/s, 'Static crawlable navigation links must remain reachable instead of being hidden to prevent CLS');
+assert.doesNotMatch(siteHeader, /\.wu-static-nav-groups\s*\{[^}]*display:\s*none/s, 'Static crawlable navigation must not hide its links');
+assert.match(staticNavMobileRule, /height:\s*56px\s*!important/, 'Static mobile navigation must reserve the same compact shell height as the enhanced header');
+assert.match(siteHeader, /\.input-mode-option\.is-active\{[^}]*#117a43/s, 'Active input mode must use the measured higher-contrast green');
+assert.match(siteHeader, /\.editor-quick-label\{color:#53645a!important\}/, 'Editor quick label must use the measured higher-contrast text colour');
+
+assert.match(siteHeaderRuntime, /function\s+repairAccessibleNames\s*\(/, 'Shared shell runtime must repair measured accessible-name mismatches');
+assert.match(siteHeaderRuntime, /function\s+ensureMainLandmark\s*\(/, 'Shared shell runtime must provide a bounded main-landmark fallback');
+assert.match(siteHeaderRuntime, /\.wu-voice-entry\[aria-label\]/, 'Voice discovery aria-label repair must cover existing source and runtime entries');
+assert.match(siteHeaderRuntime, /\.wu-ai-writing-command--menu\[aria-label\]/, 'AI More command aria-label repair must cover the measured mismatch');
+assert.doesNotMatch(siteHeaderRuntime, /entry\.setAttribute\(['"]aria-label['"],\s*['"]Try Urdu Voice Typing['"]\)/, 'Runtime Voice discovery must not overwrite its visible label with a mismatching aria-label');
 
 assert.match(v2Shell, /@import\s+url\(["']\.\/v3-design-system\.css["']\)/, 'V2 compatibility shim must load the V3 design system');
 assert.match(v2Shell, /@import\s+url\(["']\.\/v3-production-polish\.css["']\)/, 'V2 compatibility shim must load production polish after the V3 system');

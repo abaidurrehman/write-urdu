@@ -19,6 +19,27 @@
 .wu-menu-toggle{display:none;align-items:center;gap:9px;margin-left:auto;padding:9px 11px;border:1px solid var(--wu-color-border-strong);border-radius:var(--wu-radius-md);color:var(--wu-shell-control-text);background:var(--wu-color-surface);font:var(--wu-weight-semibold) .8rem/1 var(--wu-font-ui)}.wu-menu-icon,.wu-menu-icon:before,.wu-menu-icon:after{display:block;width:17px;height:2px;border-radius:2px;background:currentColor;content:""}.wu-menu-icon{position:relative}.wu-menu-icon:before{position:absolute;top:-5px}.wu-menu-icon:after{position:absolute;top:5px}
 .wu-nav-icon{transition:color var(--wu-transition-fast),transform var(--wu-transition-fast)}.wu-primary-nav a:hover .wu-nav-icon,.wu-nav-more>summary:hover .wu-nav-icon{color:var(--wu-color-brand-strong);transform:translateY(-1px)}
 
+/* Keep the crawlable static navigation in the same vertical footprint as the
+   enhanced header. Bootstrap is loaded later on legacy routes, so the critical
+   no-wrap/height declarations intentionally win with !important. Links remain
+   visible and horizontally reachable; this is layout stabilization, not SEO
+   cloaking or a second navigation design. */
+.wu-static-site-nav{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;width:100%!important;max-width:none!important;height:60px!important;min-height:60px!important;margin:0!important;padding:0 20px!important;overflow:hidden!important;box-sizing:border-box;color:var(--wu-shell-header-text);background:var(--wu-shell-header-bg);border-bottom:1px solid var(--wu-shell-header-border);box-shadow:var(--wu-shell-header-shadow);font-family:var(--wu-font-ui)}
+.wu-static-brand{display:inline-flex;align-items:center;flex:none;color:var(--wu-shell-header-text)!important;font-size:.94rem;font-weight:var(--wu-weight-bold);line-height:1;text-decoration:none!important;white-space:nowrap}
+.wu-static-nav-groups{display:flex;align-items:center;min-width:0;flex:1;gap:6px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.wu-static-nav-groups::-webkit-scrollbar{display:none}
+.wu-static-nav-group{display:contents}
+.wu-static-nav-group strong{display:inline-flex;align-items:center;flex:none;margin-left:6px;color:var(--wu-shell-header-muted);font-size:.68rem;font-weight:var(--wu-weight-bold);line-height:1;text-transform:uppercase;letter-spacing:.06em}
+.wu-static-nav-group a{display:inline-flex;align-items:center;flex:none;padding:7px 8px;border-radius:var(--wu-radius-md);color:var(--wu-shell-nav-text)!important;font-size:.76rem;font-weight:var(--wu-weight-semibold);line-height:1;text-decoration:none!important;white-space:nowrap}
+.wu-static-nav-group a:hover,.wu-static-nav-group a:focus-visible{color:var(--wu-color-brand-strong)!important;background:var(--wu-color-brand-softer);outline:none}
+@media(max-width:520px){.wu-static-site-nav{height:56px!important;min-height:56px!important;padding:0 12px!important;gap:10px}.wu-static-nav-group strong{display:none}.wu-static-nav-group a{padding:7px 6px;font-size:.72rem}}
+
+/* Lighthouse/WCAG quick wins from the 2026-09-09 production audit. These
+   selectors deliberately target the two measured failures and do not restyle
+   the surrounding editor surfaces. */
+.input-mode-option.is-active{color:#fff!important;background-color:#117a43!important;border-color:#117a43!important}
+.editor-quick-label{color:#53645a!important}
+
 /* The full tools navigation can outgrow a laptop-width header. */
 @media(max-width:1280px){.wu-header-inner{position:relative;width:min(var(--wu-shell-width),calc(100% - 32px))}.wu-menu-toggle{display:inline-flex}.wu-primary-nav{position:absolute;top:calc(100% + 8px);right:0;left:0;display:none;align-items:stretch;padding:10px;border:1px solid var(--wu-shell-header-border);border-radius:var(--wu-radius-lg);background:var(--wu-shell-menu-bg);box-shadow:var(--wu-shadow-float)}.wu-primary-nav.is-open{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.wu-primary-nav a,.wu-nav-more>summary{padding:13px}.wu-nav-more{grid-column:1/-1}.wu-nav-more-menu{position:static;width:auto;min-width:0;margin-top:5px;border-color:var(--wu-shell-header-border);background:var(--wu-color-surface-soft);box-shadow:none;grid-template-columns:1fr 1fr}.wu-primary-nav .wu-feedback-link,.wu-primary-nav .wu-language-toggle{margin:3px 0 0;grid-column:1/-1;text-align:center}.wu-primary-nav .wu-language-toggle{width:100%}}
 @media(max-width:520px){.wu-header-inner{width:calc(100% - 24px);min-height:56px}.wu-brand-mark{width:32px;height:32px}.wu-primary-nav.is-open{grid-template-columns:1fr}.wu-nav-more-menu{grid-template-columns:1fr}.wu-primary-nav .wu-feedback-link{grid-column:auto}.wu-menu-label{display:none}.wu-header-inner>.wu-language-toggle{margin-left:0;padding:8px 9px;font-size:.74rem}.wu-header-inner>.wu-language-toggle>span:first-child{display:none}.wu-header-inner>.wu-install-toggle{margin-left:0;padding:8px;font-size:.7rem}.wu-header-ad{width:calc(100% - 24px);min-height:var(--wu-ad-min-height-mobile);margin-top:9px}.wu-header-ad::before{font-size:.58rem}}
