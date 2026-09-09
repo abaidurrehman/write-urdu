@@ -26,6 +26,11 @@ assert.doesNotMatch(
   'Header bootstrap must not carry the retired dark-header palette'
 );
 
+assert.match(siteHeader, /\.wu-static-site-nav\{[^}]*height:\s*60px\s*!important[^}]*flex-wrap:\s*nowrap\s*!important/s, 'Static crawlable navigation must reserve the enhanced desktop header height without wrapping');
+assert.match(siteHeader, /\.wu-static-nav-groups\{[^}]*overflow-x:\s*auto/s, 'Static crawlable navigation links must remain reachable instead of being hidden to prevent CLS');
+assert.doesNotMatch(siteHeader, /\.wu-static-nav-groups\s*\{[^}]*display:\s*none/s, 'Static crawlable navigation must not hide its links');
+assert.match(siteHeader, /@media\(max-width:520px\)[\s\S]*\.wu-static-site-nav\{[^}]*height:\s*56px\s*!important/, 'Static mobile navigation must reserve the same compact shell height as the enhanced header');
+
 assert.match(v2Shell, /@import\s+url\(["']\.\/v3-design-system\.css["']\)/, 'V2 compatibility shim must load the V3 design system');
 assert.match(v2Shell, /@import\s+url\(["']\.\/v3-production-polish\.css["']\)/, 'V2 compatibility shim must load production polish after the V3 system');
 assert.doesNotMatch(v2Shell, /--wu-v2-shell-ink|--wu-v2-shell-bg|#0b2f1f|#072719|#0b3422|rgba\(236\s*,\s*247\s*,\s*240/i, 'V2 compatibility shim must not own a competing shell palette');
