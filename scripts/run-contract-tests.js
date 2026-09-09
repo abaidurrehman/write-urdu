@@ -20,6 +20,8 @@ const tests = [
   'tests/ads-policy-contract.test.js',
   'tests/core-write-auto-ads-locale-exclusions-contract.test.js',
   'tests/shell-style-ownership-contract.test.js',
+  'tests/logo-asset-budget-contract.test.js',
+  'tests/export-dependency-loading-contract.test.js',
   'tests/product-telemetry-contract.test.js',
   'tests/product-video-embed-contract.test.js',
   'tests/acquisition-revenue-contract.test.js',
