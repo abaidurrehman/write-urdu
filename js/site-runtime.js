@@ -80,6 +80,44 @@
     }
 
     var pdfDependencyPromise = null;
+    var canvasDependencyPromise = null;
+
+    function hasCanvasDependency() {
+        return typeof window.html2canvas === 'function';
+    }
+
+    function loadCanvasScript(url) {
+        return new Promise(function (resolve, reject) {
+            var script = document.createElement('script');
+            script.src = url;
+            script.async = true;
+            script.onload = function () {
+                if (hasCanvasDependency()) resolve(window.html2canvas);
+                else reject(new Error('The image export library loaded without its html2canvas API.'));
+            };
+            script.onerror = function () { reject(new Error('The image export library could not be loaded.')); };
+            document.head.appendChild(script);
+        });
+    }
+
+    function ensureCanvasDependency() {
+        if (hasCanvasDependency()) return Promise.resolve(window.html2canvas);
+        if (canvasDependencyPromise) return canvasDependencyPromise;
+
+        var sources = [
+            'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+            'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'
+        ];
+        function trySource(index) {
+            if (index >= sources.length) return Promise.reject(new Error('Image export dependency is unavailable.'));
+            return loadCanvasScript(sources[index]).catch(function () { return trySource(index + 1); });
+        }
+        canvasDependencyPromise = trySource(0).catch(function (error) {
+            canvasDependencyPromise = null;
+            throw error;
+        });
+        return canvasDependencyPromise;
+    }
 
     function hasPdfDependency() {
         return Boolean(window.jspdf && typeof window.jspdf.jsPDF === 'function');
@@ -103,9 +141,8 @@
         if (hasPdfDependency()) return Promise.resolve(window.jspdf.jsPDF);
         if (pdfDependencyPromise) return pdfDependencyPromise;
 
-        // The page includes the primary URL for normal loads. These lazy
-        // fallbacks handle blocked, offline or failed CDN requests when the
-        // user actually chooses PDF export.
+        // Load the PDF renderer only when the user actually chooses PDF
+        // export. A second CDN remains a fallback for blocked or failed loads.
         // jsdelivr first: cdnjs's jspdf asset is blocked by Chrome's Opaque
         // Response Blocking (ERR_BLOCKED_BY_ORB) in production, so it only
         // works as a last-resort fallback, not a reliable primary source.
@@ -246,7 +283,7 @@
 
     async function renderCanvas(source, options) {
         if (!source) throw new Error('Export source is unavailable.');
-        if (typeof window.html2canvas !== 'function') throw new Error('Image export dependency is unavailable.');
+        await ensureCanvasDependency();
         var surface = createExportSurface(source, options || {});
         try {
             await waitForExportImages(surface);
