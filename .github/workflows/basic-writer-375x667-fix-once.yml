@@ -1,0 +1,73 @@
+name: One-shot Basic Writer 375x667 activation repair
+
+on:
+  push:
+    branches:
+      - fix/basic-writer-375x667-activation
+    paths:
+      - '.github/workflows/basic-writer-375x667-fix-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout repair branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/basic-writer-375x667-activation
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Patch height-constrained mobile acquisition copy
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'css/mobile-home-task-first.css';
+          let source = fs.readFileSync(file, 'utf8');
+          const from = `  body.wu-v2-shell[data-wu-core-workspace="basic"] .page-intro.answer-summary {\n    font-size: .88rem !important;\n    line-height: 1.35 !important;\n  }`;
+          const to = `  body.wu-v2-shell[data-wu-core-workspace="basic"] .page-intro.answer-summary {\n    display: -webkit-box !important;\n    margin-bottom: 4px !important;\n    overflow: hidden !important;\n    font-size: .88rem !important;\n    line-height: 1.35 !important;\n    -webkit-box-orient: vertical;\n    -webkit-line-clamp: 1;\n  }`;
+          const count = source.split(from).length - 1;
+          if (count !== 1) throw new Error(`Expected exactly one height-constrained lede block, found ${count}`);
+          source = source.replace(from, to);
+          fs.writeFileSync(file, source, 'utf8');
+          NODE
+
+      - name: Run mobile activation source contract
+        run: node tests/mobile-editor-activation-contract.test.js
+
+      - name: Run focused Basic Writer mobile browser acceptance
+        run: npx playwright test tests/mobile-editor-activation.spec.js
+
+      - name: Run full contract suite
+        run: npm test
+
+      - name: Enforce repair scope and commit
+        shell: bash
+        run: |
+          mapfile -t changed < <(git diff --name-only | sort)
+          expected=$(printf '%s\n' css/mobile-home-task-first.css | sort)
+          actual=$(printf '%s\n' "${changed[@]}" | sort)
+          if [ "$actual" != "$expected" ]; then
+            echo 'Unexpected repair scope; refusing to commit.' >&2
+            git diff --stat >&2
+            exit 1
+          fi
+          rm .github/workflows/basic-writer-375x667-fix-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add css/mobile-home-task-first.css .github/workflows/basic-writer-375x667-fix-once.yml
+          git commit -m 'Fix Basic Writer visibility on short phone viewports'
+          git push origin HEAD:fix/basic-writer-375x667-activation
