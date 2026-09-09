@@ -45,8 +45,6 @@ assert.doesNotMatch(nameArtPage, /shared renderer|short-lived session storage/, 
 assert.match(invoicePage, /Show only what you need/, 'Invoice guidance must explain the user benefit of optional sections');
 assert.doesNotMatch(invoicePage, /without exposing the payload|More tools by the same developer/, 'Invoice guidance must not expose implementation nouns or developer-centric framing');
 
-// Runtime assertions below intentionally describe the currently shipped toolbar. WU-PLAT-002H/WU-PLAT-004
-// now define the next evidence-backed convergence change; that UI will update these runtime assertions in its implementation PR.
 assert.strictEqual(Convergence.BASIC_COMMAND_TOOLBAR_SRC, '/js/basic-writer-command-toolbar.js', 'Basic Writer toolbar loader path drifted');
 assert.match(runtime, /data-wu-command-toolbar-transition/, 'Basic Writer command-toolbar transition marker is missing');
 assert.match(runtime, /actions\.hidden = false/, 'Current Basic Writer command surface must remain visible while empty until the activation slice replaces it');
@@ -105,7 +103,7 @@ assert.match(toolbarCss, /\[data-wu-command-action="word"\] i[\s\S]*#185abd/, 'W
 assert.match(toolbarCss, /\[data-wu-command-action="png"\] i[\s\S]*#7042a1/, 'PNG icon needs a distinct image accent');
 assert.match(toolbarCss, /@media \(max-width: 767px\)/, 'Pixel/mobile toolbar behavior is missing');
 assert.doesNotMatch(toolbarCss, /position\s*:\s*(?:fixed|sticky)/, 'Basic Writer toolbar must not become fixed/sticky');
-assert.match(serviceWorker, /write-urdu-shell-v45/, 'PWA cache must include the desktop export icon update');
+assert.match(serviceWorker, /write-urdu-shell-v46/, 'PWA cache must include the desktop export icon update and B4 batch runtime');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.css/, 'Toolbar CSS must be cached');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.js/, 'Toolbar runtime must be cached');
 assert.match(serviceWorker, /basic-writer-publish\.js/, 'Basic public-link publisher must be cached');
@@ -125,8 +123,6 @@ assert.match(spec, /Make the oldest, most-used parts of Write Urdu feel as inten
 assert.match(spec, /Slice D — Urdu Keyboard convergence/, 'Keyboard convergence follow-up is not documented');
 assert.match(spec, /Slice E — Rich Editor convergence/, 'Rich Editor convergence follow-up is not documented');
 
-// The specification is now intentionally ahead of the shipped toolbar. Guard the revised product decision rather than
-// pinning the 2026-08-18 command wall and forcing future UX research to preserve it forever.
 assert.match(toolbarSpec, /moving every export under `More` reduced export use/i, 'WU-PLAT-004 must record the latest export-discovery evidence');
 assert.match(toolbarSpec, /PDF, Word and PNG as disabled until/i, 'WU-PLAT-004 must define the compact desktop Download group');
 assert.match(toolbarSpec, /E0 — Empty/, 'WU-PLAT-004 must define the empty-state activation contract');

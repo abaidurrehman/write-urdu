@@ -1,0 +1,94 @@
+name: Roman Urdu benchmark
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'benchmarks/roman-urdu/fixtures.js'
+      - 'scripts/roman-urdu-benchmark/**'
+      - 'tests/roman-urdu-benchmark-contract.test.js'
+      - 'tests/batch-transliteration-protected-tokens.test.js'
+      - 'tests/service-worker-navigation-freshness-contract.test.js'
+      - 'tests/account-documents-editors-contract.test.js'
+      - 'tests/account-growth-entry-contract.test.js'
+      - 'tests/mobile-authoring-focus-contract.test.js'
+      - 'tests/capture-continuity-contract.test.js'
+      - 'tests/mobile-editor-activation-contract.test.js'
+      - 'tests/basic-writer-voice-input-contract.test.js'
+      - 'tests/rich-editor-keyboard-voice-input-contract.test.js'
+      - 'tests/outcome-navigation-contract.test.js'
+      - 'tests/create-publish-boundaries-contract.test.js'
+      - 'tests/core-workspace-convergence-contract.test.js'
+      - 'js/batch-transliteration.js'
+      - 'sw.js'
+      - '.github/workflows/roman-urdu-benchmark.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate B4 production boundaries
+        run: |
+          node tests/roman-urdu-benchmark-contract.test.js
+          node tests/batch-transliteration-protected-tokens.test.js
+          node tests/service-worker-navigation-freshness-contract.test.js
+
+      - name: Validate B4 PWA cache generation contracts
+        run: |
+          node tests/account-documents-editors-contract.test.js
+          node tests/account-growth-entry-contract.test.js
+          node tests/mobile-authoring-focus-contract.test.js
+          node tests/capture-continuity-contract.test.js
+          node tests/mobile-editor-activation-contract.test.js
+          node tests/basic-writer-voice-input-contract.test.js
+          node tests/rich-editor-keyboard-voice-input-contract.test.js
+          node tests/outcome-navigation-contract.test.js
+          node tests/create-publish-boundaries-contract.test.js
+          node tests/core-workspace-convergence-contract.test.js
+
+      - name: Run baseline and B4 production candidate
+        run: |
+          mkdir -p benchmark-results/roman-urdu
+          node scripts/roman-urdu-benchmark/run.js \
+            --delay 150 \
+            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-baseline.json
+          node scripts/roman-urdu-benchmark/run.js \
+            --delay 150 \
+            --candidate production-batch \
+            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-production.json
+          node scripts/roman-urdu-benchmark/run.js \
+            --delay 150 \
+            --candidate production-batch \
+            --out benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-production.md
+          node scripts/roman-urdu-benchmark/compare.js \
+            benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-baseline.json \
+            benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-production.json \
+            benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-delta.md
+
+      - name: Print B4 delta
+        if: always()
+        run: |
+          if [ -f benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-delta.md ]; then
+            cat benchmark-results/roman-urdu/WU-JOURNEY-001B-B4-delta.md
+          fi
+
+      - name: Upload B4 artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wu-journey-001b-b4
+          path: benchmark-results/roman-urdu/
+          retention-days: 30
+          if-no-files-found: error
