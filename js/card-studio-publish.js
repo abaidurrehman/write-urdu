@@ -151,7 +151,7 @@
   function bindReferralEngagement() {
     if (!getReferral()) return;
     var handler = function (event) {
-      if (!event.target || !event.target.closest || !event.target.closest('[data-card-studio]')) return;
+      if (!event.isTrusted || !event.target || !event.target.closest || !event.target.closest('[data-card-studio]')) return;
       if (event.type === 'click' && !event.target.closest('[data-card-use-case],[data-card-template],[data-card-content-action],[data-card-field],[data-card-ui-mode]')) return;
       markReferredCreationStarted();
     };

@@ -382,7 +382,9 @@
         if (!node) return false;
         editorReader = function () { return node.value; };
         ['input', 'keyup', 'paste', 'change'].forEach(function (name) {
-            node.addEventListener(name, markEngaged, { passive: true });
+            node.addEventListener(name, function (event) {
+                if (event.isTrusted) markEngaged();
+            }, { passive: true });
         });
         node.addEventListener('focus', noteWriterFocus, { passive: true });
         return true;
@@ -607,13 +609,13 @@
         if (!rootSelector) return;
 
         document.addEventListener('input', function (event) {
-            if (event.target && event.target.closest && event.target.closest(rootSelector)) {
+            if (event.isTrusted && event.target && event.target.closest && event.target.closest(rootSelector)) {
                 markEngaged();
                 trackContinuationMeaningfulInteraction();
             }
         }, true);
         document.addEventListener('change', function (event) {
-            if (!event.target || !event.target.closest || !event.target.closest(rootSelector)) return;
+            if (!event.isTrusted || !event.target || !event.target.closest || !event.target.closest(rootSelector)) return;
             markEngaged();
             trackContinuationMeaningfulInteraction();
             if (event.target.matches && event.target.matches('input[type="file"]') && event.target.files && event.target.files.length) {
