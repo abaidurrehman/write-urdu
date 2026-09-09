@@ -11,6 +11,12 @@ function percent(value) {
   return value == null ? 'n/a' : (value * 100).toFixed(1) + '%';
 }
 
+function comparisonTitle(candidate) {
+  if (candidate.candidate === 'production-batch') return 'WU-JOURNEY-001B B4 — production batch delta';
+  if (candidate.candidate === 'protected-tokens') return 'WU-JOURNEY-001B B3 — protected-token candidate delta';
+  return 'WU-JOURNEY-001B — candidate delta';
+}
+
 function main() {
   const [baselinePath, candidatePath, outPath] = process.argv.slice(2);
   if (!baselinePath || !candidatePath || !outPath) {
@@ -49,7 +55,7 @@ function main() {
   ]);
 
   const lines = [];
-  lines.push('# WU-JOURNEY-001B B3 — protected-token candidate delta');
+  lines.push('# ' + comparisonTitle(candidate));
   lines.push('');
   lines.push(`Baseline: ${percent(baseline.summary.pass_rate)} (${baseline.summary.pass}/${baseline.summary.scored} scored)`);
   lines.push(`Candidate: ${percent(candidate.summary.pass_rate)} (${candidate.summary.pass}/${candidate.summary.scored} scored)`);
@@ -89,7 +95,7 @@ function main() {
   }
 
   lines.push('');
-  lines.push('This is a benchmark experiment only. It does not imply that the candidate is approved for production.');
+  lines.push('This comparison is benchmark evidence only. Production approval depends on the surrounding release and regression gates.');
 
   fs.mkdirSync(path.dirname(path.resolve(outPath)), { recursive: true });
   fs.writeFileSync(path.resolve(outPath), lines.join('\n') + '\n', 'utf8');
