@@ -69,6 +69,7 @@
         }
         copyPromise.then(function () {
             notify('Urdu text copied to the clipboard.', 'success');
+            document.dispatchEvent(new CustomEvent('write-urdu:copy-completed', { detail: { target: selector } }));
         }).catch(function () {
             notify('Copy failed. Select the text and press Ctrl+C.', 'error');
         });
