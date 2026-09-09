@@ -207,13 +207,19 @@ body.wu-v2-shell:not(.content-page) .batch-transliteration-panel [data-batch-not
   display: none;
 }
 
+/* At medium laptop widths the real writer is already immediately below the
+   hero. The CTA row repeats destinations that remain available through the
+   writing workspace and was the last element pushing the textarea below the
+   task-first fold. Keep it on wide desktop and phones; remove it only here. */
+@media (min-width: 768px) and (max-width: 1400px) {
+  body.wu-v2-shell:not(.content-page) .home-hero-actions {
+    display: none;
+  }
+}
+
 @media (max-width: 1280px) {
   body.wu-v2-shell:not(.content-page) .home-hero-meta {
     display: none;
-  }
-
-  body.wu-v2-shell:not(.content-page) .home-hero-actions {
-    margin: 9px 0 12px;
   }
 }
 
