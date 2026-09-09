@@ -53,8 +53,8 @@
     copy.ur.exportHeading = 'اپنا کارڈ مکمل کریں';
     copy.en.exportHelp = 'Your preview is exported at the exact dimensions shown on the canvas.';
     copy.ur.exportHelp = 'آپ کا پیش منظر کینوس پر دکھائے گئے عین طول و عرض میں برآمد کیا جائے گا۔';
-    copy.en.exportPrivacy = 'Processed in your browser. Your text and images stay on this device.';
-    copy.ur.exportPrivacy = 'آپ کے براؤزر میں پراسیس ہوتا ہے۔ آپ کا متن اور تصاویر اسی آلے پر رہتی ہیں۔';
+    copy.en.exportPrivacy = 'Download saves the image only. Publish & Share keeps your writing safe on a free Write-Urdu.com link you can post straight to WhatsApp, Instagram or Facebook.';
+    copy.ur.exportPrivacy = 'ڈاؤن لوڈ صرف تصویر محفوظ کرتا ہے۔ شائع اور شیئر کریں سے آپ کی تحریر ایک مفت Write-Urdu.com لنک پر محفوظ رہتی ہے جسے آپ براہ راست واٹس ایپ، انسٹاگرام یا فیس بک پر شیئر کر سکتے ہیں۔';
 
     if (socialConfig) {
         copy.en.title = socialConfig.title;
@@ -410,7 +410,7 @@
     function filename() { if (socialConfig && social.safeFilename) return social.safeFilename(state.name || socialConfig.filenamePrefix, socialExportFormat); return core.safeFilename(state.name, 'write-urdu-card') + '-' + new Date().toISOString().slice(0, 10) + '.png'; }
     function exportBlob() { var mime = exportMime(); return new Promise(function (resolve, reject) { canvas.toBlob(function (blob) { blob ? resolve(blob) : reject(new Error('Image generation failed')); }, mime, mime === 'image/jpeg' ? socialJpegQuality : undefined); }); }
     function downloadBlob(blob, name) { var url = URL.createObjectURL(blob); var link = document.createElement('a'); link.href = url; link.download = name; document.body.appendChild(link); link.click(); link.remove(); window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000); }
-    function exportPng() { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); if (!state.text.value.trim() || state.text.value === core.DEFAULT_TEXT) { setStatus(t('emptyText'), 'error'); return Promise.reject(new Error('empty')); } setStatus(t('preparing')); return ensureProjectFonts().then(function () { return drawCard({ export: true }); }).then(exportBlob).then(function (blob) { downloadBlob(blob, filename()); setStatus(socialConfig ? ((socialExportFormat === 'jpeg' ? 'JPEG' : 'PNG') + ' downloaded.') : t('downloaded')); return blob; }); }
+    function exportPng() { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); if (!state.text.value.trim() || state.text.value === core.DEFAULT_TEXT) { setStatus(t('emptyText'), 'error'); return Promise.reject(new Error('empty')); } setStatus(t('preparing')); return ensureProjectFonts().then(function () { return drawCard({ export: true }); }).then(exportBlob).then(function (blob) { downloadBlob(blob, filename()); setStatus((socialConfig ? ((socialExportFormat === 'jpeg' ? 'JPEG' : 'PNG') + ' downloaded.') : t('downloaded')) + ' Want a link to share too? Try Publish & Share above.'); return blob; }); }
     function shareCard() { return exportPng().then(function (blob) { var name = filename(); var file = new File([blob], name, { type: exportMime() }); if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) return navigator.share({ files: [file], title: socialConfig ? socialConfig.title : 'Urdu card' }).then(function () { setStatus(t('shared')); }); setStatus(t('shareFallback')); }).catch(function (error) { if (error && error.name === 'AbortError') return; if (error && error.message !== 'empty') setStatus(error.message || 'Unable to export image.', 'error'); }); }
 
     function bindControls() {
