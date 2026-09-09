@@ -1,0 +1,101 @@
+name: One-shot Urdu editor locale toolbar sync
+
+on:
+  push:
+    branches:
+      - fix/urdu-editor-locale-toolbar-sync
+    paths:
+      - '.github/workflows/locale-toolbar-sync-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repair branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/urdu-editor-locale-toolbar-sync
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Patch only the stale Rich Editor locale literals
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'locale/ur.js';
+          let source = fs.readFileSync(file, 'utf8');
+
+          function replaceOnce(from, to, label) {
+            const count = source.split(from).length - 1;
+            if (count !== 1) throw new Error(`${label}: expected exactly one match, found ${count}`);
+            source = source.replace(from, to);
+          }
+
+          replaceOnce(
+            `      ['<summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> Export</summary>', '<summary class="btn btn-dark"><i class="fas fa-download" aria-hidden="true"></i> برآمد کریں</summary>'],\n`,
+            '',
+            'retired Export dropdown literal'
+          );
+          replaceOnce(
+            `['<i class="far fa-file-word" aria-hidden="true"></i> Word document', '<i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز']`,
+            `['<i class="far fa-file-word" aria-hidden="true"></i> Word', '<i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز']`,
+            'Word button literal'
+          );
+          replaceOnce(
+            `['<i class="far fa-file-pdf" aria-hidden="true"></i> PDF document', '<i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز']`,
+            `['<i class="far fa-file-pdf" aria-hidden="true"></i> PDF', '<i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز']`,
+            'PDF button literal'
+          );
+          replaceOnce(
+            `['<i class="far fa-image" aria-hidden="true"></i> PNG image', '<i class="far fa-image" aria-hidden="true"></i> PNG تصویر']`,
+            `['<i class="far fa-image" aria-hidden="true"></i> PNG', '<i class="far fa-image" aria-hidden="true"></i> PNG تصویر']`,
+            'PNG button literal'
+          );
+          replaceOnce(
+            `['<i class="far fa-file-image" aria-hidden="true"></i> SVG image', '<i class="far fa-file-image" aria-hidden="true"></i> SVG تصویر']`,
+            `['<i class="far fa-file-image" aria-hidden="true"></i> SVG', '<i class="far fa-file-image" aria-hidden="true"></i> SVG تصویر']`,
+            'SVG button literal'
+          );
+
+          fs.writeFileSync(file, source, 'utf8');
+          NODE
+
+      - name: Regenerate Urdu locale output
+        run: node scripts/generate-urdu-locale.js
+
+      - name: Enforce two-file repair scope
+        shell: bash
+        run: |
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf 'Changed after generation:\n%s\n' "${changed[*]}"
+          expected=$(printf '%s\n' locale/ur.js urdu/urdu-editor.html | sort)
+          actual=$(printf '%s\n' "${changed[@]}" | sort)
+          if [ "$actual" != "$expected" ]; then
+            echo 'Unexpected generated-file scope; refusing to commit.' >&2
+            git diff --stat >&2
+            exit 1
+          fi
+
+      - name: Validate generated locale and closeout contracts
+        run: |
+          node tests/urdu-locale-generated-contract.test.js
+          node tests/urdu-locale-closeout-contract.test.js
+
+      - name: Remove one-shot workflow and commit repair
+        shell: bash
+        run: |
+          rm .github/workflows/locale-toolbar-sync-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add locale/ur.js urdu/urdu-editor.html .github/workflows/locale-toolbar-sync-once.yml
+          git commit -m 'Fix Urdu Rich Editor locale toolbar drift'
+          git push origin HEAD:fix/urdu-editor-locale-toolbar-sync
