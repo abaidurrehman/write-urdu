@@ -204,6 +204,18 @@
         link.textContent = urdu ? 'اردو تحریری سانچے' : 'Writing templates';
     }
 
+    function installPhraseLibraryFooterLink() {
+        var footer = document.querySelector('.wu-footer-nav');
+        var group = footer && footer.querySelector('[data-wu-footer-group="write-urdu"]');
+        if (!group || group.querySelector('[data-wu-phrase-library-link]')) return;
+        group.insertAdjacentHTML('beforeend', '<a data-wu-phrase-library-link href="/urdu-phrases-copy-paste">Copy Urdu &amp; Arabic phrases</a>');
+        var link = group.querySelector('[data-wu-phrase-library-link]');
+        if (!link) return;
+        link.href = '/urdu-phrases-copy-paste';
+        var urdu = document.documentElement.getAttribute('dir') === 'rtl' || /^ur\b/i.test(document.documentElement.lang || '');
+        link.textContent = urdu ? 'عام اردو اور عربی جملے' : 'Copy Urdu & Arabic phrases';
+    }
+
     function installHomeAccountDocuments() {
         if (normalizedPath() !== '/') return;
         ensureStylesheet('/css/account-documents.css');
@@ -321,6 +333,7 @@
 
     document.addEventListener('write-urdu:locale-change', restoreHomepageSearchIntentCopy);
     document.addEventListener('write-urdu:outcome-navigation-ready', installWritingTemplatesFooterLink);
+    document.addEventListener('write-urdu:outcome-navigation-ready', installPhraseLibraryFooterLink);
 
     loadScript('/js/site-header-core.js', 'WriteUrduLocale', function () {
         installAccountControl();
@@ -335,6 +348,7 @@
             if (root.WriteUrduOutcomeNavigation && typeof root.WriteUrduOutcomeNavigation.render === 'function') {
                 root.WriteUrduOutcomeNavigation.render();
                 installWritingTemplatesFooterLink();
+                installPhraseLibraryFooterLink();
                 protectOutcomeNavigationDuringV2Start();
                 installAuditQuickWins();
             }
@@ -345,6 +359,7 @@
                 restoreHomepageSearchIntentCopy({ detail: { locale: root.WriteUrduLocale && typeof root.WriteUrduLocale.get === 'function' ? root.WriteUrduLocale.get() : 'en' } });
                 installVoiceDiscovery();
                 installWritingTemplatesFooterLink();
+                installPhraseLibraryFooterLink();
                 installAuditQuickWins();
                 loadContextualNextSteps();
                 loadCreationDestinationAdapters();
