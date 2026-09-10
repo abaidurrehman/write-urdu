@@ -404,6 +404,70 @@
         return true;
     }
 
+    var COPY_COMPLETION_SEEN_KEY = 'wu-basic-copy-completion-seen';
+    var copyCompletionTimer = null;
+
+    function copyCompletionSeen() {
+        try { return root.sessionStorage.getItem(COPY_COMPLETION_SEEN_KEY) === 'true'; }
+        catch (error) { return false; }
+    }
+
+    function markCopyCompletionSeen() {
+        try { root.sessionStorage.setItem(COPY_COMPLETION_SEEN_KEY, 'true'); }
+        catch (error) { /* Private browsing or storage disabled; the strip just shows again. */ }
+    }
+
+    function growthRequestActive() {
+        var panel = root.document.querySelector('[data-home-account-continuity]');
+        return Boolean(panel && !panel.hidden);
+    }
+
+    function createCopyCompletion() {
+        var strip = root.document.createElement('div');
+        strip.className = 'wu-basic-copy-completion';
+        strip.setAttribute('data-wu-basic-copy-completion', '');
+        strip.setAttribute('role', 'status');
+        strip.setAttribute('aria-live', 'polite');
+        strip.hidden = true;
+
+        var message = root.document.createElement('span');
+        message.className = 'wu-basic-copy-completion-message';
+        message.textContent = 'Copied.';
+
+        var shareAction = root.document.createElement('button');
+        shareAction.type = 'button';
+        shareAction.className = 'wu-basic-copy-completion-share';
+        shareAction.setAttribute('data-wu-basic-copy-completion-share', '');
+        shareAction.textContent = 'Share this Urdu';
+
+        var dismiss = root.document.createElement('button');
+        dismiss.type = 'button';
+        dismiss.className = 'wu-basic-copy-completion-dismiss';
+        dismiss.setAttribute('data-wu-basic-copy-completion-dismiss', '');
+        dismiss.setAttribute('aria-label', 'Dismiss');
+        dismiss.innerHTML = '&times;';
+
+        strip.appendChild(message);
+        strip.appendChild(shareAction);
+        strip.appendChild(dismiss);
+        return strip;
+    }
+
+    function hideCopyCompletion(strip) {
+        if (!strip) return;
+        strip.hidden = true;
+        root.clearTimeout(copyCompletionTimer);
+    }
+
+    function maybeShowCopyCompletion(strip) {
+        if (!strip || strip.hidden === false || copyCompletionSeen() || growthRequestActive()) return;
+        markCopyCompletionSeen();
+        strip.hidden = false;
+        telemetry('copy-continuation-shown');
+        root.clearTimeout(copyCompletionTimer);
+        copyCompletionTimer = root.setTimeout(function () { hideCopyCompletion(strip); }, 8000);
+    }
+
     function createMoreMenu(filenameLabel, filenameInput, textExport, settingsPanel, shareButton, outputButtons, clearButton) {
         var wrapper = root.document.createElement('div');
         wrapper.className = 'wu-basic-command-more';
@@ -720,7 +784,10 @@
             helper.appendChild(shortcut);
         }
 
+        var copyCompletion = createCopyCompletion();
+
         surface.appendChild(actions);
+        surface.appendChild(copyCompletion);
         surface.appendChild(helper);
         demo.parentNode.insertBefore(surface, demo);
 
@@ -729,6 +796,20 @@
         removeEmptyLegacyContainer(legacyContainer);
 
         share.addEventListener('click', runAuthoringShare);
+
+        copyCompletion.querySelector('[data-wu-basic-copy-completion-share]').addEventListener('click', function () {
+            telemetry('copy-continuation-share-selected');
+            hideCopyCompletion(copyCompletion);
+            runAuthoringShare();
+        });
+        copyCompletion.querySelector('[data-wu-basic-copy-completion-dismiss]').addEventListener('click', function () {
+            telemetry('copy-continuation-dismissed');
+            hideCopyCompletion(copyCompletion);
+        });
+        root.document.addEventListener('write-urdu:copy-completed', function (event) {
+            if (!event || !event.detail || event.detail.target !== '#transliterateTextarea') return;
+            root.setTimeout(function () { maybeShowCopyCompletion(copyCompletion); }, 0);
+        });
 
         if (actions.getAttribute('data-wu-toolbar-telemetry-bound') !== 'true') {
             actions.setAttribute('data-wu-toolbar-telemetry-bound', 'true');

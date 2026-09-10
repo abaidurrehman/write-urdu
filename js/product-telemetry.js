@@ -704,6 +704,15 @@
             };
         }
 
+        if (typeof runtime.downloadSvg === 'function') {
+            var originalDownloadSvg = runtime.downloadSvg;
+            runtime.downloadSvg = function () {
+                var result = originalDownloadSvg.apply(this, arguments);
+                trackOutcome('export_completed', { format: 'svg', success: true });
+                return result;
+            };
+        }
+
         if (typeof runtime.downloadPdf === 'function') {
             var originalDownloadPdf = runtime.downloadPdf;
             runtime.downloadPdf = function () {
