@@ -32,9 +32,9 @@
 }
 .input-mode-option.is-active,
 .input-mode-option[aria-pressed="true"] {
-    border-color: var(--wu-color-brand, #177245);
+    border-color: #117a43;
     color: #fff;
-    background: var(--wu-color-brand, #177245);
+    background: #117a43;
 }
 .input-mode-note {
     flex: 1 1 100%;
