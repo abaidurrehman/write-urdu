@@ -140,6 +140,7 @@ registry.forEach(page => {
     if (redirectSources.has(pathname)) return;
     const localPath = pathname.replace(/^\//, '');
     if (localPath && fs.existsSync(path.join(root, 'functions', `${localPath}.js`))) return;
+    if (localPath && fs.existsSync(path.join(root, 'functions', localPath, 'index.js'))) return;
     if (localPath && !fs.existsSync(path.join(root, localPath))) errors.push(`${page.source_file}: broken internal link ${href}`);
   });
 });
