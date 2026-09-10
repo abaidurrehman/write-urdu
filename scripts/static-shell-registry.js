@@ -8,6 +8,7 @@ const root = path.resolve(__dirname, '..');
 const runtimePath = path.join(root, 'js', 'outcome-navigation.js');
 
 const STATIC_UTILITY_LINKS = [
+  { href: '/changelog', label: { en: 'What’s new', ur: 'نیا کیا ہے' } },
   { href: '/urdu-writing-templates', label: { en: 'Writing templates', ur: 'اردو تحریری سانچے' } },
   { href: '/why-write-urdu', label: { en: 'About Write Urdu', ur: 'رائٹ اردو کے بارے میں' } },
   { href: '/10-years-of-write-urdu', label: { en: '10 Years of Write Urdu', ur: 'رائٹ اردو کے دس سال' } },
