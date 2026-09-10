@@ -30,6 +30,7 @@ const tests = [
   'tests/product-pulse-slice1-contract.test.js',
   'tests/product-pulse-slice2-contract.test.js',
   'tests/product-pulse-slice3-contract.test.js',
+  'tests/export-funnel-diagnostics-contract.test.js',
   'tests/growth-request-arbiter.test.mjs',
   'tests/share-loop-contract.test.js',
   'tests/auth-foundation-contract.test.js',
