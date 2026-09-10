@@ -674,8 +674,15 @@
         if (typeof runtime.downloadData === 'function') {
             var originalDownloadData = runtime.downloadData;
             runtime.downloadData = function (uri, filename) {
-                var result = originalDownloadData.apply(this, arguments);
                 var format = formatFromFilename(filename);
+                if (format) trackOutcome('export_started', { format: format });
+                var result;
+                try {
+                    result = originalDownloadData.apply(this, arguments);
+                } catch (error) {
+                    if (format) trackOutcome('export_error', { format: format, success: false });
+                    throw error;
+                }
                 if (format) trackOutcome('export_completed', { format: format, success: true });
                 return result;
             };
@@ -684,7 +691,14 @@
         if (typeof runtime.downloadWord === 'function') {
             var originalDownloadWord = runtime.downloadWord;
             runtime.downloadWord = function () {
-                var result = originalDownloadWord.apply(this, arguments);
+                trackOutcome('export_started', { format: 'doc' });
+                var result;
+                try {
+                    result = originalDownloadWord.apply(this, arguments);
+                } catch (error) {
+                    trackOutcome('export_error', { format: 'doc', success: false });
+                    throw error;
+                }
                 trackOutcome('export_completed', { format: 'doc', success: true });
                 return result;
             };
@@ -693,15 +707,20 @@
         if (typeof runtime.downloadPdf === 'function') {
             var originalDownloadPdf = runtime.downloadPdf;
             runtime.downloadPdf = function () {
+                trackOutcome('export_started', { format: 'pdf' });
                 var result;
                 try {
                     result = originalDownloadPdf.apply(this, arguments);
                 } catch (error) {
+                    trackOutcome('export_error', { format: 'pdf', success: false });
                     throw error;
                 }
                 return Promise.resolve(result).then(function (value) {
                     trackOutcome('export_completed', { format: 'pdf', success: true });
                     return value;
+                }, function (error) {
+                    trackOutcome('export_error', { format: 'pdf', success: false });
+                    throw error;
                 });
             };
         }
@@ -721,7 +740,14 @@
         if (typeof window.saveTextAsFile !== 'function' || window.saveTextAsFile.__wuTelemetryWrapped) return false;
         var originalSave = window.saveTextAsFile;
         var wrapped = function () {
-            var result = originalSave.apply(this, arguments);
+            trackOutcome('export_started', { format: 'txt' });
+            var result;
+            try {
+                result = originalSave.apply(this, arguments);
+            } catch (error) {
+                trackOutcome('export_error', { format: 'txt', success: false });
+                throw error;
+            }
             trackOutcome('export_completed', { format: 'txt', success: true });
             return result;
         };

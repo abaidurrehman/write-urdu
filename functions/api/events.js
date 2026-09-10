@@ -4,7 +4,9 @@ const EVENT_NAMES = new Set([
     'tool_engaged',
     'session_summary',
     'copy_completed',
+    'export_started',
     'export_completed',
+    'export_error',
     'print_started',
     'share_clicked',
     'share_completed',
@@ -125,7 +127,7 @@ const GROWTH_RELEASE_MARKERS = new Set(['wu-plat-002h-s3-2026-09-06-v1']);
 const GROWTH_STAGE_COLUMNS = ['eligible', 'shown', 'opened', 'completed', 'dismissed', 'suppressed_due_to_arbitration'];
 
 const METRIC_COLUMNS = [
-    'visits', 'engaged_visits', 'copies', 'exports',
+    'visits', 'engaged_visits', 'copies', 'exports', 'export_started', 'export_error',
     'export_pdf', 'export_png', 'export_png_transparent', 'export_jpeg', 'export_doc', 'export_txt', 'export_svg',
     'prints', 'shares', 'handoffs', 'batch_transliterations',
     'canvas_interactions', 'template_uses', 'background_image_uses', 'summary_count',
@@ -374,6 +376,8 @@ function legacyMetricSelect(toolExpression) {
                SUM(CASE WHEN event_name = 'editor_engaged' THEN 1 ELSE 0 END) AS engaged_visits,
                SUM(CASE WHEN event_name = 'copy_completed' THEN 1 ELSE 0 END) AS copies,
                SUM(CASE WHEN event_name = 'export_completed' THEN 1 ELSE 0 END) AS exports,
+               SUM(CASE WHEN event_name = 'export_started' THEN 1 ELSE 0 END) AS export_started,
+               SUM(CASE WHEN event_name = 'export_error' THEN 1 ELSE 0 END) AS export_error,
                SUM(CASE WHEN event_name = 'export_completed' AND format = 'pdf' THEN 1 ELSE 0 END) AS export_pdf,
                SUM(CASE WHEN event_name = 'export_completed' AND format = 'png' THEN 1 ELSE 0 END) AS export_png,
                0 AS export_png_transparent,
@@ -552,6 +556,8 @@ function applyEvent(delta, event) {
     }
     if (event.eventName === 'editor_engaged' || event.eventName === 'tool_engaged') delta.engaged_visits += 1;
     if (event.eventName === 'copy_completed') delta.copies += 1;
+    if (event.eventName === 'export_started') delta.export_started += 1;
+    if (event.eventName === 'export_error') delta.export_error += 1;
     if (event.eventName === 'export_completed') {
         delta.exports += 1;
         const exportColumns = {
