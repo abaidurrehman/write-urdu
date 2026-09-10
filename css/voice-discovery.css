@@ -49,6 +49,41 @@
   margin-bottom: .35rem;
 }
 
+/* The homepage Voice card is source-visible before modern-home.css arrives.
+   Mirror the final desktop hero geometry in this early stylesheet so the card
+   does not render full-width first and then jump into the right column. Keep
+   these values aligned with the matching desktop block in modern-home.css. */
+@media (min-width: 900px) {
+  body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9 > .container:first-of-type > .row > .col-sm {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+    align-items: center;
+    column-gap: clamp(24px, 4vw, 56px);
+  }
+
+  body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9 > .container:first-of-type > .row > .col-sm > h1,
+  body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9 > .container:first-of-type > .row > .col-sm > .page-intro,
+  body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9 > .container:first-of-type > .row > .col-sm > .home-hero-meta,
+  body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9 > .container:first-of-type > .row > .col-sm > .home-hero-actions {
+    grid-column: 1;
+  }
+
+  body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9 > .container:first-of-type > .row > .col-sm > .wu-voice-entry-home {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    align-self: center;
+    margin: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: .85rem;
+    padding: 1.1rem;
+  }
+
+  body > .container-fluid > .row:nth-of-type(2) > .col-12.col-md-9 > .container:first-of-type > .row > .col-sm > .wu-voice-entry-home .wu-voice-entry-output {
+    grid-column: 1 / -1;
+    margin-top: .2rem;
+  }
+}
+
 .wu-voice-entry-documents {
   margin: 18px 0 4px;
 }

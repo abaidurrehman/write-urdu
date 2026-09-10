@@ -45,15 +45,15 @@ body:has(#transliterateTextarea) .logo{display:none}
 body:has(#transliterateTextarea) .home-hero-meta{display:none}
 body:has(#transliterateTextarea) .home-hero-actions{margin-top:16px}
 body:has(#transliterateTextarea) .home-hero-cta-tertiary{display:none}
-body:has(#transliterateTextarea) hr.solid{margin:24px 0 16px}
+body:has(#transliterateTextarea) hr.solid{margin:12px 0 10px}
 body:has(#transliterateTextarea) .home-actions{gap:8px!important;margin-bottom:14px}
 body:has(#transliterateTextarea) .home-actions a[href="/urdu-templates"],
 body:has(#transliterateTextarea) .home-actions a[href="/urdu-invoice-generator"],
 body:has(#transliterateTextarea) .home-actions [data-create-card],
 body:has(#transliterateTextarea) .home-actions [data-create-qr],
 body:has(#transliterateTextarea) .home-actions [data-write-urdu-share]{display:none!important}
-body:has(#transliterateTextarea) .editor-chrome{margin-top:8px}
-body:has(#transliterateTextarea) .batch-transliteration-panel{margin-top:8px;padding:12px 16px}
+body:has(#transliterateTextarea) .editor-chrome{margin-top:4px}
+body:has(#transliterateTextarea) .batch-transliteration-panel{margin-top:4px;padding:8px 16px}
 body:has(#transliterateTextarea) #transliterateTextarea{min-height:clamp(420px,62vh,680px)}
 
 @media(max-width:767px){body>.container-fluid>.row,body>.container>.row{padding-right:14px;padding-left:14px}body>.container-fluid>.row>.col-12.col-md-9,body>.container-fluid>.row>.col-md-9,body>.container-fluid>.row>.col-md-12{padding-top:22px}h1{font-size:clamp(1.75rem,8vw,2.35rem)}button,.btn{min-height:44px}.tox.tox-tinymce{min-height:520px}.rich-editor-page .col-12.col-md-9>.container:first-of-type,.keyboard-page .col-12.col-md-9>.container:first-of-type{padding:22px 18px;border-radius:16px}.rich-editor-page .tool-actions,.keyboard-page .tool-actions{align-items:stretch}.rich-editor-page .home-actions-group,.keyboard-page .home-actions-group,.rich-editor-page .home-actions-group-export,.keyboard-page .home-actions-group-export{width:100%;margin-left:0}.rich-editor-page .tool-actions .btn,.rich-editor-page .tool-actions details,.keyboard-page .tool-actions .btn,.keyboard-page .tool-actions details{flex:1 1 auto}.keyboard-page #key1{padding:12px 8px}.keyboard-page #key1 input{min-width:38px;min-height:40px}}

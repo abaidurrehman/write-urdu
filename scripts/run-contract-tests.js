@@ -21,6 +21,7 @@ const tests = [
   'tests/core-write-auto-ads-locale-exclusions-contract.test.js',
   'tests/shell-style-ownership-contract.test.js',
   'tests/logo-asset-budget-contract.test.js',
+  'tests/lighthouse-quickwins-3-contract.test.js',
   'tests/export-dependency-loading-contract.test.js',
   'tests/product-telemetry-contract.test.js',
   'tests/product-video-embed-contract.test.js',
