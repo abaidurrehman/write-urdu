@@ -308,3 +308,116 @@
   .wu-v2-shell.card-studio-page *,
   .wu-v2-shell.template-library-page-body *{transition:none!important}
 }
+
+/* Keep the Card Studio header compact so the workspace is visible immediately. */
+@media(min-width:1041px){
+  .wu-v2-shell.card-studio-page .card-studio-shell{
+    padding-top:14px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-topbar{
+    grid-template-columns:minmax(240px,300px) minmax(0,1fr);
+    align-items:center;
+    gap:14px;
+    margin-bottom:8px;
+    padding:12px 14px;
+    border-radius:14px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-topbar>div:first-child::before{
+    margin-bottom:5px;
+    padding:3px 7px;
+    font-size:.61rem;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-topbar h1{
+    font-size:1.85rem;
+    line-height:1.04;
+    white-space:nowrap;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-topbar p{
+    margin-top:4px;
+    font-size:.8rem;
+    line-height:1.35;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-top-actions{
+    display:flex;
+    min-width:0;
+    flex-wrap:nowrap;
+    gap:6px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-action-group{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:0;
+    border:0;
+    border-radius:0;
+    background:transparent;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-action-group+.card-studio-action-group{
+    padding-left:7px;
+    border-left:1px solid var(--wu-create-line);
+  }
+  .wu-v2-shell.card-studio-page .card-studio-action-group-label{
+    display:none;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-action-group-buttons{
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:5px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-button{
+    min-height:34px;
+    padding:7px 9px;
+    font-size:.74rem;
+    white-space:nowrap;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-guided-header{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+    padding:6px 8px;
+    border-radius:12px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-stepper{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:4px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-step{
+    min-height:38px;
+    padding:6px 8px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-step small{
+    display:none;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-mode-switch{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    margin:0;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-mode-label{
+    display:none;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-mode-button{
+    min-height:34px;
+    padding:6px 9px;
+  }
+  .wu-v2-shell.card-studio-page .card-studio-ui-status:empty{
+    display:none;
+  }
+}
+
+@media(min-width:901px) and (max-width:1040px){
+  .wu-v2-shell.card-studio-page .card-studio-shell{padding-top:14px}
+  .wu-v2-shell.card-studio-page .card-studio-topbar{gap:10px;margin-bottom:8px;padding:12px 14px}
+  .wu-v2-shell.card-studio-page .card-studio-top-actions{gap:6px}
+  .wu-v2-shell.card-studio-page .card-studio-action-group{padding:5px}
+  .wu-v2-shell.card-studio-page .card-studio-button{min-height:36px;padding:8px 10px;font-size:.77rem}
+  .wu-v2-shell.card-studio-page .card-studio-guided-header{margin-bottom:10px;padding:7px 8px}
+  .wu-v2-shell.card-studio-page .card-studio-step{min-height:40px}
+  .wu-v2-shell.card-studio-page .card-studio-step small{display:none}
+  .wu-v2-shell.card-studio-page .card-studio-mode-label{display:none}
+}
