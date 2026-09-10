@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Active Backlog
 
 **Status:** Active  
-**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-04  
+**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-09  
 **Purpose:** One source of truth for work that is still genuinely open.
 
 The previous long-form backlog is preserved at [`archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md`](archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md). Completed implementation contracts remain in [`archive/`](archive/README.md).
@@ -70,7 +70,7 @@ Execution gates:
 **Acceptance:** [`WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md`](WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md)  
 **Evidence:** [`docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md`](../docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md)
 
-**State:** M2 Basic Writer first-viewport implementation shipped 2026-09-03; M3 focus/keyboard + M4 Rich Editor hierarchy shipped 2026-09-04. Remaining work is evidence closeout, real-device/manual validation and `/urdu-keyboard` audit — not another speculative redesign.
+**State:** M2 Basic Writer first-viewport implementation shipped 2026-09-03; M3 focus/keyboard + M4 Rich Editor hierarchy shipped 2026-09-04. A reproduced 375x667 visibility regression was repaired on 2026-09-09 and the full focused browser matrix passed; medium-laptop task-first fold acceptance was also repaired under the existing V3 visual-quality gate. Remaining work is post-release evidence and real-device/manual closeout — not another speculative redesign.
 
 - [ ] Reconcile a comparable mobile **Product Pulse first-value** baseline around the release. The 2026-09-04 GSC export is a pre-repair acquisition baseline, not an activation substitute. Blocking gap fixed 2026-09-04 (`9c50e85`): `product_hourly_device_metrics` rollup ships mobile-tagged `writer_first_input`/`writer_eligible` counters; deployed same day, data collection started at deploy. Item stays open until post-deploy mobile volume is enough to reconcile (see P0.1G 7-day window).
 - [x] Audit actual DOM/runtime-injected content before the editable surface on `/` and `/urdu-editor` during M2–M4 implementation.
@@ -105,14 +105,18 @@ Execution gates:
 
 **Related:** `WU-GROWTH-002`, `WU-COMMUNITY-001`, `WU-SHARE-001`
 
-- [ ] One growth request at a time: Keep vs Share vs Publish.
-- [ ] Substantial unsaved writing normally prioritizes `Keep this writing`.
-- [ ] Normal task commands remain available without signup.
-- [ ] Signed-in users never see account-acquisition copy.
-- [ ] Distinguish `Share link` from `Publish to Urdu Writers`.
-- [ ] Community publishing appears only when eligible/appropriate and not stacked with a higher-priority request.
+**State:** Shared runtime arbitration and Product Pulse diagnostics shipped 2026-09-06 and were reconciled against runtime/tests on 2026-09-09. The remaining growth decision is post-change evidence, not another competing prompt layer.
+
+- [x] One growth request at a time: Keep vs Share vs Publish.
+- [x] Substantial unsaved writing normally prioritizes `Keep this writing`.
+- [x] Normal task commands remain available without signup.
+- [x] Signed-in users never see account-acquisition copy.
+- [x] Distinguish `Share link` from `Publish to Urdu Writers`.
+- [x] Community publishing appears only when eligible/appropriate and not stacked with a higher-priority request.
 
 ### P0.1E — Share/referral continuity
+
+**State:** Transport, aggregate counters and Product Pulse stages are shipped; explicit reader-to-destination browser acceptance is still open and remains the next P0 acceptance slice.
 
 - [ ] Trace reader CTA → destination response → referral/handoff recognized → workspace ready → first creation input → meaningful start.
 - [ ] Verify `Use this text` restores public text where promised without putting content in URL.
@@ -121,7 +125,9 @@ Execution gates:
 
 ### P0.1F — Card Studio completion
 
-- [ ] Instrument visit → role/preset → content → canvas edit → export attempt → export complete.
+**State:** Completion funnel instrumentation is shipped in Product Pulse; diagnosis and any Quick-path experiment remain open. Acquisition expansion stays blocked until the completion evidence is understood.
+
+- [x] Instrument visit → role/preset → content → canvas edit → export attempt → export complete.
 - [ ] Diagnose the drop before redesigning.
 - [ ] If complexity is implicated, test an outcome-first Quick path (`what are you making? → text → preset → preview → Download`).
 - [ ] Keep Advanced capability available.
