@@ -1,0 +1,234 @@
+@import url('./urdu-tools.css');
+
+.dictionary-page .urdu-tool-main {
+  width: min(1120px, calc(100% - 2rem));
+}
+
+.dictionary-hero {
+  align-items: stretch;
+}
+
+.dictionary-lede {
+  max-width: 48rem;
+}
+
+.dictionary-benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .85rem;
+}
+
+.dictionary-benefits span {
+  padding: .35rem .65rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: 999px;
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.dictionary-form {
+  margin-bottom: 1rem;
+}
+
+.dictionary-direction-row {
+  display: flex;
+  gap: .7rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: .9rem;
+}
+
+.dictionary-direction-row label {
+  font-weight: 800;
+}
+
+.dictionary-direction-row select,
+.dictionary-input {
+  min-height: 2.85rem;
+  border: 1px solid var(--wu-color-border-strong, var(--wu-color-border));
+  border-radius: var(--wu-radius-sm);
+  background: var(--wu-color-surface);
+  color: var(--wu-color-ink);
+  font: inherit;
+}
+
+.dictionary-direction-row select {
+  padding: .5rem .75rem;
+}
+
+.dictionary-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .85rem;
+  align-items: end;
+}
+
+.dictionary-input-wrap {
+  min-width: 0;
+}
+
+.dictionary-input {
+  width: 100%;
+  padding: .68rem .8rem;
+  font-size: 1.05rem;
+}
+
+.dictionary-input.dictionary-urdu-text {
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  font-size: 1.18rem;
+  line-height: 1.8;
+}
+
+.dictionary-search-actions {
+  margin: 0;
+}
+
+.dictionary-notice {
+  min-height: 1.6rem;
+  margin-top: .75rem;
+}
+
+.dictionary-notice[data-state="error"] {
+  color: var(--wu-color-danger, #a12121);
+}
+
+.dictionary-notice[data-state="success"] {
+  color: var(--wu-color-success, #17663a);
+}
+
+.dictionary-results {
+  padding-top: .25rem;
+}
+
+.dictionary-results-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: .75rem;
+}
+
+.dictionary-source {
+  margin: 0 0 .15rem;
+  color: var(--wu-color-ink-soft);
+  font-weight: 700;
+}
+
+.dictionary-entry-list {
+  display: grid;
+  gap: .75rem;
+}
+
+.dictionary-entry-list.dictionary-urdu-results .dictionary-entry-term {
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  font-size: 1.35rem;
+  line-height: 1.9;
+}
+
+.dictionary-entry {
+  padding: 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface);
+}
+
+.dictionary-entry-top {
+  display: flex;
+  justify-content: space-between;
+  gap: .8rem;
+  align-items: baseline;
+}
+
+.dictionary-entry-term {
+  font-size: 1.15rem;
+}
+
+.dictionary-entry-meta {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+  justify-content: end;
+}
+
+.dictionary-entry-meta span {
+  padding: .2rem .45rem;
+  border-radius: 999px;
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+  font-size: .8rem;
+  font-weight: 700;
+}
+
+.dictionary-back-translations {
+  margin-top: .75rem;
+  padding-top: .7rem;
+  border-top: 1px solid var(--wu-color-border);
+}
+
+.dictionary-back-translations ul,
+.dictionary-synonyms ul {
+  margin: .45rem 0 0;
+  padding-inline-start: 1.2rem;
+}
+
+.dictionary-back-translations li {
+  margin: .28rem 0;
+}
+
+.dictionary-back-translations small {
+  color: var(--wu-color-ink-soft);
+}
+
+.dictionary-empty,
+.dictionary-synonyms {
+  margin-top: .8rem;
+  padding: .9rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+}
+
+.dictionary-empty p,
+.dictionary-synonyms p {
+  margin-bottom: 0;
+  color: var(--wu-color-ink-soft);
+}
+
+.dictionary-guide {
+  margin-top: 1.25rem;
+}
+
+.dictionary-page .urdu-tool-status-pill[data-state="busy"] {
+  opacity: .72;
+}
+
+@media (max-width: 760px) {
+  .dictionary-page .urdu-tool-main {
+    width: min(100% - 1rem, 1120px);
+  }
+
+  .dictionary-search-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dictionary-search-actions {
+    width: 100%;
+  }
+
+  .dictionary-search-actions .urdu-tool-button {
+    min-height: 3rem;
+    flex: 1 1 9rem;
+  }
+
+  .dictionary-entry-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dictionary-entry-meta {
+    justify-content: flex-start;
+  }
+}

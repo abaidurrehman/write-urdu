@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Urdu English Dictionary Preview | WriteUrdu</title>
+    <meta name="description" content="Look up Urdu and English words, compare meanings and translation alternatives, and review context clues in a focused WriteUrdu dictionary preview.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://write-urdu.com/tools/urdu-english-dictionary">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="Urdu English Dictionary Preview">
+    <meta property="og:description" content="Look up Urdu and English words and compare dictionary alternatives with context clues.">
+    <meta property="og:url" content="https://write-urdu.com/tools/urdu-english-dictionary">
+    <meta property="og:image" content="https://write-urdu.com/image/logo10.png">
+    <link rel="icon" href="/image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/urdu-english-dictionary.css">
+    <script src="/site-header.js" defer></script>
+    <script src="/js/dictionary-core.js" defer></script>
+    <script src="/js/urdu-english-dictionary.js" defer></script>
+</head>
+<body class="urdu-tool-page dictionary-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+
+    <main class="urdu-tool-main" data-dictionary-tool>
+        <header class="urdu-tool-hero dictionary-hero">
+            <div>
+                <p class="urdu-tool-eyebrow">Word meaning · Urdu ↔ English</p>
+                <h1>Urdu English Dictionary</h1>
+                <p class="dictionary-lede">Look up one word or short phrase, compare the strongest translation alternatives, and use back-translations as context before choosing the wording that fits.</p>
+                <div class="dictionary-benefits" aria-label="Dictionary highlights">
+                    <span>Urdu ↔ English</span><span>Part of speech</span><span>Context clues</span><span>No generated synonyms</span>
+                </div>
+            </div>
+            <aside class="urdu-tool-trust" aria-label="Dictionary preview scope">
+                <strong>Preview quality rule</strong><br>
+                Back-translations are shown as context clues, not called synonyms. Same-language synonyms appear only when a verified lexical source provides them.
+            </aside>
+        </header>
+
+        <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="dictionary-workspace-title" google-side-rail-overlap="false">
+            <div class="urdu-tool-workspace-header">
+                <div>
+                    <h2 id="dictionary-workspace-title">Find a meaning without leaving your writing flow</h2>
+                    <p>Choose a direction, enter one word or a short phrase, then look it up. Nothing is searched until you submit the form.</p>
+                </div>
+                <span class="urdu-tool-status-pill" data-dictionary-status data-state="idle">Ready</span>
+            </div>
+
+            <form class="dictionary-form" data-dictionary-form>
+                <div class="dictionary-direction-row">
+                    <label for="dictionaryDirection">Direction</label>
+                    <select id="dictionaryDirection" data-dictionary-direction>
+                        <option value="en-ur">English → Urdu</option>
+                        <option value="ur-en">Urdu → English</option>
+                    </select>
+                </div>
+
+                <div class="dictionary-search-row">
+                    <div class="dictionary-input-wrap">
+                        <div class="urdu-tool-label-row">
+                            <label for="dictionaryTerm" data-dictionary-term-label>English word or short phrase</label>
+                            <span class="urdu-tool-helper" data-dictionary-count>0 / 100</span>
+                        </div>
+                        <input id="dictionaryTerm" class="dictionary-input" data-dictionary-term maxlength="100" autocomplete="off" spellcheck="true" placeholder="Type an English word, for example work">
+                    </div>
+                    <div class="urdu-tool-actions dictionary-search-actions">
+                        <button class="urdu-tool-button primary" type="submit" data-dictionary-submit disabled>Look up word</button>
+                        <button class="urdu-tool-button" type="button" data-dictionary-clear disabled>Clear</button>
+                    </div>
+                </div>
+                <p class="urdu-tool-notice dictionary-notice" data-dictionary-notice data-state="info" aria-live="polite"></p>
+            </form>
+
+            <section class="dictionary-results" aria-labelledby="dictionary-results-title">
+                <div class="dictionary-results-header">
+                    <div>
+                        <p class="dictionary-source" data-dictionary-source></p>
+                        <h2 id="dictionary-results-title" data-dictionary-result-heading>Urdu meanings &amp; alternatives</h2>
+                    </div>
+                </div>
+
+                <div class="dictionary-entry-list" data-dictionary-entries></div>
+                <div class="dictionary-empty" data-dictionary-empty hidden>
+                    <strong>No dictionary entry found.</strong>
+                    <p>Check the spelling, remove extra words, or try a simpler base form.</p>
+                </div>
+
+                <section class="dictionary-synonyms" data-dictionary-synonyms-section hidden aria-labelledby="dictionary-synonyms-title">
+                    <h3 id="dictionary-synonyms-title">Verified synonyms</h3>
+                    <ul data-dictionary-synonyms></ul>
+                    <p data-dictionary-synonym-note></p>
+                </section>
+            </section>
+        </section>
+
+        <section class="urdu-tool-content dictionary-guide" aria-label="How to read dictionary results">
+            <section>
+                <h2>How to read the results</h2>
+                <p>A single word can have several good translations. Part of speech helps separate noun, verb and adjective senses. Back-translations show how a suggested target word maps back into the source language, which can help you choose the closest meaning.</p>
+                <h3>Why back-translations are not synonyms</h3>
+                <p>A reverse translation can be related in meaning without being a true same-language synonym. WriteUrdu keeps those concepts separate instead of presenting a larger but less trustworthy list.</p>
+            </section>
+            <aside class="urdu-tool-related">
+                <h2>Related tools</h2>
+                <p><a href="/">Write Urdu with English letters</a><br><a href="/tools/urdu-english-voice-translator">Urdu ↔ English Voice Translator</a><br><a href="/tools/audio-to-text-translator">Audio / voice note to text</a><br><a href="/tools/urdu-voice-typing">Urdu Voice Typing</a></p>
+            </aside>
+        </section>
+    </main>
+
+    <footer aria-label="Footer navigation"></footer>
+</body>
+</html>
