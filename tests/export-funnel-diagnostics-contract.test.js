@@ -11,6 +11,7 @@ const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
 const events = read('functions', 'api', 'events.js');
 const telemetry = read('js', 'product-telemetry.js');
 const migration = read('migrations', '0021_export_funnel_diagnostics.sql');
+const apiMiddleware = read('functions', 'api', '_middleware.js');
 
 assert.match(events, /'export_started',\s*\n\s*'export_completed',\s*\n\s*'export_error',/, 'export_started/export_error must join the event allowlist next to export_completed');
 assert.match(events, /'exports', 'export_started', 'export_error',/, 'export_started/export_error must be bounded aggregate counters on the metric rollups, not a new sink');
@@ -25,6 +26,21 @@ assert.match(migration, /ALTER TABLE product_hourly_locale_metrics ADD COLUMN ex
 assert.match(migration, /ALTER TABLE product_hourly_locale_metrics ADD COLUMN export_error/, 'locale hourly rollup needs export_error');
 assert.match(migration, /ALTER TABLE product_hourly_device_metrics ADD COLUMN export_started/, 'device hourly rollup needs export_started (deviceMetricUpsert writes it unconditionally)');
 assert.match(migration, /ALTER TABLE product_hourly_device_metrics ADD COLUMN export_error/, 'device hourly rollup needs export_error (deviceMetricUpsert writes it unconditionally)');
+
+// Production Pages deploys do not apply SQL files automatically. Keep a narrow
+// compatibility bridge on /api/events so a code deploy cannot turn an unapplied
+// additive migration into a total telemetry outage.
+assert.match(apiMiddleware, /url\.pathname === '\/api\/events'/, 'schema compatibility bridge must stay scoped to the events endpoint');
+assert.match(apiMiddleware, /context\.request\.method === 'POST'/, 'schema compatibility bridge must only run for telemetry writes');
+['product_hourly_metrics', 'product_hourly_locale_metrics', 'product_hourly_device_metrics'].forEach((table) => {
+    assert.ok(apiMiddleware.includes(`'${table}'`), `${table} must be covered by the compatibility bridge`);
+});
+['export_started', 'export_error'].forEach((column) => {
+    assert.ok(apiMiddleware.includes(`'${column}'`), `${column} must be repaired when absent`);
+});
+assert.match(apiMiddleware, /PRAGMA table_info\(\$\{table\}\)/, 'compatibility bridge must inspect the live schema before altering it');
+assert.match(apiMiddleware, /ALTER TABLE \$\{table\} ADD COLUMN \$\{column\} INTEGER NOT NULL DEFAULT 0/, 'compatibility bridge must apply the additive columns lazily');
+assert.match(apiMiddleware, /duplicate column name/i, 'concurrent first-request repairs must tolerate duplicate-column races');
 
 // Client: every existing export wrapper must report started before attempting
 // the real work and error if the underlying export throws/rejects, alongside
