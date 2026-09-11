@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Active Backlog
 
 **Status:** Active  
-**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-04  
+**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-11  
 **Purpose:** One source of truth for work that is still genuinely open.
 
 The previous long-form backlog is preserved at [`archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md`](archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md). Completed implementation contracts remain in [`archive/`](archive/README.md).
@@ -278,6 +278,24 @@ After the activation review:
 - [ ] Check GSC/external demand.
 - [ ] Write a feature contract only if demand/product fit are strong.
 - [ ] Otherwise remain Hold.
+
+## P1.9 — Multimodal Urdu Input & Conversion Platform
+
+**Spec:** [`WU-INPUT-001`](WU-INPUT-001-multimodal-urdu-input-conversion-platform.md)  
+**Evidence:** [`docs/WU-INPUT-001-API-EVIDENCE-2026-09-11.md`](../docs/WU-INPUT-001-API-EVIDENCE-2026-09-11.md)  
+**State:** Founder-approved / planned behind the activation evidence review. Planning and benchmarks may proceed without relaxing the core-UI freeze.
+
+- [ ] Slice 0 — reconcile ownership and build benchmark fixtures/harnesses without changing production UI.
+- [ ] Extend `WU-JOURNEY-001B` rather than duplicating the Roman Urdu resilience corpus.
+- [ ] Benchmark the current Roman Urdu engine against Microsoft transliteration before any provider change.
+- [ ] Benchmark true English→Urdu translation using Cloudflare IndicTrans2, Microsoft Translator and any approved incumbent path; preserve the translation/transliteration distinction.
+- [ ] Benchmark current local Urdu OCR against Gemma 4 and Google Vision on real Nastaliq, screenshot, photo, mixed-script and handwriting fixtures.
+- [ ] Prototype bounded uploaded-audio/voice-note → Urdu with Whisper only after cost/privacy/quality gates are defined; do not replace live browser Voice.
+- [ ] Keep `WU-AI-001` as the owner of Fix/Improve Urdu and `WU-DOC-001` as the owner of file/document translation.
+- [ ] Require provider-neutral server adapters, feature quotas, kill switches, content-free telemetry and local/manual fallbacks.
+- [ ] Do not add new acquisition routes until product quality passes and `WU-SEO-CTR-001` confirms canonical ownership/no cannibalization.
+
+**Guardrail:** this epic coordinates proven/missing input modes around one editable Urdu destination. It is not permission for a new homepage command wall, generic chatbot, multiple converter doorway pages, or silent paid compute.
 
 ---
 
