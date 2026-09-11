@@ -113,7 +113,11 @@ assert.match(browserCore, /MAX_FILE_BYTES = 6 \* 1024 \* 1024/, 'Browser preview
 assert.match(browserCore, /MAX_DURATION_SECONDS = 5 \* 60/, 'Browser preview must keep the 5-minute guard');
 assert.match(client, /fileInput\.addEventListener\('change',[\s\S]*handleSelectedFile/, 'File selection should only prepare local preview state');
 assert.match(client, /transcribeButton\.addEventListener\('click',\s*transcribeSelectedAudio\)/, 'Upload must require explicit Transcribe action');
-assert.match(client, /fetch\(core\.transcriptionUrl\(languageSelect\.value\)/, 'Client must call the bounded transcription endpoint');
+assert.match(client, /var languageCode = languageSelect\.value;[\s\S]*var audioFile = selectedFile;/, 'Transcription must snapshot language/file before async work');
+assert.match(client, /fetch\(core\.transcriptionUrl\(languageCode\)/, 'Client must call the bounded transcription endpoint with the request snapshot');
+assert.match(client, /languageSelect\.disabled = busy;/, 'Language selector must lock while a request is in flight');
+assert.match(client, /fileInput\.disabled = busy;/, 'File selection must lock while a request is in flight');
+assert.match(client, /clearButton\.disabled = busy \|\|/, 'Clear must lock while a request is in flight');
 assert.match(client, /translateButton\.addEventListener\('click',\s*translateTranscript\)/, 'Translation must require a separate explicit action');
 assert.match(client, /fetch\('\/api\/language-translate'/, 'Translation must reuse WU-INPUT-001B');
 assert.doesNotMatch(client, /providerAlias|modelAlias|microsoft|cloudflare|whisper/i, 'Browser must not select or expose provider/model details');
