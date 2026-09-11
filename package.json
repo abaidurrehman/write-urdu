@@ -28,6 +28,7 @@
     "collections:check": "node scripts/sync-static-collection-content.js --check",
     "benchmark:ai-writing": "node scripts/ai-writing-benchmark/run.js",
     "benchmark:roman-urdu": "node scripts/roman-urdu-benchmark/run.js",
+    "benchmark:input-activation:check": "node benchmarks/wu-input-001a/validate.js && node benchmarks/wu-input-001f/validate.mjs",
     "video:capture": "node scripts/capture-product-video.mjs",
     "video:render": "node scripts/render-product-video.mjs",
     "video:poster": "node scripts/render-product-video.mjs voice-typing website-16x9 --poster",

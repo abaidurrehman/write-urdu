@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "spec": "specs/WU-INPUT-001F-live-quality-activation-gate.md",
+  "allowed_states": ["pass", "fail", "unavailable", "not-run", "partial"],
+  "rows": [
+    {"id":"text-ur-en","gate":"INPUT_TRANSLATION_ENABLED","requires":["translation-live-ur-en","translation-human-ur-en","translation-cost","translation-privacy"]},
+    {"id":"text-en-ur","gate":"INPUT_TRANSLATION_ENABLED","requires":["translation-live-en-ur","translation-human-en-ur","translation-cost","translation-privacy"]},
+    {"id":"voice-ur-en","gate":"INPUT_TRANSLATION_ENABLED","prerequisites":["text-ur-en"],"requires":["voice-device-ur","voice-review-before-translate","voice-platform-privacy"]},
+    {"id":"voice-en-ur","gate":"INPUT_TRANSLATION_ENABLED","prerequisites":["text-en-ur"],"requires":["voice-device-en","voice-review-before-translate","voice-platform-privacy"]},
+    {"id":"audio-ur","gate":"AUDIO_TRANSCRIBE_ENABLED","requires":["audio-live-ur","audio-gold-review-ur","audio-cost","audio-privacy"]},
+    {"id":"audio-en","gate":"AUDIO_TRANSCRIBE_ENABLED","requires":["audio-live-en","audio-gold-review-en","audio-cost","audio-privacy"]},
+    {"id":"dictionary","gate":"DICTIONARY_LOOKUP_ENABLED","requires":["dictionary-live","dictionary-human","dictionary-cost","dictionary-privacy","synonym-boundary"]}
+  ],
+  "fixture_sources": {
+    "translation": "benchmarks/wu-input-001a/translation-fixtures.json",
+    "audio": "benchmarks/wu-input-001a/audio-fixture-plan.json",
+    "dictionary": "benchmarks/wu-input-001a/dictionary-fixtures.json"
+  },
+  "lexical_rule": "Back-translations are context clues, not verified synonyms."
+}
