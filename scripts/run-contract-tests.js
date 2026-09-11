@@ -73,6 +73,7 @@ const tests = [
   'tests/urdu-ocr-contract.test.js',
   'tests/voice-input-core.test.js',
   'tests/urdu-voice-typing-contract.test.js',
+  'tests/voice-translator-contract.test.js',
   'tests/basic-writer-voice-input-contract.test.js',
   'tests/basic-writer-copy-completion-contract.test.js',
   'tests/rich-editor-keyboard-voice-input-contract.test.js',
