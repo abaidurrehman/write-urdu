@@ -86,11 +86,14 @@
         var fileValidation = currentFileValidation();
         var transcriptReady = Boolean(core.cleanText(transcript.value));
         var translationReady = Boolean(core.cleanText(translation.value));
-        transcribeButton.disabled = !fileValidation.ok || transcribing || translating;
-        translateButton.disabled = !transcriptReady || transcribing || translating;
+        var busy = transcribing || translating;
+        languageSelect.disabled = busy;
+        fileInput.disabled = busy;
+        transcribeButton.disabled = !fileValidation.ok || busy;
+        translateButton.disabled = !transcriptReady || busy;
         copyTranscriptButton.disabled = !transcriptReady;
         copyTranslationButton.disabled = !translationReady;
-        clearButton.disabled = !selectedFile && !transcriptReady && !translationReady;
+        clearButton.disabled = busy || (!selectedFile && !transcriptReady && !translationReady);
     }
 
     function resetOutputs() {
@@ -163,16 +166,18 @@
             return;
         }
 
+        var languageCode = languageSelect.value;
+        var audioFile = selectedFile;
         transcribing = true;
         setStatus('Transcribing', 'busy');
         setNotice('Uploading this audio once for transcription. WriteUrdu does not save the audio file.', 'info');
         updateActions();
 
         try {
-            var response = await fetch(core.transcriptionUrl(languageSelect.value), {
+            var response = await fetch(core.transcriptionUrl(languageCode), {
                 method: 'POST',
                 headers: { 'content-type': validation.contentType },
-                body: selectedFile
+                body: audioFile
             });
             var payload = await response.json().catch(function () { return null; });
             if (!response.ok || !payload || payload.ok !== true || typeof payload.transcript !== 'string') {
