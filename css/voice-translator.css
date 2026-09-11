@@ -1,0 +1,114 @@
+@import url('./urdu-tools.css');
+
+.voice-translator-page .urdu-tool-main {
+  width: min(1180px, calc(100% - 2rem));
+}
+
+.voice-translator-hero {
+  align-items: stretch;
+}
+
+.voice-translator-controls {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: .9rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+}
+
+.voice-translator-controls label {
+  font-weight: 800;
+  color: var(--wu-color-ink);
+}
+
+.voice-translator-controls select {
+  min-height: 2.75rem;
+  padding: .5rem .75rem;
+  border: 1px solid var(--wu-color-border-strong, var(--wu-color-border));
+  border-radius: var(--wu-radius-sm);
+  background: var(--wu-color-surface);
+  color: var(--wu-color-ink);
+  font: inherit;
+}
+
+.voice-translator-mic-actions {
+  margin-left: auto;
+}
+
+.voice-translator-interim {
+  flex-basis: 100%;
+  min-height: 1.35rem;
+  color: var(--wu-color-ink-soft);
+  font-size: .95rem;
+}
+
+.voice-translator-page .urdu-tool-textarea {
+  min-height: 17rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.voice-translator-page .voice-translator-urdu-text {
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  font-size: 1.18rem;
+  line-height: 2;
+}
+
+.voice-translator-notice {
+  min-height: 1.6rem;
+  margin-top: .8rem;
+}
+
+.voice-translator-notice[data-state="error"] {
+  color: var(--wu-color-danger, #a12121);
+}
+
+.voice-translator-notice[data-state="success"] {
+  color: var(--wu-color-success, #17663a);
+}
+
+.voice-translator-preview-note {
+  margin: .8rem 0 0;
+  padding: .85rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+}
+
+.voice-translator-page .urdu-tool-status-pill[data-state="busy"] {
+  opacity: .75;
+}
+
+@media (max-width: 760px) {
+  .voice-translator-page .urdu-tool-main {
+    width: min(100% - 1rem, 1180px);
+  }
+
+  .voice-translator-controls {
+    align-items: stretch;
+  }
+
+  .voice-translator-controls label,
+  .voice-translator-controls select,
+  .voice-translator-mic-actions {
+    width: 100%;
+  }
+
+  .voice-translator-mic-actions {
+    margin-left: 0;
+  }
+
+  .voice-translator-mic-actions .urdu-tool-button {
+    min-height: 3rem;
+    flex: 1 1 9rem;
+  }
+
+  .voice-translator-page .urdu-tool-textarea {
+    min-height: 13rem;
+  }
+}
