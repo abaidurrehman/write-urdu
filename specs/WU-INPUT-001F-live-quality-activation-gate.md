@@ -2,13 +2,15 @@
 
 **Parent:** `WU-INPUT-001`
 **Depends on:** `WU-INPUT-001A` through `WU-INPUT-001E`
-**Status:** Acceptance foundation complete; live provider and device evidence pending
+**Status:** Live Microsoft translation evidence recorded; human and device evidence pending
 **Date:** 2026-09-11
 **Scope:** quality, cost, privacy and activation evidence for existing preview capabilities
 
 ## 1. Decision
 
-Do not add another major input feature and do not enable any current feature gate yet.
+Do not add another major input feature while the remaining acceptance evidence is unresolved.
+
+On 2026-09-11 the founder enabled the shared text translation gate in production after selecting Microsoft Translator and completing bounded smoke tests in both directions. That operational activation is now recorded, but it is not retroactively labelled a full acceptance pass: fixture-level fluent human review and current F0 usage/headroom evidence remain incomplete. Audio and dictionary gates remain unapproved.
 
 This slice turns the existing translation, Voice Translator, audio transcription and dictionary previews into independently reviewable release candidates. Automated contracts prove safety boundaries; live provider and device evidence determines whether each capability is useful enough to enable.
 
@@ -135,19 +137,19 @@ Account plan, current usage, regional resource configuration and any paid-overag
 
 ## 9. Initial activation matrix
 
-No live credentials, provider-console evidence, consented audio corpus or completed browser/device matrix was available in this repository inspection.
+Microsoft live translation and production smoke evidence is recorded in `benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md`. The Azure resource, East Asia region and F0 tier were confirmed without recording credentials. Current F0 usage/headroom, fixture-level fluent human review, consented audio corpus and completed browser/device matrix remain unavailable.
 
 | Capability | Quality | Cost | Privacy | Ready? | Gate |
 | --- | --- | --- | --- | --- | --- |
-| Text `ur-en` | unavailable | unavailable | partial | no | `INPUT_TRANSLATION_ENABLED` |
-| Text `en-ur` | unavailable | unavailable | partial | no | `INPUT_TRANSLATION_ENABLED` |
-| Voice `ur-en` | not-run | depends on translation | partial | no | `INPUT_TRANSLATION_ENABLED` |
-| Voice `en-ur` | not-run | depends on translation | partial | no | `INPUT_TRANSLATION_ENABLED` |
+| Text `ur-en` | partial | partial | pass | no | `INPUT_TRANSLATION_ENABLED` (active) |
+| Text `en-ur` | partial | partial | pass | no | `INPUT_TRANSLATION_ENABLED` (active) |
+| Voice `ur-en` | not-run | partial | partial | no | depends on active translation |
+| Voice `en-ur` | not-run | partial | partial | no | depends on active translation |
 | Audio Urdu | unavailable | unavailable | partial | no | `AUDIO_TRANSCRIBE_ENABLED` |
 | Audio English | unavailable | unavailable | partial | no | `AUDIO_TRANSCRIBE_ENABLED` |
 | Dictionary | unavailable | unavailable | partial | no | `DICTIONARY_LOOKUP_ENABLED` |
 
-Recommendation: keep all three gates disabled. This is evidence-based caution, not a negative quality finding.
+Recommendation: keep the currently active translation preview `noindex` and under acceptance review. Do not enable audio or dictionary. Complete fixture-level human review, account-headroom capture and the Voice browser/device matrix before calling translation or Voice ready.
 
 ## 10. Activation procedure
 

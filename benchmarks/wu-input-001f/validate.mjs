@@ -30,6 +30,11 @@ for (const [id, row] of statusById) {
   }
   assert.equal(typeof row.ready, 'boolean', `${id}: ready must be boolean`);
   assert(Array.isArray(row.evidence), `${id}: evidence must be an array`);
+  for (const evidence of row.evidence) {
+    assert.equal(typeof evidence, 'string', `${id}: evidence references must be strings`);
+    const evidencePath = evidence.split('#', 1)[0];
+    assert(fs.existsSync(path.join(root, evidencePath)), `${id}: evidence file missing: ${evidencePath}`);
+  }
   if (row.ready) {
     assert.equal(row.quality, 'pass', `${id}: ready requires passing quality`);
     assert.equal(row.cost, 'pass', `${id}: ready requires passing cost`);

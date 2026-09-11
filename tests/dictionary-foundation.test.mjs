@@ -120,6 +120,7 @@ assert.match(page, /value="ur-en"/, 'Urdu→English lookup direction is missing'
 assert.match(page, /data-dictionary-synonyms-section/, 'Verified synonym boundary UI is missing');
 assert.match(page, /Back-translations are shown as context clues, not called synonyms/, 'Page must explain back-translation/synonym distinction');
 assert.doesNotMatch(page, /Continue editing in WriteUrdu/, 'Editor handoff is out of scope for dictionary preview');
+assert.match(page, /href="\/tools\/urdu-english-voice-translator"/, 'Dictionary preview must link to the related Voice Translator');
 assert.doesNotMatch(page, /batch-transliteration/, 'Dictionary preview must not become another Roman Urdu surface');
 
 assert.match(browserCore, /MAX_TERM_CHARS = 100/, 'Browser term limit must match server/provider constraint');

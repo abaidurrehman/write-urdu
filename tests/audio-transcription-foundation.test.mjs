@@ -107,6 +107,7 @@ assert.match(page, /data-audio-translation/, 'Editable translation is missing');
 assert.doesNotMatch(page, /data-audio-transcript[^>]*readonly/, 'Transcript must remain editable');
 assert.doesNotMatch(page, /data-audio-translation[^>]*readonly/, 'Translation must remain editable');
 assert.doesNotMatch(page, /Continue editing in WriteUrdu/, 'Editor handoff is out of scope for this preview');
+assert.match(page, /href="\/tools\/urdu-english-voice-translator"/, 'Audio preview must link to the related live Voice Translator');
 assert.doesNotMatch(page, /batch-transliteration/, 'Audio preview must not become another Roman Urdu surface');
 
 assert.match(browserCore, /MAX_FILE_BYTES = 6 \* 1024 \* 1024/, 'Browser preview must keep the 6 MiB guard');

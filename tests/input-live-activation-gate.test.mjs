@@ -17,10 +17,19 @@ assert.deepEqual(plan.rows.map(row => row.id), [
   'text-ur-en', 'text-en-ur', 'voice-ur-en', 'voice-en-ur', 'audio-ur', 'audio-en', 'dictionary'
 ]);
 assert(status.rows.every(row => row.ready === false), 'No capability may start ready without live acceptance evidence');
-assert.equal(status.overall_recommendation, 'keep-disabled');
+assert.equal(status.overall_recommendation, 'translation-active-acceptance-pending');
+assert.equal(status.production_observed.translation_gate_functional, true);
+assert.equal(status.production_observed.provider_alias, 'microsoft-translator');
+
+const translationEvidence = read('benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md');
+assert.match(translationEvidence, /12 \| 12 \| 0/, 'Evidence must record successful full runs per direction');
+assert.match(translationEvidence, /Cache-Control: no-store/, 'Evidence must record the production no-store proof');
+assert.match(translationEvidence, /F0 Free/, 'Evidence must record the confirmed Azure tier');
+assert.match(translationEvidence, /Human decision \|[\s\S]*pending/, 'Human review must remain visibly pending');
 
 const spec = read('specs/WU-INPUT-001F-live-quality-activation-gate.md');
-assert.match(spec, /keep all three gates disabled/i);
+assert.match(spec, /enabled the shared text translation gate in production/i);
+assert.match(spec, /Do not enable audio or dictionary/i);
 assert.match(spec, /Back-translations remain context clues, never verified synonyms/i);
 assert.match(spec, /noindex/i);
 assert.match(spec, /owned, consented or appropriately licensed benchmark audio/i);

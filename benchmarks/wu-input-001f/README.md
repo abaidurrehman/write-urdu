@@ -4,6 +4,7 @@ This directory tracks activation decisions for existing preview capabilities. It
 
 - `acceptance-plan.json` defines required rows, prerequisites and evidence.
 - `activation-status.json` records current evidence state and recommendation.
+- `evidence/` contains sanitized, dated evidence records without credentials or private user content.
 - `validate.mjs` checks structure and fails if a ready decision lacks passing evidence.
 
 Run:

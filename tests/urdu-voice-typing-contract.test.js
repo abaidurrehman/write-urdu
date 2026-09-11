@@ -23,6 +23,8 @@ assert.match(html, /google-anno-skip/, 'voice workspace should be excluded from 
 assert.match(html, /google-side-rail-overlap="false"/, 'voice workspace should protect side-rail overlap');
 assert.match(html, /data-wu-ad-boundary="post-workspace"/, 'voice page should expose a post-workspace monetization boundary');
 assert.match(html, /href="\/write-urdu-privacy#voice-typing"/, 'detailed voice processing disclosure should live on the privacy page');
+assert.match(html, /href="\/tools\/urdu-english-voice-translator"[^>]*>Translate Urdu or English speech<\/a>/, 'Urdu Voice Typing should link to the related Voice Translator preview');
+assert.match(urduHtml, /href="\/tools\/urdu-english-voice-translator"[^>]*>اردو یا انگریزی گفتگو کا ترجمہ کریں<\/a>/, 'Urdu Voice Typing Urdu locale should retain the Voice Translator link');
 assert.doesNotMatch(html, /speech-recognition interface|browser-vendor|vendor service|session-only browser storage/i, 'voice landing page should avoid implementation-heavy privacy copy');
 assert.match(html, /\/js\/text-handoff\.js/, 'voice page should use session-only tool handoff support');
 assert.match(html, /\/js\/site-runtime\.js[\s\S]*\/js\/urdu-voice-typing\.js/, 'English voice page should load the shared export runtime before route UI');
