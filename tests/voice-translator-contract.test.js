@@ -22,6 +22,10 @@ assert.doesNotMatch(page, /data-voice-translate-source[^>]*readonly/, 'Source tr
 assert.doesNotMatch(page, /data-voice-translate-result[^>]*readonly/, 'Translation result must remain editable');
 assert.doesNotMatch(page, /batch-transliteration/, 'Voice translator must not become another Roman Urdu surface');
 assert.doesNotMatch(page, /Continue editing in WriteUrdu/, 'Editor handoff is intentionally out of scope for this preview');
+assert.match(page, /href="\/tools\/urdu-voice-typing"/, 'Voice Translator should link back to Urdu Voice Typing');
+assert.match(page, /href="\/tools\/audio-to-text-translator"/, 'Voice Translator should link to uploaded voice-note translation');
+assert.match(page, /href="\/tools\/urdu-english-dictionary"/, 'Voice Translator should link to dictionary lookup');
+assert.doesNotMatch(page, /voice-note transcription is a separate next slice/i, 'Voice Translator must not describe the completed audio preview as future work');
 
 assert.equal(core.getDirection('ur-en').recognitionLang, 'ur-PK');
 assert.equal(core.getDirection('en-ur').recognitionLang, 'en-US');

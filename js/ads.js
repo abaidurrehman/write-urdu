@@ -32,7 +32,8 @@
         trust: [
             '/why-write-urdu', '/10-years-of-write-urdu', '/contact', '/changelog', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',
             '/write-urdu-search', '/write-urdu-sitemap', '/sign-in', '/my-documents',
-            '/community-guidelines', '/my-publications'
+            '/community-guidelines', '/my-publications',
+            '/tools/urdu-english-voice-translator', '/tools/audio-to-text-translator', '/tools/urdu-english-dictionary'
         ]
     };
 

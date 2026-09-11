@@ -33,6 +33,9 @@ assert.strictEqual(ads.resolvePageType('/changelog'), 'trust', 'Customer changel
 assert.strictEqual(ads.resolvePageType('/write-urdu-feedback'), 'trust', 'Feedback must not be monetized as a content page');
 assert.strictEqual(ads.resolvePageType('/community-guidelines'), 'trust', 'Community guidelines must not be monetized as a content page');
 assert.strictEqual(ads.resolvePageType('/my-publications'), 'trust', 'My Publications is a private writer dashboard and must stay ad-free');
+assert.strictEqual(ads.resolvePageType('/tools/urdu-english-voice-translator'), 'trust', 'Voice Translator preview must stay ad-free during acceptance review');
+assert.strictEqual(ads.resolvePageType('/tools/audio-to-text-translator'), 'trust', 'Audio Translator preview must stay ad-free during acceptance review');
+assert.strictEqual(ads.resolvePageType('/tools/urdu-english-dictionary'), 'trust', 'Dictionary preview must stay ad-free during acceptance review');
 assert.strictEqual(ads.resolvePageType('/urdu-writers'), 'trust', 'Urdu Writers hub must be ad-free until content density is deliberately promoted to a monetized page type');
 assert.strictEqual(ads.resolvePageType('/urdu-writers/some-slug'), 'trust', 'Urdu Writers detail pages must be ad-free until content density is deliberately promoted to a monetized page type');
 assert.strictEqual(ads.resolvePageType('/urdu-writers/category/poetry'), 'trust', 'Urdu Writers category pages must be ad-free until content density is deliberately promoted to a monetized page type');

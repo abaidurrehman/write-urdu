@@ -197,6 +197,7 @@ module.exports = {
         'tools.urdu-voice-typing.keepGoingTitle': 'آپ کا متن استعمال کے لیے تیار ہے',
         'tools.urdu-voice-typing.keepGoingCopy': 'فاصلہ درست کریں، لکھنا جاری رکھیں، یا جب چاہیں اردو کی بورڈ پر منتقل ہوں۔',
         'tools.urdu-voice-typing.linkClean': 'اردو متن صاف کریں',
+        'tools.urdu-voice-typing.linkTranslate': 'اردو یا انگریزی گفتگو کا ترجمہ کریں',
         'tools.urdu-voice-typing.linkContinue': 'رائٹ اردو میں جاری رکھیں',
         'tools.urdu-voice-typing.linkKeyboard': 'اردو کی بورڈ استعمال کریں',
         'tools.urdu-voice-typing.linkTyping': 'ٹائپ کرنا پسند ہے؟ انگریزی حروف سے اردو ٹائپ کریں',
