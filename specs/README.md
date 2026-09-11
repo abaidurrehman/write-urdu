@@ -29,6 +29,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-DOC-001C` | Document growth/SEO/measurement | **Planned** |
 | `WU-DOC-001D` | Scanned/image/layout R&D | **Hold / gated R&D** |
 | `WU-AI-001` | Urdu AI Writing Assistant Platform | **Implemented core / acceptance pending** — A–C built/tested; provider-terms gate blocks production enablement; later expansion remains evidence-gated |
+| `WU-INPUT-001` | Multimodal Urdu Input & Conversion Platform | **Planned / evidence-gated** — founder-approved coordination epic for Roman/direct/translation/voice/audio/OCR/document inputs; reuses existing owners, starts with benchmarks, and remains behind `WU-PLAT-002H` for core-UI/public breadth |
 | `WU-ANALYTICS-003` | Acquisition and Returning Signal | **Implemented core** — acquisition signal shipped; `WU-PLAT-002H` adds first-value/continuation acceptance requirements using the approved telemetry boundary |
 | `WU-JOURNEY-001` | Pakistan Urdu Intent & Destination Journey Programme | **Planned / evidence-gated** — feedback-reconciled programme connecting existing input, messaging/social, document, practice and print capabilities around real user destination intent; core UI remains behind `WU-PLAT-002H` |
 | `WU-JOURNEY-001A` | Destination Intent Measurement | **Planned evidence foundation** — privacy-safe bounded destination categories + Product Pulse reporting; visible prompt only after first value and P0 gate approval |
@@ -88,6 +89,21 @@ The feedback review also records two important truth constraints:
 
 - trust copy must remain feature-specific because transliteration, voice, local tools, account storage and public publishing have different processing boundaries;
 - professional print work begins with a benchmark of the current browser/Nastaliq/raster-PDF path rather than an assumed HarfBuzz/font rewrite or an unsupported “replace InPage” claim.
+
+## Planned multimodal Urdu input programme
+
+`WU-INPUT-001` records the 2026-09-11 API/traffic research as a single coordination epic rather than five competing tools. Its first principle is **one editable Urdu destination, multiple bounded input modes**.
+
+It intentionally reuses existing ownership:
+
+- Roman resilience: `WU-JOURNEY-001B`;
+- typing CTR/query ownership: `WU-SEO-CTR-001`;
+- live Voice: `WU-VOICE-PLAT-001`;
+- existing OCR route: `/urdu-ocr` / historical `WU-TOOLS-EXPANSION-003`;
+- AI correction: `WU-AI-001`;
+- document/PDF translation: `WU-DOC-001`.
+
+New gaps such as uploaded audio → Urdu and server-assisted OCR are benchmark-first. Core-UI/public breadth remains behind `WU-PLAT-002H`; planning fixtures/provider research may proceed without relaxing that gate.
 
 ## Archived contracts
 
