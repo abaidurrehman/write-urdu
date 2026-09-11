@@ -52,6 +52,16 @@
   overflow-wrap: anywhere;
 }
 
+.voice-translator-page .urdu-tool-textarea[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+.voice-translator-page .urdu-tool-textarea[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
 .voice-translator-page .voice-translator-urdu-text {
   font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
   font-size: 1.18rem;

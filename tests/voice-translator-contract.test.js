@@ -5,6 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const page = fs.readFileSync(path.join(root, 'tools/urdu-english-voice-translator.html'), 'utf8');
 const client = fs.readFileSync(path.join(root, 'js/urdu-english-voice-translator.js'), 'utf8');
+const styles = fs.readFileSync(path.join(root, 'css/voice-translator.css'), 'utf8');
 const voiceCore = fs.readFileSync(path.join(root, 'js/voice-input-core.js'), 'utf8');
 const core = require(path.join(root, 'js/voice-translator-core.js'));
 
@@ -52,6 +53,8 @@ assert.doesNotMatch(client, /providerAlias|modelAlias|microsoft|cloudflare/i, 'C
 assert.match(client, /controller\.destroy\(\)/, 'Direction changes must recreate the recognition controller');
 assert.match(client, /source\.value = ''[\s\S]*result\.value = ''/, 'Direction change/clear must prevent mislabeled carry-over');
 assert.doesNotMatch(client, /console\.(log|info|warn|error)/, 'Voice translator must not log user transcript/translation content');
+assert.match(styles, /\.urdu-tool-textarea\[dir="ltr"\]\s*\{[\s\S]*?direction:\s*ltr;[\s\S]*?text-align:\s*left;/, 'English textareas must render LTR and left-aligned');
+assert.match(styles, /\.urdu-tool-textarea\[dir="rtl"\]\s*\{[\s\S]*?direction:\s*rtl;[\s\S]*?text-align:\s*right;/, 'Urdu textareas must render RTL and right-aligned');
 
 assert.match(voiceCore, /options\.lang \|\| 'ur-PK'/, 'Shared Voice core must remain configurable by language');
 assert.match(core.friendlyTranslationError('translation_service_not_enabled'), /not enabled/i);
