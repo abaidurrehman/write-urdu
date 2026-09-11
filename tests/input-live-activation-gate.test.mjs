@@ -11,13 +11,17 @@ const status = JSON.parse(read('benchmarks/wu-input-001f/activation-status.json'
 
 const result = spawnSync(process.execPath, ['benchmarks/wu-input-001f/validate.mjs'], { cwd: root, encoding: 'utf8' });
 assert.equal(result.status, 0, result.stderr || result.stdout);
-assert.match(result.stdout, /0\/7 rows ready/);
+assert.match(result.stdout, /2\/7 rows ready/);
 
 assert.deepEqual(plan.rows.map(row => row.id), [
   'text-ur-en', 'text-en-ur', 'voice-ur-en', 'voice-en-ur', 'audio-ur', 'audio-en', 'dictionary'
 ]);
-assert(status.rows.every(row => row.ready === false), 'No capability may start ready without live acceptance evidence');
-assert.equal(status.overall_recommendation, 'translation-active-acceptance-pending');
+assert.deepEqual(
+  status.rows.filter(row => row.ready).map(row => row.id),
+  ['text-ur-en', 'text-en-ur'],
+  'Only accepted text translation directions may be ready'
+);
+assert.equal(status.overall_recommendation, 'translation-ready-voice-acceptance-pending');
 assert.equal(status.production_observed.translation_gate_functional, true);
 assert.equal(status.production_observed.provider_alias, 'microsoft-translator');
 
@@ -25,7 +29,9 @@ const translationEvidence = read('benchmarks/wu-input-001f/evidence/2026-09-11-m
 assert.match(translationEvidence, /12 \| 12 \| 0/, 'Evidence must record successful full runs per direction');
 assert.match(translationEvidence, /Cache-Control: no-store/, 'Evidence must record the production no-store proof');
 assert.match(translationEvidence, /F0 Free/, 'Evidence must record the confirmed Azure tier');
-assert.match(translationEvidence, /Human decision \|[\s\S]*pending/, 'Human review must remain visibly pending');
+assert.doesNotMatch(translationEvidence, /Human decision \|[\s\S]*pending/, 'Human review must have no pending fixture');
+assert.match(translationEvidence, /Every fixture is therefore recorded as `pass`/, 'Evidence must record human acceptance');
+assert.match(translationEvidence, /current-month `Text Characters Translated`[\s\S]*`2\.56k`/, 'Evidence must record current F0 usage');
 
 const spec = read('specs/WU-INPUT-001F-live-quality-activation-gate.md');
 assert.match(spec, /enabled the shared text translation gate in production/i);
