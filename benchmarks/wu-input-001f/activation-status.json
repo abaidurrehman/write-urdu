@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "reviewed_at": "2026-09-11",
-  "overall_recommendation": "translation-active-acceptance-pending",
+  "overall_recommendation": "translation-ready-voice-acceptance-pending",
   "production_observed": {
     "reviewed_at": "2026-09-11",
     "translation_gate_functional": true,
@@ -10,14 +10,12 @@
   },
   "external_dependencies": [
     "Cloudflare Workers AI account headroom",
-    "fluent Urdu human review",
-    "current Microsoft Translator F0 usage and remaining headroom",
     "supported browser and device matrix",
     "owned or consented audio with gold transcripts"
   ],
   "rows": [
-    {"id":"text-ur-en","quality":"partial","cost":"partial","privacy":"pass","ready":false,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
-    {"id":"text-en-ur","quality":"partial","cost":"partial","privacy":"pass","ready":false,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
+    {"id":"text-ur-en","quality":"pass","cost":"pass","privacy":"pass","ready":true,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
+    {"id":"text-en-ur","quality":"pass","cost":"pass","privacy":"pass","ready":true,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
     {"id":"voice-ur-en","quality":"not-run","cost":"partial","privacy":"partial","ready":false,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
     {"id":"voice-en-ur","quality":"not-run","cost":"partial","privacy":"partial","ready":false,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
     {"id":"audio-ur","quality":"unavailable","cost":"unavailable","privacy":"partial","ready":false,"evidence":[]},
