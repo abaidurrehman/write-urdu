@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "purpose": "Starter semantic-translation benchmark; human scoring required.",
+  "scoring_dimensions": [
+    "meaning_preservation",
+    "naturalness",
+    "grammar",
+    "proper_name_preservation",
+    "no_unwanted_additions",
+    "script_correctness"
+  ],
+  "fixtures": [
+    {"id":"ur_en_everyday_001","direction":"ur-en","source":"آپ کیسے ہیں؟","tags":["everyday","question"]},
+    {"id":"ur_en_everyday_002","direction":"ur-en","source":"میں کل گھر آؤں گا۔","tags":["everyday","time","gender"]},
+    {"id":"ur_en_message_001","direction":"ur-en","source":"براہِ کرم مجھے شام تک جواب دے دیں۔","tags":["polite","message"]},
+    {"id":"ur_en_work_001","direction":"ur-en","source":"میٹنگ پیر کو صبح دس بجے شروع ہوگی۔","tags":["work","date-time"]},
+    {"id":"ur_en_work_002","direction":"ur-en","source":"براہِ کرم invoice آج email کر دیں۔","tags":["code-switch","work","protected-token"]},
+    {"id":"ur_en_name_001","direction":"ur-en","source":"علی لاہور سے کراچی جا رہا ہے۔","tags":["names","places"]},
+    {"id":"ur_en_number_001","direction":"ur-en","source":"اس کی قیمت 2,500 روپے ہے۔","tags":["number","currency"]},
+    {"id":"ur_en_formal_001","direction":"ur-en","source":"میں آپ سے درخواست کرتا ہوں کہ میری درخواست پر غور کریں۔","tags":["formal"]},
+    {"id":"ur_en_learning_001","direction":"ur-en","source":"مجھے اس لفظ کا مطلب سمجھ نہیں آیا۔","tags":["learning"]},
+    {"id":"ur_en_social_001","direction":"ur-en","source":"آج موسم بہت اچھا ہے، باہر چلیں؟","tags":["social","question"]},
+    {"id":"ur_en_ambiguity_001","direction":"ur-en","source":"وہ کل آئے گا۔","tags":["ambiguity","time"]},
+    {"id":"ur_en_multisentence_001","direction":"ur-en","source":"میں نے فائل دیکھ لی ہے۔ کچھ تبدیلیاں ضروری ہیں۔","tags":["multi-sentence","work"]},
+    {"id":"en_ur_everyday_001","direction":"en-ur","source":"How are you?","tags":["everyday","question"]},
+    {"id":"en_ur_everyday_002","direction":"en-ur","source":"I will come home tomorrow.","tags":["everyday","time","gender-ambiguity"]},
+    {"id":"en_ur_message_001","direction":"en-ur","source":"Please reply to me by this evening.","tags":["polite","message"]},
+    {"id":"en_ur_work_001","direction":"en-ur","source":"The meeting starts at 10 AM on Monday.","tags":["work","date-time"]},
+    {"id":"en_ur_work_002","direction":"en-ur","source":"Please email the invoice today.","tags":["work","protected-token"]},
+    {"id":"en_ur_name_001","direction":"en-ur","source":"Ali is travelling from Lahore to Karachi.","tags":["names","places"]},
+    {"id":"en_ur_number_001","direction":"en-ur","source":"It costs 2,500 rupees.","tags":["number","currency"]},
+    {"id":"en_ur_formal_001","direction":"en-ur","source":"I request that you please consider my application.","tags":["formal"]},
+    {"id":"en_ur_learning_001","direction":"en-ur","source":"I did not understand the meaning of this word.","tags":["learning"]},
+    {"id":"en_ur_social_001","direction":"en-ur","source":"The weather is beautiful today. Shall we go outside?","tags":["social","question"]},
+    {"id":"en_ur_ambiguity_001","direction":"en-ur","source":"They will come tomorrow.","tags":["pronoun-ambiguity","gender-ambiguity"]},
+    {"id":"en_ur_multisentence_001","direction":"en-ur","source":"I reviewed the file. A few changes are necessary.","tags":["multi-sentence","work"]}
+  ]
+}
