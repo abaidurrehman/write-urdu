@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Urdu ↔ English Voice Translator Preview | WriteUrdu</title>
+    <meta name="description" content="Speak Urdu or English, review the transcript, then translate it into English or Urdu. Preview tool from WriteUrdu.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://write-urdu.com/tools/urdu-english-voice-translator">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="Urdu ↔ English Voice Translator Preview">
+    <meta property="og:description" content="Speak, review the transcript, then translate between Urdu and English.">
+    <meta property="og:url" content="https://write-urdu.com/tools/urdu-english-voice-translator">
+    <meta property="og:image" content="https://write-urdu.com/assets/social/write-urdu-home.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/voice-translator.css">
+    <script src="/site-header.js" defer></script>
+    <script src="/js/site-runtime.js" defer></script>
+    <script src="/js/voice-input-core.js" defer></script>
+    <script src="/js/voice-translator-core.js" defer></script>
+    <script src="/js/urdu-english-voice-translator.js" defer></script>
+</head>
+<body class="urdu-tool-page voice-translator-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+    <main class="urdu-tool-main" data-voice-translator>
+        <header class="urdu-tool-hero voice-translator-hero">
+            <div>
+                <p class="urdu-tool-eyebrow">Preview · Speak → review → translate</p>
+                <h1>Urdu ↔ English Voice Translator</h1>
+                <p>Speak in Urdu or English, review what the browser heard, then choose Translate. Your microphone audio is not uploaded by this WriteUrdu page.</p>
+            </div>
+            <aside class="urdu-tool-trust" aria-label="Preview privacy boundary">
+                <strong>You control when translation happens.</strong><br>
+                Speech recognition creates the transcript first. WriteUrdu sends text for translation only after you press Translate.
+            </aside>
+        </header>
+
+        <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="voice-translator-title" google-side-rail-overlap="false">
+            <div class="urdu-tool-workspace-header">
+                <div>
+                    <h2 id="voice-translator-title">Speak in one language. Translate into the other.</h2>
+                    <p>Choose a direction, speak or edit the transcript, then translate the reviewed text.</p>
+                </div>
+                <span class="urdu-tool-status-pill" data-voice-translate-status data-state="idle">Ready</span>
+            </div>
+
+            <div class="voice-translator-controls" aria-label="Voice translation controls">
+                <label for="voiceTranslatorDirection">Translation direction</label>
+                <select id="voiceTranslatorDirection" data-voice-translate-direction>
+                    <option value="ur-en">Urdu → English</option>
+                    <option value="en-ur">English → Urdu</option>
+                </select>
+                <div class="urdu-tool-actions voice-translator-mic-actions">
+                    <button class="urdu-tool-button primary" type="button" data-voice-translate-start>Speak Urdu</button>
+                    <button class="urdu-tool-button" type="button" data-voice-translate-stop hidden>Stop listening</button>
+                    <button class="urdu-tool-button ghost" type="button" data-voice-translate-clear disabled>Clear</button>
+                </div>
+                <div class="voice-translator-interim" data-voice-translate-interim aria-live="off"></div>
+            </div>
+
+            <div class="urdu-tool-grid voice-translator-grid">
+                <section class="urdu-tool-column" aria-labelledby="voice-translator-source-label">
+                    <div class="urdu-tool-label-row">
+                        <label id="voice-translator-source-label" for="voiceTranslatorSource" data-voice-translate-source-label>Urdu transcript</label>
+                        <span class="urdu-tool-helper" data-voice-translate-source-count>0 / 5000</span>
+                    </div>
+                    <textarea id="voiceTranslatorSource" class="urdu-tool-textarea voice-translator-urdu-text" data-voice-translate-source dir="rtl" lang="ur" maxlength="5000" spellcheck="true" placeholder="آپ کی اردو گفتگو یہاں نظر آئے گی۔ آپ اسے ترجمہ کرنے سے پہلے درست کر سکتے ہیں۔"></textarea>
+                    <div class="urdu-tool-actions">
+                        <button class="urdu-tool-button" type="button" data-voice-translate-copy-source disabled>Copy transcript</button>
+                        <button class="urdu-tool-button primary" type="button" data-voice-translate-submit disabled>Translate to English</button>
+                    </div>
+                </section>
+
+                <section class="urdu-tool-column" aria-labelledby="voice-translator-result-label">
+                    <div class="urdu-tool-label-row">
+                        <label id="voice-translator-result-label" for="voiceTranslatorResult" data-voice-translate-result-label>English translation</label>
+                        <span class="urdu-tool-helper">Editable result</span>
+                    </div>
+                    <textarea id="voiceTranslatorResult" class="urdu-tool-textarea" data-voice-translate-result dir="ltr" lang="en" spellcheck="true" placeholder="Your English translation appears here."></textarea>
+                    <div class="urdu-tool-actions">
+                        <button class="urdu-tool-button primary" type="button" data-voice-translate-copy-result disabled>Copy translation</button>
+                    </div>
+                </section>
+            </div>
+
+            <p class="urdu-tool-notice voice-translator-notice" data-voice-translate-notice data-state="idle" aria-live="polite"></p>
+            <p class="voice-translator-preview-note"><strong>Preview:</strong> translation is limited to 5,000 characters and may not yet be enabled on the public deployment. Review names, dates, numbers and important wording before using the result.</p>
+        </section>
+
+        <section class="urdu-tool-content" aria-label="How this preview works">
+            <section>
+                <h2>Why the transcript comes first</h2>
+                <p>Speech recognition can mishear names, numbers or mixed Urdu-English phrases. This preview shows the source transcript before translation so you can correct it before any text is sent for semantic translation.</p>
+                <h3>Urdu → English</h3>
+                <p>Choose Urdu → English, speak naturally in Urdu, review the Urdu transcript, then translate it into English.</p>
+                <h3>English → Urdu</h3>
+                <p>Switch the direction, speak in English, review the English transcript, then translate it into editable Urdu.</p>
+            </section>
+            <aside class="urdu-tool-related">
+                <h2>Other input options</h2>
+                <p><a href="/tools/urdu-voice-typing">Urdu Voice Typing</a><br><a href="/">Write Urdu with English letters</a><br><a href="/urdu-ocr">Extract Urdu from an image</a></p>
+                <p>Uploaded voice-note transcription is a separate next slice and is not hidden inside this live microphone workflow.</p>
+            </aside>
+        </section>
+    </main>
+    <footer aria-label="Footer navigation"></footer>
+    <div id="appNotifications" class="app-notifications" role="status" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
