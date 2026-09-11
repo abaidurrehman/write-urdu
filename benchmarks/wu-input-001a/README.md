@@ -11,6 +11,7 @@ It exists to benchmark **net-new** capabilities without modifying the current Wr
 - `audio-fixture-plan.json` — metadata plan for consented benchmark recordings; no real user audio belongs here.
 - `validate.js` — zero-dependency structural validator.
 - `run-live.js` — explicit opt-in live runner for Microsoft translation/dictionary and Cloudflare translation candidates.
+- `run-audio-live.js` — explicit opt-in Whisper transcription benchmark with optional Microsoft transcript translation.
 
 ## Important boundaries
 
@@ -20,7 +21,7 @@ It exists to benchmark **net-new** capabilities without modifying the current Wr
 4. Do not invent dictionary synonyms to make a fixture pass.
 5. Do not change the current Roman Urdu/editor implementation from this benchmark.
 6. Provider credentials must stay in environment variables; never commit them.
-7. `run-live.js` sends only committed benchmark fixtures and runs only when a developer explicitly invokes it.
+7. Live runners send only explicit benchmark content and run only when a developer invokes them.
 
 ## Validate the local corpus
 
@@ -73,9 +74,36 @@ node benchmarks/wu-input-001a/run-live.js --mode=translation --provider=cloudfla
 node benchmarks/wu-input-001a/run-live.js --mode=dictionary --provider=microsoft
 ```
 
-The runner emits JSONL to stdout. Use `--output=path/to/result.jsonl` to also write a local result file, and `--limit=N` for a bounded smoke run.
+## Optional live audio benchmark
 
-Live outputs are evidence, not automatic acceptance. Translation and lexical quality still require human Urdu review.
+Use only owned/consented benchmark audio with a gold transcript.
+
+Cloudflare transcription only:
+
+```bash
+node benchmarks/wu-input-001a/run-audio-live.js \
+  --file=benchmarks/private-samples/urdu-note.wav \
+  --language=ur \
+  --task=transcribe
+```
+
+Urdu audio → Urdu transcript → English translation:
+
+```bash
+node benchmarks/wu-input-001a/run-audio-live.js \
+  --file=benchmarks/private-samples/urdu-note.wav \
+  --language=ur \
+  --task=transcribe \
+  --translate-to=en
+```
+
+English audio → English transcript → Urdu translation uses the same pipeline with `--language=en --translate-to=ur`.
+
+The audio harness deliberately caps one benchmark file at 10 MiB. Larger/longer audio belongs in the separately reviewed chunking experiment, not an accidental huge request.
+
+The live runners emit JSONL to stdout. Use `--output=path/to/result.jsonl` to also write a local result file, and `--limit=N` on `run-live.js` for a bounded smoke run.
+
+Live outputs are evidence, not automatic acceptance. Translation, transcription and lexical quality still require human review.
 
 ## Expansion targets
 
