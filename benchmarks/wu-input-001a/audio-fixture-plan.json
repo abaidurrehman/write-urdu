@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "purpose": "Plan for consented/gold audio benchmark clips; this file contains no recordings.",
+  "storage_rule": "Never use production user audio. Benchmark recordings require explicit consent or synthetic/test ownership.",
+  "target_total_clips": 100,
+  "starter_cases": [
+    {"id":"audio_ur_clean_short_001","language":"ur","environment":"quiet","duration_bucket":"10-30s","tags":["clean","everyday"],"gold_transcript_required":true},
+    {"id":"audio_ur_noise_short_001","language":"ur","environment":"background-noise","duration_bucket":"10-30s","tags":["noise","voice-note"],"gold_transcript_required":true},
+    {"id":"audio_ur_code_switch_001","language":"ur","environment":"quiet","duration_bucket":"10-30s","tags":["code-switch","english-terms"],"gold_transcript_required":true},
+    {"id":"audio_ur_names_numbers_001","language":"ur","environment":"quiet","duration_bucket":"10-30s","tags":["names","numbers","places"],"gold_transcript_required":true},
+    {"id":"audio_ur_medium_001","language":"ur","environment":"quiet","duration_bucket":"1-3m","tags":["longer-note","chunking"],"gold_transcript_required":true},
+    {"id":"audio_en_clean_short_001","language":"en","environment":"quiet","duration_bucket":"10-30s","tags":["clean","everyday"],"gold_transcript_required":true},
+    {"id":"audio_en_to_ur_001","language":"en","environment":"quiet","duration_bucket":"10-30s","tags":["translation-target-ur"],"gold_transcript_required":true},
+    {"id":"audio_mixed_001","language":"mixed","environment":"quiet","duration_bucket":"10-30s","tags":["urdu-english-code-switch"],"gold_transcript_required":true},
+    {"id":"audio_mic_far_001","language":"ur","environment":"quiet","duration_bucket":"10-30s","tags":["far-microphone"],"gold_transcript_required":true},
+    {"id":"audio_long_chunk_001","language":"ur","environment":"quiet","duration_bucket":"3-5m","tags":["chunking","boundary-continuity"],"gold_transcript_required":true}
+  ]
+}
