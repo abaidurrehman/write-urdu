@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "purpose": "Behavior benchmark for bilingual meanings and verified same-language synonyms; contains no copied dictionary definitions.",
+  "fixtures": [
+    {"id":"dict_ur_common_001","query":"خوش","from":"ur","to":"en","tags":["common","adjective"],"required_behaviors":["meaning","part_of_speech_if_available","synonyms_only_if_verified"]},
+    {"id":"dict_ur_common_002","query":"دوست","from":"ur","to":"en","tags":["common","noun"],"required_behaviors":["meaning","alternative_translations_if_available"]},
+    {"id":"dict_ur_common_003","query":"کوشش","from":"ur","to":"en","tags":["common","noun"],"required_behaviors":["meaning","synonyms_only_if_verified"]},
+    {"id":"dict_ur_verb_001","query":"سمجھنا","from":"ur","to":"en","tags":["verb"],"required_behaviors":["meaning","part_of_speech_if_available"]},
+    {"id":"dict_ur_polysemy_001","query":"حال","from":"ur","to":"en","tags":["polysemy"],"required_behaviors":["multiple_senses_if_source_supports","do_not_merge_unrelated_senses"]},
+    {"id":"dict_ur_compound_001","query":"خوش خبری","from":"ur","to":"en","tags":["compound"],"required_behaviors":["phrase_lookup","synonyms_only_if_verified"]},
+    {"id":"dict_ur_spelling_001","query":"ذمہ داری","from":"ur","to":"en","tags":["multiword","spelling"],"required_behaviors":["meaning","preserve_source_script"]},
+    {"id":"dict_ur_notfound_001","query":"ززززغغغ","from":"ur","to":"en","tags":["not-found"],"required_behaviors":["clean_not_found","no_hallucination"]},
+    {"id":"dict_en_common_001","query":"happy","from":"en","to":"ur","tags":["common","adjective"],"required_behaviors":["meaning","alternative_translations_if_available"]},
+    {"id":"dict_en_common_002","query":"responsibility","from":"en","to":"ur","tags":["common","noun"],"required_behaviors":["meaning","part_of_speech_if_available"]},
+    {"id":"dict_en_polysemy_001","query":"light","from":"en","to":"ur","tags":["polysemy"],"required_behaviors":["multiple_senses_if_source_supports","do_not_merge_unrelated_senses"]},
+    {"id":"dict_en_phrase_001","query":"take care","from":"en","to":"ur","tags":["phrase"],"required_behaviors":["phrase_lookup_or_clean_not_found"]},
+    {"id":"dict_en_notfound_001","query":"zzzzqxxnotaword","from":"en","to":"ur","tags":["not-found"],"required_behaviors":["clean_not_found","no_hallucination"]}
+  ]
+}
