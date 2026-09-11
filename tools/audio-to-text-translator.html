@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Audio & Voice Note to Urdu or English Text Preview | WriteUrdu</title>
+    <meta name="description" content="Upload a short Urdu or English voice note, transcribe it into editable text, then optionally translate the reviewed transcript.">
+    <meta name="robots" content="noindex,follow">
+    <link rel="canonical" href="https://write-urdu.com/tools/audio-to-text-translator">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="Audio & Voice Note to Text Preview">
+    <meta property="og:description" content="Turn a short Urdu or English voice note into editable text, then optionally translate it.">
+    <meta property="og:url" content="https://write-urdu.com/tools/audio-to-text-translator">
+    <meta property="og:image" content="https://write-urdu.com/assets/social/write-urdu-home.svg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="/image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/audio-to-text-translator.css">
+    <script src="/site-header.js" defer></script>
+    <script src="/js/site-runtime.js" defer></script>
+    <script src="/js/audio-transcription-core.js" defer></script>
+    <script src="/js/audio-to-text-translator.js" defer></script>
+</head>
+<body class="urdu-tool-page audio-transcription-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+    <main class="urdu-tool-main" data-audio-transcription>
+        <header class="urdu-tool-hero audio-transcription-hero">
+            <div>
+                <p class="urdu-tool-eyebrow">Preview · voice note → editable text</p>
+                <h1>Audio & Voice Note to Text</h1>
+                <p>Choose a short Urdu or English recording, review the file locally, then transcribe it into editable text. Translation is optional and happens only after you review the transcript.</p>
+            </div>
+            <aside class="urdu-tool-trust" aria-label="Preview limits">
+                <strong>Bounded first slice</strong><br>
+                MP3, M4A, WAV, WebM, OGG or AAC · up to 6 MB · up to 5 minutes in this browser preview.
+            </aside>
+        </header>
+
+        <section class="urdu-tool-workspace google-anno-skip" aria-labelledby="audio-workspace-title" google-side-rail-overlap="false">
+            <div class="urdu-tool-workspace-header">
+                <div>
+                    <h2 id="audio-workspace-title">Transcribe a short Urdu or English recording</h2>
+                    <p>Selecting a file does not upload it. The audio is sent only when you choose <strong>Transcribe audio</strong>.</p>
+                </div>
+                <span class="urdu-tool-status-pill" data-audio-status data-state="idle">Waiting for audio</span>
+            </div>
+
+            <div class="audio-transcription-controls">
+                <label for="audioLanguage">Spoken language</label>
+                <select id="audioLanguage" data-audio-language>
+                    <option value="ur">Urdu</option>
+                    <option value="en">English</option>
+                </select>
+                <label class="audio-file-label">
+                    Choose audio file
+                    <input type="file" data-audio-file accept="audio/mpeg,audio/mp4,audio/x-m4a,audio/wav,audio/x-wav,audio/webm,audio/ogg,audio/aac,.mp3,.m4a,.mp4,.wav,.webm,.ogg,.aac">
+                </label>
+                <button class="urdu-tool-button ghost" type="button" data-audio-clear disabled>Clear</button>
+            </div>
+
+            <div class="audio-transcription-preview-row">
+                <audio controls preload="metadata" data-audio-preview aria-label="Selected audio preview"></audio>
+                <p data-audio-file-meta>No audio selected.</p>
+            </div>
+
+            <div class="urdu-tool-actions audio-transcription-primary-actions">
+                <button class="urdu-tool-button primary" type="button" data-audio-transcribe disabled>Transcribe audio</button>
+            </div>
+
+            <div class="urdu-tool-grid audio-transcription-grid">
+                <section class="urdu-tool-column" aria-labelledby="audio-transcript-title">
+                    <div class="urdu-tool-label-row">
+                        <label id="audio-transcript-title" for="audioTranscript" data-audio-transcript-label>Urdu transcript</label>
+                        <span class="urdu-tool-helper">Editable before translation</span>
+                    </div>
+                    <textarea id="audioTranscript" class="urdu-tool-textarea audio-transcription-urdu-text" dir="rtl" lang="ur" maxlength="5000" spellcheck="true" data-audio-transcript placeholder="Your transcript appears here after transcription."></textarea>
+                    <div class="urdu-tool-actions">
+                        <button class="urdu-tool-button primary" type="button" data-audio-translate disabled>Translate to English</button>
+                        <button class="urdu-tool-button" type="button" data-audio-copy-transcript disabled>Copy transcript</button>
+                    </div>
+                </section>
+
+                <section class="urdu-tool-column" aria-labelledby="audio-translation-title">
+                    <div class="urdu-tool-label-row">
+                        <label id="audio-translation-title" for="audioTranslation" data-audio-translation-label>English translation</label>
+                        <span class="urdu-tool-helper">Optional</span>
+                    </div>
+                    <textarea id="audioTranslation" class="urdu-tool-textarea" dir="ltr" lang="en" spellcheck="true" data-audio-translation placeholder="Optional translation appears here after you review the transcript."></textarea>
+                    <div class="urdu-tool-actions">
+                        <button class="urdu-tool-button" type="button" data-audio-copy-translation disabled>Copy translation</button>
+                    </div>
+                </section>
+            </div>
+
+            <p class="urdu-tool-notice audio-transcription-notice" data-audio-notice data-state="info" aria-live="polite">Choose a short Urdu or English voice note. Nothing is uploaded when you select a file.</p>
+            <p class="audio-transcription-preview-note"><strong>Privacy boundary:</strong> WriteUrdu does not save the uploaded audio as a document. Transcription sends the selected audio to the configured speech-recognition service only after you press Transcribe. Translation sends only the reviewed transcript after you press Translate.</p>
+        </section>
+
+        <section class="urdu-tool-content" aria-label="About audio transcription">
+            <section>
+                <h2>Useful for voice notes, meetings and spoken drafts</h2>
+                <p>This preview is designed for short recordings such as a WhatsApp-style voice note, a spoken reminder, a meeting note or a draft you recorded on your phone.</p>
+                <h3>Why language selection is explicit</h3>
+                <p>Choosing Urdu or English before transcription avoids an extra language-detection step and gives the speech recognizer a clearer hint. Automatic detection can be evaluated later if evidence shows it is necessary.</p>
+                <h3>Why translation comes second</h3>
+                <p>Speech recognition and translation are separate jobs. The transcript stays editable so names, numbers and wording can be corrected before any translation request is sent.</p>
+            </section>
+            <aside class="urdu-tool-related">
+                <h2>Related tools</h2>
+                <p><a href="/tools/urdu-voice-typing">Speak live and type Urdu</a><br><a href="/tools/urdu-english-voice-translator">Translate live Urdu or English speech</a><br><a href="/urdu-ocr">Extract Urdu text from an image</a></p>
+            </aside>
+        </section>
+    </main>
+    <footer aria-label="Footer navigation"></footer>
+</body>
+</html>

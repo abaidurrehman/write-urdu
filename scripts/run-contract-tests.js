@@ -84,6 +84,7 @@ const tests = [
   'tests/inpage-unicode-contract.test.js',
   'tests/document-translator-quick-win-contract.test.js',
   'tests/input-translation-foundation.test.mjs',
+  'tests/audio-transcription-foundation.test.mjs',
   'tests/writing-templates-quick-win-contract.test.js',
   'tests/writing-template-gsc-observation-contract.test.js',
   'tests/sua-acceptance-contract.test.js',
