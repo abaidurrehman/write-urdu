@@ -1,0 +1,134 @@
+@import url('./urdu-tools.css');
+
+.audio-transcription-page .urdu-tool-main {
+  width: min(1180px, calc(100% - 2rem));
+}
+
+.audio-transcription-controls {
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: .9rem;
+  padding: .9rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+}
+
+.audio-transcription-controls > label:not(.audio-file-label) {
+  font-weight: 800;
+}
+
+.audio-transcription-controls select {
+  min-height: 2.75rem;
+  padding: .5rem .75rem;
+  border: 1px solid var(--wu-color-border-strong, var(--wu-color-border));
+  border-radius: var(--wu-radius-sm);
+  background: var(--wu-color-surface);
+  color: var(--wu-color-ink);
+  font: inherit;
+}
+
+.audio-file-label {
+  display: inline-flex;
+  gap: .55rem;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: .55rem .8rem;
+  border: 1px dashed var(--wu-color-border-strong, var(--wu-color-border));
+  border-radius: var(--wu-radius-sm);
+  background: var(--wu-color-surface);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.audio-file-label input {
+  max-width: 18rem;
+}
+
+.audio-transcription-preview-row {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1fr) minmax(12rem, .7fr);
+  gap: .9rem;
+  align-items: center;
+  margin-bottom: .9rem;
+}
+
+.audio-transcription-preview-row audio {
+  width: 100%;
+}
+
+.audio-transcription-preview-row p {
+  margin: 0;
+  color: var(--wu-color-ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.audio-transcription-primary-actions {
+  margin-bottom: 1rem;
+}
+
+.audio-transcription-page .urdu-tool-textarea {
+  min-height: 17rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.audio-transcription-page .audio-transcription-urdu-text {
+  font-family: var(--wu-font-urdu, 'Noto Nastaliq Urdu', serif);
+  font-size: 1.18rem;
+  line-height: 2;
+}
+
+.audio-transcription-notice {
+  min-height: 1.6rem;
+  margin-top: .85rem;
+}
+
+.audio-transcription-notice[data-state="error"] {
+  color: var(--wu-color-danger, #a12121);
+}
+
+.audio-transcription-notice[data-state="success"] {
+  color: var(--wu-color-success, #17663a);
+}
+
+.audio-transcription-preview-note {
+  margin: .8rem 0 0;
+  padding: .85rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+  color: var(--wu-color-ink-soft);
+}
+
+.audio-transcription-page .urdu-tool-status-pill[data-state="busy"] {
+  opacity: .75;
+}
+
+@media (max-width: 760px) {
+  .audio-transcription-page .urdu-tool-main {
+    width: min(100% - 1rem, 1180px);
+  }
+
+  .audio-transcription-controls,
+  .audio-transcription-preview-row {
+    grid-template-columns: 1fr;
+  }
+
+  .audio-transcription-controls {
+    align-items: stretch;
+  }
+
+  .audio-transcription-controls > *,
+  .audio-file-label,
+  .audio-file-label input {
+    width: 100%;
+    max-width: none;
+  }
+
+  .audio-transcription-page .urdu-tool-textarea {
+    min-height: 13rem;
+  }
+}
