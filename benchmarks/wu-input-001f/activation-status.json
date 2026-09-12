@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "reviewed_at": "2026-09-11",
+  "reviewed_at": "2026-09-12",
   "overall_recommendation": "translation-ready-voice-acceptance-pending",
   "production_observed": {
     "reviewed_at": "2026-09-11",
@@ -18,7 +18,7 @@
     {"id":"text-en-ur","quality":"pass","cost":"pass","privacy":"pass","ready":true,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
     {"id":"voice-ur-en","quality":"not-run","cost":"partial","privacy":"partial","ready":false,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
     {"id":"voice-en-ur","quality":"not-run","cost":"partial","privacy":"partial","ready":false,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-11-microsoft-translation-activation.md"]},
-    {"id":"audio-ur","quality":"unavailable","cost":"unavailable","privacy":"partial","ready":false,"evidence":[]},
+    {"id":"audio-ur","quality":"partial","cost":"partial","privacy":"partial","ready":false,"evidence":["benchmarks/wu-input-001f/evidence/2026-09-12-cloudflare-audio-pilot.md"]},
     {"id":"audio-en","quality":"unavailable","cost":"unavailable","privacy":"partial","ready":false,"evidence":[]},
     {"id":"dictionary","quality":"unavailable","cost":"unavailable","privacy":"partial","ready":false,"evidence":[]}
   ]
