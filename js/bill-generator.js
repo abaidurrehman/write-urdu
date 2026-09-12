@@ -125,9 +125,10 @@
             (detailParts.length ? ' — <bdi dir="ltr">' + detailParts.map(esc).join(' · ') + '</bdi>' : '') + '</p>';
 
         var businessName = state.business.name || '—';
-        var businessPhone = state.business.phone ? '<div dir="ltr">' + esc(state.business.phone) + '</div>' : '';
-        var customerLine = (state.customer && (state.customer.name || state.customer.phone))
-            ? '<div>' + label('Customer', 'گاہک') + ': ' + esc(state.customer.name || '—') + (state.customer.phone ? ' <span dir="ltr">' + esc(state.customer.phone) + '</span>' : '') + '</div>'
+        var businessPhone = state.business.phone ? '<div class="bill-page-phone" dir="ltr">' + esc(state.business.phone) + '</div>' : '';
+        var customerValue = [state.customer && state.customer.name, state.customer && state.customer.phone].filter(function (value) { return value; }).join(' · ');
+        var customerLine = customerValue
+            ? '<div class="bill-page-customer">' + label('Customer', 'گاہک') + ': <bdi dir="ltr">' + esc(customerValue) + '</bdi></div>'
             : '';
 
         preview.innerHTML =
