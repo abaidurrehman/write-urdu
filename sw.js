@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v49';
+const CACHE_NAME = 'write-urdu-shell-v48';
 const APP_SHELL = [
   './',
   './index.html',
