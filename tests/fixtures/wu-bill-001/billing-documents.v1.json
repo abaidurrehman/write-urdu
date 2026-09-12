@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "english-paid-cash-bill",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "english",
+        "documentNumber": "BILL-20260912-001",
+        "date": "2026-09-12",
+        "business": { "name": "Amaan Repair Shop", "phone": "+92 300 1234567" },
+        "customer": { "name": "Ali", "phone": "" },
+        "items": [
+          { "id": "item-1", "description": "Fan repair", "quantity": 2, "rate": 250 }
+        ],
+        "discount": 0,
+        "amountPaid": 500,
+        "paymentMethod": "cash"
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 50000,
+        "discountMinor": 0,
+        "totalMinor": 50000,
+        "amountPaidMinor": 50000,
+        "balanceMinor": 0,
+        "paymentState": "paid"
+      }
+    },
+    {
+      "id": "urdu-partial-payment-bill",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "urdu",
+        "documentNumber": "BILL-20260912-002",
+        "date": "2026-09-12",
+        "business": { "name": "مدینہ ٹیلرز", "phone": "0300-7654321" },
+        "customer": { "name": "احمد", "phone": "0312-1112233" },
+        "items": [
+          { "id": "item-1", "description": "قمیض سلائی", "quantity": 2, "rate": 1200 },
+          { "id": "item-2", "description": "بٹن اور فنشنگ", "quantity": 1, "rate": 500 }
+        ],
+        "discount": 0,
+        "amountPaid": 1000,
+        "paymentMethod": "cash"
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 290000,
+        "discountMinor": 0,
+        "totalMinor": 290000,
+        "amountPaidMinor": 100000,
+        "balanceMinor": 190000,
+        "paymentState": "partially-paid"
+      },
+      "direction": [
+        { "value": "قمیض سلائی", "kind": "text", "expected": "rtl" },
+        { "value": "0300-7654321", "kind": "phone", "expected": "ltr" }
+      ]
+    },
+    {
+      "id": "bilingual-identifiers-bill",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "bilingual",
+        "documentNumber": "BILL-20260912-003",
+        "date": "2026-09-12",
+        "business": { "name": "نور موبائل / Noor Mobile", "phone": "+92 321 4445566" },
+        "customer": { "name": "Sana / ثنا", "phone": "0301-9876543" },
+        "items": [
+          { "id": "item-1", "description": "اسکرین پروٹیکٹر / Screen protector", "quantity": 1, "rate": 2500 }
+        ],
+        "discount": 0,
+        "amountPaid": 2500,
+        "paymentMethod": "raast",
+        "paymentDetails": { "raastId": "03001234567", "ibanOrAccount": "PK36SCBL0000001123456702" }
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 250000,
+        "discountMinor": 0,
+        "totalMinor": 250000,
+        "amountPaidMinor": 250000,
+        "balanceMinor": 0,
+        "paymentState": "paid"
+      },
+      "direction": [
+        { "value": "03001234567", "kind": "identifier", "expected": "ltr" },
+        { "value": "PK36SCBL0000001123456702", "kind": "identifier", "expected": "ltr" },
+        { "value": "نور موبائل / Noor Mobile", "kind": "text", "expected": "rtl" }
+      ]
+    },
+    {
+      "id": "cash-memo-walk-in",
+      "document": {
+        "version": 1,
+        "documentType": "cash-memo",
+        "languageMode": "bilingual",
+        "documentNumber": "CM-20260912-001",
+        "date": "2026-09-12",
+        "business": { "name": "City General Store", "phone": "" },
+        "items": [
+          { "id": "item-1", "description": "Notebook", "quantity": 3, "rate": 150 }
+        ],
+        "discount": 0,
+        "amountPaid": 450,
+        "paymentMethod": "cash"
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 45000,
+        "discountMinor": 0,
+        "totalMinor": 45000,
+        "amountPaidMinor": 45000,
+        "balanceMinor": 0,
+        "paymentState": "paid"
+      }
+    },
+    {
+      "id": "receipt-amount-only",
+      "document": {
+        "version": 1,
+        "documentType": "receipt",
+        "languageMode": "urdu",
+        "documentNumber": "RCT-20260912-001",
+        "date": "2026-09-12",
+        "business": { "name": "رحمان الیکٹریشن", "phone": "0300-2223344" },
+        "receivedFrom": { "name": "محمد اسلم", "phone": "" },
+        "amountReceived": 1750,
+        "purpose": "پنکھے کی مرمت کی ادائیگی",
+        "paymentMethod": "cash"
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "udhaar-zero-paid",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "urdu",
+        "documentNumber": "BILL-20260912-004",
+        "date": "2026-09-12",
+        "business": { "name": "الفلاح ورکشاپ", "phone": "" },
+        "customer": { "name": "بلال", "phone": "" },
+        "items": [
+          { "id": "item-1", "description": "موٹر سائیکل سروس", "quantity": 1, "rate": 8000 }
+        ],
+        "discount": 0,
+        "amountPaid": 0,
+        "paymentMethod": "udhaar"
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 800000,
+        "discountMinor": 0,
+        "totalMinor": 800000,
+        "amountPaidMinor": 0,
+        "balanceMinor": 800000,
+        "paymentState": "unpaid"
+      }
+    },
+    {
+      "id": "discounted-paid-bill",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "english",
+        "documentNumber": "BILL-20260912-005",
+        "date": "2026-09-12",
+        "business": { "name": "Home Stitching", "phone": "" },
+        "items": [
+          { "id": "item-1", "description": "Dress stitching", "quantity": 2, "rate": 1000 }
+        ],
+        "discount": 250,
+        "amountPaid": 1750,
+        "paymentMethod": "easypaisa",
+        "paymentDetails": { "phoneOrAccount": "03001234567" }
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 200000,
+        "discountMinor": 25000,
+        "totalMinor": 175000,
+        "amountPaidMinor": 175000,
+        "balanceMinor": 0,
+        "paymentState": "paid"
+      }
+    },
+    {
+      "id": "invalid-quantity-and-rate",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "english",
+        "documentNumber": "BILL-INVALID",
+        "date": "2026-09-12",
+        "business": { "name": "Test Shop", "phone": "" },
+        "items": [
+          { "id": "item-1", "description": "Broken row", "quantity": "abc", "rate": "not-a-number" }
+        ],
+        "discount": "-10",
+        "amountPaid": "Infinity",
+        "paymentMethod": "cash"
+      },
+      "expected": { "valid": false }
+    },
+    {
+      "id": "large-amount-bill",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "english",
+        "documentNumber": "BILL-LARGE",
+        "date": "2026-09-12",
+        "business": { "name": "Wholesale Test", "phone": "" },
+        "items": [
+          { "id": "item-1", "description": "Bulk goods", "quantity": 2, "rate": 99999999.99 }
+        ],
+        "discount": 0,
+        "amountPaid": 0,
+        "paymentMethod": "bank-transfer"
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 19999999998,
+        "discountMinor": 0,
+        "totalMinor": 19999999998,
+        "amountPaidMinor": 0,
+        "balanceMinor": 19999999998,
+        "paymentState": "unpaid"
+      }
+    },
+    {
+      "id": "urdu-description-latin-sku",
+      "document": {
+        "version": 1,
+        "documentType": "bill",
+        "languageMode": "urdu",
+        "documentNumber": "BILL-20260912-006",
+        "date": "2026-09-12",
+        "business": { "name": "کمپیوٹر پوائنٹ", "phone": "" },
+        "items": [
+          { "id": "item-1", "description": "پرنٹر کارٹریج SKU-HP85A", "quantity": 1, "rate": 3500 }
+        ],
+        "discount": 0,
+        "amountPaid": 3500,
+        "paymentMethod": "jazzcash",
+        "paymentDetails": { "phoneOrAccount": "03005554444" }
+      },
+      "expected": {
+        "valid": true,
+        "subtotalMinor": 350000,
+        "discountMinor": 0,
+        "totalMinor": 350000,
+        "amountPaidMinor": 350000,
+        "balanceMinor": 0,
+        "paymentState": "paid"
+      },
+      "direction": [
+        { "value": "پرنٹر کارٹریج SKU-HP85A", "kind": "text", "expected": "rtl" },
+        { "value": "SKU-HP85A", "kind": "identifier", "expected": "ltr" },
+        { "value": "03005554444", "kind": "phone", "expected": "ltr" }
+      ]
+    }
+  ]
+}

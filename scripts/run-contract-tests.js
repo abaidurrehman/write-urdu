@@ -64,6 +64,7 @@ const tests = [
   'tests/urdu-locale-closeout-contract.test.js',
   'tests/invoice-generator-core.test.js',
   'tests/invoice-preview-footer-contract.test.js',
+  'tests/bill-generator-core.test.js',
   'tests/sitemap-directory-contract.test.js',
   'tests/creation-core.test.js',
   'tests/qr-generator-core.test.js',
