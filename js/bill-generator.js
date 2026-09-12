@@ -219,12 +219,12 @@
             track('billing_error', { category: 'pdf-unavailable' });
             return;
         }
-        window.html2canvas(preview, { backgroundColor: '#ffffff', scale: 2, useCORS: true, logging: false }).then(function (canvas) {
+        window.html2canvas(preview, { backgroundColor: '#ffffff', scale: 1.5, useCORS: true, logging: false }).then(function (canvas) {
             var Pdf = window.jspdf.jsPDF;
             var widthMm = 210;
             var heightMm = widthMm * canvas.height / canvas.width;
-            var doc = new Pdf({ unit: 'mm', format: [widthMm, Math.max(heightMm, 297)], orientation: 'portrait' });
-            doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, widthMm, heightMm);
+            var doc = new Pdf({ unit: 'mm', format: [widthMm, heightMm], orientation: 'portrait' });
+            doc.addImage(canvas.toDataURL('image/jpeg', 0.82), 'JPEG', 0, 0, widthMm, heightMm);
             doc.save(safeFilename());
             setStatus('PDF downloaded.', 'ready');
             track('billing_output_completed', { format: 'pdf' });
