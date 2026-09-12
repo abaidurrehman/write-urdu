@@ -159,11 +159,11 @@
         var style = document.createElement('style');
         style.id = 'cardStudioBackgroundLibraryStyles';
         style.textContent = [
-            '.card-studio-background-library{margin:14px 0 18px;padding:14px;border:1px solid rgba(18,68,50,.16);border-radius:16px;background:rgba(248,251,249,.9)}',
-            '.card-studio-background-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}',
-            '.card-studio-background-library-title{margin:0;font-size:.96rem;color:#173e31}',
-            '.card-studio-background-library-help{margin:3px 0 0;font-size:.78rem;line-height:1.45;color:#60746b}',
-            '.card-studio-background-library-badge{flex:0 0 auto;padding:4px 8px;border-radius:999px;background:#e7f4ec;color:#245d46;font-size:.7rem;font-weight:700}',
+            '.card-studio-background-library{margin:0 0 18px;padding:16px;border:1px solid rgba(18,68,50,.18);border-radius:16px;background:linear-gradient(180deg,rgba(239,249,244,.96),rgba(248,251,249,.96));box-shadow:0 5px 18px rgba(22,51,42,.06)}',
+            '.card-studio-background-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}',
+            '.card-studio-background-library-title{margin:0;font-size:1rem;color:#173e31}',
+            '.card-studio-background-library-help{margin:4px 0 0;font-size:.8rem;line-height:1.45;color:#526b60}',
+            '.card-studio-background-library-badge{flex:0 0 auto;padding:5px 9px;border-radius:999px;background:#dff3e7;color:#1f6848;font-size:.7rem;font-weight:800}',
             '.card-studio-background-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}',
             '.card-studio-background-option{appearance:none;padding:0;overflow:hidden;border:2px solid transparent;border-radius:13px;background:#fff;box-shadow:0 3px 12px rgba(22,51,42,.09);cursor:pointer;text-align:start;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}',
             '.card-studio-background-option:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(22,51,42,.13)}',
@@ -180,14 +180,17 @@
 
     function renderLibrary() {
         if (root.querySelector('[data-card-built-in-library]')) return;
-        var backgroundType = document.getElementById('cardBackgroundType');
-        if (!backgroundType) return;
+        var templateGrid = root.querySelector('[data-card-templates]');
+        var templateSection = templateGrid && templateGrid.closest('section[data-card-step="format"]');
+        if (!templateSection || !templateSection.parentNode) return;
 
         injectStyles();
 
         var library = document.createElement('section');
         library.className = 'card-studio-background-library';
         library.dataset.cardBuiltInLibrary = 'true';
+        library.dataset.cardStep = 'format';
+        library.setAttribute('data-card-step-panel', '');
         library.setAttribute('aria-labelledby', 'cardStudioBackgroundLibraryTitle');
 
         var header = document.createElement('div');
@@ -200,13 +203,13 @@
         title.textContent = text('Designer backgrounds', 'خوبصورت پس منظر');
         var help = document.createElement('p');
         help.className = 'card-studio-background-library-help';
-        help.textContent = text('Choose a ready-made background, then keep editing your Urdu text.', 'تیار شدہ پس منظر منتخب کریں، پھر اپنے اردو متن میں ترمیم جاری رکھیں۔');
+        help.textContent = text('Pick a ready-made look here, then fine-tune text and background controls in Style.', 'یہاں تیار شدہ ڈیزائن منتخب کریں، پھر Style میں متن اور پس منظر کی باریک ترتیب کریں۔');
         headingWrap.appendChild(title);
         headingWrap.appendChild(help);
 
         var badge = document.createElement('span');
         badge.className = 'card-studio-background-library-badge';
-        badge.textContent = text('New', 'نیا');
+        badge.textContent = text('New · 4', 'نیا · 4');
         header.appendChild(headingWrap);
         header.appendChild(badge);
 
@@ -241,7 +244,7 @@
 
         library.appendChild(header);
         library.appendChild(grid);
-        backgroundType.insertAdjacentElement('afterend', library);
+        templateSection.parentNode.insertBefore(library, templateSection);
     }
 
     renderLibrary();
