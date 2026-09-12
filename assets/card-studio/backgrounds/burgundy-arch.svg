@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="82%"><stop stop-color="#742342"/><stop offset=".55" stop-color="#4a1029"/><stop offset="1" stop-color="#230713"/></radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe8a5"/><stop offset=".45" stop-color="#d69a34"/><stop offset="1" stop-color="#8b5417"/></linearGradient>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8e2148"/><stop offset=".5" stop-color="#cf6a6f"/><stop offset="1" stop-color="#6c1738"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <symbol id="leaf" viewBox="0 0 42 76"><path d="M21 72C5 55 4 20 21 4c17 16 16 51 0 68Z" fill="#a46345"/><path d="M21 68V10" stroke="#e3aa62" stroke-width="2"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <path d="M100 520V260C205 260 255 195 310 125c55 70 105 135 230 135s175-65 230-135c55 70 105 135 210 135v260" fill="none" stroke="url(#gold)" stroke-width="8"/>
+  <path d="M132 520V284C225 284 268 228 310 175c42 53 85 109 230 109s188-56 230-109c42 53 85 109 178 109v236" fill="none" stroke="#e5bd68" stroke-width="2" opacity=".72"/>
+  <g stroke="#dba64b" fill="none"><path d="M860 0v300"/><path d="M930 0v430"/><path d="M990 0v330"/></g>
+  <g fill="#e6b654" filter="url(#glow)"><path d="M860 240l12 25 28 4-20 20 5 28-25-13-25 13 5-28-20-20 28-4Z"/><circle cx="930" cy="362" r="18"/><path d="M990 280l10 20 22 3-16 16 4 22-20-10-20 10 4-22-16-16 22-3Z"/></g>
+  <g opacity=".85"><path d="M-80 1020C180 860 345 940 520 1080c140 112 305 170 640 80" fill="none" stroke="#c25968" stroke-width="95" stroke-linecap="round"/><path d="M-100 1090C190 960 390 1000 548 1135c140 120 338 142 620 45" fill="none" stroke="url(#ribbon)" stroke-width="44" stroke-linecap="round"/><path d="M-80 980C170 900 320 945 485 1040c172 99 337 148 610 95" fill="none" stroke="#f0b064" stroke-width="6" opacity=".7"/></g>
+  <g fill="#f7c35c" opacity=".9"><circle cx="120" cy="1120" r="4"/><circle cx="160" cy="1165" r="3"/><circle cx="210" cy="1100" r="5"/><circle cx="760" cy="1175" r="4"/><circle cx="810" cy="1130" r="3"/><circle cx="880" cy="1190" r="5"/><circle cx="940" cy="1140" r="3"/></g>
+  <g transform="translate(55 880)"><path d="M0 270C55 190 82 120 150 35" fill="none" stroke="#8f4a3c" stroke-width="8"/><use href="#leaf" x="28" y="170" width="44" height="78" transform="rotate(-48 50 209)"/><use href="#leaf" x="70" y="110" width="44" height="78" transform="rotate(35 92 149)"/><use href="#leaf" x="105" y="55" width="44" height="78" transform="rotate(-28 127 94)"/></g>
+  <g transform="translate(1025 880) scale(-1 1)"><path d="M0 270C55 190 82 120 150 35" fill="none" stroke="#8f4a3c" stroke-width="8"/><use href="#leaf" x="28" y="170" width="44" height="78" transform="rotate(-48 50 209)"/><use href="#leaf" x="70" y="110" width="44" height="78" transform="rotate(35 92 149)"/><use href="#leaf" x="105" y="55" width="44" height="78" transform="rotate(-28 127 94)"/></g>
+  <rect x="26" y="26" width="1028" height="1298" fill="none" stroke="#a6622b" stroke-width="2" opacity=".45"/>
+</svg>
