@@ -220,6 +220,16 @@
         window.WriteUrduCardStudioInteractionApi = { commit: commitEdit, cancel: cancelEdit, refresh: refreshSelection, select: select, undo: undo, redo: redo, getHistoryState: historyState, recordHistory: recordHistory };
         syncHistoryButtons();
     }
-    function start() { app = window.WriteUrduCardStudioApp; if (!app) return; bind(); refreshSelection(); }
+    function loadBackgroundLibrary() {
+        var path = (window.location.pathname || '').replace(/\/+$/, '').replace(/\.html$/, '');
+        if (path !== '/urdu-card-studio' && path !== '/urdu/urdu-card-studio') return;
+        if (document.querySelector('script[data-card-background-library]')) return;
+        var script = document.createElement('script');
+        script.src = '/js/card-studio-background-library.js';
+        script.defer = true;
+        script.setAttribute('data-card-background-library', '');
+        document.head.appendChild(script);
+    }
+    function start() { app = window.WriteUrduCardStudioApp; if (!app) return; bind(); refreshSelection(); loadBackgroundLibrary(); }
     if (window.WriteUrduCardStudioApp) start(); else document.addEventListener('write-urdu:card-studio-ready', start, { once: true });
 }());
