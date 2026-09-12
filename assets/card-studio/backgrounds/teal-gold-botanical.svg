@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <radialGradient id="bg" cx="52%" cy="34%" r="82%"><stop stop-color="#0a7891"/><stop offset=".52" stop-color="#075267"/><stop offset="1" stop-color="#04233a"/></radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe3a0"/><stop offset=".42" stop-color="#c78a35"/><stop offset="1" stop-color="#7f521d"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="geo" width="64" height="64" patternUnits="userSpaceOnUse"><path d="M32 3 61 32 32 61 3 32Z" fill="none" stroke="#a56d2d" stroke-width="1.4"/><circle cx="32" cy="32" r="8" fill="none" stroke="#d0a35e" stroke-width="1.2"/></pattern>
+    <symbol id="leaf" viewBox="0 0 48 84"><path d="M24 80C6 61 4 24 24 4c20 20 18 57 0 76Z" fill="#c8973d"/><path d="M24 74V11" stroke="#f2d080" stroke-width="1.7"/></symbol>
+    <symbol id="leafBlue" viewBox="0 0 48 84"><path d="M24 80C6 61 4 24 24 4c20 20 18 57 0 76Z" fill="#224f63"/><path d="M24 74V11" stroke="#6f9aad" stroke-width="1.7"/></symbol>
+    <symbol id="lantern" viewBox="0 0 84 164"><path d="M42 0v22M18 28h48l9 20-8 76H17L9 48l9-20Z" fill="#6d451a" stroke="#d7a64d" stroke-width="4"/><path d="M26 46h32l-4 60H30Z" fill="#ffd77c" filter="url(#glow)"/><path d="M19 29 65 124M65 29 19 124" stroke="#d19f49" stroke-width="3"/><path d="M22 129h40l-20 27Z" fill="#98641c"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect x="24" y="24" width="1032" height="1302" rx="10" fill="none" stroke="url(#gold)" stroke-width="6"/>
+  <path d="M0 0h260v280H0Z" fill="url(#geo)" opacity=".48"/><path d="M820 1070h260v280H820Z" fill="url(#geo)" opacity=".48"/>
+  <path d="M128 352V230c90 0 129-47 170-92 41 45 80 92 242 92s201-47 242-92c41 45 80 92 170 92v122" fill="none" stroke="url(#gold)" stroke-width="7"/>
+  <g transform="translate(58 160)"><use href="#lantern" width="72" height="140"/></g>
+  <g transform="translate(760 42)"><path d="M250 0C205 92 176 162 112 250" fill="none" stroke="#b27e33" stroke-width="6"/><use href="#leaf" x="180" y="24" width="46" height="80" transform="rotate(32 203 64)"/><use href="#leafBlue" x="146" y="82" width="46" height="80" transform="rotate(-28 169 122)"/><use href="#leaf" x="104" y="135" width="46" height="80" transform="rotate(35 127 175)"/><use href="#leafBlue" x="63" y="188" width="46" height="80" transform="rotate(-32 86 228)"/></g>
+  <g transform="translate(25 900)"><path d="M0 330C78 240 128 154 235 72" fill="none" stroke="#b27e33" stroke-width="7"/><use href="#leaf" x="40" y="240" width="48" height="84" transform="rotate(-40 64 282)"/><use href="#leafBlue" x="92" y="180" width="48" height="84" transform="rotate(35 116 222)"/><use href="#leaf" x="142" y="118" width="48" height="84" transform="rotate(-33 166 160)"/><use href="#leafBlue" x="185" y="65" width="48" height="84" transform="rotate(28 209 107)"/><g fill="#d6a34a"><circle cx="96" cy="247" r="7"/><circle cx="126" cy="226" r="5"/><circle cx="172" cy="146" r="6"/><circle cx="205" cy="123" r="4"/></g></g>
+  <path d="M996 520v480" stroke="#c18d3f" stroke-width="2"/><path d="M986 750l10 21 23 3-17 16 4 23-20-11-20 11 4-23-17-16 23-3Z" fill="#d5a54a" opacity=".8"/>
+</svg>

@@ -12,6 +12,7 @@
             id: 'emerald-mughal',
             name: 'Emerald Mughal',
             nameUr: 'زمردی مغلیہ',
+            category: 'heritage',
             src: '/assets/card-studio/backgrounds/emerald-mughal.svg',
             textColor: '#fff7df',
             overlayColor: '#10291f',
@@ -21,6 +22,7 @@
             id: 'moonlit-lanterns',
             name: 'Moonlit Lanterns',
             nameUr: 'چاندنی رات',
+            category: 'heritage',
             src: '/assets/card-studio/backgrounds/moonlit-lanterns.svg',
             textColor: '#fff7df',
             overlayColor: '#071426',
@@ -30,6 +32,7 @@
             id: 'vintage-floral',
             name: 'Vintage Floral',
             nameUr: 'پھولوں کی نزاکت',
+            category: 'floral',
             src: '/assets/card-studio/backgrounds/vintage-floral.svg',
             textColor: '#4b2e2c',
             overlayColor: '#ffffff',
@@ -39,11 +42,99 @@
             id: 'burgundy-arch',
             name: 'Burgundy Arch',
             nameUr: 'عنابی محراب',
+            category: 'elegant',
             src: '/assets/card-studio/backgrounds/burgundy-arch.svg',
             textColor: '#fff3d2',
             overlayColor: '#32101d',
             overlayOpacity: 0.08
+        },
+        {
+            id: 'emerald-jasmine-lanterns',
+            name: 'Emerald Jasmine',
+            nameUr: 'زمردی چنبیلی',
+            category: 'floral',
+            src: '/assets/card-studio/backgrounds/emerald-jasmine-lanterns.svg',
+            textColor: '#fff7df',
+            overlayColor: '#062f23',
+            overlayOpacity: 0.06
+        },
+        {
+            id: 'midnight-crescent-city',
+            name: 'Midnight Crescent',
+            nameUr: 'ماہتابی رات',
+            category: 'heritage',
+            src: '/assets/card-studio/backgrounds/midnight-crescent-city.svg',
+            textColor: '#fff4d4',
+            overlayColor: '#071426',
+            overlayOpacity: 0.09
+        },
+        {
+            id: 'emerald-eid-lanterns',
+            name: 'Eid Emerald',
+            nameUr: 'عید کی زمردی روشنی',
+            category: 'heritage',
+            src: '/assets/card-studio/backgrounds/emerald-eid-lanterns.svg',
+            textColor: '#fff6db',
+            overlayColor: '#06382c',
+            overlayOpacity: 0.05
+        },
+        {
+            id: 'blush-rose-lanterns',
+            name: 'Blush Rose',
+            nameUr: 'گلابی گلزار',
+            category: 'floral',
+            src: '/assets/card-studio/backgrounds/blush-rose-lanterns.svg',
+            textColor: '#57362f',
+            overlayColor: '#fffaf0',
+            overlayOpacity: 0
+        },
+        {
+            id: 'rose-garden-frame',
+            name: 'Rose Garden',
+            nameUr: 'باغِ گلاب',
+            category: 'floral',
+            src: '/assets/card-studio/backgrounds/rose-garden-frame.svg',
+            textColor: '#563237',
+            overlayColor: '#fff7ef',
+            overlayOpacity: 0
+        },
+        {
+            id: 'heritage-mughal-garden',
+            name: 'Heritage Garden',
+            nameUr: 'ورثہ گلزار',
+            category: 'heritage',
+            src: '/assets/card-studio/backgrounds/heritage-mughal-garden.svg',
+            textColor: '#4c3827',
+            overlayColor: '#fff8e7',
+            overlayOpacity: 0
+        },
+        {
+            id: 'teal-gold-botanical',
+            name: 'Teal & Gold',
+            nameUr: 'فیروزی و سنہری',
+            category: 'elegant',
+            src: '/assets/card-studio/backgrounds/teal-gold-botanical.svg',
+            textColor: '#fff4d2',
+            overlayColor: '#062c3b',
+            overlayOpacity: 0.07
+        },
+        {
+            id: 'ivory-arabesque',
+            name: 'Ivory Arabesque',
+            nameUr: 'عاجی نقش و نگار',
+            category: 'elegant',
+            src: '/assets/card-studio/backgrounds/ivory-arabesque.svg',
+            textColor: '#4e3d2b',
+            overlayColor: '#fffaf0',
+            overlayOpacity: 0
         }
+    ];
+
+    var categories = [
+        { id: 'all', name: 'All', nameUr: 'سب' },
+        { id: 'heritage', name: 'Heritage', nameUr: 'ورثہ' },
+        { id: 'floral', name: 'Floral', nameUr: 'پھول' },
+        { id: 'elegant', name: 'Elegant', nameUr: 'نفیس' }
     ];
 
     function isUrdu() {
@@ -160,10 +251,14 @@
         style.id = 'cardStudioBackgroundLibraryStyles';
         style.textContent = [
             '.card-studio-background-library{margin:0 0 18px;padding:16px;border:1px solid rgba(18,68,50,.18);border-radius:16px;background:linear-gradient(180deg,rgba(239,249,244,.96),rgba(248,251,249,.96));box-shadow:0 5px 18px rgba(22,51,42,.06)}',
-            '.card-studio-background-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}',
+            '.card-studio-background-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:11px}',
             '.card-studio-background-library-title{margin:0;font-size:1rem;color:#173e31}',
             '.card-studio-background-library-help{margin:4px 0 0;font-size:.8rem;line-height:1.45;color:#526b60}',
             '.card-studio-background-library-badge{flex:0 0 auto;padding:5px 9px;border-radius:999px;background:#dff3e7;color:#1f6848;font-size:.7rem;font-weight:800}',
+            '.card-studio-background-filters{display:flex;gap:6px;overflow-x:auto;padding:1px 1px 9px;scrollbar-width:thin}',
+            '.card-studio-background-filter{appearance:none;flex:0 0 auto;border:1px solid rgba(45,113,83,.2);border-radius:999px;background:#fff;color:#36594a;padding:6px 9px;font:inherit;font-size:.72rem;font-weight:700;cursor:pointer}',
+            '.card-studio-background-filter[aria-pressed="true"]{background:#1f704f;color:#fff;border-color:#1f704f}',
+            '.card-studio-background-filter:focus-visible{outline:3px solid rgba(45,113,83,.24);outline-offset:2px}',
             '.card-studio-background-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}',
             '.card-studio-background-option{appearance:none;padding:0;overflow:hidden;border:2px solid transparent;border-radius:13px;background:#fff;box-shadow:0 3px 12px rgba(22,51,42,.09);cursor:pointer;text-align:start;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}',
             '.card-studio-background-option:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(22,51,42,.13)}',
@@ -172,6 +267,7 @@
             '.card-studio-background-option[disabled]{cursor:wait;opacity:.72}',
             '.card-studio-background-option img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;background:#edf2ef}',
             '.card-studio-background-option span{display:block;padding:8px 9px 9px;font-size:.78rem;font-weight:700;color:#243b32;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+            '.card-studio-background-option[hidden]{display:none}',
             '[dir="rtl"] .card-studio-background-option{text-align:right}',
             '@media (max-width:640px){.card-studio-background-library{padding:12px}.card-studio-background-library-grid{gap:8px}}'
         ].join('');
@@ -200,18 +296,23 @@
         var title = document.createElement('h3');
         title.className = 'card-studio-background-library-title';
         title.id = 'cardStudioBackgroundLibraryTitle';
-        title.textContent = text('Designer backgrounds', 'خوبصورت پس منظر');
+        title.textContent = text('Urdu background collection', 'اردو پس منظر مجموعہ');
         var help = document.createElement('p');
         help.className = 'card-studio-background-library-help';
-        help.textContent = text('Pick a ready-made look here, then fine-tune text and background controls in Style.', 'یہاں تیار شدہ ڈیزائن منتخب کریں، پھر Style میں متن اور پس منظر کی باریک ترتیب کریں۔');
+        help.textContent = text('Choose a polished Urdu-friendly background, then refine text and layout in Style.', 'اردو متن کے لیے تیار خوبصورت پس منظر منتخب کریں، پھر Style میں متن اور ترتیب بہتر کریں۔');
         headingWrap.appendChild(title);
         headingWrap.appendChild(help);
 
         var badge = document.createElement('span');
         badge.className = 'card-studio-background-library-badge';
-        badge.textContent = text('New · 4', 'نیا · 4');
+        badge.textContent = text('Collection · ' + backgrounds.length, 'مجموعہ · ' + backgrounds.length);
         header.appendChild(headingWrap);
         header.appendChild(badge);
+
+        var filters = document.createElement('div');
+        filters.className = 'card-studio-background-filters';
+        filters.setAttribute('role', 'group');
+        filters.setAttribute('aria-label', text('Background categories', 'پس منظر کی اقسام'));
 
         var grid = document.createElement('div');
         grid.className = 'card-studio-background-library-grid';
@@ -221,6 +322,7 @@
             button.type = 'button';
             button.className = 'card-studio-background-option';
             button.dataset.cardBuiltInBackground = background.id;
+            button.dataset.cardBackgroundCategory = background.category;
             button.setAttribute('aria-pressed', 'false');
             button.setAttribute('aria-label', text('Use ' + background.name + ' background', background.nameUr + ' پس منظر استعمال کریں'));
 
@@ -242,7 +344,26 @@
             grid.appendChild(button);
         });
 
+        categories.forEach(function (category) {
+            var filter = document.createElement('button');
+            filter.type = 'button';
+            filter.className = 'card-studio-background-filter';
+            filter.dataset.cardBackgroundFilter = category.id;
+            filter.setAttribute('aria-pressed', category.id === 'all' ? 'true' : 'false');
+            filter.textContent = isUrdu() ? category.nameUr : category.name;
+            filter.addEventListener('click', function () {
+                filters.querySelectorAll('[data-card-background-filter]').forEach(function (item) {
+                    item.setAttribute('aria-pressed', item === filter ? 'true' : 'false');
+                });
+                grid.querySelectorAll('[data-card-built-in-background]').forEach(function (item) {
+                    item.hidden = category.id !== 'all' && item.dataset.cardBackgroundCategory !== category.id;
+                });
+            });
+            filters.appendChild(filter);
+        });
+
         library.appendChild(header);
+        library.appendChild(filters);
         library.appendChild(grid);
         templateSection.parentNode.insertBefore(library, templateSection);
     }

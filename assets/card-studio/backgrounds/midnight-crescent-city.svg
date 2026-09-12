@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#06132c"/><stop offset=".62" stop-color="#0a2a52"/><stop offset="1" stop-color="#132f4c"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#173f68"/><stop offset="1" stop-color="#06172b"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe5a0"/><stop offset=".45" stop-color="#c98a31"/><stop offset="1" stop-color="#6d4215"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <symbol id="lantern" viewBox="0 0 88 170"><path d="M44 0v24M19 30h50l9 20-8 79H18l-8-79 9-20Z" fill="#6a4318" stroke="#e0ad52" stroke-width="4"/><path d="M27 48h34l-5 63H32Z" fill="#ffd47a" filter="url(#glow)"/><path d="M20 31 68 129M68 31 20 129" stroke="#d9a54c" stroke-width="3"/><path d="M24 134h40l-20 29Z" fill="#9c681f"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#sky)"/>
+  <g fill="#f6d98a" opacity=".88"><circle cx="185" cy="110" r="3"/><circle cx="272" cy="184" r="2"/><circle cx="360" cy="92" r="3"/><circle cx="468" cy="160" r="2"/><circle cx="605" cy="102" r="3"/><circle cx="720" cy="198" r="2"/><circle cx="895" cy="122" r="3"/><circle cx="822" cy="292" r="2"/><circle cx="560" cy="245" r="2"/><circle cx="345" cy="276" r="2"/><path d="M510 118l6 14 15 2-11 10 3 15-13-7-13 7 3-15-11-10 15-2Z"/><path d="M772 238l5 11 12 2-9 8 2 12-10-6-10 6 2-12-9-8 12-2Z"/></g>
+  <circle cx="805" cy="180" r="76" fill="#f9e5ad" filter="url(#glow)"/><circle cx="842" cy="150" r="76" fill="#07162e"/>
+  <path d="M150 340V220c90 0 130-50 170-94 40 44 80 94 220 94s180-50 220-94c40 44 80 94 170 94v120" fill="none" stroke="url(#gold)" stroke-width="8"/>
+  <g transform="translate(52 92)"><use href="#lantern" width="78" height="150"/><use href="#lantern" x="118" y="70" width="64" height="125"/></g>
+  <g transform="translate(1028 92) scale(-1 1)"><use href="#lantern" width="78" height="150"/><use href="#lantern" x="118" y="70" width="64" height="125"/></g>
+  <g fill="#071521" opacity=".98"><path d="M0 1010C120 950 195 978 302 930c84-38 150-62 238-47 92 16 143 71 232 58 117-16 190-72 308-35v169H0Z"/><path d="M76 902h102v112H76zM109 840h36v62h-36zM116 804h22v39h-22z"/><path d="M356 890h150v126H356zM410 797h40v93h-40zM417 755h26v44h-26z"/><path d="M650 910h130v106H650zM697 842h35v68h-35zM704 807h21v38h-21z"/><path d="M876 925h96v92h-96zM910 870h28v55h-28z"/></g>
+  <g fill="#ffc96f" opacity=".9"><rect x="103" y="943" width="12" height="18" rx="6"/><rect x="142" y="943" width="12" height="18" rx="6"/><rect x="395" y="947" width="13" height="20" rx="7"/><rect x="448" y="947" width="13" height="20" rx="7"/><rect x="682" y="954" width="12" height="18" rx="6"/><rect x="730" y="954" width="12" height="18" rx="6"/><rect x="902" y="960" width="12" height="18" rx="6"/></g>
+  <rect y="1035" width="1080" height="315" fill="url(#water)"/>
+  <g stroke="#f3b84d" stroke-linecap="round" opacity=".55"><path d="M75 1070h112M103 1098h70M372 1074h152M405 1108h84M650 1071h145M693 1102h78M870 1088h95"/><path d="M52 1160h180M332 1188h228M635 1168h214M857 1210h130" stroke-width="3"/></g>
+  <rect x="24" y="24" width="1032" height="1302" fill="none" stroke="#b87b2d" stroke-width="3" opacity=".6"/>
+</svg>

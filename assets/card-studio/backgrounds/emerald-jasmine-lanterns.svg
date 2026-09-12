@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="78%"><stop stop-color="#075b42"/><stop offset=".58" stop-color="#043c2d"/><stop offset="1" stop-color="#021f18"/></radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0b0"/><stop offset=".35" stop-color="#d9a84b"/><stop offset=".72" stop-color="#8d5b19"/><stop offset="1" stop-color="#f5d87b"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="lace" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M26 3 49 26 26 49 3 26Z" fill="none" stroke="#c7963f" stroke-width="1.6"/><circle cx="26" cy="26" r="6" fill="none" stroke="#ebc96d" stroke-width="1.5"/></pattern>
+    <symbol id="leaf" viewBox="0 0 44 78"><path d="M22 74C5 57 4 22 22 4c18 18 17 53 0 70Z" fill="#728c50"/><path d="M22 69V11" stroke="#d0b166" stroke-width="1.8"/></symbol>
+    <symbol id="flower" viewBox="0 0 84 84"><g fill="#fff8de" stroke="#e2c67d" stroke-width="1.5"><ellipse cx="42" cy="16" rx="12" ry="23"/><ellipse cx="42" cy="68" rx="12" ry="23"/><ellipse cx="16" cy="42" rx="23" ry="12"/><ellipse cx="68" cy="42" rx="23" ry="12"/><ellipse cx="24" cy="24" rx="11" ry="22" transform="rotate(-45 24 24)"/><ellipse cx="60" cy="60" rx="11" ry="22" transform="rotate(-45 60 60)"/><ellipse cx="60" cy="24" rx="11" ry="22" transform="rotate(45 60 24)"/><ellipse cx="24" cy="60" rx="11" ry="22" transform="rotate(45 24 60)"/></g><circle cx="42" cy="42" r="8" fill="#d4a147"/></symbol>
+    <symbol id="lantern" viewBox="0 0 90 178"><path d="M45 0v24M22 30h46l11 22-8 82H19l-8-82 11-22Z" fill="#6c4313" stroke="#efc560" stroke-width="4"/><path d="M28 48h34l-5 68H33Z" fill="#ffd87b" opacity=".86" filter="url(#glow)"/><path d="M22 31 68 133M68 31 22 133" stroke="#e6bd61" stroke-width="3"/><path d="M24 138h42l-21 30Z" fill="#a36c1e"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect x="18" y="18" width="1044" height="1314" rx="8" fill="none" stroke="url(#gold)" stroke-width="7"/>
+  <rect x="41" y="41" width="998" height="1268" fill="none" stroke="#b9852d" stroke-width="2"/>
+  <rect x="58" y="58" width="964" height="1234" fill="none" stroke="url(#lace)" stroke-width="25" opacity=".94"/>
+  <path d="M150 348V230c98 0 132-55 173-106 42 51 78 106 217 106s175-55 217-106c41 51 75 106 173 106v118" fill="none" stroke="url(#gold)" stroke-width="9"/>
+  <path d="M150 362V243c89 0 129-48 173-94 44 46 84 94 217 94s173-48 217-94c44 46 84 94 173 94v119" fill="none" stroke="#f7dc87" stroke-width="2" opacity=".75"/>
+  <g transform="translate(95 145)"><use href="#lantern" width="76" height="150"/><use href="#lantern" x="815" y="8" width="72" height="144"/></g>
+  <g transform="translate(65 75)"><use href="#flower" width="72" height="72"/><use href="#flower" x="76" y="18" width="58" height="58"/><use href="#leaf" x="48" y="62" width="38" height="66" transform="rotate(-38 67 95)"/><use href="#leaf" x="112" y="62" width="34" height="60" transform="rotate(32 129 92)"/></g>
+  <g transform="translate(1015 75) scale(-1 1)"><use href="#flower" width="72" height="72"/><use href="#flower" x="76" y="18" width="58" height="58"/><use href="#leaf" x="48" y="62" width="38" height="66" transform="rotate(-38 67 95)"/><use href="#leaf" x="112" y="62" width="34" height="60" transform="rotate(32 129 92)"/></g>
+  <g transform="translate(38 1020)"><path d="M25 220C85 158 115 94 215 25" fill="none" stroke="#8f6d2c" stroke-width="7"/><use href="#leaf" x="60" y="128" width="42" height="74" transform="rotate(-42 81 165)"/><use href="#leaf" x="102" y="80" width="40" height="70" transform="rotate(34 122 115)"/><use href="#flower" x="18" y="125" width="96" height="96"/><use href="#flower" x="135" y="32" width="74" height="74"/></g>
+  <g transform="translate(1042 1020) scale(-1 1)"><path d="M25 220C85 158 115 94 215 25" fill="none" stroke="#8f6d2c" stroke-width="7"/><use href="#leaf" x="60" y="128" width="42" height="74" transform="rotate(-42 81 165)"/><use href="#leaf" x="102" y="80" width="40" height="70" transform="rotate(34 122 115)"/><use href="#flower" x="18" y="125" width="96" height="96"/><use href="#flower" x="135" y="32" width="74" height="74"/></g>
+</svg>
