@@ -207,10 +207,10 @@ Human/product gates:
 **Spec:** [`WU-BILL-001`](WU-BILL-001-pakistan-everyday-billing-toolkit.md)
 **Architecture:** [`WU-BILL-001-ARCHITECTURE-CONTRACT.md`](WU-BILL-001-ARCHITECTURE-CONTRACT.md)
 **Execution:** [`WU-BILL-001-IMPLEMENTATION-CHECKLIST.md`](WU-BILL-001-IMPLEMENTATION-CHECKLIST.md)
-**State:** Slice 0 shipped 2026-09-12 (`fa248a9`, #180). Slice 1 explicitly approved 2026-09-12 as an exception to rule 7: it builds an isolated, unpromoted `/urdu-bill-generator` route reusing no `WU-PLAT-002H`-owned file, adds no homepage/global-navigation entry, and does not touch `/urdu-invoice-generator` or any protected invoice file.
+**State:** Slice 0 shipped 2026-09-12 (`fa248a9`, #180). Slice 1 explicitly approved 2026-09-12 as an exception to rule 7: it builds an isolated `/urdu-bill-generator` route reusing no `WU-PLAT-002H`-owned file and does not touch `/urdu-invoice-generator` or any protected invoice file. Founder-directed release-gate exception recorded 2026-09-12: nav-link and public promotion approved ahead of P0.1 gate close, on the same isolation basis as the rest of this exception (no `WU-PLAT-002H`-owned file touched to add the link; Tools nav group item and sitemap/registry entries only).
 
-- [ ] Slice 1 — standalone `/urdu-bill-generator` route, Bill mode only, local preview, print/PDF output, content-free telemetry (see implementation checklist Slice 1).
-- [ ] No public promotion/homepage/nav link until the P0.1 gate closes or a separate release-gate exception is recorded.
+- [x] Slice 1 — standalone `/urdu-bill-generator` route, Bill mode only, local preview, print/PDF output, content-free telemetry (see implementation checklist Slice 1).
+- [x] Public promotion/nav link approved 2026-09-12 as a separate release-gate exception (see State above): added to the Tools nav group (`js/outcome-navigation.js`), `sitemap.xml`, `write-urdu-sitemap.html`, `llms.txt`, `docs/WU-PUBLIC-PAGE-REGISTRY.csv` and `changelog.html`; `seo.config.js` flipped to `indexable: true`.
 - [ ] Invoice regression tests must remain green; no protected invoice file may change.
 
 **Guardrail:** if implementation ever requires touching a Basic/Rich Editor, mobile-activation, invoice-protected, or telemetry-allowlist file beyond an additive route registration, stop — the isolation assumption behind this exception has broken and the work must be re-filed under normal backlog review.

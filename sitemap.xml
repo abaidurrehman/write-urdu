@@ -43,6 +43,12 @@
     <priority>0.88</priority>
   </url>
   <url>
+    <loc>https://write-urdu.com/urdu-bill-generator</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
     <loc>https://write-urdu.com/tools/inpage-unicode-converter</loc>
     <lastmod>2026-08-17</lastmod>
     <changefreq>monthly</changefreq>
@@ -182,7 +188,7 @@
   </url>
   <url>
     <loc>https://write-urdu.com/changelog</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.60</priority>
   </url>

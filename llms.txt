@@ -45,6 +45,7 @@ Important facts:
 - [Urdu Name Art Maker](https://write-urdu.com/urdu-name-art-maker): Render your own Urdu name as a profile/DP image or transparent name layer using Urdu-safe fonts, 24 original templates, local backgrounds and browser-side PNG export.
 - [Urdu Template Library](https://write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.
 - [Urdu and English Invoice Generator](https://write-urdu.com/urdu-invoice-generator): Create Urdu, English or bilingual invoices with automatic totals and local export.
+- [Urdu Bill Generator](https://write-urdu.com/urdu-bill-generator): Create a quick Urdu, English or bilingual shop bill or receipt, track paid and balance, then print or download as PDF.
 - [Static QR Code Generator](https://write-urdu.com/qr-code-generator): Create static QR codes for Urdu text, links, Wi-Fi, WhatsApp and contacts.
 
 ## Trust, policies and corrections

@@ -178,6 +178,15 @@
             ]
         },
         {
+            id: 'bill-generator', routes: ['/urdu-bill-generator'], status: 'current', category: 'Work', stages: ['Work', 'Publish'],
+            label: 'Create a quick shop bill or receipt', technicalLabel: 'Bill Generator',
+            jobs: ['make an everyday shop bill', 'make a cash memo or receipt'], accepts: ['structured-seed'], produces: ['structured-seed'],
+            persistence: 'bill local draft', conflictPolicy: 'never import unstructured editor text as bill data',
+            next: [
+                { id: 'bill-export', target: null, type: 'embedded', label: 'Download or print bill', payloadKind: null }
+            ]
+        },
+        {
             id: 'public-share', routes: ['/s/:id'], status: 'current', category: 'Create', stages: ['Publish'],
             label: 'View shared Urdu writing', technicalLabel: 'Public Share Page',
             jobs: ['view shared Urdu writing', 'create your own version'], accepts: ['share-artifact'], produces: ['plain-text'],
