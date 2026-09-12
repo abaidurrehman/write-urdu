@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8d7cf"/><stop offset=".48" stop-color="#f7e5dc"/><stop offset="1" stop-color="#dca5a7"/></linearGradient>
+    <radialGradient id="rose" cx="34%" cy="30%"><stop stop-color="#ffd6d1"/><stop offset=".52" stop-color="#df8b8c"/><stop offset="1" stop-color="#a94856"/></radialGradient>
+    <linearGradient id="gold"><stop stop-color="#f9e3aa"/><stop offset=".45" stop-color="#c58a36"/><stop offset="1" stop-color="#7e4f20"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="lace" width="54" height="54" patternUnits="userSpaceOnUse"><path d="M27 3 51 27 27 51 3 27Z" fill="none" stroke="#c49375" stroke-width="1.7"/><circle cx="27" cy="27" r="7" fill="none" stroke="#e0b997" stroke-width="1.4"/></pattern>
+    <symbol id="roseSym" viewBox="0 0 124 124"><g stroke="#a84f58" stroke-width="1.4"><circle cx="62" cy="62" r="47" fill="url(#rose)"/><path d="M62 20c30 6 39 28 20 43-17 14-38 2-40-16-1-13 8-23 20-27Z" fill="#f5b4af"/><path d="M93 58c0 28-20 43-40 31-17-10-15-33 2-43 13-8 29-2 38 12Z" fill="#db797e"/><path d="M52 43c19-8 36 5 35 24-2 22-26 31-42 17-14-12-10-33 7-41Z" fill="#ef9da0"/><circle cx="63" cy="63" r="12" fill="#bd5660"/></g></symbol>
+    <symbol id="leaf" viewBox="0 0 45 78"><path d="M22 74C5 57 4 22 22 4c18 18 17 53 0 70Z" fill="#4c6c40"/><path d="M22 69V10" stroke="#304a2c" stroke-width="1.8"/></symbol>
+    <symbol id="lantern" viewBox="0 0 86 168"><path d="M43 0v24M19 30h48l9 20-8 78H18l-8-78 9-20Z" fill="#744817" stroke="#d3a24b" stroke-width="4"/><path d="M27 48h32l-4 62H31Z" fill="#ffd57b" filter="url(#glow)"/><path d="M20 31 66 128M66 31 20 128" stroke="#cf9e49" stroke-width="3"/><path d="M23 133h40l-20 28Z" fill="#98651c"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect x="22" y="22" width="1036" height="1306" rx="8" fill="none" stroke="url(#gold)" stroke-width="6"/>
+  <rect x="48" y="48" width="984" height="1254" fill="none" stroke="url(#lace)" stroke-width="24" opacity=".52"/>
+  <path d="M165 340V226c88 0 128-48 169-92 41 44 81 92 206 92s165-48 206-92c41 44 81 92 169 92v114" fill="none" stroke="url(#gold)" stroke-width="7"/>
+  <g transform="translate(18 12)"><use href="#roseSym" width="150" height="150"/><use href="#roseSym" x="118" y="38" width="92" height="92"/><use href="#leaf" x="85" y="120" width="42" height="73" transform="rotate(-38 106 156)"/><use href="#leaf" x="158" y="98" width="42" height="73" transform="rotate(35 179 134)"/></g>
+  <g transform="translate(1020 44)"><use href="#lantern" width="70" height="136"/><use href="#lantern" x="-68" y="118" width="58" height="112"/></g>
+  <g transform="translate(1062 1038) scale(-1 1)"><use href="#roseSym" width="156" height="156"/><use href="#roseSym" x="126" y="60" width="94" height="94"/><use href="#leaf" x="88" y="132" width="42" height="73" transform="rotate(-38 109 168)"/><use href="#leaf" x="166" y="104" width="42" height="73" transform="rotate(35 187 140)"/></g>
+  <g transform="translate(22 1088)"><path d="M20 170c60-64 102-86 166-132" fill="none" stroke="#5b7544" stroke-width="7"/><use href="#leaf" x="62" y="88" width="42" height="72" transform="rotate(-42 83 124)"/><use href="#leaf" x="118" y="48" width="42" height="72" transform="rotate(34 139 84)"/><use href="#roseSym" x="2" y="90" width="92" height="92"/></g>
+  <g fill="#b85f69" opacity=".46"><path d="M220 310c22 6 36 20 39 39-20 3-40-6-51-25Z"/><path d="M840 555c18 3 31 15 34 31-17 2-34-6-43-22Z"/><path d="M320 850c16 3 27 14 30 29-16 2-31-5-40-20Z"/></g>
+</svg>
