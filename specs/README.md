@@ -31,6 +31,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-AI-001` | Urdu AI Writing Assistant Platform | **Implemented core / acceptance pending** — A–C built/tested; provider-terms gate blocks production enablement; later expansion remains evidence-gated |
 | `WU-INPUT-001` | Multimodal Urdu Input & Conversion Platform | **Planned / evidence-gated** — founder-approved coordination epic for Roman/direct/translation/voice/audio/OCR/document inputs; reuses existing owners, starts with benchmarks, and remains behind `WU-PLAT-002H` for core-UI/public breadth |
 | `WU-BILL-001` | Pakistan Everyday Billing Toolkit | **Planned / founder-approved** — separate `/urdu-bill-generator` sibling for Bill/Cash Memo/Receipt/Udhaar; implementation package ready, current professional `/urdu-invoice-generator` protected, production work remains behind `WU-PLAT-002H` unless reprioritized |
+| `WU-CARD-GALLERY-001` | Live Urdu Card Gallery / Background-First Rich Studio | **Planned / founder-approved specification** — new `/urdu-card-gallery` visual chooser where one Urdu text is previewed across the shared background collection; Slice 0 registry/fixtures are implementation-ready, public launch remains gated by `WU-PLAT-002H` Card Studio completion unless explicitly reprioritized |
 | `WU-ANALYTICS-003` | Acquisition and Returning Signal | **Implemented core** — acquisition signal shipped; `WU-PLAT-002H` adds first-value/continuation acceptance requirements using the approved telemetry boundary |
 | `WU-JOURNEY-001` | Pakistan Urdu Intent & Destination Journey Programme | **Planned / evidence-gated** — feedback-reconciled programme connecting existing input, messaging/social, document, practice and print capabilities around real user destination intent; core UI remains behind `WU-PLAT-002H` |
 | `WU-JOURNEY-001A` | Destination Intent Measurement | **Planned evidence foundation** — privacy-safe bounded destination categories + Product Pulse reporting; visible prompt only after first value and P0 gate approval |
@@ -121,6 +122,21 @@ The implementation package is:
 - [`../docs/WU-BILL-001-CODEX-HANDOFF.md`](../docs/WU-BILL-001-CODEX-HANDOFF.md) — ready-to-paste implementation handoff.
 
 The core invariant is that `/urdu-invoice-generator` and archived `WU-IG-001/002/003` behavior remain protected. This is planning/implementation readiness, not an exception to the current `WU-PLAT-002H` roadmap gate.
+
+## Planned Live Urdu Card Gallery programme
+
+`WU-CARD-GALLERY-001` records the founder-approved 2026-09-12 concept for a separate background-first card chooser: the user writes Urdu once, sees that same text live across the background collection, selects the best-looking card, then continues to the existing Card Studio for refinement/export.
+
+The implementation package is:
+
+- [`WU-CARD-GALLERY-001-live-urdu-card-gallery.md`](WU-CARD-GALLERY-001-live-urdu-card-gallery.md) — parent product/roadmap contract;
+- [`WU-CARD-GALLERY-001-ARCHITECTURE-CONTRACT.md`](WU-CARD-GALLERY-001-ARCHITECTURE-CONTRACT.md) — shared registry, lightweight DOM preview and handoff boundaries;
+- [`WU-CARD-GALLERY-001-IMPLEMENTATION-CHECKLIST.md`](WU-CARD-GALLERY-001-IMPLEMENTATION-CHECKLIST.md) — ordered Slice 0–5 execution plan;
+- [`WU-CARD-GALLERY-001-ACCEPTANCE-MATRIX.md`](WU-CARD-GALLERY-001-ACCEPTANCE-MATRIX.md) — text-safety, contrast, mobile, performance, privacy, handoff and receiver-quality acceptance;
+- [`../skills/wu-card-gallery-001/SKILL.md`](../skills/wu-card-gallery-001/SKILL.md) — canonical Codex/Claude execution skill;
+- [`../docs/WU-CARD-GALLERY-001-CODEX-HANDOFF.md`](../docs/WU-CARD-GALLERY-001-CODEX-HANDOFF.md) — ready-to-paste Codex prompt.
+
+The hard architecture rule is that live browsing uses lightweight DOM previews rather than one Card Studio canvas per design. Existing background IDs remain intact, background metadata becomes a shared registry, and `/urdu-card-studio` remains the authoritative advanced editor/export path. Slice 0 planning/registry work is ready; public route rollout remains behind the current Card Studio completion/P0 gate unless the canonical backlog records an explicit exception.
 
 ## Archived contracts
 
