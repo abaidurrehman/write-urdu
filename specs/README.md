@@ -30,6 +30,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-DOC-001D` | Scanned/image/layout R&D | **Hold / gated R&D** |
 | `WU-AI-001` | Urdu AI Writing Assistant Platform | **Implemented core / acceptance pending** — A–C built/tested; provider-terms gate blocks production enablement; later expansion remains evidence-gated |
 | `WU-INPUT-001` | Multimodal Urdu Input & Conversion Platform | **Planned / evidence-gated** — founder-approved coordination epic for Roman/direct/translation/voice/audio/OCR/document inputs; reuses existing owners, starts with benchmarks, and remains behind `WU-PLAT-002H` for core-UI/public breadth |
+| `WU-BILL-001` | Pakistan Everyday Billing Toolkit | **Planned / founder-approved** — separate `/urdu-bill-generator` sibling for Bill/Cash Memo/Receipt/Udhaar; implementation package ready, current professional `/urdu-invoice-generator` protected, production work remains behind `WU-PLAT-002H` unless reprioritized |
 | `WU-ANALYTICS-003` | Acquisition and Returning Signal | **Implemented core** — acquisition signal shipped; `WU-PLAT-002H` adds first-value/continuation acceptance requirements using the approved telemetry boundary |
 | `WU-JOURNEY-001` | Pakistan Urdu Intent & Destination Journey Programme | **Planned / evidence-gated** — feedback-reconciled programme connecting existing input, messaging/social, document, practice and print capabilities around real user destination intent; core UI remains behind `WU-PLAT-002H` |
 | `WU-JOURNEY-001A` | Destination Intent Measurement | **Planned evidence foundation** — privacy-safe bounded destination categories + Product Pulse reporting; visible prompt only after first value and P0 gate approval |
@@ -104,6 +105,22 @@ It intentionally reuses existing ownership:
 - document/PDF translation: `WU-DOC-001`.
 
 New gaps such as uploaded audio → Urdu and server-assisted OCR are benchmark-first. Core-UI/public breadth remains behind `WU-PLAT-002H`; planning fixtures/provider research may proceed without relaxing that gate.
+
+## Planned Pakistan everyday billing programme
+
+`WU-BILL-001` records the 2026-09-12 Pakistan small-business billing research as a separate sibling to the shipped professional Invoice Generator. Its canonical MVP route is `/urdu-bill-generator`, with Bill, Cash Memo and Receipt modes plus paid/balance/udhaar and Pakistan-facing payment labels.
+
+The implementation package is:
+
+- [`WU-BILL-001-pakistan-everyday-billing-toolkit.md`](WU-BILL-001-pakistan-everyday-billing-toolkit.md) — parent product/roadmap contract;
+- [`WU-BILL-001-ARCHITECTURE-CONTRACT.md`](WU-BILL-001-ARCHITECTURE-CONTRACT.md) — browser-local document/state/rendering boundary;
+- [`WU-BILL-001-IMPLEMENTATION-CHECKLIST.md`](WU-BILL-001-IMPLEMENTATION-CHECKLIST.md) — ordered Slice 0–8 execution plan;
+- [`WU-BILL-001-ACCEPTANCE-MATRIX.md`](WU-BILL-001-ACCEPTANCE-MATRIX.md) — calculation, RTL/LTR, mobile, privacy, output, SEO and regression acceptance;
+- [`../docs/WU-BILL-001-PAKISTAN-BILLING-EVIDENCE-2026-09-12.md`](../docs/WU-BILL-001-PAKISTAN-BILLING-EVIDENCE-2026-09-12.md) — dated evidence ledger;
+- [`../skills/wu-bill-001/SKILL.md`](../skills/wu-bill-001/SKILL.md) — canonical Codex/Claude execution skill;
+- [`../docs/WU-BILL-001-CODEX-HANDOFF.md`](../docs/WU-BILL-001-CODEX-HANDOFF.md) — ready-to-paste implementation handoff.
+
+The core invariant is that `/urdu-invoice-generator` and archived `WU-IG-001/002/003` behavior remain protected. This is planning/implementation readiness, not an exception to the current `WU-PLAT-002H` roadmap gate.
 
 ## Archived contracts
 
