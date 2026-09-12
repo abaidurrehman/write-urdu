@@ -71,6 +71,7 @@ jobs:
           tests/capture-continuity.spec.js
           tests/create-publish-boundaries.spec.js
           tests/v2-creation.spec.js
+          tests/card-studio-background-collection.spec.js
           tests/seo-acquisition.spec.js
           tests/role-journeys.spec.js
           tests/sitemap-directory.spec.js

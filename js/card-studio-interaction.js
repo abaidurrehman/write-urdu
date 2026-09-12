@@ -223,11 +223,28 @@
     function loadBackgroundLibrary() {
         var path = (window.location.pathname || '').replace(/\/+$/, '').replace(/\.html$/, '');
         if (path !== '/urdu-card-studio' && path !== '/urdu/urdu-card-studio') return;
-        if (document.querySelector('script[data-card-background-library]')) return;
+        function loadLibrary() {
+            if (document.querySelector('script[data-card-background-library]')) return;
+            var libraryScript = document.createElement('script');
+            libraryScript.src = '/js/card-studio-background-library.js';
+            libraryScript.defer = true;
+            libraryScript.setAttribute('data-card-background-library', '');
+            document.head.appendChild(libraryScript);
+        }
+        if (window.WriteUrduCardBackgroundRegistry) {
+            loadLibrary();
+            return;
+        }
+        var existingRegistry = document.querySelector('script[data-card-background-registry]');
+        if (existingRegistry) {
+            existingRegistry.addEventListener('load', loadLibrary, { once: true });
+            return;
+        }
         var script = document.createElement('script');
-        script.src = '/js/card-studio-background-library.js';
+        script.src = '/js/card-background-registry.js';
         script.defer = true;
-        script.setAttribute('data-card-background-library', '');
+        script.setAttribute('data-card-background-registry', '');
+        script.addEventListener('load', loadLibrary, { once: true });
         document.head.appendChild(script);
     }
     function start() { app = window.WriteUrduCardStudioApp; if (!app) return; bind(); refreshSelection(); loadBackgroundLibrary(); }
