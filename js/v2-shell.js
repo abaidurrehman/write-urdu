@@ -5,7 +5,7 @@
     var telemetryRoutes = [
         '/urdu-card-studio', '/stylish-urdu-text-generator', '/urdu-name-art-maker',
         '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker',
-        '/urdu-invoice-generator', '/qr-code-generator'
+        '/urdu-invoice-generator', '/qr-code-generator', '/urdu-bill-generator'
     ];
 
     function normalizedPath() {

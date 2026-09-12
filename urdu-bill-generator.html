@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Urdu Bill Generator Preview | WriteUrdu</title>
+    <meta name="description" content="Create a simple Urdu, English or bilingual bill for a customer, track paid and balance, then print it. Preview tool from WriteUrdu.">
+    <meta name="robots" content="noindex,follow">
+    <meta name="googlebot" content="noindex,follow">
+    <link rel="canonical" href="https://write-urdu.com/urdu-bill-generator">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="Urdu Bill Generator Preview">
+    <meta property="og:description" content="Create a simple Urdu, English or bilingual bill, track paid and balance, then print it.">
+    <meta property="og:url" content="https://write-urdu.com/urdu-bill-generator">
+    <meta property="og:image" content="https://write-urdu.com/image/logo10.png">
+    <link rel="icon" href="/image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/bill-generator.css">
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="/js/bill-generator-core.js" defer></script>
+    <script src="/js/bill-generator.js" defer></script>
+</head>
+<body class="bill-generator-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+
+    <main class="bill-shell" data-bill-generator>
+        <header class="bill-intro">
+            <div>
+                <p class="bill-eyebrow">WRITE URDU PREVIEW TOOL</p>
+                <h1>Urdu Bill Generator</h1>
+                <p class="bill-lede">Make a simple Urdu, English or bilingual bill for a customer in under a minute. Track paid and balance, then print it. No account required.</p>
+            </div>
+            <aside class="bill-privacy"><strong>Your bill stays private</strong><span>Everything is created and printed in your browser. Nothing is sent to Write Urdu servers.</span></aside>
+        </header>
+
+        <div class="bill-actionbar" role="toolbar" aria-label="Bill actions">
+            <button type="button" class="bill-button bill-button-secondary" data-bill-new>New bill</button>
+            <span class="bill-status" data-bill-status role="status">Ready to edit</span>
+            <button type="button" class="bill-button bill-button-secondary" data-bill-print>Print</button>
+            <button type="button" class="bill-button bill-button-primary" data-bill-pdf>Download PDF</button>
+        </div>
+
+        <div class="bill-workspace">
+            <section class="bill-editor" aria-label="Bill details">
+                <details class="bill-panel" open><summary>Language &amp; bill details</summary><div class="bill-panel-body">
+                    <div class="bill-field-grid two"><label>Language mode<select data-field="languageMode"><option value="english">English</option><option value="urdu">اردو</option><option value="bilingual" selected>Bilingual / دو لسانی</option></select></label><label>Bill number<input data-field="documentNumber" dir="ltr"></label></div>
+                    <label>Date<input data-field="date" type="date" dir="ltr"></label>
+                </div></details>
+                <details class="bill-panel" open><summary>Business &amp; customer</summary><div class="bill-panel-body">
+                    <div class="bill-field-grid two"><label>Business / shop name<input data-field="business.name" placeholder="Your shop name"></label><label>Business phone<input data-field="business.phone" dir="ltr" placeholder="+92 300 1234567"></label></div>
+                    <div class="bill-field-grid two"><label>Customer name (optional)<input data-field="customer.name" placeholder="Walk-in customer"></label><label>Customer phone (optional)<input data-field="customer.phone" dir="ltr"></label></div>
+                </div></details>
+                <details class="bill-panel" open><summary>Items</summary><div class="bill-panel-body"><div data-bill-items></div><button type="button" class="bill-button bill-button-secondary" data-bill-add-item>Add item</button></div></details>
+                <details class="bill-panel" open><summary>Discount, paid &amp; payment</summary><div class="bill-panel-body">
+                    <div class="bill-field-grid two"><label>Discount<input data-field="discount" inputmode="decimal" placeholder="0"></label><label>Amount paid<input data-field="amountPaid" inputmode="decimal" placeholder="0"></label></div>
+                    <label>Payment method<select data-field="paymentMethod"><option value="cash">Cash / نقد</option><option value="raast">Raast</option><option value="jazzcash">JazzCash</option><option value="easypaisa">Easypaisa</option><option value="bank-transfer">Bank transfer</option><option value="udhaar">Udhaar / ادھار</option><option value="other">Other</option></select></label>
+                    <div class="bill-conditional" data-payment-field="raastId"><label>Raast ID<input data-field="paymentDetails.raastId" dir="ltr"></label></div>
+                    <div class="bill-conditional" data-payment-field="phoneOrAccount"><label>Phone / account<input data-field="paymentDetails.phoneOrAccount" dir="ltr"></label></div>
+                    <div class="bill-conditional" data-payment-field="accountTitle"><label>Account title<input data-field="paymentDetails.accountTitle"></label></div>
+                    <div class="bill-conditional" data-payment-field="ibanOrAccount"><label>IBAN / account number<input data-field="paymentDetails.ibanOrAccount" dir="ltr"></label></div>
+                    <div class="bill-conditional" data-payment-field="note"><label>Note<input data-field="paymentDetails.note"></label></div>
+                </div></details>
+                <details class="bill-panel"><summary>Notes</summary><div class="bill-panel-body"><label>Notes<textarea data-field="notes" rows="2"></textarea></label></div></details>
+            </section>
+            <section class="bill-preview-workspace" aria-label="Bill preview"><div class="bill-preview-toolbar"><strong>Live preview</strong></div><div class="bill-preview-frame"><article class="bill-page" data-bill-preview aria-label="Bill preview"></article></div></section>
+        </div>
+
+        <section class="bill-about" aria-labelledby="bill-about-title">
+            <h2 id="bill-about-title">A simple everyday bill, not accounting software</h2>
+            <p>Make a bill, cash memo or receipt for a shop counter, tailor, tutor, technician or small home business. Add items, mark what is paid and what is still owed, then print or save it.</p>
+            <p>Businesses that must issue FBR-integrated digital tax invoices should use an appropriately integrated invoicing system. This tool is for everyday bills, cash memos and receipts, not tax filing.</p>
+            <p>Need a formal professional invoice with client details, due dates and tax? Use the <a href="/urdu-invoice-generator">Urdu &amp; English Invoice Generator</a> instead.</p>
+        </section>
+    </main>
+
+    <footer aria-label="Footer navigation"></footer>
+</body>
+</html>

@@ -202,6 +202,19 @@ Human/product gates:
 
 **Guardrail:** if implementation ever requires touching a Basic/Rich Editor, mobile-activation, or telemetry file, stop — the isolation assumption behind this exception has broken and the work must be re-filed under normal backlog review.
 
+## P0.8 — Pakistan Everyday Billing Toolkit Slice 1 (founder-directed P0.1-freeze exception)
+
+**Spec:** [`WU-BILL-001`](WU-BILL-001-pakistan-everyday-billing-toolkit.md)
+**Architecture:** [`WU-BILL-001-ARCHITECTURE-CONTRACT.md`](WU-BILL-001-ARCHITECTURE-CONTRACT.md)
+**Execution:** [`WU-BILL-001-IMPLEMENTATION-CHECKLIST.md`](WU-BILL-001-IMPLEMENTATION-CHECKLIST.md)
+**State:** Slice 0 shipped 2026-09-12 (`fa248a9`, #180). Slice 1 explicitly approved 2026-09-12 as an exception to rule 7: it builds an isolated, unpromoted `/urdu-bill-generator` route reusing no `WU-PLAT-002H`-owned file, adds no homepage/global-navigation entry, and does not touch `/urdu-invoice-generator` or any protected invoice file.
+
+- [ ] Slice 1 — standalone `/urdu-bill-generator` route, Bill mode only, local preview, print/PDF output, content-free telemetry (see implementation checklist Slice 1).
+- [ ] No public promotion/homepage/nav link until the P0.1 gate closes or a separate release-gate exception is recorded.
+- [ ] Invoice regression tests must remain green; no protected invoice file may change.
+
+**Guardrail:** if implementation ever requires touching a Basic/Rich Editor, mobile-activation, invoice-protected, or telemetry-allowlist file beyond an additive route registration, stop — the isolation assumption behind this exception has broken and the work must be re-filed under normal backlog review.
+
 ## P0.6 — AI production external gate
 
 **Spec:** [`WU-AI-001`](WU-AI-001-urdu-ai-writing-assistant-platform.md)  
