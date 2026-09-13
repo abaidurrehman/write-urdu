@@ -80,6 +80,10 @@ test('Gate B2 M4 lets TinyMCE contract safely when the effective viewport shrink
   await body.click();
   await body.fill('یہ میرا اردو دستاویز ہے');
   await page.setViewportSize({ width: 390, height: 480 });
+  await page.waitForFunction(() => {
+    const node = document.querySelector('.tox.tox-tinymce');
+    return Boolean(node) && node.matches(':focus-within');
+  }, null, { timeout: 2000 }).catch(() => {});
   await page.waitForTimeout(100);
 
   const geometry = await editor.evaluate(node => {

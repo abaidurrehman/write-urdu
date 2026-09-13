@@ -140,7 +140,7 @@
      navigation and input choices available before/after writing, but let the
      focused editor own the constrained viewport while the keyboard is open. */
   body.wu-v2-shell[data-wu-core-workspace="basic"]:has(#transliterateTextarea:focus) .wu-site-header,
-  body.wu-v2-shell.rich-editor-page:has(.tox.tox-tinymce.tox-edit-focus) .wu-site-header {
+  body.wu-v2-shell.rich-editor-page:has(.tox.tox-tinymce:focus-within) .wu-site-header {
     display: none !important;
   }
 
