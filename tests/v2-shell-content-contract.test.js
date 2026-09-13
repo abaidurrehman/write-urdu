@@ -12,6 +12,7 @@ const shellCss = read('css/v2-shell.css');
 const contentCss = read('css/v2-content.css');
 const documentation = read('write-urdu-documentation.html');
 const faq = read('urdu-faq.html');
+const billGenerator = read('urdu-bill-generator.html');
 
 function assertApprovedWeights(source, label) {
     const weights = Array.from(source.matchAll(/font-weight\s*:\s*(\d+)\b/g), (match) => Number(match[1]));
@@ -48,6 +49,12 @@ assert.ok((faq.match(/<details class="faq-item"/g) || []).length >= 8, 'FAQ shou
 assert.doesNotMatch(faq, /UA-80884320-1|google-analytics\.com\/analytics\.js/, 'FAQ must not retain obsolete Universal Analytics');
 assert.doesNotMatch(faq, /maxcdn\.bootstrapcdn\.com|font-awesome|cdnjs\.cloudflare\.com\/ajax\/libs\/font-awesome/i, 'FAQ must not retain obsolete framework dependencies');
 assert.doesNotMatch(faq, /<meta name="Keywords"/i, 'FAQ must not retain legacy keyword meta tags');
+
+assert.match(billGenerator, /<script src="\/seo\.config\.js" defer><\/script>/, 'Bill Generator must load the shared SEO configuration');
+assert.match(billGenerator, /<script src="\/js\/seo\.js" defer><\/script>/, 'Bill Generator must bootstrap the shared v2 shell');
+assert.match(billGenerator, /<script src="\/site-header\.js" defer><\/script>/, 'Bill Generator must load the shared header runtime');
+assert.match(billGenerator, /data-wu-static-shell="nav"/, 'Bill Generator must retain crawlable static navigation before runtime upgrade');
+assert.match(billGenerator, /data-wu-static-shell="footer"/, 'Bill Generator must retain crawlable static footer before runtime upgrade');
 
 assertApprovedWeights(shellCss, 'v2 shell');
 assertApprovedWeights(contentCss, 'v2 content system');
