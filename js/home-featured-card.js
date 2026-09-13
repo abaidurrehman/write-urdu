@@ -43,6 +43,16 @@
         };
     }
 
+    function attachToInstructions(section) {
+        var instructionCard = section.nextElementSibling;
+        if (!instructionCard || !instructionCard.classList.contains('card')) return false;
+        var body = instructionCard.firstElementChild;
+        if (!body || !body.classList.contains('card-body')) return false;
+        body.classList.add('home-instructions-with-card');
+        body.appendChild(section);
+        return true;
+    }
+
     function mount() {
         if (productPath() !== '/' || !registry || !core || !data || !selector || !sharing) return false;
         var section = document.querySelector('[data-home-featured-card]');
@@ -53,6 +63,8 @@
         var background = card && registry.getBackgroundById(card.backgroundId);
         var insets = background && core.safeAreaStyle(background.safeArea);
         if (!card || !background || !insets) return false;
+
+        attachToInstructions(section);
 
         var art = section.querySelector('[data-home-featured-card-art]');
         var image = section.querySelector('[data-home-featured-card-image]');

@@ -34,6 +34,27 @@ test('homepage keeps one contextual card after writer with exactly two actions',
   expect(new Set(artwork).size).toBeLessThanOrEqual(1);
 });
 
+test('desktop places a compact featured card beside the typing instructions', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openHome(page);
+  const layout = await page.evaluate(() => {
+    const card = document.querySelector('[data-home-featured-card]');
+    const body = card.parentElement;
+    const instructions = body.querySelector('.card-text').getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const artRect = card.querySelector('[data-home-featured-card-art]').getBoundingClientRect();
+    return {
+      nested: body.classList.contains('home-instructions-with-card'),
+      instructionsLeft: instructions.left,
+      cardLeft: cardRect.left,
+      artWidth: artRect.width
+    };
+  });
+  expect(layout.nested).toBe(true);
+  expect(layout.cardLeft).toBeGreaterThan(layout.instructionsLeft);
+  expect(layout.artWidth).toBeLessThanOrEqual(210);
+});
+
 test('Friday local time selects Jumma content', async ({ page }) => {
   await page.addInitScript(() => {
     const NativeDate = Date;
@@ -78,6 +99,7 @@ test('Urdu locale mirror renders the same compact localized feature', async ({ p
   await expect(section.locator('button')).toHaveCount(2);
   await expect(section.locator('[data-home-featured-card-title]')).toHaveText('آج کا منتخب اردو کارڈ');
   await expect(section.locator('[data-home-featured-card-share]')).toHaveText('شیئر کریں');
+  await expect(section.locator('xpath=..')).toHaveClass(/home-instructions-with-card/);
 });
 
 test('homepage Share publishes a real link and preserves fallback', async ({ page }) => {
@@ -129,16 +151,23 @@ test('Open in Card Studio restores exact featured text and background without UR
   expect(new URL(page.url()).hash).toBe('');
 });
 
-test('mobile card does not precede writer or overflow page', async ({ page }) => {
+test('mobile card follows instructions and does not overflow page', async ({ page }) => {
   for (const width of [320, 360, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await openHome(page);
     const layout = await page.evaluate(() => {
       const writer = document.getElementById('transliterateTextarea').getBoundingClientRect();
       const card = document.querySelector('[data-home-featured-card]').getBoundingClientRect();
-      return { writerTop: writer.top, cardTop: card.top, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth };
+      const instructions = document.querySelector('.home-instructions-with-card .card-text').getBoundingClientRect();
+      return {
+        writerTop: writer.top,
+        cardTop: card.top,
+        instructionsBottom: instructions.bottom,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth
+      };
     });
     expect(layout.cardTop).toBeGreaterThan(layout.writerTop);
+    expect(layout.cardTop).toBeGreaterThanOrEqual(layout.instructionsBottom - 1);
     expect(layout.overflow).toBeLessThanOrEqual(1);
   }
 });
