@@ -39,7 +39,7 @@ On desktop and wider compact layouts, PDF, Word and PNG can remain visible but d
 
 ### Input method hierarchy
 
-The input-mode control is intentionally placed on its own row below document actions instead of being allowed to wrap there accidentally. This keeps `English letters → Urdu`, direct Urdu and Voice together as writing-method choices and prevents them from competing visually with completion/export actions.
+Input modes remain one visually distinct writing-method group rather than competing with completion/export actions. When horizontal space is available, the group stays right-aligned on the first toolbar line behind a divider. At constrained desktop/tablet widths (1180px and below), it moves intentionally to a full-width second row. This avoids an unnecessary second row on 1280×720 laptops while keeping `English letters → Urdu`, direct Urdu and Voice together.
 
 ### Responsive behavior
 
@@ -48,15 +48,15 @@ On compact screens:
 - PDF, Word and PNG remain directly visible once there is exportable content;
 - the export overflow remains adjacent to those formats;
 - Print continues to move into `More`;
-- the input-mode row remains full width;
+- the input-mode group moves to a deliberate full-width row once the viewport is constrained;
 - the existing mobile editor visibility floor takes precedence over showing disabled export controls in the empty state;
 - do not introduce a sticky/fixed toolbar.
 
-This is deliberate: a 360×800 empty writer should prioritize starting the writing task. Once content exists, the high-frequency export cluster becomes directly visible without forcing users through `Download`.
+This is deliberate: a 360×800 empty writer should prioritize starting the writing task, while a 1280×720 laptop should not lose another row merely to separate controls that already have a visual divider. Once content exists, the high-frequency export cluster becomes directly visible without forcing users through `Download`.
 
 ## Engineering approach
 
-Keep the proven WU-PLAT-004B command implementation and export handlers intact. `basic-writer-export-priority.js` is a bounded presentation adapter that promotes the existing PDF/Word/PNG controls into the first-level export cluster and returns them to the existing disclosure while that disclosure is open, preserving the established download-panel contract and action wiring. `basic-writer-export-priority.css` owns the visual priority, deliberate input-mode row and narrow-empty-state height guardrail.
+Keep the proven WU-PLAT-004B command implementation and export handlers intact. `basic-writer-export-priority.js` is a bounded presentation adapter that promotes the existing PDF/Word/PNG controls into the first-level export cluster and returns them to the existing disclosure while that disclosure is open, preserving the established download-panel contract and action wiring. `basic-writer-export-priority.css` owns the visual priority and responsive row decisions.
 
 ## Guardrails
 
@@ -67,6 +67,7 @@ Keep the proven WU-PLAT-004B command implementation and export handlers intact. 
 - PDF/Word/PNG action telemetry must continue to use the existing `basic_toolbar_action` path.
 - Existing mobile tap targets remain at least 44px where compact-mode controls require it.
 - A 360×800 initial viewport must keep the established Basic Writer visible-editor floor.
+- The homepage typing surface must continue to begin before the production visual-audit fold threshold on 1280×720 laptops.
 
 ## Acceptance
 
@@ -75,7 +76,8 @@ Keep the proven WU-PLAT-004B command implementation and export handlers intact. 
 3. With content, PDF, Word and PNG are visible and enabled without opening a disclosure on all supported layouts.
 4. Opening the export overflow preserves access to filename, SVG and Text file.
 5. Closing the overflow restores PDF, Word and PNG to the direct export cluster.
-6. Input mode is rendered on a deliberate full-width row beneath document actions.
+6. Input modes stay right-aligned and visually separated when space allows, then move to a full-width row at 1180px and below.
 7. Print remains direct on desktop and moves into `More` on compact layouts.
 8. On 360×800, direct export discovery must not violate the existing visible-editor floor.
-9. Existing export handlers and privacy-safe telemetry remain unchanged.
+9. On 1280×720, the Basic Writer typing surface must stay within the established production visual-audit fold threshold.
+10. Existing export handlers and privacy-safe telemetry remain unchanged.
