@@ -17,12 +17,15 @@ assert.ok(html.indexOf('/js/workspace-journey-registry.js') < html.indexOf('/js/
 assert.ok(html.indexOf('/js/workspace-handoff.js') < html.indexOf('/js/urdu-cards.js'));
 assert.ok(html.indexOf('/js/card-background-registry.js') < html.indexOf('/js/urdu-cards.js'));
 assert.ok(html.indexOf('/js/urdu-cards-data.js') < html.indexOf('/js/urdu-cards.js'));
+assert.ok(html.indexOf('/js/curated-card-share.js') < html.indexOf('/js/urdu-cards.js'));
 
 assert.match(script, /payload: \{ text: card\.textUr, backgroundId: card\.backgroundId \}/);
 assert.match(script, /sourceWorkspace: 'urdu-cards'/);
 assert.match(script, /kind: 'visual-project-seed'/);
 assert.match(script, /trackContinuationPath\('selected', pathDetail\)/);
 assert.match(script, /trackContinuationPath\('handoff_created', pathDetail\)/);
+assert.doesNotMatch(script, /fetch\('\/api\/shares'/, 'route runtime must not duplicate shared publishing code');
+assert.doesNotMatch(script, /createElement\('canvas'\)/, 'route runtime must not duplicate shared card rendering');
 assert.doesNotMatch(script, /[?&](?:text|content|payload)=/i, 'urdu-cards must not put card text in URL transport');
 assert.doesNotMatch(script, /WriteUrduTelemetry\.track\(['"][^'"]*(?:text|content)[^'"]*['"],\s*\{[^}]*card\.textUr/, 'card text must never be sent as a telemetry payload value');
 

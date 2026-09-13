@@ -6,14 +6,14 @@ async function openCards(page) {
   await blockExternal(page);
   await page.goto('/urdu-cards', { waitUntil: 'domcontentloaded', timeout: 15000 });
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ready-made Urdu cards');
-  await expect(page.locator('.card-gallery-card')).toHaveCount(32);
+  await expect(page.locator('.card-gallery-card')).toHaveCount(64);
 }
 
 test('ready-made cards render fixed text without any canvas', async ({ page }) => {
   await openCards(page);
   expect(await page.locator('canvas').count()).toBe(0);
   await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText('اللہ آپ کی حفاظت فرمائے اور ہر مشکل میں آسانی عطا کرے۔');
-  expect(await page.evaluate(() => window.WriteUrduCardsApp.getDiagnostics())).toMatchObject({ shells: 32 });
+  expect(await page.evaluate(() => window.WriteUrduCardsApp.getDiagnostics())).toMatchObject({ shells: 64 });
 });
 
 test('category filter narrows visible cards', async ({ page }) => {

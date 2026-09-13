@@ -5,7 +5,7 @@
     var registry = root.WriteUrduCardBackgroundRegistry;
     var core = root.WriteUrduCardGalleryCore;
     var data = root.WriteUrduCardsData;
-    var CANONICAL_ORIGIN = 'https://write-urdu.com';
+    var sharing = root.WriteUrduCuratedCardShare;
 
     function normalizedPath() {
         return String(root.location && root.location.pathname || '/')
@@ -25,138 +25,8 @@
         };
     }
 
-    function cardUrl(card) {
-        return CANONICAL_ORIGIN + '/urdu-cards#card-' + card.id;
-    }
-
-    function ensureFontsReady() {
-        return (document.fonts && document.fonts.ready) ? document.fonts.ready.catch(function () {}) : Promise.resolve();
-    }
-
-    function loadCardImage(src) {
-        return new Promise(function (resolve, reject) {
-            var img = new Image();
-            img.onload = function () { resolve(img); };
-            img.onerror = function () { reject(new Error('image_load_failed')); };
-            img.src = src;
-        });
-    }
-
-    function coverFit(iw, ih, cw, ch) {
-        var scale = Math.max(cw / iw, ch / ih);
-        var width = iw * scale, height = ih * scale;
-        return { x: (cw - width) / 2, y: (ch - height) / 2, width: width, height: height };
-    }
-
-    function wrapCardText(ctx, value, maxWidth) {
-        var lines = [];
-        String(value || '').split(/\n+/).forEach(function (paragraph) {
-            var words = paragraph.trim().split(/\s+/).filter(Boolean);
-            var line = '';
-            words.forEach(function (word) {
-                var candidate = line ? line + ' ' + word : word;
-                if (line && ctx.measureText(candidate).width > maxWidth) {
-                    lines.push(line);
-                    line = word;
-                } else {
-                    line = candidate;
-                }
-            });
-            if (line) lines.push(line);
-        });
-        return lines;
-    }
-
-    var CARD_TIER_FONT_SIZE = { short: 84, medium: 62, long: 44 };
-
-    function buildCardShareImage(card, background) {
-        return ensureFontsReady().then(function () {
-            return loadCardImage(background.src);
-        }).then(function (img) {
-            var width = 1080, height = 1350;
-            var canvas = document.createElement('canvas');
-            canvas.width = width; canvas.height = height;
-            var ctx = canvas.getContext('2d');
-            var placement = coverFit(img.naturalWidth || img.width, img.naturalHeight || img.height, width, height);
-            ctx.drawImage(img, placement.x, placement.y, placement.width, placement.height);
-
-            if (background.overlayOpacity) {
-                ctx.save();
-                ctx.globalAlpha = background.overlayOpacity;
-                ctx.fillStyle = background.overlayColor;
-                ctx.fillRect(0, 0, width, height);
-                ctx.restore();
-            }
-
-            var safeArea = core.normalizeSafeArea(background.safeArea) || { top: 0.16, right: 0.12, bottom: 0.16, left: 0.12 };
-            var box = {
-                x: safeArea.left * width,
-                y: safeArea.top * height,
-                width: width - (safeArea.left + safeArea.right) * width,
-                height: height - (safeArea.top + safeArea.bottom) * height
-            };
-
-            var fontSize = CARD_TIER_FONT_SIZE[core.previewTextTier(card.textUr)] || CARD_TIER_FONT_SIZE.medium;
-            ctx.direction = 'rtl';
-            ctx.textBaseline = 'middle';
-            ctx.font = '600 ' + fontSize + 'px "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif';
-            var lines = wrapCardText(ctx, card.textUr, box.width);
-            var lineHeight = Math.round(fontSize * 1.65);
-            var totalHeight = lines.length * lineHeight;
-            var startY = box.y + box.height / 2 - totalHeight / 2 + lineHeight / 2;
-            var align = background.preferredAlign === 'left' ? 'left' : background.preferredAlign === 'right' ? 'right' : 'center';
-            var x = align === 'left' ? box.x : align === 'right' ? box.x + box.width : box.x + box.width / 2;
-            ctx.textAlign = align;
-            ctx.fillStyle = background.textColor || '#ffffff';
-            ctx.shadowColor = 'rgba(0,0,0,.32)';
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetY = 2;
-            lines.forEach(function (line, index) {
-                ctx.fillText(line, x, startY + index * lineHeight, box.width);
-            });
-            ctx.shadowColor = 'transparent';
-
-            ctx.direction = 'ltr';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'alphabetic';
-            ctx.font = '600 22px "Segoe UI", Arial, sans-serif';
-            ctx.fillStyle = background.textColor || '#ffffff';
-            ctx.globalAlpha = 0.85;
-            ctx.fillText('Write-Urdu.com', width / 2, height - 40);
-            ctx.globalAlpha = 1;
-
-            return new Promise(function (resolve, reject) {
-                canvas.toBlob(function (blob) {
-                    blob ? resolve(blob) : reject(new Error('share_preview_failed'));
-                }, 'image/png');
-            });
-        });
-    }
-
-    function publishCardShare(card, background) {
-        return buildCardShareImage(card, background).then(function (blob) {
-            var form = new FormData();
-            form.set('source_tool', 'card_studio');
-            form.set('public_text', card.textUr);
-            form.set('preset', 'ready_made_card');
-            form.set('attribution', background.name + ' · Write Urdu Card');
-            form.set('image', blob, 'write-urdu-card.png');
-            return fetch('/api/shares', {
-                method: 'POST',
-                body: form,
-                credentials: 'same-origin',
-                cache: 'no-store'
-            }).then(function (response) {
-                return response.json().catch(function () { return null; }).then(function (payload) {
-                    if (!response.ok || !payload || !payload.ok || !payload.url) throw new Error('publish_failed');
-                    return payload.url;
-                });
-            });
-        });
-    }
-
     function mount() {
-        if (normalizedPath() !== '/urdu-cards' || !registry || !core || !data) return false;
+        if (normalizedPath() !== '/urdu-cards' || !registry || !core || !data || !sharing) return false;
         var page = document.querySelector('[data-urdu-cards]');
         if (!page || page.dataset.urduCardsMounted === 'true') return false;
 
@@ -216,30 +86,18 @@
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
             status.textContent = 'Creating your shareable link…';
-            var publish = background ? publishCardShare(card, background) : Promise.reject(new Error('no_background'));
-            publish.catch(function () {
-                return cardUrl(card);
-            }).then(function (url) {
+            var share = background ? sharing.shareCard(card, background) : Promise.reject(new Error('no_background'));
+            share.then(function (result) {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                if (root.navigator && typeof root.navigator.share === 'function') {
-                    root.navigator.share({ title: 'Write Urdu Card', url: url }).catch(function () { copyLink(url); });
-                    return;
-                }
-                copyLink(url);
+                if (result.result === 'link_copied') status.textContent = 'Link copied.';
+                else if (result.result === 'fallback') status.textContent = result.url;
+                else status.textContent = 'Share sheet opened.';
+            }).catch(function () {
+                button.disabled = false;
+                button.removeAttribute('aria-busy');
+                status.textContent = sharing.cardUrl(card);
             });
-        }
-
-        function copyLink(url) {
-            if (root.navigator && root.navigator.clipboard && typeof root.navigator.clipboard.writeText === 'function') {
-                root.navigator.clipboard.writeText(url).then(function () {
-                    status.textContent = 'Link copied.';
-                }).catch(function () {
-                    status.textContent = url;
-                });
-            } else {
-                status.textContent = url;
-            }
         }
 
         function createCard(card) {
