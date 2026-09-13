@@ -109,6 +109,16 @@
             ]
         },
         {
+            id: 'urdu-cards', routes: ['/urdu-cards'], status: 'planned', category: 'Create', stages: ['Create'],
+            label: 'Browse ready-made Urdu cards', technicalLabel: 'Ready-Made Urdu Cards',
+            jobs: ['pick a finished Urdu card for dua, Eid, wedding or congratulations'], accepts: [], produces: ['visual-project-seed'],
+            persistence: 'session handoff only', conflictPolicy: 'never overwrite Card Studio before a valid handoff',
+            next: [
+                { id: 'urdu-cards-to-card', target: 'card-studio', type: 'handoff', label: 'Edit this card in Card Studio', payloadKind: 'visual-project-seed' },
+                { id: 'urdu-cards-share', target: null, type: 'embedded', label: 'Share this card', payloadKind: null }
+            ]
+        },
+        {
             id: 'templates', routes: ['/urdu-templates'], status: 'current', category: 'Create', stages: ['Create'],
             label: 'Start from an Urdu template', technicalLabel: 'Template Library',
             jobs: ['choose a ready-made Urdu design'], accepts: ['plain-text'], produces: ['template-seed'],

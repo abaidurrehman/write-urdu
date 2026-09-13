@@ -106,15 +106,15 @@ const CONTINUATION_RECOMMENDATIONS = new Set([
     'voice-to-basic', 'voice-to-rich', 'voice-to-card',
     'inpage-to-cleaner', 'inpage-to-basic', 'inpage-to-rich',
     'stylish-to-name-art', 'stylish-to-card', 'share-to-card', 'share-to-basic',
-    'legacy-compatibility', 'gallery-to-card'
+    'legacy-compatibility', 'gallery-to-card', 'urdu-cards-to-card'
 ]);
 const CONTINUATION_WORKSPACES = new Set([
     'basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner', 'image-to-urdu-text',
     'voice-typing', 'inpage-converter', 'card-studio', 'qr-generator', 'stylish-text',
-    'name-art', 'public-share', 'card-gallery'
+    'name-art', 'public-share', 'card-gallery', 'urdu-cards'
 ]);
-const CONTINUATION_PATH_VERSIONS = new Set(['v2', 'legacy-v1', 'card-gallery-v1']);
-const CONTINUATION_RELEASE_MARKERS = new Set(['wu-plat-002h-s1-2026-09-06-v1', 'wu-card-gallery-s2-2026-09-13-v1']);
+const CONTINUATION_PATH_VERSIONS = new Set(['v2', 'legacy-v1', 'card-gallery-v1', 'urdu-cards-v1']);
+const CONTINUATION_RELEASE_MARKERS = new Set(['wu-plat-002h-s1-2026-09-06-v1', 'wu-card-gallery-s2-2026-09-13-v1', 'wu-urdu-cards-s1-2026-09-13-v1']);
 const CONTINUATION_PATH_EVENTS = new Set([
     'continuation_path_eligible', 'continuation_path_shown', 'continuation_path_selected',
     'continuation_path_handoff_created', 'continuation_path_destination_ready',

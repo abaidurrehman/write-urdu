@@ -2,6 +2,7 @@
     'use strict';
 
     var TARGET = 'card-studio';
+    var VISUAL_SEED_SOURCES = { 'card-gallery': true, 'urdu-cards': true };
     var LEGACY_KEY = 'writeUrdu.cardStudio.incoming';
     var consuming = false;
 
@@ -116,7 +117,7 @@
             template = templateFromId(preview.payload.templateId || preview.context && preview.context.templateId);
             if (!template) return null;
         } else if (kind === 'visual-project-seed') {
-            if (!preview.source || preview.source.workspace !== 'card-gallery' || typeof preview.payload.backgroundId !== 'string') return null;
+            if (!preview.source || !VISUAL_SEED_SOURCES[preview.source.workspace] || typeof preview.payload.backgroundId !== 'string') return null;
         } else if (kind !== 'plain-text') return null;
 
         var app = root.WriteUrduCardStudioApp;
