@@ -60,8 +60,28 @@ test('editing a card reaches Card Studio with its exact text and background', as
   expect(eventNames).toEqual(expect.arrayContaining(['continuation_path_selected', 'continuation_path_handoff_created']));
 });
 
-test('share falls back to copying a link that never contains card text', async ({ page }) => {
+test('share publishes a real shareable link back to write-urdu.com', async ({ page }) => {
   await openCards(page);
+  let publishedForm = null;
+  await page.route('**/api/shares', async route => {
+    publishedForm = route.request().postData() || '';
+    await route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ ok: true, id: 'abc123', url: 'https://write-urdu.com/s/abc123' }) });
+  });
+  await page.evaluate(() => { navigator.share = () => Promise.reject(new Error('share unavailable')); });
+  await page.evaluate(() => {
+    window.__copied = null;
+    navigator.clipboard.writeText = text => { window.__copied = text; return Promise.resolve(); };
+  });
+  await page.locator('[data-urdu-cards-share="dua-1"]').click();
+  await expect(page.locator('[data-urdu-cards-status]')).toHaveText('Link copied.');
+  const copied = await page.evaluate(() => window.__copied);
+  expect(copied).toBe('https://write-urdu.com/s/abc123');
+  expect(publishedForm).not.toBeNull();
+});
+
+test('share falls back to the card deep link when publishing fails', async ({ page }) => {
+  await openCards(page);
+  await page.route('**/api/shares', route => route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'publish_failed' }) }));
   await page.evaluate(() => { navigator.share = () => Promise.reject(new Error('share unavailable')); });
   await page.evaluate(() => {
     window.__copied = null;
