@@ -35,7 +35,7 @@ The overflow keeps the existing filename control and secondary formats such as S
 
 ### Empty state
 
-PDF, Word and PNG remain visible but disabled before writing exists. This preserves discovery without inviting a dead action.
+On desktop and wider compact layouts, PDF, Word and PNG can remain visible but disabled before writing exists. On the narrowest phone widths (up to 380px), the empty-state export cluster is deferred until the first text exists so the real writing canvas keeps its established first-viewport visibility floor. The moment content exists, PDF, Word and PNG appear as first-level actions.
 
 ### Input method hierarchy
 
@@ -45,18 +45,18 @@ The input-mode control is intentionally placed on its own row below document act
 
 On compact screens:
 
-- PDF, Word and PNG remain directly visible in the first command line rather than forcing a new pre-editor row;
+- PDF, Word and PNG remain directly visible once there is exportable content;
 - the export overflow remains adjacent to those formats;
 - Print continues to move into `More`;
 - the input-mode row remains full width;
-- the existing mobile editor visibility floor takes precedence over decorative spacing or an extra export row;
+- the existing mobile editor visibility floor takes precedence over showing disabled export controls in the empty state;
 - do not introduce a sticky/fixed toolbar.
 
-This is deliberate: at the empty state the export cluster and `More` must fit on one compact line so the writing surface still begins high enough in a 360×800 viewport. Once content exists, normal wrapping may occur as completion actions are progressively revealed.
+This is deliberate: a 360×800 empty writer should prioritize starting the writing task. Once content exists, the high-frequency export cluster becomes directly visible without forcing users through `Download`.
 
 ## Engineering approach
 
-Keep the proven WU-PLAT-004B command implementation and export handlers intact. `basic-writer-export-priority.js` is a bounded presentation adapter that promotes the existing PDF/Word/PNG controls into the first-level export cluster and returns them to the existing disclosure while that disclosure is open, preserving the established download-panel contract and action wiring. `basic-writer-export-priority.css` owns the visual priority and deliberate input-mode row.
+Keep the proven WU-PLAT-004B command implementation and export handlers intact. `basic-writer-export-priority.js` is a bounded presentation adapter that promotes the existing PDF/Word/PNG controls into the first-level export cluster and returns them to the existing disclosure while that disclosure is open, preserving the established download-panel contract and action wiring. `basic-writer-export-priority.css` owns the visual priority, deliberate input-mode row and narrow-empty-state height guardrail.
 
 ## Guardrails
 
@@ -70,11 +70,12 @@ Keep the proven WU-PLAT-004B command implementation and export handlers intact. 
 
 ## Acceptance
 
-1. With an empty writer, PDF, Word and PNG are visible and disabled.
-2. With content, PDF, Word and PNG are visible and enabled without opening a disclosure.
-3. Opening the export overflow preserves access to filename, SVG and Text file.
-4. Closing the overflow restores PDF, Word and PNG to the direct export cluster.
-5. Input mode is rendered on a deliberate full-width row beneath document actions.
-6. Print remains direct on desktop and moves into `More` on compact layouts.
-7. On 360×800, direct export discovery must not create an extra pre-editor row that violates the existing visible-editor floor.
-8. Existing export handlers and privacy-safe telemetry remain unchanged.
+1. On desktop/wider layouts with an empty writer, PDF, Word and PNG are visible and disabled.
+2. On phone widths up to 380px with an empty writer, the export cluster may stay hidden to preserve the editor visibility floor.
+3. With content, PDF, Word and PNG are visible and enabled without opening a disclosure on all supported layouts.
+4. Opening the export overflow preserves access to filename, SVG and Text file.
+5. Closing the overflow restores PDF, Word and PNG to the direct export cluster.
+6. Input mode is rendered on a deliberate full-width row beneath document actions.
+7. Print remains direct on desktop and moves into `More` on compact layouts.
+8. On 360×800, direct export discovery must not violate the existing visible-editor floor.
+9. Existing export handlers and privacy-safe telemetry remain unchanged.
