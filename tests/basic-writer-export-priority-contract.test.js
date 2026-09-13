@@ -25,7 +25,8 @@ assert.match(coreRuntime, /loadBasicExportPriority\(\)/, 'Export-priority loader
 assert.match(css, /wu-basic-command-direct-exports/, 'Direct export cluster styling is missing');
 assert.match(css, /wu-basic-command--direct-export/, 'Direct format styling is missing');
 assert.match(css, /\.wu-basic-command-mode[\s\S]*flex: 1 1 100%/, 'Input mode must own a deliberate full-width row');
-assert.match(css, /@media \(max-width: 767px\)[\s\S]*wu-basic-command-export-priority[\s\S]*flex: 1 1 100%/, 'Compact layouts must keep the export cluster discoverable');
+assert.match(css, /@media \(max-width: 767px\)[\s\S]*wu-basic-command-export-priority[\s\S]*width: auto;[\s\S]*flex: 1 1 auto/, 'Compact layouts must keep exports visible without forcing another pre-editor row');
+assert.match(css, /min-width: 48px;[\s\S]*min-height: 44px/, 'Compact direct formats need bounded width and safe tap targets');
 assert.doesNotMatch(css, /position\s*:\s*(?:fixed|sticky)/, 'Export priority must not create fixed or sticky authoring chrome');
 
 assert.match(serviceWorker, /basic-writer-export-priority\.css/, 'PWA shell must cache the export-priority CSS');
