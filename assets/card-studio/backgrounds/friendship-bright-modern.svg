@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="fbm-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff6e8"/><stop offset="1" stop-color="#ffe9d6"/></linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#fbm-bg)"/>
+  <circle cx="130" cy="150" r="90" fill="#ffb877" opacity=".55"/>
+  <circle cx="960" cy="230" r="60" fill="#7cc9b0" opacity=".55"/>
+  <rect x="90" y="1120" width="130" height="130" rx="26" fill="#f2895f" opacity=".5" transform="rotate(18 155 1185)"/>
+  <rect x="880" y="1170" width="150" height="150" rx="30" fill="#5fa8d1" opacity=".5" transform="rotate(-14 955 1245)"/>
+  <rect x="80" y="80" width="920" height="1190" rx="24" fill="none" stroke="#e6a06a" stroke-width="2" opacity=".4"/>
+</svg>

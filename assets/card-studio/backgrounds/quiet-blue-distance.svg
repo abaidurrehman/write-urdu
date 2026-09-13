@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="qbd-sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c6d7e6"/><stop offset=".5" stop-color="#93aec6"/><stop offset="1" stop-color="#5f7d99"/></linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#qbd-sky)"/>
+  <path d="M0 900Q260 860 540 890T1080 870V1350H0Z" fill="#3d5972" opacity=".55"/>
+  <path d="M0 980Q300 950 600 975T1080 955V1350H0Z" fill="#2c4258" opacity=".55"/>
+  <g fill="none" stroke="#233444" stroke-width="4" stroke-linecap="round" opacity=".5">
+    <path d="M120 210q14-14 28 0q14-14 28 0"/>
+    <path d="M210 260q11-11 22 0q11-11 22 0"/>
+    <path d="M900 170q12-12 24 0q12-12 24 0"/>
+  </g>
+</svg>

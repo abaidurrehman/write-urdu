@@ -144,9 +144,11 @@ const CARD_GALLERY_BACKGROUNDS = new Set([
     'moonlit-lakeside', 'lantern-sunrise', 'pastel-glass', 'black-gold-classic',
     'maroon-wedding', 'regal-gold-arabesque', 'soft-sunrise-garden', 'window-light-tea',
     'quiet-moon-sky', 'rainy-window-reflection', 'jumma-ivory-geometry',
-    'jumma-midnight-silhouette', 'emerald-prayer-light', 'warm-paper-reflection'
+    'jumma-midnight-silhouette', 'emerald-prayer-light', 'warm-paper-reflection',
+    'minimal-cream-poetry', 'ink-moon-poetry', 'rose-mist-affection', 'quiet-blue-distance',
+    'self-respect-black-sand', 'friendship-bright-modern', 'family-warm-interior'
 ]);
-const CARD_GALLERY_CATEGORIES = new Set(['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury']);
+const CARD_GALLERY_CATEGORIES = new Set(['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury', 'love']);
 const CARD_GALLERY_TEXT_BUCKETS = new Set(['empty', 'short', 'medium', 'long']);
 
 const METRIC_COLUMNS = [

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <radialGradient id="fwi-glow" cx=".5" cy=".28" r=".55"><stop stop-color="#fff1d8"/><stop offset="1" stop-color="#f0d9ae" stop-opacity="0"/></radialGradient>
+    <linearGradient id="fwi-bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4e6cc"/><stop offset="1" stop-color="#e3cda3"/></linearGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#fwi-bg)"/>
+  <circle cx="540" cy="360" r="420" fill="url(#fwi-glow)"/>
+  <path d="M0 1230Q270 1190 540 1220T1080 1200V1350H0Z" fill="#c9a874" opacity=".35"/>
+  <rect x="70" y="70" width="940" height="1210" rx="20" fill="none" stroke="#b6935e" stroke-width="2" opacity=".4"/>
+</svg>

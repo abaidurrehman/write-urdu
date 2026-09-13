@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="imp-sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e9e6df"/><stop offset=".55" stop-color="#d7d2c6"/><stop offset="1" stop-color="#bfb9a9"/></linearGradient>
+    <radialGradient id="imp-moon" cx=".5" cy=".5" r=".5"><stop stop-color="#fbf8ef"/><stop offset="1" stop-color="#ded6c0" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#imp-sky)"/>
+  <circle cx="820" cy="220" r="150" fill="url(#imp-moon)"/>
+  <circle cx="820" cy="220" r="60" fill="#f6f1e2" opacity=".9"/>
+  <path d="M0 1060Q220 990 460 1040T1080 1010V1350H0Z" fill="#8d8877" opacity=".28"/>
+  <path d="M0 1130Q260 1080 540 1120T1080 1100V1350H0Z" fill="#6f6a5a" opacity=".24"/>
+  <path d="M0 1200Q300 1170 600 1195T1080 1180V1350H0Z" fill="#4c4738" opacity=".22"/>
+</svg>
