@@ -13,7 +13,7 @@ const registry = read('docs/WU-PUBLIC-PAGE-REGISTRY.csv');
 const sitemap = read('sitemap.xml');
 const llms = read('llms.txt');
 
-assert.match(html, /<h1>See your Urdu on every card<\/h1>/);
+assert.match(html, /<h1[^>]*>See your Urdu on every card<\/h1>/);
 assert.match(html, /name="robots" content="noindex,follow"/);
 assert.match(html, /name="googlebot" content="noindex,follow"/);
 assert.match(html, /href="https:\/\/write-urdu\.com\/urdu-card-gallery"/);
