@@ -1,5 +1,5 @@
-// WU-PLAT-004C: keep the evidence-led Basic Writer export priority available offline.
-const CACHE_NAME = 'write-urdu-shell-v50';
+// WU-CARD-GALLERY: refresh cached authoring assets for the editor-to-gallery handoff.
+const CACHE_NAME = 'write-urdu-shell-v51';
 const APP_SHELL = [
   './',
   './index.html',
