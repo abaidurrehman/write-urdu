@@ -4,19 +4,9 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
   flex: 1 1 auto;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
-  width: 100%;
-  min-width: 100%;
-  max-width: 100%;
-  flex: 1 1 100%;
-  order: 20;
-  margin-left: 0;
-  padding-top: 8px;
-  padding-left: 0;
-  border-top: 1px solid var(--wu-color-border);
-  border-left: 0;
-}
-
+/* Keep writing methods visually distinct without spending a second row when
+   a laptop/desktop has room. The base toolbar already gives this group a
+   divider and right alignment; constrained widths deliberately move it below. */
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-ai-entry {
   margin-left: auto;
 }
@@ -99,6 +89,24 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority .wu
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority.is-open {
   border-color: #bcdcca;
   background: #f4faf6;
+}
+
+/* At constrained desktop/tablet widths, make the input choices a deliberate
+   second row. Above this breakpoint they stay on the first line so the typing
+   canvas starts high enough on 1280x720 laptops. */
+@media (max-width: 1180px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    flex: 1 1 100%;
+    order: 20;
+    margin-left: 0;
+    padding-top: 8px;
+    padding-left: 0;
+    border-top: 1px solid var(--wu-color-border);
+    border-left: 0;
+  }
 }
 
 @media (max-width: 767px) {
