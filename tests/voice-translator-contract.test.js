@@ -60,7 +60,7 @@ assert.match(client, /source\.value = ''[\s\S]*result\.value = ''/, 'Direction c
 assert.doesNotMatch(client, /console\.(log|info|warn|error)/, 'Voice translator must not log user transcript/translation content');
 assert.match(styles, /\.urdu-tool-textarea\[dir="ltr"\]\s*\{[\s\S]*?direction:\s*ltr;[\s\S]*?text-align:\s*left;/, 'English textareas must render LTR and left-aligned');
 assert.match(styles, /\.urdu-tool-textarea\[dir="rtl"\]\s*\{[\s\S]*?direction:\s*rtl;[\s\S]*?text-align:\s*right;/, 'Urdu textareas must render RTL and right-aligned');
-assert.match(serviceWorker, /write-urdu-shell-v48/, 'PWA cache must refresh the Voice Translator direction stylesheet');
+assert.match(serviceWorker, /write-urdu-shell-v49/, 'PWA cache must retain the Voice Translator stylesheet while refreshing Card Studio backgrounds');
 
 assert.match(voiceCore, /options\.lang \|\| 'ur-PK'/, 'Shared Voice core must remain configurable by language');
 assert.match(core.friendlyTranslationError('translation_service_not_enabled'), /not enabled/i);

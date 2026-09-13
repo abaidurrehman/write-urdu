@@ -41,7 +41,7 @@ assert.match(css, /\.wu-voice-action/, 'Voice start/stop action styling is missi
 assert.match(css, /min-height:\s*44px/, 'Voice controls need mobile-sized touch targets');
 assert.match(css, /\.wu-voice-widget\s*\{[\s\S]*?flex-wrap:\s*nowrap/, 'Mobile Voice widget must not wrap its column children offscreen');
 
-assert.match(serviceWorker, /write-urdu-shell-v48/, 'PWA cache must refresh for Rich Editor/Keyboard voice, mobile activation, B4 batch and Voice Translator direction assets');
+assert.match(serviceWorker, /write-urdu-shell-v49/, 'PWA cache must refresh for Card Studio backgrounds, Rich Editor/Keyboard voice, mobile activation, B4 batch and Voice Translator direction assets');
 assert.match(serviceWorker, /\.\/js\/writer-voice-input\.js/, 'Writer voice mount must be cached');
 assert.match(serviceWorker, /\.\/css\/writer-voice-input\.css/, 'Writer voice styling must be cached');
 

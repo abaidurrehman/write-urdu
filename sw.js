@@ -1,4 +1,4 @@
-const CACHE_NAME = 'write-urdu-shell-v48';
+const CACHE_NAME = 'write-urdu-shell-v49';
 const APP_SHELL = [
   './',
   './index.html',
@@ -124,6 +124,7 @@ const APP_SHELL = [
   './js/card-studio-interaction-core.js',
   './js/card-studio.js',
   './js/card-studio-interaction.js',
+  './js/card-background-registry.js',
   './js/card-studio-background-library.js',
   './js/card-studio-entry.js',
   './js/social-direct-workspace.js',

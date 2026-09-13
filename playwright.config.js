@@ -11,6 +11,7 @@ module.exports = defineConfig({
     'capture-continuity.spec.js',
     'create-publish-boundaries.spec.js',
     'v2-creation.spec.js',
+    'card-studio-background-collection.spec.js',
     'seo-acquisition.spec.js',
     'role-journeys.spec.js',
     'sitemap-directory.spec.js',

@@ -102,6 +102,7 @@ const tests = [
   'tests/mobile-editor-activation-contract.test.js',
   'tests/create-publish-boundaries-contract.test.js',
   'tests/v2-creation-contract.test.js',
+  'tests/card-studio-background-collection-contract.test.js',
   'tests/card-studio-acquisition-contract.test.js',
   'tests/english-urdu-typing-acquisition-contract.test.js',
   'tests/serp-intent-optimization-contract.test.js',

@@ -52,5 +52,5 @@ assert.match(continuityRuntime, /\/tools\/inpage-unicode-converter/, 'InPage Uni
   assert.ok(css.includes(`[${marker}]`), `${marker} duplicate native handoff must be visually retired when shared continuation is active`);
 });
 
-assert.match(sw, /write-urdu-shell-v48/, 'PWA cache must retain Capture continuity assets with the current shared shell');
+assert.match(sw, /write-urdu-shell-v49/, 'PWA cache must retain Capture continuity assets with the current shared shell');
 console.log('Capture-to-continuation contract passed.');
