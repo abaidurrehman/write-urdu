@@ -1,6 +1,6 @@
 @import url("./design-tokens.css");
 
-/* WU-PLAT-004 — Basic Writer Command Toolbar */
+/* WU-PLAT-004B — Basic Writer command hierarchy */
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-surface {
   width: 100%;
   margin: 8px 0 6px;
@@ -13,12 +13,12 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar {
   gap: 8px;
   width: 100%;
   margin: 0;
-  padding: 7px 12px;
+  padding: 8px 10px;
   overflow: visible !important;
   border: 1px solid var(--wu-color-border);
   border-radius: var(--wu-radius-lg);
   background: #fff;
-  box-shadow: 0 12px 30px rgba(16, 40, 28, 0.06);
+  box-shadow: 0 10px 28px rgba(16, 40, 28, 0.055);
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-group {
@@ -28,38 +28,41 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-group {
   min-width: 0;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
   position: relative;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
-  padding-left: 12px;
-  margin-left: 4px;
-  border-left: 1px solid var(--wu-color-border);
+  flex: 0 1 auto;
+  flex-wrap: wrap;
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+  position: relative;
   margin-left: auto;
+  padding-left: 14px;
+  border-left: 1px solid var(--wu-color-border);
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command {
   appearance: none;
+  display: inline-flex;
   min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
   border: 1px solid transparent;
   border-radius: 10px;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 650;
   line-height: 1.1;
+  white-space: nowrap;
   cursor: pointer;
   transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command:focus-visible {
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command:focus-visible,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-panel :focus-visible,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel :focus-visible {
   outline: 3px solid rgba(16, 122, 75, 0.22);
   outline-offset: 2px;
 }
@@ -73,27 +76,13 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command:disabled {
   cursor: not-allowed;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share,
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--document,
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 0 14px;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share {
-  color: #fff;
-  border-color: #0c9a58;
-  background: #0c9a58;
-  box-shadow: 0 7px 16px rgba(12, 154, 88, 0.18);
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share:not(:disabled):hover {
-  border-color: #087a45;
-  background: #087a45;
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--download {
+  color: #27483a;
+  border-color: #d6e6dc;
+  background: #fff;
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy {
@@ -102,43 +91,215 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy {
   background: #f8fffb;
 }
 
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--download {
+  color: #096b43;
+  border-color: #acd7bf;
+  background: #f4fbf7;
+  box-shadow: 0 4px 12px rgba(12, 122, 75, 0.08);
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share {
+  color: #fff;
+  border-color: #0c9a58;
+  background: #0c9a58;
+  box-shadow: 0 6px 14px rgba(12, 154, 88, 0.16);
+}
+
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy:not(:disabled):hover,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more:hover {
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--document:not(:disabled):hover,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more:hover,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--download:not(:disabled):hover {
   border-color: #78bd98;
   background: #effaf4;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--utility {
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share:not(:disabled):hover {
+  border-color: #087a45;
+  background: #087a45;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-chevron {
+  margin-left: 2px;
+  font-size: 0.62rem;
+  opacity: 0.68;
+  transition: transform 140ms ease;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download.is-open .wu-basic-command-chevron {
+  transform: rotate(180deg);
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more {
+  position: relative;
   display: inline-flex;
-  min-width: 56px;
-  min-height: 48px;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 5px 7px;
-  color: #17392b;
-  background: transparent;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--utility i {
-  font-size: 1.05rem;
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-panel,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 40;
+  display: grid;
+  gap: 10px;
+  width: 310px;
+  max-width: calc(100vw - 28px);
+  padding: 12px;
+  border: 1px solid #cfe0d6;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 18px 46px rgba(16, 40, 28, 0.16);
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--utility:not(:disabled):hover {
-  background: #f2f8f4;
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-panel {
+  left: 0;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more {
-  color: #27483a;
-  border-color: var(--wu-color-border);
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel {
+  right: 0;
+  width: 300px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-panel[hidden],
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel[hidden],
+body[data-wu-basic-command-toolbar="true"] [data-wu-basic-reveal-on-content][hidden],
+body[data-wu-basic-command-toolbar="true"] [data-wu-basic-mobile-document-actions][hidden] {
+  display: none !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-popover-heading {
+  color: #214737;
+  font-size: 0.84rem;
+  letter-spacing: 0.01em;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-file {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e3eee8;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-panel label,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel label {
+  margin: 0;
+  color: #526c60;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-panel input,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel input {
+  width: 100%;
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid var(--wu-color-border);
+  border-radius: 8px;
   background: #fff;
 }
 
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-list {
+  display: grid;
+  gap: 4px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--download-item {
+  width: 100%;
+  min-height: 44px;
+  justify-content: flex-start;
+  padding: 7px 9px;
+  color: #27483a;
+  border-color: transparent;
+  background: transparent;
+  text-align: left;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--download-item i {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--download-item:not(:disabled):hover {
+  background: #f1f8f4;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="pdf"] i {
+  color: #c62828;
+  background: #fff0f0;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="word"] i {
+  color: #185abd;
+  background: #edf4ff;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="png"] i {
+  color: #7042a1;
+  background: #f5effc;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="svg"] i {
+  color: #8a5a16;
+  background: #fff7e8;
+}
+
+body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="text"] i {
+  color: #315c4b;
+  background: #eef6f1;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section + .wu-basic-command-more-section {
+  padding-top: 10px;
+  border-top: 1px solid #e3eee8;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel a,
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-action {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  color: #27483a;
+  background: #f2f8f4;
+  text-align: left;
+  text-decoration: none;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-document-actions .wu-basic-command--document {
+  width: 100%;
+  min-height: 44px;
+  justify-content: flex-start;
+  background: #f2f8f4;
+}
+
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
+  display: inline-flex;
+  width: 100%;
+  min-height: 42px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 11px;
   color: #a93030;
   border-color: #f2d2d2;
-  background: #fff4f4;
+  background: #fff7f7;
 }
 
 body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear:not(:disabled):hover {
@@ -322,156 +483,6 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-shortcut kbd {
   font-size: 0.78rem;
 }
 
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more.is-open {
-  flex: 1 1 100%;
-  flex-wrap: wrap;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel {
-  display: grid;
-  flex: 1 1 100%;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  width: 100%;
-  margin-top: 4px;
-  padding: 10px;
-  border: 1px solid var(--wu-color-border);
-  border-radius: 12px;
-  background: #fbfdfb;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel[hidden] {
-  display: none !important;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section {
-  display: grid;
-  align-content: start;
-  gap: 7px;
-  min-width: 0;
-  padding: 9px;
-  border-radius: 10px;
-  background: #fff;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs[hidden],
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-outputs[hidden],
-body[data-wu-basic-command-toolbar="true"] [data-wu-basic-reveal-on-content][hidden],
-body[data-wu-basic-command-toolbar="true"] [data-wu-basic-direct-exports][hidden] {
-  display: none !important;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports {
-  min-height: 52px;
-  padding: 5px 7px 5px 10px;
-  border: 1px solid #cce4d6;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #f0faf4 0%, #f9fdfb 100%);
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 3px 0 1px;
-  color: #176b45;
-  font-size: 0.78rem;
-  font-weight: 750;
-  white-space: nowrap;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--utility {
-  min-width: 58px;
-  min-height: 40px;
-  border-color: #d7e9df;
-  background: #fff;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--utility i {
-  display: inline-flex;
-  width: 28px;
-  height: 28px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-}
-
-body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="pdf"] i {
-  color: #c62828;
-  background: #fff0f0;
-}
-
-body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="word"] i {
-  color: #185abd;
-  background: #edf4ff;
-}
-
-body[data-wu-basic-command-toolbar="true"] [data-wu-command-action="png"] i {
-  color: #7042a1;
-  background: #f5effc;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--utility:not(:disabled):hover {
-  border-color: #78bd98;
-  background: #eaf8f0;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-section .wu-basic-command-outputs {
-  flex-wrap: wrap;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-heading {
-  color: #25493a;
-  font-size: 0.82rem;
-  letter-spacing: 0.01em;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel label {
-  margin: 0;
-  color: #526c60;
-  font-size: 0.82rem;
-  font-weight: 650;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel input {
-  width: 100%;
-  min-height: 40px;
-  padding: 7px 10px;
-  border: 1px solid var(--wu-color-border);
-  border-radius: 8px;
-  background: #fff;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-action,
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel a {
-  display: inline-flex;
-  min-height: 40px;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 8px;
-  color: #27483a;
-  background: #f2f8f4;
-  text-align: left;
-  text-decoration: none;
-}
-
-body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs .wu-basic-command--utility {
-  width: 100%;
-  min-height: 42px;
-  flex-direction: row;
-  justify-content: flex-start;
-  padding: 8px 10px;
-  background: #f2f8f4;
-}
-
 body[data-wu-basic-command-toolbar="true"] #demo {
   margin-top: 0;
 }
@@ -539,20 +550,6 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion :focus-visi
   outline-offset: 2px;
 }
 
-@media (max-width: 767px) {
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion {
-    flex-wrap: wrap;
-  }
-
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion-message {
-    flex: 1 1 auto;
-  }
-
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion-share {
-    min-height: 44px;
-  }
-}
-
 @media (max-width: 1180px) {
   body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
     flex: 1 1 100%;
@@ -567,25 +564,44 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion :focus-visi
 
 @media (max-width: 767px) {
   body[data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar {
+    align-items: stretch;
     gap: 7px;
     padding: 8px;
   }
 
   body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    gap: 6px;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command {
+    min-height: 44px;
+    padding: 0 10px;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--document,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share {
     flex: 1 1 auto;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share,
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy,
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more,
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--clear {
-    min-height: 44px;
-    padding: 0 11px;
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more {
+    position: static;
+    flex: 0 0 auto;
+    min-width: 0;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
-    padding-left: 7px;
-    margin-left: 0;
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-download-panel,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel {
+    top: calc(100% + 7px);
+    right: 0;
+    left: 0;
+    width: auto;
+    max-width: none;
   }
 
   body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
@@ -633,16 +649,16 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion :focus-visi
     width: 100%;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more.is-open {
-    width: 100%;
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion {
+    flex-wrap: wrap;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-more-panel {
-    grid-template-columns: 1fr;
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion-message {
+    flex: 1 1 auto;
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mobile-outputs {
-    display: grid;
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion-share {
+    min-height: 44px;
   }
 
   body[data-wu-basic-command-toolbar="true"] .wu-basic-command-helper {
@@ -655,18 +671,15 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-copy-completion :focus-visi
   }
 }
 
-@media (max-width: 390px) {
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
-    width: 100%;
+@media (max-width: 430px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--copy,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--document,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--share {
+    flex: 1 1 calc(33.333% - 6px);
   }
 
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary .wu-basic-command--copy {
-    flex: 1 1 0;
-  }
-
-  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-overflow {
-    margin-left: auto;
-    border-left: 0;
-    padding-left: 0;
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--download,
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--more {
+    padding-inline: 9px;
   }
 }

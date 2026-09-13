@@ -44,7 +44,7 @@ async function installRecognitionStub(page) {
   });
 }
 
-test('Basic Writer keeps E0 to input choices + writer and reveals Copy after first value', async ({ page }) => {
+test('Basic Writer keeps E0 task-first and promotes completion actions after first value', async ({ page }) => {
   let publishBody = '';
   await blockExternalServices(page);
   await page.addInitScript(() => {
@@ -77,13 +77,20 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   const editor = page.locator('#transliterateTextarea');
   const surface = page.locator('[data-wu-basic-command-surface]');
   const toolbar = page.locator('.home-actions[data-wu-basic-command-toolbar]');
-  const share = toolbar.locator('[data-wu-command-action="share"]');
   const copy = toolbar.locator('[data-wu-command-action="copy"]');
+  const preview = toolbar.locator('[data-wu-command-action="preview"]');
+  const share = toolbar.locator('[data-wu-command-action="share"]');
+  const print = toolbar.locator('[data-wu-command-action="print"]');
   const clear = toolbar.locator('[data-wu-command-action="clear"]');
-  const directExports = toolbar.locator('[data-wu-basic-direct-exports]');
   const mode = toolbar.locator('[data-input-mode-control]');
+  const downloadToggle = toolbar.locator('[data-wu-basic-download-toggle]');
+  const downloadPanel = toolbar.locator('[data-wu-basic-download-panel]');
   const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
   const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
+  const ensureDownloadOpen = async () => {
+    if (await downloadToggle.getAttribute('aria-expanded') !== 'true') await downloadToggle.click();
+    await expect(downloadPanel).toBeVisible();
+  };
   const ensureMoreOpen = async () => {
     if (await moreToggle.getAttribute('aria-expanded') !== 'true') await moreToggle.click();
     await expect(morePanel).toBeVisible();
@@ -99,80 +106,63 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   await expect(toolbar.getByText('Share text only', { exact: true })).toHaveCount(0);
 
   const toolbarBeforeCanvas = await page.evaluate(() => {
-    const surface = document.querySelector('[data-wu-basic-command-surface]');
+    const commandSurface = document.querySelector('[data-wu-basic-command-surface]');
     const canvas = document.querySelector('#demo');
-    return Boolean(surface && canvas && (surface.compareDocumentPosition(canvas) & Node.DOCUMENT_POSITION_FOLLOWING));
+    return Boolean(commandSurface && canvas && (commandSurface.compareDocumentPosition(canvas) & Node.DOCUMENT_POSITION_FOLLOWING));
   });
   expect(toolbarBeforeCanvas).toBe(true);
 
   const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
 
-  // Common downloads stay discoverable in the spare desktop space, but remain safely
-  // disabled until writing exists. Compact layouts keep the same nodes in More.
   await expect(copy).toBeHidden();
+  await expect(preview).toBeHidden();
   await expect(share).toBeHidden();
+  await expect(print).toBeHidden();
   await expect(clear).toBeHidden();
-  if (compact) {
-    await expect(directExports).toBeHidden();
-  } else {
-    await expect(directExports).toBeVisible();
-    await expect(directExports.locator('[data-wu-basic-export-label]')).toHaveText('Download');
-    for (const action of ['pdf', 'word', 'png']) {
-      await expect(directExports.locator(`[data-wu-command-action="${action}"]`)).toBeDisabled();
-    }
-  }
+  await expect(downloadToggle).toBeVisible();
+  await expect(downloadToggle).toBeDisabled();
   await expect(mode.locator('[data-input-mode-option="roman"]')).toBeEnabled();
   await expect(moreToggle).toBeEnabled();
   await expect(page.locator('[data-wu-basic-mode-helper]')).toContainText('Type Urdu words using English letters');
 
   await editor.fill('میرا خیال ہے');
 
-  // E1 (first useful text): Copy is promoted to a direct, visible primary action.
-  await expect(copy).toBeVisible();
-  await expect(copy).toBeEnabled();
-  await expect(copy).toHaveText('Copy');
-
-  await expect(share).toBeHidden();
-  await expect(clear).toBeHidden();
-
-  await ensureMoreOpen();
-  await expect(share).toBeVisible();
-  await expect(share).toBeEnabled();
-  await expect(share).toHaveText('Share');
-  await expect(clear).toBeVisible();
-  await expect(clear).toBeEnabled();
-
-  const outputs = ['pdf', 'word', 'png', 'preview', 'print'];
-  const outputLabels = { pdf: 'PDF', word: 'Word', png: 'PNG', preview: 'Preview', print: 'Print' };
-  if (compact) {
-    await expect(morePanel.locator('[data-wu-basic-output-group]')).toBeHidden();
-    for (const action of outputs) {
-      const control = morePanel.locator(`[data-wu-command-action="${action}"]`);
-      await expect(control).toBeVisible();
-      await expect(control).toHaveText(outputLabels[action]);
-    }
-  } else {
-    await expect(morePanel.locator('[data-wu-basic-output-group]')).toBeVisible();
-    for (const action of ['pdf', 'word', 'png']) {
-      const control = directExports.locator(`[data-wu-command-action="${action}"]`);
-      await expect(control).toBeVisible();
-      await expect(control).toBeEnabled();
-      await expect(control).toHaveText(outputLabels[action]);
-      await expect(morePanel.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(0);
-    }
-    for (const action of ['preview', 'print']) {
-      const control = morePanel.locator(`[data-wu-command-action="${action}"]`);
-      await expect(control).toBeVisible();
-      await expect(control).toHaveText(outputLabels[action]);
-    }
+  for (const control of [copy, preview, share]) {
+    await expect(control).toBeVisible();
+    await expect(control).toBeEnabled();
+  }
+  await expect(downloadToggle).toBeVisible();
+  await expect(downloadToggle).toBeEnabled();
+  if (compact) await expect(print).toBeHidden();
+  else {
+    await expect(print).toBeVisible();
+    await expect(print).toBeEnabled();
   }
 
-  await expect(morePanel.locator('#inputFileNameToSaveAs')).toBeVisible();
-  await expect(morePanel.getByText('Text file', { exact: true })).toBeVisible();
+  await ensureDownloadOpen();
+  await expect(downloadPanel.locator('#inputFileNameToSaveAs')).toBeVisible();
+  const downloadLabels = { pdf: 'PDF', word: 'Word', png: 'PNG', svg: 'SVG', text: 'Text file' };
+  for (const action of Object.keys(downloadLabels)) {
+    const control = downloadPanel.locator(`[data-wu-command-action="${action}"]`);
+    await expect(control).toBeVisible();
+    await expect(control).toBeEnabled();
+    await expect(control).toHaveText(downloadLabels[action]);
+    await expect(page.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(1);
+  }
   await page.keyboard.press('Escape');
-  await expect(morePanel).toBeHidden();
+  await expect(downloadPanel).toBeHidden();
+  await expect(downloadToggle).toBeFocused();
 
   await ensureMoreOpen();
+  await expect(clear).toBeVisible();
+  await expect(clear).toBeEnabled();
+  await expect(morePanel.locator('#inputFileNameToSaveAs')).toHaveCount(0);
+  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toHaveCount(0);
+  await expect(morePanel.locator('[data-wu-command-action="share"]')).toHaveCount(0);
+  if (compact) await expect(morePanel.locator('[data-wu-command-action="print"]')).toBeVisible();
+  else await expect(morePanel.locator('[data-wu-command-action="print"]')).toHaveCount(0);
+  await page.keyboard.press('Escape');
+
   await share.click();
   const publishDialog = page.locator('.wu-share-dialog');
   await expect(publishDialog).toBeVisible();
@@ -201,7 +191,9 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   await clear.click();
   await expect(editor).toHaveValue('');
   await expect(copy).toBeHidden();
-  await page.keyboard.press('Escape');
+  await expect(preview).toBeHidden();
+  await expect(share).toBeHidden();
+  await expect(downloadToggle).toBeDisabled();
 
   const nextStep = page.locator('[data-wu-next-step-version="2"]');
   await editor.fill('ایک نئی تحریر');
@@ -211,7 +203,7 @@ test('Basic Writer keeps E0 to input choices + writer and reveals Copy after fir
   await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
 });
 
-test('Basic Writer keeps common downloads obvious on desktop and compact in More on mobile', async ({ page }) => {
+test('Basic Writer uses one Download disclosure and keeps Print responsive', async ({ page }) => {
   await blockExternalServices(page);
   await page.goto('/');
   await waitForConvergence(page);
@@ -219,35 +211,36 @@ test('Basic Writer keeps common downloads obvious on desktop and compact in More
 
   const editor = page.locator('#transliterateTextarea');
   const toolbar = page.locator('.home-actions[data-wu-basic-command-toolbar]');
-  const directExports = toolbar.locator('[data-wu-basic-direct-exports]');
+  const downloadToggle = toolbar.locator('[data-wu-basic-download-toggle]');
+  const downloadPanel = toolbar.locator('[data-wu-basic-download-panel]');
   const moreToggle = toolbar.locator('[data-wu-basic-more-toggle]');
   const morePanel = toolbar.locator('[data-wu-basic-more-panel]');
-  const ensureMoreOpen = async () => {
-    if (await moreToggle.getAttribute('aria-expanded') !== 'true') await moreToggle.click();
-    await expect(morePanel).toBeVisible();
-  };
-
-  await editor.fill('میرا خیال ہے');
+  const print = toolbar.locator('[data-wu-command-action="print"]');
   const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
 
-  if (compact) {
-    await expect(directExports).toBeHidden();
-  } else {
-    await expect(directExports).toBeVisible();
-    for (const action of ['pdf', 'word', 'png']) {
-      await expect(directExports.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
-      await expect(directExports.locator(`[data-wu-command-action="${action}"]`)).toBeEnabled();
-    }
-  }
+  await editor.fill('میرا خیال ہے');
+  await expect(downloadToggle).toBeVisible();
+  await expect(downloadToggle).toBeEnabled();
+  await downloadToggle.click();
+  await expect(downloadPanel).toBeVisible();
 
-  await ensureMoreOpen();
-  for (const action of ['pdf', 'word', 'png']) {
-    if (compact) await expect(morePanel.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
-    else await expect(morePanel.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(0);
+  for (const action of ['pdf', 'word', 'png', 'svg', 'text']) {
+    await expect(downloadPanel.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
     await expect(page.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(1);
   }
-  await expect(morePanel.locator('[data-wu-command-action="preview"]')).toBeVisible();
-  await expect(morePanel.locator('[data-wu-command-action="print"]')).toBeVisible();
+  await expect(downloadPanel.locator('#inputFileNameToSaveAs')).toBeVisible();
+
+  await moreToggle.click();
+  await expect(downloadPanel).toBeHidden();
+  await expect(morePanel).toBeVisible();
+  if (compact) await expect(morePanel.locator('[data-wu-command-action="print"]')).toBeVisible();
+  else {
+    await expect(print).toBeVisible();
+    await expect(morePanel.locator('[data-wu-command-action="print"]')).toHaveCount(0);
+  }
+  await expect(morePanel.locator('[data-wu-command-action="pdf"]')).toHaveCount(0);
+  await expect(morePanel.locator('[data-wu-command-action="preview"]')).toHaveCount(0);
+  await expect(morePanel.locator('[data-wu-command-action="share"]')).toHaveCount(0);
 });
 
 test('Basic Writer makes AI writing help discoverable and keeps review below the editor', async ({ page }) => {
@@ -289,9 +282,6 @@ test('Basic Writer makes AI writing help discoverable and keeps review below the
   const host = page.locator('[data-wu-ai-writing-host]');
   const jump = page.locator('[data-wu-ai-writing-jump]');
 
-  // E0: the AI writing entry point stays tucked away until there is text to improve — its
-  // own click handler already treats empty content as a precondition failure, so the state
-  // model gates it the same way as Copy (WU-PLAT-004 §5).
   await expect(jump).toBeHidden();
 
   const hierarchy = await page.evaluate(() => {
@@ -602,6 +592,7 @@ test('phone outcome navigation and Basic Writer toolbar stay inside the viewport
   expect(toolbarGeometry.copyRight).toBeLessThanOrEqual(toolbarGeometry.width + 1);
   await expect(page.locator('[data-wu-command-action="share"]')).toBeVisible();
   await expect(page.locator('[data-wu-command-action="copy"]')).toBeVisible();
+  await expect(page.locator('[data-wu-basic-more-panel] [data-wu-command-action="print"]')).toBeVisible();
 });
 
 test('legacy follow/comment chrome and premature header creation are retired from core workspaces', async ({ page }) => {
