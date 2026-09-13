@@ -20,33 +20,35 @@
     var BASIC_COMMAND_COPY = {
         en: {
             toolbar: 'Writing and document actions',
-            primary: 'Share and copy',
+            primary: 'Document actions',
             outputs: 'Document actions',
             download: 'Download',
+            downloadHeading: 'Download document',
+            formats: 'Download formats',
             mode: 'Input mode',
             share: 'Share',
             copy: 'Copy',
             more: 'More',
-            clear: 'Clear',
+            clear: 'Clear document',
             preview: 'Preview',
             print: 'Print',
-            fileOptions: 'File options',
             editorOptions: 'Editor options',
             textFile: 'Text file'
         },
         ur: {
             toolbar: 'تحریر اور دستاویز کی کارروائیاں',
-            primary: 'شیئر اور کاپی',
+            primary: 'دستاویز کی کارروائیاں',
             outputs: 'دستاویز کی کارروائیاں',
             download: 'ڈاؤن لوڈ',
+            downloadHeading: 'دستاویز ڈاؤن لوڈ کریں',
+            formats: 'ڈاؤن لوڈ فارمیٹس',
             mode: 'لکھنے کا طریقہ',
             share: 'شیئر کریں',
             copy: 'متن کاپی کریں',
             more: 'مزید',
-            clear: 'صاف کریں',
+            clear: 'دستاویز صاف کریں',
             preview: 'پیش منظر',
             print: 'پرنٹ',
-            fileOptions: 'فائل کے اختیارات',
             editorOptions: 'ایڈیٹر کے اختیارات',
             textFile: 'متنی فائل'
         }
@@ -166,28 +168,28 @@
         actions.setAttribute('aria-label', copy.toolbar);
 
         var primary = actions.querySelector('.wu-basic-command-primary');
-        var directExports = actions.querySelector('[data-wu-basic-direct-exports]');
-        var outputs = actions.querySelector('[data-wu-basic-output-group]');
+        var downloadPanel = actions.querySelector('[data-wu-basic-download-panel]');
+        var downloadFormats = actions.querySelector('.wu-basic-command-download-list');
+        var mobileActions = actions.querySelector('[data-wu-basic-mobile-document-actions]');
         var mode = actions.querySelector('.wu-basic-command-mode');
         if (primary) primary.setAttribute('aria-label', copy.primary);
-        if (directExports) directExports.setAttribute('aria-label', copy.download);
-        if (outputs) outputs.setAttribute('aria-label', copy.outputs);
+        if (downloadPanel) downloadPanel.setAttribute('aria-label', copy.downloadHeading);
+        if (downloadFormats) downloadFormats.setAttribute('aria-label', copy.formats);
+        if (mobileActions) mobileActions.setAttribute('aria-label', copy.outputs);
         if (mode) mode.setAttribute('aria-label', copy.mode);
 
         setCommandLabel(actions, '[data-wu-command-action="share"]', copy.share);
         setCommandLabel(actions, '[data-wu-command-action="copy"]', copy.copy);
+        setCommandLabel(actions, '[data-wu-basic-download-toggle]', copy.download);
         setCommandLabel(actions, '[data-wu-basic-more-toggle]', copy.more);
         setCommandLabel(actions, '[data-wu-command-action="clear"]', copy.clear);
         setCommandLabel(actions, '[data-wu-command-action="preview"]', copy.preview);
         setCommandLabel(actions, '[data-wu-command-action="print"]', copy.print);
         setCommandLabel(actions, '[data-wu-command-action="text"]', copy.textFile);
-        setCommandLabel(actions, '[data-wu-basic-export-label]', copy.download);
 
-        var mobileOutputs = actions.querySelector('[data-wu-basic-mobile-outputs]');
-        if (mobileOutputs) mobileOutputs.setAttribute('aria-label', copy.outputs);
-        var fileHeading = actions.querySelector('[data-wu-basic-file-options] .wu-basic-command-more-heading');
-        if (fileHeading) fileHeading.textContent = copy.fileOptions;
-        var editorHeading = actions.querySelector('[data-wu-basic-editor-options] .wu-basic-command-more-heading');
+        var downloadHeading = actions.querySelector('[data-wu-basic-download-panel] .wu-basic-command-popover-heading');
+        if (downloadHeading) downloadHeading.textContent = copy.downloadHeading;
+        var editorHeading = actions.querySelector('[data-wu-basic-editor-options] .wu-basic-command-popover-heading');
         if (editorHeading) editorHeading.textContent = copy.editorOptions;
         actions.setAttribute('data-wu-basic-command-locale', basicLocale());
         return true;
@@ -304,7 +306,7 @@
         var createTitle = create.querySelector('h2');
         if (createTitle) createTitle.textContent = 'Turn Urdu into something ready to share';
         var writeEyebrow = write.querySelector('.sitemap-directory-eyebrow');
-        if (writeEyebrow) writeEyebrow.textContent = 'Write';
+        if (writeEyebrow) writeEyrow.textContent = 'Write';
 
         var learnStep = learn.querySelector('.sitemap-directory-step');
         if (learnStep) learnStep.textContent = '04';
