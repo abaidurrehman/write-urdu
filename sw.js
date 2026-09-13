@@ -1,5 +1,5 @@
-// WU-CARD-GALLERY: refresh cached authoring assets for the editor-to-gallery handoff.
-const CACHE_NAME = 'write-urdu-shell-v51';
+// WU-CARD-GALLERY: refresh cached authoring assets within the governed v50 shell generation.
+const CACHE_NAME = 'write-urdu-shell-v50';
 const APP_SHELL = [
   './',
   './index.html',
@@ -138,6 +138,7 @@ const APP_SHELL = [
   './js/card-studio-interaction.js',
   './js/card-background-registry.js',
   './js/card-gallery-core.js',
+  './js/card-gallery.js',
   './js/urdu-cards-data.js',
   './js/home-featured-card-selector.js',
   './js/curated-card-share.js',
