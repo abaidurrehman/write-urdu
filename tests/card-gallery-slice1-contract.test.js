@@ -23,7 +23,7 @@ assert.strictEqual(seo.byPath['/urdu-card-gallery'].indexable, true, 'P0.9 found
 assert.match(registry, /urdu-card-gallery\.html,\/urdu-card-gallery,Create,[^\n]+,index,yes,/);
 assert.match(sitemap, /urdu-card-gallery/);
 assert.match(llms, /urdu-card-gallery/);
-assert.match(script, /registry\.getAllBackgrounds\(\)\.forEach\(createPreview\)/, 'shared registry must own gallery inventory');
+assert.match(script, /registry\.getAllBackgrounds\(\)\.forEach\(function \(background\) \{\s*createPreview\(background, fragment\);/, 'shared registry must own gallery inventory');
 assert.match(script, /requestAnimationFrame\(refreshPreviews\)/, 'input refresh must be frame-batched');
 assert.match(script, /record\.text\.textContent = value/, 'typing must update existing DOM text nodes');
 assert.doesNotMatch(script, /createElement\(['"]canvas['"]\)|getContext\(/, 'gallery must not create preview canvases');
@@ -32,7 +32,7 @@ assert.match(script, /image\.loading = 'lazy'/);
 assert.match(script, /image\.src = background\.thumbnailSrc \|\| background\.src/);
 assert.match(script, /text\.lang = 'ur'/);
 assert.match(script, /text\.dir = 'rtl'/);
-assert.match(script, /core\.isSuitable\(state\.bucket, record\.background\.textCapacity\)/);
+assert.match(script, /core\.isSuitable\(bucket, record\.background\.textCapacity\)/);
 assert.doesNotMatch(css, /text-overflow\s*:\s*ellipsis[^}]*card-gallery-preview-text|card-gallery-preview-text[^}]*text-overflow\s*:\s*ellipsis/i);
 assert.match(css, /unicode-bidi:plaintext/);
 assert.match(css, /overflow-wrap:anywhere/);
