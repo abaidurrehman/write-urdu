@@ -215,6 +215,25 @@ Human/product gates:
 
 **Guardrail:** if implementation ever requires touching a Basic/Rich Editor, mobile-activation, invoice-protected, or telemetry-allowlist file beyond an additive route registration, stop — the isolation assumption behind this exception has broken and the work must be re-filed under normal backlog review.
 
+## P0.9 — Card design family indexing and cross-linking (founder-directed P0.1-freeze exception)
+
+**Specs:** [`WU-CARD-GALLERY-001`](WU-CARD-GALLERY-001-live-urdu-card-gallery.md), [`WU-CARD-GALLERY-001-ARCHITECTURE-CONTRACT.md`](WU-CARD-GALLERY-001-ARCHITECTURE-CONTRACT.md)
+**Skill:** `skills/wu-card-gallery-001/SKILL.md`
+**State:** Founder-directed exception recorded 2026-09-13 to the P0.1F Card Studio completion gate: `/urdu-card-studio`, `/urdu-card-gallery` and `/urdu-cards` become indexable and cross-linked ahead of the P0.1F diagnosis, on the basis that each page owns a distinct, non-cannibalizing intent:
+
+- `/urdu-card-studio` — full editor / primary creation acquisition owner (unchanged, already indexed, `priority: .92`).
+- `/urdu-card-gallery` — "compare your own Urdu text live across many designs" (distinct from the editor; no text input exists on Card Studio's landing intent).
+- `/urdu-cards` — "browse ready-made/pre-written Urdu cards" (distinct from both; no live typing, curated content).
+
+- [x] `seo.config.js` flipped `urdu-card-gallery` and `urdu-cards` to `indexable: true` with the distinct titles/descriptions above.
+- [x] `docs/WU-PUBLIC-PAGE-REGISTRY.csv` updated to `index`/`yes`/`keep` for both rows.
+- [x] `js/outcome-navigation.js` Create group/footer group gained `urdu-card-gallery` and `urdu-cards` entries (single nav source of truth; propagates via `npm run shell:sync`).
+- [x] Reciprocal on-page links added between all three routes (not nav-only).
+- [x] `js/workspace-journey-registry.js` status flipped from `planned` to `current` for `card-gallery` and `urdu-cards`.
+- [ ] Post-change Search Console/Product Pulse review of whether the split intent actually avoids cannibalizing `/urdu-card-studio` query ownership (owned by `WU-SEO-CTR-001`/P0.1G once volume supports it).
+
+**Guardrail:** this exception covers indexing/nav/cross-linking only. It is not permission to change Card Studio's canvas/export/renderer, to duplicate the background registry, or to add live-canvas-per-preview architecture to the Gallery/Cards pages. If evidence later shows cannibalization, retitle/re-scope rather than de-index without a decision.
+
 ## P0.6 — AI production external gate
 
 **Spec:** [`WU-AI-001`](WU-AI-001-urdu-ai-writing-assistant-platform.md)  

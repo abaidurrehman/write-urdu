@@ -14,15 +14,15 @@ const sitemap = read('sitemap.xml');
 const llms = read('llms.txt');
 
 assert.match(html, /<h1[^>]*>See your Urdu on every card<\/h1>/);
-assert.match(html, /name="robots" content="noindex,follow"/);
-assert.match(html, /name="googlebot" content="noindex,follow"/);
+assert.match(html, /name="robots" content="index,follow"/, 'WU-CARD-GALLERY-001 P0.9 founder exception (2026-09-13) made this route indexable');
+assert.match(html, /name="googlebot" content="index,follow"/);
 assert.match(html, /href="https:\/\/write-urdu\.com\/urdu-card-gallery"/);
 assert.match(html, /data-card-gallery-input[^>]+lang="ur"[^>]+dir="rtl"[^>]+maxlength="600"/);
 assert.match(html, /data-card-gallery-grid/);
-assert.strictEqual(seo.byPath['/urdu-card-gallery'].indexable, false, 'validation route must stay noindex');
-assert.match(registry, /urdu-card-gallery\.html,\/urdu-card-gallery,Utility,[^\n]+,noindex,no,/);
-assert.doesNotMatch(sitemap, /urdu-card-gallery/);
-assert.doesNotMatch(llms, /urdu-card-gallery/);
+assert.strictEqual(seo.byPath['/urdu-card-gallery'].indexable, true, 'P0.9 founder exception made this a distinct-intent indexed route');
+assert.match(registry, /urdu-card-gallery\.html,\/urdu-card-gallery,Create,[^\n]+,index,yes,/);
+assert.match(sitemap, /urdu-card-gallery/);
+assert.match(llms, /urdu-card-gallery/);
 assert.match(script, /registry\.getAllBackgrounds\(\)\.forEach\(createPreview\)/, 'shared registry must own gallery inventory');
 assert.match(script, /requestAnimationFrame\(refreshPreviews\)/, 'input refresh must be frame-batched');
 assert.match(script, /record\.text\.textContent = value/, 'typing must update existing DOM text nodes');
@@ -41,4 +41,4 @@ assert.strictEqual(core.previewTextTier('محبت روشنی ہے'), 'short');
 assert.strictEqual(core.previewTextTier('ا'.repeat(100)), 'medium');
 assert.strictEqual(core.previewTextTier('ا'.repeat(300)), 'long');
 
-console.log('Card Gallery Slice 1 contract passed: noindex DOM-preview route, shared registry, and frame-batched updates.');
+console.log('Card Gallery Slice 1 contract passed: indexed DOM-preview route (P0.9 exception), shared registry, and frame-batched updates.');

@@ -34,6 +34,8 @@
             },
             items: [
                 { href: '/urdu-card-studio', icon: 'card', label: { en: 'Make a poetry, quote or announcement image', ur: 'شاعری، اقتباس یا اعلان کی تصویر بنائیں' }, tool: { en: 'Card Studio', ur: 'کارڈ اسٹوڈیو' }, excludeRole: 'facebook' },
+                { href: '/urdu-card-gallery', icon: 'card', label: { en: 'Compare your Urdu text across card designs', ur: 'اپنے اردو متن کا مختلف ڈیزائنز میں موازنہ کریں' }, tool: { en: 'Card Gallery', ur: 'کارڈ گیلری' } },
+                { href: '/urdu-cards', icon: 'grid', label: { en: 'Browse ready-made Urdu cards', ur: 'تیار شدہ اردو کارڈز دیکھیں' }, tool: { en: 'Ready-Made Urdu Cards', ur: 'تیار اردو کارڈز' } },
                 { href: '/urdu-whatsapp-status-maker', icon: 'phone', label: { en: 'Create a WhatsApp Status', ur: 'واٹس ایپ اسٹیٹس بنائیں' }, tool: { en: 'WhatsApp Status Maker', ur: 'واٹس ایپ اسٹیٹس میکر' } },
                 { href: '/urdu-instagram-post-maker', icon: 'image', label: { en: 'Create an Instagram post', ur: 'انسٹاگرام پوسٹ بنائیں' }, tool: { en: 'Instagram Post Maker', ur: 'انسٹاگرام پوسٹ میکر' } },
                 { href: '/urdu-card-studio?role=facebook', icon: 'image', label: { en: 'Create a Facebook post', ur: 'فیس بک پوسٹ بنائیں' }, tool: { en: 'Card Studio · Facebook', ur: 'کارڈ اسٹوڈیو · فیس بک' }, role: 'facebook' },
@@ -125,6 +127,8 @@
             label: { en: 'Create', ur: 'بنائیں' },
             items: [
                 { href: '/urdu-card-studio', label: { en: 'Urdu image maker', ur: 'اردو تصویر بنائیں' } },
+                { href: '/urdu-card-gallery', label: { en: 'Compare card designs', ur: 'کارڈ ڈیزائنز کا موازنہ' } },
+                { href: '/urdu-cards', label: { en: 'Ready-made Urdu cards', ur: 'تیار اردو کارڈز' } },
                 { href: '/urdu-whatsapp-status-maker', label: { en: 'WhatsApp status', ur: 'واٹس ایپ اسٹیٹس' } },
                 { href: '/urdu-instagram-post-maker', label: { en: 'Instagram post', ur: 'انسٹاگرام پوسٹ' } },
                 { href: '/urdu-name-art-maker', label: { en: 'Urdu name art', ur: 'اردو نام آرٹ' } },

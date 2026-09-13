@@ -41,6 +41,8 @@ Important facts:
 ## Create and export
 
 - [Urdu Card Studio](https://write-urdu.com/urdu-card-studio): Write Urdu text or poetry on a photo, create quote/post/announcement images with Urdu fonts and templates, and export the finished PNG.
+- [Urdu Card Gallery](https://write-urdu.com/urdu-card-gallery): Type your own Urdu text once and compare it live across many card designs, then continue the one you like in Card Studio.
+- [Ready-Made Urdu Cards](https://write-urdu.com/urdu-cards): Browse ready-made Urdu cards for dua, Eid, wedding, congratulations and more, then edit one in Card Studio or share its link.
 - [Stylish Urdu Text Generator](https://write-urdu.com/stylish-urdu-text-generator): Generate curated copyable Urdu name/text styles, filter by category and intensity, and hand wording into image-based Name Art when exact typography matters.
 - [Urdu Name Art Maker](https://write-urdu.com/urdu-name-art-maker): Render your own Urdu name as a profile/DP image or transparent name layer using Urdu-safe fonts, 24 original templates, local backgrounds and browser-side PNG export.
 - [Urdu Template Library](https://write-urdu.com/urdu-templates): Browse starter designs and open a selected template in Card Studio.
