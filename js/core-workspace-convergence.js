@@ -11,8 +11,10 @@
     var PREMATURE_CORE_SELECTORS = ['[data-wu-authoring-share-primary]'];
     var CLEANUP_GUARD_MS = 6000;
     var BASIC_COMMAND_TOOLBAR_SRC = '/js/basic-writer-command-toolbar.js';
+    var BASIC_EXPORT_PRIORITY_SRC = '/js/basic-writer-export-priority.js';
     var cleanupObserver = null;
     var cleanupTimer = null;
+    var basicExportPriorityLoader = null;
     var USER_FIRST_LABELS = {
         cleaner: 'Fix broken or badly formatted Urdu text',
         image: 'Turn an Urdu screenshot or photo into editable text'
@@ -204,11 +206,33 @@
         return true;
     }
 
+    function loadBasicExportPriority() {
+        if (!root || !root.document || currentRoute() !== '/') return false;
+        if (root.WriteUrduBasicExportPriority && typeof root.WriteUrduBasicExportPriority.run === 'function') {
+            root.WriteUrduBasicExportPriority.run();
+            return true;
+        }
+        if (basicExportPriorityLoader) return true;
+        basicExportPriorityLoader = root.document.querySelector('script[data-wu-basic-export-priority-script]');
+        if (basicExportPriorityLoader) return true;
+        var script = root.document.createElement('script');
+        script.src = BASIC_EXPORT_PRIORITY_SRC;
+        script.defer = true;
+        script.setAttribute('data-wu-basic-export-priority-script', '');
+        script.addEventListener('load', function () {
+            if (root.WriteUrduBasicExportPriority && typeof root.WriteUrduBasicExportPriority.run === 'function') root.WriteUrduBasicExportPriority.run();
+        });
+        root.document.head.appendChild(script);
+        basicExportPriorityLoader = script;
+        return true;
+    }
+
     function loadBasicCommandToolbar() {
         if (!root || !root.document || currentRoute() !== '/') return false;
         if (root.WriteUrduBasicCommandToolbar && typeof root.WriteUrduBasicCommandToolbar.run === 'function') {
             root.WriteUrduBasicCommandToolbar.run();
             localizeBasicCommandToolbar();
+            loadBasicExportPriority();
             return true;
         }
         var existing = root.document.querySelector('script[data-wu-basic-command-toolbar-script]');
@@ -220,6 +244,7 @@
         script.addEventListener('load', function () {
             if (root.WriteUrduBasicCommandToolbar && typeof root.WriteUrduBasicCommandToolbar.run === 'function') root.WriteUrduBasicCommandToolbar.run();
             localizeBasicCommandToolbar();
+            loadBasicExportPriority();
         });
         root.document.head.appendChild(script);
         return true;
@@ -372,6 +397,7 @@
         PREMATURE_CORE_SELECTORS: PREMATURE_CORE_SELECTORS.slice(),
         USER_FIRST_LABELS: Object.assign({}, USER_FIRST_LABELS),
         BASIC_COMMAND_TOOLBAR_SRC: BASIC_COMMAND_TOOLBAR_SRC,
+        BASIC_EXPORT_PRIORITY_SRC: BASIC_EXPORT_PRIORITY_SRC,
         normalizeRoute: normalizeRoute,
         coreWorkspace: coreWorkspace,
         run: run,
@@ -381,6 +407,7 @@
         enhanceGlobalLabels: enhanceGlobalLabels,
         localizeBasicCommandToolbar: localizeBasicCommandToolbar,
         loadBasicCommandToolbar: loadBasicCommandToolbar,
+        loadBasicExportPriority: loadBasicExportPriority,
         removeLegacyTrustChrome: removeLegacyTrustChrome,
         removePrematureCoreChrome: removePrematureCoreChrome
     };
