@@ -1,3 +1,4 @@
+// WU-PLAT-004B: refresh the current shell so cached Basic Writer toolbar assets are updated.
 const CACHE_NAME = 'write-urdu-shell-v49';
 const APP_SHELL = [
   './',
