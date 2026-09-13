@@ -1,9 +1,9 @@
 # WU-CARD-RETENTION-001 — Card Retention & Sharing Engine
 
-**Status:** Planned / founder-approved 2026-09-13  
-**Area:** Retention / social sharing / Card ecosystem / homepage discovery  
-**Primary surfaces:** `/`, `/urdu-cards`, `/urdu-card-studio`, public share pages  
-**Related:** `WU-CARD-CONTENT-001`, `WU-CARD-GALLERY-001`, `WU-SHARE-001`, `WU-JOURNEY-001C`, `WU-PLAT-002H`  
+**Status:** Slice A implemented 2026-09-13; post-release evidence review remains open
+**Area:** Retention / social sharing / Card ecosystem / homepage discovery
+**Primary surfaces:** `/`, `/urdu-cards`, `/urdu-card-studio`, public share pages
+**Related:** `WU-CARD-CONTENT-001`, `WU-CARD-GALLERY-001`, `WU-SHARE-001`, `WU-JOURNEY-001C`, `WU-PLAT-002H`
 **First implementation child:** `WU-CARD-RETENTION-001A` — Homepage Contextual Featured Card
 
 ---

@@ -1,6 +1,6 @@
 # WU-CARD-RETENTION-001 — Acceptance Matrix
 
-**Parent:** `WU-CARD-RETENTION-001-card-retention-sharing-engine.md`  
+**Parent:** `WU-CARD-RETENTION-001-card-retention-sharing-engine.md`
 **First child:** `WU-CARD-RETENTION-001A-homepage-contextual-featured-card.md`
 
 Slice A is accepted only when every P0 row below is green or has an explicit founder-approved waiver recorded in the PR/spec decision log.

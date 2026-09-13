@@ -1,10 +1,10 @@
 # WU-CARD-CONTENT-001A — Recurring Social Content Library
 
-**Parent:** `WU-CARD-CONTENT-001-ready-made-urdu-cards-gallery.md`  
-**Related retention owner:** `WU-CARD-RETENTION-001`  
-**Status:** Planned / implementation-ready content expansion  
-**Area:** Prepared Urdu text / editorial card corpus / recurring social sharing  
-**Primary surfaces:** `/urdu-cards`, homepage featured-card candidate pool, Card Studio handoff  
+**Parent:** `WU-CARD-CONTENT-001-ready-made-urdu-cards-gallery.md`
+**Related retention owner:** `WU-CARD-RETENTION-001`
+**Status:** Slices 001A.0–001A.1 implemented 2026-09-13; later batches remain evidence-gated
+**Area:** Prepared Urdu text / editorial card corpus / recurring social sharing
+**Primary surfaces:** `/urdu-cards`, homepage featured-card candidate pool, Card Studio handoff
 **Core goal:** build a large enough, trustworthy prepared-text library that users can repeatedly find something worth sharing without lowering editorial quality.
 
 ---

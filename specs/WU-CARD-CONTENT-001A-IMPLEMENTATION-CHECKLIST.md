@@ -1,7 +1,7 @@
 # WU-CARD-CONTENT-001A — Implementation Checklist
 
-**Parent:** `WU-CARD-CONTENT-001-ready-made-urdu-cards-gallery.md`  
-**Child:** `WU-CARD-CONTENT-001A-recurring-social-content-library.md`  
+**Parent:** `WU-CARD-CONTENT-001-ready-made-urdu-cards-gallery.md`
+**Child:** `WU-CARD-CONTENT-001A-recurring-social-content-library.md`
 **Related consumer:** `WU-CARD-RETENTION-001A-homepage-contextual-featured-card.md`
 
 Execute in order. The goal is a trustworthy recurring content library, not a large raw count.

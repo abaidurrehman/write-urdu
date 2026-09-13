@@ -1,6 +1,6 @@
 # WU-CARD-RETENTION-001 — Implementation Checklist
 
-**Canonical parent:** `WU-CARD-RETENTION-001-card-retention-sharing-engine.md`  
+**Canonical parent:** `WU-CARD-RETENTION-001-card-retention-sharing-engine.md`
 **First child:** `WU-CARD-RETENTION-001A-homepage-contextual-featured-card.md`
 
 Use this as the ordered execution contract. Do not skip to later retention experiments before Slice A is accepted.

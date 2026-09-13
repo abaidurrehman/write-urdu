@@ -1,6 +1,6 @@
 # WU-CARD-CONTENT-001A — Acceptance Matrix
 
-**Parent:** `WU-CARD-CONTENT-001-ready-made-urdu-cards-gallery.md`  
+**Parent:** `WU-CARD-CONTENT-001-ready-made-urdu-cards-gallery.md`
 **Child:** `WU-CARD-CONTENT-001A-recurring-social-content-library.md`
 
 The recurring library is an editorial product asset. A batch is not accepted merely because data validates or the gallery renders.

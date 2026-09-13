@@ -1,9 +1,9 @@
 # WU-CARD-RETENTION-001A — Homepage Contextual Featured Card
 
-**Parent:** `WU-CARD-RETENTION-001-card-retention-sharing-engine.md`  
-**Status:** Implementation-ready / founder-approved first slice  
-**Priority:** P0 within the card-retention programme  
-**Primary route:** `/` with generated/localized `/urdu/` parity  
+**Parent:** `WU-CARD-RETENTION-001-card-retention-sharing-engine.md`
+**Status:** Implemented 2026-09-13; hosted CI and post-release evidence review remain open
+**Priority:** P0 within the card-retention programme
+**Primary route:** `/` with generated/localized `/urdu/` parity
 **Primary outcome:** one relevant ready-made card → Share OR Open in Card Studio
 
 ---

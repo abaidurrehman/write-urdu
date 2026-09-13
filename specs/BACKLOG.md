@@ -1,7 +1,7 @@
 # WriteUrdu — Canonical Active Backlog
 
 **Status:** Active  
-**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-11  
+**Last reconciled against code + Product Pulse/GSC evidence:** 2026-09-13
 **Purpose:** One source of truth for work that is still genuinely open.
 
 The previous long-form backlog is preserved at [`archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md`](archive/snapshots/BACKLOG-2026-08-30-pre-reconciliation.md). Completed implementation contracts remain in [`archive/`](archive/README.md).
@@ -233,6 +233,20 @@ Human/product gates:
 - [ ] Post-change Search Console/Product Pulse review of whether the split intent actually avoids cannibalizing `/urdu-card-studio` query ownership (owned by `WU-SEO-CTR-001`/P0.1G once volume supports it).
 
 **Guardrail:** this exception covers indexing/nav/cross-linking only. It is not permission to change Card Studio's canvas/export/renderer, to duplicate the background registry, or to add live-canvas-per-preview architecture to the Gallery/Cards pages. If evidence later shows cannibalization, retitle/re-scope rather than de-index without a decision.
+
+## P0.10 — Cards retention programme first release (founder-directed P0.1/P0.1F exception)
+
+**Specs:** [`WU-CARD-RETENTION-001`](WU-CARD-RETENTION-001-card-retention-sharing-engine.md), [`WU-CARD-CONTENT-001A`](WU-CARD-CONTENT-001A-recurring-social-content-library.md), [`WU-CARD-GALLERY-001A`](WU-CARD-GALLERY-001A-social-background-collection-expansion.md)
+**State:** Founder-directed implementation exception recorded 2026-09-13. This permits one compact homepage card after the writer, the first recurring-content batch, eight original daily/Jumma backgrounds, shared public-card publishing and the exact Card Studio handoff. It does not close or erase P0.1F.
+
+- [x] Preserve one shared background registry, one ready-made-card registry, one share publisher and one Card Studio renderer.
+- [x] Add only one homepage card with exactly Share and Open in Card Studio; keep it after the core writer.
+- [x] Add deterministic browser-local morning/daytime/evening/night selection with Friday override.
+- [x] Add first source/rights-validated morning/night/Jumma/reflection content batch.
+- [x] Add and validate eight original lightweight daily/Jumma backgrounds without removing shipped IDs.
+- [ ] Review at least seven days of writer activation, featured-card engagement, Card Studio continuation/export, share reliability and homepage performance before expanding another batch.
+
+**Guardrail:** this exception permits the defined first integrated release only. Favorites, shuffle, homepage filters/carousels, another content/background batch, new card SEO routes or broader Card Studio acquisition still require acceptance evidence and a fresh backlog decision. Writer first-value and Card Studio completion remain guardrail metrics.
 
 ## P0.6 — AI production external gate
 

@@ -1,9 +1,9 @@
 # WU-CARD-GALLERY-001A — Social Background Collection Expansion
 
-**Status:** Planned / founder-approved 2026-09-13  
-**Parent:** `WU-CARD-GALLERY-001`  
-**Related:** `WU-CARD-CONTENT-001`, `WU-CARD-CONTENT-001A`, `WU-CARD-RETENTION-001`, `WU-CARD-RETENTION-001A`, `/urdu-card-studio`, `/urdu-card-gallery`, `/urdu-cards`  
-**Area:** Card creation / social sharing / visual design system  
+**Status:** Slices 0–1 implemented 2026-09-13; later visual batches remain evidence-gated
+**Parent:** `WU-CARD-GALLERY-001`
+**Related:** `WU-CARD-CONTENT-001`, `WU-CARD-CONTENT-001A`, `WU-CARD-RETENTION-001`, `WU-CARD-RETENTION-001A`, `/urdu-card-studio`, `/urdu-card-gallery`, `/urdu-cards`
+**Area:** Card creation / social sharing / visual design system
 **Core promise:** Expand the shared Write Urdu card background collection with original, receiver-quality designs intentionally matched to the recurring social-content jobs that drive repeat use.
 
 ---
