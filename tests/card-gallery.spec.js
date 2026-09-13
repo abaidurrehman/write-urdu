@@ -6,10 +6,10 @@ async function openGallery(page) {
   await blockExternal(page);
   await page.goto('/urdu-card-gallery', { waitUntil: 'domcontentloaded', timeout: 15000 });
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('See your Urdu on every card');
-  await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(32);
+  await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(39);
 }
 
-test('live Urdu updates reuse 32 DOM previews without canvas or image refetch', async ({ page }) => {
+test('live Urdu updates reuse 39 DOM previews without canvas or image refetch', async ({ page }) => {
   const requests = [];
   page.on('request', request => {
     requests.push({ url: request.url(), body: request.postData() || '' });
@@ -40,7 +40,7 @@ test('live Urdu updates reuse 32 DOM previews without canvas or image refetch', 
   await page.waitForTimeout(100);
   expect(requests.filter(request => request.url.includes('/assets/card-studio/backgrounds/')).length).toBe(requestsAfterFirstFill);
   expect(requests.filter(request => /\/backgrounds\/[^/]+\.webp(?:\?|$)/.test(request.url))).toHaveLength(0);
-  expect(await page.evaluate(() => window.WriteUrduCardGalleryApp.getDiagnostics())).toMatchObject({ shells: 32, renders: 1, bucket: 'long' });
+  expect(await page.evaluate(() => window.WriteUrduCardGalleryApp.getDiagnostics())).toMatchObject({ shells: 39, renders: 1, bucket: 'long' });
   expect(await page.evaluate(() => Math.max(0, ...window.__galleryLongTasks))).toBeLessThan(50);
 });
 

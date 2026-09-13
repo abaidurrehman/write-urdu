@@ -7,18 +7,18 @@ async function openStudio(page, route = '/urdu-card-studio.html') {
   await expect(page.locator('[data-card-built-in-library]')).toBeVisible();
 }
 
-test('collection filters all 32 bilingual background choices', async ({ page }) => {
+test('collection filters all 39 bilingual background choices', async ({ page }) => {
   await blockExternal(page);
   await openStudio(page);
   const choices = page.locator('[data-card-built-in-background]');
-  await expect(choices).toHaveCount(32);
-  await expect(page.locator('[data-card-background-filter]')).toHaveCount(9);
+  await expect(choices).toHaveCount(39);
+  await expect(page.locator('[data-card-background-filter]')).toHaveCount(10);
   await page.getByRole('button', { name: 'Truck Art', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('button', { name: 'Truck Art', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-card-built-in-background]:visible')).toHaveCount(2);
   await page.getByRole('button', { name: 'All', exact: true }).click();
-  await expect(page.locator('[data-card-built-in-background]:visible')).toHaveCount(32);
+  await expect(page.locator('[data-card-built-in-background]:visible')).toHaveCount(39);
 
   await openStudio(page, '/urdu/urdu-card-studio.html');
   await expect(page.getByRole('button', { name: 'ٹرک آرٹ', exact: true })).toBeVisible();
