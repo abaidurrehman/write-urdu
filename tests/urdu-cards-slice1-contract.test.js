@@ -11,8 +11,8 @@ const script = read('js/urdu-cards.js');
 const endpoint = read('functions/api/events.js');
 const ads = read('js/ads.js');
 
-assert.match(html, /<meta name="robots" content="noindex,follow">/, 'urdu-cards must stay noindex until an SEO exception is recorded');
-assert.doesNotMatch(html, /wu-static-nav-group[^>]*>[^<]*<a href="\/urdu-cards"/, 'urdu-cards must not be promoted in the primary nav yet');
+assert.match(html, /<meta name="robots" content="index,follow">/, 'WU-CARD-GALLERY-001 P0.9 founder exception (2026-09-13) made this route indexable');
+assert.match(html, /data-wu-static-nav-group="create"[^]*?<a href="\/urdu-cards">/, 'urdu-cards must be promoted in the primary nav per the P0.9 exception');
 assert.ok(html.indexOf('/js/workspace-journey-registry.js') < html.indexOf('/js/workspace-handoff.js'));
 assert.ok(html.indexOf('/js/workspace-handoff.js') < html.indexOf('/js/urdu-cards.js'));
 assert.ok(html.indexOf('/js/card-background-registry.js') < html.indexOf('/js/urdu-cards.js'));

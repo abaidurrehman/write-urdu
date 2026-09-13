@@ -100,7 +100,7 @@
             ]
         },
         {
-            id: 'card-gallery', routes: ['/urdu-card-gallery'], status: 'planned', category: 'Create', stages: ['Create'],
+            id: 'card-gallery', routes: ['/urdu-card-gallery'], status: 'current', category: 'Create', stages: ['Create'],
             label: 'Compare Urdu card designs', technicalLabel: 'Live Urdu Card Gallery',
             jobs: ['compare one Urdu text across card backgrounds'], accepts: ['plain-text'], produces: ['visual-project-seed'],
             persistence: 'session handoff only', conflictPolicy: 'never place writing in the URL or overwrite Card Studio before a valid handoff',
@@ -109,7 +109,7 @@
             ]
         },
         {
-            id: 'urdu-cards', routes: ['/urdu-cards'], status: 'planned', category: 'Create', stages: ['Create'],
+            id: 'urdu-cards', routes: ['/urdu-cards'], status: 'current', category: 'Create', stages: ['Create'],
             label: 'Browse ready-made Urdu cards', technicalLabel: 'Ready-Made Urdu Cards',
             jobs: ['pick a finished Urdu card for dua, Eid, wedding or congratulations'], accepts: [], produces: ['visual-project-seed'],
             persistence: 'session handoff only', conflictPolicy: 'never overwrite Card Studio before a valid handoff',
