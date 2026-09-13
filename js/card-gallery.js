@@ -190,7 +190,7 @@
             updateCount(previewRecords.length);
         }
 
-        var REFRESH_CHUNK_SIZE = 12;
+        var REFRESH_CHUNK_SIZE = 8;
 
         function applyPreview(record, value, tier, bucket) {
             record.text.textContent = value;
