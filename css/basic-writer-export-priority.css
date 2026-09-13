@@ -1,0 +1,156 @@
+/* WU-PLAT-004C — Evidence-led export priority.
+   Keep PDF, Word and PNG directly visible; reserve the disclosure for secondary formats. */
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
+  flex: 1 1 auto;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  flex: 1 1 100%;
+  order: 20;
+  margin-left: 0;
+  padding-top: 8px;
+  padding-left: 0;
+  border-top: 1px solid var(--wu-color-border);
+  border-left: 0;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-ai-entry {
+  margin-left: auto;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority {
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid #d8e8de;
+  border-radius: 11px;
+  background: #f8fcfa;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--direct-export {
+  width: auto;
+  min-width: 62px;
+  min-height: 38px;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #fff;
+  text-align: center;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--direct-export:not(:disabled):hover {
+  border-color: #a9d9c0;
+  background: #effaf4;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--direct-export i {
+  width: 26px;
+  height: 26px;
+  flex-basis: 26px;
+  font-size: 0.92rem;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--export-more {
+  width: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--export-more > .fa-download {
+  display: none;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--export-more > span {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command--export-more .wu-basic-command-chevron {
+  margin: 0;
+  font-size: 0.72rem;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority .wu-basic-command-download-panel {
+  left: 0;
+  width: 300px;
+}
+
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority.is-open {
+  border-color: #bcdcca;
+  background: #f4faf6;
+}
+
+@media (max-width: 767px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-primary {
+    align-items: center;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority {
+    width: 100%;
+    flex: 1 1 100%;
+    order: 10;
+    box-sizing: border-box;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--direct-export {
+    min-width: 0;
+    flex: 1 1 0;
+    min-height: 44px;
+    padding-inline: 7px;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command--export-more {
+    min-height: 44px;
+    flex: 0 0 42px;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority .wu-basic-command-download-panel {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-mode {
+    order: 30;
+  }
+}
+
+@media (max-width: 430px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--direct-export {
+    gap: 4px;
+    padding-inline: 5px;
+    font-size: 0.8rem;
+  }
+
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--direct-export i {
+    width: 23px;
+    height: 23px;
+    flex-basis: 23px;
+  }
+}
