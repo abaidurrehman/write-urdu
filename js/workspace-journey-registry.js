@@ -119,6 +119,16 @@
             ]
         },
         {
+            id: 'home-featured-card', routes: [], status: 'current', category: 'Create', stages: ['Create'],
+            label: 'Use today\'s featured Urdu card', technicalLabel: 'Homepage Featured Card',
+            jobs: ['share a prepared Urdu card', 'edit a prepared Urdu card'], accepts: [], produces: ['visual-project-seed'],
+            persistence: 'session handoff only', conflictPolicy: 'never place card text in the URL or overwrite Card Studio before a valid handoff',
+            next: [
+                { id: 'home-featured-card-to-studio', target: 'card-studio', type: 'handoff', label: 'Open in Card Studio', payloadKind: 'visual-project-seed' },
+                { id: 'home-featured-card-share', target: null, type: 'embedded', label: 'Share this card', payloadKind: null }
+            ]
+        },
+        {
             id: 'templates', routes: ['/urdu-templates'], status: 'current', category: 'Create', stages: ['Create'],
             label: 'Start from an Urdu template', technicalLabel: 'Template Library',
             jobs: ['choose a ready-made Urdu design'], accepts: ['plain-text'], produces: ['template-seed'],

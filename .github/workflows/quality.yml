@@ -73,6 +73,7 @@ jobs:
           tests/v2-creation.spec.js
           tests/card-gallery.spec.js
           tests/urdu-cards.spec.js
+          tests/home-featured-card.spec.js
           tests/card-studio-background-collection.spec.js
           tests/seo-acquisition.spec.js
           tests/role-journeys.spec.js

@@ -53,9 +53,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <link href="css/modern-home.css" rel="stylesheet" type="text/css" />
+<link href="/css/home-featured-card.css" rel="stylesheet" type="text/css" />
 <link href="/css/product-video.css" rel="stylesheet" type="text/css" />
 <script src="google_jsapi.js"></script>
 <script src="main.js"></script>
+<script src="/js/workspace-journey-registry.js" defer></script>
+<script src="/js/workspace-handoff.js" defer></script>
+<script src="/js/card-background-registry.js" defer></script>
+<script src="/js/card-gallery-core.js" defer></script>
+<script src="/js/urdu-cards-data.js" defer></script>
+<script src="/js/home-featured-card-selector.js" defer></script>
+<script src="/js/curated-card-share.js" defer></script>
+<script src="/js/home-featured-card.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.2.0/js/bootstrap-colorpicker.js"></script>
 <style type="text/css">
     canvas {
@@ -207,6 +216,22 @@
                     for="transliterateTextarea" data-wu-l10n="home.editorLabel">Urdu writing editor</label><textarea
                     class="write-udu-main-editor" dir="rtl" id="transliterateTextarea"
                     lang="ur" placeholder="لکھنا شروع کریں" style="font-family: 'Noto Nastaliq Urdu'"></textarea></div>
+            <section class="home-featured-card" data-home-featured-card aria-labelledby="home-featured-card-title" hidden>
+                <p class="home-featured-card-context" data-home-featured-card-context lang="ur" dir="rtl"></p>
+                <h2 id="home-featured-card-title" class="sr-only" data-home-featured-card-title>Featured Urdu card</h2>
+                <article class="home-featured-card-art" data-home-featured-card-art>
+                    <img data-home-featured-card-image alt="" width="430" height="538" decoding="async" />
+                    <span class="home-featured-card-overlay" data-home-featured-card-overlay aria-hidden="true"></span>
+                    <div class="home-featured-card-safe-area" data-home-featured-card-safe-area>
+                        <p class="home-featured-card-text" data-home-featured-card-text lang="ur" dir="rtl"></p>
+                    </div>
+                </article>
+                <div class="home-featured-card-actions">
+                    <button type="button" class="home-featured-card-share" data-home-featured-card-share>Share · شیئر کریں</button>
+                    <button type="button" class="home-featured-card-edit" data-home-featured-card-edit>Open in Card Studio · کارڈ اسٹوڈیو میں کھولیں</button>
+                </div>
+                <p class="home-featured-card-status" data-home-featured-card-status role="status" aria-live="polite"></p>
+            </section>
             <div class="card">
                 <div class="card-body">
                     <p class="card-subtitle" data-wu-l10n="home.cardSubtitle">Write Urdu online — press Ctrl+G to switch between English-letter typing and direct Urdu input</p>
