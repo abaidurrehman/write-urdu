@@ -16,21 +16,26 @@
     <meta property="og:image" content="https://write-urdu.com/image/logo10.png">
     <link rel="icon" href="/image/logo10.png" type="image/png">
     <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/input-mode.css">
     <link rel="stylesheet" href="/css/card-gallery.css">
+    <script src="site-header.js" defer></script>
     <script src="/js/product-telemetry.js" defer></script>
     <script src="/js/workspace-journey-registry.js" defer></script>
     <script src="/js/workspace-handoff.js" defer></script>
     <script src="/js/card-background-registry.js" defer></script>
     <script src="/js/card-gallery-core.js" defer></script>
     <script src="/js/card-gallery.js" defer></script>
+    <script src="/js/input-mode.js" defer></script>
+    <script src="google_jsapi.js"></script>
+    <script src="/js/card-gallery-transliteration.js" defer></script>
 </head>
 <body class="card-gallery-page">
-    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+    <nav class="navbar wu-static-site-nav" data-wu-static-shell="nav" aria-label="Primary navigation"><a class="wu-static-brand" href="/">Write Urdu</a><div class="wu-static-nav-groups"><div class="wu-static-nav-group" data-wu-static-nav-group="write"><strong>Write</strong><a href="/">Start writing in Urdu</a><a href="/urdu-keyboard">Type directly in Urdu</a><a href="/urdu-editor">Format an assignment or document</a><a href="/tools/urdu-voice-typing">Speak and turn it into Urdu text</a><a href="/urdu-ocr">Extract Urdu text from an image</a><a href="/urdu-text-cleaner">Fix broken or messy Urdu text</a><a href="/tools/inpage-unicode-converter">Convert older InPage Urdu</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="create"><strong>Create</strong><a href="/urdu-card-studio">Make a poetry, quote or announcement image</a><a href="/urdu-whatsapp-status-maker">Create a WhatsApp Status</a><a href="/urdu-instagram-post-maker">Create an Instagram post</a><a href="/urdu-name-art-maker">Make Urdu Name Art or a profile image</a><a href="/stylish-urdu-text-generator">Create stylish copyable Urdu text</a><a href="/urdu-templates">Start from a ready-made design</a><a href="/qr-code-generator">Turn text or a link into a QR code</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="work"><strong>Tools</strong><a href="/urdu-invoice-generator">Create an Urdu or English invoice</a><a href="/urdu-bill-generator">Create a quick shop bill or receipt</a><a href="/urdu-editor">Prepare a formal Urdu document</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="learn"><strong>Learn</strong><a href="/urdu-typing-practice">Practise Urdu typing and measure your speed</a><a href="/urdu-alphabet">Learn the Urdu alphabet</a><a href="/roman-urdu-transliteration">How English to Urdu typing works</a><a href="/urdu-fonts-nastaliq-vs-naskh">Choose an Urdu font</a><a href="/english-urdu-typing-tutorial">Learn English-to-Urdu typing</a><a href="/how-to-write-urdu-on-photo">Learn to put Urdu on a photo</a><a href="/how-to-share-urdu-writing-online">Learn to share Urdu writing online</a><a href="/write-urdu-documentation">Use Write Urdu documentation</a><a href="/urdu-faq">Get answers to common questions</a></div></div></nav>
     <main class="card-gallery-shell" data-card-gallery>
         <header class="card-gallery-hero">
             <div>
                 <p class="card-gallery-kicker">Private live preview · لائیو پیش منظر</p>
-                <h1>See your Urdu on every card</h1>
+                <h1 data-wu-l10n="card-gallery.h1">See your Urdu on every card</h1>
                 <p class="card-gallery-lede">Write once, then compare the same Urdu across every background. ایک بار لکھیں، پھر ہر ڈیزائن میں اپنا اردو متن دیکھیں۔</p>
             </div>
             <aside class="card-gallery-privacy"><strong>Your writing remains private while you compare.</strong>No text, preview image or card content is uploaded by this gallery.</aside>
@@ -39,6 +44,12 @@
             <div class="card-gallery-input-row">
                 <div class="card-gallery-input-wrap">
                     <label id="card-gallery-input-label" for="cardGalleryText">Your Urdu text · اپنا اردو متن</label>
+                    <div class="input-mode-control input-mode-control-card" data-input-mode-control data-input-mode-storage="card-gallery" data-input-mode-targets="#cardGalleryText" role="group" aria-label="Input mode">
+                        <span class="input-mode-title" data-input-mode-title>Input mode</span>
+                        <button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">Roman Urdu → Urdu</button>
+                        <button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Direct Urdu / English</button>
+                        <span class="input-mode-note" data-input-mode-note>Type Roman Urdu and press Space to convert each word.</span>
+                    </div>
                     <textarea id="cardGalleryText" class="card-gallery-input" data-card-gallery-input lang="ur" dir="rtl" maxlength="600" rows="3" placeholder="اپنا اردو متن یہاں لکھیں یا چسپاں کریں"></textarea>
                     <small>Up to 600 characters. Line breaks stay visible. · زیادہ سے زیادہ 600 حروف</small>
                 </div>
@@ -50,6 +61,6 @@
         <p class="card-gallery-status" data-card-gallery-status role="status" aria-live="polite"></p>
         <p class="card-gallery-note">Choose a design to continue in Card Studio. Your text stays editable.</p>
     </main>
-    <footer class="card-gallery-footer"><a href="/urdu-card-studio">Open Urdu Card Studio</a> · <a href="/write-urdu-privacy">Privacy</a></footer>
+    <footer data-wu-static-shell="footer"><nav class="wu-static-footer-nav" aria-label="Footer navigation"><div class="wu-static-footer-group" data-wu-static-footer-group="write-urdu"><strong>Write Urdu</strong><a href="/">English to Urdu typing</a><a href="/urdu-keyboard">Urdu keyboard</a><a href="/urdu-editor">Urdu editor</a><a href="/tools/urdu-voice-typing">Voice to Urdu</a><a href="/urdu-text-cleaner">Fix Urdu text</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="create"><strong>Create</strong><a href="/urdu-card-studio">Urdu image maker</a><a href="/urdu-whatsapp-status-maker">WhatsApp status</a><a href="/urdu-instagram-post-maker">Instagram post</a><a href="/urdu-name-art-maker">Urdu name art</a><a href="/qr-code-generator">QR code</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="help"><strong>Help</strong><a href="/urdu-typing-practice">Urdu typing practice</a><a href="/english-urdu-typing-tutorial">How to type Urdu</a><a href="/urdu-alphabet">Urdu alphabet</a><a href="/urdu-faq">FAQ</a><a href="/why-write-urdu">About</a><a href="/write-urdu-privacy">Privacy</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="trust"><strong>Help & trust</strong><a href="/changelog">What’s new</a><a href="/urdu-writing-templates">Writing templates</a><a href="/why-write-urdu">About Write Urdu</a><a href="/10-years-of-write-urdu">10 Years of Write Urdu</a><a href="/contact">Contact</a><a href="/write-urdu-privacy">Privacy and terms</a><a href="/write-urdu-sitemap">Sitemap</a></div></nav></footer>
 </body>
 </html>

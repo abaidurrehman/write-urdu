@@ -129,6 +129,8 @@
 
         function startHandoff(background, button) {
             var handoff = root.WriteUrduWorkspaceHandoff;
+            state.text = core.preserveText(input.value);
+            state.bucket = core.classifyText(state.text);
             if (!state.text.trim() || !handoff || typeof handoff.transfer !== 'function') {
                 status.textContent = state.text.trim() ? 'This browser could not prepare Card Studio. Your text remains here.' : 'Write some Urdu before choosing a design.';
                 return;
