@@ -45,11 +45,14 @@ The input-mode control is intentionally placed on its own row below document act
 
 On compact screens:
 
-- PDF, Word and PNG remain visible as a dedicated export row;
+- PDF, Word and PNG remain directly visible in the first command line rather than forcing a new pre-editor row;
 - the export overflow remains adjacent to those formats;
 - Print continues to move into `More`;
 - the input-mode row remains full width;
+- the existing mobile editor visibility floor takes precedence over decorative spacing or an extra export row;
 - do not introduce a sticky/fixed toolbar.
+
+This is deliberate: at the empty state the export cluster and `More` must fit on one compact line so the writing surface still begins high enough in a 360×800 viewport. Once content exists, normal wrapping may occur as completion actions are progressively revealed.
 
 ## Engineering approach
 
@@ -63,6 +66,7 @@ Keep the proven WU-PLAT-004B command implementation and export handlers intact. 
 - Existing Share, Voice, AI writing, Print, Clear and filename behaviors remain owned by their current implementations.
 - PDF/Word/PNG action telemetry must continue to use the existing `basic_toolbar_action` path.
 - Existing mobile tap targets remain at least 44px where compact-mode controls require it.
+- A 360×800 initial viewport must keep the established Basic Writer visible-editor floor.
 
 ## Acceptance
 
@@ -72,4 +76,5 @@ Keep the proven WU-PLAT-004B command implementation and export handlers intact. 
 4. Closing the overflow restores PDF, Word and PNG to the direct export cluster.
 5. Input mode is rendered on a deliberate full-width row beneath document actions.
 6. Print remains direct on desktop and moves into `More` on compact layouts.
-7. Existing export handlers and privacy-safe telemetry remain unchanged.
+7. On 360×800, direct export discovery must not create an extra pre-editor row that violates the existing visible-editor floor.
+8. Existing export handlers and privacy-safe telemetry remain unchanged.
