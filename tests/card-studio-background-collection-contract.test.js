@@ -19,13 +19,17 @@ const newIds = [
   'moon-paper', 'old-lahore-journal', 'moonlit-lakeside', 'lantern-sunrise',
   'pastel-glass', 'black-gold-classic', 'maroon-wedding', 'regal-gold-arabesque'
 ];
+const dailyIds = [
+  'soft-sunrise-garden', 'window-light-tea', 'quiet-moon-sky', 'rainy-window-reflection',
+  'jumma-ivory-geometry', 'jumma-midnight-silhouette', 'emerald-prayer-light', 'warm-paper-reflection'
+];
 const categoryIds = ['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury'];
 
-assert.strictEqual(library.backgrounds.length, 24, 'collection must include 12 existing and 12 new backgrounds');
+assert.strictEqual(library.backgrounds.length, 32, 'collection must include 24 shipped and 8 daily/Jumma backgrounds');
 assert.strictEqual(library.backgrounds, registry.backgrounds, 'Card Studio must consume the shared background registry');
 assert.deepStrictEqual(library.categories.map((item) => item.id), categoryIds, 'category order changed');
 assert.deepStrictEqual(library.filterBackgrounds('all'), library.backgrounds, 'All must return every background');
-assert.strictEqual(new Set(library.backgrounds.map((item) => item.id)).size, 24, 'background IDs must be unique');
+assert.strictEqual(new Set(library.backgrounds.map((item) => item.id)).size, 32, 'background IDs must be unique');
 previousIds.forEach((id) => assert.ok(library.backgrounds.some((item) => item.id === id), `existing background removed: ${id}`));
 
 let fullBytes = 0;
@@ -58,6 +62,18 @@ newIds.forEach((id) => {
   assert.strictEqual(library.filterBackgrounds(background.category).some((item) => item.id === id), true, `${id} missing from filter`);
 });
 
+dailyIds.forEach((id) => {
+  const background = library.backgrounds.find((item) => item.id === id);
+  assert.ok(background, `daily/Jumma background missing: ${id}`);
+  assert.match(background.src, new RegExp(`/backgrounds/${id}\\.svg$`));
+  assert.strictEqual(background.thumbnailSrc, undefined, `${id} lightweight SVG should not duplicate a thumbnail`);
+  const full = path.join(root, background.src.replace(/^\//, ''));
+  assert.ok(fs.existsSync(full), `${id} SVG asset missing`);
+  assert.ok(fs.statSync(full).size < 10 * 1024, `${id} SVG must stay below 10 KB`);
+  assert.ok(['medium', 'long'].includes(background.textCapacity), `${id} needs honest medium/long capacity`);
+  assert.strictEqual(background.preferredAlign, 'center', `${id} needs a controlled preferred alignment`);
+});
+
 categoryIds.slice(1).forEach((category) => {
   assert.ok(library.filterBackgrounds(category).length > 0, `${category} category must not be empty`);
 });
@@ -73,6 +89,6 @@ assert.match(source, /input\.dispatchEvent\(new Event\('change'/, 'background mu
 assert.strictEqual(library.mount({ location: { pathname: '/urdu-editor' }, document: {} }), false, 'library must not mount on unrelated routes');
 assert.doesNotMatch(sw, /ajrak-heritage|truck-art-bloom|moonlit-lakeside/, 'large new artwork must not be eagerly precached');
 assert.match(sw, /\.\/js\/card-background-registry\.js/, 'shared registry must remain available offline with Card Studio');
-assert.match(sw, /write-urdu-shell-v49/, 'PWA cache revision must refresh changed collection code');
+assert.match(sw, /write-urdu-shell-v50/, 'PWA cache revision must refresh changed collection code');
 
 console.log(`Card Studio background collection contract passed: ${library.backgrounds.length} backgrounds, ${Math.round(fullBytes / 1024)} KB full, ${Math.round(thumbnailBytes / 1024)} KB thumbnails.`);

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <radialGradient id="emerald" cx="50%" cy="38%" r="78%"><stop stop-color="#1a7056"/><stop offset=".52" stop-color="#0a4938"/><stop offset="1" stop-color="#03261e"/></radialGradient>
+    <radialGradient id="beam"><stop stop-color="#fff3b4" stop-opacity=".38"/><stop offset="1" stop-color="#fff3b4" stop-opacity="0"/></radialGradient>
+    <pattern id="stars" width="120" height="120" patternUnits="userSpaceOnUse"><path d="M60 18 70 50 102 60 70 70 60 102 50 70 18 60 50 50Z" fill="none" stroke="#d5b95e" stroke-width="2" opacity=".5"/></pattern>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#emerald)"/>
+  <ellipse cx="540" cy="465" rx="430" ry="500" fill="url(#beam)"/>
+  <path d="M115 0h850v245H115Z" fill="url(#stars)" opacity=".48"/>
+  <path d="M115 1105h850v245H115Z" fill="url(#stars)" opacity=".48"/>
+  <path d="M94 300c180 78 286 12 446-105 160 117 266 183 446 105M94 1050c180-78 286-12 446 105 160-117 266-183 446-105" fill="none" stroke="#e2ca79" stroke-width="4" opacity=".72"/>
+  <g fill="#e2ca79"><circle cx="540" cy="195" r="12"/><circle cx="540" cy="1155" r="12"/></g>
+  <rect x="34" y="34" width="1012" height="1282" rx="26" fill="none" stroke="#e2ca79" stroke-width="5"/>
+  <rect x="54" y="54" width="972" height="1242" rx="18" fill="none" stroke="#fff0b5" stroke-width="1" opacity=".55"/>
+</svg>
