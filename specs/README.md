@@ -32,6 +32,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-INPUT-001` | Multimodal Urdu Input & Conversion Platform | **Planned / evidence-gated** — founder-approved coordination epic for Roman/direct/translation/voice/audio/OCR/document inputs; reuses existing owners, starts with benchmarks, and remains behind `WU-PLAT-002H` for core-UI/public breadth |
 | `WU-BILL-001` | Pakistan Everyday Billing Toolkit | **Planned / founder-approved** — separate `/urdu-bill-generator` sibling for Bill/Cash Memo/Receipt/Udhaar; implementation package ready, current professional `/urdu-invoice-generator` protected, production work remains behind `WU-PLAT-002H` unless reprioritized |
 | `WU-CARD-GALLERY-001` | Live Urdu Card Gallery / Background-First Rich Studio | **Planned / founder-approved specification** — new `/urdu-card-gallery` visual chooser where one Urdu text is previewed across the shared background collection; Slice 0 registry/fixtures are implementation-ready, public launch remains gated by `WU-PLAT-002H` Card Studio completion unless explicitly reprioritized |
+| `WU-FONT-001` | Urdu Typography & Font Discovery Platform | **Planned / founder-approved specification** — one governed Urdu font registry plus truthful compare/choose workflow; existing-tool convergence and license evidence first, `/urdu-fonts` public indexing remains separately gated |
 | `WU-ANALYTICS-003` | Acquisition and Returning Signal | **Implemented core** — acquisition signal shipped; `WU-PLAT-002H` adds first-value/continuation acceptance requirements using the approved telemetry boundary |
 | `WU-JOURNEY-001` | Pakistan Urdu Intent & Destination Journey Programme | **Planned / evidence-gated** — feedback-reconciled programme connecting existing input, messaging/social, document, practice and print capabilities around real user destination intent; core UI remains behind `WU-PLAT-002H` |
 | `WU-JOURNEY-001A` | Destination Intent Measurement | **Planned evidence foundation** — privacy-safe bounded destination categories + Product Pulse reporting; visible prompt only after first value and P0 gate approval |
@@ -137,6 +138,22 @@ The implementation package is:
 - [`../docs/WU-CARD-GALLERY-001-CODEX-HANDOFF.md`](../docs/WU-CARD-GALLERY-001-CODEX-HANDOFF.md) — ready-to-paste Codex prompt.
 
 The hard architecture rule is that live browsing uses lightweight DOM previews rather than one Card Studio canvas per design. Existing background IDs remain intact, background metadata becomes a shared registry, and `/urdu-card-studio` remains the authoritative advanced editor/export path. Slice 0 planning/registry work is ready; public route rollout remains behind the current Card Studio completion/P0 gate unless the canonical backlog records an explicit exception.
+
+## Planned Urdu Typography & Font Discovery programme
+
+`WU-FONT-001` records the founder-approved 2026-09-13 direction to turn Urdu typography into a shared product capability rather than a set of unrelated dropdowns. It combines license-governed font infrastructure with a future interactive `/urdu-fonts` compare/choose surface and direct continuation into existing creation tools.
+
+The implementation package is:
+
+- [`WU-FONT-001-urdu-typography-font-discovery-platform.md`](WU-FONT-001-urdu-typography-font-discovery-platform.md) — parent product/roadmap contract;
+- [`WU-FONT-001-ARCHITECTURE-CONTRACT.md`](WU-FONT-001-ARCHITECTURE-CONTRACT.md) — shared registry, delivery, shaping, export and compatibility boundaries;
+- [`WU-FONT-001-IMPLEMENTATION-CHECKLIST.md`](WU-FONT-001-IMPLEMENTATION-CHECKLIST.md) — ordered Slice 0–6 plan;
+- [`WU-FONT-001-ACCEPTANCE-MATRIX.md`](WU-FONT-001-ACCEPTANCE-MATRIX.md) — licensing, shaping, browser, export, performance, privacy and SEO acceptance;
+- [`../docs/WU-FONT-001-MARKET-LICENSE-EVIDENCE-2026-09-13.md`](../docs/WU-FONT-001-MARKET-LICENSE-EVIDENCE-2026-09-13.md) — dated competitor and candidate-font evidence;
+- [`../skills/wu-font-001/SKILL.md`](../skills/wu-font-001/SKILL.md) — canonical Codex/Claude execution skill;
+- [`../docs/WU-FONT-001-CODEX-HANDOFF.md`](../docs/WU-FONT-001-CODEX-HANDOFF.md) — ready-to-paste implementation handoff.
+
+The strategic distinction is deliberate: competitors prove demand for Urdu font preview/download, but Write-Urdu should win on `type once → compare real fonts → choose → create/share/export`. Famous rights-sensitive fonts remain system/reference-only until authoritative redistribution/web-embedding evidence is preserved. Planning and existing-tool registry convergence may proceed when prioritized; public `/urdu-fonts` indexing remains a separate release decision.
 
 ## Archived contracts
 
