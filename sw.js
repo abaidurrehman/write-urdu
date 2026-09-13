@@ -1,4 +1,4 @@
-// WU-PLAT-004B: refresh the current shell so cached Basic Writer toolbar assets are updated.
+// WU-PLAT-004C: keep the evidence-led Basic Writer export priority available offline.
 const CACHE_NAME = 'write-urdu-shell-v49';
 const APP_SHELL = [
   './',
@@ -25,6 +25,7 @@ const APP_SHELL = [
   './css/workspace-next-step.css',
   './css/core-workspace-convergence.css',
   './css/basic-writer-command-toolbar.css',
+  './css/basic-writer-export-priority.css',
   './css/writer-voice-input.css',
   './css/voice-discovery.css',
   './css/card-studio-publish.css',
@@ -97,6 +98,7 @@ const APP_SHELL = [
   './js/outcome-navigation.js',
   './js/core-workspace-convergence.js',
   './js/basic-writer-command-toolbar.js',
+  './js/basic-writer-export-priority.js',
   './js/basic-writer-publish.js',
   './js/ai-writing-age-gate.js',
   './js/ai-writing-assistant.js',
