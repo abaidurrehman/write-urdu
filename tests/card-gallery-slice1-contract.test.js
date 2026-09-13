@@ -1,0 +1,44 @@
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
+const seo = require('../seo.config.js');
+const core = require('../js/card-gallery-core.js');
+
+const root = path.resolve(__dirname, '..');
+const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
+const html = read('urdu-card-gallery.html');
+const script = read('js/card-gallery.js');
+const css = read('css/card-gallery.css');
+const registry = read('docs/WU-PUBLIC-PAGE-REGISTRY.csv');
+const sitemap = read('sitemap.xml');
+const llms = read('llms.txt');
+
+assert.match(html, /<h1>See your Urdu on every card<\/h1>/);
+assert.match(html, /name="robots" content="noindex,follow"/);
+assert.match(html, /name="googlebot" content="noindex,follow"/);
+assert.match(html, /href="https:\/\/write-urdu\.com\/urdu-card-gallery"/);
+assert.match(html, /data-card-gallery-input[^>]+lang="ur"[^>]+dir="rtl"[^>]+maxlength="600"/);
+assert.match(html, /data-card-gallery-grid/);
+assert.strictEqual(seo.byPath['/urdu-card-gallery'].indexable, false, 'validation route must stay noindex');
+assert.match(registry, /urdu-card-gallery\.html,\/urdu-card-gallery,Utility,[^\n]+,noindex,no,/);
+assert.doesNotMatch(sitemap, /urdu-card-gallery/);
+assert.doesNotMatch(llms, /urdu-card-gallery/);
+assert.match(script, /registry\.getAllBackgrounds\(\)\.forEach\(createPreview\)/, 'shared registry must own gallery inventory');
+assert.match(script, /requestAnimationFrame\(refreshPreviews\)/, 'input refresh must be frame-batched');
+assert.match(script, /record\.text\.textContent = value/, 'typing must update existing DOM text nodes');
+assert.doesNotMatch(script, /createElement\(['"]canvas['"]\)|getContext\(/, 'gallery must not create preview canvases');
+assert.doesNotMatch(script, /fetch\(/, 'typing runtime must not fetch artwork');
+assert.match(script, /image\.loading = 'lazy'/);
+assert.match(script, /image\.src = background\.thumbnailSrc \|\| background\.src/);
+assert.match(script, /text\.lang = 'ur'/);
+assert.match(script, /text\.dir = 'rtl'/);
+assert.match(script, /core\.isSuitable\(state\.bucket, record\.background\.textCapacity\)/);
+assert.doesNotMatch(css, /text-overflow\s*:\s*ellipsis[^}]*card-gallery-preview-text|card-gallery-preview-text[^}]*text-overflow\s*:\s*ellipsis/i);
+assert.match(css, /unicode-bidi:plaintext/);
+assert.match(css, /overflow-wrap:anywhere/);
+assert.strictEqual(core.previewTextTier(''), 'short');
+assert.strictEqual(core.previewTextTier('محبت روشنی ہے'), 'short');
+assert.strictEqual(core.previewTextTier('ا'.repeat(100)), 'medium');
+assert.strictEqual(core.previewTextTier('ا'.repeat(300)), 'long');
+
+console.log('Card Gallery Slice 1 contract passed: noindex DOM-preview route, shared registry, and frame-batched updates.');

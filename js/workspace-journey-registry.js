@@ -100,6 +100,15 @@
             ]
         },
         {
+            id: 'card-gallery', routes: ['/urdu-card-gallery'], status: 'planned', category: 'Create', stages: ['Create'],
+            label: 'Compare Urdu card designs', technicalLabel: 'Live Urdu Card Gallery',
+            jobs: ['compare one Urdu text across card backgrounds'], accepts: ['plain-text'], produces: ['visual-project-seed'],
+            persistence: 'session handoff only', conflictPolicy: 'never place writing in the URL or overwrite Card Studio before a valid handoff',
+            next: [
+                { id: 'gallery-to-card', target: 'card-studio', type: 'handoff', label: 'Use this design in Card Studio', payloadKind: 'visual-project-seed' }
+            ]
+        },
+        {
             id: 'templates', routes: ['/urdu-templates'], status: 'current', category: 'Create', stages: ['Create'],
             label: 'Start from an Urdu template', technicalLabel: 'Template Library',
             jobs: ['choose a ready-made Urdu design'], accepts: ['plain-text'], produces: ['template-seed'],

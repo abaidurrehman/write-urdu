@@ -3,6 +3,7 @@
 
     var TARGET = 'card-studio';
     var LEGACY_KEY = 'writeUrdu.cardStudio.incoming';
+    var consuming = false;
 
     function normalizePath() {
         if (root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.productPath === 'function') return root.WriteUrduLocaleRoute.productPath(root.location && root.location.pathname || '/');
@@ -72,6 +73,31 @@
         return true;
     }
 
+    function applyGallerySeed(envelope) {
+        var app = root.WriteUrduCardStudioApp;
+        var library = root.WriteUrduCardStudioBackgroundLibrary;
+        if (!app || typeof app.updateObjectText !== 'function' || !library || typeof library.applyById !== 'function') return null;
+        var text = payloadText(envelope);
+        app.updateObjectText('text', text, { save: false });
+        return library.applyById(envelope.payload.backgroundId).then(function (result) {
+            if (typeof app.syncControls === 'function') app.syncControls();
+            if (typeof app.requestRender === 'function') app.requestRender();
+            if (typeof app.scheduleSave === 'function') app.scheduleSave();
+            return result;
+        });
+    }
+
+    function galleryTelemetry(envelope, result) {
+        if (!root.WriteUrduTelemetry || typeof root.WriteUrduTelemetry.track !== 'function') return;
+        var background = result && result.background;
+        root.WriteUrduTelemetry.track('card_gallery_destination_ready', {
+            background_id: background && background.id || null,
+            gallery_category: background && background.category || null,
+            gallery_text_bucket: envelope && envelope.context && envelope.context.textLengthBucket || null,
+            success: Boolean(result && result.ok)
+        });
+    }
+
     function path(stage, handoff, envelope) {
         if (!envelope || !root.WriteUrduTelemetry || !root.WriteUrduTelemetry.trackContinuationPath) return;
         root.WriteUrduTelemetry.trackContinuationPath(stage, handoff.telemetryDetail(envelope));
@@ -89,11 +115,34 @@
         if (kind === 'template-seed') {
             template = templateFromId(preview.payload.templateId || preview.context && preview.context.templateId);
             if (!template) return null;
+        } else if (kind === 'visual-project-seed') {
+            if (!preview.source || preview.source.workspace !== 'card-gallery' || typeof preview.payload.backgroundId !== 'string') return null;
         } else if (kind !== 'plain-text') return null;
 
         var app = root.WriteUrduCardStudioApp;
         var core = root.WriteUrduCardStudio;
         if (!app || !core || typeof app.getState !== 'function') return null;
+        if (kind === 'visual-project-seed') {
+            if (consuming) return null;
+            var pending = applyGallerySeed(preview);
+            if (!pending) return null;
+            consuming = true;
+            path('destination_ready', handoff, preview);
+            return pending.then(function (result) {
+                var envelope = handoff.take(TARGET);
+                if (!envelope || !envelope.payload) return null;
+                if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_destination_ready', { target_route: '/urdu-card-studio' });
+                if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_payload_restored', { target_route: '/urdu-card-studio' });
+                path('payload_restored', handoff, envelope);
+                galleryTelemetry(envelope, result);
+                if (root.document && root.document.documentElement) {
+                    root.document.documentElement.setAttribute('data-wu-card-seed-kind', kind);
+                    root.document.documentElement.setAttribute('data-wu-card-seed-applied', result && result.ok ? 'live' : 'text-only');
+                    if (result && result.reason) root.document.documentElement.setAttribute('data-wu-card-seed-fallback', result.reason);
+                }
+                return envelope;
+            }).finally(function () { consuming = false; });
+        }
         path('destination_ready', handoff, preview);
         if (template) applyTemplateRoute(template);
         if (!applyToRunningApp(preview, template)) return null;
@@ -114,6 +163,7 @@
     var consumed = consume();
     if (!consumed && normalizePath() === '/urdu-card-studio') {
         root.document.addEventListener('write-urdu:card-studio-ready', function () { consume(); }, { once: true });
+        root.document.addEventListener('write-urdu:card-background-library-ready', function () { consume(); }, { once: true });
     }
 
     root.WriteUrduCardStudioHandoffAdapter = {

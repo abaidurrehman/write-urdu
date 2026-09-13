@@ -44,6 +44,7 @@
             '/urdu-editor': 'rich_editor',
             '/urdu-keyboard': 'urdu_keyboard',
             '/urdu-card-studio': 'card_studio',
+            '/urdu-card-gallery': 'card_gallery',
             '/stylish-urdu-text-generator': 'stylish_text',
             '/urdu-name-art-maker': 'name_art',
             '/urdu-whatsapp-status-maker': 'whatsapp_status',
@@ -152,7 +153,10 @@
             growth_account_state: detail.growth_account_state || null,
             suppression_winner: detail.suppression_winner || null,
             suppression_reason: detail.suppression_reason || null,
-            growth_release_marker: detail.growth_release_marker || null
+            growth_release_marker: detail.growth_release_marker || null,
+            background_id: detail.background_id || null,
+            gallery_category: detail.gallery_category || null,
+            gallery_text_bucket: detail.gallery_text_bucket || null
         };
     }
 
@@ -436,6 +440,7 @@
             return true;
         }
         if (route === '/urdu-card-studio') return attachDynamicReader('#cardText');
+        if (route === '/urdu-card-gallery') return attachDynamicReader('#cardGalleryText');
         if (route === '/stylish-urdu-text-generator') return attachTextarea(document.getElementById('stylishText'));
         if (route === '/urdu-name-art-maker') return attachTextarea(document.getElementById('nameArtText'));
         if (route === '/urdu-whatsapp-status-maker' || route === '/urdu-instagram-post-maker') return attachDynamicReader('#cardText');

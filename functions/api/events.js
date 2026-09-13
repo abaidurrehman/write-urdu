@@ -71,13 +71,19 @@ const EVENT_NAMES = new Set([
     'continuation_path_destination_outcome',
     'growth_request_stage',
     'share_destination_ready',
-    'share_referral_recognized'
+    'share_referral_recognized',
+    'card_gallery_previews_visible',
+    'card_gallery_first_input',
+    'card_gallery_category_used',
+    'card_gallery_design_selected',
+    'card_gallery_handoff_started',
+    'card_gallery_destination_ready'
 ]);
 
 const TOOLS = new Set([
     'basic_editor', 'rich_editor', 'urdu_keyboard', 'card_studio', 'stylish_text',
     'name_art', 'whatsapp_status', 'instagram_post', 'invoice_generator', 'qr_generator',
-    'public_share', 'voice_typing', 'content', 'community_writing'
+    'public_share', 'voice_typing', 'content', 'community_writing', 'card_gallery'
 ]);
 
 const FORMATS = new Set([
@@ -100,15 +106,15 @@ const CONTINUATION_RECOMMENDATIONS = new Set([
     'voice-to-basic', 'voice-to-rich', 'voice-to-card',
     'inpage-to-cleaner', 'inpage-to-basic', 'inpage-to-rich',
     'stylish-to-name-art', 'stylish-to-card', 'share-to-card', 'share-to-basic',
-    'legacy-compatibility'
+    'legacy-compatibility', 'gallery-to-card'
 ]);
 const CONTINUATION_WORKSPACES = new Set([
     'basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner', 'image-to-urdu-text',
     'voice-typing', 'inpage-converter', 'card-studio', 'qr-generator', 'stylish-text',
-    'name-art', 'public-share'
+    'name-art', 'public-share', 'card-gallery'
 ]);
-const CONTINUATION_PATH_VERSIONS = new Set(['v2', 'legacy-v1']);
-const CONTINUATION_RELEASE_MARKERS = new Set(['wu-plat-002h-s1-2026-09-06-v1']);
+const CONTINUATION_PATH_VERSIONS = new Set(['v2', 'legacy-v1', 'card-gallery-v1']);
+const CONTINUATION_RELEASE_MARKERS = new Set(['wu-plat-002h-s1-2026-09-06-v1', 'wu-card-gallery-s2-2026-09-13-v1']);
 const CONTINUATION_PATH_EVENTS = new Set([
     'continuation_path_eligible', 'continuation_path_shown', 'continuation_path_selected',
     'continuation_path_handoff_created', 'continuation_path_destination_ready',
@@ -125,6 +131,21 @@ const GROWTH_SUPPRESSION_WINNERS = new Set(['none', 'keep', 'share', 'community_
 const GROWTH_SUPPRESSION_REASONS = new Set(['none', 'higher_priority']);
 const GROWTH_RELEASE_MARKERS = new Set(['wu-plat-002h-s3-2026-09-06-v1']);
 const GROWTH_STAGE_COLUMNS = ['eligible', 'shown', 'opened', 'completed', 'dismissed', 'suppressed_due_to_arbitration'];
+const CARD_GALLERY_EVENTS = new Set([
+    'card_gallery_previews_visible', 'card_gallery_first_input', 'card_gallery_category_used',
+    'card_gallery_design_selected', 'card_gallery_handoff_started', 'card_gallery_destination_ready'
+]);
+const CARD_GALLERY_BACKGROUNDS = new Set([
+    'emerald-mughal', 'moonlit-lanterns', 'vintage-floral', 'burgundy-arch',
+    'emerald-jasmine-lanterns', 'midnight-crescent-city', 'emerald-eid-lanterns',
+    'blush-rose-lanterns', 'rose-garden-frame', 'heritage-mughal-garden',
+    'teal-gold-botanical', 'ivory-arabesque', 'ajrak-heritage', 'truck-art-bloom',
+    'peacock-festival', 'ink-wash-poetry', 'moon-paper', 'old-lahore-journal',
+    'moonlit-lakeside', 'lantern-sunrise', 'pastel-glass', 'black-gold-classic',
+    'maroon-wedding', 'regal-gold-arabesque'
+]);
+const CARD_GALLERY_CATEGORIES = new Set(['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury']);
+const CARD_GALLERY_TEXT_BUCKETS = new Set(['empty', 'short', 'medium', 'long']);
 
 const METRIC_COLUMNS = [
     'visits', 'engaged_visits', 'copies', 'exports', 'export_started', 'export_error',
@@ -254,6 +275,18 @@ const SCHEMA_STATEMENTS = [
         latest_event_at TEXT,
         PRIMARY KEY (bucket_hour, request_family, growth_workspace, writer_state, account_state, release_marker, suppression_winner, suppression_reason, device_class)
     )`,
+    `CREATE TABLE IF NOT EXISTS card_gallery_hourly_funnel (
+        bucket_hour TEXT NOT NULL,
+        event_name TEXT NOT NULL,
+        background_id TEXT NOT NULL,
+        category TEXT NOT NULL,
+        text_length_bucket TEXT NOT NULL,
+        device_class TEXT NOT NULL,
+        success_state TEXT NOT NULL,
+        events INTEGER NOT NULL DEFAULT 0,
+        latest_event_at TEXT,
+        PRIMARY KEY (bucket_hour, event_name, background_id, category, text_length_bucket, device_class, success_state)
+    )`,
     `CREATE TABLE IF NOT EXISTS product_telemetry_meta (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL,
@@ -323,6 +356,13 @@ function cleanEvent(input) {
     const suppressionReason = enumValue(input.suppression_reason || 'none', GROWTH_SUPPRESSION_REASONS);
     const growthReleaseMarker = enumValue(input.growth_release_marker, GROWTH_RELEASE_MARKERS);
     if (isGrowthRequest && (!requestFamily || !growthStage || !writerState || !growthWorkspace || !growthAccountState || !suppressionWinner || !suppressionReason || !growthReleaseMarker)) return null;
+    const isCardGallery = CARD_GALLERY_EVENTS.has(eventName);
+    const backgroundId = enumValue(input.background_id, CARD_GALLERY_BACKGROUNDS);
+    const galleryCategory = enumValue(input.gallery_category, CARD_GALLERY_CATEGORIES);
+    const galleryTextBucket = enumValue(input.gallery_text_bucket, CARD_GALLERY_TEXT_BUCKETS);
+    if (isCardGallery && !galleryTextBucket) return null;
+    if ((eventName === 'card_gallery_category_used') && !galleryCategory) return null;
+    if (/card_gallery_(design_selected|handoff_started)/.test(eventName) && (!backgroundId || !galleryCategory)) return null;
 
     return {
         eventId,
@@ -354,7 +394,10 @@ function cleanEvent(input) {
         growthAccountState,
         suppressionWinner,
         suppressionReason,
-        growthReleaseMarker
+        growthReleaseMarker,
+        backgroundId,
+        galleryCategory,
+        galleryTextBucket
     };
 }
 
@@ -656,6 +699,7 @@ function aggregateEvents(events, now) {
     const handoffs = new Map();
     const continuationPaths = new Map();
     const growthRequests = new Map();
+    const cardGalleryFunnel = new Map();
     const getDelta = (tool) => {
         if (!byTool.has(tool)) byTool.set(tool, emptyDelta(tool, now));
         return byTool.get(tool);
@@ -721,6 +765,21 @@ function aggregateEvents(events, now) {
             const delta = growthRequests.get(key);
             if (GROWTH_STAGE_COLUMNS.indexOf(event.growthStage) >= 0) delta[event.growthStage] += 1;
         }
+        if (CARD_GALLERY_EVENTS.has(event.eventName)) {
+            const successState = event.success === null ? 'unknown' : (event.success ? 'success' : 'failed');
+            const key = [event.eventName, event.backgroundId || 'none', event.galleryCategory || 'none', event.galleryTextBucket, event.deviceClass || 'unknown', successState].join('|');
+            const current = cardGalleryFunnel.get(key);
+            cardGalleryFunnel.set(key, {
+                eventName: event.eventName,
+                backgroundId: event.backgroundId || 'none',
+                category: event.galleryCategory || 'none',
+                textLengthBucket: event.galleryTextBucket,
+                deviceClass: event.deviceClass || 'unknown',
+                successState,
+                events: (current && current.events || 0) + 1,
+                latest_event_at: now
+            });
+        }
         if (event.eventName === 'tool_handoff' && event.targetRoute) {
             [event.tool, 'all'].forEach((tool) => {
                 const key = tool + '|' + event.targetRoute;
@@ -735,7 +794,8 @@ function aggregateEvents(events, now) {
         shareByTool: Array.from(shareByTool.values()),
         handoffs: Array.from(handoffs.values()),
         continuationPaths: Array.from(continuationPaths.values()),
-        growthRequests: Array.from(growthRequests.values())
+        growthRequests: Array.from(growthRequests.values()),
+        cardGalleryFunnel: Array.from(cardGalleryFunnel.values())
     };
 }
 
@@ -815,6 +875,16 @@ function growthRequestUpsert(db, bucket, item) {
                        DO UPDATE SET ${assignments.join(', ')}`).bind(...values);
 }
 
+function cardGalleryFunnelUpsert(db, bucket, item) {
+    return db.prepare(`INSERT INTO card_gallery_hourly_funnel
+        (bucket_hour, event_name, background_id, category, text_length_bucket, device_class, success_state, events, latest_event_at)
+        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)
+        ON CONFLICT(bucket_hour, event_name, background_id, category, text_length_bucket, device_class, success_state)
+        DO UPDATE SET events = events + excluded.events,
+                      latest_event_at = MAX(COALESCE(latest_event_at, excluded.latest_event_at), excluded.latest_event_at)`)
+        .bind(bucket, item.eventName, item.backgroundId, item.category, item.textLengthBucket, item.deviceClass, item.successState, item.events, item.latest_event_at);
+}
+
 export async function onRequestPost(context) {
     const { request, env } = context;
     if (!originAllowed(request)) return json(403, { error: 'origin_not_allowed' });
@@ -851,7 +921,8 @@ export async function onRequestPost(context) {
             .concat(aggregated.shareByTool.map((delta) => shareMetricUpsert(db, bucket, delta)))
             .concat(aggregated.handoffs.map((item) => handoffUpsert(db, bucket, item)))
             .concat(aggregated.continuationPaths.map((item) => continuationPathUpsert(db, bucket, item)))
-            .concat(aggregated.growthRequests.map((item) => growthRequestUpsert(db, bucket, item)));
+            .concat(aggregated.growthRequests.map((item) => growthRequestUpsert(db, bucket, item)))
+            .concat(aggregated.cardGalleryFunnel.map((item) => cardGalleryFunnelUpsert(db, bucket, item)));
         await db.batch(statements);
         return json(202, { accepted: events.length, rollup_rows: statements.length });
     } catch (error) {

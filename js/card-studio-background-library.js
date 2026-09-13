@@ -88,16 +88,18 @@
         var input = document.getElementById('cardImage');
         if (!input || typeof window.fetch !== 'function' || typeof window.DataTransfer !== 'function') {
             announce(text('This browser cannot apply a ready-made background. You can still upload your own image.', 'یہ براؤزر تیار شدہ پس منظر نہیں لگا سکتا۔ آپ اپنی تصویر اب بھی اپ لوڈ کر سکتے ہیں۔'), true);
-            return;
+            return Promise.resolve({ ok: false, reason: 'browser-unsupported', background: background });
         }
 
-        var originalLabel = button.querySelector('[data-card-background-label]');
-        button.disabled = true;
-        button.setAttribute('aria-busy', 'true');
+        var originalLabel = button && button.querySelector('[data-card-background-label]');
+        if (button) {
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+        }
         if (originalLabel) originalLabel.textContent = text('Loading…', 'لوڈ ہو رہا ہے…');
         announce(text('Loading designer background…', 'خوبصورت پس منظر لوڈ ہو رہا ہے…'));
 
-        fetch(background.src, { cache: 'force-cache', credentials: 'same-origin' })
+        return fetch(background.src, { cache: 'force-cache', credentials: 'same-origin' })
             .then(function (response) {
                 if (!response.ok) throw new Error('Background request failed');
                 return response.blob();
@@ -120,15 +122,29 @@
                 input.dispatchEvent(new Event('change', { bubbles: true }));
                 setPressed(background.id);
                 announce(text('Designer background applied. Your text is still fully editable.', 'خوبصورت پس منظر لگا دیا گیا ہے۔ آپ کا متن اب بھی مکمل طور پر قابلِ ترمیم ہے۔'));
+                return { ok: true, reason: null, background: background };
             })
             .catch(function () {
                 announce(text('This background could not be loaded. Please try again.', 'یہ پس منظر لوڈ نہیں ہو سکا۔ دوبارہ کوشش کریں۔'), true);
+                return { ok: false, reason: 'background-load-failed', background: background };
             })
             .finally(function () {
-                button.disabled = false;
-                button.removeAttribute('aria-busy');
+                if (button) {
+                    button.disabled = false;
+                    button.removeAttribute('aria-busy');
+                }
                 if (originalLabel) originalLabel.textContent = isUrdu() ? background.nameUr : background.name;
             });
+    }
+
+    function applyById(backgroundId) {
+        var background = registry.getBackgroundById(backgroundId);
+        if (!background) {
+            announce(text('That background is no longer available. Your text is ready to edit.', 'یہ پس منظر اب دستیاب نہیں۔ آپ کا متن ترمیم کے لیے تیار ہے۔'), true);
+            return Promise.resolve({ ok: false, reason: 'invalid-background', background: null });
+        }
+        var button = root.querySelector('[data-card-built-in-background="' + background.id + '"]');
+        return applyBackground(background, button);
     }
 
     function injectStyles() {
@@ -256,6 +272,9 @@
     }
 
     renderLibrary();
+    window.WriteUrduCardStudioBackgroundLibrary.applyBackground = applyBackground;
+    window.WriteUrduCardStudioBackgroundLibrary.applyById = applyById;
+    document.dispatchEvent(new CustomEvent('write-urdu:card-background-library-ready'));
     document.addEventListener('write-urdu:locale-change', function () {
         var library = root.querySelector('[data-card-built-in-library]');
         if (library) library.remove();
