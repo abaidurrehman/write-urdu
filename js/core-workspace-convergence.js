@@ -306,7 +306,7 @@
         var createTitle = create.querySelector('h2');
         if (createTitle) createTitle.textContent = 'Turn Urdu into something ready to share';
         var writeEyebrow = write.querySelector('.sitemap-directory-eyebrow');
-        if (writeEyebrow) writeEyrow.textContent = 'Write';
+        if (writeEyebrow) writeEyebrow.textContent = 'Write';
 
         var learnStep = learn.querySelector('.sitemap-directory-step');
         if (learnStep) learnStep.textContent = '04';
