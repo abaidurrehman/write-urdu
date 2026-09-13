@@ -77,6 +77,7 @@ const tests = [
   'tests/voice-translator-contract.test.js',
   'tests/basic-writer-voice-input-contract.test.js',
   'tests/basic-writer-copy-completion-contract.test.js',
+  'tests/basic-writer-export-priority-contract.test.js',
   'tests/rich-editor-keyboard-voice-input-contract.test.js',
   'tests/voice-account-analytics-contract.test.js',
   'tests/voice-discovery-launch-contract.test.js',
