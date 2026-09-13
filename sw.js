@@ -1,4 +1,4 @@
-// WU-PLAT-004C: keep the evidence-led Basic Writer export priority available offline.
+// WU-CARD-GALLERY: refresh cached authoring assets within the governed v50 shell generation.
 const CACHE_NAME = 'write-urdu-shell-v50';
 const APP_SHELL = [
   './',
@@ -138,6 +138,7 @@ const APP_SHELL = [
   './js/card-studio-interaction.js',
   './js/card-background-registry.js',
   './js/card-gallery-core.js',
+  './js/card-gallery.js',
   './js/urdu-cards-data.js',
   './js/home-featured-card-selector.js',
   './js/curated-card-share.js',

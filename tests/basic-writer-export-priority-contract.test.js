@@ -12,12 +12,21 @@ const spec = fs.readFileSync(path.join(root, 'specs', 'WU-PLAT-004C-basic-writer
 
 assert.deepStrictEqual(Priority.DIRECT_EXPORTS, ['pdf', 'word', 'png'], 'The three observed dominant export formats must stay first-level');
 assert.strictEqual(Priority.STYLE_HREF, '/css/basic-writer-export-priority.css');
+assert.strictEqual(Priority.CARD_GALLERY_ROUTE, '/urdu-card-gallery', 'Create Card must open the live card gallery');
+assert.strictEqual(Priority.CARD_GALLERY_LEGACY_KEY, 'writeUrdu.cardGallery.incoming.v1', 'Browser-local fallback key drifted');
 assert.match(runtime, /data-wu-basic-direct-export-row/, 'Direct export row contract is missing');
 assert.match(runtime, /DIRECT_EXPORTS = \['pdf', 'word', 'png'\]/, 'Direct export order must remain PDF, Word, PNG');
 assert.match(runtime, /moveToDirectRow/, 'Direct export restoration is missing');
 assert.match(runtime, /moveIntoDisclosure/, 'Existing disclosure compatibility is missing');
 assert.match(runtime, /attributeName === 'aria-expanded'/, 'Disclosure state must drive direct-format movement');
 assert.match(runtime, /More export formats/, 'Export overflow needs an accessible label');
+assert.match(runtime, /data-wu-card-gallery-action/, 'Create Card must be a governed first-level action');
+assert.match(runtime, /wrapper\.insertAdjacentElement\('afterend', button\)/, 'Create Card must sit immediately after the export cluster');
+assert.match(runtime, /transfer\('card-gallery', 'basic-to-card'\)/, 'Create Card must use the browser-local workspace handoff when available');
+assert.match(runtime, /data-wu-command-action', 'card'/, 'Create Card needs toolbar telemetry attribution');
+assert.match(runtime, /Create Card/, 'English Create Card label is missing');
+assert.match(runtime, /کارڈ بنائیں/, 'Urdu Create Card label is missing');
+assert.doesNotMatch(runtime, /(?:URLSearchParams|location\.search)[\s\S]{0,180}(?:text|content)/i, 'Writer text must never be transported to the gallery in the URL');
 
 assert.match(coreRuntime, /BASIC_EXPORT_PRIORITY_SRC = '\/js\/basic-writer-export-priority\.js'/, 'Core workspace must load the export-priority adapter');
 assert.match(coreRuntime, /loadBasicExportPriority\(\)/, 'Export-priority loader must be invoked after the Basic Writer toolbar');

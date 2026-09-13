@@ -5,6 +5,8 @@
     var registry = root.WriteUrduCardBackgroundRegistry;
     var core = root.WriteUrduCardGalleryCore;
     var EXAMPLE_TEXT = 'محبت روشنی ہے';
+    var HANDOFF_TTL = 30 * 60 * 1000;
+    var LEGACY_INCOMING_KEY = 'writeUrdu.cardGallery.incoming.v1';
 
     function normalizedPath() {
         return String(root.location && root.location.pathname || '/')
@@ -22,7 +24,8 @@
         var grid = page.querySelector('[data-card-gallery-grid]');
         var count = page.querySelector('[data-card-gallery-count]');
         var status = page.querySelector('[data-card-gallery-status]');
-        var state = { text: '', bucket: 'empty', frame: 0, renders: 0, refreshes: 0 };
+        var maxTextLength = Number(core.MAX_PREVIEW_TEXT_LENGTH) || 600;
+        var state = { text: '', bucket: 'empty', frame: 0, renders: 0, refreshes: 0, overLimit: false };
         var previewRecords = [];
 
         function telemetry(name, background, category) {
@@ -33,6 +36,41 @@
                 gallery_category: category || background && background.category || null,
                 gallery_text_bucket: state.bucket
             });
+        }
+
+        function continuationPath(stage, envelope) {
+            var client = root.WriteUrduTelemetry;
+            var handoff = root.WriteUrduWorkspaceHandoff;
+            if (!client || typeof client.trackContinuationPath !== 'function' || !handoff || typeof handoff.telemetryDetail !== 'function' || !envelope) return;
+            client.trackContinuationPath(stage, handoff.telemetryDetail(envelope));
+        }
+
+        function readLegacyIncoming() {
+            var incoming = null;
+            try {
+                incoming = JSON.parse(root.sessionStorage.getItem(LEGACY_INCOMING_KEY) || 'null');
+                root.sessionStorage.removeItem(LEGACY_INCOMING_KEY);
+            } catch (error) {
+                incoming = null;
+            }
+            var created = incoming && Date.parse(incoming.createdAt || '');
+            if (!incoming || incoming.version !== 1 || typeof incoming.text !== 'string' || !incoming.text.trim()) return null;
+            if (!created || Date.now() - created > HANDOFF_TTL) return null;
+            return incoming;
+        }
+
+        function incomingText() {
+            var handoff = root.WriteUrduWorkspaceHandoff;
+            var envelope = handoff && typeof handoff.take === 'function' ? handoff.take('card-gallery') : null;
+            if (envelope && envelope.payload && envelope.payload.kind === 'plain-text' && typeof envelope.payload.text === 'string' && envelope.payload.text.trim()) {
+                return {
+                    text: envelope.payload.text,
+                    source: envelope.source && envelope.source.workspace || 'workspace',
+                    envelope: envelope
+                };
+            }
+            var legacy = readLegacyIncoming();
+            return legacy ? { text: legacy.text, source: legacy.source || 'workspace', envelope: null } : null;
         }
 
         function previewText() {
@@ -129,8 +167,17 @@
 
         function startHandoff(background, button) {
             var handoff = root.WriteUrduWorkspaceHandoff;
-            state.text = core.preserveText(input.value);
+            var raw = String(input.value || '').replace(/\r\n?/g, '\n');
+            if (raw.length > maxTextLength) {
+                state.overLimit = true;
+                status.textContent = 'This text is longer than ' + maxTextLength + ' characters. Shorten it before choosing a card so nothing is silently removed.';
+                scheduleRefresh();
+                input.focus();
+                return;
+            }
+            state.text = core.preserveText(raw);
             state.bucket = core.classifyText(state.text);
+            state.overLimit = false;
             if (!state.text.trim() || !handoff || typeof handoff.transfer !== 'function') {
                 status.textContent = state.text.trim() ? 'This browser could not prepare Card Studio. Your text remains here.' : 'Write some Urdu before choosing a design.';
                 return;
@@ -196,9 +243,10 @@
             record.text.textContent = value;
             record.article.dataset.textTier = tier;
             record.article.dataset.example = bucket === 'empty' ? 'true' : 'false';
+            record.article.dataset.overLimit = state.overLimit ? 'true' : 'false';
             record.example.hidden = bucket !== 'empty';
             record.fit.hidden = core.isSuitable(bucket, record.background.textCapacity);
-            record.choose.disabled = bucket === 'empty';
+            record.choose.disabled = bucket === 'empty' || state.overLimit;
         }
 
         function refreshPreviews() {
@@ -228,13 +276,41 @@
             state.frame = root.requestAnimationFrame(refreshPreviews);
         }
 
+        function restoreIncoming() {
+            var incoming = incomingText();
+            if (!incoming) return false;
+            var raw = String(incoming.text || '').replace(/\r\n?/g, '\n');
+            input.value = raw;
+            state.overLimit = raw.length > maxTextLength;
+            state.text = core.preserveText(raw);
+            state.bucket = core.classifyText(state.text);
+            page.dataset.cardGalleryPrefilled = 'true';
+            page.dataset.cardGalleryPrefillSource = incoming.source || 'workspace';
+            if (incoming.envelope) {
+                continuationPath('destination_ready', incoming.envelope);
+                continuationPath('payload_restored', incoming.envelope);
+            }
+            status.textContent = state.overLimit
+                ? 'Your text is here, but it is longer than ' + maxTextLength + ' characters. Shorten it to ' + maxTextLength + ' characters or fewer to choose a card.'
+                : 'Your text is ready. Choose a design below.';
+            return true;
+        }
+
         function onInput() {
-            state.text = core.preserveText(input.value);
+            var raw = String(input.value || '').replace(/\r\n?/g, '\n');
+            var wasOverLimit = state.overLimit;
+            state.overLimit = raw.length > maxTextLength;
+            state.text = core.preserveText(raw);
             state.bucket = core.classifyText(state.text);
             if (state.bucket !== 'empty' && !page.dataset.cardGalleryFirstInput) {
                 page.dataset.cardGalleryFirstInput = 'true';
                 telemetry('card_gallery_first_input');
                 if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.engage === 'function') root.WriteUrduTelemetry.engage();
+            }
+            if (state.overLimit) {
+                status.textContent = 'This text is longer than ' + maxTextLength + ' characters. Shorten it before choosing a card so nothing is silently removed.';
+            } else if (wasOverLimit) {
+                status.textContent = state.bucket === 'empty' ? '' : 'Your text now fits. Choose a design below.';
             }
             scheduleRefresh();
         }
@@ -265,13 +341,14 @@
         });
 
         renderShells();
+        restoreIncoming();
         refreshPreviews();
         telemetry('card_gallery_previews_visible');
         input.addEventListener('input', onInput);
         page.dataset.cardGalleryMounted = 'true';
         root.WriteUrduCardGalleryApp = {
             getDiagnostics: function () {
-                return { shells: previewRecords.length, renders: state.renders, refreshes: state.refreshes, bucket: state.bucket };
+                return { shells: previewRecords.length, renders: state.renders, refreshes: state.refreshes, bucket: state.bucket, overLimit: state.overLimit };
             }
         };
         return true;

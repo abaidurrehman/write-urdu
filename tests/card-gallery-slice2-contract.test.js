@@ -17,9 +17,18 @@ const endpoint = read('functions/api/events.js');
 const migration = read('migrations/0022_card_gallery_funnel.sql');
 
 assert.strictEqual(core.preserveText('  دعا\r\nCODE-27  '), '  دعا\nCODE-27  ', 'handoff text must preserve whitespace and line breaks');
+assert.ok(journey.get('card-gallery').accepts.includes('plain-text'), 'Gallery must accept browser-local writer text');
 assert.ok(journey.get('card-gallery').next.some(edge => edge.id === 'gallery-to-card' && edge.target === 'card-studio' && edge.payloadKind === 'visual-project-seed'));
 assert.ok(html.indexOf('/js/workspace-journey-registry.js') < html.indexOf('/js/workspace-handoff.js'));
 assert.ok(html.indexOf('/js/workspace-handoff.js') < html.indexOf('/js/card-gallery.js'));
+assert.match(gallery, /take\('card-gallery'\)/, 'Gallery must consume the v2 browser-local writer handoff');
+assert.match(gallery, /writeUrdu\.cardGallery\.incoming\.v1/, 'Gallery must support the local fallback handoff without URL text');
+assert.match(gallery, /cardGalleryPrefilled/, 'Restored writer text needs an explicit destination-ready state');
+assert.match(gallery, /input\.value = raw/, 'Incoming text must prefill the editable gallery input');
+assert.match(gallery, /raw\.length > maxTextLength/, 'Oversized writer text must be detected before Card Studio handoff');
+assert.match(gallery, /record\.choose\.disabled = bucket === 'empty' \|\| state\.overLimit/, 'Gallery must not silently truncate oversized text into a selectable card');
+assert.match(gallery, /continuationPath\('destination_ready', incoming\.envelope\)/, 'Incoming v2 handoff must expose destination-ready telemetry');
+assert.match(gallery, /continuationPath\('payload_restored', incoming\.envelope\)/, 'Incoming v2 handoff must expose payload-restored telemetry');
 assert.match(gallery, /payload: \{ text: state\.text, backgroundId: background\.id \}/);
 assert.match(gallery, /sourceWorkspace: 'card-gallery'/);
 assert.match(gallery, /kind: 'visual-project-seed'/);
