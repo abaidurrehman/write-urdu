@@ -6,7 +6,7 @@ const data = require('../js/urdu-cards-data.js');
 const cards = data.getAllCards();
 
 assert.notStrictEqual(cards, data.cards, 'getAllCards must return a collection copy');
-assert.ok(cards.length >= 30 && cards.length <= 40, `expected 30-40 curated cards, got ${cards.length}`);
+assert.ok(cards.length >= 60 && cards.length <= 72, `expected first recurring batch beside original corpus, got ${cards.length}`);
 assert.strictEqual(new Set(cards.map((card) => card.id)).size, cards.length, 'card IDs must be unique');
 
 const categoryIds = data.getCardCategories().map((item) => item.id);
@@ -35,6 +35,11 @@ cards.forEach((card) => {
     assert.notStrictEqual(bucket, 'empty', `${card.id} text must not classify as empty`);
     assert.notStrictEqual(bucket, 'long', `${card.id} curated card text should stay short/medium for receiver quality`);
     assert.ok(core.isSuitable(bucket, background.textCapacity), `${card.id} text bucket exceeds ${card.backgroundId} capacity`);
+});
+
+assert.deepStrictEqual(data.validateCards(registry), [], 'curated-card registry validation must pass');
+data.CONTEXTS.forEach((context) => {
+    assert.ok(data.getFeaturedCandidates(context).length >= 4, `${context} needs multiple approved homepage candidates`);
 });
 
 console.log(`Urdu Cards Slice 0 contract passed: ${cards.length} curated cards across ${realCategoryIds.size} categories.`);

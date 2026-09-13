@@ -142,7 +142,9 @@ const CARD_GALLERY_BACKGROUNDS = new Set([
     'teal-gold-botanical', 'ivory-arabesque', 'ajrak-heritage', 'truck-art-bloom',
     'peacock-festival', 'ink-wash-poetry', 'moon-paper', 'old-lahore-journal',
     'moonlit-lakeside', 'lantern-sunrise', 'pastel-glass', 'black-gold-classic',
-    'maroon-wedding', 'regal-gold-arabesque'
+    'maroon-wedding', 'regal-gold-arabesque', 'soft-sunrise-garden', 'window-light-tea',
+    'quiet-moon-sky', 'rainy-window-reflection', 'jumma-ivory-geometry',
+    'jumma-midnight-silhouette', 'emerald-prayer-light', 'warm-paper-reflection'
 ]);
 const CARD_GALLERY_CATEGORIES = new Set(['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury']);
 const CARD_GALLERY_TEXT_BUCKETS = new Set(['empty', 'short', 'medium', 'long']);

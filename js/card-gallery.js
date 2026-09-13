@@ -43,7 +43,7 @@
             count.textContent = visible + ' designs';
         }
 
-        function createPreview(background) {
+        function createPreview(background, target) {
             var article = document.createElement('article');
             article.className = 'card-gallery-card';
             article.dataset.cardGalleryPreview = background.id;
@@ -122,7 +122,7 @@
             article.appendChild(art);
             article.appendChild(details);
             article.appendChild(choose);
-            grid.appendChild(article);
+            target.appendChild(article);
 
             previewRecords.push({ article: article, text: text, example: example, fit: fit, choose: choose, background: background });
         }
@@ -181,24 +181,46 @@
         }
 
         function renderShells() {
-            registry.getAllBackgrounds().forEach(createPreview);
+            var fragment = document.createDocumentFragment();
+            registry.getAllBackgrounds().forEach(function (background) {
+                createPreview(background, fragment);
+            });
+            grid.appendChild(fragment);
             state.renders += 1;
             updateCount(previewRecords.length);
+        }
+
+        var REFRESH_CHUNK_SIZE = 8;
+
+        function applyPreview(record, value, tier, bucket) {
+            record.text.textContent = value;
+            record.article.dataset.textTier = tier;
+            record.article.dataset.example = bucket === 'empty' ? 'true' : 'false';
+            record.example.hidden = bucket !== 'empty';
+            record.fit.hidden = core.isSuitable(bucket, record.background.textCapacity);
+            record.choose.disabled = bucket === 'empty';
         }
 
         function refreshPreviews() {
             state.frame = 0;
             var value = previewText();
             var tier = core.previewTextTier(state.text);
-            previewRecords.forEach(function (record) {
-                record.text.textContent = value;
-                record.article.dataset.textTier = tier;
-                record.article.dataset.example = state.bucket === 'empty' ? 'true' : 'false';
-                record.example.hidden = state.bucket !== 'empty';
-                record.fit.hidden = core.isSuitable(state.bucket, record.background.textCapacity);
-                record.choose.disabled = state.bucket === 'empty';
-            });
-            state.refreshes += 1;
+            var bucket = state.bucket;
+            var index = 0;
+
+            function step() {
+                var end = Math.min(index + REFRESH_CHUNK_SIZE, previewRecords.length);
+                for (; index < end; index += 1) {
+                    applyPreview(previewRecords[index], value, tier, bucket);
+                }
+                if (index < previewRecords.length) {
+                    root.requestAnimationFrame(step);
+                } else {
+                    state.refreshes += 1;
+                }
+            }
+
+            step();
         }
 
         function scheduleRefresh() {

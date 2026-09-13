@@ -14,6 +14,7 @@ module.exports = defineConfig({
     'card-studio-background-collection.spec.js',
     'card-gallery.spec.js',
     'urdu-cards.spec.js',
+    'home-featured-card.spec.js',
     'seo-acquisition.spec.js',
     'role-journeys.spec.js',
     'sitemap-directory.spec.js',

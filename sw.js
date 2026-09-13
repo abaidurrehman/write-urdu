@@ -1,5 +1,5 @@
 // WU-PLAT-004C: keep the evidence-led Basic Writer export priority available offline.
-const CACHE_NAME = 'write-urdu-shell-v49';
+const CACHE_NAME = 'write-urdu-shell-v50';
 const APP_SHELL = [
   './',
   './index.html',
@@ -33,6 +33,7 @@ const APP_SHELL = [
   './css/editor-tools.css',
   './css/input-mode.css',
   './css/modern-home.css',
+  './css/home-featured-card.css',
   './css/mobile-home-task-first.css',
   './css/mobile-authoring-focus.css',
   './css/tools-modern.css',
@@ -77,6 +78,14 @@ const APP_SHELL = [
   './assets/card-studio/backgrounds/heritage-mughal-garden.svg',
   './assets/card-studio/backgrounds/teal-gold-botanical.svg',
   './assets/card-studio/backgrounds/ivory-arabesque.svg',
+  './assets/card-studio/backgrounds/soft-sunrise-garden.svg',
+  './assets/card-studio/backgrounds/window-light-tea.svg',
+  './assets/card-studio/backgrounds/quiet-moon-sky.svg',
+  './assets/card-studio/backgrounds/rainy-window-reflection.svg',
+  './assets/card-studio/backgrounds/jumma-ivory-geometry.svg',
+  './assets/card-studio/backgrounds/jumma-midnight-silhouette.svg',
+  './assets/card-studio/backgrounds/emerald-prayer-light.svg',
+  './assets/card-studio/backgrounds/warm-paper-reflection.svg',
   './site-header.js',
   './js/site-header-core.js',
   './locale.config.js',
@@ -128,6 +137,11 @@ const APP_SHELL = [
   './js/card-studio.js',
   './js/card-studio-interaction.js',
   './js/card-background-registry.js',
+  './js/card-gallery-core.js',
+  './js/urdu-cards-data.js',
+  './js/home-featured-card-selector.js',
+  './js/curated-card-share.js',
+  './js/home-featured-card.js',
   './js/card-studio-background-library.js',
   './js/card-studio-entry.js',
   './js/social-direct-workspace.js',

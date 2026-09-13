@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f8d8c0"/><stop offset=".42" stop-color="#fff2d7"/><stop offset="1" stop-color="#d8ead7"/></linearGradient>
+    <radialGradient id="sun"><stop stop-color="#fff8d6"/><stop offset=".45" stop-color="#f8bd75" stop-opacity=".7"/><stop offset="1" stop-color="#f8bd75" stop-opacity="0"/></radialGradient>
+    <filter id="grain"><feTurbulence baseFrequency=".65" numOctaves="3" seed="12"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .035 0"/></filter>
+    <symbol id="leaf" viewBox="0 0 70 120"><path d="M35 116C4 85 3 34 35 4c32 30 31 81 0 112Z" fill="#557f63"/><path d="M35 108V18" stroke="#355d47" stroke-width="3"/><path d="M35 48 18 34M35 70l22-19M35 88 17-12" fill="none" stroke="#7fa386" stroke-width="2"/></symbol>
+    <symbol id="bloom" viewBox="0 0 100 100"><g fill="#f4a9a1" opacity=".9"><ellipse cx="50" cy="22" rx="18" ry="28"/><ellipse cx="50" cy="78" rx="18" ry="28"/><ellipse cx="22" cy="50" rx="28" ry="18"/><ellipse cx="78" cy="50" rx="28" ry="18"/></g><circle cx="50" cy="50" r="14" fill="#e49a47"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#sky)"/>
+  <circle cx="540" cy="195" r="260" fill="url(#sun)"/>
+  <path d="M0 1130c170-95 280-55 430 25 175 92 320 80 650-65v260H0Z" fill="#92b99a" opacity=".58"/>
+  <path d="M0 1205c210-85 390-15 540 55 165 76 330 48 540-40v130H0Z" fill="#668d70" opacity=".72"/>
+  <g opacity=".94"><g transform="translate(-12 920) rotate(-18)"><use href="#leaf" width="120" height="205"/><use href="#leaf" x="82" y="45" width="95" height="165"/><use href="#bloom" x="45" y="145" width="105" height="105"/></g><g transform="translate(1092 930) scale(-1 1) rotate(-16)"><use href="#leaf" width="120" height="205"/><use href="#leaf" x="82" y="45" width="95" height="165"/><use href="#bloom" x="45" y="145" width="105" height="105"/></g></g>
+  <rect x="34" y="34" width="1012" height="1282" rx="34" fill="none" stroke="#fff8eb" stroke-width="4" opacity=".75"/>
+  <rect width="1080" height="1350" filter="url(#grain)"/>
+</svg>

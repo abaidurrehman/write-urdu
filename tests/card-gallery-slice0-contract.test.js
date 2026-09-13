@@ -10,11 +10,11 @@ const previousIds = [
   'teal-gold-botanical', 'ivory-arabesque'
 ];
 const allowedCategories = new Set(['classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury']);
-const allowedGoodFor = new Set(['dua', 'greeting', 'heritage', 'modern', 'nature', 'poetry', 'quote', 'wedding']);
+const allowedGoodFor = new Set(['dua', 'family', 'greeting', 'heritage', 'jumma', 'modern', 'morning', 'nature', 'night', 'poetry', 'quote', 'reflection', 'wedding']);
 const backgrounds = registry.getAllBackgrounds();
 
 assert.notStrictEqual(backgrounds, registry.backgrounds, 'registry reads must return a collection copy');
-assert.strictEqual(backgrounds.length, 24, 'Slice 0 inventory must retain all 24 backgrounds');
+assert.strictEqual(backgrounds.length, 32, 'daily/Jumma expansion must retain all 32 backgrounds');
 assert.strictEqual(new Set(backgrounds.map((item) => item.id)).size, backgrounds.length, 'background IDs must be unique');
 previousIds.forEach((id) => assert.ok(registry.getBackgroundById(id), `existing background removed: ${id}`));
 

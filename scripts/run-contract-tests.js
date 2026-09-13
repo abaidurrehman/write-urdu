@@ -109,6 +109,7 @@ const tests = [
   'tests/card-gallery-slice2-contract.test.js',
   'tests/urdu-cards-slice0-contract.test.js',
   'tests/urdu-cards-slice1-contract.test.js',
+  'tests/home-featured-card-selector-contract.test.js',
   'tests/card-studio-acquisition-contract.test.js',
   'tests/english-urdu-typing-acquisition-contract.test.js',
   'tests/serp-intent-optimization-contract.test.js',

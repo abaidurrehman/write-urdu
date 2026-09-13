@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eadac4"/><stop offset=".55" stop-color="#f5ead8"/><stop offset="1" stop-color="#cdb99f"/></linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf0" stop-opacity=".9"/><stop offset="1" stop-color="#fff1bd" stop-opacity="0"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="paper"><feTurbulence baseFrequency=".8" numOctaves="2" seed="4"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 .045 0"/></filter>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#wall)"/>
+  <rect x="80" y="68" width="315" height="425" rx="8" fill="#c79d70" opacity=".55"/>
+  <rect x="102" y="90" width="271" height="381" fill="#f8f2df"/>
+  <path d="M237 90v381M102 280h271" stroke="#b68a61" stroke-width="14"/>
+  <path d="M375 110 920 1020H470L125 460Z" fill="url(#beam)" opacity=".72"/>
+  <ellipse cx="870" cy="1125" rx="150" ry="40" fill="#695341" opacity=".24" filter="url(#soft)"/>
+  <path d="M790 1015h145l-18 126c-8 45-37 66-55 66s-47-21-55-66Z" fill="#9b5d43"/>
+  <path d="M930 1048c85-12 92 103 8 112" fill="none" stroke="#9b5d43" stroke-width="24" stroke-linecap="round"/>
+  <path d="M830 1007c-28-42 28-61 0-106M875 1007c-28-42 28-61 0-106" fill="none" stroke="#fff8e8" stroke-width="10" stroke-linecap="round" opacity=".55" filter="url(#soft)"/>
+  <path d="M65 1245c125-82 210-54 295 26M1015 1215c-130-70-220-36-300 55" fill="none" stroke="#7b8a62" stroke-width="18" stroke-linecap="round" opacity=".65"/>
+  <rect x="36" y="36" width="1008" height="1278" rx="28" fill="none" stroke="#8d6b4f" stroke-width="3" opacity=".42"/>
+  <rect width="1080" height="1350" filter="url(#paper)"/>
+</svg>

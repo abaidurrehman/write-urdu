@@ -2,7 +2,7 @@
     'use strict';
 
     var TARGET = 'card-studio';
-    var VISUAL_SEED_SOURCES = { 'card-gallery': true, 'urdu-cards': true };
+    var VISUAL_SEED_SOURCES = { 'card-gallery': true, 'urdu-cards': true, 'home-featured-card': true };
     var LEGACY_KEY = 'writeUrdu.cardStudio.incoming';
     var consuming = false;
 
@@ -89,6 +89,7 @@
     }
 
     function galleryTelemetry(envelope, result) {
+        if (envelope && envelope.source && envelope.source.workspace === 'home-featured-card') return;
         if (!root.WriteUrduTelemetry || typeof root.WriteUrduTelemetry.track !== 'function') return;
         var background = result && result.background;
         root.WriteUrduTelemetry.track('card_gallery_destination_ready', {
