@@ -146,6 +146,15 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority.is-
   }
 }
 
+/* On the narrowest phone widths, the writing canvas wins the empty-state
+   height budget. The export cluster appears immediately after the first text
+   is entered, so PDF/Word/PNG remain first-level at the moment they are usable. */
+@media (max-width: 380px) {
+  body[data-wu-basic-command-toolbar="true"] .wu-basic-command-surface[data-wu-has-content="false"] .wu-basic-command-export-priority {
+    display: none;
+  }
+}
+
 @media (max-width: 430px) {
   body[data-wu-basic-command-toolbar="true"] .wu-basic-command-direct-exports .wu-basic-command--direct-export {
     min-width: 44px;
