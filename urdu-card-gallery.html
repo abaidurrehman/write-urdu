@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Live Urdu Card Gallery Preview | WriteUrdu</title>
+    <meta name="description" content="Type Urdu once and compare it live across 24 card backgrounds in a fast, private browser preview.">
+    <meta name="robots" content="noindex,follow">
+    <meta name="googlebot" content="noindex,follow">
+    <link rel="canonical" href="https://write-urdu.com/urdu-card-gallery">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Write Urdu">
+    <meta property="og:title" content="Live Urdu Card Gallery Preview">
+    <meta property="og:description" content="Type Urdu once and compare it live across 24 card backgrounds.">
+    <meta property="og:url" content="https://write-urdu.com/urdu-card-gallery">
+    <meta property="og:image" content="https://write-urdu.com/image/logo10.png">
+    <link rel="icon" href="/image/logo10.png" type="image/png">
+    <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/card-gallery.css">
+    <script src="/js/product-telemetry.js" defer></script>
+    <script src="/js/workspace-journey-registry.js" defer></script>
+    <script src="/js/workspace-handoff.js" defer></script>
+    <script src="/js/card-background-registry.js" defer></script>
+    <script src="/js/card-gallery-core.js" defer></script>
+    <script src="/js/card-gallery.js" defer></script>
+</head>
+<body class="card-gallery-page">
+    <nav class="navbar" aria-label="Primary navigation"><a href="/">Write Urdu</a></nav>
+    <main class="card-gallery-shell" data-card-gallery>
+        <header class="card-gallery-hero">
+            <div>
+                <p class="card-gallery-kicker">Private live preview · لائیو پیش منظر</p>
+                <h1>See your Urdu on every card</h1>
+                <p class="card-gallery-lede">Write once, then compare the same Urdu across every background. ایک بار لکھیں، پھر ہر ڈیزائن میں اپنا اردو متن دیکھیں۔</p>
+            </div>
+            <aside class="card-gallery-privacy"><strong>Your writing remains private while you compare.</strong>No text, preview image or card content is uploaded by this gallery.</aside>
+        </header>
+        <section class="card-gallery-composer" aria-labelledby="card-gallery-input-label">
+            <div class="card-gallery-input-row">
+                <div class="card-gallery-input-wrap">
+                    <label id="card-gallery-input-label" for="cardGalleryText">Your Urdu text · اپنا اردو متن</label>
+                    <textarea id="cardGalleryText" class="card-gallery-input" data-card-gallery-input lang="ur" dir="rtl" maxlength="600" rows="3" placeholder="اپنا اردو متن یہاں لکھیں یا چسپاں کریں"></textarea>
+                    <small>Up to 600 characters. Line breaks stay visible. · زیادہ سے زیادہ 600 حروف</small>
+                </div>
+                <output class="card-gallery-count" data-card-gallery-count aria-live="polite">24 designs</output>
+            </div>
+            <div class="card-gallery-filter-row" data-card-gallery-filters role="group" aria-label="Filter card backgrounds"></div>
+        </section>
+        <section class="card-gallery-grid" data-card-gallery-grid aria-label="Live Urdu card previews"></section>
+        <p class="card-gallery-status" data-card-gallery-status role="status" aria-live="polite"></p>
+        <p class="card-gallery-note">Choose a design to continue in Card Studio. Your text stays editable.</p>
+    </main>
+    <footer class="card-gallery-footer"><a href="/urdu-card-studio">Open Urdu Card Studio</a> · <a href="/write-urdu-privacy">Privacy</a></footer>
+</body>
+</html>

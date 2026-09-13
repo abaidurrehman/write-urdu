@@ -36,6 +36,7 @@ assert.strictEqual(ads.resolvePageType('/my-publications'), 'trust', 'My Publica
 assert.strictEqual(ads.resolvePageType('/tools/urdu-english-voice-translator'), 'trust', 'Voice Translator preview must stay ad-free during acceptance review');
 assert.strictEqual(ads.resolvePageType('/tools/audio-to-text-translator'), 'trust', 'Audio Translator preview must stay ad-free during acceptance review');
 assert.strictEqual(ads.resolvePageType('/tools/urdu-english-dictionary'), 'trust', 'Dictionary preview must stay ad-free during acceptance review');
+assert.strictEqual(ads.resolvePageType('/urdu-card-gallery'), 'trust', 'Card Gallery preview must stay ad-free during validation');
 assert.strictEqual(ads.resolvePageType('/urdu-writers'), 'trust', 'Urdu Writers hub must be ad-free until content density is deliberately promoted to a monetized page type');
 assert.strictEqual(ads.resolvePageType('/urdu-writers/some-slug'), 'trust', 'Urdu Writers detail pages must be ad-free until content density is deliberately promoted to a monetized page type');
 assert.strictEqual(ads.resolvePageType('/urdu-writers/category/poetry'), 'trust', 'Urdu Writers category pages must be ad-free until content density is deliberately promoted to a monetized page type');

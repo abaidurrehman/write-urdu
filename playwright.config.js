@@ -12,6 +12,7 @@ module.exports = defineConfig({
     'create-publish-boundaries.spec.js',
     'v2-creation.spec.js',
     'card-studio-background-collection.spec.js',
+    'card-gallery.spec.js',
     'seo-acquisition.spec.js',
     'role-journeys.spec.js',
     'sitemap-directory.spec.js',

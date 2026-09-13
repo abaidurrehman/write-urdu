@@ -59,6 +59,14 @@
         return backgrounds.find(function (background) { return background.id === id; }) || null;
     }
 
+    function getAllBackgrounds() {
+        return backgrounds.slice();
+    }
+
+    function getBackgroundCategories() {
+        return categories.slice();
+    }
+
     function filterBackgrounds(category) {
         return category === 'all' ? backgrounds.slice() : backgrounds.filter(function (background) {
             return background.category === category;
@@ -68,6 +76,8 @@
     return {
         backgrounds: backgrounds,
         categories: categories,
+        getAllBackgrounds: getAllBackgrounds,
+        getBackgroundCategories: getBackgroundCategories,
         getBackgroundById: getBackgroundById,
         filterBackgrounds: filterBackgrounds
     };

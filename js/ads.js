@@ -34,7 +34,7 @@
             '/write-urdu-search', '/write-urdu-sitemap', '/sign-in', '/my-documents',
             '/community-guidelines', '/my-publications',
             '/tools/urdu-english-voice-translator', '/tools/audio-to-text-translator', '/tools/urdu-english-dictionary',
-            '/urdu-bill-generator'
+            '/urdu-bill-generator', '/urdu-card-gallery'
         ]
     };
 
