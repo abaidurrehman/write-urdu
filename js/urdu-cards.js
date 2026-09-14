@@ -6,7 +6,7 @@
     var core = root.WriteUrduCardGalleryCore;
     var data = root.WriteUrduCardsData;
     var sharing = root.WriteUrduCuratedCardShare;
-    var whatsappStatus = root.WriteUrduWhatsAppStatusShare;
+    var whatsappStatusPromise = null;
 
     function normalizedPath() {
         return String(root.location && root.location.pathname || '/')
@@ -32,6 +32,29 @@
                 root.WriteUrduTelemetry.track(name, detail || {});
             }
         } catch (error) {}
+    }
+
+    function ensureWhatsAppStatusShare() {
+        if (root.WriteUrduWhatsAppStatusShare && typeof root.WriteUrduWhatsAppStatusShare.shareCard === 'function') {
+            return Promise.resolve(root.WriteUrduWhatsAppStatusShare);
+        }
+        if (whatsappStatusPromise) return whatsappStatusPromise;
+        whatsappStatusPromise = new Promise(function (resolve, reject) {
+            var script = document.createElement('script');
+            script.src = root.location && root.location.protocol === 'file:' ? 'js/whatsapp-status-share.js' : '/js/whatsapp-status-share.js';
+            script.async = true;
+            script.onload = function () {
+                var api = root.WriteUrduWhatsAppStatusShare;
+                if (api && typeof api.shareCard === 'function') resolve(api);
+                else reject(new Error('status_share_api_missing'));
+            };
+            script.onerror = function () { reject(new Error('status_share_script_failed')); };
+            document.head.appendChild(script);
+        }).catch(function (error) {
+            whatsappStatusPromise = null;
+            throw error;
+        });
+        return whatsappStatusPromise;
     }
 
     function mount() {
@@ -110,10 +133,6 @@
         }
 
         function startWhatsAppStatus(card, background, button) {
-            if (!whatsappStatus || typeof whatsappStatus.shareCard !== 'function') {
-                status.textContent = 'WhatsApp Status sharing is unavailable in this browser.';
-                return;
-            }
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
             status.textContent = 'Preparing WhatsApp Status…';
@@ -122,7 +141,9 @@
                 background_id: card.backgroundId,
                 source_route: '/urdu-cards'
             });
-            whatsappStatus.shareCard(card, background).then(function (result) {
+            ensureWhatsAppStatusShare().then(function (whatsappStatus) {
+                return whatsappStatus.shareCard(card, background);
+            }).then(function (result) {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
                 if (result.result === 'shared') {
@@ -269,7 +290,7 @@
             getDiagnostics: function () {
                 return {
                     shells: cardRecords.length,
-                    whatsappStatusShare: Boolean(whatsappStatus && typeof whatsappStatus.shareCard === 'function')
+                    whatsappStatusShareLoaded: Boolean(root.WriteUrduWhatsAppStatusShare)
                 };
             }
         };
