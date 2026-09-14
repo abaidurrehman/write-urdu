@@ -111,6 +111,7 @@ const tests = [
   'tests/urdu-cards-slice1-contract.test.js',
   'tests/urdu-font-slice0-contract.test.js',
   'tests/urdu-font-registry.test.js',
+  'tests/urdu-font-slice1b-contract.test.js',
   'tests/home-featured-card-selector-contract.test.js',
   'tests/card-studio-acquisition-contract.test.js',
   'tests/english-urdu-typing-acquisition-contract.test.js',
