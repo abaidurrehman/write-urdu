@@ -11,7 +11,6 @@ const cardAdapter = read('js/urdu-font-card-convergence.js');
 const tinyAdapter = read('js/urdu-font-tinymce-adapter.js');
 const interactionCore = read('js/card-studio-interaction-core.js');
 const entry = read('js/card-studio-entry.js');
-const legacyEntry = read('js/card-studio-entry-legacy.js');
 const home = read('index.html');
 const editorFeatures = read('urdu-editor-features.html');
 
@@ -42,14 +41,16 @@ for (const systemFont of ['Arial', 'Courier New', 'Georgia', 'Tahoma', 'Times Ne
 assert.match(tinyAdapter, /Qadreeregular/, 'adapter must explicitly remove the stale Qadreeregular sample');
 assert.match(tinyAdapter, /Scheherazade New/, 'adapter must normalize the visible Scheherazade sample');
 
-assert.match(entry, /\/js\/urdu-font-registry\.js/, 'Rich Editor entry must load shared font registry');
+assert.match(entry, /function ensureRichFontConvergence\(\)/, 'Rich Editor journey entry must own the narrow font-runtime bootstrap');
+assert.match(entry, /\/js\/urdu-font-registry\.js/, 'Rich Editor entry must load shared font registry only for the rich route');
 assert.match(entry, /\/js\/urdu-font-tinymce-adapter\.js/, 'Rich Editor entry must load TinyMCE font adapter');
-assert.match(entry, /\/js\/card-studio-entry-legacy\.js/, 'font convergence wrapper must delegate to unchanged journey runtime');
-assert.match(legacyEntry, /WriteUrduJourneyHandoffs/, 'legacy authoring journey runtime must remain intact');
-assert.match(legacyEntry, /consumeRichHandoff/, 'Rich Editor handoff behavior must remain intact');
-assert.match(legacyEntry, /renderJourneyPanel/, 'authoring journey UI behavior must remain intact');
+assert.match(entry, /handoff && typeof handoff\.peek === 'function' \? handoff\.peek\('rich-editor'\) : null/, 'Rich destination must still inspect v2 state before legacy fallback');
+assert.match(entry, /incoming = readOneTimeHandoff\('rich'\)/, 'Rich destination must retain legacy fallback after the v2 check');
+assert.match(entry, /WriteUrduJourneyHandoffs/, 'authoring journey runtime must remain in its historical entry file');
+assert.match(entry, /consumeRichHandoff/, 'Rich Editor handoff behavior must remain intact');
+assert.match(entry, /renderJourneyPanel/, 'authoring journey UI behavior must remain intact');
 
-assert.doesNotMatch(home, /urdu-font-registry\.js|urdu-font-card-convergence\.js|urdu-font-tinymce-adapter\.js/, 'Basic Writer must not pay font-registry runtime cost globally');
+assert.doesNotMatch(home, /urdu-font-registry\.js|urdu-font-card-convergence\.js|urdu-font-tinymce-adapter\.js/, 'Basic Writer HTML must not directly pay font-registry runtime cost');
 assert.match(editorFeatures, /Available Urdu-friendly fonts/, 'public formatting guide remains the documentation owner for editor font choices');
 assert.doesNotMatch(read('sitemap.xml'), /\/urdu-fonts(?:<|\s)/, 'Slice 1B must not launch the future /urdu-fonts route');
 
