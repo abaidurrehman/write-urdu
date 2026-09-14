@@ -65,8 +65,8 @@ assert.match(editorFeatures, /Qadreeregular/, 'documented Qadreeregular inconsis
 
 assert.match(cardStudioJs, /document\.fonts\.load\(/, 'Card Studio must explicitly load selected fonts');
 assert.match(cardStudioJs, /ensureProjectFonts\(\)\.then\(function \(\) \{ return drawCard\(\{ export: true \}\); \}\)/, 'Card Studio export must await project fonts before draw');
-assert.match(cardStudioCore, /ctx\.font = size \+ 'px \\"' \+ \(text\.fontFamily \|\| 'Noto Nastaliq Urdu'\) \+ '\\"'/, 'Card Studio core font assignment changed');
-assert.match(documentShare, /ctx\.font = `600 \$\{fontSize\}px \\"Noto Nastaliq Urdu\\", \\"Noto Naskh Arabic\\", serif`/, 'document share preview Urdu stack changed');
+assert.match(cardStudioCore, /ctx\.font = size \+ 'px "' \+ \(text\.fontFamily \|\| 'Noto Nastaliq Urdu'\) \+ '"'/, 'Card Studio core font assignment changed');
+assert.match(documentShare, /ctx\.font = `600 \$\{fontSize\}px "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif`/, 'document share preview Urdu stack changed');
 
 const googleFontLinks = html => [...html.matchAll(/https:\/\/fonts\.googleapis\.com\/[^"']+/g)].map(match => match[0]);
 const baseline = {
