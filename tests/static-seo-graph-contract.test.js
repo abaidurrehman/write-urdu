@@ -60,6 +60,28 @@ const instagramRendered = applyStaticSeoGraph(read('urdu-instagram-post-maker.ht
 assert.strictEqual((instagramRendered.match(/type="application\/ld\+json"/g) || []).length, 1, 'Governed Instagram WebApplication schema must not coexist with a legacy duplicate block');
 assert.strictEqual(nodes(buildGraph(page('/urdu-instagram-post-maker'), instagramRendered), 'WebApplication')[0].applicationCategory, 'DesignApplication', 'Instagram maker must retain design application semantics');
 
+const expectedApplicationDetails = {
+  '/urdu-card-gallery': {
+    category: 'DesignApplication',
+    features: ['Preview Urdu text across many card designs', 'Filter designs by category', 'Continue a selected design in Urdu Card Studio', 'Use without an account']
+  },
+  '/urdu-cards': {
+    category: 'DesignApplication',
+    features: ['Browse ready-made Urdu cards by occasion', 'Filter cards by occasion and theme', 'Edit a selected card in Urdu Card Studio', 'Share links to ready-made cards']
+  },
+  '/urdu-bill-generator': {
+    category: 'BusinessApplication',
+    features: ['Create Urdu, English and bilingual bills', 'Add line items with automatic totals', 'Track paid amount and remaining balance', 'Print bills and download PDF', 'Keep bill data in the browser']
+  }
+};
+for (const [route, expected] of Object.entries(expectedApplicationDetails)) {
+  const graph = buildGraph(page(route), read(route.slice(1) + '.html'));
+  const application = nodes(graph, 'WebApplication')[0];
+  assert.ok(application, route + ' must expose WebApplication schema');
+  assert.strictEqual(application.applicationCategory, expected.category, route + ' must expose accurate application category');
+  assert.deepStrictEqual(application.featureList, expected.features, route + ' must expose truthful product features');
+}
+
 const runtime = read('js/seo.js');
 assert.match(runtime, /!document\.head\.querySelector\('script\[data-write-urdu-schema\]'\)/, 'Runtime SEO must detect the static owned graph before attempting dynamic schema');
 

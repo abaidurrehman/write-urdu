@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const seo = require('../seo.config.js');
 const core = require('../js/card-gallery-core.js');
+const backgrounds = require('../js/card-background-registry.js').getAllBackgrounds();
 
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
@@ -12,6 +13,7 @@ const css = read('css/card-gallery.css');
 const registry = read('docs/WU-PUBLIC-PAGE-REGISTRY.csv');
 const sitemap = read('sitemap.xml');
 const llms = read('llms.txt');
+const discoveryGuide = (html.match(/<section class="card-discovery-guide"[^]*?<\/section>/) || [''])[0];
 
 assert.match(html, /<h1[^>]*>See your Urdu on every card<\/h1>/);
 assert.match(html, /name="robots" content="index,follow"/, 'WU-CARD-GALLERY-001 P0.9 founder exception (2026-09-13) made this route indexable');
@@ -19,6 +21,11 @@ assert.match(html, /name="googlebot" content="index,follow"/);
 assert.match(html, /href="https:\/\/write-urdu\.com\/urdu-card-gallery"/);
 assert.match(html, /data-card-gallery-input[^>]+lang="ur"[^>]+dir="rtl"[^>]+maxlength="600"/);
 assert.match(html, /data-card-gallery-grid/);
+assert.match(html, new RegExp(`data-card-gallery-count[^>]*>${backgrounds.length} designs<`), 'source count must match the shared background registry');
+assert.match(html, /<h2[^>]*>Choose a design for your Urdu text<\/h2>/, 'indexed route needs useful source-visible guidance');
+['/', '/urdu-cards', '/urdu-card-studio', '/how-to-write-urdu-on-photo'].forEach(route => {
+    assert.ok(discoveryGuide.includes(`href="${route}"`), `gallery guidance must link contextually to ${route}`);
+});
 assert.strictEqual(seo.byPath['/urdu-card-gallery'].indexable, true, 'P0.9 founder exception made this a distinct-intent indexed route');
 assert.match(registry, /urdu-card-gallery\.html,\/urdu-card-gallery,Create,[^\n]+,index,yes,/);
 assert.match(sitemap, /urdu-card-gallery/);

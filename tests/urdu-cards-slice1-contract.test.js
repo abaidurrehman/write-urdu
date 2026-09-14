@@ -5,14 +5,21 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const journey = require('../js/workspace-journey-registry.js');
+const cards = require('../js/urdu-cards-data.js').getAllCards();
 
 const html = read('urdu-cards.html');
 const script = read('js/urdu-cards.js');
 const endpoint = read('functions/api/events.js');
 const ads = read('js/ads.js');
+const discoveryGuide = (html.match(/<section class="card-discovery-guide"[^]*?<\/section>/) || [''])[0];
 
 assert.match(html, /<meta name="robots" content="index,follow">/, 'WU-CARD-GALLERY-001 P0.9 founder exception (2026-09-13) made this route indexable');
 assert.match(html, /data-wu-static-nav-group="create"[^]*?<a href="\/urdu-cards">/, 'urdu-cards must be promoted in the primary nav per the P0.9 exception');
+assert.match(html, new RegExp(`data-urdu-cards-count[^>]*>${cards.length} cards<`), 'source count must match the curated-card registry');
+assert.match(html, /<h2[^>]*>Find an Urdu card for the moment<\/h2>/, 'indexed route needs useful source-visible guidance');
+['/urdu-card-gallery', '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker'].forEach(route => {
+    assert.ok(discoveryGuide.includes(`href="${route}"`), `card guidance must link contextually to ${route}`);
+});
 assert.ok(html.indexOf('/js/workspace-journey-registry.js') < html.indexOf('/js/workspace-handoff.js'));
 assert.ok(html.indexOf('/js/workspace-handoff.js') < html.indexOf('/js/urdu-cards.js'));
 assert.ok(html.indexOf('/js/card-background-registry.js') < html.indexOf('/js/urdu-cards.js'));

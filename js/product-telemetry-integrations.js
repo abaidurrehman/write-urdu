@@ -34,10 +34,12 @@
 
     function cardStudioOutcomes() {
         if (['/urdu-card-studio', '/urdu-name-art-maker', '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker'].indexOf(route) < 0) return;
+        document.addEventListener('write-urdu:card-export-completed', function (event) {
+            var format = event && event.detail && event.detail.format === 'jpeg' ? 'jpeg' : 'png';
+            outcome('export_completed', { format: format, success: true });
+        });
         observeStatus('[data-card-status]', function (message) {
-            if (/^PNG downloaded\.?$/i.test(message)) outcome('export_completed', { format: 'png', success: true });
-            else if (/^JPEG downloaded\.?$/i.test(message)) outcome('export_completed', { format: 'jpeg', success: true });
-            else if (/share sheet opened/i.test(message)) outcome('share_completed', { success: true });
+            if (/share sheet opened/i.test(message)) outcome('share_completed', { success: true });
         });
 
         if (route === '/urdu-name-art-maker') {

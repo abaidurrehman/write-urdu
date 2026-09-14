@@ -110,9 +110,9 @@ function websiteNode(config) {
 
 function applicationCategory(pageId) {
   if (pageId === 'urdu-typing-practice') return 'EducationalApplication';
-  if (['urdu-card-studio', 'urdu-instagram-post-maker', 'urdu-whatsapp-status-maker', 'urdu-name-art-maker'].includes(pageId)) return 'DesignApplication';
+  if (['urdu-card-studio', 'urdu-card-gallery', 'urdu-cards', 'urdu-instagram-post-maker', 'urdu-whatsapp-status-maker', 'urdu-name-art-maker'].includes(pageId)) return 'DesignApplication';
   if (['home', 'urdu-editor', 'urdu-writing-templates'].includes(pageId)) return 'WritingApplication';
-  if (pageId === 'urdu-invoice-generator') return 'BusinessApplication';
+  if (['urdu-invoice-generator', 'urdu-bill-generator'].includes(pageId)) return 'BusinessApplication';
   return 'UtilitiesApplication';
 }
 
@@ -123,6 +123,9 @@ function applicationFeatures(pageId) {
     'urdu-keyboard': ['On-screen Urdu keyboard', 'Physical keyboard input', 'Copy and download text'],
     'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Progress history, streaks and personal bests'],
     'urdu-card-studio': ['Create Urdu quote and poetry images', 'Urdu fonts and templates', 'Use your own background image', 'Move and edit text on the design', 'Download PNG'],
+    'urdu-card-gallery': ['Preview Urdu text across many card designs', 'Filter designs by category', 'Continue a selected design in Urdu Card Studio', 'Use without an account'],
+    'urdu-cards': ['Browse ready-made Urdu cards by occasion', 'Filter cards by occasion and theme', 'Edit a selected card in Urdu Card Studio', 'Share links to ready-made cards'],
+    'urdu-bill-generator': ['Create Urdu, English and bilingual bills', 'Add line items with automatic totals', 'Track paid amount and remaining balance', 'Print bills and download PDF', 'Keep bill data in the browser'],
     'qr-code-generator': ['QR codes for Urdu text and links', 'Wi-Fi and WhatsApp QR codes', 'Download PNG and SVG'],
     'stylish-urdu-text-generator': ['Ready-made Urdu text styles', 'English-letter and direct Urdu input', 'Save favourites and copy text', 'Continue to Urdu Name Art'],
     'urdu-name-art-maker': ['Create Urdu name images', 'Templates and direct editing', 'Use your own background image', 'Download PNG']
