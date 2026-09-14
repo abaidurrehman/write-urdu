@@ -15,20 +15,11 @@ if (driftCheck.status !== 0) {
 }
 assert.strictEqual(driftCheck.status, 0, `generated Urdu locale output is stale:\n${driftDetails}`);
 
-const outputs = {
-  '/': 'urdu/index.html',
-  '/urdu-keyboard': 'urdu/urdu-keyboard.html',
-  '/urdu-editor': 'urdu/urdu-editor.html',
-  '/tools/urdu-voice-typing': 'urdu/tools/urdu-voice-typing.html',
-  '/urdu-alphabet': 'urdu/urdu-alphabet.html',
-  '/urdu-faq': 'urdu/urdu-faq.html',
-  '/urdu-card-studio': 'urdu/urdu-card-studio.html',
-  '/how-to-write-urdu-on-photo': 'urdu/how-to-write-urdu-on-photo.html'
-};
+const generatedRoutes = config.generatedRoutes || config.phase1Routes;
+const outputFor = route => route === '/' ? 'urdu/index.html' : 'urdu' + route + '.html';
 
-assert.deepStrictEqual(Object.keys(outputs), config.phase1Routes);
-for (const route of config.phase1Routes) {
-  const file = path.join(root, outputs[route]);
+for (const route of generatedRoutes) {
+  const file = path.join(root, outputFor(route));
   assert.ok(fs.existsSync(file), `generated Urdu file missing for ${route}`);
   const html = fs.readFileSync(file, 'utf8');
   assert.match(html, /<html\s+lang="ur"\s+dir="rtl"/i, `${route} initial HTML must be Urdu RTL`);

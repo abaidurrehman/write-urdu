@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 async function blockExternal(page) {
-  await page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, route => route.abort());
 }
 
 test('homepage language counterpart is crawlable and preserves Basic Writer text', async ({ page }) => {
@@ -35,7 +35,7 @@ test('nested Urdu voice route loads shared root assets without local 404s', asyn
   const local404s = [];
   page.on('response', response => {
     const url = new URL(response.url());
-    if (url.origin === 'http://127.0.0.1:8765' && response.status() === 404) local404s.push(url.pathname);
+    if (url.hostname === '127.0.0.1' && response.status() === 404) local404s.push(url.pathname);
   });
   await blockExternal(page);
   await page.goto('/urdu/tools/urdu-voice-typing', { waitUntil: 'domcontentloaded' });
@@ -103,4 +103,41 @@ test('locale telemetry keeps normalized route while distinguishing Urdu and Engl
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect.poll(() => acquisition.length).toBeGreaterThan(0);
   expect(acquisition.at(-1)).toMatchObject({ route: '/', locale: 'en' });
+});
+
+test('newest card routes have crawlable Urdu pages and localized runtime controls', async ({ page }) => {
+  await blockExternal(page);
+
+  await page.goto('/urdu/urdu-card-gallery', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
+  await expect(page.locator('h1')).toHaveText('اپنا اردو متن ہر کارڈ پر دیکھیں');
+  await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(44);
+  await expect(page.locator('[data-card-gallery-count]')).toHaveText('44 ڈیزائنز');
+  await expect(page.locator('[data-card-gallery-filter="all"]')).toHaveText('سب');
+  await expect(page.locator('[data-card-gallery-choose]').first()).toHaveText('یہ ڈیزائن استعمال کریں');
+  await expect(page.locator('[data-wu-language-toggle]')).toHaveAttribute('href', '/urdu-card-gallery');
+  await expect(page.locator('body')).not.toContainText('See your Urdu on every card');
+  await expect(page.locator('body')).not.toContainText('Example preview');
+
+  await page.goto('/urdu/urdu-cards', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
+  await expect(page.locator('h1')).toHaveText('تیار شدہ اردو کارڈز');
+  await expect(page.locator('.card-gallery-card')).toHaveCount(157);
+  await expect(page.locator('[data-urdu-cards-count]')).toHaveText('157 کارڈز');
+  await expect(page.locator('[data-urdu-cards-filter="all"]')).toHaveText('سب');
+  await expect(page.locator('[data-urdu-cards-edit]').first()).toHaveText('کارڈ اسٹوڈیو میں ترمیم کریں');
+  await expect(page.locator('[data-urdu-cards-share]').first()).toHaveText('شیئر کریں');
+  await expect(page.locator('[data-wu-language-toggle]')).toHaveAttribute('href', '/urdu-cards');
+  await expect(page.locator('body')).not.toContainText('Ready-made Urdu cards');
+  await expect(page.locator('body')).not.toContainText('Edit in Card Studio');
+
+  await page.route('**/api/shares', route => route.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }));
+  await page.evaluate(() => {
+    navigator.share = () => Promise.reject(new Error('share unavailable'));
+    window.__copiedUrduCardUrl = null;
+    navigator.clipboard.writeText = value => { window.__copiedUrduCardUrl = value; return Promise.resolve(); };
+  });
+  await page.locator('[data-urdu-cards-share]').first().click();
+  await expect(page.locator('[data-urdu-cards-status]')).toHaveText('لنک کاپی ہو گیا۔');
+  await expect.poll(() => page.evaluate(() => window.__copiedUrduCardUrl)).toMatch(/^https:\/\/write-urdu\.com\/urdu\/urdu-cards#card-/);
 });

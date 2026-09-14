@@ -1,4 +1,6 @@
 const { defineConfig, devices } = require('@playwright/test');
+const testPort = process.env.WRITE_URDU_TEST_PORT || '8765';
+const testBaseUrl = `http://127.0.0.1:${testPort}`;
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -33,7 +35,7 @@ module.exports = defineConfig({
   workers: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://127.0.0.1:8765',
+    baseURL: testBaseUrl,
     channel: 'chrome',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure'
@@ -44,7 +46,8 @@ module.exports = defineConfig({
   ],
   webServer: {
     command: 'node tests/server.js',
-    url: 'http://127.0.0.1:8765',
+    url: testBaseUrl,
+    env: { ...process.env, PORT: testPort },
     reuseExistingServer: true
   }
 });

@@ -3,7 +3,7 @@
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.WriteUrduLocaleConfig = factory();
 }(typeof self !== 'undefined' ? self : this, function () {
-  var phase1Routes = [
+  var generatedRoutes = [
     '/',
     '/urdu-keyboard',
     '/urdu-editor',
@@ -11,7 +11,9 @@
     '/urdu-alphabet',
     '/urdu-faq',
     '/urdu-card-studio',
-    '/how-to-write-urdu-on-photo'
+    '/how-to-write-urdu-on-photo',
+    '/urdu-card-gallery',
+    '/urdu-cards'
   ];
   var routes = {
     '/': { source: 'index.html', ur: true, indexable: true },
@@ -22,6 +24,8 @@
     '/urdu-faq': { source: 'urdu-faq.html', ur: true, indexable: true },
     '/urdu-card-studio': { source: 'urdu-card-studio.html', ur: true, indexable: true },
     '/how-to-write-urdu-on-photo': { source: 'how-to-write-urdu-on-photo.html', ur: true, indexable: true },
+    '/urdu-card-gallery': { source: 'urdu-card-gallery.html', ur: true, indexable: true },
+    '/urdu-cards': { source: 'urdu-cards.html', ur: true, indexable: true },
     '/urdu-writing-templates': { source: 'urdu-writing-templates.html', ur: true, indexable: true, standalone: true },
     // No `source` -- /urdu-writers is a Cloudflare Pages Function (functions/urdu-writers/),
     // not static HTML, so it is deliberately absent from phase1Routes (the static-mirror
@@ -35,6 +39,8 @@
     locales: ['en', 'ur'],
     prefix: { en: '', ur: '/urdu' },
     routes: routes,
-    phase1Routes: phase1Routes
+    generatedRoutes: generatedRoutes,
+    // Compatibility alias for callers not yet migrated from original launch name.
+    phase1Routes: generatedRoutes
   };
 }));

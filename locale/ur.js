@@ -409,6 +409,50 @@ module.exports = {
         'urdu-card-studio.videoLink': 'تصویر پر اردو لکھنے کی گائیڈ پڑھیں ←'
       }
     },
+    '/urdu-card-gallery': {
+      title: 'اپنے اردو متن کا کارڈ ڈیزائنز میں موازنہ کریں | WriteUrdu',
+      description: 'اپنا اردو متن ایک بار لکھیں، اسے 44 کارڈ ڈیزائنز میں بیک وقت دیکھیں، پسندیدہ ڈیزائن منتخب کریں اور کارڈ اسٹوڈیو میں مکمل کریں۔',
+      h1: 'اپنا اردو متن ہر کارڈ پر دیکھیں',
+      lede: 'ایک بار لکھیں، پھر اسی اردو متن کو ہر پس منظر پر دیکھیں اور پسندیدہ ڈیزائن منتخب کریں۔',
+      lastReviewed: '2026-09-14',
+      strings: {
+        'urdu-card-gallery.kicker': 'نجی لائیو پیش منظر',
+        'urdu-card-gallery.privacyTitle': 'موازنہ کرتے وقت آپ کی تحریر نجی رہتی ہے۔',
+        'urdu-card-gallery.privacyCopy': 'یہ گیلری آپ کا متن، پیش منظر یا کارڈ کا مواد اپ لوڈ نہیں کرتی۔',
+        'urdu-card-gallery.inputLabel': 'اپنا اردو متن',
+        'urdu-card-gallery.inputHelp': 'زیادہ سے زیادہ 600 حروف۔ سطروں کی ترتیب برقرار رہتی ہے۔',
+        'urdu-card-gallery.count': '44 ڈیزائنز',
+        'urdu-card-gallery.note': 'کارڈ اسٹوڈیو میں جاری رکھنے کے لیے کوئی ڈیزائن منتخب کریں۔ آپ کا متن قابلِ ترمیم رہے گا۔ تیار تحریر چاہیے؟ <a href="/urdu-cards">تیار شدہ اردو کارڈز دیکھیں</a> یا <a href="/urdu-card-studio">مکمل کارڈ اسٹوڈیو</a> کھولیں۔',
+        'urdu-card-gallery.guideTitle': 'اپنے اردو متن کے لیے ڈیزائن منتخب کریں',
+        'urdu-card-gallery.guideCopy': 'اپنے الفاظ کو 44 پس منظر پر بیک وقت دیکھیں۔ مجموعے میں کلاسیکی، پاکستانی، ٹرک آرٹ، شاعری، قدرتی، جدید، شادی، پُرتعیش اور محبت کے ڈیزائن شامل ہیں۔ مختصر اقتباس نمایاں لے آؤٹس کے لیے موزوں ہیں، جبکہ طویل شاعری اور پیغامات کے لیے کشادہ جگہ بہتر ہے۔',
+        'urdu-card-gallery.option1Title': 'ابھی لکھ رہے ہیں؟',
+        'urdu-card-gallery.option1Copy': '<a href="/">انگریزی حروف سے اردو ٹائپنگ</a> کے ذریعے متن تیار کریں، پھر اسے یہاں پیسٹ کریں۔',
+        'urdu-card-gallery.option2Title': 'تیار الفاظ چاہیے؟',
+        'urdu-card-gallery.option2Copy': 'دعا، عید، شادی، دوستی اور روزمرہ مبارک باد کے لیے <a href="/urdu-cards">اردو کارڈز دیکھیں</a>۔',
+        'urdu-card-gallery.option3Title': 'مکمل اختیار چاہیے؟',
+        'urdu-card-gallery.option3Copy': 'فونٹ، جگہ اور پس منظر تبدیل کرنے کے لیے <a href="/urdu-card-studio">اردو کارڈ اسٹوڈیو</a> کھولیں، یا <a href="/how-to-write-urdu-on-photo">تصویر پر اردو لکھنے کا طریقہ</a> پڑھیں۔'
+      }
+    },
+    '/urdu-cards': {
+      title: 'دعا، عید اور شادی کے تیار شدہ اردو کارڈز | WriteUrdu',
+      description: 'دعا، عید، شادی، مبارک باد اور دیگر مواقع کے تیار شدہ اردو کارڈز دیکھیں۔ کارڈ منتخب کریں، کارڈ اسٹوڈیو میں تبدیل کریں یا لنک شیئر کریں۔',
+      h1: 'تیار شدہ اردو کارڈز',
+      lede: 'دعا، عید، شادی، مبارک باد، دوستی اور دیگر مواقع کے تیار کارڈز دیکھیں۔ پسندیدہ کارڈ منتخب کریں، کارڈ اسٹوڈیو میں تبدیل کریں یا اس کا لنک شیئر کریں۔',
+      lastReviewed: '2026-09-14',
+      strings: {
+        'urdu-cards.kicker': 'تیار شدہ کارڈز',
+        'urdu-cards.count': '157 کارڈز',
+        'urdu-cards.note': 'ترمیم کرنے پر یہی متن اور پس منظر کارڈ اسٹوڈیو میں کھلیں گے۔ اپنے الفاظ استعمال کرنا چاہتے ہیں؟ <a href="/urdu-card-gallery">اپنے اردو متن کا ڈیزائنز میں موازنہ کریں</a> یا <a href="/urdu-card-studio">مکمل کارڈ اسٹوڈیو</a> کھولیں۔',
+        'urdu-cards.guideTitle': 'ہر موقع کے لیے اردو کارڈ تلاش کریں',
+        'urdu-cards.guideCopy': '16 مواقع اور موضوعات میں 157 تیار شدہ کارڈز میں سے انتخاب کریں۔ دعا، عید، شادی، مبارک باد، تعزیت، صبح، رات، جمعہ، خاندان، دوستی، محبت، شاعری اور عزتِ نفس کے پیغامات دیکھیں۔ ہر کارڈ جوں کا توں شیئر کیا جا سکتا ہے یا ترمیم کے لیے کارڈ اسٹوڈیو میں کھولا جا سکتا ہے۔',
+        'urdu-cards.option1Title': 'کارڈ کو ذاتی بنائیں',
+        'urdu-cards.option1Copy': 'منتخب ڈیزائن برقرار رکھتے ہوئے اردو الفاظ بدلنے کے لیے کارڈ اسٹوڈیو میں ترمیم منتخب کریں۔',
+        'urdu-cards.option2Title': 'اپنا پیغام استعمال کریں',
+        'urdu-cards.option2Copy': 'مکمل ایڈیٹر کھولنے سے پہلے <a href="/urdu-card-gallery">اپنے اردو متن کا تمام ڈیزائنز میں موازنہ کریں</a>۔',
+        'urdu-cards.option3Title': 'سوشل میڈیا کے لیے بنائیں',
+        'urdu-cards.option3Copy': 'موزوں سائز کی تصاویر کے لیے مخصوص <a href="/urdu-whatsapp-status-maker">اردو واٹس ایپ اسٹیٹس میکر</a> یا <a href="/urdu-instagram-post-maker">اردو انسٹاگرام پوسٹ میکر</a> استعمال کریں۔'
+      }
+    },
     '/how-to-write-urdu-on-photo': {
       title: 'تصویر پر اردو متن یا شاعری کیسے لکھیں | WriteUrdu',
       description: 'تصویر پر اردو متن، شاعری یا اقتباس لکھنے، اردو فونٹ منتخب کرنے، پس منظر لگانے اور PNG ڈاؤن لوڈ کرنے کا آسان طریقہ۔',
@@ -496,6 +540,15 @@ module.exports = {
     }
   },
   literalReplacements: {
+    '/urdu-card-gallery': [
+      ['aria-label="Input mode"', 'aria-label="تحریر کا طریقہ"'],
+      ['aria-label="Filter card backgrounds"', 'aria-label="کارڈ کے پس منظر چھانٹیں"'],
+      ['aria-label="Live Urdu card previews"', 'aria-label="اردو کارڈز کے لائیو پیش منظر"']
+    ],
+    '/urdu-cards': [
+      ['aria-label="Filter ready-made cards"', 'aria-label="تیار شدہ کارڈز چھانٹیں"'],
+      ['aria-label="Ready-made Urdu cards"', 'aria-label="تیار شدہ اردو کارڈز"']
+    ],
     '/': [
       ['aria-label="Editor highlights"', 'aria-label="ایڈیٹر کی نمایاں خصوصیات"'],
       ['aria-label="Get started"', 'aria-label="شروع کریں"'],
