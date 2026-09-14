@@ -14,6 +14,7 @@ const spec = read('specs', 'WU-SHARE-001V-viral-recipient-surface.md');
 assert.match(page, /data-share-download/, 'share page needs a direct PNG download');
 assert.match(page, /data-share-copy-text/, 'share page needs a Copy Urdu action');
 assert.match(page, /data-share-gallery/, 'share page needs a card-gallery remix action');
+assert.equal((page.match(/class="share-action-icon"/g) || []).length, 3, 'share, download and Copy Urdu actions each need a lightweight inline icon');
 assert.match(page, /اپنا خوبصورت اردو کارڈ بنائیں/, 'share page neds a high-intent Urdu creation CTA');
 assert.match(page, /Create your own Urdu card — free, no account/, 'creation CTA needs low-friction supporting copy');
 assert.match(page, /const titleExcerpt = excerpt\(share\.public_text, 72\)/, 'social/page title should use a bounded public-text excerpt');
@@ -28,6 +29,8 @@ assert.match(media, /searchParams\.get\('download'\) === '1'/, 'media route need
 assert.match(media, /wantsDownload \? 'attachment' : 'inline'/, 'same media object should support view and download modes');
 
 assert.match(css, /\.share-media-actions\{/, 'compact card-level actions need dedicated lightweight styling');
+assert.match(css, /\.share-media-action\{[^}]*display:inline-flex[^}]*gap:7px/, 'card-level action icons and labels need compact centered alignment');
+assert.match(css, /\.share-action-icon\{width:17px;height:17px/, 'share action icons need an explicit lightweight size');
 assert.match(css, /\.share-hero-cta\{/, 'creation acquisition CTA needs a dedicated visual hierarchy');
 
 assert.match(spec, /Unlisted public share — current\/default/, 'spec must distinguish current unlisted sharing');
