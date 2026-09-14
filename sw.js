@@ -1,5 +1,5 @@
-// WU-CARD-GALLERY: refresh cached authoring assets within the governed v50 shell generation.
-const CACHE_NAME = 'write-urdu-shell-v50';
+// WU-CARD-GALLERY: refresh cached authoring assets within the governed v51 shell generation.
+const CACHE_NAME = 'write-urdu-shell-v51';
 const APP_SHELL = [
   './',
   './index.html',

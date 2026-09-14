@@ -57,6 +57,7 @@ const tests = [
   'tests/v3-utility-pages-contract.test.js',
   'tests/contact-feedback-trust-contract.test.js',
   'tests/contact-feedback-routing-contract.test.js',
+  'tests/contextual-feature-discovery-contract.test.js',
   'tests/changelog-contract.test.js',
   'tests/pages-routing-contract.test.js',
   'tests/urdu-locale-route-contract.test.js',

@@ -5,6 +5,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const client = fs.readFileSync(path.join(root, 'js', 'product-telemetry.js'), 'utf8');
 const integrations = fs.readFileSync(path.join(root, 'js', 'product-telemetry-integrations.js'), 'utf8');
+const cardStudio = fs.readFileSync(path.join(root, 'js', 'card-studio.js'), 'utf8');
 const endpoint = fs.readFileSync(path.join(root, 'functions', 'api', 'events.js'), 'utf8');
 const migration = fs.readFileSync(path.join(root, 'migrations', '0001_product_telemetry.sql'), 'utf8');
 const rollupMigration = fs.readFileSync(path.join(root, 'migrations', '0002_product_telemetry_rollups.sql'), 'utf8');
@@ -99,7 +100,11 @@ for (const forbiddenColumn of ['editor_text', 'content TEXT', 'filename TEXT', '
   assert.ok(!localeSchema.includes(forbiddenColumn.toLowerCase()), `Locale D1 rollup schema must not contain ${forbiddenColumn}`);
 }
 
-assert.match(integrations, /\[data-card-status\]/, 'Card Studio/social export outcomes must be observed');
+assert.match(cardStudio, /write-urdu:card-export-completed/, 'Card Studio must emit a stable completion signal after the browser download starts');
+assert.match(integrations, /addEventListener\('write-urdu:card-export-completed'/, 'Card Studio/social export telemetry must consume the stable completion signal');
+const cardStudioOutcomeBlock = integrations.match(/function cardStudioOutcomes\(\)[\s\S]*?\n    function invoiceOutcomes/);
+assert.ok(cardStudioOutcomeBlock, 'Card Studio outcome integration block must remain present');
+assert.doesNotMatch(cardStudioOutcomeBlock[0], /\^PNG downloaded|\^JPEG downloaded/, 'Card Studio export completion must not depend on mutable or localized status copy');
 assert.match(integrations, /png_transparent/, 'Name Art transparent export telemetry is missing');
 assert.match(integrations, /\[data-invoice-fit-status\]/, 'Invoice output telemetry is missing');
 assert.match(integrations, /\[data-qr-status\]/, 'QR output telemetry is missing');

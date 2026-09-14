@@ -106,7 +106,8 @@ test('chosen design reaches Card Studio with exact editable text and remains exp
   expect(eventNames).toEqual(expect.arrayContaining([
     'card_gallery_previews_visible', 'card_gallery_first_input',
     'card_gallery_design_selected', 'card_gallery_handoff_started',
-    'card_gallery_destination_ready'
+    'card_gallery_destination_ready', 'card_studio_export_attempted',
+    'export_completed'
   ]));
 });
 
