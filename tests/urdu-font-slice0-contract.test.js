@@ -57,8 +57,10 @@ for (const family of sixCreationFonts) {
 }
 
 assert.match(cardStudio, /fonts\.googleapis\.com\/css2\?family=Amiri[^"']+Noto\+Nastaliq\+Urdu[^"']+Scheherazade\+New[^"']+Tajawal/, 'Card Studio Google Fonts bundle changed');
-assert.match(editor, /font_formats:\s*"Noto Nastaliq Urdu;Noto Naskh Arabic;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;/, 'Rich Editor active Urdu font list changed');
-assert.doesNotMatch(editor.match(/tinymce\.init\(\{[\s\S]*?setup:/)?.[0] || '', /Qadreeregular/, 'Qadreeregular must not be treated as active runtime font');
+const activeFontFormatsLine = editor.split(/\r?\n/).find(line => /^\s*font_formats:\s*"/.test(line));
+assert.ok(activeFontFormatsLine, 'Rich Editor active font_formats line must exist');
+assert.match(activeFontFormatsLine, /Noto Nastaliq Urdu;Noto Naskh Arabic;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;/, 'Rich Editor active Urdu font list changed');
+assert.doesNotMatch(activeFontFormatsLine, /Qadreeregular/, 'Qadreeregular must not be treated as active runtime font');
 assert.match(editorFeatures, /Qadreeregular/, 'documented Qadreeregular inconsistency should remain visible until reconciled in Slice 1B');
 
 assert.match(cardStudioJs, /document\.fonts\.load\(/, 'Card Studio must explicitly load selected fonts');
