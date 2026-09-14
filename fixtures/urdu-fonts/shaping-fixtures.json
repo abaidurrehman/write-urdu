@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "fixtures": [
+    {"id":"short","label":"Short Urdu phrase","text":"محبت روشنی ہے"},
+    {"id":"ligature-heavy","label":"Ligature-heavy prose","text":"زندگی خوبصورت لمحوں، یادوں اور رشتوں سے بنتی ہے۔"},
+    {"id":"poetry","label":"Multiline poetry","text":"دل ہی تو ہے نہ سنگ و خشت\nدرد سے بھر نہ آئے کیوں"},
+    {"id":"aeraab","label":"Aeraab and marks","text":"اَلْحَمْدُ لِلّٰهِ رَبِّ الْعَالَمِينَ"},
+    {"id":"urdu-digits","label":"Urdu digits","text":"قیمت ۱٬۲۵۰ روپے — تاریخ ۱۴ ستمبر ۲۰۲۶"},
+    {"id":"western-digits","label":"Western digits","text":"قیمت 1,250 روپے — Order 2026-09-14"},
+    {"id":"mixed-script","label":"Urdu plus Latin name/code/URL","text":"علی نے INV-2048 کی تفصیل write-urdu.com پر لکھی۔"},
+    {"id":"explicit-breaks","label":"Explicit line breaks","text":"پہلی سطر\nدوسری سطر\nتیسری سطر"},
+    {"id":"tatweel","label":"Tatweel / Kashida probe","text":"مــحــبــت اور خــوبــصــورتــی"}
+  ]
+}
