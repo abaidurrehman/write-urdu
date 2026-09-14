@@ -65,7 +65,7 @@
         record('wedding-1', 'wedding', 'blush-rose-lanterns', 'شادی مبارک ہو! اللہ آپ دونوں کی زندگی خوشیوں سے بھر دے۔'),
         record('wedding-2', 'wedding', 'rose-garden-frame', 'نکاح مبارک، یہ رشتہ محبت اور برکت کا باعث بنے۔'),
         record('wedding-3', 'wedding', 'maroon-wedding', 'دولہا دولہن کو مبارکباد، آپ کی نئی زندگی خوشگوار ہو۔'),
-        record('wedding-4', 'wedding', 'blush-rose-lanterns', 'شادی کی سالگرہ مبارک، آپ کا رشتہ ہمیشہ قائم رہے۔'),
+        record('wedding-4', 'wedding', 'rose-garden-frame', 'شادی کی سالگرہ مبارک، آپ کا رشتہ ہمیشہ قائم رہے۔'),
 
         record('congrats-1', 'congratulations', 'teal-gold-botanical', 'مبارک ہو! آپ کی محنت رنگ لائی۔'),
         record('congrats-2', 'congratulations', 'pastel-glass', 'کامیابی مبارک، یہ صرف آغاز ہے۔'),
@@ -104,7 +104,7 @@
         record('night-001', 'night', 'quiet-moon-sky', 'شب بخیر! اللہ آپ کو پرسکون نیند اور روشن صبح عطا کرے۔', { tags: ['night-prayer'], contexts: ['night'], featuredEligible: true, schedulePriority: 10 }),
         record('night-002', 'night', 'rainy-window-reflection', 'دن کی تھکن چھوڑ دیں؛ رات سکون، دعا اور آرام کے لیے ہے۔', { tags: ['quiet'], contexts: ['night'], featuredEligible: true, schedulePriority: 9 }),
         record('night-003', 'night', 'quiet-moon-sky', 'آپ کی رات اطمینان سے گزرے اور صبح نئی امید کے ساتھ آئے۔', { tags: ['hope', 'night-prayer'], contexts: ['night'], featuredEligible: true, schedulePriority: 8 }),
-        record('night-004', 'night', 'warm-paper-reflection', 'جو بات دل پر بھاری ہے اسے دعا میں رکھ دیں؛ شب بخیر۔', { tags: ['quiet', 'healing'], contexts: ['night'], featuredEligible: true, schedulePriority: 8 }),
+        record('night-004', 'night', 'ramadan-lantern-night', 'جو بات دل پر بھاری ہے اسے دعا میں رکھ دیں؛ شب بخیر۔', { tags: ['quiet', 'healing'], contexts: ['night'], featuredEligible: true, schedulePriority: 8 }),
         record('night-005', 'night', 'jumma-midnight-silhouette', 'اللہ آپ اور آپ کے پیاروں کو رات بھر اپنی امان میں رکھے۔', { tags: ['family', 'night-prayer'], contexts: ['night'], featuredEligible: true, schedulePriority: 7 }),
         record('night-006', 'night', 'moon-paper', 'آج کی اچھی یادیں ساتھ رکھیں، باقی فکر صبح پر چھوڑ دیں۔', { tags: ['quiet'], contexts: ['night'], featuredEligible: false }),
         record('night-007', 'night', 'moonlit-lakeside', 'شب بخیر! دل مطمئن ہو، نیند گہری ہو اور خواب خوش گوار ہوں۔', { tags: ['greeting'], contexts: ['night'], featuredEligible: false }),
@@ -113,9 +113,9 @@
         record('jumma-001', 'jumma', 'jumma-ivory-geometry', 'جمعہ مبارک! دعا ہے یہ دن آپ کے لیے رحمت، سکون اور آسانی لائے۔', { tags: ['friday-prayer'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 10 }),
         record('jumma-002', 'jumma', 'emerald-prayer-light', 'اللہ آج کے مبارک دن آپ کے گھر میں خیر و برکت عطا فرمائے۔', { tags: ['family', 'friday-prayer'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 9 }),
         record('jumma-003', 'jumma', 'jumma-midnight-silhouette', 'جمعہ مبارک! دل سے مانگی گئی اچھی دعائیں قبول ہوں۔', { tags: ['friday-prayer'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 9 }),
-        record('jumma-004', 'jumma', 'jumma-ivory-geometry', 'دعا ہے جمعہ کا دن آپ کی پریشانیوں کو سکون میں بدل دے۔', { tags: ['healing', 'friday-prayer'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 8 }),
+        record('jumma-004', 'jumma', 'regal-gold-arabesque', 'دعا ہے جمعہ کا دن آپ کی پریشانیوں کو سکون میں بدل دے۔', { tags: ['healing', 'friday-prayer'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 8 }),
         record('jumma-005', 'jumma', 'warm-paper-reflection', 'آج اپنے لیے بھی دعا کریں اور ان لوگوں کے لیے بھی جو آپ کو عزیز ہیں۔', { tags: ['kindness', 'family'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 8 }),
-        record('jumma-006', 'jumma', 'emerald-prayer-light', 'جمعہ مبارک! اللہ آپ کے رزق، صحت اور وقت میں برکت دے۔', { tags: ['friday-prayer'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 7 }),
+        record('jumma-006', 'jumma', 'ivory-arabesque', 'جمعہ مبارک! اللہ آپ کے رزق، صحت اور وقت میں برکت دے۔', { tags: ['friday-prayer'], occasion: 'jumma', contexts: ['friday'], featuredEligible: true, schedulePriority: 7 }),
         record('jumma-007', 'jumma', 'jumma-midnight-silhouette', 'یہ جمعہ امید تازہ کرے اور دل کو نیکی کی طرف مائل رکھے۔', { tags: ['hope'], occasion: 'jumma', contexts: ['friday'], featuredEligible: false }),
         record('jumma-008', 'jumma', 'jumma-ivory-geometry', 'جمعہ مبارک! آپ کا آج امن، شکر اور خیر سے بھرپور ہو۔', { tags: ['shukr'], occasion: 'jumma', contexts: ['friday'], featuredEligible: false }),
 
@@ -123,39 +123,39 @@
         record('reflection-002', 'reflection', 'rainy-window-reflection', 'آسانی ہمیشہ حالات میں نہیں آتی، کبھی دل کو حوصلہ مل جاتا ہے۔', { tags: ['courage', 'healing'], contexts: ['daytime', 'evening'], featuredEligible: true, schedulePriority: 9 }),
         record('reflection-003', 'reflection', 'emerald-prayer-light', 'جو خیر آپ دوسروں کے لیے چاہتے ہیں، وہی دعا اپنے لیے بھی رکھیں۔', { tags: ['kindness'], contexts: ['daytime', 'evening'], featuredEligible: true, schedulePriority: 9 }),
         record('reflection-004', 'reflection', 'soft-sunrise-garden', 'ہر دن کامل نہیں ہوتا، مگر ہر دن میں شکر کی کوئی وجہ ضرور ہوتی ہے۔', { tags: ['shukr', 'hope'], contexts: ['daytime', 'evening'], featuredEligible: true, schedulePriority: 8 }),
-        record('reflection-005', 'reflection', 'window-light-tea', 'نرمی سے کہا گیا ایک جملہ کسی کا پورا دن بہتر بنا سکتا ہے۔', { tags: ['kindness'], contexts: ['daytime', 'evening'], featuredEligible: true, schedulePriority: 8 }),
+        record('reflection-005', 'reflection', 'ramadan-lantern-night', 'نرمی سے کہا گیا ایک جملہ کسی کا پورا دن بہتر بنا سکتا ہے۔', { tags: ['kindness'], contexts: ['daytime', 'evening'], featuredEligible: true, schedulePriority: 8 }),
         record('reflection-006', 'reflection', 'quiet-moon-sky', 'امید شور نہیں کرتی؛ وہ خاموشی سے اگلا قدم اٹھانے کی ہمت دیتی ہے۔', { tags: ['hope', 'courage'], contexts: ['daytime', 'evening'], featuredEligible: true, schedulePriority: 7 }),
         record('reflection-007', 'reflection', 'emerald-prayer-light', 'دعا ہے آپ کو وہ سکون ملے جو کسی وضاحت کا محتاج نہ ہو۔', { tags: ['quiet', 'healing'], contexts: ['evening', 'night'], featuredEligible: false }),
-        record('reflection-008', 'reflection', 'warm-paper-reflection', 'زندگی کی رفتار میں کچھ لمحے صرف سانس لینے اور شکر کرنے کے لیے رکھیں۔', { tags: ['shukr', 'quiet'], contexts: ['daytime', 'evening'], featuredEligible: false }),
+        record('reflection-008', 'reflection', 'quiet-blue-distance', 'زندگی کی رفتار میں کچھ لمحے صرف سانس لینے اور شکر کرنے کے لیے رکھیں۔', { tags: ['shukr', 'quiet'], contexts: ['daytime', 'evening'], featuredEligible: false }),
 
         record('poetry-005', 'poetry-quote', 'minimal-cream-poetry', 'دل کی بات لفظوں میں کم پڑ جاتی ہے، خاموشی بھی کبھی مکمل جواب ہوتی ہے۔', { tags: ['quiet'] }),
         record('poetry-006', 'poetry-quote', 'ink-moon-poetry', 'چاند نے پوچھا رات سے، تیرا سب سے قیمتی راز کیا ہے؛ رات بولی، ستاروں کا صبر۔', { tags: ['sabr'] }),
         record('poetry-007', 'poetry-quote', 'quiet-blue-distance', 'فاصلے صرف نقشے پر ہوتے ہیں، دل والے ہمیشہ قریب رہتے ہیں۔', { tags: ['quiet'] }),
-        record('poetry-008', 'poetry-quote', 'minimal-cream-poetry', 'ہر لفظ کو تولنا مشکل کام ہے، مگر سچی بات کبھی وزن نہیں مانگتی۔', { tags: ['quiet'] }),
+        record('poetry-008', 'poetry-quote', 'ajrak-modern-frame', 'ہر لفظ کو تولنا مشکل کام ہے، مگر سچی بات کبھی وزن نہیں مانگتی۔', { tags: ['quiet'] }),
         record('poetry-009', 'poetry-quote', 'ink-moon-poetry', 'خاموش راتیں بھی کہانی سناتی ہیں، بس سننے والا دل چاہیے۔', { tags: ['quiet', 'healing'] }),
 
         record('love-005', 'love', 'rose-mist-affection', 'تمہارا ساتھ ملا تو زندگی کے معنی بدل گئے۔', { tags: ['romantic'] }),
-        record('love-006', 'love', 'blush-rose-lanterns', 'محبت شور نہیں مچاتی، وہ خاموشی سے دل میں بس جاتی ہے۔', { tags: ['romantic', 'quiet'] }),
+        record('love-006', 'love', 'truck-art-modern-bloom', 'محبت شور نہیں مچاتی، وہ خاموشی سے دل میں بس جاتی ہے۔', { tags: ['romantic', 'quiet'] }),
         record('love-007', 'love', 'rose-mist-affection', 'تم جیسا اپنا مل جائے تو دنیا آسان لگنے لگتی ہے۔', { tags: ['romantic'] }),
         record('love-008', 'love', 'blush-rose-lanterns', 'میری ہر خوشی میں تمہاری موجودگی شامل ہے۔', { tags: ['romantic'] }),
         record('love-009', 'love', 'rose-mist-affection', 'محبت میں سب سے خوبصورت بات یہ ہے کہ کچھ کہے بغیر بھی سب کچھ سمجھ آجاتا ہے۔', { tags: ['romantic', 'quiet'] }),
 
         record('family-005', 'family', 'family-warm-interior', 'گھر وہ جگہ ہے جہاں دل کو سب سے زیادہ سکون ملتا ہے۔', { tags: ['parents', 'quiet'] }),
         record('family-006', 'family', 'window-light-tea', 'والدین کی دعا سے بڑی کوئی دولت نہیں ہوتی۔', { tags: ['parents'] }),
-        record('family-007', 'family', 'family-warm-interior', 'بہن بھائیوں کا ساتھ زندگی کی سب سے بڑی نعمتوں میں سے ایک ہے۔', { tags: ['siblings'] }),
-        record('family-008', 'family', 'window-light-tea', 'اپنوں کی موجودگی ہر مشکل کو ہلکا کر دیتی ہے۔', { tags: ['parents', 'healing'] }),
+        record('family-007', 'family', 'eid-morning-gold', 'بہن بھائیوں کا ساتھ زندگی کی سب سے بڑی نعمتوں میں سے ایک ہے۔', { tags: ['siblings'] }),
+        record('family-008', 'family', 'eid-morning-gold', 'اپنوں کی موجودگی ہر مشکل کو ہلکا کر دیتی ہے۔', { tags: ['parents', 'healing'] }),
         record('family-009', 'family', 'family-warm-interior', 'ماں باپ کی خدمت سے بڑھ کر کوئی عبادت نہیں۔', { tags: ['mother', 'father'] }),
 
         record('friendship-005', 'friendship', 'friendship-bright-modern', 'سچا دوست وہی ہے جو مشکل وقت میں بھی ساتھ نہ چھوڑے۔', { tags: ['friend'] }),
         record('friendship-006', 'friendship', 'vintage-floral', 'دوستی میں نہ شرط ہوتی ہے نہ حساب، بس اعتماد ہوتا ہے۔', { tags: ['friend'] }),
         record('friendship-007', 'friendship', 'friendship-bright-modern', 'اچھے دوست زندگی کے سب سے قیمتی تحفوں میں سے ایک ہیں۔', { tags: ['friend'] }),
         record('friendship-008', 'friendship', 'vintage-floral', 'دوستی کی خوبصورتی یہ ہے کہ فاصلے بھی رشتہ کمزور نہیں کرتے۔', { tags: ['friend', 'quiet'] }),
-        record('friendship-009', 'friendship', 'friendship-bright-modern', 'تمہاری دوستی نے زندگی کے کئی مشکل لمحے آسان بنا دیے۔', { tags: ['friend', 'healing'] }),
+        record('friendship-009', 'friendship', 'truck-art-modern-bloom', 'تمہاری دوستی نے زندگی کے کئی مشکل لمحے آسان بنا دیے۔', { tags: ['friend', 'healing'] }),
 
         record('self-respect-001', 'self-respect', 'self-respect-black-sand', 'خاموشی سے اپنا مقام بنائیں، شور مچانے کی ضرورت نہیں۔', { tags: ['courage', 'quiet'] }),
         record('self-respect-002', 'self-respect', 'black-gold-classic', 'عزتِ نفس پر کبھی سمجھوتہ مت کریں۔', { tags: ['courage'] }),
         record('self-respect-003', 'self-respect', 'self-respect-black-sand', 'اپنی قدر خود پہچانیں، دنیا خود بخود پہچان لے گی۔', { tags: ['courage', 'success'] }),
-        record('self-respect-004', 'self-respect', 'self-respect-black-sand', 'جو لوگ آپ کی قدر نہیں کرتے، ان کے لیے خود کو ثابت کرنا ضروری نہیں۔', { tags: ['courage'] })
+        record('self-respect-004', 'self-respect', 'pakistan-green-heritage', 'جو لوگ آپ کی قدر نہیں کرتے، ان کے لیے خود کو ثابت کرنا ضروری نہیں۔', { tags: ['courage'] })
     ];
 
     function getAllCards() {
