@@ -8,6 +8,15 @@
 
     var installed = false;
     var bypass = new WeakSet();
+    var loaderInstance = null;
+    var degradedNoticeKey = '';
+    var LOAD_DEADLINE_MS = 3000;
+    var DELIVERY_FAILURE_CODES = [
+        'stylesheet-unavailable',
+        'font-load-failed',
+        'font-load-error',
+        'font-load-timeout'
+    ];
 
     function registry() {
         return root && root.WriteUrduFontRegistry || null;
@@ -19,12 +28,16 @@
 
     function capability() {
         var body = root && root.document && root.document.body;
-        return body && body.classList.contains('name-art-page') ? 'name-art' : 'card-studio';
+        if (!body) return null;
+        if (body.classList.contains('name-art-page')) return 'name-art';
+        if (body.classList.contains('card-studio-page')) return 'card-studio';
+        return null;
     }
 
     function records() {
         var value = registry();
-        return value ? value.getForCapability(capability(), { webOnly: true, excludeCandidates: true }) : [];
+        var currentCapability = capability();
+        return value && currentCapability ? value.getForCapability(currentCapability, { webOnly: true, excludeCandidates: true }) : [];
     }
 
     function notify(message, type) {
@@ -67,20 +80,78 @@
 
     function strictLoader() {
         var value = registry();
-        return value && value.createLoader ? value.createLoader({ document: root.document }) : null;
+        if (!loaderInstance && value && value.createLoader) loaderInstance = value.createLoader({ document: root.document });
+        return loaderInstance;
+    }
+
+    function deadline(promise, record) {
+        return Promise.race([
+            promise,
+            new Promise(function (resolve) {
+                root.setTimeout(function () {
+                    resolve({ ok: false, id: record.id, family: record.family, code: 'font-load-timeout' });
+                }, LOAD_DEADLINE_MS);
+            })
+        ]);
+    }
+
+    function isDeliveryFailure(result) {
+        return result && DELIVERY_FAILURE_CODES.indexOf(result.code) !== -1;
+    }
+
+    function approvedRecord(value) {
+        var currentCapability = capability();
+        var record = registry() && registry().get(value);
+        if (!record) throw new Error('Unknown Urdu font cannot be used by this tool.');
+        if (record.licenseStatus !== 'approved-web') throw new Error('That Urdu font is not approved for web use.');
+        if (!currentCapability || record.capabilities.indexOf(currentCapability) === -1) throw new Error('That Urdu font is not approved for this tool.');
+        return record;
+    }
+
+    function markDeliveryState(results) {
+        var degraded = (results || []).filter(function (item) { return item && item.degraded; });
+        var html = root.document && root.document.documentElement;
+        if (!html) return;
+        if (!degraded.length) {
+            html.removeAttribute('data-wu-font-delivery');
+            html.removeAttribute('data-wu-font-degraded');
+            degradedNoticeKey = '';
+            return;
+        }
+        var key = degraded.map(function (item) { return item.record.id + ':' + item.result.code; }).join(',');
+        html.setAttribute('data-wu-font-delivery', 'degraded');
+        html.setAttribute('data-wu-font-degraded', key);
+        if (degradedNoticeKey === key) return;
+        degradedNoticeKey = key;
+        notify('The selected Urdu font service is unavailable. Your design can still be exported, but this browser may use a fallback font until the font becomes available.', 'info');
+    }
+
+    function loadApprovedFont(request) {
+        var loader = strictLoader();
+        if (!loader) return Promise.reject(new Error('Urdu font registry is unavailable.'));
+        var record;
+        try {
+            record = approvedRecord(request.font);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+        return deadline(loader.load(record.id, { weight: request.weight }), record).then(function (result) {
+            if (result && result.ok) return { record: record, result: result, degraded: false };
+            if (isDeliveryFailure(result)) return { record: record, result: result, degraded: true };
+            throw new Error('The selected Urdu font could not be approved for use (' + (result && result.code || 'unknown') + ').');
+        });
     }
 
     function loadStateFonts(state) {
-        var loader = strictLoader();
-        if (!loader) return Promise.reject(new Error('Urdu font registry is unavailable.'));
         var requests = stateFontRequests(state);
-        if (!requests.length) return Promise.resolve([]);
-        return Promise.all(requests.map(function (request) {
-            return loader.load(request.font, { weight: request.weight }).then(function (result) {
-                if (!result.ok) throw new Error('The selected Urdu font could not be loaded (' + result.code + ').');
-                return result;
-            });
-        }));
+        if (!requests.length) {
+            markDeliveryState([]);
+            return Promise.resolve([]);
+        }
+        return Promise.all(requests.map(loadApprovedFont)).then(function (results) {
+            markDeliveryState(results);
+            return results;
+        });
     }
 
     function revealCanvas(ok) {
@@ -102,7 +173,7 @@
             return true;
         }).catch(function (error) {
             revealCanvas(false);
-            notify(error.message || 'The selected Urdu font could not be loaded.', 'error');
+            notify(error.message || 'The selected Urdu font is not approved for this tool.', 'error');
             return false;
         });
     }
@@ -118,15 +189,16 @@
             var current = app();
             var previousState = current && current.getState ? current.getState() : null;
             var previous = previousState && previousState.text && previousState.text.fontFamily;
-            var record = registry() && registry().get(select.value);
-            if (!record || record.licenseStatus !== 'approved-web' || record.capabilities.indexOf(capability()) === -1) {
+            var record;
+            try {
+                record = approvedRecord(select.value);
+            } catch (error) {
                 if (previous) select.value = previous;
-                notify('That Urdu font is not approved for this tool.', 'error');
+                notify(error.message || 'That Urdu font is not approved for this tool.', 'error');
                 return;
             }
-            var loader = strictLoader();
-            loader.load(record.id).then(function (result) {
-                if (!result.ok) throw new Error('The selected Urdu font could not be loaded (' + result.code + ').');
+            loadApprovedFont({ font: record.id, weight: 400 }).then(function (loadResult) {
+                markDeliveryState([loadResult]);
                 if (current && typeof current.updateTextStyle === 'function') current.updateTextStyle({ fontFamily: record.family });
                 bypass.add(select);
                 select.value = record.family;
@@ -134,7 +206,7 @@
                 bypass.delete(select);
             }).catch(function (error) {
                 if (previous) select.value = previous;
-                notify(error.message || 'The selected Urdu font could not be loaded.', 'error');
+                notify(error.message || 'The selected Urdu font is not approved for this tool.', 'error');
             });
         }, true);
     }
@@ -156,7 +228,7 @@
                 bypass.delete(button);
             }).catch(function (error) {
                 button.disabled = false;
-                notify(error.message || 'Export stopped because the selected Urdu font did not load.', 'error');
+                notify(error.message || 'Export stopped because the selected Urdu font is not approved for this tool.', 'error');
             });
         }, true);
     }
@@ -166,7 +238,8 @@
     }
 
     function install() {
-        if (installed || !root || !root.document || !registry()) return false;
+        var currentCapability = capability();
+        if (installed || !root || !root.document || !registry() || !currentCapability) return false;
         var current = app();
         if (!current) return false;
         installed = true;
@@ -179,6 +252,7 @@
 
     function boot() {
         if (install()) return;
+        if (!capability()) return;
         root.document.addEventListener('write-urdu:card-studio-ready', install, { once: true });
         if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', install, { once: true });
     }
