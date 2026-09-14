@@ -26,10 +26,18 @@ assert.strictEqual(core.normalizeFontFamily('Scheherazade'), 'Scheherazade New',
 assert.match(interactionCore, /\/js\/urdu-font-registry\.js/, 'shared creation interaction core must bootstrap font registry');
 assert.match(interactionCore, /\/js\/urdu-font-card-convergence\.js/, 'shared creation interaction core must bootstrap convergence adapter');
 
-assert.match(cardAdapter, /getForCapability\(capability\(\), \{ webOnly: true, excludeCandidates: true \}\)/, 'creation selector must come from registry capability');
-assert.match(cardAdapter, /value\.createLoader\(\{ document: root\.document \}\)/, 'creation surfaces must use strict shared loader');
-assert.match(cardAdapter, /\[data-card-action="download"\]/, 'download must be guarded by strict font preflight');
-assert.match(cardAdapter, /data-name-art-transparent/, 'transparent Name Art export must be guarded by strict font preflight');
+assert.match(cardAdapter, /getForCapability\(currentCapability, \{ webOnly: true, excludeCandidates: true \}\)/, 'creation selector must come from the resolved registry capability');
+assert.match(cardAdapter, /classList\.contains\('name-art-page'\)/, 'font convergence must recognize Name Art explicitly');
+assert.match(cardAdapter, /classList\.contains\('card-studio-page'\)/, 'font convergence must recognize Card Studio explicitly');
+assert.doesNotMatch(cardAdapter, /social-maker-page/, 'social makers must not be pulled into Slice 1B font convergence');
+assert.match(cardAdapter, /value\.createLoader\(\{ document: root\.document \}\)/, 'creation surfaces must use the shared font loader');
+assert.match(cardAdapter, /record\.licenseStatus !== 'approved-web'/, 'unknown or unapproved fonts must still fail closed');
+assert.match(cardAdapter, /DELIVERY_FAILURE_CODES/, 'approved font delivery failures must be classified separately from approval failures');
+assert.match(cardAdapter, /data-wu-font-delivery/, 'degraded approved-font delivery must be surfaced explicitly');
+assert.match(cardAdapter, /browser may use a fallback font/, 'degraded delivery must not pretend the named font rendered successfully');
+assert.match(cardAdapter, /LOAD_DEADLINE_MS = 3000/, 'font delivery verification must be bounded instead of hanging export');
+assert.match(cardAdapter, /\[data-card-action="download"\]/, 'download must be guarded by font preflight');
+assert.match(cardAdapter, /data-name-art-transparent/, 'transparent Name Art export must be guarded by font preflight');
 assert.match(cardAdapter, /event\.stopImmediatePropagation\(\)/, 'font selection guard must prevent permissive legacy handler from racing the verified load');
 assert.doesNotMatch(cardAdapter, /Jameel|Mehr Nastaliq|AlQalam|Sameer|Gandhara/, 'convergence adapter must not special-case license-review candidates');
 
@@ -54,4 +62,4 @@ assert.doesNotMatch(home, /urdu-font-registry\.js|urdu-font-card-convergence\.js
 assert.match(editorFeatures, /Available Urdu-friendly fonts/, 'public formatting guide remains the documentation owner for editor font choices');
 assert.doesNotMatch(read('sitemap.xml'), /\/urdu-fonts(?:<|\s)/, 'Slice 1B must not launch the future /urdu-fonts route');
 
-console.log('WU-FONT-001 Slice 1B contract passed: Card Studio, Name Art and Rich Editor converge on the shared registry without launching new fonts or routes.');
+console.log('WU-FONT-001 Slice 1B contract passed: governed fonts converge without making approved-font delivery outages break browser-local creation.');
