@@ -10,11 +10,11 @@ const previousIds = [
   'teal-gold-botanical', 'ivory-arabesque'
 ];
 const allowedCategories = new Set(['classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury', 'love']);
-const allowedGoodFor = new Set(['dua', 'family', 'friendship', 'greeting', 'heritage', 'jumma', 'love', 'modern', 'morning', 'nature', 'night', 'poetry', 'quote', 'reflection', 'self-respect', 'social', 'wedding']);
+const allowedGoodFor = new Set(['dua', 'eid', 'family', 'friendship', 'greeting', 'heritage', 'jumma', 'love', 'modern', 'morning', 'nature', 'night', 'pakistan', 'poetry', 'quote', 'ramadan', 'reflection', 'self-respect', 'social', 'wedding']);
 const backgrounds = registry.getAllBackgrounds();
 
 assert.notStrictEqual(backgrounds, registry.backgrounds, 'registry reads must return a collection copy');
-assert.strictEqual(backgrounds.length, 39, 'emotional/social pack expansion must retain all 39 backgrounds');
+assert.strictEqual(backgrounds.length, 44, 'cultural/seasonal pack expansion must retain all 44 backgrounds');
 assert.strictEqual(new Set(backgrounds.map((item) => item.id)).size, backgrounds.length, 'background IDs must be unique');
 previousIds.forEach((id) => assert.ok(registry.getBackgroundById(id), `existing background removed: ${id}`));
 

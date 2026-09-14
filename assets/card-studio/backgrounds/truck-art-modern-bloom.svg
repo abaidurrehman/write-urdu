@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="tamb-bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#eafff8"/><stop offset="1" stop-color="#d9f2ea"/></linearGradient>
+    <symbol id="tamb-bloom" viewBox="0 0 120 120">
+      <g fill="#ef8a5c" opacity=".9">
+        <ellipse cx="60" cy="30" rx="16" ry="24"/><ellipse cx="60" cy="90" rx="16" ry="24"/>
+        <ellipse cx="30" cy="60" rx="24" ry="16"/><ellipse cx="90" cy="60" rx="24" ry="16"/>
+        <ellipse cx="38" cy="38" rx="18" ry="12" transform="rotate(45 38 38)"/><ellipse cx="82" cy="38" rx="18" ry="12" transform="rotate(-45 82 38)"/>
+        <ellipse cx="38" cy="82" rx="18" ry="12" transform="rotate(-45 38 82)"/><ellipse cx="82" cy="82" rx="18" ry="12" transform="rotate(45 82 82)"/>
+      </g>
+      <circle cx="60" cy="60" r="16" fill="#f4b942"/>
+      <circle cx="60" cy="60" r="16" fill="none" stroke="#c97a2e" stroke-width="2" opacity=".6"/>
+    </symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#tamb-bg)"/>
+  <path d="M0 210Q160 150 260 210T480 190M1080 210Q920 150 820 210T600 190M0 1140Q160 1200 260 1140T480 1160M1080 1140Q920 1200 820 1140T600 1160" fill="none" stroke="#2f8f6f" stroke-width="5" opacity=".55"/>
+  <g fill="none" stroke="#2f8f6f" stroke-width="3" opacity=".5">
+    <path d="M150 230q14 20 0 40M930 230q-14 20 0 40M150 1120q14-20 0-40M930 1120q-14-20 0-40"/>
+  </g>
+  <g opacity=".92">
+    <use href="#tamb-bloom" x="60" y="90" width="120" height="120"/>
+    <use href="#tamb-bloom" x="900" y="90" width="120" height="120"/>
+    <use href="#tamb-bloom" x="60" y="1140" width="120" height="120"/>
+    <use href="#tamb-bloom" x="900" y="1140" width="120" height="120"/>
+  </g>
+  <path d="M60 220Q120 260 60 300M1020 220Q960 260 1020 300M60 1130Q120 1090 60 1050M1020 1130Q960 1090 1020 1050" fill="none" stroke="#17384a" stroke-width="3" opacity=".5"/>
+  <rect x="54" y="54" width="972" height="1242" rx="18" fill="none" stroke="#17384a" stroke-width="2" opacity=".55"/>
+</svg>

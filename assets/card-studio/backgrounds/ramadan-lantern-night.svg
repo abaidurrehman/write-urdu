@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="rln-bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#141c3d"/><stop offset="1" stop-color="#070a1c"/></linearGradient>
+    <radialGradient id="rln-glow" cx=".5" cy=".18" r=".5"><stop stop-color="#f4d98a" stop-opacity=".28"/><stop offset="1" stop-color="#f4d98a" stop-opacity="0"/></radialGradient>
+    <filter id="rln-soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <symbol id="rln-lantern" viewBox="0 0 90 170">
+      <path d="M45 0v20" stroke="#d9a954" stroke-width="4"/>
+      <path d="M20 26h50l9 18-7 74H18l-7-74Z" fill="#6e4519" stroke="#d9a954" stroke-width="3"/>
+      <path d="M27 44h36l-5 58H32Z" fill="#ffd87d" filter="url(#rln-soft)" opacity=".92"/>
+      <path d="M20 26 70 118M70 26 20 118" stroke="#d8a64c" stroke-width="2" opacity=".8"/>
+      <path d="M24 122h42l-21 26Z" fill="#a56f21"/>
+    </symbol>
+    <symbol id="rln-dome" viewBox="0 0 120 60"><path d="M0 60V40Q30 0 60 0T120 40V60Z" fill="#232c52"/><path d="M60 0V-16M53 -12h14" stroke="#8c743a" stroke-width="2"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#rln-bg)"/>
+  <rect width="1080" height="1350" fill="url(#rln-glow)"/>
+  <path d="M780 130a65 65 0 1 0 8 128 78 78 0 0 1-8-128Z" fill="#f4d98a" opacity=".8"/>
+  <g fill="#f4d98a" opacity=".8"><path d="M320 70l4 10 10 2-8 7 2 10-8-6-8 6 2-10-8-7 10-2Z"/><path d="M470 40l3 8 8 2-6 5 2 8-7-5-7 5 2-8-6-5 8-2Z"/><path d="M620 90l3 8 8 2-6 5 2 8-7-5-7 5 2-8-6-5 8-2Z"/><circle cx="220" cy="120" r="2.5"/><circle cx="410" cy="150" r="2"/><circle cx="560" cy="60" r="2.5"/><circle cx="680" cy="180" r="2"/></g>
+  <g opacity=".75"><use href="#rln-dome" x="0" y="1290" width="140" height="60"/><use href="#rln-dome" x="220" y="1304" width="100" height="46"/><use href="#rln-dome" x="760" y="1304" width="100" height="46"/><use href="#rln-dome" x="940" y="1290" width="140" height="60"/></g>
+  <path d="M116 1050q40 30 0 60M964 1050q-40 30 0 60" fill="none" stroke="#8c743a" stroke-width="2" opacity=".5"/>
+  <g opacity=".95">
+    <use href="#rln-lantern" x="80" y="1090" width="78" height="148"/>
+    <use href="#rln-lantern" x="928" y="1075" width="72" height="137"/>
+  </g>
+  <rect x="56" y="56" width="968" height="1238" fill="none" stroke="#8c743a" stroke-width="1.5" opacity=".45"/>
+</svg>
