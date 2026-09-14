@@ -28,7 +28,7 @@ assert.match(interactionCore, /\/js\/urdu-font-card-convergence\.js/, 'shared cr
 
 assert.match(cardAdapter, /getForCapability\(capability\(\), \{ webOnly: true, excludeCandidates: true \}\)/, 'creation selector must come from registry capability');
 assert.match(cardAdapter, /value\.createLoader\(\{ document: root\.document \}\)/, 'creation surfaces must use strict shared loader');
-assert.match(cardAdapter, /data-card-action=\\"download\\"/, 'download must be guarded by strict font preflight');
+assert.match(cardAdapter, /\[data-card-action="download"\]/, 'download must be guarded by strict font preflight');
 assert.match(cardAdapter, /data-name-art-transparent/, 'transparent Name Art export must be guarded by strict font preflight');
 assert.match(cardAdapter, /event\.stopImmediatePropagation\(\)/, 'font selection guard must prevent permissive legacy handler from racing the verified load');
 assert.doesNotMatch(cardAdapter, /Jameel|Mehr Nastaliq|AlQalam|Sameer|Gandhara/, 'convergence adapter must not special-case license-review candidates');
