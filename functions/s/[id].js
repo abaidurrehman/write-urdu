@@ -41,8 +41,10 @@ export async function onRequestGet(context) {
   const origin = publicOrigin(request, env);
   const url = `${origin}/s/${id}`;
   const imageUrl = `${origin}/share-media/${id}`;
+  const downloadUrl = `${origin}/share-media/${id}?download=1`;
   const description = excerpt(share.public_text, 170) || 'Urdu writing shared with Write Urdu.';
-  const title = 'Urdu writing shared on Write Urdu';
+  const titleExcerpt = excerpt(share.public_text, 72);
+  const title = titleExcerpt ? `${titleExcerpt} | Write Urdu` : 'Urdu writing shared on Write Urdu';
   const publicText = escapeHtml(share.public_text);
   const attribution = share.attribution ? `<p class="share-attribution" lang="ur" dir="auto">— ${escapeHtml(share.attribution)}</p>` : '';
   const created = share.created_at ? escapeHtml(share.created_at) : '';
@@ -88,6 +90,11 @@ export async function onRequestGet(context) {
     <div class="share-layout">
       <article class="share-card" aria-labelledby="shared-writing-heading">
         <img class="share-visual" src="${escapeHtml(imageUrl)}" width="${Number(share.image_width)}" height="${Number(share.image_height)}" alt="Urdu writing shared from Write Urdu">
+        <div class="share-media-actions" aria-label="Share or save this card">
+          <button class="share-button share-media-action" type="button" data-share-native>Share</button>
+          <a class="share-button share-media-action" href="${escapeHtml(downloadUrl)}" download="write-urdu-${id}.png" data-share-download>Download PNG</a>
+          <button class="share-button share-media-action" type="button" data-share-copy-text>Copy Urdu</button>
+        </div>
         <div class="share-content">
           <p class="share-kicker">Shared Urdu writing</p>
           <h2 id="shared-writing-heading" class="share-urdu" data-share-public-text lang="ur" dir="rtl">${publicText}</h2>
@@ -97,17 +104,25 @@ export async function onRequestGet(context) {
 
       <aside class="share-panel" aria-label="Continue with this Urdu writing">
         <p class="share-kicker">Make it your own</p>
-        <h1>Continue with this Urdu</h1>
-        <p>Keep writing with the same words, turn them into a fresh design, or make a QR code for this public link.</p>
+        <h1>Like this card?</h1>
+        <p>Create one with your own words, reuse these words, or try the same Urdu across other designs.</p>
+
+        <a class="share-hero-cta" href="/urdu-card-studio" data-share-create aria-label="Create your own Urdu design">
+          <span class="share-hero-urdu" lang="ur" dir="rtl">اپنا خوبصورت اردو کارڈ بنائیں</span>
+          <span class="share-hero-sub">Create your own Urdu card — free, no account</span>
+        </a>
+
         <div class="share-actions">
           <button class="share-button primary" type="button" data-share-use-text>Use this text</button>
-          <a class="share-button secondary" href="/urdu-card-studio" data-share-create>Create your own Urdu design</a>
+          <button class="share-button secondary" type="button" data-share-gallery>Try this text with another design</button>
           <button class="share-button secondary" type="button" data-share-qr>Make QR for this link</button>
           <div class="share-row share-row-utilities">
             <button class="share-button quiet" type="button" data-share-copy>Copy link</button>
-            <button class="share-button quiet" type="button" data-share-native>Share</button>
+            <a class="share-button quiet" href="/">Write Urdu</a>
           </div>
         </div>
+
+        <p class="share-mini-note">The published card stays unchanged. Any version you create starts as your own local project.</p>
         <div class="share-note"><strong>A public snapshot</strong>This link contains only this published snapshot. The creator's other local drafts and projects are not included.</div>
         <details class="share-report">
           <summary>Report this shared page</summary>
