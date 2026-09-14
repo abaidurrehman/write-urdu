@@ -71,25 +71,40 @@
     return true;
   }
 
-  async function copyLink() {
-    var value = publicUrl();
+  async function copyValue(value, successMessage) {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(value);
       else {
         var field = document.createElement('textarea');
         field.value = value;
         field.setAttribute('readonly', '');
-        field.style.position = 'fixed'; field.style.opacity = '0';
+        field.style.position = 'fixed';
+        field.style.opacity = '0';
         document.body.appendChild(field);
         field.select();
         document.execCommand('copy');
         field.remove();
       }
-      status('Link copied.');
+      status(successMessage);
       track('share_clicked', { success: true });
+      return true;
     } catch (error) {
-      status('Could not copy the link. Select it from the address bar instead.', true);
+      status('Could not copy this right now. Please try again.', true);
+      return false;
     }
+  }
+
+  async function copyLink() {
+    return copyValue(publicUrl(), 'Link copied.');
+  }
+
+  async function copyText() {
+    var text = publicText();
+    if (!text) {
+      status('There is no Urdu text available to copy.', true);
+      return false;
+    }
+    return copyValue(text, 'Urdu text copied.');
   }
 
   async function shareLink() {
@@ -100,8 +115,8 @@
     track('share_clicked');
     try {
       await navigator.share({
-        title: 'Urdu writing shared on Write Urdu',
-        text: 'Open this Urdu writing on Write Urdu.',
+        title: document.title || 'Urdu writing shared on Write Urdu',
+        text: publicText().slice(0, 180) || 'Open this Urdu writing on Write Urdu.',
         url: publicUrl()
       });
       track('share_completed', { success: true });
@@ -109,6 +124,11 @@
       if (error && error.name === 'AbortError') return;
       status('Sharing is not available here. You can copy the link instead.', true);
     }
+  }
+
+  function downloadStarted() {
+    status('PNG download started. You can create your own card below.');
+    track('share_clicked', { success: true });
   }
 
   async function reportShare() {
@@ -140,23 +160,40 @@
 
   function bind() {
     trackOnce('share-page-view', 'share_page_viewed');
+
     var create = q('[data-share-create]');
     if (create) create.addEventListener('click', function (event) {
       event.preventDefault();
       transfer('card-studio', 'share-to-card', publicText(), 'create');
     });
+
     var useText = q('[data-share-use-text]');
     if (useText) useText.addEventListener('click', function () {
       transfer('basic-writer', 'share-to-basic', publicText(), 'basic_writer');
     });
+
+    var gallery = q('[data-share-gallery]');
+    if (gallery) gallery.addEventListener('click', function () {
+      transfer('card-gallery', 'share-to-gallery', publicText(), 'gallery');
+    });
+
     var qr = q('[data-share-qr]');
     if (qr) qr.addEventListener('click', function () {
       transfer('qr-generator', 'share-to-qr', publicUrl(), 'qr');
     });
+
     var copy = q('[data-share-copy]');
     if (copy) copy.addEventListener('click', copyLink);
+
+    var copyUrdu = q('[data-share-copy-text]');
+    if (copyUrdu) copyUrdu.addEventListener('click', copyText);
+
     var share = q('[data-share-native]');
     if (share) share.addEventListener('click', shareLink);
+
+    var download = q('[data-share-download]');
+    if (download) download.addEventListener('click', downloadStarted);
+
     var report = q('[data-share-report]');
     if (report) report.addEventListener('click', reportShare);
   }
