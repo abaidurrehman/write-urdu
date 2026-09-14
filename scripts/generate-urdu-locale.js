@@ -10,6 +10,7 @@ const Route = require('../js/locale-route.js');
 const { applyStaticShell } = require('./static-shell.js');
 const root = path.resolve(__dirname, '..');
 const checkOnly = process.argv.includes('--check');
+const generatedRoutes = config.generatedRoutes || config.phase1Routes;
 
 function outputPath(productPath) {
   if (productPath === '/') return 'urdu/index.html';
@@ -165,7 +166,7 @@ function render(productPath, englishSource) {
 }
 
 let stale = false;
-for (const productPath of config.phase1Routes) {
+for (const productPath of generatedRoutes) {
   const record = config.routes[productPath];
   const sourceFile = path.join(root, record.source);
   const original = fs.readFileSync(sourceFile, 'utf8').replace(/\r\n/g, '\n');

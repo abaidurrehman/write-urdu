@@ -7,6 +7,7 @@ const localeConfig = require('../locale.config.js');
 const ur = require('../locale/ur.js');
 const Route = require('../js/locale-route.js');
 const root = path.resolve(__dirname, '..');
+const generatedRoutes = localeConfig.generatedRoutes || localeConfig.phase1Routes;
 const errors = [];
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const decode = value => String(value || '').replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&#39;|&apos;/gi, "'").replace(/&lt;/gi, '<').replace(/&gt;/gi, '>');
@@ -31,7 +32,7 @@ const standaloneUrduUrls = new Set([
   seo.SITE_ORIGIN + '/urdu/urdu-writing-templates'
 ]);
 
-for (const productPath of localeConfig.phase1Routes) {
+for (const productPath of generatedRoutes) {
   const record = localeConfig.routes[productPath];
   const copy = ur.routes[productPath];
   const page = seo.byPath[productPath];
@@ -97,4 +98,4 @@ if (actualUrduUrls.size !== expectedUrduUrls.size) errors.push(`sitemap: expecte
 for (const url of expectedUrduUrls) if (!actualUrduUrls.has(url)) errors.push(`sitemap: missing launched Urdu URL ${url}`);
 for (const url of actualUrduUrls) if (!expectedUrduUrls.has(url)) errors.push(`sitemap: unlaunched Urdu URL included ${url}`);
 if (errors.length) { console.error(errors.map(error => 'URDU-SEO: ' + error).join('\n')); process.exit(1); }
-console.log(`Urdu locale SEO checks passed for ${localeConfig.phase1Routes.length} reciprocal locale pairs, ${actualUrduUrls.size} generated Urdu sitemap URLs and ${standaloneUrduUrls.size} standalone Urdu sibling.`);
+console.log(`Urdu locale SEO checks passed for ${generatedRoutes.length} reciprocal locale pairs, ${actualUrduUrls.size} generated Urdu sitemap URLs and ${standaloneUrduUrls.size} standalone Urdu sibling.`);

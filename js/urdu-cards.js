@@ -6,11 +6,28 @@
     var core = root.WriteUrduCardGalleryCore;
     var data = root.WriteUrduCardsData;
     var sharing = root.WriteUrduCuratedCardShare;
+    var COPY = {
+        en: { cards: ' cards', unavailable: 'This browser could not open Card Studio.', opening: 'Opening Card Studio…', creating: 'Creating your shareable link…', copied: 'Link copied.', shared: 'Share sheet opened.', edit: 'Edit in Card Studio · اس میں تبدیلی کریں', editLabel: 'Edit {id} in Card Studio', share: 'Share · شیئر کریں', shareLabel: 'Share {id}' },
+        ur: { cards: ' کارڈز', unavailable: 'یہ براؤزر کارڈ اسٹوڈیو نہیں کھول سکا۔', opening: 'کارڈ اسٹوڈیو کھولا جا رہا ہے…', creating: 'شیئر کرنے کے لیے لنک بنایا جا رہا ہے…', copied: 'لنک کاپی ہو گیا۔', shared: 'شیئر مینو کھل گیا۔', edit: 'کارڈ اسٹوڈیو میں ترمیم کریں', editLabel: 'کارڈ اسٹوڈیو میں {id} کارڈ تبدیل کریں', share: 'شیئر کریں', shareLabel: '{id} کارڈ شیئر کریں' }
+    };
+
+    function locale() { return document.documentElement.lang === 'ur' ? 'ur' : 'en'; }
+    function copyText(key, values) {
+        var value = COPY[locale()][key];
+        Object.keys(values || {}).forEach(function (name) { value = value.split('{' + name + '}').join(values[name]); });
+        return value;
+    }
 
     function normalizedPath() {
-        return String(root.location && root.location.pathname || '/')
+        var pathname = String(root.location && root.location.pathname || '/');
+        if (root.WriteUrduLocaleRoute) return root.WriteUrduLocaleRoute.productPath(pathname);
+        return pathname.replace(/^\/urdu(?=\/|$)/, '')
             .replace(/\.html$/i, '')
             .replace(/\/$/, '') || '/';
+    }
+
+    function localizedRoute(productPath) {
+        return root.WriteUrduLocaleRoute && root.WriteUrduLocaleRoute.href(productPath, locale()) || productPath;
     }
 
     function pathDetailFor(card) {
@@ -37,13 +54,13 @@
         var cardRecords = [];
 
         function updateCount(visible) {
-            count.textContent = visible + ' cards';
+            count.textContent = visible + copyText('cards');
         }
 
         function startEdit(card, background, button) {
             var handoff = root.WriteUrduWorkspaceHandoff;
             if (!handoff || typeof handoff.transfer !== 'function') {
-                status.textContent = 'This browser could not open Card Studio.';
+                status.textContent = copyText('unavailable');
                 return;
             }
             var pathDetail = pathDetailFor(card);
@@ -52,9 +69,9 @@
             }
             var result = handoff.transfer({
                 sourceWorkspace: 'urdu-cards',
-                sourceRoute: '/urdu-cards',
+                sourceRoute: localizedRoute('/urdu-cards'),
                 targetWorkspace: 'card-studio',
-                targetRoute: '/urdu-card-studio',
+                targetRoute: localizedRoute('/urdu-card-studio'),
                 actionId: 'urdu-cards-to-card',
                 kind: 'visual-project-seed',
                 payload: { text: card.textUr, backgroundId: card.backgroundId },
@@ -68,7 +85,7 @@
                 }
             });
             if (!result.ok) {
-                status.textContent = 'This browser could not open Card Studio.';
+                status.textContent = copyText('unavailable');
                 return;
             }
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.trackContinuationPath === 'function') {
@@ -76,7 +93,7 @@
             }
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = 'Opening Card Studio…';
+            status.textContent = copyText('opening');
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.flush === 'function') root.WriteUrduTelemetry.flush(true);
             root.location.href = root.location.protocol === 'file:' ? 'urdu-card-studio.html' : (result.route || '/urdu-card-studio');
         }
@@ -85,18 +102,19 @@
             var background = registry.getBackgroundById(card.backgroundId);
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = 'Creating your shareable link…';
-            var share = background ? sharing.shareCard(card, background) : Promise.reject(new Error('no_background'));
+            status.textContent = copyText('creating');
+            var shareOptions = { route: localizedRoute('/urdu-cards'), title: locale() === 'ur' ? 'رائٹ اردو کارڈ' : 'Write Urdu Card' };
+            var share = background ? sharing.shareCard(card, background, shareOptions) : Promise.reject(new Error('no_background'));
             share.then(function (result) {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                if (result.result === 'link_copied') status.textContent = 'Link copied.';
+                if (result.result === 'link_copied') status.textContent = copyText('copied');
                 else if (result.result === 'fallback') status.textContent = result.url;
-                else status.textContent = 'Share sheet opened.';
+                else status.textContent = copyText('shared');
             }).catch(function () {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                status.textContent = sharing.cardUrl(card);
+                status.textContent = sharing.cardUrl(card, shareOptions);
             });
         }
 
@@ -152,7 +170,7 @@
             var names = document.createElement('div');
             names.className = 'card-gallery-card-names';
             var name = document.createElement('h2');
-            name.textContent = background.name;
+            name.textContent = locale() === 'ur' ? background.nameUr : background.name;
             names.appendChild(name);
             details.appendChild(names);
 
@@ -163,16 +181,16 @@
             edit.type = 'button';
             edit.className = 'urdu-cards-edit';
             edit.dataset.urduCardsEdit = card.id;
-            edit.textContent = 'Edit in Card Studio · اس میں تبدیلی کریں';
-            edit.setAttribute('aria-label', 'Edit ' + card.id + ' in Card Studio');
+            edit.textContent = copyText('edit');
+            edit.setAttribute('aria-label', copyText('editLabel', { id: card.id }));
             edit.addEventListener('click', function () { startEdit(card, background, edit); });
 
             var share = document.createElement('button');
             share.type = 'button';
             share.className = 'urdu-cards-share';
             share.dataset.urduCardsShare = card.id;
-            share.textContent = 'Share · شیئر کریں';
-            share.setAttribute('aria-label', 'Share ' + card.id);
+            share.textContent = copyText('share');
+            share.setAttribute('aria-label', copyText('shareLabel', { id: card.id }));
             share.addEventListener('click', function () { startShare(card, share); });
 
             actions.appendChild(edit);
@@ -205,7 +223,7 @@
             button.className = 'card-gallery-filter';
             button.dataset.urduCardsFilter = category.id;
             button.setAttribute('aria-pressed', category.id === 'all' ? 'true' : 'false');
-            button.textContent = category.name + ' · ' + category.nameUr;
+            button.textContent = locale() === 'ur' ? category.nameUr : category.name + ' · ' + category.nameUr;
             button.addEventListener('click', function () { selectFilter(button); });
             filters.appendChild(button);
         });

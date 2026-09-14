@@ -1,19 +1,22 @@
 const { test, expect } = require('@playwright/test');
+const cards = require('../js/urdu-cards-data.js').getAllCards();
+const cardCount = cards.length;
+const weddingCount = cards.filter(card => card.category === 'wedding').length;
 
-const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, route => route.abort());
 
 async function openCards(page) {
   await blockExternal(page);
   await page.goto('/urdu-cards', { waitUntil: 'domcontentloaded', timeout: 15000 });
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ready-made Urdu cards');
-  await expect(page.locator('.card-gallery-card')).toHaveCount(88);
+  await expect(page.locator('.card-gallery-card')).toHaveCount(cardCount);
 }
 
 test('ready-made cards render fixed text without any canvas', async ({ page }) => {
   await openCards(page);
   expect(await page.locator('canvas').count()).toBe(0);
   await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText('اللہ آپ کی حفاظت فرمائے اور ہر مشکل میں آسانی عطا کرے۔');
-  expect(await page.evaluate(() => window.WriteUrduCardsApp.getDiagnostics())).toMatchObject({ shells: 88 });
+  expect(await page.evaluate(() => window.WriteUrduCardsApp.getDiagnostics())).toMatchObject({ shells: cardCount });
 });
 
 test('category filter narrows visible cards', async ({ page }) => {
@@ -22,7 +25,7 @@ test('category filter narrows visible cards', async ({ page }) => {
   await filter.focus();
   await page.keyboard.press('Enter');
   await expect(filter).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('.card-gallery-card:visible')).toHaveCount(4);
+  await expect(page.locator('.card-gallery-card:visible')).toHaveCount(weddingCount);
 });
 
 test('mobile page has no horizontal overflow', async ({ page }) => {

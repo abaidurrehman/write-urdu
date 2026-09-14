@@ -1,24 +1,27 @@
 const { test, expect } = require('@playwright/test');
+const backgrounds = require('../js/card-background-registry.js').getAllBackgrounds();
+const backgroundCount = backgrounds.length;
+const truckArtCount = backgrounds.filter(background => background.category === 'truck-art').length;
 
-const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, route => route.abort());
 
 async function openStudio(page, route = '/urdu-card-studio.html') {
   await page.goto(route, { waitUntil: 'domcontentloaded', timeout: 15000 });
   await expect(page.locator('[data-card-built-in-library]')).toBeVisible();
 }
 
-test('collection filters all 39 bilingual background choices', async ({ page }) => {
+test(`collection filters all ${backgroundCount} bilingual background choices`, async ({ page }) => {
   await blockExternal(page);
   await openStudio(page);
   const choices = page.locator('[data-card-built-in-background]');
-  await expect(choices).toHaveCount(39);
+  await expect(choices).toHaveCount(backgroundCount);
   await expect(page.locator('[data-card-background-filter]')).toHaveCount(10);
   await page.getByRole('button', { name: 'Truck Art', exact: true }).focus();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('button', { name: 'Truck Art', exact: true })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-card-built-in-background]:visible')).toHaveCount(2);
+  await expect(page.locator('[data-card-built-in-background]:visible')).toHaveCount(truckArtCount);
   await page.getByRole('button', { name: 'All', exact: true }).click();
-  await expect(page.locator('[data-card-built-in-background]:visible')).toHaveCount(39);
+  await expect(page.locator('[data-card-built-in-background]:visible')).toHaveCount(backgroundCount);
 
   await openStudio(page, '/urdu/urdu-card-studio.html');
   await expect(page.getByRole('button', { name: 'ٹرک آرٹ', exact: true })).toBeVisible();

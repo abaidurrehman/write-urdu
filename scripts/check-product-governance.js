@@ -110,7 +110,7 @@ registry.forEach(page => {
 
 const incoming = new Map(registry.map(page => [page.canonical_route, new Set()]));
 const knownRoutes = new Set(registry.map(page => page.canonical_route));
-const localizedRoutes = new Set(localeConfig.phase1Routes.map(route => normalizeRoute(LocaleRoute.href(route, 'ur'))));
+const localizedRoutes = new Set((localeConfig.generatedRoutes || localeConfig.phase1Routes).map(route => normalizeRoute(LocaleRoute.href(route, 'ur'))));
 const legacyLinkCounts = { html: 0, alternateHost: 0, slash: 0 };
 
 registry.forEach(page => {

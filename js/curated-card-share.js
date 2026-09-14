@@ -9,8 +9,9 @@
     var CANONICAL_ORIGIN = 'https://write-urdu.com';
     var CARD_TIER_FONT_SIZE = { short: 84, medium: 62, long: 44 };
 
-    function cardUrl(card) {
-        return CANONICAL_ORIGIN + '/urdu-cards#card-' + card.id;
+    function cardUrl(card, options) {
+        options = options || {};
+        return CANONICAL_ORIGIN + (options.route || '/urdu-cards') + '#card-' + card.id;
     }
 
     function documentRef() {
@@ -165,7 +166,7 @@
         var published = true;
         return publishCardShare(card, background).catch(function () {
             published = false;
-            return cardUrl(card);
+            return cardUrl(card, options);
         }).then(function (url) {
             var navigator = root && root.navigator;
             if (navigator && typeof navigator.share === 'function') {
