@@ -1,6 +1,6 @@
 # WU-CARD-GALLERY-001A — Social Background Collection Expansion
 
-**Status:** Slices 0–1 implemented 2026-09-13; later visual batches remain evidence-gated
+**Status:** Slices 0–3 implemented 2026-09-14 (44 backgrounds shipped); Slice 4 (pairing/ranking) and further visual batches remain evidence-gated
 **Parent:** `WU-CARD-GALLERY-001`
 **Related:** `WU-CARD-CONTENT-001`, `WU-CARD-CONTENT-001A`, `WU-CARD-RETENTION-001`, `WU-CARD-RETENTION-001A`, `/urdu-card-studio`, `/urdu-card-gallery`, `/urdu-cards`
 **Area:** Card creation / social sharing / visual design system

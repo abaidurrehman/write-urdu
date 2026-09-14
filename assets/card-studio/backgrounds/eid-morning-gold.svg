@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="emg-bg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffaec"/><stop offset="1" stop-color="#f7ecc9"/></linearGradient>
+    <symbol id="emg-flourish" viewBox="0 0 90 90">
+      <path d="M6 6q30 0 30 30M6 6q0 30 30 30" fill="none" stroke="#c9932f" stroke-width="2.5"/>
+      <circle cx="36" cy="36" r="5" fill="#2f6a4a" opacity=".8"/>
+      <path d="M6 6q14 4 18 18M6 6q4 14 18 18" fill="none" stroke="#2f6a4a" stroke-width="1.3" opacity=".7"/>
+    </symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#emg-bg)"/>
+  <g fill="none" stroke="#2f6a4a" stroke-width="2.5" opacity=".55">
+    <path d="M540 96a48 48 0 1 0 6 96 58 58 0 0 1-6-96Z"/>
+    <path d="M540 1158a48 48 0 1 0 6 96 58 58 0 0 1-6-96Z"/>
+    <path d="M600 118l8 20 20 4-15 14 4 20-17-11-17 11 4-20-15-14 20-4Z" fill="#c9932f" stroke="none" opacity=".9"/>
+    <path d="M600 1180l8 20 20 4-15 14 4 20-17-11-17 11 4-20-15-14 20-4Z" fill="#c9932f" stroke="none" opacity=".9"/>
+  </g>
+  <g opacity=".85">
+    <use href="#emg-flourish" x="58" y="58" width="90" height="90"/>
+    <g transform="translate(1080 0) scale(-1 1)"><use href="#emg-flourish" x="58" y="58" width="90" height="90"/></g>
+    <g transform="translate(0 1350) scale(1 -1)"><use href="#emg-flourish" x="58" y="58" width="90" height="90"/></g>
+    <g transform="translate(1080 1350) scale(-1 -1)"><use href="#emg-flourish" x="58" y="58" width="90" height="90"/></g>
+  </g>
+  <path d="M170 120q60-24 120 0M790 120q60-24 120 0M170 1230q60 24 120 0M790 1230q60 24 120 0" fill="none" stroke="#c9932f" stroke-width="1.5" opacity=".4"/>
+  <rect x="52" y="52" width="976" height="1246" rx="16" fill="none" stroke="#c9932f" stroke-width="2.5" opacity=".65"/>
+  <rect x="76" y="76" width="928" height="1198" rx="10" fill="none" stroke="#2f6a4a" stroke-width="1.5" opacity=".35"/>
+  <circle cx="540" cy="1240" r="4" fill="#c9932f"/>
+</svg>

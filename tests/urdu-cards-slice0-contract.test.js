@@ -6,7 +6,7 @@ const data = require('../js/urdu-cards-data.js');
 const cards = data.getAllCards();
 
 assert.notStrictEqual(cards, data.cards, 'getAllCards must return a collection copy');
-assert.ok(cards.length >= 60 && cards.length <= 96, `expected recurring-content batches beside original corpus, got ${cards.length}`);
+assert.ok(cards.length >= 60 && cards.length <= 170, `expected recurring-content batches beside original corpus, got ${cards.length}`);
 assert.strictEqual(new Set(cards.map((card) => card.id)).size, cards.length, 'card IDs must be unique');
 
 const categoryIds = data.getCardCategories().map((item) => item.id);

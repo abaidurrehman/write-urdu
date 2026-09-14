@@ -27,13 +27,17 @@ const emotionalIds = [
   'minimal-cream-poetry', 'ink-moon-poetry', 'rose-mist-affection', 'quiet-blue-distance',
   'self-respect-black-sand', 'friendship-bright-modern', 'family-warm-interior'
 ];
+const culturalIds = [
+  'ajrak-modern-frame', 'truck-art-modern-bloom', 'ramadan-lantern-night',
+  'eid-morning-gold', 'pakistan-green-heritage'
+];
 const categoryIds = ['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury', 'love'];
 
-assert.strictEqual(library.backgrounds.length, 39, 'collection must include 32 shipped and 7 emotional/social backgrounds');
+assert.strictEqual(library.backgrounds.length, 44, 'collection must include 32 shipped, 15 daily/emotional and 5 cultural/seasonal backgrounds');
 assert.strictEqual(library.backgrounds, registry.backgrounds, 'Card Studio must consume the shared background registry');
 assert.deepStrictEqual(library.categories.map((item) => item.id), categoryIds, 'category order changed');
 assert.deepStrictEqual(library.filterBackgrounds('all'), library.backgrounds, 'All must return every background');
-assert.strictEqual(new Set(library.backgrounds.map((item) => item.id)).size, 39, 'background IDs must be unique');
+assert.strictEqual(new Set(library.backgrounds.map((item) => item.id)).size, 44, 'background IDs must be unique');
 previousIds.forEach((id) => assert.ok(library.backgrounds.some((item) => item.id === id), `existing background removed: ${id}`));
 
 let fullBytes = 0;
@@ -89,6 +93,21 @@ emotionalIds.forEach((id) => {
   assert.ok(['medium', 'long'].includes(background.textCapacity), `${id} needs honest medium/long capacity`);
   assert.strictEqual(background.preferredAlign, 'center', `${id} needs a controlled preferred alignment`);
   assert.ok(Array.isArray(background.goodFor) && background.goodFor.length > 0, `${id} needs controlled suitability metadata`);
+});
+
+culturalIds.forEach((id) => {
+  const background = library.backgrounds.find((item) => item.id === id);
+  assert.ok(background, `cultural/seasonal background missing: ${id}`);
+  assert.match(background.src, new RegExp(`/backgrounds/${id}\\.svg$`));
+  assert.strictEqual(background.thumbnailSrc, undefined, `${id} lightweight SVG should not duplicate a thumbnail`);
+  const full = path.join(root, background.src.replace(/^\//, ''));
+  assert.ok(fs.existsSync(full), `${id} SVG asset missing`);
+  assert.ok(fs.statSync(full).size < 10 * 1024, `${id} SVG must stay below 10 KB`);
+  assert.ok(['medium', 'long'].includes(background.textCapacity), `${id} needs honest medium/long capacity`);
+  assert.strictEqual(background.preferredAlign, 'center', `${id} needs a controlled preferred alignment`);
+  assert.ok(Array.isArray(background.goodFor) && background.goodFor.length > 0, `${id} needs controlled suitability metadata`);
+  Object.values(background.safeArea).forEach((value) => assert.ok(value >= 0 && value <= 1, `${id} has invalid safe-area metadata`));
+  assert.strictEqual(library.filterBackgrounds(background.category).some((item) => item.id === id), true, `${id} missing from filter`);
 });
 
 categoryIds.slice(1).forEach((category) => {
