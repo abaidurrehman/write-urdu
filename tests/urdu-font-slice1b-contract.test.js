@@ -9,7 +9,7 @@ const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
 
 const cardAdapter = read('js/urdu-font-card-convergence.js');
 const tinyAdapter = read('js/urdu-font-tinymce-adapter.js');
-const cardCoreSource = read('js/card-studio-core.js');
+const interactionCore = read('js/card-studio-interaction-core.js');
 const entry = read('js/card-studio-entry.js');
 const legacyEntry = read('js/card-studio-entry-legacy.js');
 const home = read('index.html');
@@ -19,14 +19,13 @@ const creation = ['noto-nastaliq-urdu', 'noto-naskh-arabic', 'amiri', 'lateef', 
 assert.deepStrictEqual(registry.getForCapability('card-studio', { webOnly: true, excludeCandidates: true }).map(item => item.id), creation);
 assert.deepStrictEqual(registry.getForCapability('name-art', { webOnly: true, excludeCandidates: true }).map(item => item.id), creation);
 assert.deepStrictEqual(registry.getForCapability('editor', { webOnly: true, excludeCandidates: true }).map(item => item.id), [
-  'noto-nastaliq-urdu', 'noto-naskh-arabic', 'amiri', 'lateef', 'scheherazade-new', 'tajawal', 'harmattan', 'katibeh'
-]);
+  'noto-nastaliq-urdu', 'noto-naskh-arabic', 'amiri', 'lateef', 'tajawal', 'harmattan', 'katibeh'
+], 'Slice 1 registry remains byte-stable; the historic Scheherazade editor bridge belongs to the adapter');
 assert.strictEqual(registry.resolveId('Scheherazade'), 'scheherazade-new');
 assert.strictEqual(core.normalizeFontFamily('Scheherazade'), 'Scheherazade New', 'legacy Card Studio projects must still normalize Scheherazade');
 
-assert.match(cardCoreSource, /\/js\/urdu-font-registry\.js/, 'creation core must bootstrap shared font registry');
-assert.match(cardCoreSource, /\/js\/urdu-font-card-convergence\.js/, 'creation core must bootstrap convergence adapter');
-assert.match(cardCoreSource, /window\.WriteUrduFontRegistry/, 'Card Studio normalizer should prefer governed registry when available');
+assert.match(interactionCore, /\/js\/urdu-font-registry\.js/, 'shared creation interaction core must bootstrap font registry');
+assert.match(interactionCore, /\/js\/urdu-font-card-convergence\.js/, 'shared creation interaction core must bootstrap convergence adapter');
 
 assert.match(cardAdapter, /getForCapability\(capability\(\), \{ webOnly: true, excludeCandidates: true \}\)/, 'creation selector must come from registry capability');
 assert.match(cardAdapter, /value\.createLoader\(\{ document: root\.document \}\)/, 'creation surfaces must use strict shared loader');
@@ -35,7 +34,9 @@ assert.match(cardAdapter, /data-name-art-transparent/, 'transparent Name Art exp
 assert.match(cardAdapter, /event\.stopImmediatePropagation\(\)/, 'font selection guard must prevent permissive legacy handler from racing the verified load');
 assert.doesNotMatch(cardAdapter, /Jameel|Mehr Nastaliq|AlQalam|Sameer|Gandhara/, 'convergence adapter must not special-case license-review candidates');
 
-assert.match(tinyAdapter, /getForCapability\('editor', \{ webOnly: true, excludeCandidates: true \}\)/, 'TinyMCE Urdu families must come from editor capability');
+assert.match(tinyAdapter, /getForCapability\('editor', \{ webOnly: true, excludeCandidates: true \}\)/, 'TinyMCE starts from registry editor capability');
+assert.match(tinyAdapter, /value\.get\('scheherazade-new'\)/, 'historic Rich Editor Scheherazade choice must resolve through the governed registry');
+assert.match(tinyAdapter, /record\.id === 'scheherazade-new'/, 'Scheherazade New is the bounded compatibility bridge, not a second font definition');
 assert.match(tinyAdapter, /editor\.getDoc\(\)/, 'TinyMCE web fonts must load into the editor iframe document');
 for (const systemFont of ['Arial', 'Courier New', 'Georgia', 'Tahoma', 'Times New Roman', 'Verdana']) assert.match(tinyAdapter, new RegExp(systemFont.replace(/ /g, '\\s*')));
 assert.match(tinyAdapter, /Qadreeregular/, 'adapter must explicitly remove the stale Qadreeregular sample');
