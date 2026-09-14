@@ -32,8 +32,8 @@ assert.deepStrictEqual(
 );
 assert.deepStrictEqual(
   registry.getForCapability('editor', { webOnly: true }).map(record => record.id),
-  ['noto-nastaliq-urdu', 'noto-naskh-arabic', 'amiri', 'lateef', 'tajawal', 'harmattan', 'katibeh'],
-  'editor capability should preserve current governed web families without silently adding candidates'
+  ['noto-nastaliq-urdu', 'noto-naskh-arabic', 'amiri', 'lateef', 'scheherazade-new', 'tajawal', 'harmattan', 'katibeh'],
+  'editor capability should preserve all eight current Urdu web families while normalizing Scheherazade to Scheherazade New'
 );
 
 for (const record of all) {
@@ -106,10 +106,7 @@ async function run() {
     },
     querySelector() { return null; },
     createElement() {
-      return {
-        setAttribute() {},
-        rel: '', href: '', onload: null, onerror: null
-      };
+      return { setAttribute() {}, rel: '', href: '', onload: null, onerror: null };
     },
     head: {
       appendChild(link) {
