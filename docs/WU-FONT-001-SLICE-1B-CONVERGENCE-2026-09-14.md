@@ -45,11 +45,36 @@ The existing Latin/system choices in TinyMCE remain available.
 
 The convergence adapter owns the runtime `#cardFont` options. It asks the registry for the capability of the current workspace and exposes only approved web fonts.
 
+The adapter activates only when the page identifies itself as Card Studio (`card-studio-page`) or Name Art (`name-art-page`). Social makers reuse parts of the Card Studio runtime but remain outside Slice 1B font convergence, so WhatsApp, Instagram and Facebook creation/export behavior is not intercepted by this adapter.
+
 Old saved projects remain family-string compatible. `Scheherazade` continues to normalize to `Scheherazade New`; unknown or unapproved families fall back to the established creation default rather than becoming new product choices.
 
-### Strict canvas/export boundary
+### Approval boundary and resilient delivery
 
-The creation adapter verifies the active text and attribution fonts through the shared loader before:
+Slice 1B separates two different failure classes that must not be treated the same way.
+
+**Font approval remains fail-closed.** Before a selected font is applied or an export is replayed, the adapter resolves it through the shared registry and requires:
+
+- a known stable registry record;
+- `licenseStatus: approved-web`;
+- the current tool capability (`card-studio` or `name-art`).
+
+Unknown, license-review, system-reference-only or wrong-capability fonts stop the action and surface an error.
+
+**Approved font delivery is resilient.** The browser may be offline, a font CDN may be blocked, or an acceptance environment may deliberately block external services. Those conditions must not turn Write Urdu's browser-local creation tools into a dead end.
+
+For approved fonts the adapter therefore:
+
+- reuses one shared loader instance instead of recreating a loader for every export;
+- bounds verification with a 3-second delivery deadline;
+- classifies stylesheet/network/font-loading failures separately from approval failures;
+- marks the document with `data-wu-font-delivery="degraded"` and a concrete `data-wu-font-degraded` value when delivery cannot be verified;
+- tells the user that the browser may use a fallback font;
+- keeps preview/export available rather than silently hanging or disabling the creation flow.
+
+This is intentionally not presented as successful named-font rendering. The degraded state is explicit so the product does not claim that Noto, Amiri, Lateef or another named family rendered when the browser could not verify it.
+
+The preflight applies before:
 
 - revealing the initial governed canvas;
 - applying a user-selected font;
@@ -57,7 +82,7 @@ The creation adapter verifies the active text and attribution fonts through the 
 - Share image;
 - Name Art transparent-PNG export.
 
-A failed or unapproved load stops the action and surfaces an error. The legacy Card Studio loader remains underneath for compatibility, but it is no longer the trust boundary for governed user choices or exports.
+The existing Card Studio/Name Art rendering paths remain underneath for browser-local continuity.
 
 ### Rich Editor
 
@@ -89,7 +114,7 @@ Slice 1B does not add or embed Mehr Nastaliq Web, Jameel Noori variants, Nafees 
 
 The font registry is not added to Basic Writer or the global shell.
 
-Creation surfaces load the registry only through the shared Card Studio interaction runtime. Rich Editor loads it through the route-guarded authoring entry bootstrap. The registry loader remains one-font-at-a-time and reuses already available faces.
+Creation surfaces load the registry through the shared Card Studio interaction runtime, but the convergence adapter exits immediately outside Card Studio and Name Art. Rich Editor loads the registry through the route-guarded authoring entry bootstrap. The creation adapter reuses its loader instance so repeated export actions do not restart font delivery work.
 
 ## Deliberately unchanged
 
@@ -113,9 +138,10 @@ Slice 1B must pass:
 - creation-core contracts;
 - Rich Editor/Keyboard contracts;
 - Card Studio/Name Art browser acceptance;
-- existing workspace-handoff/share-loop/browser suites.
+- existing workspace-handoff/share-loop/browser suites;
+- focused creation/export browser tests while external services are deliberately blocked.
 
-Manual/browser acceptance should confirm that the TinyMCE font-family menu presents the governed Urdu choices after editor initialization and that a font selected for Card Studio or Name Art is the font measured/exported by canvas.
+Manual/browser acceptance should confirm that the TinyMCE font-family menu presents the governed Urdu choices after editor initialization; that a successfully loaded selected font is the font measured/exported by canvas; and that a font-service outage produces an explicit degraded/fallback state without destroying the user's ability to finish and export their browser-local design.
 
 ## Rollback
 
