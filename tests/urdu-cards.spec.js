@@ -16,6 +16,44 @@ test('ready-made cards render fixed text without any canvas', async ({ page }) =
   expect(await page.evaluate(() => window.WriteUrduCardsApp.getDiagnostics())).toMatchObject({ shells: 88 });
 });
 
+test('WhatsApp Status sharing is lazy, branded and uses a 9:16 PNG file', async ({ page }) => {
+  await openCards(page);
+  await expect(page.locator('script[src*="whatsapp-status-share.js"]')).toHaveCount(0);
+  await page.evaluate(() => {
+    window.__statusShare = null;
+    Object.defineProperty(navigator, 'canShare', {
+      configurable: true,
+      value: data => Boolean(data && data.files && data.files[0] && data.files[0].type === 'image/png')
+    });
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async data => {
+        const file = data.files[0];
+        window.__statusShare = { name: file.name, type: file.type, size: file.size, text: data.text };
+      }
+    });
+  });
+
+  await page.locator('[data-urdu-cards-whatsapp-status="dua-1"]').click();
+  await expect(page.locator('[data-urdu-cards-status]')).toContainText('Shared');
+  await expect(page.locator('script[src*="whatsapp-status-share.js"]')).toHaveCount(1);
+
+  const result = await page.evaluate(() => ({
+    share: window.__statusShare,
+    diagnostics: window.WriteUrduWhatsAppStatusShare.getDiagnostics(),
+    canvasCount: document.querySelectorAll('canvas').length
+  }));
+  expect(result.share).toMatchObject({
+    type: 'image/png',
+    text: 'Create your own Urdu card at write-urdu.com/urdu-cards'
+  });
+  expect(result.share.name).toContain('whatsapp-status.png');
+  expect(result.share.size).toBeGreaterThan(1000);
+  expect(result.diagnostics).toMatchObject({ width: 720, height: 1280 });
+  expect(result.diagnostics.watermark).toContain('write-urdu.com');
+  expect(result.canvasCount).toBe(0);
+});
+
 test('category filter narrows visible cards', async ({ page }) => {
   await openCards(page);
   const filter = page.getByRole('button', { name: 'Wedding · شادی', exact: true });
