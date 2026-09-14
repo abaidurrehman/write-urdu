@@ -36,7 +36,9 @@ The existing Latin/system choices in TinyMCE remain available.
 
 ### Creation surfaces
 
-`js/card-studio-core.js` remains the common Card Studio/Name Art foundation. In browser contexts it bootstraps:
+`js/card-studio-core.js` remains the common Card Studio/Name Art foundation and stays byte-stable from Slice 1.
+
+`js/card-studio-interaction-core.js`, which is already shared by Card Studio and Name Art, owns the narrow browser bootstrap for:
 
 - `js/urdu-font-registry.js`
 - `js/urdu-font-card-convergence.js`
@@ -67,14 +69,15 @@ The visible legacy `Qadreeregular` sample is removed at runtime because the repo
 
 ### Journey-runtime compatibility
 
-Rich Editor already loads `js/card-studio-entry.js` for handoff/journey behavior. Slice 1B preserves that mature runtime byte-for-byte as `js/card-studio-entry-legacy.js` and turns `js/card-studio-entry.js` into a small compatibility bootstrap:
+`js/card-studio-entry.js` remains the real authoring journey/handoff runtime and keeps the existing v2-before-legacy Rich Editor restore logic in the same source owner expected by the Product Pulse, continuity and share-loop contracts.
 
-1. on `/urdu-editor`, load the font registry;
-2. load the TinyMCE font adapter;
-3. load the unchanged journey runtime;
-4. on other authoring routes, load the unchanged journey runtime directly.
+Slice 1B adds only a narrow `ensureRichFontConvergence()` bootstrap to that file. On `/urdu-editor` it:
 
-This keeps font convergence separate from the workspace-handoff implementation.
+1. loads the shared font registry;
+2. loads the TinyMCE font adapter;
+3. leaves all existing journey, v2 handoff, legacy fallback, telemetry and sharing logic in place.
+
+On Basic Writer and Urdu Keyboard routes the font bootstrap exits before loading the registry. There is no duplicate or delegated legacy journey file.
 
 ## Licensing boundary
 
@@ -86,7 +89,7 @@ Slice 1B does not add or embed Mehr Nastaliq Web, Jameel Noori variants, Nafees 
 
 The font registry is not added to Basic Writer or the global shell.
 
-Creation surfaces load the registry only because they already load Card Studio core. Rich Editor loads it through its existing authoring entry point. The registry loader remains one-font-at-a-time and reuses already available faces.
+Creation surfaces load the registry only through the shared Card Studio interaction runtime. Rich Editor loads it through the route-guarded authoring entry bootstrap. The registry loader remains one-font-at-a-time and reuses already available faces.
 
 ## Deliberately unchanged
 
@@ -106,6 +109,7 @@ Slice 1B must pass:
 - Slice 0 audit contracts;
 - Slice 1 registry/loader contracts;
 - new Slice 1B convergence contract;
+- Product Pulse Slice 1 continuation contracts;
 - creation-core contracts;
 - Rich Editor/Keyboard contracts;
 - Card Studio/Name Art browser acceptance;
@@ -115,4 +119,4 @@ Manual/browser acceptance should confirm that the TinyMCE font-family menu prese
 
 ## Rollback
 
-The convergence layer is intentionally separable. Rollback can remove the two adapters and restore the previous `card-studio-entry.js` blob without changing saved Card Studio documents, font family strings, templates or public routes.
+The convergence layer is intentionally separable. Rollback can remove the two adapters, remove the small Rich Editor font bootstrap from `js/card-studio-entry.js`, and restore the Slice 1 interaction-core blob without changing saved Card Studio documents, font family strings, templates or public routes.
