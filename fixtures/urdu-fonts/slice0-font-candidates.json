@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "captured": "2026-09-14",
+  "licenseStatuses": ["approved-web", "approved-system-reference", "license-review", "rejected"],
+  "candidates": [
+    {
+      "id": "noto-nastaliq-urdu",
+      "family": "Noto Nastaliq Urdu",
+      "style": "nastaliq",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/noto/specimen/Noto+Nastaliq+Urdu",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "canvas", "editor", "card-studio", "name-art", "preview"]
+    },
+    {
+      "id": "noto-naskh-arabic",
+      "family": "Noto Naskh Arabic",
+      "style": "naskh",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/noto/specimen/Noto+Naskh+Arabic",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "canvas", "editor", "card-studio", "name-art", "preview"]
+    },
+    {
+      "id": "amiri",
+      "family": "Amiri",
+      "style": "naskh",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/specimen/Amiri",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "canvas", "editor", "card-studio", "name-art", "preview"]
+    },
+    {
+      "id": "lateef",
+      "family": "Lateef",
+      "style": "naskh",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/specimen/Lateef",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "canvas", "editor", "card-studio", "name-art", "preview"]
+    },
+    {
+      "id": "scheherazade-new",
+      "family": "Scheherazade New",
+      "style": "naskh",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/specimen/Scheherazade+New",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "canvas", "card-studio", "name-art", "preview"]
+    },
+    {
+      "id": "tajawal",
+      "family": "Tajawal",
+      "style": "modern-arabic",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/specimen/Tajawal",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "canvas", "editor", "card-studio", "name-art", "preview"]
+    },
+    {
+      "id": "harmattan",
+      "family": "Harmattan",
+      "style": "naskh",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/specimen/Harmattan",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "editor", "preview"]
+    },
+    {
+      "id": "katibeh",
+      "family": "Katibeh",
+      "style": "decorative",
+      "delivery": "google-fonts",
+      "licenseStatus": "approved-web",
+      "authoritativeSource": "https://fonts.google.com/specimen/Katibeh",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["dom", "editor", "preview"]
+    },
+    {
+      "id": "mehr-nastaliq-web",
+      "family": "Mehr Nastaliq Web",
+      "style": "nastaliq",
+      "delivery": "future-webfont",
+      "licenseStatus": "license-review",
+      "authoritativeSource": "https://mehrtype.com/product/mehr-nastaliq-web/",
+      "licenseFamily": "product-page Creative Commons statement; current Mehr Type Webfont EULA also applies to webfont licensing and must be reconciled before shipping",
+      "capabilities": ["candidate"]
+    },
+    {
+      "id": "awami-nastaliq",
+      "family": "Awami Nastaliq",
+      "style": "nastaliq",
+      "delivery": "future-webfont",
+      "licenseStatus": "approved-system-reference",
+      "authoritativeSource": "https://software.sil.org/awami/",
+      "licenseFamily": "SIL Open Font License",
+      "capabilities": ["candidate", "system-reference"]
+    },
+    {
+      "id": "nafees-nastaleeq",
+      "family": "Nafees Nastaleeq",
+      "style": "nastaliq",
+      "delivery": "system-reference",
+      "licenseStatus": "license-review",
+      "authoritativeSource": null,
+      "licenseFamily": null,
+      "capabilities": ["candidate", "system-reference"]
+    },
+    {
+      "id": "jameel-noori-nastaleeq",
+      "family": "Jameel Noori Nastaleeq",
+      "style": "nastaliq",
+      "delivery": "system-reference",
+      "licenseStatus": "license-review",
+      "authoritativeSource": null,
+      "licenseFamily": null,
+      "capabilities": ["candidate", "system-reference"]
+    },
+    {
+      "id": "jameel-noori-kasheeda",
+      "family": "Jameel Noori Kasheeda",
+      "style": "nastaliq",
+      "delivery": "system-reference",
+      "licenseStatus": "license-review",
+      "authoritativeSource": null,
+      "licenseFamily": null,
+      "capabilities": ["candidate", "system-reference"]
+    },
+    {
+      "id": "alqalam-taj-nastaleeq",
+      "family": "AlQalam Taj Nastaleeq",
+      "style": "decorative-nastaliq",
+      "delivery": "system-reference",
+      "licenseStatus": "license-review",
+      "authoritativeSource": null,
+      "licenseFamily": null,
+      "capabilities": ["candidate", "system-reference"]
+    },
+    {
+      "id": "aa-sameer-sagar",
+      "family": "AA Sameer Sagar",
+      "style": "decorative",
+      "delivery": "system-reference",
+      "licenseStatus": "license-review",
+      "authoritativeSource": null,
+      "licenseFamily": null,
+      "capabilities": ["candidate", "system-reference"]
+    },
+    {
+      "id": "gandhara-suls",
+      "family": "Gandhara Suls",
+      "style": "calligraphic",
+      "delivery": "system-reference",
+      "licenseStatus": "license-review",
+      "authoritativeSource": null,
+      "licenseFamily": null,
+      "capabilities": ["candidate", "system-reference"]
+    }
+  ]
+}
