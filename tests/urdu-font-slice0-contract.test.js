@@ -61,11 +61,11 @@ const activeFontFormatsLine = editor.split(/\r?\n/).find(line => /^\s*font_forma
 assert.ok(activeFontFormatsLine, 'Rich Editor active font_formats line must exist');
 assert.match(activeFontFormatsLine, /Noto Nastaliq Urdu;Noto Naskh Arabic;Amiri;Harmattan;Katibeh;Lateef;Scheherazade;Tajawal;/, 'Rich Editor active Urdu font list changed');
 assert.doesNotMatch(activeFontFormatsLine, /Qadreeregular/, 'Qadreeregular must not be treated as active runtime font');
-assert.match(editorFeatures, /Qadreeregular/, 'documented Qadreeregular inconsistency should remain visible until reconciled in Slice 1B');
+assert.match(editorFeatures, /Qadreeregular/, 'Slice 0 captured the documentation mismatch; Slice 1B runtime removes it while the guide is reconciled separately');
 
 assert.match(cardStudioJs, /document\.fonts\.load\(/, 'Card Studio must explicitly load selected fonts');
 assert.match(cardStudioJs, /ensureProjectFonts\(\)\.then\(function \(\) \{ return drawCard\(\{ export: true \}\); \}\)/, 'Card Studio export must await project fonts before draw');
-assert.match(cardStudioCore, /ctx\.font = size \+ 'px "' \+ \(text\.fontFamily \|\| 'Noto Nastaliq Urdu'\) \+ '"'/, 'Card Studio core font assignment changed');
+assert.match(cardStudioCore, /ctx\.font\s*=\s*size\s*\+\s*'px "'\s*\+\s*\(text\.fontFamily\s*\|\|\s*'Noto Nastaliq Urdu'\)\s*\+\s*'"'/, 'Card Studio core font assignment changed');
 assert.match(documentShare, /ctx\.font = `600 \$\{fontSize\}px "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif`/, 'document share preview Urdu stack changed');
 
 const googleFontLinks = html => [...html.matchAll(/https:\/\/fonts\.googleapis\.com\/[^"']+/g)].map(match => match[0]);
