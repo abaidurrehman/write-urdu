@@ -2,6 +2,25 @@
     var api = factory();
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (root) root.WriteUrduCardStudioInteraction = api;
+
+    // WU-FONT-001 Slice 1B: this module is already shared by Card Studio and
+    // Name Art. Load the governed registry/convergence adapter without making
+    // the global site shell pay the font-catalog cost.
+    if (root && root.document) {
+        function loadFontRuntime(src, marker, done) {
+            if (marker && root[marker]) { done(); return; }
+            var existing = root.document.querySelector('script[src="' + src + '"]');
+            if (existing) { existing.addEventListener('load', done, { once: true }); return; }
+            var script = root.document.createElement('script');
+            script.src = src;
+            script.async = false;
+            script.addEventListener('load', done, { once: true });
+            root.document.head.appendChild(script);
+        }
+        loadFontRuntime('/js/urdu-font-registry.js', 'WriteUrduFontRegistry', function () {
+            loadFontRuntime('/js/urdu-font-card-convergence.js', 'WriteUrduFontCardConvergence', function () {});
+        });
+    }
 }(typeof window !== 'undefined' ? window : globalThis, function () {
     'use strict';
 

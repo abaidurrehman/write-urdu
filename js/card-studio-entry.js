@@ -1,6 +1,28 @@
 (function () {
     'use strict';
 
+    function ensureRichFontConvergence() {
+        var path = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(window.location && window.location.pathname || '/') : String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
+        if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
+        if (path.endsWith('.html')) path = path.slice(0, -5);
+        if (path !== '/urdu-editor' || window.WriteUrduFontTinyMceAdapter) return;
+
+        function load(src, ready, next) {
+            if (ready()) { next(); return; }
+            var existing = document.querySelector('script[src="' + src + '"]');
+            if (existing) { existing.addEventListener('load', next, { once: true }); return; }
+            var script = document.createElement('script');
+            script.src = src;
+            script.async = false;
+            script.addEventListener('load', next, { once: true });
+            document.head.appendChild(script);
+        }
+
+        load('/js/urdu-font-registry.js', function () { return Boolean(window.WriteUrduFontRegistry); }, function () {
+            load('/js/urdu-font-tinymce-adapter.js', function () { return Boolean(window.WriteUrduFontTinyMceAdapter); }, function () {});
+        });
+    }
+
     function ensureCoreContinuityForRich() {
         var path = window.WriteUrduLocaleRoute ? window.WriteUrduLocaleRoute.productPath(window.location && window.location.pathname || '/') : String(window.location && window.location.pathname || '/').split('?')[0].split('#')[0] || '/';
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
@@ -26,6 +48,7 @@
     }
 
     ensureCoreContinuityForRich();
+    ensureRichFontConvergence();
 
     var HANDOFF_TTL = 30 * 60 * 1000;
     var RICH_DRAFT_KEY = 'write-urdu:draft:v1:rich';
