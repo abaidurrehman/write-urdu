@@ -91,9 +91,9 @@ export async function onRequestGet(context) {
       <article class="share-card" aria-labelledby="shared-writing-heading">
         <img class="share-visual" src="${escapeHtml(imageUrl)}" width="${Number(share.image_width)}" height="${Number(share.image_height)}" alt="Urdu writing shared from Write Urdu">
         <div class="share-media-actions" aria-label="Share or save this card">
-          <button class="share-button share-media-action" type="button" data-share-native>Share</button>
-          <a class="share-button share-media-action" href="${escapeHtml(downloadUrl)}" download="write-urdu-${id}.png" data-share-download>Download PNG</a>
-          <button class="share-button share-media-action" type="button" data-share-copy-text>Copy Urdu</button>
+          <button class="share-button share-media-action" type="button" data-share-native><svg class="share-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"></path></svg><span>Share</span></button>
+          <a class="share-button share-media-action" href="${escapeHtml(downloadUrl)}" download="write-urdu-${id}.png" data-share-download><svg class="share-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"></path></svg><span>Download PNG</span></a>
+          <button class="share-button share-media-action" type="button" data-share-copy-text><svg class="share-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>Copy Urdu</span></button>
         </div>
         <div class="share-content">
           <p class="share-kicker">Shared Urdu writing</p>
