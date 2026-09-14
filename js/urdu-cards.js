@@ -7,11 +7,64 @@
     var data = root.WriteUrduCardsData;
     var sharing = root.WriteUrduCuratedCardShare;
     var whatsappStatusPromise = null;
+    var COPY = {
+        en: {
+            cards: ' cards',
+            unavailable: 'This browser could not open Card Studio.',
+            opening: 'Opening Card Studio…',
+            creating: 'Creating your shareable link…',
+            copied: 'Link copied.',
+            shared: 'Share sheet opened.',
+            edit: 'Edit in Card Studio · اس میں تبدیلی کریں',
+            editLabel: 'Edit {id} in Card Studio',
+            share: 'Share · شیئر کریں',
+            shareLabel: 'Share {id}',
+            whatsapp: 'WhatsApp Status · اسٹیٹس',
+            whatsappLabel: 'Share {id} to WhatsApp Status',
+            statusPreparing: 'Preparing WhatsApp Status…',
+            statusShared: 'Shared — choose WhatsApp and My Status when prompted.',
+            statusDownloaded: 'PNG downloaded. Open WhatsApp → Updates → Add status.',
+            statusCancelled: 'Sharing cancelled.',
+            statusFailed: 'Could not prepare this Status image. Try Edit in Card Studio.'
+        },
+        ur: {
+            cards: ' کارڈز',
+            unavailable: 'یہ براؤزر کارڈ اسٹوڈیو نہیں کھول سکا۔',
+            opening: 'کارڈ اسٹوڈیو کھولا جا رہا ہے…',
+            creating: 'شیئر کرنے کے لیے لنک بنایا جا رہا ہے…',
+            copied: 'لنک کاپی ہو گیا۔',
+            shared: 'شیئر مینو کھل گیا۔',
+            edit: 'کارڈ اسٹوڈیو میں ترمیم کریں',
+            editLabel: 'کارڈ اسٹوڈیو میں {id} کارڈ تبدیل کریں',
+            share: 'شیئر کریں',
+            shareLabel: '{id} کارڈ شیئر کریں',
+            whatsapp: 'واٹس ایپ اسٹیٹس',
+            whatsappLabel: '{id} کارڈ واٹس ایپ اسٹیٹس پر شیئر کریں',
+            statusPreparing: 'واٹس ایپ اسٹیٹس تیار کیا جا رہا ہے…',
+            statusShared: 'شیئر مینو کھل گیا — واٹس ایپ اور پھر میرا اسٹیٹس منتخب کریں۔',
+            statusDownloaded: 'PNG ڈاؤن لوڈ ہو گیا۔ واٹس ایپ → اپ ڈیٹس → اسٹیٹس شامل کریں کھولیں۔',
+            statusCancelled: 'شیئر منسوخ کر دیا گیا۔',
+            statusFailed: 'اسٹیٹس تصویر تیار نہیں ہو سکی۔ کارڈ اسٹوڈیو میں ترمیم کر کے دوبارہ کوشش کریں۔'
+        }
+    };
+
+    function locale() { return document.documentElement.lang === 'ur' ? 'ur' : 'en'; }
+    function copyText(key, values) {
+        var value = COPY[locale()][key];
+        Object.keys(values || {}).forEach(function (name) { value = value.split('{' + name + '}').join(values[name]); });
+        return value;
+    }
 
     function normalizedPath() {
-        return String(root.location && root.location.pathname || '/')
+        var pathname = String(root.location && root.location.pathname || '/');
+        if (root.WriteUrduLocaleRoute) return root.WriteUrduLocaleRoute.productPath(pathname);
+        return pathname.replace(/^\/urdu(?=\/|$)/, '')
             .replace(/\.html$/i, '')
             .replace(/\/$/, '') || '/';
+    }
+
+    function localizedRoute(productPath) {
+        return root.WriteUrduLocaleRoute && root.WriteUrduLocaleRoute.href(productPath, locale()) || productPath;
     }
 
     function pathDetailFor(card) {
@@ -69,13 +122,13 @@
         var cardRecords = [];
 
         function updateCount(visible) {
-            count.textContent = visible + ' cards';
+            count.textContent = visible + copyText('cards');
         }
 
         function startEdit(card, background, button) {
             var handoff = root.WriteUrduWorkspaceHandoff;
             if (!handoff || typeof handoff.transfer !== 'function') {
-                status.textContent = 'This browser could not open Card Studio.';
+                status.textContent = copyText('unavailable');
                 return;
             }
             var pathDetail = pathDetailFor(card);
@@ -84,9 +137,9 @@
             }
             var result = handoff.transfer({
                 sourceWorkspace: 'urdu-cards',
-                sourceRoute: '/urdu-cards',
+                sourceRoute: localizedRoute('/urdu-cards'),
                 targetWorkspace: 'card-studio',
-                targetRoute: '/urdu-card-studio',
+                targetRoute: localizedRoute('/urdu-card-studio'),
                 actionId: 'urdu-cards-to-card',
                 kind: 'visual-project-seed',
                 payload: { text: card.textUr, backgroundId: card.backgroundId },
@@ -100,7 +153,7 @@
                 }
             });
             if (!result.ok) {
-                status.textContent = 'This browser could not open Card Studio.';
+                status.textContent = copyText('unavailable');
                 return;
             }
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.trackContinuationPath === 'function') {
@@ -108,7 +161,7 @@
             }
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = 'Opening Card Studio…';
+            status.textContent = copyText('opening');
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.flush === 'function') root.WriteUrduTelemetry.flush(true);
             root.location.href = root.location.protocol === 'file:' ? 'urdu-card-studio.html' : (result.route || '/urdu-card-studio');
         }
@@ -117,29 +170,30 @@
             var background = registry.getBackgroundById(card.backgroundId);
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = 'Creating your shareable link…';
-            var share = background ? sharing.shareCard(card, background) : Promise.reject(new Error('no_background'));
+            status.textContent = copyText('creating');
+            var shareOptions = { route: localizedRoute('/urdu-cards'), title: locale() === 'ur' ? 'رائٹ اردو کارڈ' : 'Write Urdu Card' };
+            var share = background ? sharing.shareCard(card, background, shareOptions) : Promise.reject(new Error('no_background'));
             share.then(function (result) {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                if (result.result === 'link_copied') status.textContent = 'Link copied.';
+                if (result.result === 'link_copied') status.textContent = copyText('copied');
                 else if (result.result === 'fallback') status.textContent = result.url;
-                else status.textContent = 'Share sheet opened.';
+                else status.textContent = copyText('shared');
             }).catch(function () {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                status.textContent = sharing.cardUrl(card);
+                status.textContent = sharing.cardUrl(card, shareOptions);
             });
         }
 
         function startWhatsAppStatus(card, background, button) {
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = 'Preparing WhatsApp Status…';
+            status.textContent = copyText('statusPreparing');
             track('card_whatsapp_status_share_attempted', {
                 card_id: card.id,
                 background_id: card.backgroundId,
-                source_route: '/urdu-cards'
+                source_route: localizedRoute('/urdu-cards')
             });
             ensureWhatsAppStatusShare().then(function (whatsappStatus) {
                 return whatsappStatus.shareCard(card, background);
@@ -147,19 +201,19 @@
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
                 if (result.result === 'shared') {
-                    status.textContent = 'Shared — choose WhatsApp and My Status when prompted.';
+                    status.textContent = copyText('statusShared');
                     track('card_whatsapp_status_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'native_share' });
                 } else if (result.result === 'downloaded') {
-                    status.textContent = 'PNG downloaded. Open WhatsApp → Updates → Add status.';
+                    status.textContent = copyText('statusDownloaded');
                     track('card_whatsapp_status_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'download_fallback' });
                 } else {
-                    status.textContent = 'Sharing cancelled.';
+                    status.textContent = copyText('statusCancelled');
                     track('card_whatsapp_status_share_cancelled', { card_id: card.id, background_id: card.backgroundId });
                 }
             }).catch(function () {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                status.textContent = 'Could not prepare this Status image. Try Edit in Card Studio.';
+                status.textContent = copyText('statusFailed');
                 track('card_whatsapp_status_share_failed', { card_id: card.id, background_id: card.backgroundId });
             });
         }
@@ -216,7 +270,7 @@
             var names = document.createElement('div');
             names.className = 'card-gallery-card-names';
             var name = document.createElement('h2');
-            name.textContent = background.name;
+            name.textContent = locale() === 'ur' ? background.nameUr : background.name;
             names.appendChild(name);
             details.appendChild(names);
 
@@ -227,24 +281,24 @@
             whatsapp.type = 'button';
             whatsapp.className = 'urdu-cards-whatsapp';
             whatsapp.dataset.urduCardsWhatsappStatus = card.id;
-            whatsapp.textContent = 'WhatsApp Status · اسٹیٹس';
-            whatsapp.setAttribute('aria-label', 'Share ' + card.id + ' to WhatsApp Status');
+            whatsapp.textContent = copyText('whatsapp');
+            whatsapp.setAttribute('aria-label', copyText('whatsappLabel', { id: card.id }));
             whatsapp.addEventListener('click', function () { startWhatsAppStatus(card, background, whatsapp); });
 
             var edit = document.createElement('button');
             edit.type = 'button';
             edit.className = 'urdu-cards-edit';
             edit.dataset.urduCardsEdit = card.id;
-            edit.textContent = 'Edit · تبدیل کریں';
-            edit.setAttribute('aria-label', 'Edit ' + card.id + ' in Card Studio');
+            edit.textContent = copyText('edit');
+            edit.setAttribute('aria-label', copyText('editLabel', { id: card.id }));
             edit.addEventListener('click', function () { startEdit(card, background, edit); });
 
             var share = document.createElement('button');
             share.type = 'button';
             share.className = 'urdu-cards-share';
             share.dataset.urduCardsShare = card.id;
-            share.textContent = 'Share link · لنک شیئر کریں';
-            share.setAttribute('aria-label', 'Share ' + card.id);
+            share.textContent = copyText('share');
+            share.setAttribute('aria-label', copyText('shareLabel', { id: card.id }));
             share.addEventListener('click', function () { startShare(card, share); });
 
             actions.appendChild(whatsapp);
@@ -278,7 +332,7 @@
             button.className = 'card-gallery-filter';
             button.dataset.urduCardsFilter = category.id;
             button.setAttribute('aria-pressed', category.id === 'all' ? 'true' : 'false');
-            button.textContent = category.name + ' · ' + category.nameUr;
+            button.textContent = locale() === 'ur' ? category.nameUr : category.name + ' · ' + category.nameUr;
             button.addEventListener('click', function () { selectFilter(button); });
             filters.appendChild(button);
         });

@@ -1,15 +1,18 @@
 const { test, expect } = require('@playwright/test');
+const backgrounds = require('../js/card-background-registry.js').getAllBackgrounds();
+const backgroundCount = backgrounds.length;
+const truckArtCount = backgrounds.filter(background => background.category === 'truck-art').length;
 
-const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, route => route.abort());
 
 async function openGallery(page) {
   await blockExternal(page);
   await page.goto('/urdu-card-gallery', { waitUntil: 'domcontentloaded', timeout: 15000 });
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('See your Urdu on every card');
-  await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(39);
+  await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(backgroundCount);
 }
 
-test('live Urdu updates reuse 39 DOM previews without canvas or image refetch', async ({ page }) => {
+test(`live Urdu updates reuse ${backgroundCount} DOM previews without canvas or image refetch`, async ({ page }) => {
   const requests = [];
   page.on('request', request => {
     requests.push({ url: request.url(), body: request.postData() || '' });
@@ -40,7 +43,7 @@ test('live Urdu updates reuse 39 DOM previews without canvas or image refetch', 
   await page.waitForTimeout(100);
   expect(requests.filter(request => request.url.includes('/assets/card-studio/backgrounds/')).length).toBe(requestsAfterFirstFill);
   expect(requests.filter(request => /\/backgrounds\/[^/]+\.webp(?:\?|$)/.test(request.url))).toHaveLength(0);
-  expect(await page.evaluate(() => window.WriteUrduCardGalleryApp.getDiagnostics())).toMatchObject({ shells: 39, renders: 1, bucket: 'long' });
+  expect(await page.evaluate(() => window.WriteUrduCardGalleryApp.getDiagnostics())).toMatchObject({ shells: backgroundCount, renders: 1, bucket: 'long' });
   expect(await page.evaluate(() => Math.max(0, ...window.__galleryLongTasks))).toBeLessThan(50);
 });
 
@@ -52,7 +55,7 @@ test('filters remain accessible and preserve text', async ({ page }) => {
   await filter.focus();
   await page.keyboard.press('Enter');
   await expect(filter).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('[data-card-gallery-preview]:visible')).toHaveCount(2);
+  await expect(page.locator('[data-card-gallery-preview]:visible')).toHaveCount(truckArtCount);
   await expect(page.locator('[data-card-gallery-preview]:visible .card-gallery-preview-text').first()).toHaveText('امید کا چراغ جلائے رکھیں');
 });
 

@@ -7,11 +7,45 @@
     var EXAMPLE_TEXT = 'محبت روشنی ہے';
     var HANDOFF_TTL = 30 * 60 * 1000;
     var LEGACY_INCOMING_KEY = 'writeUrdu.cardGallery.incoming.v1';
+    var COPY = {
+        en: {
+            designs: ' designs', example: 'Example preview', shorter: 'Better for shorter text',
+            useDesign: 'Use this design · یہ ڈیزائن استعمال کریں', useDesignLabel: 'Use {name} design in Card Studio',
+            tooLong: 'This text is longer than {max} characters. Shorten it before choosing a card so nothing is silently removed.',
+            unavailable: 'This browser could not prepare Card Studio. Your text remains here.', empty: 'Write some Urdu before choosing a design.',
+            opening: 'Opening Card Studio with your design…', restoredLong: 'Your text is here, but it is longer than {max} characters. Shorten it to {max} characters or fewer to choose a card.',
+            restored: 'Your text is ready. Choose a design below.', fits: 'Your text now fits. Choose a design below.'
+        },
+        ur: {
+            designs: ' ڈیزائنز', example: 'مثالی پیش منظر', shorter: 'مختصر متن کے لیے بہتر',
+            useDesign: 'یہ ڈیزائن استعمال کریں', useDesignLabel: 'کارڈ اسٹوڈیو میں {name} ڈیزائن استعمال کریں',
+            tooLong: 'یہ متن {max} حروف سے زیادہ ہے۔ کارڈ منتخب کرنے سے پہلے اسے مختصر کریں تاکہ کوئی حصہ حذف نہ ہو۔',
+            unavailable: 'یہ براؤزر کارڈ اسٹوڈیو تیار نہیں کر سکا۔ آپ کا متن یہیں محفوظ ہے۔', empty: 'ڈیزائن منتخب کرنے سے پہلے کچھ اردو لکھیں۔',
+            opening: 'آپ کے ڈیزائن کے ساتھ کارڈ اسٹوڈیو کھولا جا رہا ہے…', restoredLong: 'آپ کا متن موجود ہے، مگر یہ {max} حروف سے زیادہ ہے۔ کارڈ منتخب کرنے کے لیے اسے {max} یا اس سے کم حروف تک مختصر کریں۔',
+            restored: 'آپ کا متن تیار ہے۔ نیچے کوئی ڈیزائن منتخب کریں۔', fits: 'آپ کا متن اب موزوں ہے۔ نیچے کوئی ڈیزائن منتخب کریں۔'
+        }
+    };
+
+    function locale() {
+        return document.documentElement.lang === 'ur' ? 'ur' : 'en';
+    }
+
+    function copyText(key, values) {
+        var value = COPY[locale()][key];
+        Object.keys(values || {}).forEach(function (name) { value = value.split('{' + name + '}').join(values[name]); });
+        return value;
+    }
 
     function normalizedPath() {
-        return String(root.location && root.location.pathname || '/')
+        var pathname = String(root.location && root.location.pathname || '/');
+        if (root.WriteUrduLocaleRoute) return root.WriteUrduLocaleRoute.productPath(pathname);
+        return pathname.replace(/^\/urdu(?=\/|$)/, '')
             .replace(/\.html$/i, '')
             .replace(/\/$/, '') || '/';
+    }
+
+    function localizedRoute(productPath) {
+        return root.WriteUrduLocaleRoute && root.WriteUrduLocaleRoute.href(productPath, locale()) || productPath;
     }
 
     function mount() {
@@ -78,7 +112,7 @@
         }
 
         function updateCount(visible) {
-            count.textContent = visible + ' designs';
+            count.textContent = visible + copyText('designs');
         }
 
         function createPreview(background, target) {
@@ -126,7 +160,7 @@
 
             var example = document.createElement('span');
             example.className = 'card-gallery-example-label';
-            example.textContent = 'Example preview';
+            example.textContent = copyText('example');
             art.appendChild(example);
 
             var details = document.createElement('div');
@@ -134,7 +168,7 @@
             var names = document.createElement('div');
             names.className = 'card-gallery-card-names';
             var name = document.createElement('h2');
-            name.textContent = background.name;
+            name.textContent = locale() === 'ur' ? background.nameUr : background.name;
             var nameUr = document.createElement('span');
             nameUr.lang = 'ur';
             nameUr.dir = 'rtl';
@@ -144,7 +178,7 @@
 
             var fit = document.createElement('span');
             fit.className = 'card-gallery-fit';
-            fit.textContent = 'Better for shorter text';
+            fit.textContent = copyText('shorter');
             fit.hidden = true;
             details.appendChild(names);
             details.appendChild(fit);
@@ -154,8 +188,8 @@
             choose.className = 'card-gallery-choose';
             choose.dataset.cardGalleryChoose = background.id;
             choose.disabled = true;
-            choose.textContent = 'Use this design · یہ ڈیزائن استعمال کریں';
-            choose.setAttribute('aria-label', 'Use ' + background.name + ' design in Card Studio');
+            choose.textContent = copyText('useDesign');
+            choose.setAttribute('aria-label', copyText('useDesignLabel', { name: locale() === 'ur' ? background.nameUr : background.name }));
             choose.addEventListener('click', function () { startHandoff(background, choose); });
             article.appendChild(art);
             article.appendChild(details);
@@ -170,7 +204,7 @@
             var raw = String(input.value || '').replace(/\r\n?/g, '\n');
             if (raw.length > maxTextLength) {
                 state.overLimit = true;
-                status.textContent = 'This text is longer than ' + maxTextLength + ' characters. Shorten it before choosing a card so nothing is silently removed.';
+                status.textContent = copyText('tooLong', { max: maxTextLength });
                 scheduleRefresh();
                 input.focus();
                 return;
@@ -179,7 +213,7 @@
             state.bucket = core.classifyText(state.text);
             state.overLimit = false;
             if (!state.text.trim() || !handoff || typeof handoff.transfer !== 'function') {
-                status.textContent = state.text.trim() ? 'This browser could not prepare Card Studio. Your text remains here.' : 'Write some Urdu before choosing a design.';
+                status.textContent = state.text.trim() ? copyText('unavailable') : copyText('empty');
                 return;
             }
             telemetry('card_gallery_design_selected', background);
@@ -197,9 +231,9 @@
             }
             var result = handoff.transfer({
                 sourceWorkspace: 'card-gallery',
-                sourceRoute: '/urdu-card-gallery',
+                sourceRoute: localizedRoute('/urdu-card-gallery'),
                 targetWorkspace: 'card-studio',
-                targetRoute: '/urdu-card-studio',
+                targetRoute: localizedRoute('/urdu-card-studio'),
                 actionId: 'gallery-to-card',
                 kind: 'visual-project-seed',
                 payload: { text: state.text, backgroundId: background.id },
@@ -213,7 +247,7 @@
                 }
             });
             if (!result.ok) {
-                status.textContent = 'This browser could not prepare Card Studio. Your text remains here.';
+                status.textContent = copyText('unavailable');
                 return;
             }
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.trackContinuationPath === 'function') {
@@ -221,7 +255,7 @@
             }
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = 'Opening Card Studio with your design…';
+            status.textContent = copyText('opening');
             telemetry('card_gallery_handoff_started', background);
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.flush === 'function') root.WriteUrduTelemetry.flush(true);
             root.location.href = root.location.protocol === 'file:' ? 'urdu-card-studio.html' : (result.route || '/urdu-card-studio');
@@ -291,8 +325,8 @@
                 continuationPath('payload_restored', incoming.envelope);
             }
             status.textContent = state.overLimit
-                ? 'Your text is here, but it is longer than ' + maxTextLength + ' characters. Shorten it to ' + maxTextLength + ' characters or fewer to choose a card.'
-                : 'Your text is ready. Choose a design below.';
+                ? copyText('restoredLong', { max: maxTextLength })
+                : copyText('restored');
             return true;
         }
 
@@ -308,9 +342,9 @@
                 if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.engage === 'function') root.WriteUrduTelemetry.engage();
             }
             if (state.overLimit) {
-                status.textContent = 'This text is longer than ' + maxTextLength + ' characters. Shorten it before choosing a card so nothing is silently removed.';
+                status.textContent = copyText('tooLong', { max: maxTextLength });
             } else if (wasOverLimit) {
-                status.textContent = state.bucket === 'empty' ? '' : 'Your text now fits. Choose a design below.';
+                status.textContent = state.bucket === 'empty' ? '' : copyText('fits');
             }
             scheduleRefresh();
         }
@@ -335,7 +369,7 @@
             button.className = 'card-gallery-filter';
             button.dataset.cardGalleryFilter = category.id;
             button.setAttribute('aria-pressed', category.id === 'all' ? 'true' : 'false');
-            button.textContent = category.name + ' · ' + category.nameUr;
+            button.textContent = locale() === 'ur' ? category.nameUr : category.name + ' · ' + category.nameUr;
             button.addEventListener('click', function () { selectFilter(button); });
             filters.appendChild(button);
         });

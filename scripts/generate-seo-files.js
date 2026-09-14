@@ -6,8 +6,9 @@ const localeConfig = require('../locale.config.js');
 const ur = require('../locale/ur.js');
 const Route = require('../js/locale-route.js');
 const root = path.resolve(__dirname, '..');
+const generatedRoutes = localeConfig.generatedRoutes || localeConfig.phase1Routes;
 const englishUrls = config.pages.filter(page => page.indexable).map(page => ({ page, url: config.canonical(page.path), lastmod: page.lastmod }));
-const urduUrls = localeConfig.phase1Routes.map(productPath => {
+const urduUrls = generatedRoutes.map(productPath => {
   const page = config.byPath[productPath];
   const localeRecord = localeConfig.routes[productPath];
   const copy = ur.routes[productPath];
