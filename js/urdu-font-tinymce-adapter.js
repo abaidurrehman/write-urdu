@@ -18,9 +18,22 @@
 
     function registry() { return root && root.WriteUrduFontRegistry || null; }
 
+    function isEditorRecord(record) {
+        if (!record || record.licenseStatus !== 'approved-web') return false;
+        return record.capabilities.indexOf('editor') !== -1 || record.id === 'scheherazade-new';
+    }
+
     function editorRecords() {
         var value = registry();
-        return value ? value.getForCapability('editor', { webOnly: true, excludeCandidates: true }) : [];
+        if (!value) return [];
+        var records = value.getForCapability('editor', { webOnly: true, excludeCandidates: true });
+        // Rich Editor historically exposed "Scheherazade" while the creation
+        // tools already used the current family name "Scheherazade New".
+        // Resolve that legacy choice through the registry without mutating the
+        // proven Slice 1 registry or inventing a second font record.
+        var scheherazade = value.get('scheherazade-new');
+        if (isEditorRecord(scheherazade) && !records.some(function (record) { return record.id === scheherazade.id; })) records.push(scheherazade);
+        return records.sort(function (a, b) { return a.priority - b.priority; });
     }
 
     function buildFontFormats() {
@@ -68,7 +81,7 @@
 
     function loadFont(editor, value, weight) {
         var record = registry() && registry().get(value);
-        if (!record || record.capabilities.indexOf('editor') === -1 || record.licenseStatus !== 'approved-web') {
+        if (!isEditorRecord(record)) {
             return Promise.resolve({ ok:false, code:'not-editor-approved', id:record && record.id || null });
         }
         var loader = createIframeLoader(editor);
@@ -104,7 +117,7 @@
             editor.on('NodeChange', function () {
                 var family = selectedFamily(editor);
                 var record = registry().get(family);
-                if (record && record.capabilities.indexOf('editor') !== -1) loadFont(editor, record.id);
+                if (isEditorRecord(record)) loadFont(editor, record.id);
             });
         }
         if (root.document && root.document.documentElement) root.document.documentElement.setAttribute('data-wu-editor-font-registry', 'true');
