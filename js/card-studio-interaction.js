@@ -222,7 +222,8 @@
     }
     function loadBackgroundLibrary() {
         var path = (window.location.pathname || '').replace(/\/+$/, '').replace(/\.html$/, '');
-        if (path !== '/urdu-card-studio' && path !== '/urdu/urdu-card-studio') return;
+        var allowedPaths = ['/urdu-card-studio', '/urdu/urdu-card-studio', '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker'];
+        if (allowedPaths.indexOf(path) === -1) return;
         function loadLibrary() {
             if (document.querySelector('script[data-card-background-library]')) return;
             var libraryScript = document.createElement('script');

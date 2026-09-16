@@ -46,6 +46,31 @@ test('background applies through editable local image pipeline and remains expor
   expect(download.suggestedFilename()).toMatch(/\.png$/);
 });
 
+test('designer background collection also mounts on the WhatsApp Status and Instagram Post makers', async ({ page }) => {
+  await blockExternal(page);
+  await page.goto('/urdu-whatsapp-status-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect(page.locator('[data-card-built-in-library]')).toBeVisible();
+  await expect(page.locator('[data-card-built-in-background]')).toHaveCount(backgroundCount);
+  await page.locator('#cardText').fill('محبت روشنی ہے');
+  await page.locator('[data-card-built-in-background="black-gold-classic"]').click();
+  await expect(page.locator('[data-card-built-in-background="black-gold-classic"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => page.evaluate(() => {
+    const state = window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState();
+    return state && state.background.type;
+  })).toBe('image');
+
+  await page.goto('/urdu-instagram-post-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect(page.locator('[data-card-built-in-library]')).toBeVisible();
+  await expect(page.locator('[data-card-built-in-background]')).toHaveCount(backgroundCount);
+  await page.locator('#cardText').fill('محبت روشنی ہے');
+  await page.locator('[data-card-built-in-background="black-gold-classic"]').click();
+  await expect(page.locator('[data-card-built-in-background="black-gold-classic"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => page.evaluate(() => {
+    const state = window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState();
+    return state && state.background.type;
+  })).toBe('image');
+});
+
 test('mobile collection scrolls internally without page overflow and stays route-scoped', async ({ page, isMobile }) => {
   await blockExternal(page);
   await openStudio(page);
