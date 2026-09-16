@@ -18,7 +18,8 @@
     function mount(window) {
         var document = window.document;
         var path = (window.location.pathname || '').replace(/\/+$/, '').replace(/\.html$/, '');
-        if (path !== '/urdu-card-studio' && path !== '/urdu/urdu-card-studio') return false;
+        var allowedPaths = ['/urdu-card-studio', '/urdu/urdu-card-studio', '/urdu-whatsapp-status-maker', '/urdu-instagram-post-maker'];
+        if (allowedPaths.indexOf(path) === -1) return false;
 
         var root = document.querySelector('[data-card-studio]');
         if (!root) return false;
@@ -152,7 +153,7 @@
         var style = document.createElement('style');
         style.id = 'cardStudioBackgroundLibraryStyles';
         style.textContent = [
-            '.card-studio-background-library{margin:0 0 18px;padding:16px;border:1px solid rgba(18,68,50,.18);border-radius:16px;background:linear-gradient(180deg,rgba(239,249,244,.96),rgba(248,251,249,.96));box-shadow:0 5px 18px rgba(22,51,42,.06)}',
+            '.card-studio-background-library{margin:0 0 18px;padding:16px;border:1px solid rgba(18,68,50,.18);border-radius:16px;background:linear-gradient(180deg,rgba(239,249,244,.96),rgba(248,251,249,.96));box-shadow:0 5px 18px rgba(22,51,42,.06);min-width:0}',
             '.card-studio-background-library-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:11px}',
             '.card-studio-background-library-title{margin:0;font-size:1rem;color:#173e31}',
             '.card-studio-background-library-help{margin:4px 0 0;font-size:.8rem;line-height:1.45;color:#526b60}',
@@ -179,7 +180,7 @@
     function renderLibrary() {
         if (root.querySelector('[data-card-built-in-library]')) return;
         var templateGrid = root.querySelector('[data-card-templates]');
-        var templateSection = templateGrid && templateGrid.closest('section[data-card-step="format"]');
+        var templateSection = templateGrid && templateGrid.closest('section');
         if (!templateSection || !templateSection.parentNode) return;
 
         injectStyles();
