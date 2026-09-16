@@ -24,7 +24,8 @@
             '/how-to-share-urdu-writing-online', '/urdu-phrases-copy-paste'
         ],
         create: [
-            '/urdu-card-studio', '/urdu-templates', '/urdu-writing-templates', '/urdu/urdu-writing-templates',
+            '/urdu-card-studio', '/urdu-card-gallery', '/urdu-cards', '/urdu-templates',
+            '/urdu-writing-templates', '/urdu/urdu-writing-templates',
             '/stylish-urdu-text-generator', '/urdu-name-art-maker', '/urdu-whatsapp-status-maker',
             '/urdu-instagram-post-maker', '/urdu-invoice-generator', '/qr-code-generator',
             '/urdu-text-cleaner', '/urdu-ocr', '/tools/urdu-voice-typing', '/tools/inpage-unicode-converter'
@@ -34,7 +35,7 @@
             '/write-urdu-search', '/write-urdu-sitemap', '/sign-in', '/my-documents',
             '/community-guidelines', '/my-publications',
             '/tools/urdu-english-voice-translator', '/tools/audio-to-text-translator', '/tools/urdu-english-dictionary',
-            '/urdu-bill-generator', '/urdu-card-gallery', '/urdu-cards'
+            '/urdu-bill-generator'
         ]
     };
 

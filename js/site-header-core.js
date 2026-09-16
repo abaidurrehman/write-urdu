@@ -394,7 +394,7 @@
     }
 
     function loadAds() {
-        if (!document.querySelector('ins.adsbygoogle') || document.querySelector('script[src="js/ads.js"]')) return;
+        if (window.WriteUrduAds || document.querySelector('script[src="js/ads.js"], script[src="/js/ads.js"]')) return;
         var ads = document.createElement('script');
         ads.src = '/js/ads.js';
         ads.defer = true;

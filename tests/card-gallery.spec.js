@@ -12,6 +12,13 @@ async function openGallery(page) {
   await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(backgroundCount);
 }
 
+test('live Card Gallery loads the protected Create-page ad placement', async ({ page }) => {
+  await blockExternal(page);
+  await page.goto('/urdu-card-gallery', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect(page.locator('body')).toHaveAttribute('data-wu-monetization-type', 'create');
+  await expect(page.locator('.wu-header-ad[data-wu-ad-placement="tool_post_workspace"] ins.adsbygoogle')).toHaveCount(1);
+});
+
 test(`live Urdu updates reuse ${backgroundCount} DOM previews without canvas or image refetch`, async ({ page }) => {
   const requests = [];
   page.on('request', request => {

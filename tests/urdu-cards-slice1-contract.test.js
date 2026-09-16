@@ -10,7 +10,6 @@ const cards = require('../js/urdu-cards-data.js').getAllCards();
 const html = read('urdu-cards.html');
 const script = read('js/urdu-cards.js');
 const endpoint = read('functions/api/events.js');
-const ads = read('js/ads.js');
 const discoveryGuide = (html.match(/<section class="card-discovery-guide"[^]*?<\/section>/) || [''])[0];
 
 assert.match(html, /<meta name="robots" content="index,follow">/, 'WU-CARD-GALLERY-001 P0.9 founder exception (2026-09-13) made this route indexable');
@@ -46,6 +45,6 @@ assert.ok(endpoint.includes(`'urdu-cards-to-card'`), 'continuation recommendatio
 assert.ok(endpoint.includes(`'urdu-cards-v1'`), 'continuation path version allowlist missing urdu-cards-v1');
 assert.ok(endpoint.includes(`'wu-urdu-cards-s1-2026-09-13-v1'`), 'continuation release marker allowlist missing urdu-cards marker');
 
-assert.match(ads, /'\/urdu-cards'/, 'urdu-cards must stay ad-light like other active creation surfaces');
+assert.equal(require('../js/ads.js').resolvePageType('/urdu-cards'), 'create', 'urdu-cards must use the protected Create-page ad placement');
 
 console.log('Urdu Cards Slice 1 handoff/wiring contract passed.');

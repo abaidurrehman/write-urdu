@@ -12,6 +12,13 @@ async function openCards(page) {
   await expect(page.locator('.card-gallery-card')).toHaveCount(cardCount);
 }
 
+test('ready-made cards load the protected Create-page ad placement', async ({ page }) => {
+  await blockExternal(page);
+  await page.goto('/urdu-cards', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect(page.locator('body')).toHaveAttribute('data-wu-monetization-type', 'create');
+  await expect(page.locator('.wu-header-ad[data-wu-ad-placement="tool_post_workspace"] ins.adsbygoogle')).toHaveCount(1);
+});
+
 test('ready-made cards render fixed text without any canvas', async ({ page }) => {
   await openCards(page);
   expect(await page.locator('canvas').count()).toBe(0);
