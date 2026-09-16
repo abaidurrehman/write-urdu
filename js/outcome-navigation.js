@@ -33,13 +33,13 @@
                 theme: 'create'
             },
             items: [
-                { href: '/urdu-card-studio', icon: 'card', label: { en: 'Make a poetry, quote or announcement image', ur: 'شاعری، اقتباس یا اعلان کی تصویر بنائیں' }, tool: { en: 'Card Studio', ur: 'کارڈ اسٹوڈیو' }, excludeRole: 'facebook' },
+                { href: '/urdu-cards', icon: 'grid', label: { en: 'Browse ready-made Urdu cards', ur: 'تیار شدہ اردو کارڈز دیکھیں' }, tool: { en: 'Ready-Made Urdu Cards', ur: 'تیار اردو کارڈز' }, section: { en: 'Cards', ur: 'کارڈز' } },
                 { href: '/urdu-card-gallery', icon: 'card', label: { en: 'Compare your Urdu text across card designs', ur: 'اپنے اردو متن کا مختلف ڈیزائنز میں موازنہ کریں' }, tool: { en: 'Card Gallery', ur: 'کارڈ گیلری' } },
-                { href: '/urdu-cards', icon: 'grid', label: { en: 'Browse ready-made Urdu cards', ur: 'تیار شدہ اردو کارڈز دیکھیں' }, tool: { en: 'Ready-Made Urdu Cards', ur: 'تیار اردو کارڈز' } },
-                { href: '/urdu-whatsapp-status-maker', icon: 'phone', label: { en: 'Create a WhatsApp Status', ur: 'واٹس ایپ اسٹیٹس بنائیں' }, tool: { en: 'WhatsApp Status Maker', ur: 'واٹس ایپ اسٹیٹس میکر' } },
+                { href: '/urdu-card-studio', icon: 'card', label: { en: 'Make a poetry, quote or announcement image', ur: 'شاعری، اقتباس یا اعلان کی تصویر بنائیں' }, tool: { en: 'Card Studio', ur: 'کارڈ اسٹوڈیو' }, excludeRole: 'facebook' },
+                { href: '/urdu-whatsapp-status-maker', icon: 'phone', label: { en: 'Create a WhatsApp Status', ur: 'واٹس ایپ اسٹیٹس بنائیں' }, tool: { en: 'WhatsApp Status Maker', ur: 'واٹس ایپ اسٹیٹس میکر' }, section: { en: 'Social posts', ur: 'سوشل پوسٹس' } },
                 { href: '/urdu-instagram-post-maker', icon: 'image', label: { en: 'Create an Instagram post', ur: 'انسٹاگرام پوسٹ بنائیں' }, tool: { en: 'Instagram Post Maker', ur: 'انسٹاگرام پوسٹ میکر' } },
-                { href: '/urdu-card-studio?role=facebook', icon: 'image', label: { en: 'Create a Facebook post', ur: 'فیس بک پوسٹ بنائیں' }, tool: { en: 'Card Studio · Facebook', ur: 'کارڈ اسٹوڈیو · فیس بک' }, role: 'facebook' },
-                { href: '/urdu-name-art-maker', icon: 'name', label: { en: 'Make Urdu Name Art or a profile image', ur: 'اردو نام آرٹ یا پروفائل تصویر بنائیں' }, tool: { en: 'Urdu Name Art', ur: 'اردو نام آرٹ' } },
+                { href: '/urdu-card-studio?role=facebook', icon: 'image', label: { en: 'Create a Facebook post', ur: 'فیس بک پوسٹ بنائیں' }, tool: { en: 'Facebook post', ur: 'فیس بک پوسٹ' }, role: 'facebook' },
+                { href: '/urdu-name-art-maker', icon: 'name', label: { en: 'Make Urdu Name Art or a profile image', ur: 'اردو نام آرٹ یا پروفائل تصویر بنائیں' }, tool: { en: 'Urdu Name Art', ur: 'اردو نام آرٹ' }, section: { en: 'Design tools', ur: 'ڈیزائن ٹولز' } },
                 { href: '/stylish-urdu-text-generator', icon: 'sparkle', label: { en: 'Create stylish copyable Urdu text', ur: 'خوب صورت کاپی ہونے والا اردو متن بنائیں' }, tool: { en: 'Stylish Urdu Text', ur: 'خوب صورت اردو متن' } },
                 { href: '/urdu-templates', icon: 'grid', label: { en: 'Start from a ready-made design', ur: 'تیار ڈیزائن سے شروع کریں' }, tool: { en: 'Urdu Templates', ur: 'اردو ٹیمپلیٹس' } },
                 { href: '/qr-code-generator', icon: 'qr', label: { en: 'Turn text or a link into a QR code', ur: 'متن یا لنک کو QR کوڈ بنائیں' }, tool: { en: 'QR Code Generator', ur: 'QR کوڈ جنریٹر' } }
@@ -240,7 +240,8 @@
     function renderItem(item, lang) {
         var isActive = active(item);
         var className = 'wu-outcome-link' + (isActive ? ' is-active' : '');
-        return '<a class="' + className + '" href="' + localizedHref(item.href) + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
+        var sectionLabel = item.section ? '<span class="wu-outcome-section-label">' + item.section[lang] + '</span>' : '';
+        return sectionLabel + '<a class="' + className + '" href="' + localizedHref(item.href) + '"' + (isActive ? ' aria-current="page"' : '') + '>' +
             icon(item.icon) +
             '<span class="wu-outcome-link-copy"><strong>' + item.label[lang] + '</strong><small>' + item.tool[lang] + '</small></span>' +
         '</a>';

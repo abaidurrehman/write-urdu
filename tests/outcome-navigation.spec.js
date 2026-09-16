@@ -35,6 +35,12 @@ test('global navigation is organized by Write / Create / Tools / Learn outcomes'
   await groups.nth(1).locator('.wu-outcome-toggle').click();
   await expect(groups.nth(1).locator('a[href="/urdu-card-studio"] strong')).toContainText('Make a poetry, quote or announcement image');
   await expect(groups.nth(1).locator('a[href="/urdu-card-studio?role=facebook"]')).toContainText('Create a Facebook post');
+  const createSectionLabels = groups.nth(1).locator('.wu-outcome-section-label');
+  await expect(createSectionLabels).toHaveText(['Cards', 'Social posts', 'Design tools']);
+  const createLinks = groups.nth(1).locator('.wu-outcome-link');
+  await expect(createLinks.first()).toHaveAttribute('href', '/urdu-cards');
+  await expect(createLinks.nth(1)).toHaveAttribute('href', '/urdu-card-gallery');
+  await expect(createLinks.nth(2)).toHaveAttribute('href', '/urdu-card-studio');
 
   await groups.nth(2).locator('.wu-outcome-toggle').click();
   await expect(groups.nth(2).locator('a[href="/urdu-invoice-generator"] strong')).toHaveText('Create an Urdu or English invoice');
@@ -184,4 +190,23 @@ test('mobile mega-menu panel hides the preview card', async ({ page }) => {
   await write.locator('.wu-outcome-toggle').click();
   await expect(write.locator('.wu-nav-panel-preview')).toBeHidden();
   await expect(write.locator('.wu-nav-panel-list')).toBeVisible();
+});
+
+test('mobile Create panel section labels render below the sticky header, not clipped behind it', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await open(page, '/');
+  await openMobileMenuIfNeeded(page);
+
+  const create = page.locator('[data-wu-nav-group="create"]');
+  await create.locator('.wu-outcome-toggle').click();
+
+  const headerBottom = await page.locator('.wu-site-header').evaluate(el => el.getBoundingClientRect().bottom);
+  const labels = create.locator('.wu-outcome-section-label');
+  const count = await labels.count();
+  expect(count).toBeGreaterThanOrEqual(3);
+  for (let i = 0; i < count; i += 1) {
+    const box = await labels.nth(i).boundingBox();
+    expect(box, `section label ${i} must have a layout box`).not.toBeNull();
+    expect(box.y, `section label ${i} must render below the sticky header`).toBeGreaterThanOrEqual(headerBottom);
+  }
 });
