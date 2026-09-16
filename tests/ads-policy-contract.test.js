@@ -7,6 +7,7 @@ const adsPath = path.join(root, 'js', 'ads.js');
 const adsSource = fs.readFileSync(adsPath, 'utf8');
 const ads = require(adsPath);
 const writeMonetization = fs.readFileSync(path.join(root, 'js', 'write-monetization.js'), 'utf8');
+const siteHeaderCore = fs.readFileSync(path.join(root, 'js', 'site-header-core.js'), 'utf8');
 const mainSource = fs.readFileSync(path.join(root, 'main.js'), 'utf8');
 const inputModeSource = fs.readFileSync(path.join(root, 'js', 'input-mode.js'), 'utf8');
 const v2ShellCss = fs.readFileSync(path.join(root, 'css', 'v2-shell.css'), 'utf8');
@@ -27,6 +28,8 @@ assert.strictEqual(ads.resolvePageType('/urdu-keyboard'), 'write', 'Urdu Keyboar
 assert.strictEqual(ads.resolvePageType('/roman-urdu-transliteration'), 'learn', 'Roman Urdu guide must be a Learn surface');
 assert.strictEqual(ads.resolvePageType('/urdu-alphabet'), 'learn', 'Urdu Alphabet must be a Learn surface');
 assert.strictEqual(ads.resolvePageType('/urdu-card-studio'), 'create', 'Card Studio must be a Create surface');
+assert.strictEqual(ads.resolvePageType('/urdu-card-gallery'), 'create', 'Public Card Gallery must use the protected Create-page placement');
+assert.strictEqual(ads.resolvePageType('/urdu-cards'), 'create', 'Public ready-made Cards must use the protected Create-page placement');
 assert.strictEqual(ads.resolvePageType('/urdu-invoice-generator'), 'create', 'Invoice Generator must be a Create surface');
 assert.strictEqual(ads.resolvePageType('/write-urdu-privacy'), 'trust', 'Privacy must not be monetized as a content page');
 assert.strictEqual(ads.resolvePageType('/changelog'), 'trust', 'Customer changelog must remain an ad-free trust/product-information surface');
@@ -36,7 +39,6 @@ assert.strictEqual(ads.resolvePageType('/my-publications'), 'trust', 'My Publica
 assert.strictEqual(ads.resolvePageType('/tools/urdu-english-voice-translator'), 'trust', 'Voice Translator preview must stay ad-free during acceptance review');
 assert.strictEqual(ads.resolvePageType('/tools/audio-to-text-translator'), 'trust', 'Audio Translator preview must stay ad-free during acceptance review');
 assert.strictEqual(ads.resolvePageType('/tools/urdu-english-dictionary'), 'trust', 'Dictionary preview must stay ad-free during acceptance review');
-assert.strictEqual(ads.resolvePageType('/urdu-card-gallery'), 'trust', 'Card Gallery preview must stay ad-free during validation');
 assert.strictEqual(ads.resolvePageType('/urdu-writers'), 'trust', 'Urdu Writers hub must be ad-free until content density is deliberately promoted to a monetized page type');
 assert.strictEqual(ads.resolvePageType('/urdu-writers/some-slug'), 'trust', 'Urdu Writers detail pages must be ad-free until content density is deliberately promoted to a monetized page type');
 assert.strictEqual(ads.resolvePageType('/urdu-writers/category/poetry'), 'trust', 'Urdu Writers category pages must be ad-free until content density is deliberately promoted to a monetized page type');
@@ -56,6 +58,8 @@ assert.match(adsSource, /data-wu-design-ad-slot/, 'Design-system-created ad regi
 assert.match(adsSource, /card-studio-workspace|card-studio-shell/, 'Card Studio needs a safe post-workspace placement anchor');
 assert.match(adsSource, /qr-workspace|qr-generator-shell/, 'QR Generator needs a safe post-workspace placement anchor');
 assert.doesNotMatch(adsSource, /data-ad-channel\s*=/, 'Do not invent AdSense custom-channel IDs before channels exist in the publisher account');
+assert.match(siteHeaderCore, /window\.WriteUrduAds\s*\|\|\s*document\.querySelector/, 'Shared shell must load the AdSense policy runtime even when the page has no pre-rendered slot');
+assert.doesNotMatch(siteHeaderCore, /!document\.querySelector\(['"]ins\.adsbygoogle['"]\)/, 'AdSense policy bootstrap must not depend on an existing ad slot');
 
 // Regression contract for the 2026-07-11 monetization incident: the major
 // cleanup removed advertising from the three highest-value writing surfaces.
@@ -103,6 +107,12 @@ const registryLines = fs.readFileSync(registryPath, 'utf8').trim().split(/\r?\n/
 const registryRoutes = registryLines.map(line => line.split(',')[1]).filter(Boolean);
 const unclassified = registryRoutes.filter(route => ads.resolvePageType(route) === 'unclassified');
 assert.deepStrictEqual(unclassified, [], `Every registered public route must have a monetization type: ${unclassified.join(', ')}`);
+registryLines.forEach(line => {
+    const [sourceFile, route] = line.split(',');
+    if (!sourceFile || !route) return;
+    const source = fs.readFileSync(path.join(root, sourceFile), 'utf8');
+    assert.match(source, /(?:site-header\.js|\/js\/ads\.js|js\/ads\.js)/, `${route} must reach the shared AdSense policy runtime`);
+});
 
 const siteHeader = fs.readFileSync(path.join(root, 'site-header.js'), 'utf8');
 assert.match(siteHeader, /script\[src=\\?"js\/ads\.js\\?"\]/, 'Shared shell must keep the AdSense loader single-instance guard');
