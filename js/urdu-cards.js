@@ -16,7 +16,7 @@
             copied: 'Link copied.',
             shared: 'Share sheet opened.',
             edit: 'Make it mine · اپنی مرضی سے بنائیں',
-            editLabel: 'Personalize {id} in Card Studio',
+            editLabel: 'Personalize {id}',
             image: 'Share image · تصویر شیئر کریں',
             imageLabel: 'Share {id} as an image',
             imagePreparing: 'Preparing image…',
@@ -39,7 +39,14 @@
             browseCta: 'Browse 157 cards',
             ownTitle: 'Use my own words',
             ownCopy: 'Type or paste your Urdu once, then compare it across every card design before you choose.',
-            ownCta: 'Use my words'
+            ownCta: 'Use my words',
+            personalizeTitle: 'Make this card yours',
+            personalizeCopy: 'Change the Urdu words below. Your edit stays in this browser unless you choose to share the image or continue to Card Studio.',
+            personalizeLabel: 'Your Urdu message',
+            personalizeShare: 'Share this image',
+            personalizeAdvanced: 'More editing in Card Studio',
+            personalizeClose: 'Close personalization',
+            personalizeEmpty: 'Add some Urdu text before sharing or continuing.'
         },
         ur: {
             cards: ' کارڈز',
@@ -49,7 +56,7 @@
             copied: 'لنک کاپی ہو گیا۔',
             shared: 'شیئر مینو کھل گیا۔',
             edit: 'اپنی مرضی سے بنائیں',
-            editLabel: 'کارڈ اسٹوڈیو میں {id} کارڈ اپنی مرضی سے بنائیں',
+            editLabel: '{id} کارڈ اپنی مرضی سے بنائیں',
             image: 'تصویر شیئر کریں',
             imageLabel: '{id} کارڈ بطور تصویر شیئر کریں',
             imagePreparing: 'تصویر تیار کی جا رہی ہے…',
@@ -72,7 +79,14 @@
             browseCta: '157 کارڈز دیکھیں',
             ownTitle: 'اپنا پیغام استعمال کریں',
             ownCopy: 'اپنا اردو متن ایک بار لکھیں یا پیسٹ کریں، پھر منتخب کرنے سے پہلے اسے تمام کارڈ ڈیزائنز پر دیکھیں۔',
-            ownCta: 'اپنا پیغام استعمال کریں'
+            ownCta: 'اپنا پیغام استعمال کریں',
+            personalizeTitle: 'اس کارڈ کو اپنا بنائیں',
+            personalizeCopy: 'نیچے اردو الفاظ تبدیل کریں۔ جب تک آپ تصویر شیئر یا کارڈ اسٹوڈیو نہ کھولیں، یہ تبدیلی اسی براؤزر میں رہتی ہے۔',
+            personalizeLabel: 'آپ کا اردو پیغام',
+            personalizeShare: 'یہ تصویر شیئر کریں',
+            personalizeAdvanced: 'کارڈ اسٹوڈیو میں مزید ترمیم',
+            personalizeClose: 'ذاتی تبدیلی بند کریں',
+            personalizeEmpty: 'شیئر کرنے یا آگے بڑھنے سے پہلے کچھ اردو متن لکھیں۔'
         }
     };
 
@@ -290,10 +304,11 @@
             });
         }
 
-        function startImageShare(card, background, button) {
+        function startImageShare(card, background, button, statusTarget) {
+            var output = statusTarget || status;
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = copyText('imagePreparing');
+            output.textContent = copyText('imagePreparing');
             track('card_image_share_attempted', {
                 card_id: card.id,
                 background_id: card.backgroundId,
@@ -305,21 +320,156 @@
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
                 if (result.result === 'shared') {
-                    status.textContent = copyText('imageShared');
+                    output.textContent = copyText('imageShared');
                     track('card_image_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'native_share' });
                 } else if (result.result === 'downloaded') {
-                    status.textContent = copyText('imageDownloaded');
+                    output.textContent = copyText('imageDownloaded');
                     track('card_image_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'download_fallback' });
                 } else {
-                    status.textContent = copyText('imageCancelled');
+                    output.textContent = copyText('imageCancelled');
                     track('card_image_share_cancelled', { card_id: card.id, background_id: card.backgroundId });
                 }
             }).catch(function () {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                status.textContent = copyText('imageFailed');
+                output.textContent = copyText('imageFailed');
                 track('card_image_share_failed', { card_id: card.id, background_id: card.backgroundId });
             });
+        }
+
+        function openPersonalizer(card, background, trigger, article) {
+            var previous = document.querySelector('[data-urdu-cards-personalizer]');
+            if (previous) previous.remove();
+
+            var overlay = document.createElement('div');
+            overlay.className = 'urdu-cards-personalizer';
+            overlay.dataset.urduCardsPersonalizer = card.id;
+            overlay.setAttribute('role', 'dialog');
+            overlay.setAttribute('aria-modal', 'true');
+            overlay.setAttribute('aria-labelledby', 'urdu-cards-personalizer-title');
+
+            var panel = document.createElement('div');
+            panel.className = 'urdu-cards-personalizer-panel';
+
+            var header = document.createElement('div');
+            header.className = 'urdu-cards-personalizer-header';
+            var headingWrap = document.createElement('div');
+            var heading = document.createElement('h2');
+            heading.id = 'urdu-cards-personalizer-title';
+            heading.textContent = copyText('personalizeTitle');
+            var intro = document.createElement('p');
+            intro.textContent = copyText('personalizeCopy');
+            headingWrap.appendChild(heading);
+            headingWrap.appendChild(intro);
+            var closeButton = document.createElement('button');
+            closeButton.type = 'button';
+            closeButton.className = 'urdu-cards-personalizer-close';
+            closeButton.setAttribute('aria-label', copyText('personalizeClose'));
+            closeButton.textContent = '×';
+            header.appendChild(headingWrap);
+            header.appendChild(closeButton);
+
+            var body = document.createElement('div');
+            body.className = 'urdu-cards-personalizer-body';
+
+            var preview = article.querySelector('.card-gallery-art').cloneNode(true);
+            preview.classList.add('urdu-cards-personalizer-preview');
+            preview.removeAttribute('aria-hidden');
+            var previewText = preview.querySelector('.card-gallery-preview-text');
+
+            var form = document.createElement('div');
+            form.className = 'urdu-cards-personalizer-form';
+            var label = document.createElement('label');
+            label.setAttribute('for', 'urdu-cards-personalizer-text');
+            label.textContent = copyText('personalizeLabel');
+            var textarea = document.createElement('textarea');
+            textarea.id = 'urdu-cards-personalizer-text';
+            textarea.dataset.urduCardsPersonalizerText = card.id;
+            textarea.lang = 'ur';
+            textarea.dir = 'rtl';
+            textarea.rows = 6;
+            textarea.maxLength = 600;
+            textarea.value = card.textUr;
+            var modalStatus = document.createElement('p');
+            modalStatus.className = 'urdu-cards-personalizer-status';
+            modalStatus.dataset.urduCardsPersonalizerStatus = card.id;
+            modalStatus.setAttribute('role', 'status');
+            modalStatus.setAttribute('aria-live', 'polite');
+
+            var actions = document.createElement('div');
+            actions.className = 'urdu-cards-personalizer-actions';
+            var shareButton = document.createElement('button');
+            shareButton.type = 'button';
+            shareButton.className = 'urdu-cards-personalizer-share';
+            shareButton.dataset.urduCardsPersonalizerShare = card.id;
+            shareButton.textContent = copyText('personalizeShare');
+            var advancedButton = document.createElement('button');
+            advancedButton.type = 'button';
+            advancedButton.className = 'urdu-cards-personalizer-advanced';
+            advancedButton.dataset.urduCardsPersonalizerAdvanced = card.id;
+            advancedButton.textContent = copyText('personalizeAdvanced');
+            actions.appendChild(shareButton);
+            actions.appendChild(advancedButton);
+
+            form.appendChild(label);
+            form.appendChild(textarea);
+            form.appendChild(modalStatus);
+            form.appendChild(actions);
+            body.appendChild(preview);
+            body.appendChild(form);
+            panel.appendChild(header);
+            panel.appendChild(body);
+            overlay.appendChild(panel);
+            document.body.appendChild(overlay);
+            document.body.classList.add('urdu-cards-dialog-open');
+
+            track('card_personalize_opened', { card_id: card.id, background_id: card.backgroundId });
+
+            function personalizedCard() {
+                var text = textarea.value.trim();
+                if (!text) {
+                    modalStatus.textContent = copyText('personalizeEmpty');
+                    return null;
+                }
+                return Object.assign({}, card, { textUr: text });
+            }
+
+            function close(options) {
+                options = options || {};
+                document.removeEventListener('keydown', onKeydown, true);
+                overlay.remove();
+                document.body.classList.remove('urdu-cards-dialog-open');
+                if (!options.skipFocus && trigger && document.contains(trigger)) trigger.focus();
+            }
+
+            function onKeydown(event) {
+                if (event.key === 'Escape') close();
+            }
+
+            textarea.addEventListener('input', function () {
+                previewText.textContent = textarea.value || ' ';
+                modalStatus.textContent = '';
+                var empty = !textarea.value.trim();
+                shareButton.disabled = empty;
+                advancedButton.disabled = empty;
+            });
+            shareButton.addEventListener('click', function () {
+                var edited = personalizedCard();
+                if (!edited) return;
+                startImageShare(edited, background, shareButton, modalStatus);
+            });
+            advancedButton.addEventListener('click', function () {
+                var edited = personalizedCard();
+                if (!edited) return;
+                track('card_personalize_advanced_selected', { card_id: card.id, background_id: card.backgroundId });
+                close({ skipFocus: true });
+                startEdit(edited, background, advancedButton);
+            });
+            closeButton.addEventListener('click', function () { close(); });
+            overlay.addEventListener('click', function (event) { if (event.target === overlay) close(); });
+            document.addEventListener('keydown', onKeydown, true);
+            textarea.focus();
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length);
         }
 
         function startWhatsAppStatus(card, background, button) {
@@ -427,7 +577,7 @@
             edit.dataset.urduCardsEdit = card.id;
             edit.textContent = copyText('edit');
             edit.setAttribute('aria-label', copyText('editLabel', { id: card.id }));
-            edit.addEventListener('click', function () { startEdit(card, background, edit); });
+            edit.addEventListener('click', function () { openPersonalizer(card, background, edit, article); });
 
             actions.appendChild(imageShare);
             actions.appendChild(edit);
@@ -495,7 +645,8 @@
                 return {
                     shells: cardRecords.length,
                     whatsappStatusShareLoaded: Boolean(root.WriteUrduWhatsAppStatusShare),
-                    imageShareLoaded: Boolean(root.WriteUrduWhatsAppStatusShare && root.WriteUrduWhatsAppStatusShare.shareImage)
+                    imageShareLoaded: Boolean(root.WriteUrduWhatsAppStatusShare && root.WriteUrduWhatsAppStatusShare.shareImage),
+                    personalizerOpen: Boolean(document.querySelector('[data-urdu-cards-personalizer]'))
                 };
             }
         };
