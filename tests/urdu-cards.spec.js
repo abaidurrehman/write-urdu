@@ -121,6 +121,53 @@ test('WhatsApp Status sharing is lazy, branded and uses a 9:16 PNG file', async 
   expect(result.canvasCount).toBe(0);
 });
 
+test('Make it mine opens a local personalization sheet with live preview and Escape close', async ({ page }) => {
+  await openCards(page);
+  const trigger = page.locator('[data-urdu-cards-edit="dua-1"]');
+  await trigger.click();
+
+  const dialog = page.locator('[data-urdu-cards-personalizer="dua-1"]');
+  const textarea = dialog.locator('[data-urdu-cards-personalizer-text="dua-1"]');
+  await expect(dialog).toBeVisible();
+  await expect(dialog).toHaveAttribute('role', 'dialog');
+  await expect(dialog).toHaveAttribute('aria-modal', 'true');
+  await expect(textarea).toBeFocused();
+  await expect(textarea).toHaveValue('اللہ آپ کی حفاظت فرمائے اور ہر مشکل میں آسانی عطا کرے۔');
+
+  const personalized = 'اللہ آپ کو ہمیشہ خوش رکھے، عائشہ۔';
+  await textarea.fill(personalized);
+  await expect(dialog.locator('.urdu-cards-personalizer-preview .card-gallery-preview-text')).toHaveText(personalized);
+  await expect(page).toHaveURL(/\/urdu-cards$/);
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+});
+
+test('personalized card can be shared as an image without opening Card Studio', async ({ page }) => {
+  await openCards(page);
+  await page.evaluate(() => {
+    window.__personalizedCardText = null;
+    window.WriteUrduWhatsAppStatusShare = {
+      shareCard: async () => ({ result: 'shared' }),
+      shareImage: async card => {
+        window.__personalizedCardText = card.textUr;
+        return { result: 'shared', width: 720, height: 900 };
+      }
+    };
+  });
+
+  await page.locator('[data-urdu-cards-edit="dua-1"]').click();
+  const dialog = page.locator('[data-urdu-cards-personalizer="dua-1"]');
+  const personalized = 'میری پیاری امی، اللہ آپ کو ہمیشہ سلامت رکھے۔';
+  await dialog.locator('[data-urdu-cards-personalizer-text="dua-1"]').fill(personalized);
+  await dialog.locator('[data-urdu-cards-personalizer-share="dua-1"]').click();
+
+  await expect(dialog.locator('[data-urdu-cards-personalizer-status="dua-1"]')).toHaveText('Image share sheet opened.');
+  await expect.poll(() => page.evaluate(() => window.__personalizedCardText)).toBe(personalized);
+  await expect(page).toHaveURL(/\/urdu-cards$/);
+});
+
 test('category filter narrows visible cards', async ({ page }) => {
   await openCards(page);
   const filter = page.getByRole('button', { name: 'Wedding · شادی', exact: true });
@@ -145,7 +192,7 @@ test('mobile page has no horizontal overflow', async ({ page }) => {
   }
 });
 
-test('editing a card reaches Card Studio with its exact text and background', async ({ page }) => {
+test('personalized card continues to Card Studio with edited text and the selected background', async ({ page }) => {
   const telemetryBodies = [];
   await page.route('**/api/events', async route => {
     telemetryBodies.push(route.request().postData() || '');
@@ -153,9 +200,14 @@ test('editing a card reaches Card Studio with its exact text and background', as
   });
   await openCards(page);
   await page.locator('[data-urdu-cards-edit="dua-1"]').click();
+  const personalized = 'اللہ آپ کو نئی منزل پر بہت کامیابی عطا کرے۔';
+  const dialog = page.locator('[data-urdu-cards-personalizer="dua-1"]');
+  await dialog.locator('[data-urdu-cards-personalizer-text="dua-1"]').fill(personalized);
+  await dialog.locator('[data-urdu-cards-personalizer-advanced="dua-1"]').click();
+
   await expect(page).toHaveURL(/\/urdu-card-studio$/);
   await expect(page.locator('html')).toHaveAttribute('data-wu-card-seed-applied', 'live', { timeout: 20000 });
-  await expect(page.locator('#cardText')).toHaveValue('اللہ آپ کی حفاظت فرمائے اور ہر مشکل میں آسانی عطا کرے۔');
+  await expect(page.locator('#cardText')).toHaveValue(personalized);
   await expect(page.locator('[data-card-built-in-background="emerald-mughal"]')).toHaveAttribute('aria-pressed', 'true');
   await page.evaluate(() => window.WriteUrduTelemetry && window.WriteUrduTelemetry.flush(true));
   await page.waitForTimeout(200);

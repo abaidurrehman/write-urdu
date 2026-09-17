@@ -1,4 +1,5 @@
 body.urdu-cards-page{margin:0;color:var(--gallery-ink,#172d24);background:radial-gradient(circle at 8% 0,rgba(23,111,69,.1),transparent 28rem),#f7faf8;font-family:Inter,"Segoe UI",Arial,sans-serif}
+body.urdu-cards-dialog-open{overflow:hidden}
 .urdu-cards-shell{width:min(1280px,calc(100% - 32px));margin:0 auto;padding:38px 0 64px}
 .urdu-cards-hero{margin-bottom:22px}
 .urdu-cards-kicker{margin:0 0 8px;color:var(--gallery-brand,#176f45);font-size:.76rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
@@ -30,4 +31,30 @@ body.urdu-cards-page{margin:0;color:var(--gallery-ink,#172d24);background:radial
 .urdu-cards-edit:disabled,.urdu-cards-image:disabled,.urdu-cards-share:disabled,.urdu-cards-whatsapp:disabled{cursor:not-allowed;opacity:.48}
 .urdu-cards-status{min-height:1.5em;margin:18px 0 0;color:#274c3d;font-weight:700;text-align:center}
 .urdu-cards-note{margin:24px 0 0;color:var(--gallery-muted,#5a6e64);font-size:.82rem;text-align:center}
-@media(max-width:720px){.urdu-cards-shell{width:min(100% - 22px,1280px);padding-top:22px}.urdu-cards-hero h1{font-size:clamp(2rem,10vw,3rem)}.urdu-cards-start{padding:13px}.urdu-cards-start-options{grid-template-columns:1fr}.urdu-cards-start-option{min-height:0}.urdu-cards-actions{gap:7px;padding:0 9px 7px}.urdu-cards-secondary-actions{gap:7px;padding:0 9px 10px}.urdu-cards-edit,.urdu-cards-image{font-size:.69rem}.urdu-cards-whatsapp,.urdu-cards-share{font-size:.63rem}}
+.urdu-cards-personalizer{position:fixed;inset:0;z-index:10020;display:grid;place-items:center;padding:22px;background:rgba(7,24,17,.64);backdrop-filter:blur(5px)}
+.urdu-cards-personalizer-panel{width:min(760px,100%);max-height:min(760px,calc(100vh - 44px));overflow:auto;border:1px solid rgba(198,219,207,.9);border-radius:22px;background:#fff;box-shadow:0 26px 70px rgba(4,28,18,.3)}
+.urdu-cards-personalizer-header{display:flex;align-items:flex-start;gap:16px;padding:20px 20px 14px;border-bottom:1px solid #e2ebe6}
+.urdu-cards-personalizer-header>div{min-width:0;flex:1}
+.urdu-cards-personalizer-header h2{margin:0;color:#183d2f;font-size:1.28rem;line-height:1.25}
+.urdu-cards-personalizer-header p{margin:7px 0 0;color:#60736a;font-size:.82rem;line-height:1.5}
+.urdu-cards-personalizer-close{display:grid;flex:0 0 40px;width:40px;height:40px;place-items:center;border:1px solid #d8e5de;border-radius:50%;background:#f8fbf9;color:#355447;font:inherit;font-size:1.45rem;line-height:1;cursor:pointer}
+.urdu-cards-personalizer-close:hover{background:#edf4f0}
+.urdu-cards-personalizer-close:focus-visible{outline:3px solid rgba(23,107,75,.24);outline-offset:2px}
+.urdu-cards-personalizer-body{display:grid;grid-template-columns:minmax(190px,250px) minmax(0,1fr);gap:22px;align-items:start;padding:20px}
+.urdu-cards-personalizer-preview{width:100%;aspect-ratio:4/5;min-height:0;border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(24,65,48,.14)}
+.urdu-cards-personalizer-preview .card-gallery-preview-text{font-size:clamp(1rem,2.6vw,1.5rem)}
+.urdu-cards-personalizer-form{display:flex;min-width:0;flex-direction:column;gap:9px}
+.urdu-cards-personalizer-form label{color:#294b3d;font-size:.82rem;font-weight:800}
+.urdu-cards-personalizer-form textarea{width:100%;min-height:180px;resize:vertical;box-sizing:border-box;border:1px solid #bfd2c7;border-radius:13px;padding:13px 14px;background:#fbfdfc;color:#172d24;font:600 1.08rem/1.9 "Noto Nastaliq Urdu","Noto Naskh Arabic",serif;text-align:right}
+.urdu-cards-personalizer-form textarea:focus{outline:3px solid rgba(23,107,75,.18);border-color:#4b9471}
+.urdu-cards-personalizer-status{min-height:1.4em;margin:0;color:#456557;font-size:.75rem;font-weight:700}
+.urdu-cards-personalizer-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:2px}
+.urdu-cards-personalizer-share,.urdu-cards-personalizer-advanced{min-height:46px;border-radius:12px;font:inherit;font-size:.78rem;font-weight:800;cursor:pointer}
+.urdu-cards-personalizer-share{border:0;background:#176b4b;color:#fff;box-shadow:0 8px 18px rgba(23,107,75,.16)}
+.urdu-cards-personalizer-share:hover{background:#10563c}
+.urdu-cards-personalizer-advanced{border:1px solid #bfd2c7;background:#f5f9f6;color:#244d3b}
+.urdu-cards-personalizer-advanced:hover{background:#eaf2ed}
+.urdu-cards-personalizer-share:focus-visible,.urdu-cards-personalizer-advanced:focus-visible{outline:3px solid rgba(23,107,75,.23);outline-offset:2px}
+.urdu-cards-personalizer-share:disabled,.urdu-cards-personalizer-advanced:disabled{cursor:not-allowed;opacity:.45}
+@media(max-width:720px){.urdu-cards-shell{width:min(100% - 22px,1280px);padding-top:22px}.urdu-cards-hero h1{font-size:clamp(2rem,10vw,3rem)}.urdu-cards-start{padding:13px}.urdu-cards-start-options{grid-template-columns:1fr}.urdu-cards-start-option{min-height:0}.urdu-cards-actions{gap:7px;padding:0 9px 7px}.urdu-cards-secondary-actions{gap:7px;padding:0 9px 10px}.urdu-cards-edit,.urdu-cards-image{font-size:.69rem}.urdu-cards-whatsapp,.urdu-cards-share{font-size:.63rem}.urdu-cards-personalizer{place-items:end center;padding:0;background:rgba(7,24,17,.58)}.urdu-cards-personalizer-panel{width:100%;max-height:91vh;border-radius:20px 20px 0 0;border-bottom:0}.urdu-cards-personalizer-header{padding:16px 15px 12px}.urdu-cards-personalizer-header h2{font-size:1.12rem}.urdu-cards-personalizer-body{grid-template-columns:105px minmax(0,1fr);gap:13px;padding:15px}.urdu-cards-personalizer-preview{border-radius:12px}.urdu-cards-personalizer-preview .card-gallery-preview-text{font-size:.78rem}.urdu-cards-personalizer-form textarea{min-height:150px;font-size:.98rem}.urdu-cards-personalizer-share,.urdu-cards-personalizer-advanced{min-height:44px;font-size:.72rem}}
+@media(max-width:430px){.urdu-cards-personalizer-body{grid-template-columns:1fr}.urdu-cards-personalizer-preview{width:min(160px,48vw);margin:0 auto}.urdu-cards-personalizer-form textarea{min-height:130px}}
