@@ -1,5 +1,5 @@
-.urdu-cards-own-words{margin:0 0 22px;padding:18px;border:1px solid #d5e4dc;border-radius:18px;background:#fff;box-shadow:0 12px 30px rgba(24,65,48,.07)}
-.urdu-cards-own-words[hidden]{display:none}
+.urdu-cards-own-words{max-width:100%;min-width:0;margin:0 0 22px;padding:18px;border:1px solid #d5e4dc;border-radius:18px;background:#fff;box-shadow:0 12px 30px rgba(24,65,48,.07)}
+.urdu-cards-own-words[hidden]{display:none!important}
 .urdu-cards-own-words-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:14px}
 .urdu-cards-own-words-heading>div{min-width:0}
 .urdu-cards-own-words h2{margin:0;color:#183d2f;font-size:clamp(1.1rem,2vw,1.35rem);line-height:1.25}
@@ -9,16 +9,18 @@
 .urdu-cards-own-clear{min-height:34px;padding:6px 12px}
 .urdu-cards-own-back:hover,.urdu-cards-own-clear:hover{background:#eaf3ed}
 .urdu-cards-own-back:focus-visible,.urdu-cards-own-clear:focus-visible{outline:3px solid rgba(23,107,75,.22);outline-offset:2px}
-.urdu-cards-own-form{display:flex;flex-direction:column;gap:9px}
+.urdu-cards-own-form{display:flex;min-width:0;max-width:100%;flex-direction:column;gap:9px}
 .urdu-cards-own-form>label{color:#294b3d;font-size:.82rem;font-weight:800}
-.urdu-cards-own-input-mode{margin:0}
-.urdu-cards-own-text{width:100%;min-height:112px;box-sizing:border-box;resize:vertical;border:1px solid #bfd2c7;border-radius:14px;padding:13px 14px;background:#fbfdfc;color:#172d24;font:600 1.04rem/1.85 "Noto Nastaliq Urdu","Noto Naskh Arabic",serif;text-align:right}
+.urdu-cards-own-input-mode{min-width:0;max-width:100%;margin:0}
+.urdu-cards-own-input-mode .input-mode-option{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.urdu-cards-own-text{width:100%;min-width:0;max-width:100%;min-height:112px;box-sizing:border-box;resize:vertical;border:1px solid #bfd2c7;border-radius:14px;padding:13px 14px;background:#fbfdfc;color:#172d24;font:600 1.04rem/1.85 "Noto Nastaliq Urdu","Noto Naskh Arabic",serif;text-align:right}
 .urdu-cards-own-text:focus{outline:3px solid rgba(23,107,75,.18);border-color:#4b9471}
-.urdu-cards-own-meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.urdu-cards-own-meta small{color:#687b71;font-size:.7rem;line-height:1.45}
+.urdu-cards-own-meta{display:flex;min-width:0;align-items:center;justify-content:space-between;gap:12px}
+.urdu-cards-own-meta small{min-width:0;color:#687b71;font-size:.7rem;line-height:1.45;overflow-wrap:anywhere}
 .urdu-cards-own-status{min-height:1.35em;margin:0;color:#315c49;font-size:.76rem;font-weight:700}
+[data-urdu-cards][data-urdu-cards-own-active="true"] [data-urdu-cards-filters],
 [data-urdu-cards][data-urdu-cards-own-active="true"] [data-urdu-cards-returning],
 [data-urdu-cards][data-urdu-cards-own-active="true"] .urdu-cards-favorite,
 [data-urdu-cards][data-urdu-cards-own-active="true"] .urdu-cards-share{display:none!important}
 [data-urdu-cards][data-urdu-cards-own-active="true"] .urdu-cards-whatsapp{flex:1 1 100%}
-@media(max-width:720px){.urdu-cards-own-words{padding:14px;margin-bottom:18px}.urdu-cards-own-words-heading{flex-direction:column;gap:10px}.urdu-cards-own-back{width:100%}.urdu-cards-own-meta{align-items:flex-start;flex-direction:column}.urdu-cards-own-clear{align-self:flex-end}.urdu-cards-own-text{min-height:126px;font-size:.98rem}}
+@media(max-width:720px){.urdu-cards-own-words{padding:14px;margin-bottom:18px}.urdu-cards-own-words-heading{flex-direction:column;gap:10px}.urdu-cards-own-back{width:100%;white-space:normal}.urdu-cards-own-meta{align-items:flex-start;flex-direction:column}.urdu-cards-own-clear{align-self:flex-end}.urdu-cards-own-text{min-height:126px;font-size:.98rem}}
