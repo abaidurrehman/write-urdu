@@ -65,6 +65,15 @@
         }, 50);
     }
 
+    function loadSocialFormatHandoff() {
+        if (window.WriteUrduSocialFormatHandoff || document.querySelector('script[data-wu-social-format-handoff]')) return;
+        var script = document.createElement('script');
+        script.src = window.location && window.location.protocol === 'file:' ? 'js/social-format-handoff-adapter.js' : '/js/social-format-handoff-adapter.js';
+        script.async = true;
+        script.setAttribute('data-wu-social-format-handoff', '');
+        document.head.appendChild(script);
+    }
+
     function preserveRoleShell() {
         if (document.body.classList.contains('social-maker-embedded')) document.body.classList.remove('social-maker-embedded');
         document.title = pageTitle;
@@ -97,6 +106,7 @@
     if (mode === 'whatsapp') mountWhatsappWorkspace();
     mountCommunityButton();
     preserveRoleShell();
+    loadSocialFormatHandoff();
     document.addEventListener('DOMContentLoaded', preserveRoleShell, { once: true });
     if (window.WriteUrduCardStudioApp) connect();
     else document.addEventListener('write-urdu:card-studio-ready', connect, { once: true });

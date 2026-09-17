@@ -74,6 +74,7 @@ jobs:
           tests/card-gallery.spec.js
           tests/urdu-cards.spec.js
           tests/urdu-cards-own-words.spec.js
+          tests/urdu-cards-social-formats.spec.js
           tests/home-featured-card.spec.js
           tests/card-studio-background-collection.spec.js
           tests/whatsapp-status-discovery.spec.js

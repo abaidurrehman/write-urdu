@@ -17,6 +17,7 @@ module.exports = defineConfig({
     'card-gallery.spec.js',
     'urdu-cards.spec.js',
     'urdu-cards-own-words.spec.js',
+    'urdu-cards-social-formats.spec.js',
     'home-featured-card.spec.js',
     'whatsapp-status-discovery.spec.js',
     'seo-acquisition.spec.js',
