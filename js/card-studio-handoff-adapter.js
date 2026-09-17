@@ -3,6 +3,7 @@
 
     var TARGET = 'card-studio';
     var VISUAL_SEED_SOURCES = { 'card-gallery': true, 'urdu-cards': true, 'home-featured-card': true };
+    var PROJECT_CONTINUITY_SOURCES = { 'whatsapp-status': true, 'instagram-post': true };
     var LEGACY_KEY = 'writeUrdu.cardStudio.incoming';
     var consuming = false;
 
@@ -12,6 +13,10 @@
         if (path.length > 1 && path.endsWith('/')) path = path.slice(0, -1);
         if (path.endsWith('.html')) path = path.slice(0, -5);
         return path || '/';
+    }
+
+    function asset(path) {
+        return root.location && root.location.protocol === 'file:' ? path.replace(/^\//, '') : path;
     }
 
     function templateFromId(id) {
@@ -30,6 +35,14 @@
 
     function payloadText(envelope) {
         return envelope && envelope.payload && typeof envelope.payload.text === 'string' ? envelope.payload.text : '';
+    }
+
+    function continuityProject(envelope) {
+        if (!envelope || !envelope.payload || envelope.payload.kind !== 'plain-text') return null;
+        if (envelope.payload.continuityVersion !== 1 || !envelope.payload.project || typeof envelope.payload.project !== 'object') return null;
+        if (!envelope.context || envelope.context.creationFormatContinuity !== true) return null;
+        if (!envelope.source || !PROJECT_CONTINUITY_SOURCES[envelope.source.workspace]) return null;
+        return envelope.payload.project;
     }
 
     function writeLegacyText(envelope) {
@@ -54,8 +67,19 @@
         var library = root.WriteUrduTemplateLibrary;
         if (!app || !core || typeof app.getState !== 'function') return false;
 
+        var project = continuityProject(envelope);
         var text = payloadText(envelope);
-        if (template && library && typeof library.applyToCardProject === 'function') {
+        if (project && typeof app.replaceState === 'function') {
+            var restored;
+            try {
+                restored = core.normalizeCardProject(JSON.parse(JSON.stringify(project)));
+                restored.socialMode = null;
+                restored.name = restored.name || 'Urdu card';
+            } catch (error) {
+                return false;
+            }
+            app.replaceState(restored, { save: false });
+        } else if (template && library && typeof library.applyToCardProject === 'function') {
             var next = library.applyToCardProject(
                 core,
                 core.createDefaultCardProject(text || ''),
@@ -158,8 +182,18 @@
         if (root.document && root.document.documentElement) {
             root.document.documentElement.setAttribute('data-wu-card-seed-kind', kind);
             root.document.documentElement.setAttribute('data-wu-card-seed-applied', 'live');
+            if (continuityProject(envelope)) root.document.documentElement.setAttribute('data-wu-create-continuity-restored', 'true');
         }
         return envelope;
+    }
+
+    function loadContinuityShell() {
+        if (root.WriteUrduCreateFormatContinuity || root.document.querySelector('script[data-create-format-continuity-script]')) return;
+        var script = root.document.createElement('script');
+        script.src = asset('/js/create-format-continuity.js');
+        script.async = true;
+        script.setAttribute('data-create-format-continuity-script', '');
+        root.document.head.appendChild(script);
     }
 
     var consumed = consume();
@@ -167,12 +201,14 @@
         root.document.addEventListener('write-urdu:card-studio-ready', function () { consume(); }, { once: true });
         root.document.addEventListener('write-urdu:card-background-library-ready', function () { consume(); }, { once: true });
     }
+    if (normalizePath() === '/urdu-card-studio') loadContinuityShell();
 
     root.WriteUrduCardStudioHandoffAdapter = {
         TARGET: TARGET,
         consume: consume,
         consumed: consumed,
         templateFromId: templateFromId,
-        applyToRunningApp: applyToRunningApp
+        applyToRunningApp: applyToRunningApp,
+        continuityProject: continuityProject
     };
 }(window));

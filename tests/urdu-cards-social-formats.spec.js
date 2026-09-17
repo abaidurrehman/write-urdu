@@ -22,6 +22,11 @@ async function expectSocialSeed(page, target, text, presetId, socialMode, backgr
   expect(state).toMatchObject({ presetId, socialMode });
 }
 
+async function waitForContinuity(page, workspace) {
+  await expect(page.locator(`[data-create-format-continuity="${workspace}"]`)).toBeVisible({ timeout: 15000 });
+  await expect(page.locator(`[data-create-format-target="${workspace}"]`)).toHaveAttribute('aria-current', 'page');
+}
+
 test('each ready-made card offers editable Card, WhatsApp and Instagram destinations without replacing fast sharing', async ({ page }) => {
   await openCards(page);
   const card = page.locator('#card-dua-1');
@@ -77,6 +82,90 @@ test('custom own-words text continues into Instagram while keeping the chosen de
   })).toBeNull();
 });
 
+test('shared creation shell carries one edited project Card Studio → WhatsApp → Instagram → Card Studio', async ({ page }) => {
+  await blockExternal(page);
+  await page.goto('/urdu-card-studio', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await waitForContinuity(page, 'card-studio');
+
+  const firstText = 'یہ ایک ہی ڈیزائن مختلف سوشل فارمیٹس میں جاری رہتا ہے۔';
+  await page.evaluate((text) => {
+    const app = window.WriteUrduCardStudioApp;
+    const core = window.WriteUrduCardStudio;
+    let state = app.getState();
+    state.text.value = text;
+    state.text.fontFamily = 'Amiri';
+    state.text.color = '#234567';
+    state.text.align = 'right';
+    state.background.type = 'solid';
+    state.background.color = '#f1e9d8';
+    state.watermark.enabled = true;
+    state = core.applyPreset(state, 'portrait');
+    app.replaceState(core.normalizeCardProject(state), { save: false });
+    app.syncControls();
+    app.requestRender();
+  }, firstText);
+
+  await page.locator('[data-create-format-target="whatsapp-status"]').click();
+  await expect(page).toHaveURL(/\/urdu-whatsapp-status-maker$/);
+  expect(new URL(page.url()).search).toBe('');
+  await waitForContinuity(page, 'whatsapp-status');
+  await expect(page.locator('html')).toHaveAttribute('data-wu-create-continuity-restored', 'true', { timeout: 15000 });
+
+  let state = await page.evaluate(() => window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState());
+  expect(state).toMatchObject({
+    presetId: 'story',
+    socialMode: 'whatsapp',
+    text: { value: firstText, fontFamily: 'Amiri', color: '#234567', align: 'right' },
+    background: { type: 'solid', color: '#f1e9d8' },
+    watermark: { enabled: true }
+  });
+
+  const secondText = 'واٹس ایپ میں ترمیم کے بعد یہی متن انسٹاگرام پر بھی جاتا ہے۔';
+  await page.evaluate((text) => {
+    const app = window.WriteUrduCardStudioApp;
+    const core = window.WriteUrduCardStudio;
+    const state = app.getState();
+    state.text.value = text;
+    state.text.color = '#654321';
+    app.replaceState(core.normalizeCardProject(state), { save: false });
+    app.syncControls();
+    app.requestRender();
+  }, secondText);
+
+  await page.locator('[data-create-format-target="instagram-post"]').click();
+  await expect(page).toHaveURL(/\/urdu-instagram-post-maker$/);
+  expect(new URL(page.url()).search).toBe('');
+  await waitForContinuity(page, 'instagram-post');
+  await expect(page.locator('html')).toHaveAttribute('data-wu-create-continuity-restored', 'true', { timeout: 15000 });
+
+  state = await page.evaluate(() => window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState());
+  expect(state).toMatchObject({
+    presetId: 'square',
+    socialMode: 'instagram',
+    text: { value: secondText, fontFamily: 'Amiri', color: '#654321', align: 'right' },
+    background: { type: 'solid', color: '#f1e9d8' },
+    watermark: { enabled: true }
+  });
+
+  await page.locator('[data-create-format-target="card-studio"]').click();
+  await expect(page).toHaveURL(/\/urdu-card-studio$/);
+  expect(new URL(page.url()).search).toBe('');
+  await waitForContinuity(page, 'card-studio');
+  await expect(page.locator('html')).toHaveAttribute('data-wu-create-continuity-restored', 'true', { timeout: 15000 });
+
+  state = await page.evaluate(() => window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState());
+  expect(state.presetId).toBe('square');
+  expect(state.socialMode).toBeNull();
+  expect(state.text).toMatchObject({ value: secondText, fontFamily: 'Amiri', color: '#654321', align: 'right' });
+  expect(state.background).toMatchObject({ type: 'solid', color: '#f1e9d8' });
+  expect(state.watermark.enabled).toBe(true);
+
+  await expect.poll(() => page.evaluate(() => {
+    const api = window.WriteUrduWorkspaceHandoff;
+    return api && typeof api.peek === 'function' ? api.peek('card-studio') : undefined;
+  })).toBeNull();
+});
+
 test('social format preset row stays inside a phone viewport', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await openCards(page);
@@ -87,4 +176,20 @@ test('social format preset row stays inside a phone viewport', async ({ page }) 
   }));
   expect(dimensions.page).toBeLessThanOrEqual(dimensions.viewport + 1);
   expect(dimensions.row).toBeLessThanOrEqual(dimensions.viewport);
+});
+
+test('shared creation shell stays inside a phone viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 780 });
+  await blockExternal(page);
+  await page.goto('/urdu-whatsapp-status-maker', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await waitForContinuity(page, 'whatsapp-status');
+  const dimensions = await page.evaluate(() => ({
+    viewport: document.documentElement.clientWidth,
+    page: document.documentElement.scrollWidth,
+    shell: document.querySelector('[data-create-format-continuity]').getBoundingClientRect().width,
+    widestButton: Math.max(...Array.from(document.querySelectorAll('[data-create-format-target]')).map(node => node.getBoundingClientRect().width))
+  }));
+  expect(dimensions.page).toBeLessThanOrEqual(dimensions.viewport + 1);
+  expect(dimensions.shell).toBeLessThanOrEqual(dimensions.viewport);
+  expect(dimensions.widestButton).toBeLessThanOrEqual(dimensions.shell);
 });
