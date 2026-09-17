@@ -28,8 +28,8 @@
     function restorePageIdentity() {
         var urdu = document.documentElement.lang === 'ur';
         var heading = root.querySelector('h1');
-        if (heading) heading.textContent = urdu ? 'InPage سے Unicode اردو کنورٹر' : 'InPage to Unicode Urdu Converter';
-        document.title = urdu ? 'InPage سے Unicode اردو کنورٹر | رائٹ اردو' : 'InPage to Unicode Urdu Converter — Both Directions | WriteUrdu';
+        if (heading) heading.textContent = urdu ? 'Unicode سے InPage اور InPage سے Unicode اردو کنورٹر' : 'Unicode to InPage & InPage to Unicode Urdu Converter';
+        document.title = urdu ? 'Unicode سے InPage اور InPage سے Unicode اردو کنورٹر | رائٹ اردو' : 'Unicode to InPage & InPage to Unicode Converter | WriteUrdu';
     }
 
     // The shared shell historically falls back to homepage copy for routes it does
