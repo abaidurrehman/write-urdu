@@ -12,39 +12,53 @@
             cards: ' cards',
             unavailable: 'This browser could not open Card Studio.',
             opening: 'Opening Card Studio…',
-            creating: 'Creating your shareable link…',
+            creating: 'Publishing your shareable link…',
             copied: 'Link copied.',
             shared: 'Share sheet opened.',
-            edit: 'Edit in Card Studio · اس میں تبدیلی کریں',
-            editLabel: 'Edit {id} in Card Studio',
-            share: 'Share · شیئر کریں',
-            shareLabel: 'Share {id}',
-            whatsapp: 'WhatsApp Status · اسٹیٹس',
+            edit: 'Make it mine · اپنی مرضی سے بنائیں',
+            editLabel: 'Personalize {id} in Card Studio',
+            share: 'Publish shareable link · شیئر لنک بنائیں',
+            shareLabel: 'Publish a shareable link for {id}',
+            whatsapp: 'Share to WhatsApp Status · اسٹیٹس پر شیئر',
             whatsappLabel: 'Share {id} to WhatsApp Status',
             statusPreparing: 'Preparing WhatsApp Status…',
             statusShared: 'Shared — choose WhatsApp and My Status when prompted.',
             statusDownloaded: 'PNG downloaded. Open WhatsApp → Updates → Add status.',
             statusCancelled: 'Sharing cancelled.',
-            statusFailed: 'Could not prepare this Status image. Try Edit in Card Studio.'
+            statusFailed: 'Could not prepare this Status image. Try Make it mine.',
+            startTitle: 'How do you want to start?',
+            browseTitle: 'Find a ready-made message',
+            browseCopy: 'Browse dua, Jumma, love, family, wedding and more. Pick a card and share it or personalize it.',
+            browseCta: 'Browse 157 cards',
+            ownTitle: 'Use my own words',
+            ownCopy: 'Type or paste your Urdu once, then compare it across every card design before you choose.',
+            ownCta: 'Use my words'
         },
         ur: {
             cards: ' کارڈز',
             unavailable: 'یہ براؤزر کارڈ اسٹوڈیو نہیں کھول سکا۔',
             opening: 'کارڈ اسٹوڈیو کھولا جا رہا ہے…',
-            creating: 'شیئر کرنے کے لیے لنک بنایا جا رہا ہے…',
+            creating: 'شیئر کرنے کے لیے لنک شائع کیا جا رہا ہے…',
             copied: 'لنک کاپی ہو گیا۔',
             shared: 'شیئر مینو کھل گیا۔',
-            edit: 'کارڈ اسٹوڈیو میں ترمیم کریں',
-            editLabel: 'کارڈ اسٹوڈیو میں {id} کارڈ تبدیل کریں',
-            share: 'شیئر کریں',
-            shareLabel: '{id} کارڈ شیئر کریں',
-            whatsapp: 'واٹس ایپ اسٹیٹس',
+            edit: 'اپنی مرضی سے بنائیں',
+            editLabel: 'کارڈ اسٹوڈیو میں {id} کارڈ اپنی مرضی سے بنائیں',
+            share: 'شیئر لنک بنائیں',
+            shareLabel: '{id} کارڈ کے لیے شیئر کرنے کا لنک بنائیں',
+            whatsapp: 'واٹس ایپ اسٹیٹس پر شیئر کریں',
             whatsappLabel: '{id} کارڈ واٹس ایپ اسٹیٹس پر شیئر کریں',
             statusPreparing: 'واٹس ایپ اسٹیٹس تیار کیا جا رہا ہے…',
             statusShared: 'شیئر مینو کھل گیا — واٹس ایپ اور پھر میرا اسٹیٹس منتخب کریں۔',
             statusDownloaded: 'PNG ڈاؤن لوڈ ہو گیا۔ واٹس ایپ → اپ ڈیٹس → اسٹیٹس شامل کریں کھولیں۔',
             statusCancelled: 'شیئر منسوخ کر دیا گیا۔',
-            statusFailed: 'اسٹیٹس تصویر تیار نہیں ہو سکی۔ کارڈ اسٹوڈیو میں ترمیم کر کے دوبارہ کوشش کریں۔'
+            statusFailed: 'اسٹیٹس تصویر تیار نہیں ہو سکی۔ اپنی مرضی سے بنائیں کھول کر دوبارہ کوشش کریں۔',
+            startTitle: 'آپ کیسے شروع کرنا چاہتے ہیں؟',
+            browseTitle: 'تیار شدہ پیغام منتخب کریں',
+            browseCopy: 'دعا، جمعہ، محبت، خاندان، شادی اور مزید پیغامات دیکھیں۔ کارڈ منتخب کریں، شیئر کریں یا اپنی مرضی سے بدلیں۔',
+            browseCta: '157 کارڈز دیکھیں',
+            ownTitle: 'اپنا پیغام استعمال کریں',
+            ownCopy: 'اپنا اردو متن ایک بار لکھیں یا پیسٹ کریں، پھر منتخب کرنے سے پہلے اسے تمام کارڈ ڈیزائنز پر دیکھیں۔',
+            ownCta: 'اپنا پیغام استعمال کریں'
         }
     };
 
@@ -64,7 +78,14 @@
     }
 
     function localizedRoute(productPath) {
-        return root.WriteUrduLocaleRoute && root.WriteUrduLocaleRoute.href(productPath, locale()) || productPath;
+        if (root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.href === 'function') {
+            return root.WriteUrduLocaleRoute.href(productPath, locale());
+        }
+        if (locale() === 'ur') {
+            if (productPath === '/') return '/urdu/';
+            return '/urdu' + productPath;
+        }
+        return productPath;
     }
 
     function pathDetailFor(card) {
@@ -110,6 +131,71 @@
         return whatsappStatusPromise;
     }
 
+    function createStartOption(options) {
+        var link = document.createElement('a');
+        link.className = 'urdu-cards-start-option' + (options.primary ? ' is-primary' : '');
+        link.href = options.href;
+        link.dataset.urduCardsStartChoice = options.choice;
+
+        var title = document.createElement('strong');
+        title.textContent = options.title;
+        link.appendChild(title);
+
+        var copy = document.createElement('span');
+        copy.textContent = options.copy;
+        link.appendChild(copy);
+
+        var cta = document.createElement('b');
+        cta.textContent = options.cta + ' →';
+        link.appendChild(cta);
+
+        link.addEventListener('click', function () {
+            track('card_journey_start_selected', {
+                choice: options.choice,
+                source_route: localizedRoute('/urdu-cards')
+            });
+        });
+        return link;
+    }
+
+    function mountStartChoices(page, filters) {
+        var hero = page.querySelector('.urdu-cards-hero');
+        if (!hero || page.querySelector('[data-urdu-cards-start]')) return;
+
+        filters.id = filters.id || 'urdu-cards-browser';
+
+        var section = document.createElement('section');
+        section.className = 'urdu-cards-start';
+        section.dataset.urduCardsStart = 'true';
+        section.setAttribute('aria-labelledby', 'urdu-cards-start-title');
+
+        var heading = document.createElement('h2');
+        heading.id = 'urdu-cards-start-title';
+        heading.textContent = copyText('startTitle');
+        section.appendChild(heading);
+
+        var options = document.createElement('div');
+        options.className = 'urdu-cards-start-options';
+        options.appendChild(createStartOption({
+            choice: 'ready-made',
+            href: '#urdu-cards-browser',
+            title: copyText('browseTitle'),
+            copy: copyText('browseCopy'),
+            cta: copyText('browseCta'),
+            primary: true
+        }));
+        options.appendChild(createStartOption({
+            choice: 'own-words',
+            href: localizedRoute('/urdu-card-gallery'),
+            title: copyText('ownTitle'),
+            copy: copyText('ownCopy'),
+            cta: copyText('ownCta'),
+            primary: false
+        }));
+        section.appendChild(options);
+        hero.insertAdjacentElement('afterend', section);
+    }
+
     function mount() {
         if (normalizedPath() !== '/urdu-cards' || !registry || !core || !data || !sharing) return false;
         var page = document.querySelector('[data-urdu-cards]');
@@ -120,6 +206,8 @@
         var count = page.querySelector('[data-urdu-cards-count]');
         var status = page.querySelector('[data-urdu-cards-status]');
         var cardRecords = [];
+
+        mountStartChoices(page, filters);
 
         function updateCount(visible) {
             count.textContent = visible + copyText('cards');
