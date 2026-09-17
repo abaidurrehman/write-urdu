@@ -93,6 +93,15 @@
         document.head.appendChild(link);
     }
 
+    function loadOwnWordsEnhancement() {
+        if (root.WriteUrduCardsOwnWords || document.querySelector('script[data-urdu-cards-own-words-script]')) return;
+        var script = document.createElement('script');
+        script.src = root.location && root.location.protocol === 'file:' ? 'js/urdu-cards-own-words.js' : '/js/urdu-cards-own-words.js';
+        script.async = true;
+        script.dataset.urduCardsOwnWordsScript = 'true';
+        document.head.appendChild(script);
+    }
+
     function addRecent(id) {
         if (!knownIds[id]) return;
         state.recents = [id].concat(state.recents.filter(function (item) { return item !== id; })).slice(0, MAX_RECENTS);
@@ -342,6 +351,11 @@
         root.requestAnimationFrame(function () { retryMount(attempt + 1); });
     }
 
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { retryMount(0); });
-    else retryMount(0);
+    function boot() {
+        retryMount(0);
+        loadOwnWordsEnhancement();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
 }(window));

@@ -9,6 +9,9 @@ const cards = require('../js/urdu-cards-data.js').getAllCards();
 
 const html = read('urdu-cards.html');
 const script = read('js/urdu-cards.js');
+const returningScript = read('js/urdu-cards-returning-state.js');
+const ownWordsScript = read('js/urdu-cards-own-words.js');
+const transliterationAdapter = read('js/card-gallery-transliteration.js');
 const endpoint = read('functions/api/events.js');
 const discoveryGuide = (html.match(/<section class="card-discovery-guide"[^]*?<\/section>/) || [''])[0];
 
@@ -34,6 +37,16 @@ assert.doesNotMatch(script, /fetch\('\/api\/shares'/, 'route runtime must not du
 assert.doesNotMatch(script, /createElement\('canvas'\)/, 'route runtime must not duplicate shared card rendering');
 assert.doesNotMatch(script, /[?&](?:text|content|payload)=/i, 'urdu-cards must not put card text in URL transport');
 assert.doesNotMatch(script, /WriteUrduTelemetry\.track\(['"][^'"]*(?:text|content)[^'"]*['"],\s*\{[^}]*card\.textUr/, 'card text must never be sent as a telemetry payload value');
+
+assert.match(returningScript, /urdu-cards-own-words\.js/, 'the existing cards progressive-enhancement bootstrap must load own-words mode');
+assert.match(ownWordsScript, /data-input-mode-targets', '#urduCardsOwnText'/, 'own-words mode must reuse the shared input-mode controller');
+assert.match(ownWordsScript, /card-gallery-transliteration\.js/, 'own-words mode must reuse the existing card transliteration adapter');
+assert.match(transliterationAdapter, /'cardGalleryText', 'urduCardsOwnText'/, 'the shared card transliteration adapter must support both gallery surfaces');
+assert.match(ownWordsScript, /originals\[card\.id\] = card\.textUr/, 'own-words mode must preserve canonical ready-made text for restoration');
+assert.match(ownWordsScript, /card\.textUr = normalized/, 'own-words mode must feed existing card actions through the canonical in-memory card object');
+assert.doesNotMatch(ownWordsScript, /localStorage\.setItem[^\n]*(?:text|message|value)/i, 'own-words text must not be persisted to localStorage');
+assert.doesNotMatch(ownWordsScript, /sessionStorage\.setItem[^\n]*(?:text|message|value)/i, 'own-words text must not be persisted by the inline composer');
+assert.doesNotMatch(ownWordsScript, /fetch\(/, 'own-words mode must remain browser-local until an existing explicit share action is chosen');
 
 const edge = journey.get('urdu-cards');
 assert.ok(edge, 'journey registry must know about urdu-cards');

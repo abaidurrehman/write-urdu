@@ -23,7 +23,7 @@ concurrency:
 jobs:
   static-and-seo:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,6 +73,7 @@ jobs:
           tests/v2-creation.spec.js
           tests/card-gallery.spec.js
           tests/urdu-cards.spec.js
+          tests/urdu-cards-own-words.spec.js
           tests/home-featured-card.spec.js
           tests/card-studio-background-collection.spec.js
           tests/seo-acquisition.spec.js

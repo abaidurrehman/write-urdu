@@ -1,9 +1,17 @@
 (function (root) {
     'use strict';
 
+    function targetIds() {
+        return ['cardGalleryText', 'urduCardsOwnText'].filter(function (id) {
+            return Boolean(root.document.getElementById(id));
+        });
+    }
+
     function ready() {
         try {
             var google = root.google;
+            var ids = targetIds();
+            if (!ids.length) return;
             var options = {
                 sourceLanguage: google.elements.transliteration.LanguageCode.ENGLISH,
                 destinationLanguage: [google.elements.transliteration.LanguageCode.URDU],
@@ -11,7 +19,7 @@
                 transliterationEnabled: true
             };
             var control = new google.elements.transliteration.TransliterationControl(options);
-            control.makeTransliteratable(['cardGalleryText']);
+            control.makeTransliteratable(ids);
             root.writeUrduTransliterationControl = control;
             root.document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: control } }));
         } catch (error) { /* Google transliteration unavailable; direct Urdu input still works. */ }
