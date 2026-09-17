@@ -127,8 +127,10 @@ test('newest card routes have crawlable Urdu pages and localized runtime control
   await expect(page.locator('[data-urdu-cards-filter="all"]')).toHaveText('سب');
   await expect(page.locator('[data-urdu-cards-start]')).toContainText('آپ کیسے شروع کرنا چاہتے ہیں؟');
   await expect(page.locator('[data-urdu-cards-start-choice="own-words"]')).toHaveAttribute('href', '/urdu/urdu-card-gallery');
+  await expect(page.locator('[data-urdu-cards-image-share]').first()).toHaveText('تصویر شیئر کریں');
   await expect(page.locator('[data-urdu-cards-edit]').first()).toHaveText('اپنی مرضی سے بنائیں');
-  await expect(page.locator('[data-urdu-cards-share]').first()).toHaveText('شیئر لنک بنائیں');
+  await expect(page.locator('[data-urdu-cards-whatsapp-status]').first()).toHaveText('واٹس ایپ اسٹیٹس');
+  await expect(page.locator('[data-urdu-cards-share]').first()).toHaveText('شیئر لنک');
   await expect(page.locator('[data-wu-language-toggle]')).toHaveAttribute('href', '/urdu-cards');
   await expect(page.locator('body')).not.toContainText('Ready-made Urdu cards');
   await expect(page.locator('body')).not.toContainText('Edit in Card Studio');
