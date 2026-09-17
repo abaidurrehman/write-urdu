@@ -304,6 +304,15 @@
         root.WriteUrduCardsOwnWords = {
             open: openOwnWords,
             close: closeOwnWords,
+            importText: function (value) {
+                if (textarea.value.trim()) return { ok: false, reason: 'existing-text' };
+                var text = String(value || '');
+                if (!text.trim() || text.length > MAX_TEXT_LENGTH) return { ok: false, reason: 'invalid-text' };
+                textarea.value = text;
+                applyOwnWords(text);
+                openOwnWords();
+                return { ok: true };
+            },
             clear: function () {
                 textarea.value = '';
                 applyOwnWords('');
@@ -317,6 +326,7 @@
                 };
             }
         };
+        document.dispatchEvent(new root.CustomEvent('write-urdu:urdu-cards-own-words-ready'));
         return true;
     }
 

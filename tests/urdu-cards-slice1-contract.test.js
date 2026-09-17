@@ -12,6 +12,7 @@ const script = read('js/urdu-cards.js');
 const returningScript = read('js/urdu-cards-returning-state.js');
 const ownWordsScript = read('js/urdu-cards-own-words.js');
 const ownWordsVoiceScript = read('js/urdu-cards-own-words-voice.js');
+const publicShareEntry = read('js/urdu-cards-public-share-entry.js');
 const transliterationAdapter = read('js/card-gallery-transliteration.js');
 const endpoint = read('functions/api/events.js');
 const discoveryGuide = (html.match(/<section class="card-discovery-guide"[^]*?<\/section>/) || [''])[0];
@@ -45,6 +46,7 @@ assert.match(ownWordsScript, /card-gallery-transliteration\.js/, 'own-words mode
 assert.match(transliterationAdapter, /'cardGalleryText', 'urduCardsOwnText'/, 'the shared card transliteration adapter must support both gallery surfaces');
 assert.match(ownWordsScript, /originals\[card\.id\] = card\.textUr/, 'own-words mode must preserve canonical ready-made text for restoration');
 assert.match(ownWordsScript, /card\.textUr = normalized/, 'own-words mode must feed existing card actions through the canonical in-memory card object');
+assert.match(ownWordsScript, /importText:/, 'own-words mode must expose its existing state for bounded public-share imports');
 assert.doesNotMatch(ownWordsScript, /localStorage\.setItem[^\n]*(?:text|message|value)/i, 'own-words text must not be persisted to localStorage');
 assert.doesNotMatch(ownWordsScript, /sessionStorage\.setItem[^\n]*(?:text|message|value)/i, 'own-words text must not be persisted by the inline composer');
 assert.doesNotMatch(ownWordsScript, /fetch\(/, 'own-words mode must remain browser-local until an existing explicit share action is chosen');
@@ -59,8 +61,18 @@ assert.doesNotMatch(ownWordsVoiceScript, /getUserMedia|mediaDevices/, 'the cards
 assert.doesNotMatch(ownWordsVoiceScript, /localStorage|sessionStorage/, 'voice transcript must remain in the existing in-memory textarea flow');
 assert.doesNotMatch(ownWordsVoiceScript, /fetch\(/, 'voice recognition itself must not send transcript text to the server');
 
+assert.match(html, /\/js\/urdu-cards-public-share-entry\.js/, 'Urdu Cards must load its isolated public-share entry adapter');
+assert.match(publicShareEntry, /Handoff\.take\('urdu-cards'\)/, 'public-share entry must consume and clear the Urdu Cards handoff');
+assert.match(publicShareEntry, /source\.workspace !== 'public-share'/, 'destination must reject unrelated handoff sources');
+assert.match(publicShareEntry, /share-to-urdu-cards-create-own/, 'destination must recognize only the bounded fresh-start intent');
+assert.match(publicShareEntry, /share-to-urdu-cards-use-public-text/, 'destination must recognize only the bounded public-text intent');
+assert.match(publicShareEntry, /WriteUrduTelemetry\.shareReferralReady/, 'destination-ready measurement must wait for successful own-words activation');
+assert.doesNotMatch(publicShareEntry, /localStorage/, 'public-share text must never be persisted to localStorage');
+assert.doesNotMatch(publicShareEntry, /location\.(?:search|hash)|URLSearchParams/, 'public-share entry must not read content or identity from the URL');
+
 const edge = journey.get('urdu-cards');
 assert.ok(edge, 'journey registry must know about urdu-cards');
+assert.ok(edge.accepts.includes('plain-text'), 'urdu-cards must accept the bounded public-share plain-text handoff');
 assert.ok(edge.next.some(e => e.id === 'urdu-cards-to-card' && e.target === 'card-studio' && e.payloadKind === 'visual-project-seed'));
 assert.ok(edge.next.some(e => e.id === 'urdu-cards-share' && e.target === null && e.type === 'embedded'));
 

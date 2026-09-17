@@ -56,12 +56,12 @@ assert.match(qrHtml, /workspace-handoff\.js[\s\S]*qr-handoff-adapter\.js[\s\S]*q
 assert.match(qrAdapter, /handoff\.take\(TARGET\)/, 'QR destination must consume the v2 envelope');
 assert.match(qrAdapter, /writeUrdu\.qrGenerator\.incoming/, 'QR adapter must bridge to the proven local QR consumer shape');
 
-assert.match(sharePage, /transfer\('basic-writer', 'share-to-basic', publicText\(\)/, 'Use this text must continue into Basic Writer');
-assert.match(sharePage, /transfer\('card-studio', 'share-to-card', publicText\(\), 'create'\)/, 'Create your own design must seed Card Studio');
-assert.match(sharePage, /transfer\('qr-generator', 'share-to-qr', publicUrl\(\)/, 'Public share QR must encode the public URL');
+assert.match(sharePage, /transfer\('urdu-cards', 'share-to-urdu-cards-create-own', ''/, 'Fresh recipient start must open Urdu Cards without source text');
+assert.match(sharePage, /transfer\('urdu-cards', 'share-to-urdu-cards-use-public-text', publicText\(\)/, 'Use these words must continue into Urdu Cards');
+assert.match(sharePage, /transfer\('card-studio', 'share-to-card', publicText\(\), 'remix_design'\)/, 'Lower-emphasis Card Studio edit must preserve public text');
 assert.doesNotMatch(sharePage, /writeUrdu\.cardStudio\.incoming/, 'Public share must not write Card Studio legacy state directly');
 assert.doesNotMatch(sharePage, /payload:\s*\{\s*text:\s*[^}]*window\.location\.href/, 'Public URL handoff should use the normalized publicUrl helper');
-assert.match(shareFunction, /data-share-qr/, 'Public share page must expose the QR continuation action');
+assert.match(shareFunction, /data-share-create[^]*data-share-use-text[^]*data-share-edit/, 'Public share page must keep the bounded 7A recipient hierarchy');
 assert.match(shareFunction, /workspace-journey-registry\.js[\s\S]*create-publish-boundaries-registry\.js[\s\S]*workspace-handoff\.js/, 'Public share page must load the governed v2 runtime before its action script');
 
 assert.match(sw, /write-urdu-shell-v51/, 'PWA cache must retain Card Studio, Slice G and B4 assets with the current shared shell');

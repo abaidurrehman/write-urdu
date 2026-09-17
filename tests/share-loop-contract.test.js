@@ -63,14 +63,15 @@ assert.match(publicPage, /property="og:image"/, 'Public shares must expose serve
 assert.match(publicPage, /twitter:card.*summary_large_image/, 'Public shares must expose a large social preview card');
 assert.match(publicPage, /\/share-media\/\$\{id\}/, 'Social metadata must use controlled same-site share media delivery');
 assert.match(publicPage, /data-share-public-text/, 'Published Urdu must remain real selectable HTML text');
-assert.match(publicPage, /Create your own Urdu design/, 'Public share must expose a creation CTA');
-assert.match(publicPage, /Use this text/, 'Public share must expose an explicit public-text continuation action');
-assert.match(publicPage, /Make QR for this link/, 'Public share must expose a QR continuation action');
+assert.match(publicPage, /Make your own Urdu card/, 'Public share must expose Urdu Cards as the primary fresh-start CTA');
+assert.match(publicPage, /Use these words/, 'Public share must expose an explicit public-text continuation action');
+assert.match(publicPage, /href="\/urdu-cards"[^>]*data-share-create/, 'Fresh recipient start must have a no-JS Urdu Cards fallback');
+assert.match(publicPage, /data-share-edit/, 'Card Studio must remain available as a lower-emphasis edit path');
 assert.match(publicPage, /Report this shared page/, 'Public share must expose an abuse-report path');
 assert.doesNotMatch(publicPage, /adsbygoogle|googlesyndication|google_ad_client/i, 'User-generated share pages must remain ad-free');
 assert.doesNotMatch(sitemap, /write-urdu\.com\/s\//, 'Individual user-generated share pages must never enter the XML sitemap');
 assert.match(publicPage, /<article class="share-card"[\s\S]*<aside class="share-panel"/, 'Shared artwork must come before continuation actions in the document flow');
-assert.match(publicPage, /share-button primary[^>]*data-share-use-text/, 'Use this text must be the primary recipient continuation action');
+assert.match(publicPage, /share-hero-cta[^>]*data-share-create/, 'Fresh Urdu Cards start must be the primary recipient continuation action');
 assert.doesNotMatch(shareCss, /\.share-panel\{[^}]*order:-1/, 'Mobile share layout must not move actions ahead of the shared artwork');
 
 // Card Studio retains local export while adding an explicit public-publish boundary.
@@ -112,11 +113,12 @@ assert.match(shareClient, /writeUrdu\.shareReferral\.v1/, 'Recipient creation mu
 assert.match(shareClient, /Handoff\.transfer\(\{/, 'Recipient continuation must use the shared v2 handoff runtime');
 assert.match(shareClient, /sourceWorkspace: 'public-share'/, 'Recipient handoffs must identify the immutable public-share source');
 assert.match(shareClient, /kind: 'plain-text'/, 'Recipient continuation must carry only bounded plain text');
-assert.match(shareClient, /transfer\('basic-writer', 'share-to-basic'/, 'Use this text must continue into Basic Writer');
-assert.match(shareClient, /transfer\('card-studio', 'share-to-card'/, 'Create your own design must continue into Card Studio');
-assert.match(shareClient, /transfer\('qr-generator', 'share-to-qr'/, 'QR action must continue into QR Generator');
+assert.match(shareClient, /transfer\('urdu-cards', 'share-to-urdu-cards-create-own', ''/, 'Fresh start must open Urdu Cards without copying public text');
+assert.match(shareClient, /transfer\('urdu-cards', 'share-to-urdu-cards-use-public-text', publicText\(\)/, 'Use these words must send public text to Urdu Cards');
+assert.match(shareClient, /transfer\('card-studio', 'share-to-card'/, 'Lower-emphasis edit must preserve Card Studio continuation');
 assert.doesNotMatch(shareClient, /writeUrdu\.cardStudio\.incoming/, 'Public share must not couple directly to Card Studio legacy storage');
 assert.doesNotMatch(shareClient, /location\.href\s*=\s*[^;]*(?:text=|share=|origin_share_id)/, 'Recipient handoff must not leak text/share identity in the destination URL');
+assert.doesNotMatch(shareClient, /context:\s*\{\s*shareId/, 'Workspace handoff context must not duplicate the public share ID');
 
 // Anonymous telemetry normalizes the dynamic route before it reaches /api/events.
 assert.match(shareTelemetry, /return '\/s\/:share'/, 'Dynamic share routes must normalize to one low-cardinality telemetry route');
