@@ -11,6 +11,7 @@ const html = read('urdu-cards.html');
 const script = read('js/urdu-cards.js');
 const returningScript = read('js/urdu-cards-returning-state.js');
 const ownWordsScript = read('js/urdu-cards-own-words.js');
+const ownWordsVoiceScript = read('js/urdu-cards-own-words-voice.js');
 const transliterationAdapter = read('js/card-gallery-transliteration.js');
 const endpoint = read('functions/api/events.js');
 const discoveryGuide = (html.match(/<section class="card-discovery-guide"[^]*?<\/section>/) || [''])[0];
@@ -47,6 +48,16 @@ assert.match(ownWordsScript, /card\.textUr = normalized/, 'own-words mode must f
 assert.doesNotMatch(ownWordsScript, /localStorage\.setItem[^\n]*(?:text|message|value)/i, 'own-words text must not be persisted to localStorage');
 assert.doesNotMatch(ownWordsScript, /sessionStorage\.setItem[^\n]*(?:text|message|value)/i, 'own-words text must not be persisted by the inline composer');
 assert.doesNotMatch(ownWordsScript, /fetch\(/, 'own-words mode must remain browser-local until an existing explicit share action is chosen');
+
+assert.match(ownWordsScript, /urdu-cards-own-words-voice\.js/, 'own-words mode should lazy-load its voice enhancement only after the composer is opened');
+assert.match(ownWordsVoiceScript, /voice-input-core\.js/, 'Slice 5B must reuse the shared speech-recognition core');
+assert.match(ownWordsVoiceScript, /unified-urdu-input\.js/, 'Slice 5B must reuse the shared text-target adapter');
+assert.match(ownWordsVoiceScript, /writer-voice-input\.js/, 'Slice 5B must reuse the established voice UI and permission/error handling');
+assert.match(ownWordsVoiceScript, /mountInputModeTextTargets/, 'voice must bind through the generic input-mode target path rather than a cards-specific adapter');
+assert.doesNotMatch(ownWordsVoiceScript, /SpeechRecognition|webkitSpeechRecognition/, 'the cards voice layer must not implement a second recognition engine');
+assert.doesNotMatch(ownWordsVoiceScript, /getUserMedia|mediaDevices/, 'the cards voice layer must not add a separate microphone API path');
+assert.doesNotMatch(ownWordsVoiceScript, /localStorage|sessionStorage/, 'voice transcript must remain in the existing in-memory textarea flow');
+assert.doesNotMatch(ownWordsVoiceScript, /fetch\(/, 'voice recognition itself must not send transcript text to the server');
 
 const edge = journey.get('urdu-cards');
 assert.ok(edge, 'journey registry must know about urdu-cards');
