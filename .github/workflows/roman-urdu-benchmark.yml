@@ -90,5 +90,5 @@ jobs:
         with:
           name: wu-journey-001b-b4
           path: benchmark-results/roman-urdu/
-          retention-days: 30
+          retention-days: 2
           if-no-files-found: error
