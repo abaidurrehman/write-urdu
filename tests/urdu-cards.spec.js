@@ -168,6 +168,85 @@ test('personalized card can be shared as an image without opening Card Studio', 
   await expect(page).toHaveURL(/\/urdu-cards$/);
 });
 
+test('favorites persist locally and stay filtered when a favorite is removed', async ({ page }) => {
+  await openCards(page);
+  await expect(page.locator('[data-urdu-cards-returning]')).toBeHidden();
+  await expect(page.locator('[data-urdu-cards-favorite]')).toHaveCount(cardCount);
+
+  const secondId = cards.find(card => card.id !== 'dua-1').id;
+  await page.locator('[data-urdu-cards-favorite="dua-1"]').click();
+  await page.locator(`[data-urdu-cards-favorite="${secondId}"]`).click();
+  await expect(page.locator('[data-urdu-cards-returning]')).toBeVisible();
+  await expect(page.locator('[data-urdu-cards-returning-filter="favorites"]')).toHaveText('Favorites · 2');
+
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('writeUrdu.urduCardsFavorites.v1')))).toEqual([secondId, 'dua-1']);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.card-gallery-card')).toHaveCount(cardCount);
+  await expect(page.locator('[data-urdu-cards-favorite="dua-1"]')).toHaveAttribute('aria-pressed', 'true');
+
+  const favorites = page.locator('[data-urdu-cards-returning-filter="favorites"]');
+  await favorites.click();
+  await expect(favorites).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.card-gallery-card:visible')).toHaveCount(2);
+
+  await page.locator('[data-urdu-cards-favorite="dua-1"]').click();
+  await expect(favorites).toHaveAttribute('aria-pressed', 'true');
+  await expect(favorites).toHaveText('Favorites · 1');
+  await expect(page.locator('.card-gallery-card:visible')).toHaveCount(1);
+  await expect(page.locator(`#card-${secondId}`)).toBeVisible();
+});
+
+test('recents remember only canonical card ids and never personalized Urdu text', async ({ page }) => {
+  await openCards(page);
+  await page.locator('[data-urdu-cards-edit="dua-1"]').click();
+  const dialog = page.locator('[data-urdu-cards-personalizer="dua-1"]');
+  const privateText = 'یہ صرف میری ذاتی عبارت ہے اور محفوظ نہیں ہونی چاہیے۔';
+  await dialog.locator('[data-urdu-cards-personalizer-text="dua-1"]').fill(privateText);
+
+  const stored = await page.evaluate(() => ({
+    favorites: localStorage.getItem('writeUrdu.urduCardsFavorites.v1'),
+    recents: localStorage.getItem('writeUrdu.urduCardsRecents.v1')
+  }));
+  expect(JSON.parse(stored.favorites)).toEqual([]);
+  expect(JSON.parse(stored.recents)).toEqual(['dua-1']);
+  expect(JSON.stringify(stored)).not.toContain(privateText);
+
+  await page.keyboard.press('Escape');
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.locator('.card-gallery-card')).toHaveCount(cardCount);
+  const recent = page.locator('[data-urdu-cards-returning-filter="recent"]');
+  await expect(recent).toHaveText('Recent · 1');
+  await recent.click();
+  await expect(page.locator('.card-gallery-card:visible')).toHaveCount(1);
+  await page.locator('[data-urdu-cards-continue]').click();
+  await expect(page.locator('[data-urdu-cards-image-share="dua-1"]')).toBeFocused();
+});
+
+test('returning state removes unknown ids and localizes its Urdu controls', async ({ page }) => {
+  await blockExternal(page);
+  await page.goto('/urdu-cards', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await page.evaluate(() => {
+    localStorage.setItem('writeUrdu.urduCardsFavorites.v1', JSON.stringify(['missing-card', 'dua-1', 'dua-1']));
+    localStorage.setItem('writeUrdu.urduCardsRecents.v1', JSON.stringify(['missing-card', 'dua-1']));
+  });
+  await page.goto('/urdu/urdu-cards', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect(page.locator('.card-gallery-card')).toHaveCount(cardCount);
+  await expect(page.locator('[data-urdu-cards-returning]')).toContainText('آپ کے کارڈز');
+  await expect(page.locator('[data-urdu-cards-returning-filter="favorites"]')).toHaveText('پسندیدہ · 1');
+  await expect(page.locator('[data-urdu-cards-returning-filter="recent"]')).toHaveText('حالیہ · 1');
+  await expect(page.locator('[data-urdu-cards-favorite="dua-1"]')).toHaveAttribute('aria-label', 'dua-1 کارڈ پسندیدہ سے نکالیں');
+
+  const state = await page.evaluate(() => ({
+    app: window.WriteUrduCardsReturningState.getState(),
+    favorites: JSON.parse(localStorage.getItem('writeUrdu.urduCardsFavorites.v1')),
+    recents: JSON.parse(localStorage.getItem('writeUrdu.urduCardsRecents.v1'))
+  }));
+  expect(state.app.favorites).toEqual(['dua-1']);
+  expect(state.app.recents).toEqual(['dua-1']);
+  expect(state.favorites).toEqual(['dua-1']);
+  expect(state.recents).toEqual(['dua-1']);
+});
+
 test('category filter narrows visible cards', async ({ page }) => {
   await openCards(page);
   const filter = page.getByRole('button', { name: 'Wedding · شادی', exact: true });
