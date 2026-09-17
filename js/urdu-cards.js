@@ -78,7 +78,14 @@
     }
 
     function localizedRoute(productPath) {
-        return root.WriteUrduLocaleRoute && root.WriteUrduLocaleRoute.href(productPath, locale()) || productPath;
+        if (root.WriteUrduLocaleRoute && typeof root.WriteUrduLocaleRoute.href === 'function') {
+            return root.WriteUrduLocaleRoute.href(productPath, locale());
+        }
+        if (locale() === 'ur') {
+            if (productPath === '/') return '/urdu/';
+            return '/urdu' + productPath;
+        }
+        return productPath;
     }
 
     function pathDetailFor(card) {
