@@ -102,6 +102,15 @@
         document.head.appendChild(script);
     }
 
+    function loadSocialFormatEnhancement() {
+        if (root.WriteUrduCardsSocialFormats || document.querySelector('script[data-urdu-cards-social-formats-script]')) return;
+        var script = document.createElement('script');
+        script.src = root.location && root.location.protocol === 'file:' ? 'js/urdu-cards-social-formats.js' : '/js/urdu-cards-social-formats.js';
+        script.async = true;
+        script.dataset.urduCardsSocialFormatsScript = 'true';
+        document.head.appendChild(script);
+    }
+
     function addRecent(id) {
         if (!knownIds[id]) return;
         state.recents = [id].concat(state.recents.filter(function (item) { return item !== id; })).slice(0, MAX_RECENTS);
@@ -282,9 +291,9 @@
     }
 
     function actionCardId(target) {
-        var action = target.closest('[data-urdu-cards-image-share], [data-urdu-cards-edit], [data-urdu-cards-whatsapp-status], [data-urdu-cards-share]');
+        var action = target.closest('[data-urdu-cards-image-share], [data-urdu-cards-edit], [data-urdu-cards-whatsapp-status], [data-urdu-cards-share], [data-urdu-cards-format]');
         if (!action) return '';
-        return action.dataset.urduCardsImageShare || action.dataset.urduCardsEdit || action.dataset.urduCardsWhatsappStatus || action.dataset.urduCardsShare || '';
+        return action.dataset.urduCardsImageShare || action.dataset.urduCardsEdit || action.dataset.urduCardsWhatsappStatus || action.dataset.urduCardsShare || action.dataset.cardId || '';
     }
 
     function mount() {
@@ -354,6 +363,7 @@
     function boot() {
         retryMount(0);
         loadOwnWordsEnhancement();
+        loadSocialFormatEnhancement();
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
