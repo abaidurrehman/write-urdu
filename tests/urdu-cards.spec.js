@@ -26,6 +26,24 @@ test('ready-made cards render fixed text without any canvas', async ({ page }) =
   expect(await page.evaluate(() => window.WriteUrduCardsApp.getDiagnostics())).toMatchObject({ shells: cardCount });
 });
 
+test('start choices separate ready-made browsing from using your own words', async ({ page }) => {
+  await openCards(page);
+  const chooser = page.locator('[data-urdu-cards-start]');
+  await expect(chooser).toBeVisible();
+  await expect(chooser.getByRole('heading', { level: 2 })).toHaveText('How do you want to start?');
+  await expect(chooser.locator('[data-urdu-cards-start-choice="ready-made"]')).toContainText('Find a ready-made message');
+  await expect(chooser.locator('[data-urdu-cards-start-choice="ready-made"]')).toHaveAttribute('href', '#urdu-cards-browser');
+  await expect(chooser.locator('[data-urdu-cards-start-choice="own-words"]')).toContainText('Use my own words');
+  await expect(chooser.locator('[data-urdu-cards-start-choice="own-words"]')).toHaveAttribute('href', '/urdu-card-gallery');
+});
+
+test('card actions explain share, personalize and publish as different outcomes', async ({ page }) => {
+  await openCards(page);
+  await expect(page.locator('[data-urdu-cards-whatsapp-status="dua-1"]')).toContainText('Share to WhatsApp Status');
+  await expect(page.locator('[data-urdu-cards-edit="dua-1"]')).toContainText('Make it mine');
+  await expect(page.locator('[data-urdu-cards-share="dua-1"]')).toContainText('Publish shareable link');
+});
+
 test('WhatsApp Status sharing is lazy, branded and uses a 9:16 PNG file', async ({ page }) => {
   await openCards(page);
   await expect(page.locator('script[src*="whatsapp-status-share.js"]')).toHaveCount(0);
