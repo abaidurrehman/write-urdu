@@ -6,6 +6,40 @@ const uniqueDesignCount = new Set(cards.map(card => card.backgroundId)).size;
 const originalDua = cards.find(card => card.id === 'dua-1').textUr;
 const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, route => route.abort());
 
+async function installSpeechRecognitionMock(page) {
+  await page.addInitScript(() => {
+    class MockSpeechRecognition {
+      constructor() {
+        this.lang = '';
+        this.continuous = false;
+        this.interimResults = false;
+        this.maxAlternatives = 0;
+        window.__urduCardsRecognition = this;
+        window.__urduCardsVoiceStopCalls = 0;
+      }
+      start() {
+        if (typeof this.onstart === 'function') this.onstart();
+      }
+      stop() {
+        window.__urduCardsVoiceStopCalls += 1;
+        if (typeof this.onend === 'function') this.onend();
+      }
+      abort() {
+        if (typeof this.onend === 'function') this.onend();
+      }
+    }
+    window.SpeechRecognition = undefined;
+    window.webkitSpeechRecognition = MockSpeechRecognition;
+  });
+}
+
+async function disableSpeechRecognition(page) {
+  await page.addInitScript(() => {
+    window.SpeechRecognition = undefined;
+    window.webkitSpeechRecognition = undefined;
+  });
+}
+
 async function openCards(page, path = '/urdu-cards') {
   await blockExternal(page);
   await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 15000 });
@@ -148,13 +182,77 @@ test('own-words input reuses the existing Roman Urdu transliteration adapter', a
   await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText('اردو براہ راست بھی کام کرتی ہے۔');
 });
 
-test('Urdu locale keeps the inline own-words journey localized', async ({ page }) => {
+test('Speak Urdu inserts final speech into the same own-words textarea and card previews', async ({ page }) => {
+  await installSpeechRecognitionMock(page);
+  await openCards(page);
+  await openOwnWords(page);
+
+  const method = page.locator('[data-wu-voice-method]');
+  await expect(method).toBeVisible();
+  await expect(method).toBeEnabled();
+  await expect(method.locator('[data-wu-voice-label]')).toHaveText('Speak Urdu');
+  await method.click();
+  await expect(page.locator('[data-wu-voice-panel]')).toBeVisible();
+  await page.locator('[data-wu-voice-start]').click();
+  await expect(page.locator('[data-wu-voice-status]')).toHaveText('Listening…');
+  expect(await page.evaluate(() => window.__urduCardsRecognition.lang)).toBe('ur-PK');
+
+  const spoken = 'اللہ آپ کو ہمیشہ خوش رکھے';
+  await page.evaluate(text => {
+    const result = [{ transcript: text }];
+    result.isFinal = true;
+    window.__urduCardsRecognition.onresult({ resultIndex: 0, results: [result] });
+  }, spoken);
+
+  await expect(page.locator('[data-urdu-cards-own-input]')).toHaveValue(spoken);
+  await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText(spoken);
+  await expect(page.locator('[data-urdu-cards-count]')).toHaveText(`${uniqueDesignCount} designs`);
+
+  await page.locator('[data-urdu-cards-own-back]').click();
+  await expect.poll(() => page.evaluate(() => window.__urduCardsVoiceStopCalls)).toBe(1);
+  await expect(page.locator('[data-urdu-cards-own-words]')).toBeHidden();
+});
+
+test('voice permission denial is bounded and leaves typing available', async ({ page }) => {
+  await installSpeechRecognitionMock(page);
+  await openCards(page);
+  await openOwnWords(page);
+
+  await page.locator('[data-wu-voice-method]').click();
+  await page.locator('[data-wu-voice-start]').click();
+  await page.evaluate(() => window.__urduCardsRecognition.onerror({ error: 'not-allowed' }));
+
+  await expect(page.locator('[data-wu-voice-status]')).toHaveText('Permission blocked');
+  await expect(page.locator('[data-wu-voice-notice]')).toContainText('Allow microphone access');
+  await page.locator('[data-urdu-cards-own-input]').fill('مائیک نہ ہو تب بھی میں لکھ سکتا ہوں۔');
+  await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText('مائیک نہ ہو تب بھی میں لکھ سکتا ہوں۔');
+});
+
+test('unsupported voice stays disabled while Roman Urdu and direct typing remain available', async ({ page }) => {
+  await disableSpeechRecognition(page);
+  await openCards(page);
+  await openOwnWords(page);
+
+  const method = page.locator('[data-wu-voice-method]');
+  await expect(method).toBeVisible();
+  await expect(method).toBeDisabled();
+  await expect(method).toHaveAttribute('aria-disabled', 'true');
+  await page.locator('[data-urdu-cards-own-input]').fill('آواز دستیاب نہ ہو تو بھی یہ کام کرتا ہے۔');
+  await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText('آواز دستیاب نہ ہو تو بھی یہ کام کرتا ہے۔');
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+test('Urdu locale keeps the inline own-words journey and voice method localized', async ({ page }) => {
+  await installSpeechRecognitionMock(page);
   await openCards(page, '/urdu/urdu-cards');
   await openOwnWords(page);
 
   await expect(page).toHaveURL(/\/urdu\/urdu-cards$/);
   await expect(page.locator('[data-urdu-cards-own-words] h2')).toHaveText('اپنا پیغام استعمال کریں');
   await expect(page.locator('[data-urdu-cards-own-back]')).toHaveText('تیار شدہ کارڈز پر واپس جائیں');
+  await expect(page.locator('[data-wu-voice-label]')).toHaveText('بول کر اردو لکھیں');
   await page.locator('[data-urdu-cards-own-input]').fill('آپ ہمیشہ خوش رہیں۔');
   await expect(page.locator('[data-urdu-cards-count]')).toHaveText(`${uniqueDesignCount} ڈیزائنز`);
 });

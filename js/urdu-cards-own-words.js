@@ -10,9 +10,9 @@
     var COPY = {
         en: {
             title: 'Use your own words',
-            intro: 'Type Roman Urdu, Urdu directly, or paste a message. Your words will appear across the unique card designs below.',
+            intro: 'Type Roman Urdu, Urdu directly, paste a message, or speak Urdu. Your words will appear across the unique card designs below.',
             label: 'Your message',
-            placeholder: 'Type Roman Urdu and press Space, or paste Urdu here…',
+            placeholder: 'Type Roman Urdu and press Space, paste Urdu, or use Speak Urdu…',
             help: 'Up to {max} characters. Your message is not saved to Favorites or Recent.',
             back: 'Back to ready-made cards',
             clear: 'Clear',
@@ -22,9 +22,9 @@
         },
         ur: {
             title: 'اپنا پیغام استعمال کریں',
-            intro: 'رومن اردو لکھیں، اردو براہِ راست ٹائپ کریں یا پیغام پیسٹ کریں۔ آپ کے الفاظ نیچے منفرد کارڈ ڈیزائنز پر نظر آئیں گے۔',
+            intro: 'رومن اردو لکھیں، اردو براہِ راست ٹائپ کریں، پیغام پیسٹ کریں یا اردو بول کر لکھیں۔ آپ کے الفاظ نیچے منفرد کارڈ ڈیزائنز پر نظر آئیں گے۔',
             label: 'آپ کا پیغام',
-            placeholder: 'رومن اردو لکھ کر Space دبائیں، یا اردو متن یہاں پیسٹ کریں…',
+            placeholder: 'رومن اردو لکھیں، اردو پیسٹ کریں یا بول کر لکھیں…',
             help: 'زیادہ سے زیادہ {max} حروف۔ آپ کا پیغام پسندیدہ یا حالیہ کارڈز میں محفوظ نہیں ہوتا۔',
             back: 'تیار شدہ کارڈز پر واپس جائیں',
             clear: 'صاف کریں',
@@ -91,6 +91,10 @@
             if (root.WriteUrduInputMode && typeof root.WriteUrduInputMode.refresh === 'function') root.WriteUrduInputMode.refresh();
             return loadScript('/js/card-gallery-transliteration.js', 'data-urdu-cards-transliteration-script', function () {
                 return Boolean(root.writeUrduTransliterationControl);
+            });
+        }).then(function () {
+            return loadScript('/js/urdu-cards-own-words-voice.js', 'data-urdu-cards-own-words-voice-script', function () {
+                return Boolean(root.WriteUrduCardsOwnWordsVoice);
             });
         }).catch(function () {
             enhancementPromise = null;
@@ -270,6 +274,7 @@
             ownChoice.setAttribute('aria-expanded', 'true');
             ensureInputEnhancements().then(function () {
                 if (root.WriteUrduInputMode && typeof root.WriteUrduInputMode.refresh === 'function') root.WriteUrduInputMode.refresh();
+                if (root.WriteUrduCardsOwnWordsVoice && typeof root.WriteUrduCardsOwnWordsVoice.ensure === 'function') root.WriteUrduCardsOwnWordsVoice.ensure();
             });
             if (textarea.value.trim()) applyOwnWords(textarea.value);
             root.requestAnimationFrame(function () { textarea.focus(); });
@@ -277,6 +282,7 @@
 
         function closeOwnWords(options) {
             options = options || {};
+            if (root.WriteUrduCardsOwnWordsVoice && typeof root.WriteUrduCardsOwnWordsVoice.stop === 'function') root.WriteUrduCardsOwnWordsVoice.stop();
             restoreReadyMade();
             section.hidden = true;
             ownChoice.setAttribute('aria-expanded', 'false');
