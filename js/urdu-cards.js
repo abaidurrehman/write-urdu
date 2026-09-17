@@ -6,7 +6,7 @@
     var core = root.WriteUrduCardGalleryCore;
     var data = root.WriteUrduCardsData;
     var sharing = root.WriteUrduCuratedCardShare;
-    var whatsappStatusPromise = null;
+    var cardImageSharePromise = null;
     var COPY = {
         en: {
             cards: ' cards',
@@ -17,9 +17,16 @@
             shared: 'Share sheet opened.',
             edit: 'Make it mine · اپنی مرضی سے بنائیں',
             editLabel: 'Personalize {id} in Card Studio',
-            share: 'Publish shareable link · شیئر لنک بنائیں',
+            image: 'Share image · تصویر شیئر کریں',
+            imageLabel: 'Share {id} as an image',
+            imagePreparing: 'Preparing image…',
+            imageShared: 'Image share sheet opened.',
+            imageDownloaded: 'PNG downloaded.',
+            imageCancelled: 'Sharing cancelled.',
+            imageFailed: 'Could not prepare this image. Try Make it mine.',
+            share: 'Shareable link · شیئر لنک',
             shareLabel: 'Publish a shareable link for {id}',
-            whatsapp: 'Share to WhatsApp Status · اسٹیٹس پر شیئر',
+            whatsapp: 'WhatsApp Status · واٹس ایپ اسٹیٹس',
             whatsappLabel: 'Share {id} to WhatsApp Status',
             statusPreparing: 'Preparing WhatsApp Status…',
             statusShared: 'Shared — choose WhatsApp and My Status when prompted.',
@@ -43,9 +50,16 @@
             shared: 'شیئر مینو کھل گیا۔',
             edit: 'اپنی مرضی سے بنائیں',
             editLabel: 'کارڈ اسٹوڈیو میں {id} کارڈ اپنی مرضی سے بنائیں',
-            share: 'شیئر لنک بنائیں',
+            image: 'تصویر شیئر کریں',
+            imageLabel: '{id} کارڈ بطور تصویر شیئر کریں',
+            imagePreparing: 'تصویر تیار کی جا رہی ہے…',
+            imageShared: 'تصویر کا شیئر مینو کھل گیا۔',
+            imageDownloaded: 'PNG ڈاؤن لوڈ ہو گیا۔',
+            imageCancelled: 'شیئر منسوخ کر دیا گیا۔',
+            imageFailed: 'تصویر تیار نہیں ہو سکی۔ اپنی مرضی سے بنائیں کھول کر دوبارہ کوشش کریں۔',
+            share: 'شیئر لنک',
             shareLabel: '{id} کارڈ کے لیے شیئر کرنے کا لنک بنائیں',
-            whatsapp: 'واٹس ایپ اسٹیٹس پر شیئر کریں',
+            whatsapp: 'واٹس ایپ اسٹیٹس',
             whatsappLabel: '{id} کارڈ واٹس ایپ اسٹیٹس پر شیئر کریں',
             statusPreparing: 'واٹس ایپ اسٹیٹس تیار کیا جا رہا ہے…',
             statusShared: 'شیئر مینو کھل گیا — واٹس ایپ اور پھر میرا اسٹیٹس منتخب کریں۔',
@@ -108,27 +122,29 @@
         } catch (error) {}
     }
 
-    function ensureWhatsAppStatusShare() {
-        if (root.WriteUrduWhatsAppStatusShare && typeof root.WriteUrduWhatsAppStatusShare.shareCard === 'function') {
+    function ensureCardImageShare() {
+        if (root.WriteUrduWhatsAppStatusShare &&
+            typeof root.WriteUrduWhatsAppStatusShare.shareCard === 'function' &&
+            typeof root.WriteUrduWhatsAppStatusShare.shareImage === 'function') {
             return Promise.resolve(root.WriteUrduWhatsAppStatusShare);
         }
-        if (whatsappStatusPromise) return whatsappStatusPromise;
-        whatsappStatusPromise = new Promise(function (resolve, reject) {
+        if (cardImageSharePromise) return cardImageSharePromise;
+        cardImageSharePromise = new Promise(function (resolve, reject) {
             var script = document.createElement('script');
             script.src = root.location && root.location.protocol === 'file:' ? 'js/whatsapp-status-share.js' : '/js/whatsapp-status-share.js';
             script.async = true;
             script.onload = function () {
                 var api = root.WriteUrduWhatsAppStatusShare;
-                if (api && typeof api.shareCard === 'function') resolve(api);
-                else reject(new Error('status_share_api_missing'));
+                if (api && typeof api.shareCard === 'function' && typeof api.shareImage === 'function') resolve(api);
+                else reject(new Error('card_image_share_api_missing'));
             };
-            script.onerror = function () { reject(new Error('status_share_script_failed')); };
+            script.onerror = function () { reject(new Error('card_image_share_script_failed')); };
             document.head.appendChild(script);
         }).catch(function (error) {
-            whatsappStatusPromise = null;
+            cardImageSharePromise = null;
             throw error;
         });
-        return whatsappStatusPromise;
+        return cardImageSharePromise;
     }
 
     function createStartOption(options) {
@@ -274,6 +290,38 @@
             });
         }
 
+        function startImageShare(card, background, button) {
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+            status.textContent = copyText('imagePreparing');
+            track('card_image_share_attempted', {
+                card_id: card.id,
+                background_id: card.backgroundId,
+                source_route: localizedRoute('/urdu-cards')
+            });
+            ensureCardImageShare().then(function (imageShare) {
+                return imageShare.shareImage(card, background);
+            }).then(function (result) {
+                button.disabled = false;
+                button.removeAttribute('aria-busy');
+                if (result.result === 'shared') {
+                    status.textContent = copyText('imageShared');
+                    track('card_image_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'native_share' });
+                } else if (result.result === 'downloaded') {
+                    status.textContent = copyText('imageDownloaded');
+                    track('card_image_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'download_fallback' });
+                } else {
+                    status.textContent = copyText('imageCancelled');
+                    track('card_image_share_cancelled', { card_id: card.id, background_id: card.backgroundId });
+                }
+            }).catch(function () {
+                button.disabled = false;
+                button.removeAttribute('aria-busy');
+                status.textContent = copyText('imageFailed');
+                track('card_image_share_failed', { card_id: card.id, background_id: card.backgroundId });
+            });
+        }
+
         function startWhatsAppStatus(card, background, button) {
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
@@ -283,8 +331,8 @@
                 background_id: card.backgroundId,
                 source_route: localizedRoute('/urdu-cards')
             });
-            ensureWhatsAppStatusShare().then(function (whatsappStatus) {
-                return whatsappStatus.shareCard(card, background);
+            ensureCardImageShare().then(function (imageShare) {
+                return imageShare.shareCard(card, background);
             }).then(function (result) {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
@@ -365,13 +413,13 @@
             var actions = document.createElement('div');
             actions.className = 'urdu-cards-actions';
 
-            var whatsapp = document.createElement('button');
-            whatsapp.type = 'button';
-            whatsapp.className = 'urdu-cards-whatsapp';
-            whatsapp.dataset.urduCardsWhatsappStatus = card.id;
-            whatsapp.textContent = copyText('whatsapp');
-            whatsapp.setAttribute('aria-label', copyText('whatsappLabel', { id: card.id }));
-            whatsapp.addEventListener('click', function () { startWhatsAppStatus(card, background, whatsapp); });
+            var imageShare = document.createElement('button');
+            imageShare.type = 'button';
+            imageShare.className = 'urdu-cards-image';
+            imageShare.dataset.urduCardsImageShare = card.id;
+            imageShare.textContent = copyText('image');
+            imageShare.setAttribute('aria-label', copyText('imageLabel', { id: card.id }));
+            imageShare.addEventListener('click', function () { startImageShare(card, background, imageShare); });
 
             var edit = document.createElement('button');
             edit.type = 'button';
@@ -381,6 +429,20 @@
             edit.setAttribute('aria-label', copyText('editLabel', { id: card.id }));
             edit.addEventListener('click', function () { startEdit(card, background, edit); });
 
+            actions.appendChild(imageShare);
+            actions.appendChild(edit);
+
+            var secondaryActions = document.createElement('div');
+            secondaryActions.className = 'urdu-cards-secondary-actions';
+
+            var whatsapp = document.createElement('button');
+            whatsapp.type = 'button';
+            whatsapp.className = 'urdu-cards-whatsapp';
+            whatsapp.dataset.urduCardsWhatsappStatus = card.id;
+            whatsapp.textContent = copyText('whatsapp');
+            whatsapp.setAttribute('aria-label', copyText('whatsappLabel', { id: card.id }));
+            whatsapp.addEventListener('click', function () { startWhatsAppStatus(card, background, whatsapp); });
+
             var share = document.createElement('button');
             share.type = 'button';
             share.className = 'urdu-cards-share';
@@ -389,13 +451,13 @@
             share.setAttribute('aria-label', copyText('shareLabel', { id: card.id }));
             share.addEventListener('click', function () { startShare(card, share); });
 
-            actions.appendChild(whatsapp);
-            actions.appendChild(edit);
-            actions.appendChild(share);
+            secondaryActions.appendChild(whatsapp);
+            secondaryActions.appendChild(share);
 
             article.appendChild(art);
             article.appendChild(details);
             article.appendChild(actions);
+            article.appendChild(secondaryActions);
             grid.appendChild(article);
 
             cardRecords.push({ article: article, card: card });
@@ -432,7 +494,8 @@
             getDiagnostics: function () {
                 return {
                     shells: cardRecords.length,
-                    whatsappStatusShareLoaded: Boolean(root.WriteUrduWhatsAppStatusShare)
+                    whatsappStatusShareLoaded: Boolean(root.WriteUrduWhatsAppStatusShare),
+                    imageShareLoaded: Boolean(root.WriteUrduWhatsAppStatusShare && root.WriteUrduWhatsAppStatusShare.shareImage)
                 };
             }
         };

@@ -37,11 +37,50 @@ test('start choices separate ready-made browsing from using your own words', asy
   await expect(chooser.locator('[data-urdu-cards-start-choice="own-words"]')).toHaveAttribute('href', '/urdu-card-gallery');
 });
 
-test('card actions explain share, personalize and publish as different outcomes', async ({ page }) => {
+test('card actions prioritize image sharing and personalization over secondary destinations', async ({ page }) => {
   await openCards(page);
-  await expect(page.locator('[data-urdu-cards-whatsapp-status="dua-1"]')).toContainText('Share to WhatsApp Status');
+  await expect(page.locator('[data-urdu-cards-image-share="dua-1"]')).toContainText('Share image');
   await expect(page.locator('[data-urdu-cards-edit="dua-1"]')).toContainText('Make it mine');
-  await expect(page.locator('[data-urdu-cards-share="dua-1"]')).toContainText('Publish shareable link');
+  await expect(page.locator('[data-urdu-cards-whatsapp-status="dua-1"]')).toContainText('WhatsApp Status');
+  await expect(page.locator('[data-urdu-cards-share="dua-1"]')).toContainText('Shareable link');
+});
+
+test('generic image sharing is lazy, branded and uses a 4:5 PNG file', async ({ page }) => {
+  await openCards(page);
+  await expect(page.locator('script[src*="whatsapp-status-share.js"]')).toHaveCount(0);
+  await page.evaluate(() => {
+    window.__imageShare = null;
+    Object.defineProperty(navigator, 'canShare', {
+      configurable: true,
+      value: data => Boolean(data && data.files && data.files[0] && data.files[0].type === 'image/png')
+    });
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: async data => {
+        const file = data.files[0];
+        window.__imageShare = { name: file.name, type: file.type, size: file.size, text: data.text };
+      }
+    });
+  });
+
+  await page.locator('[data-urdu-cards-image-share="dua-1"]').click();
+  await expect(page.locator('[data-urdu-cards-status]')).toHaveText('Image share sheet opened.');
+  await expect(page.locator('script[src*="whatsapp-status-share.js"]')).toHaveCount(1);
+
+  const result = await page.evaluate(() => ({
+    share: window.__imageShare,
+    diagnostics: window.WriteUrduWhatsAppStatusShare.getDiagnostics(),
+    canvasCount: document.querySelectorAll('canvas').length
+  }));
+  expect(result.share).toMatchObject({
+    type: 'image/png',
+    text: 'Create your own Urdu card at write-urdu.com/urdu-cards'
+  });
+  expect(result.share.name).toBe('write-urdu-dua-1.png');
+  expect(result.share.size).toBeGreaterThan(1000);
+  expect(result.diagnostics).toMatchObject({ cardWidth: 720, cardHeight: 900 });
+  expect(result.diagnostics.watermark).toContain('write-urdu.com');
+  expect(result.canvasCount).toBe(0);
 });
 
 test('WhatsApp Status sharing is lazy, branded and uses a 9:16 PNG file', async ({ page }) => {
