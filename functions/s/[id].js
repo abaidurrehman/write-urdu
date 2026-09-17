@@ -24,7 +24,7 @@ function pageResponse(html, status) {
 }
 
 function unavailable(status, title, message) {
-  return pageResponse(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(title)} | Write Urdu</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/share-page.css"></head><body><main class="share-shell"><header class="share-topbar"><a class="share-brand" href="/"><span class="share-brand-mark">WU</span><span>Write Urdu</span></a></header><section class="share-panel" style="position:static;max-width:680px;margin:10vh auto"><p class="share-kicker">Shared Urdu writing</p><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p><div class="share-actions"><a class="share-button primary" href="/urdu-card-studio">Create your own Urdu card</a><a class="share-button" href="/">Write Urdu</a></div></section></main></body></html>`, status);
+  return pageResponse(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escapeHtml(title)} | Write Urdu</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/share-page.css"></head><body><main class="share-shell"><header class="share-topbar"><a class="share-brand" href="/"><span class="share-brand-mark">WU</span><span>Write Urdu</span></a></header><section class="share-panel" style="position:static;max-width:680px;margin:10vh auto"><p class="share-kicker">Shared Urdu writing</p><h1>${escapeHtml(title)}</h1><p>${escapeHtml(message)}</p><div class="share-actions"><a class="share-button primary" href="/urdu-cards">Make your own Urdu card</a><a class="share-button" href="/">Write Urdu</a></div></section></main></body></html>`, status);
 }
 
 export async function onRequestGet(context) {
@@ -105,17 +105,16 @@ export async function onRequestGet(context) {
       <aside class="share-panel" aria-label="Continue with this Urdu writing">
         <p class="share-kicker">Make it your own</p>
         <h1>Like this card?</h1>
-        <p>Create one with your own words, reuse these words, or try the same Urdu across other designs.</p>
+        <p>Start fresh with your own words, or intentionally reuse the public words from this card.</p>
 
-        <a class="share-hero-cta" href="/urdu-card-studio" data-share-create aria-label="Create your own Urdu design">
+        <a class="share-hero-cta" href="/urdu-cards" data-share-create aria-label="Make your own Urdu card">
           <span class="share-hero-urdu" lang="ur" dir="rtl">اپنا خوبصورت اردو کارڈ بنائیں</span>
-          <span class="share-hero-sub">Create your own Urdu card — free, no account</span>
+          <span class="share-hero-sub">Make your own Urdu card — free, no account</span>
         </a>
 
         <div class="share-actions">
-          <button class="share-button primary" type="button" data-share-use-text>Use this text</button>
-          <button class="share-button secondary" type="button" data-share-gallery>Try this text with another design</button>
-          <button class="share-button secondary" type="button" data-share-qr>Make QR for this link</button>
+          <button class="share-button secondary" type="button" data-share-use-text>Use these words</button>
+          <a class="share-button quiet" href="/urdu-card-studio" data-share-edit>Edit these words in Card Studio</a>
           <div class="share-row share-row-utilities">
             <button class="share-button quiet" type="button" data-share-copy>Copy link</button>
             <a class="share-button quiet" href="/">Write Urdu</a>

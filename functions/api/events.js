@@ -83,7 +83,7 @@ const EVENT_NAMES = new Set([
 const TOOLS = new Set([
     'basic_editor', 'rich_editor', 'urdu_keyboard', 'card_studio', 'stylish_text',
     'name_art', 'whatsapp_status', 'instagram_post', 'invoice_generator', 'qr_generator',
-    'public_share', 'voice_typing', 'content', 'community_writing', 'card_gallery'
+    'public_share', 'voice_typing', 'content', 'community_writing', 'card_gallery', 'urdu_cards'
 ]);
 
 const FORMATS = new Set([
@@ -106,6 +106,7 @@ const CONTINUATION_RECOMMENDATIONS = new Set([
     'voice-to-basic', 'voice-to-rich', 'voice-to-card',
     'inpage-to-cleaner', 'inpage-to-basic', 'inpage-to-rich',
     'stylish-to-name-art', 'stylish-to-card', 'share-to-card', 'share-to-basic',
+    'share-to-urdu-cards-create-own', 'share-to-urdu-cards-use-public-text',
     'legacy-compatibility', 'gallery-to-card', 'urdu-cards-to-card'
 ]);
 const CONTINUATION_WORKSPACES = new Set([

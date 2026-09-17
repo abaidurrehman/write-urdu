@@ -56,9 +56,10 @@
       targetWorkspace: targetWorkspace,
       targetRoute: route,
       actionId: actionId,
+      intent: referralAction || null,
       kind: 'plain-text',
       payload: { text: String(text || '') },
-      context: { shareId: shareId }
+      context: {}
     });
     if (!result || !result.ok) {
       status('This browser could not move this item safely. You can still copy the text or link manually.', true);
@@ -164,22 +165,19 @@
     var create = q('[data-share-create]');
     if (create) create.addEventListener('click', function (event) {
       event.preventDefault();
-      transfer('card-studio', 'share-to-card', publicText(), 'create');
+      transfer('urdu-cards', 'share-to-urdu-cards-create-own', '', 'create_own');
     });
 
     var useText = q('[data-share-use-text]');
-    if (useText) useText.addEventListener('click', function () {
-      transfer('basic-writer', 'share-to-basic', publicText(), 'basic_writer');
+    if (useText) useText.addEventListener('click', function (event) {
+      event.preventDefault();
+      transfer('urdu-cards', 'share-to-urdu-cards-use-public-text', publicText(), 'use_public_text');
     });
 
-    var gallery = q('[data-share-gallery]');
-    if (gallery) gallery.addEventListener('click', function () {
-      transfer('card-gallery', 'share-to-gallery', publicText(), 'gallery');
-    });
-
-    var qr = q('[data-share-qr]');
-    if (qr) qr.addEventListener('click', function () {
-      transfer('qr-generator', 'share-to-qr', publicUrl(), 'qr');
+    var edit = q('[data-share-edit]');
+    if (edit) edit.addEventListener('click', function (event) {
+      event.preventDefault();
+      transfer('card-studio', 'share-to-card', publicText(), 'remix_design');
     });
 
     var copy = q('[data-share-copy]');

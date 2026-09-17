@@ -111,7 +111,7 @@
         {
             id: 'urdu-cards', routes: ['/urdu-cards'], status: 'current', category: 'Create', stages: ['Create'],
             label: 'Browse ready-made Urdu cards', technicalLabel: 'Ready-Made Urdu Cards',
-            jobs: ['pick a finished Urdu card for dua, Eid, wedding or congratulations'], accepts: [], produces: ['visual-project-seed'],
+            jobs: ['pick a finished Urdu card for dua, Eid, wedding or congratulations'], accepts: ['plain-text'], produces: ['visual-project-seed'],
             persistence: 'session handoff only', conflictPolicy: 'never overwrite Card Studio before a valid handoff',
             next: [
                 { id: 'urdu-cards-to-card', target: 'card-studio', type: 'handoff', label: 'Edit this card in Card Studio', payloadKind: 'visual-project-seed' },
@@ -222,7 +222,9 @@
             persistence: 'published artifact service', conflictPolicy: 'recipient continuation never mutates the published source artifact',
             next: [
                 { id: 'share-to-card', target: 'card-studio', type: 'handoff', label: 'Create your own version', payloadKind: 'plain-text' },
-                { id: 'share-to-basic', target: 'basic-writer', type: 'handoff', label: 'Use this text', payloadKind: 'plain-text' }
+                { id: 'share-to-basic', target: 'basic-writer', type: 'handoff', label: 'Use this text', payloadKind: 'plain-text' },
+                { id: 'share-to-urdu-cards-create-own', target: 'urdu-cards', type: 'handoff', label: 'Make your own Urdu card', payloadKind: 'plain-text' },
+                { id: 'share-to-urdu-cards-use-public-text', target: 'urdu-cards', type: 'handoff', label: 'Use these words', payloadKind: 'plain-text' }
             ]
         },
         {

@@ -328,11 +328,13 @@ function removeLegacyGovernedSchema(html, page, options = {}) {
 
 function applyStaticSeoGraph(html, page, options = {}) {
   if (!page || page.indexable !== true) return html;
-  const tag = schemaTag(page, html, options);
-  let output = removeLegacyGovernedSchema(String(html || ''), page, options);
-  output = output.replace(/\s*<script\b[^>]*data-write-urdu-schema[^>]*>[\s\S]*?<\/script>/ig, '');
+  const source = String(html || '');
+  const eol = source.includes('\r\n') ? '\r\n' : '\n';
+  const tag = schemaTag(page, source, options);
+  let output = removeLegacyGovernedSchema(source, page, options);
+  output = output.replace(/[ \t]*<script\b[^>]*data-write-urdu-schema[^>]*>[\s\S]*?<\/script>[ \t]*(?:\r?\n)?/ig, '');
   if (!/<\/head>/i.test(output)) throw new Error('Missing </head> for ' + page.path);
-  return output.replace(/<\/head>/i, '    ' + tag + '\n</head>');
+  return output.replace(/<\/head>/i, '    ' + tag + eol + '</head>');
 }
 
 module.exports = {

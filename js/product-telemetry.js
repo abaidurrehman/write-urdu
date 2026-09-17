@@ -21,7 +21,7 @@
     var copyWatchToken = 0;
     var trackedOnce = Object.create(null);
     var SHARE_REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
-    var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true };
+    var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true, urdu_cards: true };
     var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-09-06-v1';
 
     function normalizedPath(value) {
@@ -45,6 +45,7 @@
             '/urdu-keyboard': 'urdu_keyboard',
             '/urdu-card-studio': 'card_studio',
             '/urdu-card-gallery': 'card_gallery',
+            '/urdu-cards': 'urdu_cards',
             '/stylish-urdu-text-generator': 'stylish_text',
             '/urdu-name-art-maker': 'name_art',
             '/urdu-whatsapp-status-maker': 'whatsapp_status',
@@ -615,6 +616,7 @@
     function rootSelectorForTool() {
         var selectors = {
             card_studio: '[data-card-studio]',
+            urdu_cards: '[data-urdu-cards]',
             stylish_text: '[data-stylish-generator]',
             name_art: '[data-name-art]',
             whatsapp_status: '[data-social-direct-workspace="whatsapp"]',
@@ -632,6 +634,9 @@
         document.addEventListener('input', function (event) {
             if (event.isTrusted && event.target && event.target.closest && event.target.closest(rootSelector)) {
                 markEngaged();
+                if (tool === 'urdu_cards' && event.target.matches('[data-urdu-cards-own-input]') && String(event.target.value || '').trim().length >= 20) {
+                    trackShareReferredMeaningfulStart();
+                }
                 trackContinuationMeaningfulInteraction();
             }
         }, true);
@@ -815,7 +820,7 @@
         startActiveTimer();
         track('page_session_started');
         if (writerFunnelEligible()) trackOnce('writer-viewed', 'writer_viewed');
-        trackShareReferralDestinationReady();
+        if (tool !== 'urdu_cards') trackShareReferralDestinationReady();
         document.addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'hidden') flush(true);
         });
@@ -828,6 +833,7 @@
         engage: markEngaged,
         trackOutcome: trackOutcome,
         trackContinuationPath: trackContinuationPath,
+        shareReferralReady: trackShareReferralDestinationReady,
         rememberContinuationContext: rememberContinuationContext,
         continuationContextFromDocument: continuationContextFromDocument,
         lengthBucket: lengthBucket,
