@@ -22,6 +22,19 @@
     var status = section.querySelector('[data-whatsapp-status-status]');
     var activeCategory = 'all';
 
+    function restorePageIdentity() {
+        var urdu = document.documentElement.lang === 'ur';
+        var heading = document.querySelector('main.social-maker-main h1');
+        if (heading) heading.textContent = urdu ? 'اردو واٹس ایپ اسٹیٹس' : 'Urdu WhatsApp Status';
+        document.title = urdu
+            ? 'اردو واٹس ایپ اسٹیٹس — تیار متن اور تصویر ساز | رائٹ اردو'
+            : 'Urdu WhatsApp Status – Ready-Made Text & Image Maker';
+    }
+
+    document.addEventListener('write-urdu:locale-change', restorePageIdentity);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', restorePageIdentity);
+    else restorePageIdentity();
+
     function track(name, detail) {
         try {
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.track === 'function') {
