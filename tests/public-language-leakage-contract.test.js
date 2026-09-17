@@ -68,9 +68,11 @@ assert.ok(!pages.privacy.includes('hash of the private management token'),
 assert.ok(!pages.privacy.includes('ephemeral tab-session identifier'),
   'privacy policy must not publish internal telemetry field names');
 
-assert.match(pages.typingGuide, /<title>English to Urdu Typing with English Letters \| WriteUrdu<\/title>/,
-  'typing guide should use the user/search-intent phrase while retaining its existing URL');
-assert.match(pages.typingGuide, /<h1[^>]*>English to Urdu Typing with English Letters<\/h1>/,
+assert.match(pages.typingGuide, /<title>Roman Urdu to Urdu Typing \| Convert Roman Urdu to Urdu Script<\/title>/,
+  'typing guide should use the Roman Urdu to Urdu search-intent phrase while retaining its existing URL');
+assert.match(pages.typingGuide, /<h1[^>]*>Roman Urdu to Urdu Typing<\/h1>/,
+  'typing guide H1 should use natural Roman Urdu language without specialist transliteration terminology');
+assert.doesNotMatch(pages.typingGuide, /<h1[^>]*>[^<]*transliteration[^<]*<\/h1>/i,
   'typing guide H1 should avoid specialist transliteration terminology');
 assert.ok(!pages.cardStudio.includes('Can I create a card from Roman Urdu?'),
   'Card Studio should use English-letter typing language in user-facing FAQ copy');
