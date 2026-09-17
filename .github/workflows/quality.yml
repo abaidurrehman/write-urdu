@@ -96,4 +96,4 @@ jobs:
           name: v3-visual-audit-${{ github.run_id }}
           path: visual-audit
           if-no-files-found: warn
-          retention-days: 7
+          retention-days: 2
