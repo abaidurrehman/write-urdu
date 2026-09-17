@@ -1,0 +1,46 @@
+name: Cleanup old Actions artifacts
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cleanup-old-artifacts.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete artifacts older than 2 days
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cutoff="$(date -u -d '2 days ago' +%s)"
+          deleted=0
+          kept=0
+
+          while IFS=$'\t' read -r id created_at name; do
+            [ -n "${id:-}" ] || continue
+            created_epoch="$(date -u -d "$created_at" +%s)"
+
+            if [ "$created_epoch" -lt "$cutoff" ]; then
+              echo "Deleting artifact $id ($name), created $created_at"
+              gh api --method DELETE "/repos/$GH_REPO/actions/artifacts/$id"
+              deleted=$((deleted + 1))
+            else
+              echo "Keeping artifact $id ($name), created $created_at"
+              kept=$((kept + 1))
+            fi
+          done < <(
+            gh api --paginate "/repos/$GH_REPO/actions/artifacts?per_page=100" \
+              --jq '.artifacts[] | select(.expired == false) | [.id, .created_at, .name] | @tsv'
+          )
+
+          echo "Deleted $deleted artifact(s); kept $kept artifact(s) from the last 2 days."
