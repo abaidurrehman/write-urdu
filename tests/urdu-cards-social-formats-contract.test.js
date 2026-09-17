@@ -24,7 +24,7 @@ assert.match(source, /transfer\(cardData\(id\), 'instagram-post'/, 'Instagram fo
 assert.doesNotMatch(source, /[?&](?:text|content|payload)=/i, 'card text must never be transported in the URL');
 assert.doesNotMatch(source, /localStorage\.setItem/, 'format selection must not persist card text to localStorage');
 assert.doesNotMatch(source, /fetch\(/, 'source format selection must not introduce a server call');
-assert.match(cards, /data\.urduCardsWhatsappStatus = card\.id/, 'the existing one-tap WhatsApp Status export must remain available');
+assert.match(cards, /dataset\.urduCardsWhatsappStatus = card\.id/, 'the existing one-tap WhatsApp Status export must remain available');
 
 assert.match(socialWorkspace, /social-format-handoff-adapter\.js/, 'both social maker shells must load the shared format handoff adapter');
 assert.ok(destination.indexOf('/js/card-background-registry.js') < destination.indexOf('/js/card-studio-background-library.js'), 'background registry must load before the background library');
