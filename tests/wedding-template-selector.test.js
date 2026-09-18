@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const selector = require('../js/wedding-template-selector.js');
+const wording = require('../js/wedding-wording-registry.js');
 
 function project(language) {
   return { invitationLanguage: language };
@@ -38,3 +39,12 @@ assert.deepEqual(nikahSuggestions, ['blush-rose-lanterns', 'maroon-wedding', 'ro
 
 const customSuggestions = selector.suggestBackgroundCategory(project('urdu'), { type: 'custom' });
 assert.deepEqual(customSuggestions, [], 'An event type with no palette entry must return an empty suggestion, never a guessed one');
+
+// The tone vocabulary must not silently drift across the three places it's duplicated
+// (core.js's schema default, this file's own filter, and the registry's per-template
+// formality tags) — if it does, selectTemplate would silently fall back to
+// concise-whatsapp for everything with no test failing.
+const core = require('../js/wedding-project-core.js');
+assert.deepEqual(selector.WORDING_TONES, core.WORDING_TONES, 'wedding-template-selector.js tone vocabulary must match wedding-project-core.js exactly');
+const registryFormalities = wording.TEMPLATES.map((t) => t.formality).filter((v, i, a) => a.indexOf(v) === i).sort();
+assert.deepEqual(registryFormalities, ['concise', 'formal', 'informal'], 'every formality value used by the wording registry must be one of the three known tones');
