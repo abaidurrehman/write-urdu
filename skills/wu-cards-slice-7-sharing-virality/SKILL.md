@@ -14,9 +14,9 @@ Strengthen the product-led loop:
 
 while reusing the existing WriteUrdu platform.
 
-The first executable child is **7A — Public share recipient -> Urdu Cards start**.
+**7A — Public share recipient -> Urdu Cards start** shipped through PR `#226` at squash commit `0c835ffe2d53dbbcf29c3c1b13daf84d8911d269`.
 
-Do not implement 7B/7C/7D in the same PR unless explicitly instructed after 7A is accepted.
+Treat 7A as the protected regression baseline. Do not reimplement it. Slice 7B is the next unimplemented child, but do not begin it—or 7C/7D—without explicit instruction. Keep one sub-slice per PR.
 
 ---
 
@@ -69,7 +69,7 @@ The strongest current creation entry for casual card users is `/urdu-cards`, not
 
 ---
 
-# Slice 7A — execution contract
+# Slice 7A — shipped regression contract
 
 ## Public share page
 
@@ -374,7 +374,7 @@ Work in this order:
 5. map workspace handoff target/source validation;
 6. write/update contract tests;
 7. write browser tests;
-8. implement the smallest 7A adapter/UI change;
+8. preserve the shipped 7A adapter/UI behavior, or implement only the explicitly authorized later sub-slice;
 9. test desktop + 360px mobile;
 10. run repository quality gates;
 11. stop and report.

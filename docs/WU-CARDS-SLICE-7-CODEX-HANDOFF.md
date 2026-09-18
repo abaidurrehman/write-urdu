@@ -16,6 +16,13 @@ Current baseline when this handoff was authored:
 - Slice 6B: shared creation continuity across Card Studio / WhatsApp / Instagram — merged.
 - Slice 6B merge commit: `86e6a1a8df7484875b6c72c88e291995b18defec`.
 
+Current status (refreshed 2026-09-18):
+
+- Slice 7A shipped through PR `#226`.
+- Slice 7A squash commit: `0c835ffe2d53dbbcf29c3c1b13daf84d8911d269`.
+- The 7A sections below are now the regression contract, not an instruction to reimplement it.
+- Slice 7B is the next unimplemented slice, but it still requires explicit product authorization before implementation.
+
 Feature:
 
 **Slice 7 — Sharing / Virality Loop**
@@ -125,7 +132,7 @@ Use the following sub-slices. Finish each with focused tests and a green quality
 
 ## Slice 7A — Public share recipient -> Urdu Cards start
 
-**Priority:** first implementation target.
+**Status:** shipped baseline; preserve and regression-test.
 
 ### Goal
 
@@ -572,4 +579,4 @@ The product loop should be technically trustworthy before we optimize its conver
 
 Use this exact prompt when starting Codex:
 
-> Work in `abaidurrehman/write-urdu` on **Write-Urdu Cards Slice 7 — Sharing / Virality Loop**. Start from current `main`. Read `docs/WU-CARDS-SLICE-7-CODEX-HANDOFF.md` and `skills/wu-cards-slice-7-sharing-virality/SKILL.md` in full, then read the authoritative parent specs `specs/WU-SHARE-001-public-share-pages-viral-publishing-loop.md` and `specs/WU-SHARE-001R-recipient-start-continuity.md`. Inspect current runtime/tests before editing because recent card work has already shipped. Implement **Slice 7A only** first: strengthen the public `/s/:id` recipient path so `Make your own Urdu card` starts fresh in `/urdu-cards` own-words mode, while `Use these words` intentionally restores the public Urdu text into that same existing own-words state through the approved workspace/session handoff. Keep URLs clean, consume the handoff, explicitly bound the source to `public-share`, preserve existing Share/Copy/Download/Report behavior, preserve WU-SHARE-001 storage/API/moderation/noindex contracts, send no text or share IDs to telemetry, and keep mobile clean at 360px. Reuse the existing 5A/5B own-words + voice path and 6A/6B card/social architecture; do not create a second renderer, composer, sharing backend, referral store, or social editor. Add/extend protected contract and Playwright tests before/with the implementation, register any new tests in the existing runners/workflow, run focused checks and the authoritative Quality workflow, and stop after 7A with a PR report. Do not proceed to 7B/7C/7D until 7A is green and reviewed.
+> Work in `abaidurrehman/write-urdu` on **Write-Urdu Cards Slice 7 — Sharing / Virality Loop**. Start from current `main`. Read `docs/WU-CARDS-SLICE-7-CODEX-HANDOFF.md` and `skills/wu-cards-slice-7-sharing-virality/SKILL.md` in full, then read the authoritative parent specs `specs/WU-SHARE-001-public-share-pages-viral-publishing-loop.md` and `specs/WU-SHARE-001R-recipient-start-continuity.md`. Inspect current runtime/tests before editing because Slice 7A shipped through PR `#226`. Treat 7A as a protected regression baseline: fresh recipient starts remain fresh, `Use these words` restores only intentionally public text through the approved handoff, URLs stay clean, sources remain bounded to `public-share`, Share/Copy/Download/Report remain intact, and telemetry contains no text or share IDs. Do not reimplement 7A. Continue only the explicitly authorized remaining sub-slice, beginning with 7B when requested. Reuse the existing WU-SHARE-001 backend, 5A/5B own-words and voice path, and 6A/6B card/social architecture. Add focused contract and browser coverage for the selected slice, run the authoritative Quality workflow, and stop at that slice's acceptance gate. Do not bundle 7B/7C/7D together.
