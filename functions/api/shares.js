@@ -16,6 +16,7 @@ import {
   publicOrigin,
   validatePng
 } from '../_lib/share-artifacts.js';
+import { sanitizeRemixPayload } from '../_lib/share-remix.js';
 
 const MAX_REQUEST_BYTES = 13 * 1024 * 1024;
 
@@ -47,6 +48,8 @@ export async function onRequestPost(context) {
   if (form.get('attribution') && attribution === null) return jsonResponse(400, { ok: false, error: 'invalid_attribution' });
   if (form.get('preset') && !preset) return jsonResponse(400, { ok: false, error: 'invalid_preset' });
   if (form.get('origin_share_id') && !originShareId) return jsonResponse(400, { ok: false, error: 'invalid_origin_share' });
+
+  const remixPayload = sanitizeRemixPayload(form.get('remix_payload'), publicText, attribution || '');
 
   const checkedImage = await validatePng(image);
   if (!checkedImage.ok) return jsonResponse(400, { ok: false, error: checkedImage.error });
@@ -81,8 +84,8 @@ export async function onRequestPost(context) {
           id, source_tool, public_text, attribution, image_key, image_mime,
           image_width, image_height, preset, remix_payload_json, remix_mode,
           origin_share_id, manage_token_hash, status, report_count, created_at
-        ) VALUES (?1, ?2, ?3, ?4, ?5, 'image/png', ?6, ?7, ?8, NULL, 'text_only', ?9, ?10, 'active', 0, ?11)`)
-        .bind(id, sourceTool, publicText, attribution || null, imageKey, checkedImage.width, checkedImage.height, preset || null, originShareId || null, manageTokenHash, createdAt)
+        ) VALUES (?1, ?2, ?3, ?4, ?5, 'image/png', ?6, ?7, ?8, ?9, ?10, ?11, ?12, 'active', 0, ?13)`)
+        .bind(id, sourceTool, publicText, attribution || null, imageKey, checkedImage.width, checkedImage.height, preset || null, remixPayload.payload ? JSON.stringify(remixPayload.payload) : null, remixPayload.mode, originShareId || null, manageTokenHash, createdAt)
         .run();
     } catch (error) {
       await env.CONTENT_STORE.delete(imageKey).catch(() => {});

@@ -34,6 +34,7 @@ const tests = [
   'tests/export-funnel-diagnostics-contract.test.js',
   'tests/growth-request-arbiter.test.mjs',
   'tests/share-loop-contract.test.js',
+  'tests/share-remix-contract.test.mjs',
   'tests/share-page-viral-v2-contract.test.js',
   'tests/auth-foundation-contract.test.js',
   'tests/documents-contract.test.js',

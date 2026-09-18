@@ -45,6 +45,17 @@
         return envelope.payload.project;
     }
 
+    function publicShareProject(envelope) {
+        if (!envelope || !envelope.payload || envelope.payload.kind !== 'visual-project-seed') return null;
+        if (!envelope.source || envelope.source.workspace !== 'public-share') return null;
+        if (envelope.actionId !== 'share-to-card' || envelope.payload.remixVersion !== 1) return null;
+        if (!envelope.context || envelope.context.publicShareRemix !== true) return null;
+        var project = envelope.payload.project;
+        if (!project || typeof project !== 'object' || !project.background) return null;
+        if (project.background.type !== 'solid' && project.background.type !== 'gradient') return null;
+        return project;
+    }
+
     function writeLegacyText(envelope) {
         var text = payloadText(envelope);
         if (!text.trim()) return true;
@@ -67,7 +78,7 @@
         var library = root.WriteUrduTemplateLibrary;
         if (!app || !core || typeof app.getState !== 'function') return false;
 
-        var project = continuityProject(envelope);
+        var project = continuityProject(envelope) || publicShareProject(envelope);
         var text = payloadText(envelope);
         if (project && typeof app.replaceState === 'function') {
             var restored;
@@ -142,13 +153,13 @@
             template = templateFromId(preview.payload.templateId || preview.context && preview.context.templateId);
             if (!template) return null;
         } else if (kind === 'visual-project-seed') {
-            if (!preview.source || !VISUAL_SEED_SOURCES[preview.source.workspace] || typeof preview.payload.backgroundId !== 'string') return null;
+            if (!publicShareProject(preview) && (!preview.source || !VISUAL_SEED_SOURCES[preview.source.workspace] || typeof preview.payload.backgroundId !== 'string')) return null;
         } else if (kind !== 'plain-text') return null;
 
         var app = root.WriteUrduCardStudioApp;
         var core = root.WriteUrduCardStudio;
         if (!app || !core || typeof app.getState !== 'function') return null;
-        if (kind === 'visual-project-seed') {
+        if (kind === 'visual-project-seed' && !publicShareProject(preview)) {
             if (consuming) return null;
             var pending = applyGallerySeed(preview);
             if (!pending) return null;
@@ -183,6 +194,7 @@
             root.document.documentElement.setAttribute('data-wu-card-seed-kind', kind);
             root.document.documentElement.setAttribute('data-wu-card-seed-applied', 'live');
             if (continuityProject(envelope)) root.document.documentElement.setAttribute('data-wu-create-continuity-restored', 'true');
+            if (publicShareProject(envelope)) root.document.documentElement.setAttribute('data-wu-public-share-remix-restored', 'true');
         }
         return envelope;
     }
@@ -209,6 +221,7 @@
         consumed: consumed,
         templateFromId: templateFromId,
         applyToRunningApp: applyToRunningApp,
-        continuityProject: continuityProject
+        continuityProject: continuityProject,
+        publicShareProject: publicShareProject
     };
 }(window));

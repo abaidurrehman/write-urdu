@@ -367,6 +367,60 @@
     if (stepPublishButton) stepPublishButton.disabled = value;
   }
 
+  function buildRemixCandidate(project) {
+    project = project || {};
+    var text = project.text || {};
+    var attribution = project.attribution || {};
+    var background = project.background || {};
+    var watermark = project.watermark || {};
+    return {
+      version: 1,
+      project: {
+        version: 2,
+        useCase: project.useCase || null,
+        presetId: project.presetId,
+        templateId: project.templateId,
+        text: {
+          value: text.value,
+          fontFamily: text.fontFamily,
+          fontMode: text.fontMode,
+          fontSize: text.fontSize,
+          minFontSize: text.minFontSize,
+          maxFontSize: text.maxFontSize,
+          color: text.color,
+          align: text.align,
+          verticalAlign: text.verticalAlign,
+          lineHeight: text.lineHeight,
+          shadow: text.shadow,
+          transform: text.transform
+        },
+        attribution: {
+          enabled: attribution.enabled === true,
+          value: attribution.value,
+          fontFamily: attribution.fontFamily,
+          fontSizeRatio: attribution.fontSizeRatio,
+          color: attribution.color,
+          transform: attribution.transform
+        },
+        background: {
+          type: background.type,
+          color: background.color,
+          gradientId: background.gradientId,
+          fit: background.fit,
+          positionX: background.positionX,
+          positionY: background.positionY,
+          overlayColor: background.overlayColor,
+          overlayOpacity: background.overlayOpacity,
+          blur: background.blur
+        },
+        watermark: {
+          enabled: watermark.enabled === true,
+          position: watermark.position
+        }
+      }
+    };
+  }
+
   async function publishCurrent() {
     if (busy) return;
     var state = app.getState && app.getState();
@@ -392,6 +446,7 @@
       form.append('public_text', String(latest.text.value || '').trim());
       if (latest.attribution && latest.attribution.enabled && String(latest.attribution.value || '').trim()) form.append('attribution', String(latest.attribution.value || '').trim());
       if (latest.presetId) form.append('preset', latest.presetId);
+      form.append('remix_payload', JSON.stringify(buildRemixCandidate(latest)));
       if (referral && referral.id) form.append('origin_share_id', referral.id);
 
       var response = await fetch('/api/shares', { method: 'POST', body: form, credentials: 'same-origin' });
