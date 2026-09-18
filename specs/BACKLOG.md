@@ -343,6 +343,30 @@ After the activation review:
 
 **Guardrail:** this epic coordinates proven/missing input modes around one editable Urdu destination. It is not permission for a new homepage command wall, generic chatbot, multiple converter doorway pages, or silent paid compute.
 
+
+## P1.10 — Pakistan Wedding Invitation Platform
+
+**Spec:** [WU-SHAADI-001](WU-SHAADI-001-pakistan-wedding-invitation-platform.md)  
+**Architecture:** [WU-SHAADI-001-ARCHITECTURE-CONTRACT.md](WU-SHAADI-001-ARCHITECTURE-CONTRACT.md)  
+**Execution:** [WU-SHAADI-001-IMPLEMENTATION-CHECKLIST.md](WU-SHAADI-001-IMPLEMENTATION-CHECKLIST.md)  
+**Acceptance:** [WU-SHAADI-001-ACCEPTANCE-MATRIX.md](WU-SHAADI-001-ACCEPTANCE-MATRIX.md)  
+**Evidence:** [docs/WU-SHAADI-001-EVIDENCE-2026-09-18.md](../docs/WU-SHAADI-001-EVIDENCE-2026-09-18.md)  
+**Skill:** skills/wu-shaadi-001/SKILL.md  
+**State:** Founder-approved specification / planned behind the activation evidence review. Slice 0 research, domain-schema work, fixtures and architectural proof may proceed without shipping a new public route.
+
+- [ ] Slice 0 — lock WeddingProject, event/host/programme/guest-household contracts; validate local-first privacy and renderer reuse.
+- [ ] Slice 1 — local structured invitation composer for Urdu/English/bilingual Pakistani wedding events.
+- [ ] Slice 2 — receiver-quality PNG/PDF/print output with optional Card Studio fine-tuning.
+- [ ] Slice 3 — household personalization, Roman/Latin-name → Urdu review, event assignment and bounded bulk generation.
+- [ ] Slice 4 — explicit private personalized links using opaque noindex guest URLs and WU-SHARE-001 security patterns.
+- [ ] Slice 5 — maps/calendar and optional culturally natural RSVP.
+- [ ] Slice 6+ — print system, lifecycle/retention and animated invitations only from evidence.
+- [ ] Never make a canvas or rendered card the canonical wedding record; one structured wedding must regenerate every dependent output.
+- [ ] Keep guest lists/browser-local projects off the server until explicit publication and never put names, phone numbers, addresses or private wording in telemetry.
+- [ ] Preserve one product route; do not pre-create Nikah/Baraat/Walima SEO doorway makers.
+
+**Guardrail:** this programme is not a generic wedding planner, vendor marketplace or second Card Studio. It digitizes the Pakistani invitation/envelope workflow around structured wedding data, guest households and WhatsApp/print outputs. If implementation permission is unclear, Slice 0 only.
+
 ---
 
 # LATER — P2

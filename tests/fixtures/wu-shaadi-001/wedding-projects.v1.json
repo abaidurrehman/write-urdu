@@ -1,0 +1,290 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "formal-nikah",
+      "document": {
+        "invitationLanguage": "urdu",
+        "couple": { "personA": { "displayName": "محمد علی" }, "personB": { "displayName": "عائشہ" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-12-05", "venueId": "venue-1" }],
+        "venues": [{ "id": "venue-1", "name": "مسجد قرطبہ ہال" }],
+        "guests": []
+      },
+      "expected": { "valid": true },
+      "wording": [{ "templateId": "formal-nikah-ur", "eventId": "evt-nikah", "expectComplete": true }]
+    },
+    {
+      "id": "bride-side-baraat",
+      "document": {
+        "invitationLanguage": "bilingual",
+        "couple": { "personA": { "displayName": "Ali" }, "personB": { "displayName": "Sara" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-baraat", "type": "baraat", "hostMode": "bride_side", "date": "2026-12-06", "venueId": "venue-1" }],
+        "venues": [{ "id": "venue-1", "name": "Pearl Continental" }],
+        "guests": []
+      },
+      "expected": { "valid": true },
+      "wording": [{ "templateId": "traditional-baraat-bilingual", "eventId": "evt-baraat", "expectComplete": true }]
+    },
+    {
+      "id": "groom-side-walima",
+      "document": {
+        "invitationLanguage": "english",
+        "couple": { "personA": { "displayName": "Usman" }, "personB": { "displayName": "Hina" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-walima", "type": "walima", "hostMode": "groom_side", "date": "2026-12-08", "venueId": "venue-1" }],
+        "venues": [{ "id": "venue-1", "name": "Grand Marquee" }],
+        "guests": []
+      },
+      "expected": { "valid": true },
+      "wording": [{ "templateId": "groom-family-walima-en", "eventId": "evt-walima", "expectComplete": true }]
+    },
+    {
+      "id": "mehndi",
+      "document": {
+        "invitationLanguage": "urdu",
+        "couple": { "personA": { "displayName": "ندیم" }, "personB": { "displayName": "زینب" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-mehndi", "type": "mehndi", "date": "2026-12-04", "venueId": "venue-1" }],
+        "venues": [{ "id": "venue-1", "name": "گھر کا لان" }],
+        "guests": []
+      },
+      "expected": { "valid": true },
+      "wording": [{ "templateId": "warm-mehndi-ur", "eventId": "evt-mehndi", "expectComplete": true }]
+    },
+    {
+      "id": "multi-event-wedding",
+      "document": {
+        "invitationLanguage": "bilingual",
+        "couple": { "personA": { "displayName": "Ali" }, "personB": { "displayName": "Sara" }, "displayMode": "both_names" },
+        "events": [
+          { "id": "evt-nikah", "type": "nikah", "date": "2026-12-05", "venueId": "venue-1" },
+          { "id": "evt-baraat", "type": "baraat", "date": "2026-12-06", "venueId": "venue-2" },
+          { "id": "evt-walima", "type": "walima", "date": "2026-12-08", "venueId": "venue-2" }
+        ],
+        "venues": [
+          { "id": "venue-1", "name": "Family Home" },
+          { "id": "venue-2", "name": "Pearl Continental" }
+        ],
+        "guests": []
+      },
+      "expected": { "valid": true },
+      "wording": [
+        { "templateId": "concise-whatsapp", "eventId": "evt-nikah", "expectComplete": true, "exactText": "Nikah: Ali & Sara — 2026-12-05 @ Family Home" },
+        { "templateId": "concise-whatsapp", "eventId": "evt-walima", "expectComplete": true, "exactText": "Walima: Ali & Sara — 2026-12-08 @ Pearl Continental" }
+      ]
+    },
+    {
+      "id": "bilingual-invitation-language",
+      "document": {
+        "invitationLanguage": "bilingual",
+        "couple": { "personA": { "displayName": "Bilal" }, "personB": { "displayName": "Mahnoor" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-01" }],
+        "venues": [],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "urdu-only-invitation-language",
+      "document": {
+        "invitationLanguage": "urdu",
+        "couple": { "personA": { "displayName": "بلال" }, "personB": { "displayName": "مہ نور" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-01" }],
+        "venues": [],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "english-only-invitation-language",
+      "document": {
+        "invitationLanguage": "english",
+        "couple": { "personA": { "displayName": "Bilal" }, "personB": { "displayName": "Mahnoor" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-01" }],
+        "venues": [],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "bride-name-shown-both-names",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" }, "displayMode": "both_names" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "lineage-style-wording",
+      "document": {
+        "couple": {
+          "personA": { "displayName": "Ahmed", "parentageText": "S/o Muhammad Aslam" },
+          "personB": { "displayName": "Fatima", "parentageText": "D/o Tariq Mahmood" },
+          "displayMode": "lineage"
+        },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "family-hosted-wording",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" }, "displayMode": "family_led" },
+        "families": [
+          { "id": "host-bride", "role": "bride_side", "displayName": "Family of Tariq Mahmood", "inviterNames": ["Tariq Mahmood"] },
+          { "id": "host-groom", "role": "groom_side", "displayName": "Family of Muhammad Aslam", "inviterNames": ["Muhammad Aslam"] }
+        ],
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "one-gathering-time",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02", "programme": [{ "labelType": "gathering", "time": "6:00 PM" }] }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "gathering-plus-dinner",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{
+          "id": "evt-walima", "type": "walima", "date": "2026-11-08",
+          "programme": [{ "labelType": "gathering", "time": "7:00 PM" }, { "labelType": "dinner", "time": "9:00 PM" }]
+        }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "gathering-nikah-dinner",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{
+          "id": "evt-nikah", "type": "nikah", "date": "2026-11-02",
+          "programme": [
+            { "labelType": "gathering", "time": "5:00 PM" },
+            { "labelType": "nikah", "time": "6:30 PM" },
+            { "labelType": "dinner", "time": "8:30 PM" }
+          ]
+        }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "custom-event",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{ "id": "evt-custom", "type": "custom", "customTypeLabel": "Qawwali Night", "date": "2026-11-03" }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "no-religious-opening",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "religiousOpening": { "mode": "none" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "bismillah-opening-pending-review",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "religiousOpening": { "mode": "verified_library", "libraryId": "bismillah-standard" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": []
+      },
+      "expected": { "valid": false, "errors": ["religiousOpening:unapproved_library_entry"] }
+    },
+    {
+      "id": "custom-religious-text-provided",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "religiousOpening": { "mode": "custom_user_text", "customText": "All praise is due to Allah." },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": []
+      },
+      "expected": { "valid": true }
+    },
+    {
+      "id": "custom-religious-text-missing",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "religiousOpening": { "mode": "custom_user_text", "customText": "" },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": []
+      },
+      "expected": { "valid": false, "errors": ["religiousOpening.customText:required"] }
+    },
+    {
+      "id": "missing-required-data",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "" }],
+        "guests": [{ "id": "guest-1", "sourceName": "Uncle Rizwan", "invitedEventIds": [] }]
+      },
+      "expected": { "valid": false, "errors": ["guests[0].invitedEventIds:required"] },
+      "wording": [{ "templateId": "formal-nikah-ur", "eventId": "evt-nikah", "expectComplete": false, "missingFields": ["event.date"] }]
+    },
+    {
+      "id": "unresolved-event-reference",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": [{ "id": "guest-1", "sourceName": "Uncle Rizwan", "invitedEventIds": ["evt-does-not-exist"] }]
+      },
+      "expected": { "valid": false, "errors": ["guests[0].invitedEventIds[0]:unresolved"] }
+    },
+    {
+      "id": "unresolved-venue-reference",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02", "venueId": "venue-does-not-exist" }],
+        "guests": []
+      },
+      "expected": { "valid": false, "errors": ["events[0].venueId:unresolved"] }
+    },
+    {
+      "id": "duplicate-guest-display-names-remain-separate",
+      "document": {
+        "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
+        "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
+        "guests": [
+          { "id": "guest-1", "sourceName": "Uncle Rizwan", "invitedEventIds": ["evt-nikah"] },
+          { "id": "guest-2", "sourceName": "Uncle Rizwan", "invitedEventIds": ["evt-nikah"] }
+        ]
+      },
+      "expected": { "valid": true },
+      "guestRecordCount": 2
+    },
+    {
+      "id": "household-event-scoped-filtering",
+      "document": {
+        "couple": { "personA": { "displayName": "Ali" }, "personB": { "displayName": "Sara" } },
+        "events": [
+          { "id": "evt-nikah", "type": "nikah", "date": "2026-12-05" },
+          { "id": "evt-baraat", "type": "baraat", "date": "2026-12-06" },
+          { "id": "evt-walima", "type": "walima", "date": "2026-12-08" }
+        ],
+        "guests": [
+          { "id": "household-a", "sourceName": "Household A", "scope": "family", "invitedEventIds": ["evt-nikah", "evt-baraat"] },
+          { "id": "household-b", "sourceName": "Household B", "scope": "couple", "invitedEventIds": ["evt-walima"] }
+        ]
+      },
+      "expected": { "valid": true },
+      "viewModel": [
+        { "guestId": "household-a", "expectedEventIds": ["evt-nikah", "evt-baraat"] },
+        { "guestId": "household-b", "expectedEventIds": ["evt-walima"] }
+      ]
+    }
+  ]
+}
