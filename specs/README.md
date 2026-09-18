@@ -143,6 +143,25 @@ The implementation package is:
 
 The hard architecture rule is that live browsing uses lightweight DOM previews rather than one Card Studio canvas per design. Existing background IDs remain intact, background metadata becomes a shared registry, and `/urdu-card-studio` remains the authoritative advanced editor/export path. Slice 0 planning/registry work is ready; public route rollout remains behind the current Card Studio completion/P0 gate unless the canonical backlog records an explicit exception.
 
+
+## Planned Pakistan Wedding Invitation programme
+
+WU-SHAADI-001 records the 2026-09-18 research-backed direction for a durable Pakistani wedding invitation system rather than another generic wedding-card editor.
+
+Its defining model is **one structured wedding → many culturally appropriate outputs**: multiple wedding functions, family/host wording, programme timings, guest-household personalization, Roman/Latin-name → Urdu review, event-specific invitations, WhatsApp-ready cards, print/PDF and later explicit private invitation links/RSVP.
+
+The implementation package is:
+
+- [WU-SHAADI-001-pakistan-wedding-invitation-platform.md](WU-SHAADI-001-pakistan-wedding-invitation-platform.md) — parent product/roadmap contract;
+- [WU-SHAADI-001-ARCHITECTURE-CONTRACT.md](WU-SHAADI-001-ARCHITECTURE-CONTRACT.md) — structured WeddingProject, guest/publication/privacy and Card Studio/share ownership boundaries;
+- [WU-SHAADI-001-IMPLEMENTATION-CHECKLIST.md](WU-SHAADI-001-IMPLEMENTATION-CHECKLIST.md) — ordered Slice 0–8 execution plan;
+- [WU-SHAADI-001-ACCEPTANCE-MATRIX.md](WU-SHAADI-001-ACCEPTANCE-MATRIX.md) — cultural/domain, privacy, bulk, mobile, print, personalized-link and RSVP acceptance;
+- [../docs/WU-SHAADI-001-EVIDENCE-2026-09-18.md](../docs/WU-SHAADI-001-EVIDENCE-2026-09-18.md) — dated evidence ledger covering Pakistani physical/online invitation conventions and current market patterns;
+- [../skills/wu-shaadi-001/SKILL.md](../skills/wu-shaadi-001/SKILL.md) — canonical Codex/Claude execution skill;
+- [../docs/WU-SHAADI-001-CODEX-HANDOFF.md](../docs/WU-SHAADI-001-CODEX-HANDOFF.md) — ready-to-paste implementation handoff.
+
+The hard architecture rule is that Card Studio/canvas state is never the canonical wedding record. Guest and wedding data remain browser-local before explicit publication. Personalized public links, when implemented, are opaque, event-scoped, revocable and noindex. While the current activation roadmap remains the governing gate, implementation defaults to Slice 0 only unless the canonical backlog records explicit release permission.
+
 ## Archived contracts
 
 Completed implementation slices and superseded contracts were moved on **2026-08-30** to keep the active directory honest and navigable.

@@ -55,6 +55,107 @@ async function openOwnWords(page) {
   await expect(page.locator('[data-urdu-cards-own-input]')).toBeFocused();
 }
 
+async function seedPublicShareHandoff(page, actionId, text, sourceWorkspace = 'public-share') {
+  await page.addInitScript(({ actionId, text, sourceWorkspace }) => {
+    const now = Date.now();
+    sessionStorage.setItem('write-urdu:workspace-handoff:v2:urdu-cards', JSON.stringify({
+      version: 2,
+      id: 'test-public-share-entry',
+      createdAt: now,
+      expiresAt: now + 30 * 60 * 1000,
+      source: { workspace: sourceWorkspace, route: '/s/AbCd1234', intent: actionId.includes('use-public-text') ? 'use_public_text' : 'create_own' },
+      target: { workspace: 'urdu-cards', route: '/urdu-cards' },
+      actionId,
+      payload: { kind: 'plain-text', text },
+      context: {}
+    }));
+  }, { actionId, text, sourceWorkspace });
+}
+
+async function openPublicShareFixture(page, shared) {
+  await blockExternal(page);
+  await page.route('**/s/AbCd1234', route => route.fulfill({
+    contentType: 'text/html',
+    body: `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/css/share-page.css"></head><body><main class="share-shell"><div class="share-layout"><article class="share-card"><img class="share-visual" alt="Shared Urdu card" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='900'/%3E"><div class="share-media-actions"><button class="share-button share-media-action" data-share-native>Share</button><a class="share-button share-media-action" data-share-download href="/share-media/AbCd1234?download=1">Download PNG</a><button class="share-button share-media-action" data-share-copy-text>Copy Urdu</button></div><h2 data-share-public-text>${shared}</h2></article><aside class="share-panel"><a class="share-hero-cta" href="/urdu-cards" data-share-create>Make your own Urdu card</a><div class="share-actions"><button class="share-button secondary" data-share-use-text>Use these words</button><a class="share-button quiet" href="/urdu-card-studio" data-share-edit>Edit these words in Card Studio</a><button class="share-button quiet" data-share-copy>Copy link</button></div><details class="share-report"><summary>Report this shared page</summary><div class="share-report-form"><select data-share-report-reason><option value="">Choose reason</option><option value="spam">Spam</option></select><button data-share-report>Report</button></div></details><p data-share-status></p></aside></div></main><script src="/js/workspace-journey-registry.js"></script><script src="/js/workspace-handoff.js"></script><script src="/js/share-loop-telemetry.js"></script><script src="/js/share-page.js"></script></body></html>`
+  }));
+  await page.goto('/s/AbCd1234', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[data-share-create]')).toBeVisible();
+}
+
+test('public share primary CTA reaches a clean fresh Urdu Cards composer', async ({ page }) => {
+  const source = 'اصل عوامی متن تازہ کارڈ میں نہیں آنا چاہیے';
+  await openPublicShareFixture(page, source);
+  await page.locator('[data-share-create]').click();
+
+  await expect(page).toHaveURL(/\/urdu-cards$/);
+  await expect.poll(() => page.evaluate(() => Boolean(window.WriteUrduCardsOwnWords))).toBe(true);
+  await expect(page.locator('[data-urdu-cards-own-words]')).toBeVisible();
+  await expect(page.locator('[data-urdu-cards-own-input]')).toHaveValue('');
+  expect(page.url()).not.toContain('AbCd1234');
+  expect(decodeURIComponent(page.url())).not.toContain(source);
+});
+
+test('public share secondary CTA restores exact words with clean mobile navigation', async ({ page }) => {
+  const source = 'محبت بانٹنے سے بڑھتی ہے۔';
+  await page.setViewportSize({ width: 360, height: 800 });
+  await openPublicShareFixture(page, source);
+
+  await expect(page.locator('[data-share-native]')).toBeVisible();
+  await expect(page.locator('[data-share-copy]')).toBeVisible();
+  await expect(page.locator('[data-share-download]')).toBeVisible();
+  await expect(page.locator('.share-report')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+
+  await page.locator('[data-share-use-text]').click();
+  await expect(page).toHaveURL(/\/urdu-cards$/);
+  await expect(page.locator('[data-urdu-cards-own-input]')).toHaveValue(source);
+  expect(page.url()).not.toContain('AbCd1234');
+  expect(decodeURIComponent(page.url())).not.toContain(source);
+});
+
+test('public share fresh start opens own words without copying source text', async ({ page }) => {
+  await seedPublicShareHandoff(page, 'share-to-urdu-cards-create-own', 'یہ متن تازہ آغاز میں نہیں آنا چاہیے');
+  await openCards(page);
+
+  await expect(page).toHaveURL(/\/urdu-cards$/);
+  await expect(page.locator('[data-urdu-cards-own-words]')).toBeVisible();
+  await expect(page.locator('[data-urdu-cards-own-input]')).toBeFocused();
+  await expect(page.locator('[data-urdu-cards-own-input]')).toHaveValue('');
+  expect(await page.evaluate(() => sessionStorage.getItem('write-urdu:workspace-handoff:v2:urdu-cards'))).toBeNull();
+});
+
+test('public share words restore into existing own-words state and handoff is consumed', async ({ page }) => {
+  const shared = 'یہ جان بوجھ کر عوامی کیے گئے اردو الفاظ ہیں۔';
+  await seedPublicShareHandoff(page, 'share-to-urdu-cards-use-public-text', shared);
+  await openCards(page);
+
+  await expect(page).toHaveURL(/\/urdu-cards$/);
+  await expect(page.locator('[data-urdu-cards-own-input]')).toHaveValue(shared);
+  await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText(shared);
+  expect(await page.evaluate(() => sessionStorage.getItem('write-urdu:workspace-handoff:v2:urdu-cards'))).toBeNull();
+  expect(decodeURIComponent(new URL(page.url()).href)).not.toContain(shared);
+
+  await page.locator('[data-urdu-cards-own-input]').fill(`${shared} مزید`);
+  await expect(page.locator('#card-dua-1 .card-gallery-preview-text')).toHaveText(`${shared} مزید`);
+
+  const localValues = await page.evaluate(() => Object.values(localStorage));
+  expect(JSON.stringify(localValues)).not.toContain(shared);
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+test('unrelated workspace cannot inject public-share words into Urdu Cards', async ({ page }) => {
+  const rejected = 'یہ غیر متعلقہ ذریعے کا متن ہے';
+  await seedPublicShareHandoff(page, 'share-to-urdu-cards-use-public-text', rejected, 'basic-writer');
+  await openCards(page);
+
+  await expect(page.locator('[data-urdu-cards-own-input]')).toHaveCount(1);
+  await expect(page.locator('[data-urdu-cards-own-input]')).toHaveValue('');
+  await expect(page.locator('[data-urdu-cards-status]')).toContainText('could not be restored');
+  expect(await page.evaluate(() => sessionStorage.getItem('write-urdu:workspace-handoff:v2:urdu-cards'))).toBeNull();
+});
+
 test('Use my own words opens inline and keeps the cards route', async ({ page }) => {
   await openCards(page);
   await openOwnWords(page);

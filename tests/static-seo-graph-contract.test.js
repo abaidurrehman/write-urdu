@@ -55,6 +55,7 @@ const rendered = applyStaticSeoGraph(read('urdu-keyboard.html'), page('/urdu-key
 assert.strictEqual((rendered.match(/data-write-urdu-schema/g) || []).length, 1, 'Static graph application must be idempotent and own exactly one schema tag');
 const renderedTwice = applyStaticSeoGraph(rendered, page('/urdu-keyboard'));
 assert.strictEqual((renderedTwice.match(/data-write-urdu-schema/g) || []).length, 1, 'Second graph application must not duplicate schema');
+assert.strictEqual(renderedTwice, rendered, 'Static graph application must be byte-idempotent on Windows CRLF sources');
 
 const instagramRendered = applyStaticSeoGraph(read('urdu-instagram-post-maker.html'), page('/urdu-instagram-post-maker'));
 assert.strictEqual((instagramRendered.match(/type="application\/ld\+json"/g) || []).length, 1, 'Governed Instagram WebApplication schema must not coexist with a legacy duplicate block');

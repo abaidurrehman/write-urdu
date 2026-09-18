@@ -13,14 +13,16 @@ const spec = read('specs', 'WU-SHARE-001V-viral-recipient-surface.md');
 
 assert.match(page, /data-share-download/, 'share page needs a direct PNG download');
 assert.match(page, /data-share-copy-text/, 'share page needs a Copy Urdu action');
-assert.match(page, /data-share-gallery/, 'share page needs a card-gallery remix action');
+assert.match(page, /data-share-create[^]*Make your own Urdu card/, 'share page needs a primary fresh Urdu Cards action');
+assert.match(page, /data-share-use-text>Use these words/, 'share page needs an intentional public-text reuse action');
 assert.equal((page.match(/class="share-action-icon"/g) || []).length, 3, 'share, download and Copy Urdu actions each need a lightweight inline icon');
 assert.match(page, /اپنا خوبصورت اردو کارڈ بنائیں/, 'share page neds a high-intent Urdu creation CTA');
-assert.match(page, /Create your own Urdu card — free, no account/, 'creation CTA needs low-friction supporting copy');
+assert.match(page, /Make your own Urdu card — free, no account/, 'creation CTA needs low-friction supporting copy');
 assert.match(page, /const titleExcerpt = excerpt\(share\.public_text, 72\)/, 'social/page title should use a bounded public-text excerpt');
 assert.match(page, /meta name="robots" content="noindex,follow,max-image-preview:large"/, 'existing unlisted share pages stay noindex in this slice');
 
-assert.match(client, /transfer\('card-gallery', 'share-to-gallery'/, 'same public Urdu should hand off to the live card gallery');
+assert.match(client, /transfer\('urdu-cards', 'share-to-urdu-cards-create-own', ''/, 'fresh CTA must open Urdu Cards without source text');
+assert.match(client, /transfer\('urdu-cards', 'share-to-urdu-cards-use-public-text', publicText\(\)/, 'same public Urdu should hand off to Urdu Cards own-words mode');
 assert.match(client, /data-share-copy-text/, 'Copy Urdu action must be wired');
 assert.match(client, /data-share-download/, 'PNG download interaction must be measured without a renderer');
 assert.doesNotMatch(client, /URLSearchParams[sS]*(?:publicText|shareId)|location\.href\s*=[^;]*(?:text=|share=)/, 'recipient content/identity must not leak into destination URLs');
