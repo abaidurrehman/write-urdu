@@ -30,7 +30,8 @@ module.exports = defineConfig({
     'rich-editor-mobile-activation.spec.js',
     'urdu-locale.spec.js',
     'v3-visual-quality.spec.js',
-    'inpage.spec.js'
+    'inpage.spec.js',
+    'wedding-invitation-render-adapter.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },
