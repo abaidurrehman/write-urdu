@@ -68,6 +68,7 @@ const tests = [
   'tests/invoice-preview-footer-contract.test.js',
   'tests/bill-generator-core.test.js',
   'tests/wedding-project-core.test.js',
+  'tests/wedding-invitation-render-adapter.test.js',
   'tests/sitemap-directory-contract.test.js',
   'tests/creation-core.test.js',
   'tests/qr-generator-core.test.js',
