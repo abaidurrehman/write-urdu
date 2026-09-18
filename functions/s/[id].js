@@ -48,6 +48,9 @@ export async function onRequestGet(context) {
   const publicText = escapeHtml(share.public_text);
   const attribution = share.attribution ? `<p class="share-attribution" lang="ur" dir="auto">— ${escapeHtml(share.attribution)}</p>` : '';
   const created = share.created_at ? escapeHtml(share.created_at) : '';
+  const exactRemixAction = share.remix_mode === 'design' && share.remix_payload
+    ? '<button class="share-button quiet" type="button" data-share-edit>Edit this design</button>'
+    : '';
 
   const html = `<!doctype html>
 <html lang="en">
@@ -114,7 +117,7 @@ export async function onRequestGet(context) {
 
         <div class="share-actions">
           <button class="share-button secondary" type="button" data-share-use-text>Use these words</button>
-          <a class="share-button quiet" href="/urdu-card-studio" data-share-edit>Edit these words in Card Studio</a>
+          ${exactRemixAction}
           <div class="share-row share-row-utilities">
             <button class="share-button quiet" type="button" data-share-copy>Copy link</button>
             <a class="share-button quiet" href="/">Write Urdu</a>

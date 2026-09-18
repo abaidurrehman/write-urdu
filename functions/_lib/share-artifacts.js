@@ -1,3 +1,5 @@
+import { readStoredRemix } from './share-remix.js';
+
 const SHARE_ID_PATTERN = /^[A-Za-z0-9]{8,12}$/;
 const SOURCE_TOOLS = new Set(['card_studio', 'basic_editor', 'rich_editor', 'urdu_keyboard']);
 const REPORT_REASONS = new Set(['spam', 'abuse', 'privacy', 'copyright', 'other']);
@@ -186,6 +188,7 @@ export async function getShare(db, id, includePrivate) {
       FROM share_artifacts WHERE id = ?1`).bind(shareId).first();
   if (!row) return null;
   if (includePrivate) return row;
+  const remixPayload = readStoredRemix(row.remix_mode, row.remix_payload_json, row.public_text, row.attribution || '');
   return {
     id: row.id,
     source_tool: row.source_tool,
@@ -195,7 +198,8 @@ export async function getShare(db, id, includePrivate) {
     image_width: Number(row.image_width),
     image_height: Number(row.image_height),
     preset: row.preset || null,
-    remix_mode: row.remix_mode || 'text_only',
+    remix_mode: remixPayload ? 'design' : 'text_only',
+    remix_payload: remixPayload,
     status: row.status,
     created_at: row.created_at
   };

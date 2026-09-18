@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, '..');
 const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
 
 const helper = read('functions', '_lib', 'share-artifacts.js');
+const remixHelper = read('functions', '_lib', 'share-remix.js');
 const publishApi = read('functions', 'api', 'shares.js');
 const shareApi = read('functions', 'api', 'shares', '[id].js');
 const reportApi = read('functions', 'api', 'shares', '[id]', 'report.js');
@@ -55,6 +56,10 @@ assert.match(helper, /cleanPlainText/, 'Public Urdu text must be normalized as p
 assert.match(helper, /new Set\(\['card_studio', 'basic_editor', 'rich_editor', 'urdu_keyboard'\]\)/, 'Share API source allowlist must cover all current writing publishers');
 assert.doesNotMatch(publishApi, /innerHTML|dangerouslySetInnerHTML/, 'Publish API must not accept/render HTML content');
 assert.match(publishApi, /origin_share_unavailable/, 'Child publication must validate its parent share');
+assert.match(publishApi, /sanitizeRemixPayload/, 'Publishing must sanitize reconstructible Card Studio state server-side');
+assert.match(publishApi, /remixPayload\.mode/, 'Publishing must derive remix mode from sanitization, not trust the client');
+assert.match(remixHelper, /background\.type !== 'solid' && background\.type !== 'gradient'/, 'Uploaded image projects must not claim exact reconstruction');
+assert.doesNotMatch(remixHelper, /imageAssetId|image_key|manage_token/i, 'Public remix payload must not include local assets, storage keys or management secrets');
 
 // Public UGC pages stay acquisition surfaces, not an indexable content farm.
 assert.match(publicPage, /x-robots-tag': 'noindex, follow'/i, 'Public share responses must emit a noindex HTTP header');
@@ -67,6 +72,8 @@ assert.match(publicPage, /Make your own Urdu card/, 'Public share must expose Ur
 assert.match(publicPage, /Use these words/, 'Public share must expose an explicit public-text continuation action');
 assert.match(publicPage, /href="\/urdu-cards"[^>]*data-share-create/, 'Fresh recipient start must have a no-JS Urdu Cards fallback');
 assert.match(publicPage, /data-share-edit/, 'Card Studio must remain available as a lower-emphasis edit path');
+assert.match(publicPage, /share\.remix_mode === 'design' && share\.remix_payload/, 'Exact-design CTA must be server-gated by a reconstructible payload');
+assert.match(publicPage, />Edit this design</, 'Reconstructible shares must describe exact design editing accurately');
 assert.match(publicPage, /Report this shared page/, 'Public share must expose an abuse-report path');
 assert.doesNotMatch(publicPage, /adsbygoogle|googlesyndication|google_ad_client/i, 'User-generated share pages must remain ad-free');
 assert.doesNotMatch(sitemap, /write-urdu\.com\/s\//, 'Individual user-generated share pages must never enter the XML sitemap');
@@ -87,6 +94,7 @@ assert.match(cardPublish, /current && current\.watermark && current\.watermark\.
 assert.match(cardPublish, /Write-Urdu\.com/, 'Hosted publish image must carry restrained Write Urdu provenance');
 assert.match(cardPublish, /writeUrdu\.shareManagement\.v1/, 'Management tokens must be retained locally for later deletion');
 assert.match(cardPublish, /\/api\/shares/, 'Card Studio must publish through the first-party share API');
+assert.match(cardPublish, /form\.append\('remix_payload'/, 'Card Studio must submit a bounded project candidate for server sanitization');
 
 // Basic Writer's first-class Share command publishes through the same short-link system.
 assert.match(basicPublish, /form\.append\('source_tool', 'basic_editor'\)/, 'Basic Writer must identify itself to the shared publish endpoint');
@@ -115,7 +123,9 @@ assert.match(shareClient, /sourceWorkspace: 'public-share'/, 'Recipient handoffs
 assert.match(shareClient, /kind: 'plain-text'/, 'Recipient continuation must carry only bounded plain text');
 assert.match(shareClient, /transfer\('urdu-cards', 'share-to-urdu-cards-create-own', ''/, 'Fresh start must open Urdu Cards without copying public text');
 assert.match(shareClient, /transfer\('urdu-cards', 'share-to-urdu-cards-use-public-text', publicText\(\)/, 'Use these words must send public text to Urdu Cards');
-assert.match(shareClient, /transfer\('card-studio', 'share-to-card'/, 'Lower-emphasis edit must preserve Card Studio continuation');
+assert.match(shareClient, /actionId: 'share-to-card'/, 'Exact-design edit must preserve the governed Card Studio action');
+assert.match(shareClient, /fetch\('\/api\/shares\/'/, 'Exact remix must fetch bounded first-party public share data');
+assert.match(shareClient, /kind: 'visual-project-seed'/, 'Exact remix must use the existing Card Studio visual-project handoff');
 assert.doesNotMatch(shareClient, /writeUrdu\.cardStudio\.incoming/, 'Public share must not couple directly to Card Studio legacy storage');
 assert.doesNotMatch(shareClient, /location\.href\s*=\s*[^;]*(?:text=|share=|origin_share_id)/, 'Recipient handoff must not leak text/share identity in the destination URL');
 assert.doesNotMatch(shareClient, /context:\s*\{\s*shareId/, 'Workspace handoff context must not duplicate the public share ID');
