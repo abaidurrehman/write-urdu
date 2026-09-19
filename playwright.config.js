@@ -31,7 +31,8 @@ module.exports = defineConfig({
     'urdu-locale.spec.js',
     'v3-visual-quality.spec.js',
     'inpage.spec.js',
-    'wedding-invitation-render-adapter.spec.js'
+    'wedding-invitation-render-adapter.spec.js',
+    'urdu-wedding-invitation-maker.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },
