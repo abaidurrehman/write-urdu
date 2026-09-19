@@ -73,6 +73,7 @@ const tests = [
   'tests/wedding-template-selector.test.js',
   'tests/wedding-project-storage.test.js',
   'tests/wu-shaadi-riwaayat-svg-pack.test.js',
+  'tests/riwaayat-manifest-sync-contract.test.js',
   'tests/sitemap-directory-contract.test.js',
   'tests/creation-core.test.js',
   'tests/qr-generator-core.test.js',
