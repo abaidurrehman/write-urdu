@@ -1110,7 +1110,7 @@ test('WU-SHAADI-001 composer: wording override survives and image export produce
   await expect(page.locator('.wedding-preview-text')).toHaveText('My own hand-edited wording');
 
   const downloadPromise = page.waitForEvent('download');
-  await page.click('.wedding-preview-list button:has-text("Download image")');
+  await page.click('[data-wedding-preview-list] button:has-text("Download image")');
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toMatch(/\.png$/);
 });
