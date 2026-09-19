@@ -57,7 +57,8 @@
             items: [
                 { href: '/urdu-invoice-generator', icon: 'invoice', label: { en: 'Create an Urdu or English invoice', ur: 'اردو یا انگریزی انوائس بنائیں' }, tool: { en: 'Invoice Generator', ur: 'انوائس جنریٹر' } },
                 { href: '/urdu-bill-generator', icon: 'invoice', label: { en: 'Create a quick shop bill or receipt', ur: 'دکان کا بل یا رسید بنائیں' }, tool: { en: 'Bill Generator', ur: 'بل جنریٹر' } },
-                { href: '/urdu-editor', icon: 'document', label: { en: 'Prepare a formal Urdu document', ur: 'رسمی اردو دستاویز تیار کریں' }, tool: { en: 'Rich Text Editor', ur: 'رچ ٹیکسٹ ایڈیٹر' }, activeOwner: false }
+                { href: '/urdu-editor', icon: 'document', label: { en: 'Prepare a formal Urdu document', ur: 'رسمی اردو دستاویز تیار کریں' }, tool: { en: 'Rich Text Editor', ur: 'رچ ٹیکسٹ ایڈیٹر' }, activeOwner: false },
+                { href: '/urdu-wedding-invitation-maker', icon: 'wedding', label: { en: 'Build a wedding invitation', ur: 'شادی کا دعوت نامہ بنائیں' }, tool: { en: 'Wedding Invitation Maker', ur: 'شادی دعوت نامہ میکر' } }
             ]
         },
         {

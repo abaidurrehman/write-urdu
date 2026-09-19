@@ -86,6 +86,7 @@ jobs:
           tests/voice-mobile-acceptance.spec.js
           tests/writer-voice-input.spec.js
           tests/urdu-locale.spec.js
+          tests/urdu-wedding-invitation-maker.spec.js
 
       - name: Run V3 production visual-quality audit
         run: npx playwright test tests/v3-visual-quality.spec.js --project=desktop-chromium
