@@ -58,13 +58,14 @@ assert.match(qrAdapter, /writeUrdu\.qrGenerator\.incoming/, 'QR adapter must bri
 
 assert.match(sharePage, /transfer\('urdu-cards', 'share-to-urdu-cards-create-own', ''/, 'Fresh recipient start must open Urdu Cards without source text');
 assert.match(sharePage, /transfer\('urdu-cards', 'share-to-urdu-cards-use-public-text', publicText\(\)/, 'Use these words must continue into Urdu Cards');
-assert.match(sharePage, /transfer\('card-studio', 'share-to-card', publicText\(\), 'remix_design'\)/, 'Lower-emphasis Card Studio edit must preserve public text');
+assert.match(sharePage, /fetch\('\/api\/shares\/'[\s\S]*actionId: 'share-to-card'[\s\S]*kind: 'visual-project-seed'/, 'Exact-design edit must fetch bounded public data and use the governed Card Studio handoff');
 assert.doesNotMatch(sharePage, /writeUrdu\.cardStudio\.incoming/, 'Public share must not write Card Studio legacy state directly');
 assert.doesNotMatch(sharePage, /payload:\s*\{\s*text:\s*[^}]*window\.location\.href/, 'Public URL handoff should use the normalized publicUrl helper');
-assert.match(shareFunction, /data-share-create[^]*data-share-use-text[^]*data-share-edit/, 'Public share page must keep the bounded 7A recipient hierarchy');
+assert.match(shareFunction, /data-share-create[^]*data-share-use-text/, 'Public share page must keep the bounded 7A recipient hierarchy');
+assert.match(shareFunction, /share\.remix_mode === 'design' && share\.remix_payload[\s\S]*data-share-edit/, 'Public share page must add exact-design editing only for reconstructible shares');
 assert.match(shareFunction, /workspace-journey-registry\.js[\s\S]*create-publish-boundaries-registry\.js[\s\S]*workspace-handoff\.js/, 'Public share page must load the governed v2 runtime before its action script');
 
-assert.match(sw, /write-urdu-shell-v51/, 'PWA cache must retain Card Studio, Slice G and B4 assets with the current shared shell');
+assert.match(sw, /write-urdu-shell-v52/, 'PWA cache must retain Card Studio, Slice G, B4 and safe remix assets');
 ['create-publish-boundaries-registry.js', 'card-studio-handoff-adapter.js', 'qr-handoff-adapter.js', 'template-library-boundary.js', 'share-page.js'].forEach(asset => {
   assert.ok(sw.includes(asset), `${asset} must be cached with the current shell`);
 });

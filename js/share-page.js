@@ -72,6 +72,58 @@
     return true;
   }
 
+  async function transferRemix(button) {
+    var route = routeFor('card-studio');
+    if (!shareId || !route || !Handoff || typeof Handoff.transfer !== 'function') {
+      status('This design cannot be prepared in this browser right now.', true);
+      return false;
+    }
+    if (button) {
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+    }
+    status('Preparing this editable design…');
+    try {
+      var response = await fetch('/api/shares/' + encodeURIComponent(shareId), { credentials: 'same-origin' });
+      var result = await response.json().catch(function () { return {}; });
+      var share = result && result.share;
+      if (!response.ok || !result.ok || !share || share.remix_mode !== 'design' || !share.remix_payload || share.remix_payload.version !== 1 || !share.remix_payload.project) throw new Error('remix_unavailable');
+      var handoff = Handoff.transfer({
+        sourceWorkspace: 'public-share',
+        sourceRoute: window.location.pathname,
+        targetWorkspace: 'card-studio',
+        targetRoute: route,
+        actionId: 'share-to-card',
+        intent: 'remix_design',
+        kind: 'visual-project-seed',
+        payload: {
+          remixVersion: 1,
+          project: share.remix_payload.project
+        },
+        context: {
+          publicShareRemix: true,
+          pathVersion: 'public-share-remix-v1',
+          releaseMarker: 'wu-cards-s7b-2026-09-18-v1',
+          handoffRequired: true,
+          restoreRequired: true
+        }
+      });
+      if (!handoff || !handoff.ok) throw new Error('handoff_failed');
+      setReferral('remix_design');
+      track('share_page_cta_clicked', { target_route: route, action_id: 'share-to-card' });
+      track('tool_handoff', { target_route: route, action_id: 'share-to-card' });
+      window.location.href = handoff.route || route;
+      return true;
+    } catch (error) {
+      status('This exact design is no longer available to edit. You can still start a fresh card or reuse its words.', true);
+      if (button) {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+      }
+      return false;
+    }
+  }
+
   async function copyValue(value, successMessage) {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(value);
@@ -177,7 +229,7 @@
     var edit = q('[data-share-edit]');
     if (edit) edit.addEventListener('click', function (event) {
       event.preventDefault();
-      transfer('card-studio', 'share-to-card', publicText(), 'remix_design');
+      transferRemix(edit);
     });
 
     var copy = q('[data-share-copy]');
