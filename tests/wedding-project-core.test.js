@@ -1,6 +1,18 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+
+// A minimal in-memory localStorage shim for storage round-trip tests
+function makeFakeStorage() {
+  var store = {};
+  return {
+    getItem: function (key) { return Object.prototype.hasOwnProperty.call(store, key) ? store[key] : null; },
+    setItem: function (key, value) { store[key] = String(value); },
+    removeItem: function (key) { delete store[key]; }
+  };
+}
+global.localStorage = makeFakeStorage();
+
 const core = require('../js/wedding-project-core.js');
 const wording = require('../js/wedding-wording-registry.js');
 
@@ -200,5 +212,47 @@ const regenerated = core.wrapWordingResult(
 );
 assert.equal(regenerated.isOverridden, false, 'Regeneration must always produce a fresh, non-overridden result');
 assert.notEqual(regenerated.text, overridden.text, 'Regeneration must reflect the new venue, not repeat the frozen override text');
+
+// --- Slice 1 UI: selectedBackgroundId and wordingOverride, both nullable, never inferred ---
+const freshEventProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05' }]
+});
+assert.equal(freshEventProject.events[0].selectedBackgroundId, null, 'selectedBackgroundId must default to null, never guessed');
+assert.equal(freshEventProject.events[0].wordingOverride, null, 'wordingOverride must default to null until the user overrides');
+
+const explicitBackgroundProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05', selectedBackgroundId: 'riwaayat-nikah-ivory' }]
+});
+assert.equal(explicitBackgroundProject.events[0].selectedBackgroundId, 'riwaayat-nikah-ivory', 'an explicit selectedBackgroundId must be preserved verbatim');
+
+const overrideOnEventProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{
+    id: 'evt-nikah', type: 'nikah', date: '2026-12-05',
+    wordingOverride: { text: 'Hand-written wording', isOverridden: true, generatedFrom: { templateId: 'formal-nikah-ur', sourceFieldsSnapshot: { personA: 'Ali', personB: 'Sara', eventDate: '2026-12-05', venueName: '' } } }
+  }]
+});
+assert.deepEqual(
+  overrideOnEventProject.events[0].wordingOverride,
+  { text: 'Hand-written wording', isOverridden: true, generatedFrom: { templateId: 'formal-nikah-ur', sourceFieldsSnapshot: { personA: 'Ali', personB: 'Sara', eventDate: '2026-12-05', venueName: '' } } },
+  'a valid wordingOverride object must round-trip through normalizeEvent unchanged'
+);
+
+// A malformed/garbage wordingOverride must fail closed to null, never throw and never pass through partially.
+const malformedOverrideProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05', wordingOverride: 'not-an-object' }]
+});
+assert.equal(malformedOverrideProject.events[0].wordingOverride, null, 'a malformed wordingOverride must fail closed to null');
+
+// Both fields must survive a save/load round-trip through wedding-project-storage.js unchanged.
+const storage = require('../js/wedding-project-storage.js');
+storage.resetDraft();
+storage.saveDraft(explicitBackgroundProject);
+const reloaded = storage.loadDraft();
+assert.equal(reloaded.events[0].selectedBackgroundId, 'riwaayat-nikah-ivory', 'selectedBackgroundId must round-trip through storage');
+storage.resetDraft();
 
 console.log(`Wedding project core tests passed (${fixtureSet.cases.length} fixtures).`);

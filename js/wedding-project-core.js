@@ -112,6 +112,26 @@
         };
     }
 
+    function isValidWordingOverride(value) {
+        return value && typeof value === 'object' &&
+            typeof value.text === 'string' &&
+            typeof value.isOverridden === 'boolean' &&
+            value.generatedFrom && typeof value.generatedFrom === 'object' &&
+            typeof value.generatedFrom.templateId === 'string' &&
+            value.generatedFrom.sourceFieldsSnapshot && typeof value.generatedFrom.sourceFieldsSnapshot === 'object';
+    }
+
+    function normalizeWordingOverride(value) {
+        return isValidWordingOverride(value) ? {
+            text: text(value.text),
+            isOverridden: Boolean(value.isOverridden),
+            generatedFrom: {
+                templateId: trimmed(value.generatedFrom.templateId, 80),
+                sourceFieldsSnapshot: Object.assign({}, value.generatedFrom.sourceFieldsSnapshot)
+            }
+        } : null;
+    }
+
     function normalizeEvent(value, index) {
         var source = value && typeof value === 'object' ? value : {};
         var type = enumOrFallback(source.type, EVENT_TYPES, 'custom');
@@ -127,7 +147,9 @@
             wordingTemplateId: trimmed(source.wordingTemplateId, 80),
             wordingTone: enumOrFallback(source.wordingTone, WORDING_TONES, 'formal'),
             customWording: trimmed(source.customWording, 2000),
-            notes: trimmed(source.notes, 500)
+            notes: trimmed(source.notes, 500),
+            selectedBackgroundId: trimmed(source.selectedBackgroundId, 80) || null,
+            wordingOverride: normalizeWordingOverride(source.wordingOverride)
         };
     }
 
