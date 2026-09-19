@@ -16,3 +16,5 @@ packages/*/dist/
 .npmrc
 marketing/video/captures/
 marketing/video/generated/
+
+.superpowers/

@@ -1,6 +1,18 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+
+// A minimal in-memory localStorage shim for storage round-trip tests
+function makeFakeStorage() {
+  var store = {};
+  return {
+    getItem: function (key) { return Object.prototype.hasOwnProperty.call(store, key) ? store[key] : null; },
+    setItem: function (key, value) { store[key] = String(value); },
+    removeItem: function (key) { delete store[key]; }
+  };
+}
+global.localStorage = makeFakeStorage();
+
 const core = require('../js/wedding-project-core.js');
 const wording = require('../js/wedding-wording-registry.js');
 
@@ -111,5 +123,136 @@ assert.equal(unspecifiedSuffixGuest.suffixStyle, 'none', 'Suffix/honorific must 
 // Direction detection: Urdu text is RTL, Latin text is LTR.
 assert.equal(core.firstStrongDirection('محمد علی'), 'rtl');
 assert.equal(core.firstStrongDirection('Muhammad Ali'), 'ltr');
+
+// --- Slice 1: wordingTone field, never inferred, defaults to 'formal' ---
+const wordingToneProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05' }]
+});
+assert.equal(wordingToneProject.events[0].wordingTone, 'formal', 'wordingTone must default to formal, never be inferred');
+assert.deepEqual(core.WORDING_TONES, ['formal', 'informal', 'concise']);
+
+const explicitToneProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-mehndi', type: 'mehndi', date: '2026-12-01', wordingTone: 'informal' }]
+});
+assert.equal(explicitToneProject.events[0].wordingTone, 'informal');
+
+const invalidToneProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-mehndi', type: 'mehndi', date: '2026-12-01', wordingTone: 'shouty' }]
+});
+assert.equal(invalidToneProject.events[0].wordingTone, 'formal', 'unknown wordingTone must fall back to the default, never throw');
+
+// --- Slice 1: evaluateComposerSteps ---
+const emptyProject = core.createDefaultWeddingProject(new Date('2026-09-18T00:00:00Z'));
+const emptySteps = core.evaluateComposerSteps(emptyProject);
+assert.deepEqual(emptySteps.map((step) => step.step), ['events', 'hosts', 'schedule_venue', 'language_wording', 'design', 'preview_export']);
+assert.equal(emptySteps[0].status, 'current', 'The first incomplete step on an empty project must be "current"');
+assert.deepEqual(emptySteps[0].missingFields, ['events']);
+assert.equal(emptySteps[1].status, 'blocked', 'Steps after the current incomplete step must be blocked');
+assert.equal(emptySteps[4].status, 'blocked', 'Design step must be blocked until steps 1-4 are complete');
+assert.equal(emptySteps[5].status, 'blocked', 'Preview/export must be blocked until steps 1-5 are complete');
+
+const completeProject = core.normalizeWeddingProject({
+  invitationLanguage: 'urdu',
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  families: [{ id: 'fam-1', role: 'both', displayName: 'The Khan Family' }],
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05' }]
+});
+const completeSteps = core.evaluateComposerSteps(completeProject);
+assert.ok(completeSteps.slice(0, 4).every((step) => step.status === 'complete'), 'All four content steps must report complete once satisfied');
+assert.equal(completeSteps[4].step, 'design');
+assert.equal(completeSteps[4].status, 'complete', 'Design step 5 is a fixed-default stub: complete once steps 1-4 are done');
+assert.deepEqual(completeSteps[4].designDefault, { templateId: 'classic-nastaliq', presetId: 'portrait' }, 'Design default must match the render adapter default');
+assert.equal(completeSteps[5].step, 'preview_export');
+assert.equal(completeSteps[5].status, 'available', 'Preview/export becomes available once steps 1-5 are complete');
+
+// --- Slice 1: wording-override tracking ---
+const overrideProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  venues: [{ id: 'venue-1', name: 'Pearl Continental' }],
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05', venueId: 'venue-1' }]
+});
+const overrideEvent = overrideProject.events[0];
+const overrideRender = wording.renderWording('formal-nikah-ur', overrideProject, overrideEvent);
+assert.equal(overrideRender.complete, true);
+
+const wrapped = core.wrapWordingResult(overrideRender, 'formal-nikah-ur', overrideProject, overrideEvent);
+assert.equal(wrapped.isOverridden, false);
+assert.equal(wrapped.text, overrideRender.text);
+assert.deepEqual(wrapped.generatedFrom, {
+  templateId: 'formal-nikah-ur',
+  sourceFieldsSnapshot: { personA: 'Ali', personB: 'Sara', eventDate: '2026-12-05', venueName: 'Pearl Continental' }
+});
+
+assert.equal(core.isWordingStale(wrapped, overrideProject, overrideEvent), false, 'Freshly wrapped wording must not be stale');
+
+const overridden = core.applyWordingOverride(wrapped, 'My own hand-edited wording');
+assert.equal(overridden.isOverridden, true);
+assert.equal(overridden.text, 'My own hand-edited wording');
+assert.deepEqual(overridden.generatedFrom, wrapped.generatedFrom, 'An override must keep the original generatedFrom snapshot, not discard it');
+
+const changedVenueProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  venues: [{ id: 'venue-1', name: 'A New Venue' }],
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05', venueId: 'venue-1' }]
+});
+assert.equal(
+  core.isWordingStale(overridden, changedVenueProject, changedVenueProject.events[0]),
+  true,
+  'Changing the venue after an override must be detected as stale'
+);
+
+const regenerated = core.wrapWordingResult(
+  wording.renderWording('formal-nikah-ur', changedVenueProject, changedVenueProject.events[0]),
+  'formal-nikah-ur',
+  changedVenueProject,
+  changedVenueProject.events[0]
+);
+assert.equal(regenerated.isOverridden, false, 'Regeneration must always produce a fresh, non-overridden result');
+assert.notEqual(regenerated.text, overridden.text, 'Regeneration must reflect the new venue, not repeat the frozen override text');
+
+// --- Slice 1 UI: selectedBackgroundId and wordingOverride, both nullable, never inferred ---
+const freshEventProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05' }]
+});
+assert.equal(freshEventProject.events[0].selectedBackgroundId, null, 'selectedBackgroundId must default to null, never guessed');
+assert.equal(freshEventProject.events[0].wordingOverride, null, 'wordingOverride must default to null until the user overrides');
+
+const explicitBackgroundProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05', selectedBackgroundId: 'riwaayat-nikah-ivory' }]
+});
+assert.equal(explicitBackgroundProject.events[0].selectedBackgroundId, 'riwaayat-nikah-ivory', 'an explicit selectedBackgroundId must be preserved verbatim');
+
+const overrideOnEventProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{
+    id: 'evt-nikah', type: 'nikah', date: '2026-12-05',
+    wordingOverride: { text: 'Hand-written wording', isOverridden: true, generatedFrom: { templateId: 'formal-nikah-ur', sourceFieldsSnapshot: { personA: 'Ali', personB: 'Sara', eventDate: '2026-12-05', venueName: '' } } }
+  }]
+});
+assert.deepEqual(
+  overrideOnEventProject.events[0].wordingOverride,
+  { text: 'Hand-written wording', isOverridden: true, generatedFrom: { templateId: 'formal-nikah-ur', sourceFieldsSnapshot: { personA: 'Ali', personB: 'Sara', eventDate: '2026-12-05', venueName: '' } } },
+  'a valid wordingOverride object must round-trip through normalizeEvent unchanged'
+);
+
+// A malformed/garbage wordingOverride must fail closed to null, never throw and never pass through partially.
+const malformedOverrideProject = core.normalizeWeddingProject({
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05', wordingOverride: 'not-an-object' }]
+});
+assert.equal(malformedOverrideProject.events[0].wordingOverride, null, 'a malformed wordingOverride must fail closed to null');
+
+// Both fields must survive a save/load round-trip through wedding-project-storage.js unchanged.
+const storage = require('../js/wedding-project-storage.js');
+storage.resetDraft();
+storage.saveDraft(explicitBackgroundProject);
+const reloaded = storage.loadDraft();
+assert.equal(reloaded.events[0].selectedBackgroundId, 'riwaayat-nikah-ivory', 'selectedBackgroundId must round-trip through storage');
+storage.resetDraft();
 
 console.log(`Wedding project core tests passed (${fixtureSet.cases.length} fixtures).`);
