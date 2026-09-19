@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd54a"/><stop offset=".55" stop-color="#f5a623"/><stop offset="1" stop-color="#dc6d24"/></linearGradient>
+    <pattern id="gota" width="38" height="38" patternUnits="userSpaceOnUse"><circle cx="19" cy="19" r="5" fill="#fce7a9"/><circle cx="19" cy="19" r="10" fill="none" stroke="#8f1e55" stroke-width="2"/></pattern>
+    <symbol id="marigold" viewBox="0 0 80 80"><g fill="#f59d20" stroke="#d26f10" stroke-width="1.2"><circle cx="40" cy="40" r="27"/><circle cx="25" cy="29" r="17"/><circle cx="55" cy="29" r="17"/><circle cx="27" cy="53" r="17"/><circle cx="53" cy="53" r="17"/><circle cx="40" cy="40" r="13" fill="#ffd24a"/></g></symbol>
+    <symbol id="leaf" viewBox="0 0 34 70"><path d="M17 66C4 50 4 20 17 4c13 16 13 46 0 62Z" fill="#4b8e57"/><path d="M17 60V11" stroke="#2e6f3c" stroke-width="1.4"/></symbol>
+    <symbol id="dhol" viewBox="0 0 150 115"><path d="M28 18h94l18 18-16 62H26L10 36Z" fill="#b63a66" stroke="#742246" stroke-width="5"/><path d="M34 24h82l10 12-11 50H35L24 36Z" fill="#f1b431"/><path d="M24 36h102M35 86h80M46 24 36 86M104 24l10 62" stroke="#fff0c5" stroke-width="4"/><circle cx="75" cy="56" r="12" fill="#2aa7a0"/></symbol>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect x="34" y="34" width="1012" height="1282" rx="18" fill="none" stroke="#8f1e55" stroke-width="9"/>
+  <rect x="60" y="60" width="960" height="1230" rx="14" fill="#fff8de"/>
+  <rect x="78" y="78" width="924" height="1194" rx="10" fill="none" stroke="#2aa7a0" stroke-width="4"/>
+  <rect x="95" y="95" width="890" height="1160" fill="none" stroke="url(#gota)" stroke-width="16" opacity=".78"/>
+  <path d="M160 146C320 250 760 250 920 146" fill="none" stroke="#277f70" stroke-width="5"/>
+  <g>
+    <use href="#marigold" x="180" y="144" width="66" height="66"/><use href="#marigold" x="292" y="187" width="72" height="72"/>
+    <use href="#marigold" x="430" y="210" width="70" height="70"/><use href="#marigold" x="575" y="210" width="70" height="70"/>
+    <use href="#marigold" x="716" y="187" width="72" height="72"/><use href="#marigold" x="834" y="144" width="66" height="66"/>
+  </g>
+  <g transform="translate(84 1015) rotate(-8 90 80)"><use href="#dhol" width="170" height="130"/><use href="#leaf" x="128" y="2" width="36" height="74" transform="rotate(40 146 39)"/></g>
+  <g transform="translate(996 1015) scale(-1 1) rotate(-8 90 80)"><use href="#dhol" width="170" height="130"/><use href="#leaf" x="128" y="2" width="36" height="74" transform="rotate(40 146 39)"/></g>
+  <g fill="#8f1e55">
+    <circle cx="140" cy="344" r="6"/><circle cx="940" cy="344" r="6"/><circle cx="140" cy="1000" r="6"/><circle cx="940" cy="1000" r="6"/>
+  </g>
+</svg>
