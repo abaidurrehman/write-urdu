@@ -3,7 +3,7 @@
     var wording = rootWindow && rootWindow.WriteUrduWeddingWording;
     if (!wording && typeof require === 'function') wording = require('./wedding-wording-registry.js');
     var riwaayatManifest = rootWindow && rootWindow.WriteUrduRiwaayatManifest;
-    if (!riwaayatManifest && typeof require === 'function') riwaayatManifest = require('../assets/wedding-invitations/riwaayat/manifest.json');
+    if (!riwaayatManifest && typeof require === 'function') riwaayatManifest = require('./riwaayat-manifest.js');
     var api = factory(wording, riwaayatManifest);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (rootWindow) rootWindow.WriteUrduWeddingTemplateSelector = api;
@@ -60,6 +60,21 @@
         return matches.map(function (variant) { return variant.id; }).sort();
     }
 
+    function resolveEventBackground(project, event) {
+        var explicit = event && event.selectedBackgroundId;
+        if (explicit) return explicit;
+        var suggestions = suggestBackgroundCategory(project, event);
+        return suggestions.length ? suggestions[0] : null;
+    }
+
+    function getBackgroundVariant(variantId) {
+        if (!variantId) return null;
+        for (var i = 0; i < riwaayatManifest.variants.length; i += 1) {
+            if (riwaayatManifest.variants[i].id === variantId) return riwaayatManifest.variants[i];
+        }
+        return null;
+    }
+
     return {
         WORDING_TONES: WORDING_TONES,
         DEFAULT_WORDING_TONE: DEFAULT_WORDING_TONE,
@@ -67,6 +82,8 @@
         EVENT_DESIGN_PALETTES: EVENT_DESIGN_PALETTES,
         selectTemplate: selectTemplate,
         getDesignPalette: getDesignPalette,
-        suggestBackgroundCategory: suggestBackgroundCategory
+        suggestBackgroundCategory: suggestBackgroundCategory,
+        resolveEventBackground: resolveEventBackground,
+        getBackgroundVariant: getBackgroundVariant
     };
 }));

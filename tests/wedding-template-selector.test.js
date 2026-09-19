@@ -51,3 +51,32 @@ const core = require('../js/wedding-project-core.js');
 assert.deepEqual(selector.WORDING_TONES, core.WORDING_TONES, 'wedding-template-selector.js tone vocabulary must match wedding-project-core.js exactly');
 const registryFormalities = wording.TEMPLATES.map((t) => t.formality).filter((v, i, a) => a.indexOf(v) === i).sort();
 assert.deepEqual(registryFormalities, ['concise', 'formal', 'informal'], 'every formality value used by the wording registry must be one of the three known tones');
+
+// --- resolveEventBackground: explicit choice > first suggestion > null (never fabricated) ---
+assert.equal(
+  selector.resolveEventBackground(project('urdu'), { type: 'nikah', selectedBackgroundId: 'riwaayat-nikah-ivory' }),
+  'riwaayat-nikah-ivory',
+  'an explicit selectedBackgroundId must always win'
+);
+assert.equal(
+  selector.resolveEventBackground(project('urdu'), { type: 'nikah' }),
+  'riwaayat-nikah-ivory',
+  'with no explicit choice, the first suggestBackgroundCategory match is used'
+);
+assert.equal(
+  selector.resolveEventBackground(project('urdu'), { type: 'custom' }),
+  null,
+  'an event type with no matching Riwaayat variant and no explicit choice resolves to null, never a guess'
+);
+// An explicit choice for an event type Riwaayat doesn't cover is still honored verbatim.
+assert.equal(
+  selector.resolveEventBackground(project('urdu'), { type: 'custom', selectedBackgroundId: 'some-future-id' }),
+  'some-future-id'
+);
+
+// --- getBackgroundVariant: full manifest entry lookup, null for unknown ids ---
+const nikahVariant = selector.getBackgroundVariant('riwaayat-nikah-ivory');
+assert.equal(nikahVariant.id, 'riwaayat-nikah-ivory');
+assert.equal(nikahVariant.src, '/assets/wedding-invitations/riwaayat/riwaayat-nikah-ivory.svg');
+assert.ok(nikahVariant.safeArea && typeof nikahVariant.safeArea.top === 'number');
+assert.equal(selector.getBackgroundVariant('does-not-exist'), null);
