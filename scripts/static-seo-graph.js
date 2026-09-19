@@ -9,7 +9,7 @@ const PAGE_TOPICS = {
   home: ['English to Urdu typing', 'Urdu typing online', 'Urdu writing online'],
   'urdu-editor': ['Urdu document editing', 'Urdu document formatting'],
   'urdu-keyboard': ['Urdu keyboard', 'Direct Urdu typing'],
-  'roman-urdu-transliteration': ['English to Urdu typing', 'Roman Urdu typing'],
+  'roman-urdu-transliteration': ['Roman Urdu to Urdu', 'Roman Urdu typing'],
   'urdu-alphabet': ['Urdu alphabet', 'Urdu script'],
   'write-urdu-documentation': ['Urdu typing', 'Urdu writing', 'Write Urdu help']
 };
