@@ -79,6 +79,24 @@
     }
 
     function renderFamiliesStep() {
+        var personAInput = document.querySelector('[data-wedding-couple-person-a]');
+        if (personAInput) {
+            personAInput.value = project.couple.personA.displayName;
+            personAInput.oninput = function () {
+                project.couple.personA.displayName = personAInput.value;
+                save();
+                renderStepRail(core.evaluateComposerSteps(project));
+            };
+        }
+        var personBInput = document.querySelector('[data-wedding-couple-person-b]');
+        if (personBInput) {
+            personBInput.value = project.couple.personB.displayName;
+            personBInput.oninput = function () {
+                project.couple.personB.displayName = personBInput.value;
+                save();
+                renderStepRail(core.evaluateComposerSteps(project));
+            };
+        }
         var list = document.querySelector('[data-wedding-families-list]');
         if (!list) return;
         list.innerHTML = '';
