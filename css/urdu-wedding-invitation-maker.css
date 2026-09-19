@@ -1,0 +1,126 @@
+.wedding-maker-page {
+    background: var(--wu-color-page, #f6f8f7);
+    color: var(--wu-color-ink, #17221c);
+    font-family: var(--wu-font-ui, system-ui, sans-serif);
+}
+
+.wedding-maker-main {
+    max-width: var(--wu-content-width, 78rem);
+    margin: 0 auto;
+    padding: var(--wu-space-6, 2rem) var(--wu-space-4, 1rem);
+}
+
+.wedding-maker-intro {
+    color: var(--wu-color-muted, #68766e);
+    margin-bottom: var(--wu-space-5, 1.5rem);
+}
+
+.wedding-step-rail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wu-space-2, 0.5rem);
+    list-style: none;
+    margin: 0 0 var(--wu-space-6, 2rem);
+    padding: 0;
+}
+
+.wedding-step-rail li {
+    padding: var(--wu-space-2, 0.5rem) var(--wu-space-4, 1rem);
+    border: 1px solid var(--wu-color-border, #dfe7e2);
+    border-radius: var(--wu-radius-pill, 999px);
+    font-size: var(--wu-text-sm, 0.875rem);
+    color: var(--wu-color-muted, #68766e);
+    background: var(--wu-color-surface, #fff);
+}
+
+.wedding-step-rail li[data-wedding-step-status="complete"] {
+    border-color: var(--wu-color-brand, #15934d);
+    color: var(--wu-color-brand-strong, #0d783e);
+}
+
+.wedding-step-rail li[data-wedding-step-status="current"] {
+    border-color: var(--wu-color-brand, #15934d);
+    background: var(--wu-color-brand-soft, #eaf8ef);
+    color: var(--wu-color-brand-deep, #0a5d31);
+    font-weight: var(--wu-weight-semibold, 600);
+}
+
+.wedding-step-rail li[data-wedding-step-status="blocked"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+[data-wedding-step-panel] {
+    background: var(--wu-color-surface, #fff);
+    border: 1px solid var(--wu-color-border, #dfe7e2);
+    border-radius: var(--wu-radius-md, 0.8rem);
+    padding: var(--wu-space-5, 1.5rem);
+    margin-bottom: var(--wu-space-5, 1.5rem);
+}
+
+.wedding-maker-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--wu-space-3, 0.75rem);
+}
+
+.wedding-maker-nav button {
+    min-height: var(--wu-control-height, 2.75rem);
+    padding: 0 var(--wu-space-5, 1.5rem);
+    border-radius: var(--wu-radius-sm, 0.6rem);
+    border: 1px solid var(--wu-color-border-strong, #cbd9d1);
+    background: var(--wu-color-surface, #fff);
+    cursor: pointer;
+}
+
+[data-wedding-next] {
+    background: var(--wu-color-brand, #15934d);
+    color: #fff;
+    border-color: var(--wu-color-brand-strong, #0d783e);
+}
+
+.wedding-design-option {
+    display: inline-block;
+    width: 120px;
+    margin: 0 var(--wu-space-2, 0.5rem) var(--wu-space-2, 0.5rem) 0;
+    border: 2px solid var(--wu-color-border, #dfe7e2);
+    border-radius: var(--wu-radius-sm, 0.6rem);
+    cursor: pointer;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    aspect-ratio: 4 / 5;
+}
+
+.wedding-design-option[aria-pressed="true"] {
+    border-color: var(--wu-color-brand, #15934d);
+}
+
+.wedding-design-fallback {
+    background: #fffdf7;
+    border: 1px solid #c9a75a;
+}
+
+.wedding-preview-card {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 4 / 5;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: var(--wu-space-4, 1rem);
+    overflow: hidden;
+}
+
+.wedding-preview-card.wedding-design-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wedding-preview-text {
+    position: absolute;
+    white-space: pre-line;
+    text-align: center;
+    font-family: var(--wu-font-urdu, serif);
+}
