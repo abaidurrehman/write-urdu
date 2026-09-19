@@ -123,7 +123,7 @@
 
     function normalizeWordingOverride(value) {
         return isValidWordingOverride(value) ? {
-            text: text(value.text),
+            text: trimmed(value.text, 2000),
             isOverridden: Boolean(value.isOverridden),
             generatedFrom: {
                 templateId: trimmed(value.generatedFrom.templateId, 80),
@@ -358,11 +358,15 @@
     }
 
     function stepCheck(project) {
-        var hasDate = project.events.some(function (event) { return hasMeaningfulText(event.date); });
+        var allEventsHaveDate = project.events.length > 0 && project.events.every(function (event) { return hasMeaningfulText(event.date); });
+        var hostsMissing = [];
+        if (!project.families.length) hostsMissing.push('families');
+        if (!hasMeaningfulText(project.couple.personA.displayName)) hostsMissing.push('couple.personA.displayName');
+        if (!hasMeaningfulText(project.couple.personB.displayName)) hostsMissing.push('couple.personB.displayName');
         return [
             { step: 'events', missingFields: project.events.length ? [] : ['events'] },
-            { step: 'hosts', missingFields: project.families.length ? [] : ['families'] },
-            { step: 'schedule_venue', missingFields: hasDate ? [] : ['events[].date'] },
+            { step: 'hosts', missingFields: hostsMissing },
+            { step: 'schedule_venue', missingFields: allEventsHaveDate ? [] : ['events[].date'] },
             { step: 'language_wording', missingFields: INVITATION_LANGUAGES.indexOf(project.invitationLanguage) >= 0 ? [] : ['invitationLanguage'] }
         ];
     }

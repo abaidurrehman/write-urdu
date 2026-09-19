@@ -164,8 +164,15 @@
 
             var templateId = templateSelector.selectTemplate(project, event);
             var rendered = wording.renderWording(templateId, project, event);
+            if (!event.wordingOverride && !rendered.complete) {
+                container.appendChild(el('p', { text: 'Missing: ' + rendered.missingFields.join(', ') }));
+            }
             var textArea = el('textarea', {});
             textArea.value = event.wordingOverride ? event.wordingOverride.text : (rendered.complete ? rendered.text : '');
+            textArea.dir = core.firstStrongDirection(textArea.value);
+            textArea.oninput = function () {
+                textArea.dir = core.firstStrongDirection(textArea.value);
+            };
             container.appendChild(textArea);
 
             if (event.wordingOverride && core.isWordingStale(event.wordingOverride, project, event)) {
@@ -182,7 +189,11 @@
             var saveOverrideButton = el('button', { type: 'button', text: 'Save wording' });
             saveOverrideButton.onclick = function () {
                 var wrapped = event.wordingOverride || core.wrapWordingResult(rendered, templateId, project, event);
-                if (!wrapped) return;
+                if (!wrapped) {
+                    var statusEl = document.querySelector('[data-wedding-save-status]');
+                    if (statusEl) statusEl.textContent = 'Cannot save wording yet — missing: ' + rendered.missingFields.join(', ');
+                    return;
+                }
                 project.events[index].wordingOverride = core.applyWordingOverride(wrapped, textArea.value);
                 save();
                 renderWordingStep();
@@ -249,12 +260,18 @@
         project.events.forEach(function (event, index) {
             var templateId = templateSelector.selectTemplate(project, event);
             var rendered = wording.renderWording(templateId, project, event);
-            var text = event.wordingOverride ? event.wordingOverride.text : (rendered.complete ? rendered.text : '');
+            var text = event.wordingOverride
+                ? event.wordingOverride.text
+                : (rendered.complete ? rendered.text : ('Missing: ' + rendered.missingFields.join(', ')));
 
             var backgroundId = templateSelector.resolveEventBackground(project, event);
             var variant = backgroundId ? templateSelector.getBackgroundVariant(backgroundId) : null;
 
             var textEl = el('div', { 'class': 'wedding-preview-text', text: text });
+            var direction = core.firstStrongDirection(text);
+            textEl.style.direction = direction;
+            textEl.style.unicodeBidi = 'plaintext';
+            textEl.style.textAlign = direction === 'rtl' ? 'right' : 'left';
             var cardEl = el('div', { 'class': 'wedding-preview-card' }, [textEl]);
             applyPreviewCardStyle(cardEl, textEl, variant);
 
@@ -300,7 +317,12 @@
             renderCurrentStep();
         };
         if (nextButton) nextButton.onclick = function () {
-            if (currentStepIndex < STEP_IDS.length - 1) currentStepIndex += 1;
+            if (currentStepIndex < STEP_IDS.length - 1) {
+                var steps = core.evaluateComposerSteps(project);
+                if (steps[currentStepIndex + 1].status !== 'blocked') {
+                    currentStepIndex += 1;
+                }
+            }
             renderCurrentStep();
         };
     }

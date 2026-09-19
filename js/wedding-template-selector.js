@@ -70,7 +70,7 @@
     function getBackgroundVariant(variantId) {
         if (!variantId) return null;
         for (var i = 0; i < riwaayatManifest.variants.length; i += 1) {
-            if (riwaayatManifest.variants[i].id === variantId) return riwaayatManifest.variants[i];
+            if (riwaayatManifest.variants[i].id === variantId) return Object.assign({}, riwaayatManifest.variants[i]);
         }
         return null;
     }
