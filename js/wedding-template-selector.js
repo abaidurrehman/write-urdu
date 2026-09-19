@@ -2,15 +2,15 @@
     'use strict';
     var wording = rootWindow && rootWindow.WriteUrduWeddingWording;
     if (!wording && typeof require === 'function') wording = require('./wedding-wording-registry.js');
-    var backgroundRegistry = rootWindow && rootWindow.WriteUrduCardBackgroundRegistry;
-    if (!backgroundRegistry && typeof require === 'function') backgroundRegistry = require('./card-background-registry.js');
-    var api = factory(wording, backgroundRegistry);
+    var riwaayatManifest = rootWindow && rootWindow.WriteUrduRiwaayatManifest;
+    if (!riwaayatManifest && typeof require === 'function') riwaayatManifest = require('../assets/wedding-invitations/riwaayat/manifest.json');
+    var api = factory(wording, riwaayatManifest);
     if (typeof module !== 'undefined' && module.exports) module.exports = api;
     if (rootWindow) rootWindow.WriteUrduWeddingTemplateSelector = api;
-}(typeof window !== 'undefined' ? window : null, function (wording, backgroundRegistry) {
+}(typeof window !== 'undefined' ? window : null, function (wording, riwaayatManifest) {
     'use strict';
     if (!wording) throw new Error('Wedding wording registry unavailable');
-    if (!backgroundRegistry) throw new Error('Card background registry unavailable');
+    if (!riwaayatManifest) throw new Error('Riwaayat design manifest unavailable');
 
     var WORDING_TONES = ['formal', 'informal', 'concise'];
     var DEFAULT_WORDING_TONE = 'formal';
@@ -49,16 +49,15 @@
 
     function suggestBackgroundCategory(project, event) {
         var eventType = event && event.type;
-        if (!getDesignPalette(eventType)) return [];
-        // The registry has no per-event-type tags yet (only a single generic "wedding"
-        // category — see spec §5), so every known wedding event type gets the same
-        // cross-referenced suggestion until finer-grained assets are produced
-        // (tracked in specs/BACKLOG.md P1.10). This is honest about the current data,
-        // not a fabricated per-event ranking.
-        var matches = backgroundRegistry.getAllBackgrounds().filter(function (background) {
-            return background.category === 'wedding' && background.goodFor.indexOf('wedding') >= 0;
+        if (!eventType) return [];
+        // Cross-references the Riwaayat art pack's own eventTypes tags (WU-SHAADI-001
+        // SVG Art Pack 01) — no invented per-event ranking, just what the pack itself
+        // declares it's for. An event type with no matching variant returns empty,
+        // never a guess.
+        var matches = riwaayatManifest.variants.filter(function (variant) {
+            return variant.eventTypes.indexOf(eventType) >= 0;
         });
-        return matches.map(function (background) { return background.id; }).sort();
+        return matches.map(function (variant) { return variant.id; }).sort();
     }
 
     return {

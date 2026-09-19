@@ -35,10 +35,13 @@ assert.equal(selector.getDesignPalette('custom'), null, 'Custom events get no de
 
 const nikahSuggestions = selector.suggestBackgroundCategory(project('urdu'), { type: 'nikah' });
 assert.ok(Array.isArray(nikahSuggestions));
-assert.deepEqual(nikahSuggestions, ['blush-rose-lanterns', 'maroon-wedding', 'rose-garden-frame'], 'Must cross-reference the existing wedding-tagged backgrounds, sorted for determinism');
+assert.deepEqual(nikahSuggestions, ['riwaayat-nikah-ivory'], 'Must cross-reference the Riwaayat art pack\'s own eventTypes tags, sorted for determinism');
+assert.deepEqual(selector.suggestBackgroundCategory(project('urdu'), { type: 'mehndi' }), ['riwaayat-mehndi-marigold']);
+assert.deepEqual(selector.suggestBackgroundCategory(project('urdu'), { type: 'baraat' }), ['riwaayat-baraat-emerald']);
+assert.deepEqual(selector.suggestBackgroundCategory(project('urdu'), { type: 'walima' }), ['riwaayat-walima-sage']);
 
 const customSuggestions = selector.suggestBackgroundCategory(project('urdu'), { type: 'custom' });
-assert.deepEqual(customSuggestions, [], 'An event type with no palette entry must return an empty suggestion, never a guessed one');
+assert.deepEqual(customSuggestions, [], 'An event type with no matching Riwaayat variant must return an empty suggestion, never a guessed one');
 
 // The tone vocabulary must not silently drift across the three places it's duplicated
 // (core.js's schema default, this file's own filter, and the registry's per-template
