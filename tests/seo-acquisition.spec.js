@@ -40,7 +40,7 @@ test('homepage keeps plain-language English to Urdu typing metadata and writing 
 
 test('Urdu Keyboard keeps direct input dominant and sends English-letter writers to the homepage', async ({ page }) => {
   await open(page, '/urdu-keyboard');
-  await expect(page.locator('h1')).toHaveText('Urdu Keyboard');
+  await expect(page.locator('h1')).toHaveText('Urdu Keyboard Online');
   await expect(page.locator('mark.sm')).toHaveText('Type Urdu directly—no installation required');
   await expect(page.locator('#write')).toBeVisible();
   await expect(page.locator('#key1')).toBeVisible();
