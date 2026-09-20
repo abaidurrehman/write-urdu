@@ -9,6 +9,14 @@
 
     var STEP_IDS = ['events', 'hosts', 'schedule_venue', 'language_wording', 'design', 'preview_export'];
     var EVENT_LABELS = { nikah: 'Nikah', mehndi: 'Mehndi', mayun: 'Mayun', dholki: 'Dholki', baraat: 'Baraat', rukhsati: 'Rukhsati', walima: 'Walima', engagement: 'Engagement', custom: 'Custom' };
+    var MISSING_FIELD_LABELS = {
+        events: 'Add at least one event',
+        families: 'Add at least one family',
+        'couple.personA.displayName': "Enter Person A's name",
+        'couple.personB.displayName': "Enter Person B's name",
+        'events[].date': 'Set a date for every event',
+        invitationLanguage: 'Choose an invitation language'
+    };
 
     var project = storage.loadDraft() || core.createDefaultWeddingProject();
     var currentStepIndex = 0;
@@ -85,7 +93,7 @@
             personAInput.oninput = function () {
                 project.couple.personA.displayName = personAInput.value;
                 save();
-                renderStepRail(core.evaluateComposerSteps(project));
+                refreshNavState();
             };
         }
         var personBInput = document.querySelector('[data-wedding-couple-person-b]');
@@ -94,7 +102,7 @@
             personBInput.oninput = function () {
                 project.couple.personB.displayName = personBInput.value;
                 save();
-                renderStepRail(core.evaluateComposerSteps(project));
+                refreshNavState();
             };
         }
         var list = document.querySelector('[data-wedding-families-list]');
@@ -105,7 +113,7 @@
             input.oninput = function () {
                 project.families[index].displayName = input.value;
                 save();
-                renderStepRail(core.evaluateComposerSteps(project));
+                refreshNavState();
             };
             list.appendChild(el('div', {}, [input]));
         });
@@ -126,7 +134,7 @@
             dateInput.onchange = function () {
                 project.events[index].date = dateInput.value;
                 save();
-                renderStepRail(core.evaluateComposerSteps(project));
+                refreshNavState();
             };
             list.appendChild(el('div', {}, [el('label', { text: EVENT_LABELS[event.type] || event.type }), dateInput]));
         });
@@ -302,7 +310,31 @@
         var stepId = STEP_IDS[currentStepIndex];
         showPanel(stepId);
         STEP_RENDERERS[stepId]();
-        renderStepRail(core.evaluateComposerSteps(project));
+        refreshNavState();
+    }
+
+    function refreshNavState() {
+        var steps = core.evaluateComposerSteps(project);
+        renderStepRail(steps);
+        renderNextState(steps);
+    }
+
+    function renderNextState(steps) {
+        var nextButton = document.querySelector('[data-wedding-next]');
+        var hintEl = document.querySelector('[data-wedding-next-hint]');
+        var isLastStep = currentStepIndex >= STEP_IDS.length - 1;
+        var willBlock = !isLastStep && steps[currentStepIndex + 1].status === 'blocked';
+        if (nextButton) nextButton.disabled = willBlock;
+        if (hintEl) {
+            if (willBlock) {
+                var missing = steps[currentStepIndex].missingFields || [];
+                hintEl.textContent = missing.length
+                    ? 'Before continuing: ' + missing.map(function (field) { return MISSING_FIELD_LABELS[field] || field; }).join('; ')
+                    : 'Finish this step to continue.';
+            } else {
+                hintEl.textContent = '';
+            }
+        }
     }
 
     function refreshAll() {

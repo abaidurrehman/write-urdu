@@ -152,6 +152,19 @@
     border-color: var(--wu-color-brand-strong, #0d783e);
 }
 
+.wedding-maker-nav button[data-wedding-next]:disabled {
+    background: var(--wu-color-border-strong, #cbd9d1);
+    border-color: var(--wu-color-border-strong, #cbd9d1);
+    color: var(--wu-color-muted, #68766e);
+    cursor: not-allowed;
+}
+
+[data-wedding-next-hint] {
+    color: var(--wu-color-muted, #68766e);
+    font-size: var(--wu-text-sm, 0.875rem);
+    margin: var(--wu-space-2, 0.5rem) 0 0;
+}
+
 .wedding-design-option {
     display: inline-block;
     width: 120px;
