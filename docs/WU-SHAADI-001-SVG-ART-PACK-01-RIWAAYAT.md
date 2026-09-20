@@ -1,7 +1,7 @@
 # WU-SHAADI-001 — SVG Art Pack 01: Riwaayat
 
-**Date:** 2026-09-18  
-**Status:** Design exploration assets only; not wired into production UI yet.  
+**Date:** 2026-09-18 (updated 2026-09-20 — Rukhsati/Engagement added)  
+**Status:** Live in production. Wired into `js/wedding-template-selector.js`'s `suggestBackgroundCategory`/`resolveEventBackground` and rendered as DOM/CSS backgrounds (not Card Studio) on `/urdu-wedding-invitation-maker`'s design and preview/export steps.  
 **Epic:** `WU-SHAADI-001 — Pakistan Wedding Invitation Platform`
 
 ## Purpose
@@ -20,6 +20,8 @@ The pack follows the epic rule that a family chooses one visual identity, while 
 | `riwaayat-walima-sage` | Walima | Sage/ivory, dusty rose botanicals, champagne details, softer reception mood |
 | `riwaayat-mayun-saffron` | Mayun | Turmeric/saffron, genda flowers and mirror/gota rhythm |
 | `riwaayat-dholki-fuchsia` | Dholki | Fuchsia/teal jewel palette, dholki and festive string lights |
+| `riwaayat-rukhsati-dove` | Rukhsati | Dusty lilac/silver-blue, doves and jasmine, tender/bittersweet departure mood |
+| `riwaayat-engagement-blush` | Engagement | Blush/champagne, ring and rose motifs, soft elegant mangni mood |
 
 ## Design contract
 
@@ -39,10 +41,11 @@ The event-to-mood mapping reflects current Pakistani invitation practice: Nikah 
 
 ## Next design round
 
-After visual review of Pack 01:
+Rukhsati and Engagement coverage (item 2 below) shipped 2026-09-20 — the pack now covers all 8 event types `wedding-project-core.js` knows about except `custom` (which intentionally never gets a fabricated suggestion).
+
+Remaining, in order:
 
 1. add a second suite with a different visual language rather than recolouring Riwaayat;
-2. cover Rukhsati and Engagement;
+2. ~~cover Rukhsati and Engagement~~ — done;
 3. add a minimal contemporary suite for families that do not want traditional florals;
-4. add preview fixtures with real Urdu/English/bilingual wedding content;
-5. only then wire approved variants into the wedding theme registry/renderer.
+4. add preview fixtures with real Urdu/English/bilingual wedding content.

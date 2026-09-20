@@ -88,6 +88,28 @@
                 "safeArea": { "top": 0.20, "right": 0.16, "bottom": 0.18, "left": 0.16 },
                 "mood": ["musical", "energetic", "festive"],
                 "motifs": ["dholki", "string-lights", "phulkari-geometry"]
+            },
+            {
+                "id": "riwaayat-rukhsati-dove",
+                "eventTypes": ["rukhsati"],
+                "src": "/assets/wedding-invitations/riwaayat/riwaayat-rukhsati-dove.svg",
+                "textColor": "#3c3d4d",
+                "overlayColor": "#eef0f6",
+                "overlayOpacity": 0,
+                "safeArea": { "top": 0.20, "right": 0.16, "bottom": 0.18, "left": 0.16 },
+                "mood": ["tender", "bittersweet", "gentle"],
+                "motifs": ["dove", "jasmine", "farewell-path"]
+            },
+            {
+                "id": "riwaayat-engagement-blush",
+                "eventTypes": ["engagement"],
+                "src": "/assets/wedding-invitations/riwaayat/riwaayat-engagement-blush.svg",
+                "textColor": "#5a3a35",
+                "overlayColor": "#fdf3f1",
+                "overlayOpacity": 0,
+                "safeArea": { "top": 0.20, "right": 0.16, "bottom": 0.18, "left": 0.16 },
+                "mood": ["elegant", "soft", "hopeful"],
+                "motifs": ["ring", "rose", "champagne-frame"]
             }
         ]
     };
