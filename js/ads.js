@@ -28,7 +28,8 @@
             '/urdu-writing-templates', '/urdu/urdu-writing-templates',
             '/stylish-urdu-text-generator', '/urdu-name-art-maker', '/urdu-whatsapp-status-maker',
             '/urdu-instagram-post-maker', '/urdu-invoice-generator', '/qr-code-generator',
-            '/urdu-text-cleaner', '/urdu-ocr', '/tools/urdu-voice-typing', '/tools/inpage-unicode-converter'
+            '/urdu-text-cleaner', '/urdu-ocr', '/tools/urdu-voice-typing', '/tools/inpage-unicode-converter',
+            '/urdu-wedding-invitation-maker'
         ],
         trust: [
             '/why-write-urdu', '/10-years-of-write-urdu', '/contact', '/changelog', '/feedback', '/write-urdu-feedback', '/write-urdu-privacy',

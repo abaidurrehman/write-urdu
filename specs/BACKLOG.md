@@ -364,6 +364,9 @@ After the activation review:
 - [ ] Never make a canvas or rendered card the canonical wedding record; one structured wedding must regenerate every dependent output.
 - [ ] Keep guest lists/browser-local projects off the server until explicit publication and never put names, phone numbers, addresses or private wording in telemetry.
 - [ ] Preserve one product route; do not pre-create Nikah/Baraat/Walima SEO doorway makers.
+- [x] Event-specific SVG backgrounds — Riwaayat pack (PR #231) shipped Nikah/Mehndi/Baraat/Walima/Mayun/Dholki; Rukhsati/Engagement added 2026-09-20 (`docs/WU-SHAADI-001-SVG-ART-PACK-01-RIWAAYAT.md`). All 8 non-`custom` event types now covered. Remaining art work (a second visual-language suite, a minimal contemporary suite) tracked in that doc's "Next design round" section, not here.
+- [ ] Wording-registry expansion — expand `js/wedding-wording-registry.js` content with event-tone-aware wording variants per the palette/motif research in `docs/superpowers/specs/2026-09-18-wu-shaadi-001-slice-1-logic-design.md` §5; copy production, not engineering, and not required before the shipped Slice 1 logic/UI work.
+- [x] Slice 1 UI design open question — resolved 2026-09-19: `event.wordingOverride` (`{text, isOverridden, generatedFrom}`) is its own field on the event, alongside `wordingTemplateId`/`wordingTone`, not folded into `customWording`. Shipped in `docs/superpowers/plans/2026-09-19-wu-shaadi-001-slice-1-ui-implementation.md` Task 1 and consumed by the composer at `/urdu-wedding-invitation-maker`.
 
 **Guardrail:** this programme is not a generic wedding planner, vendor marketplace or second Card Studio. It digitizes the Pakistani invitation/envelope workflow around structured wedding data, guest households and WhatsApp/print outputs. If implementation permission is unclear, Slice 0 only.
 

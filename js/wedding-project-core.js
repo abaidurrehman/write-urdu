@@ -14,6 +14,7 @@
     var GUEST_SCOPES = ['individual', 'couple', 'family', 'custom'];
     var SUFFIX_STYLES = ['sahib', 'sahiba', 'with_family', 'none', 'custom'];
     var RELIGIOUS_OPENING_MODES = ['none', 'verified_library', 'custom_user_text'];
+    var WORDING_TONES = ['formal', 'informal', 'concise'];
 
     // Only the fixed, universally identical opening formula (the basmala) is seeded here.
     // reviewStatus stays 'pending_human_review' until Write Urdu's own religious-content
@@ -111,6 +112,26 @@
         };
     }
 
+    function isValidWordingOverride(value) {
+        return value && typeof value === 'object' &&
+            typeof value.text === 'string' &&
+            typeof value.isOverridden === 'boolean' &&
+            value.generatedFrom && typeof value.generatedFrom === 'object' &&
+            typeof value.generatedFrom.templateId === 'string' &&
+            value.generatedFrom.sourceFieldsSnapshot && typeof value.generatedFrom.sourceFieldsSnapshot === 'object';
+    }
+
+    function normalizeWordingOverride(value) {
+        return isValidWordingOverride(value) ? {
+            text: trimmed(value.text, 2000),
+            isOverridden: Boolean(value.isOverridden),
+            generatedFrom: {
+                templateId: trimmed(value.generatedFrom.templateId, 80),
+                sourceFieldsSnapshot: Object.assign({}, value.generatedFrom.sourceFieldsSnapshot)
+            }
+        } : null;
+    }
+
     function normalizeEvent(value, index) {
         var source = value && typeof value === 'object' ? value : {};
         var type = enumOrFallback(source.type, EVENT_TYPES, 'custom');
@@ -124,8 +145,11 @@
             programme: boundedArray(source.programme, normalizeProgrammeItem, 12),
             venueId: trimmed(source.venueId, 80),
             wordingTemplateId: trimmed(source.wordingTemplateId, 80),
+            wordingTone: enumOrFallback(source.wordingTone, WORDING_TONES, 'formal'),
             customWording: trimmed(source.customWording, 2000),
-            notes: trimmed(source.notes, 500)
+            notes: trimmed(source.notes, 500),
+            selectedBackgroundId: trimmed(source.selectedBackgroundId, 80) || null,
+            wordingOverride: normalizeWordingOverride(source.wordingOverride)
         };
     }
 
@@ -333,6 +357,101 @@
         return 'ltr';
     }
 
+    function stepCheck(project) {
+        var allEventsHaveDate = project.events.length > 0 && project.events.every(function (event) { return hasMeaningfulText(event.date); });
+        var hostsMissing = [];
+        if (!project.families.length) hostsMissing.push('families');
+        if (!hasMeaningfulText(project.couple.personA.displayName)) hostsMissing.push('couple.personA.displayName');
+        if (!hasMeaningfulText(project.couple.personB.displayName)) hostsMissing.push('couple.personB.displayName');
+        return [
+            { step: 'events', missingFields: project.events.length ? [] : ['events'] },
+            { step: 'hosts', missingFields: hostsMissing },
+            { step: 'schedule_venue', missingFields: allEventsHaveDate ? [] : ['events[].date'] },
+            { step: 'language_wording', missingFields: INVITATION_LANGUAGES.indexOf(project.invitationLanguage) >= 0 ? [] : ['invitationLanguage'] }
+        ];
+    }
+
+    function evaluateComposerSteps(rawProject) {
+        var project = normalizeWeddingProject(rawProject);
+        var blocked = false;
+        var steps = stepCheck(project).map(function (check) {
+            var status;
+            if (blocked) {
+                status = 'blocked';
+            } else if (check.missingFields.length) {
+                status = 'current';
+                blocked = true;
+            } else {
+                status = 'complete';
+            }
+            return { step: check.step, status: status, missingFields: check.missingFields };
+        });
+
+        var priorComplete = !blocked;
+        // Step 5 (design) is a fixed-default stub for this slice: no picker exists yet,
+        // it always resolves to the same default the render adapter already uses.
+        steps.push({
+            step: 'design',
+            status: priorComplete ? 'complete' : 'blocked',
+            missingFields: [],
+            designDefault: { templateId: 'classic-nastaliq', presetId: 'portrait' }
+        });
+        steps.push({
+            step: 'preview_export',
+            status: priorComplete ? 'available' : 'blocked',
+            missingFields: []
+        });
+
+        return steps;
+    }
+
+    function findVenueById(project, venueId) {
+        for (var i = 0; i < project.venues.length; i += 1) {
+            if (project.venues[i].id === venueId) return project.venues[i];
+        }
+        return null;
+    }
+
+    function snapshotWordingSourceFields(project, event) {
+        var normalizedProject = normalizeWeddingProject(project);
+        var normalizedEvent = normalizeEvent(event, 0);
+        var venue = normalizedEvent.venueId ? findVenueById(normalizedProject, normalizedEvent.venueId) : null;
+        return {
+            personA: normalizedProject.couple.personA.displayName,
+            personB: normalizedProject.couple.personB.displayName,
+            eventDate: normalizedEvent.date,
+            venueName: venue ? venue.name : ''
+        };
+    }
+
+    function wrapWordingResult(renderResult, templateId, project, event) {
+        if (!renderResult || !renderResult.complete) return null;
+        return {
+            text: renderResult.text,
+            isOverridden: false,
+            generatedFrom: {
+                templateId: templateId,
+                sourceFieldsSnapshot: snapshotWordingSourceFields(project, event)
+            }
+        };
+    }
+
+    function applyWordingOverride(wordingResult, newText) {
+        if (!wordingResult) throw new Error('Cannot override a wording result that does not exist yet');
+        return {
+            text: text(newText),
+            isOverridden: true,
+            generatedFrom: wordingResult.generatedFrom
+        };
+    }
+
+    function isWordingStale(wordingResult, project, event) {
+        if (!wordingResult || !wordingResult.generatedFrom) return false;
+        var current = snapshotWordingSourceFields(project, event);
+        var previous = wordingResult.generatedFrom.sourceFieldsSnapshot;
+        return Object.keys(current).some(function (key) { return current[key] !== previous[key]; });
+    }
+
     return {
         SCHEMA_VERSION: SCHEMA_VERSION,
         EVENT_TYPES: EVENT_TYPES,
@@ -344,10 +463,16 @@
         SUFFIX_STYLES: SUFFIX_STYLES,
         RELIGIOUS_OPENING_MODES: RELIGIOUS_OPENING_MODES,
         RELIGIOUS_LIBRARY: RELIGIOUS_LIBRARY,
+        WORDING_TONES: WORDING_TONES,
         createDefaultWeddingProject: createDefaultWeddingProject,
         normalizeWeddingProject: normalizeWeddingProject,
         validateWeddingProject: validateWeddingProject,
         buildInvitationViewModel: buildInvitationViewModel,
-        firstStrongDirection: firstStrongDirection
+        firstStrongDirection: firstStrongDirection,
+        evaluateComposerSteps: evaluateComposerSteps,
+        snapshotWordingSourceFields: snapshotWordingSourceFields,
+        wrapWordingResult: wrapWordingResult,
+        applyWordingOverride: applyWordingOverride,
+        isWordingStale: isWordingStale
     };
 }));

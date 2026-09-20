@@ -77,6 +77,7 @@ jobs:
           tests/urdu-cards-social-formats.spec.js
           tests/home-featured-card.spec.js
           tests/card-studio-background-collection.spec.js
+          tests/wedding-invitation-render-adapter.spec.js
           tests/whatsapp-status-discovery.spec.js
           tests/seo-acquisition.spec.js
           tests/role-journeys.spec.js
@@ -85,6 +86,7 @@ jobs:
           tests/voice-mobile-acceptance.spec.js
           tests/writer-voice-input.spec.js
           tests/urdu-locale.spec.js
+          tests/urdu-wedding-invitation-maker.spec.js
 
       - name: Run V3 production visual-quality audit
         run: npx playwright test tests/v3-visual-quality.spec.js --project=desktop-chromium

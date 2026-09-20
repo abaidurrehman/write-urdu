@@ -7,10 +7,10 @@ const manifestPath = path.join(root, 'assets', 'wedding-invitations', 'riwaayat'
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 
 assert.strictEqual(manifest.id, 'riwaayat');
-assert.strictEqual(manifest.variants.length, 6);
+assert.strictEqual(manifest.variants.length, 8);
 assert.deepStrictEqual(manifest.canvas, { width: 1080, height: 1350, aspectRatio: '4:5' });
 
-const expectedEvents = ['nikah', 'mehndi', 'baraat', 'walima', 'mayun', 'dholki'];
+const expectedEvents = ['nikah', 'mehndi', 'baraat', 'walima', 'mayun', 'dholki', 'rukhsati', 'engagement'];
 assert.deepStrictEqual(manifest.variants.map((item) => item.eventTypes[0]), expectedEvents);
 
 manifest.variants.forEach((variant) => {
@@ -28,4 +28,4 @@ manifest.variants.forEach((variant) => {
   assert.ok(safeHeight >= 0.60 && safeHeight <= 0.70, `${variant.id} safe height is outside target`);
 });
 
-console.log('WU-SHAADI Riwaayat SVG pack contract passed: 6 event variants.');
+console.log('WU-SHAADI Riwaayat SVG pack contract passed: 8 event variants.');

@@ -8,7 +8,7 @@
 
 ## Decision summary
 
-Slice 0 establishes the WeddingProject domain contract, controlled enums, deterministic wording-template shape, a representative Pakistani-wedding fixture corpus, and a pure Card Studio renderer-adapter proof (Architecture Contract §16), without publishing `/urdu-wedding-invitation-maker` or changing any existing user-facing surface.
+Slice 0 establishes the WeddingProject domain contract, controlled enums, deterministic wording-template shape, a representative Pakistani-wedding fixture corpus, a pure Card Studio renderer-adapter proof (Architecture Contract §16, both Node-level and real-browser), and the route/indexability decision the exit gate requires (§11), without publishing `/urdu-wedding-invitation-maker` or changing any existing user-facing surface.
 
 WU-SHAADI-001 remains **P1.10, planned behind the current activation evidence review** per `specs/BACKLOG.md`. This report does not claim, and does not require, an implementation-release exception. Per the epic's own governance ("If implementation permission is unclear, Slice 0 only"), only pure domain/schema/fixture/test work is included here.
 
@@ -18,7 +18,7 @@ Existing Card Studio, Card Gallery, Ready-Made Cards and `/s/:id` public-share b
 
 ## 1. Changed
 
-New files only — nothing existing was modified:
+New files, plus three registration-only edits to shared config (no existing check's behavior changed, they only add the new spec to the set each already runs):
 
 ```text
 js/wedding-project-core.js
@@ -26,8 +26,11 @@ js/wedding-wording-registry.js
 js/wedding-invitation-render-adapter.js
 tests/wedding-project-core.test.js
 tests/wedding-invitation-render-adapter.test.js
+tests/wedding-invitation-render-adapter.spec.js
 tests/fixtures/wu-shaadi-001/wedding-projects.v1.json
-scripts/run-contract-tests.js   (two lines added: registers the new test files)
+scripts/run-contract-tests.js       (two lines added: registers the new .test.js files)
+playwright.config.js                (one line added: registers the new .spec.js in testMatch)
+.github/workflows/quality.yml       (one line added: runs the new .spec.js on every PR)
 ```
 
 No route, HTML page, CSS, telemetry event, or D1/R2 schema was added. No `functions/api/*` endpoint exists for this epic yet — that is explicitly Slice 4 work. `js/card-studio-core.js` and every other existing Card Studio file were read for reconnaissance but not modified.
@@ -124,7 +127,35 @@ Invalid/edge coverage: missing event date + empty guest `invitedEventIds`, an un
 - **Validate at least one print-size export path.** All three cases are laid out against the `portrait` preset (1080×1350, the tallest/most invitation-card-like aspect ratio Card Studio currently ships) via `cardStudio.normalizeCardProject` → `cardStudio.validateCardProject` → `cardStudio.findBestFontSize`, proving the seed survives the full existing data/layout pipeline for that preset. This is the honest limit of what Slice 0 can prove: a real browser `<canvas>` (for `toDataURL`/PNG rasterization) is not available in this Node contract-test run, so pixel-level PNG/print rasterization is not exercised here — only the data and layout path a print export would consume. A literal PDF/print output path remains Slice 2/Slice 6 scope per the Implementation Checklist and is not claimed here.
 - **Benchmark mobile preview cost.** The test times 200 iterations of the full realistic pipeline (`buildInvitationViewModel` → `renderWording` → `buildCardStudioSeed` → `normalizeCardProject` → `findBestFontSize`) across the three-event `multi-event-wedding` fixture (600 calls total) and logs the result: **0.095ms/call** on this CI machine, asserted to stay under a generous 25ms/call ceiling. This is a structural proxy, not a real on-device measurement — Node CPU timing on the test runner's hardware is not a mobile browser profile — but it does prove the pipeline has no hidden quadratic blow-up, synchronous network call, or per-render allocation storm that would make a mobile preview infeasible. A real device/browser measurement remains outstanding and is listed below.
 
-Because a browser `CanvasRenderingContext2D` does not exist in Node, the test supplies a minimal `measureText` stand-in (character-count × font-size approximation) so the exact same `wrapRtlText`/`layoutCardText`/`findBestFontSize` code Card Studio ships can run unmodified. This proves structural/integration correctness (wrap logic, fit logic, overflow handling, character preservation) but is not a substitute for a real-browser/Playwright visual check of Nastaliq shaping, which remains open — see below.
+Because a browser `CanvasRenderingContext2D` does not exist in Node, the test supplies a minimal `measureText` stand-in (character-count × font-size approximation) so the exact same `wrapRtlText`/`layoutCardText`/`findBestFontSize` code Card Studio ships can run unmodified. This proves structural/integration correctness (wrap logic, fit logic, overflow handling, character preservation) but is not a substitute for a real-browser visual check of Nastaliq shaping — that follow-up is now done, see §6b.
+
+---
+
+## 6b. Real-browser visual proof (`tests/wedding-invitation-render-adapter.spec.js`)
+
+A Playwright spec closes the gap §6a is explicit about: it drives the actual `/urdu-card-studio.html` page in a real Chromium instance, so real font shaping and real canvas painting are exercised, not a mocked `measureText`.
+
+For each of the same three cultural fixtures (Urdu-only Nikah, bilingual mixed-script Baraat, English-only Walima):
+
+- opens the current, unmodified Card Studio page and seeds it via `window.WriteUrduCardStudioApp.replaceState(seed)`, exactly the same public app API `js/card-studio-handoff-adapter.js` already uses for every other cross-tool handoff — no new integration surface was invented;
+- asserts the accessible DOM mirror of the canvas text (`[data-accessible-card-text]`) equals the wording text byte-for-byte;
+- asserts `text.fontMode` stayed `auto`, i.e. Card Studio's own existing font-fit logic — not this adapter — is what avoids overflow;
+- asserts the page itself does not overflow (`scrollWidth`/`clientWidth`) after being seeded with wedding content;
+- reads back real canvas pixel data and asserts a meaningful fraction of the frame is painted (not a blank/placeholder canvas) — proof that Nastaliq/Naskh glyphs actually rendered, which no Node-side mock can demonstrate;
+- asserts text alignment followed the detected direction, matching §6a's Node-level assertion.
+
+A fourth test exercises the actual PNG export button (`[data-card-action="download"]`) against the `portrait` preset and asserts the downloaded file is a real, non-trivial PNG (>5KB, not a blank placeholder) — closing the one honest gap §6a flagged in the "print-size export path" item: real rasterization, not just the data/layout path.
+
+All four tests pass against the repository's pinned Chromium build. Verification:
+
+```text
+npx playwright test tests/wedding-invitation-render-adapter.spec.js
+  → 4 passed
+```
+
+(Run locally in this session against the sandbox's pre-installed Chromium via a temporary, unshipped `launchOptions.executablePath` override — `playwright.config.js` itself is unchanged and still uses the repository's normal `channel: 'chrome'`, matching every other spec. The new spec file is registered in `playwright.config.js`'s `testMatch` and in `.github/workflows/quality.yml`'s "Run focused product browser acceptance" step, same as every existing Card Studio spec, so it runs on every PR going forward.)
+
+What this still does not prove: real mobile-device performance (§6a's timing proxy remains a Node CPU measurement, not an on-device one) and a human's subjective judgment of whether the Nastaliq shaping "looks right" for a wedding invitation — the pixel-painted check here is a structural presence check, not a typographic quality review.
 
 ---
 
@@ -160,14 +191,21 @@ node scripts/check-product-governance.js
   → Product governance checks passed for 45 registered public pages, 49 sitemap routes, and 102 redirect rules.
 ```
 
-Mobile/manual QA: not applicable — no UI exists in this slice. The renderer proof above runs against Card Studio's core layout functions directly in Node; it is not a substitute for an on-device or Playwright-driven visual check, which remains open (see below).
+```text
+npx playwright test tests/wedding-invitation-render-adapter.spec.js
+  → 4 passed (real Chromium: Urdu, bilingual and English wording painted correctly on the
+     live, unmodified Card Studio canvas; a real portrait-preset PNG export produced a
+     non-trivial file)
+```
+
+Mobile/manual QA: not applicable — no new UI exists in this slice (the spec above seeds the *existing* Card Studio page, it does not add a page). A real on-device mobile performance profile remains open (see below).
 
 ---
 
 ## 10. Risk / remaining unknowns
 
-- **No real-browser/visual QA of the renderer proof yet.** The Node-based proof in §6a exercises Card Studio's actual wrap/fit/layout functions and proves structural correctness (no dropped characters, no overflow, no hidden perf cliff), but nobody has yet looked at an actual rendered Nastaliq PNG of wedding wording in a browser. A Playwright-based visual check against `/urdu-card-studio` (not a new public wedding route — just confirming the existing studio renders a manually-seeded wedding-shaped project correctly) is the natural next step before Slice 2 design work begins.
-- **The mobile preview-cost benchmark is a Node CPU proxy, not a device measurement.** 0.095ms/call on CI hardware is reassuring (no quadratic blow-up, no synchronous network call in the hot path) but is not evidence about actual phone-class JS performance or canvas rasterization cost, which only a real device/browser profile can give.
+- **Real-browser visual QA is now done (§6b)**, closing what was previously the top open item: `tests/wedding-invitation-render-adapter.spec.js` proves Urdu/bilingual/English wording actually paints on a real Chromium canvas through the unmodified Card Studio page, and that a real portrait-preset PNG export is non-trivial. What it does not give is a *human's* typographic judgment of the Nastaliq shaping quality — that is a design review, not a test assertion, and is naturally Slice 2 (visual template) scope.
+- **The mobile preview-cost benchmark is still a Node CPU proxy, not a device measurement.** 0.095ms/call on CI hardware is reassuring (no quadratic blow-up, no synchronous network call in the hot path) but is not evidence about actual phone-class JS performance or canvas rasterization cost, which only a real device/browser profile can give. The Playwright proof in §6b confirms the pipeline works end-to-end in a real browser, but it was not run as a timed benchmark and should not be read as one.
 - **Route/indexability decision is not yet recorded** — deferred until closer to Slice 1, per checklist.
 - **Religious-content review is a real open task**, not a technical one: the basmala entry needs an actual human/editorial sign-off before `verified_library` mode can ever be used; the code enforces this rather than assuming it.
 - The wording registry's five templates are a proof set; the full 8–12 launch-quality visual/wording library is Slice 2 scope, not Slice 0.
@@ -175,21 +213,33 @@ Mobile/manual QA: not applicable — no UI exists in this slice. The renderer pr
 
 ---
 
-## 11. Rollback
+## 11. Route/indexability decision (Slice 0 exit-gate requirement)
 
-Every file in this slice is additive and unreferenced by any existing page, route, or build step other than the one new line in `scripts/run-contract-tests.js`. Reverting the commit(s) removes the feature with zero impact on any shipped product surface.
+The Implementation Checklist's Slice 0 exit gate requires this decision to be *recorded*, not acted on. Nothing below changes `check-product-governance.js`'s registered counts (still 45 pages / 49 sitemap routes / 102 redirect rules) — no route is created by this document.
+
+- **Canonical route (Slice 1+, not yet published):** `/urdu-wedding-invitation-maker`, per the Implementation Checklist's Slice 1 "Route and shell" section and `specs/BACKLOG.md`'s P1.10 guardrail ("Preserve one product route; do not pre-create Nikah/Baraat/Walima SEO doorway makers"). There is exactly one composer route, never per-event-type doorway pages — this is a decision already made at the epic level, recorded here for the exit gate rather than re-litigated.
+- **Initial indexability posture:** `noindex` during limited validation, matching the Implementation Checklist's explicit Slice 1 instruction ("Keep noindex during limited validation unless SEO ownership is explicitly approved") and the same pattern already used elsewhere in this repo for a new, unvalidated product surface. It becomes indexable only through a later, separate, explicit SEO-ownership decision — not automatically once Slice 1 ships.
+- **No sitemap/public directory entry** until that same later indexability decision is made. This mirrors the architecturally-fixed rule already recorded in the Acceptance Matrix and checklist for the *recipient* link page (`noindex,follow`, no sitemap, no public directory) — that page-level rule is permanent by design (opaque per-household links must never be crawlable or listed), separate from the composer route's temporary launch-time `noindex`, which is expected to be revisited once there is real usage/query evidence.
+- **Registration mechanism when the time comes:** the repository's existing canonical SEO/public-page pipeline (`npm run seo:sync-heads`, `npm run seo:graph:sync`, `npm run seo:generate`, `scripts/static-shell-registry.js`) — the same mechanism WU-BILL-001 recorded for `/urdu-bill-generator` and every other product route in this repo. Slice 0/1 does not hand-edit `sitemap.xml`, `robots.txt`, or any shell registry file to pre-stage this; those all stay exactly as `check-product-governance.js` reports them today.
+- **What is explicitly not decided here:** *when* Slice 1 may ship the route at all — that remains gated by the activation roadmap review referenced in `specs/BACKLOG.md`'s P1.10 `State` line, independent of this document.
 
 ---
 
-## 12. Slice 0 exit gate
+## 12. Rollback
+
+Every file in this slice is additive and unreferenced by any existing page, route, or build step other than: one new line in `scripts/run-contract-tests.js`, one new entry in `playwright.config.js`'s `testMatch`, and one new line in `.github/workflows/quality.yml`'s browser-acceptance step (both purely to register the new spec file, not to change any existing check). Reverting the commit(s) removes the feature with zero impact on any shipped product surface.
+
+---
+
+## 13. Slice 0 exit gate
 
 | Checklist item | Status |
 |---|---|
 | Schema stable enough for version 1 | Done |
 | No duplicate ownership with Card Studio/share infrastructure | Done (Card Studio files unmodified; adapter references existing template/preset ids) |
 | Wording fixtures render deterministically | Done |
-| Route/indexability decision recorded | **Open** |
-| Performance/privacy constraints testable | Privacy: done. Performance: done as a Node structural proxy (0.095ms/call); **real-device/browser measurement open** |
-| Renderer/handoff proof against Card Studio | Done as a Node-level structural proof (§6a); **real-browser/visual QA open** |
+| Route/indexability decision recorded | Done (§11) |
+| Performance/privacy constraints testable | Privacy: done. Performance: Node structural proxy done (0.095ms/call) and confirmed working end-to-end in a real browser (§6b); **timed real-device measurement still open** |
+| Renderer/handoff proof against Card Studio | Done — both a Node-level structural proof (§6a) and a real-browser visual/pixel/export proof (§6b) |
 
-Slice 0 is **substantially complete**: the domain/schema/fixture/test foundation and the Card Studio renderer-adapter proof are both done and green, covering all four "Renderer proof" checklist items at the structural/contract-test level. What remains before Slice 1 can begin is a real-browser visual check of the renderer proof, an actual device performance measurement, the route/indexability decision, and the still-outstanding human/editorial religious-content review. A green Slice 0 does not by itself authorize Slice 1 or any public route — that remains behind the current activation roadmap gate.
+Slice 0 is **complete against this checklist**: the domain/schema/fixture/test foundation, the Card Studio renderer-adapter proof (Node-level and real-browser), and the route/indexability decision are all done and recorded. What remains before Slice 1 can begin is a real on-device performance measurement (nice-to-have, not gating per the checklist's own wording) and the still-outstanding human/editorial religious-content review (a real product decision, not a Slice 0 code gap). A green Slice 0 does not by itself authorize Slice 1 or any public route — that remains behind the current activation roadmap gate recorded in `specs/BACKLOG.md`.
