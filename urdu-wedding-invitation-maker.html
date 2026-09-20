@@ -38,23 +38,10 @@
         <h1>Urdu Wedding Invitation Maker</h1>
         <p class="wedding-maker-intro">Build your Nikah, Mehndi, Baraat or Walima invitation with matching wording and design, then download it as an image. No account required.</p>
 
-        <ol class="wedding-step-rail" data-wedding-step-rail>
-            <li data-wedding-step-tab="events">Events</li>
-            <li data-wedding-step-tab="hosts">Hosts</li>
-            <li data-wedding-step-tab="schedule_venue">Schedule &amp; venue</li>
-            <li data-wedding-step-tab="language_wording">Language &amp; wording</li>
-            <li data-wedding-step-tab="design">Design</li>
-            <li data-wedding-step-tab="preview_export">Preview &amp; export</li>
-        </ol>
+        <ol class="wedding-step-rail" data-wedding-step-rail></ol>
 
-        <section data-wedding-step-panel="events" hidden>
-            <h2>Which events are you inviting guests to?</h2>
-            <div data-wedding-events-list></div>
-            <button type="button" data-wedding-add-event>Add event</button>
-        </section>
-
-        <section data-wedding-step-panel="hosts" hidden>
-            <h2>Who is hosting?</h2>
+        <section data-wedding-step-panel="intro" hidden>
+            <h2>Tell us about your wedding</h2>
             <label>Person A
                 <input type="text" data-wedding-couple-person-a placeholder="Person A's name">
             </label>
@@ -63,15 +50,6 @@
             </label>
             <div data-wedding-families-list></div>
             <button type="button" data-wedding-add-family>Add family</button>
-        </section>
-
-        <section data-wedding-step-panel="schedule_venue" hidden>
-            <h2>Date, programme and venue</h2>
-            <div data-wedding-schedule-list></div>
-        </section>
-
-        <section data-wedding-step-panel="language_wording" hidden>
-            <h2>Language and wording</h2>
             <label>Invitation language
                 <select data-wedding-invitation-language>
                     <option value="urdu">اردو</option>
@@ -79,15 +57,25 @@
                     <option value="bilingual">Bilingual</option>
                 </select>
             </label>
-            <div data-wedding-wording-list></div>
+            <h3>Which events are you inviting guests to?</h3>
+            <div data-wedding-events-list></div>
+            <button type="button" data-wedding-add-event>Add event</button>
         </section>
 
         <section data-wedding-step-panel="design" hidden>
-            <h2>Choose a design</h2>
+            <h2 data-wedding-design-heading>Choose a design</h2>
             <div data-wedding-design-list></div>
         </section>
 
-        <section data-wedding-step-panel="preview_export" hidden>
+        <section data-wedding-step-panel="edit" hidden>
+            <h2 data-wedding-edit-heading>Event details</h2>
+            <div class="wedding-edit-layout">
+                <div class="wedding-edit-fields" data-wedding-edit-fields></div>
+                <div class="wedding-edit-preview" data-wedding-edit-preview></div>
+            </div>
+        </section>
+
+        <section data-wedding-step-panel="review_export" hidden>
             <h2>Preview and download</h2>
             <div data-wedding-preview-list></div>
         </section>
