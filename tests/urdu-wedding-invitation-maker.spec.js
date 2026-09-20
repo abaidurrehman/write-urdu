@@ -29,8 +29,8 @@ test('WU-SHAADI-001 composer: design-first happy path picks a card before typing
   // Design step for Mehndi: a card gallery must be visible before any date/wording field.
   await expect(page.locator('[data-wedding-step-panel="design"]')).toBeVisible();
   await expect(page.locator('[data-wedding-design-list] .wedding-design-option').first()).toBeVisible();
+  // Picking a card advances straight to that event's edit step (no manual Next needed).
   await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.click('[data-wedding-next]');
 
   // Edit step: fields plus a live preview pane, still scoped to Mehndi.
   await expect(page.locator('[data-wedding-step-panel="edit"]')).toBeVisible();
@@ -49,8 +49,8 @@ test('WU-SHAADI-001 composer: live preview updates as the user types wording', a
 
   await fillIntro(page, 'nikah');
   await page.click('[data-wedding-next]');
+  // Picking a card advances straight to that event's edit step (no manual Next needed).
   await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.click('[data-wedding-next]');
 
   await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-05');
   await page.fill('[data-wedding-edit-fields] textarea', 'My own hand-typed wording');
@@ -64,8 +64,8 @@ test('WU-SHAADI-001 composer: blocked steps cannot be jumped to', async ({ page 
   await fillIntro(page, 'walima');
   // Do not fill the date - the edit step (and review_export after it) must stay blocked.
   await page.click('[data-wedding-next]');
+  // Picking a card advances straight to that event's edit step (no manual Next needed).
   await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.click('[data-wedding-next]');
 
   await expect(page.locator('[data-wedding-step-panel="edit"]')).toBeVisible();
   await expect(page.locator('[data-wedding-next]')).toBeDisabled();
@@ -80,8 +80,8 @@ test('WU-SHAADI-001 composer: wording override survives and image export produce
 
   await fillIntro(page, 'nikah');
   await page.click('[data-wedding-next]');
+  // Picking a card advances straight to that event's edit step (no manual Next needed).
   await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.click('[data-wedding-next]');
   await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-05');
   await page.fill('[data-wedding-edit-fields] textarea', 'My own hand-edited wording');
   await page.click('[data-wedding-edit-fields] button:has-text("Save wording")');
@@ -106,14 +106,13 @@ test('WU-SHAADI-001 composer: two events each get their own design and edit step
 
   // Mehndi design -> Mehndi edit -> Baraat design -> Baraat edit -> review_export
   await expect(page.locator('[data-wedding-design-heading]')).toContainText('Mehndi');
+  // Picking a card advances straight to that event's edit step (no manual Next needed).
   await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.click('[data-wedding-next]');
   await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-01');
   await page.click('[data-wedding-next]');
 
   await expect(page.locator('[data-wedding-design-heading]')).toContainText('Baraat');
   await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.click('[data-wedding-next]');
   await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-05');
   await page.click('[data-wedding-next]');
 

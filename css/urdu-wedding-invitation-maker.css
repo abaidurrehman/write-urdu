@@ -75,8 +75,7 @@
 
 [data-wedding-events-list] > div,
 [data-wedding-families-list] > div,
-[data-wedding-schedule-list] > div,
-[data-wedding-wording-list] > div,
+[data-wedding-edit-fields] > div,
 [data-wedding-design-list] > div,
 [data-wedding-preview-list] > div {
     margin-bottom: var(--wu-space-3, 0.75rem);

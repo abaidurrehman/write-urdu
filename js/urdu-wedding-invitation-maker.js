@@ -106,6 +106,13 @@
         if (panelType !== 'edit') {
             var editPreview = document.querySelector('[data-wedding-edit-preview]');
             if (editPreview) editPreview.innerHTML = '';
+            // A pending debounced preview refresh (see schedulePreviewRefresh) would otherwise
+            // fire after navigation and re-inject a .wedding-preview-card into the now-hidden
+            // edit pane. Cancel it whenever we navigate away from the edit step.
+            if (previewDebounceTimer) {
+                clearTimeout(previewDebounceTimer);
+                previewDebounceTimer = null;
+            }
         }
     }
 
@@ -205,7 +212,13 @@
                 option.onclick = function () {
                     project.events[eventIndex].selectedBackgroundId = variantId;
                     save();
-                    refreshAll();
+                    // Picking a card advances straight to that event's edit step (spec §2)
+                    // instead of re-rendering the same design step and requiring a manual Next.
+                    var steps = currentSteps();
+                    if (currentStepIndex < steps.length - 1 && steps[currentStepIndex + 1].status !== 'blocked') {
+                        currentStepIndex += 1;
+                    }
+                    renderCurrentStep();
                 };
                 list.appendChild(option);
             });
@@ -294,7 +307,11 @@
         toneSelect.onchange = function () {
             project.events[eventIndex].wordingTone = toneSelect.value;
             save();
-            schedulePreviewRefresh(eventId);
+            // Re-render the whole panel (rather than schedulePreviewRefresh) so the wording
+            // textarea itself reflects the newly selected tone's generated text. Without this,
+            // the textarea kept showing the old tone's text, and clicking "Save wording" would
+            // silently freeze that stale text into a permanent override.
+            renderEditStep(eventId);
         };
         fields.appendChild(el('div', {}, [el('label', { text: 'Wording tone' }), toneSelect]));
 
@@ -316,7 +333,13 @@
             fields.appendChild(el('p', { text: 'Wording may be outdated — regenerate?' }));
             var regenerateButton = el('button', { type: 'button', text: 'Regenerate' });
             regenerateButton.onclick = function () {
-                project.events[eventIndex].wordingOverride = null;
+                // Re-resolve the event index fresh: save() (called by other handlers in this
+                // same panel visit, e.g. date/tone changes) runs the project through
+                // normalizeWeddingProject, which returns entirely new event objects each time,
+                // so the eventIndex/event captured when this panel was drawn can go stale after
+                // a second field edit.
+                var idx = findEventIndexById(eventId);
+                project.events[idx].wordingOverride = null;
                 save();
                 renderEditStep(eventId);
             };
@@ -325,19 +348,23 @@
 
         var saveOverrideButton = el('button', { type: 'button', text: 'Save wording' });
         saveOverrideButton.onclick = function () {
-            // Recompute fresh rather than closing over the templateId/rendered captured when this
-            // panel was first drawn: the user may have just filled in a field (e.g. the date) that
-            // was missing at that time, and a stale "incomplete" rendered result would otherwise
-            // block saving even though the requirements are now met.
-            var currentTemplateId = templateSelector.selectTemplate(project, event);
-            var currentRendered = wording.renderWording(currentTemplateId, project, event);
-            var wrapped = event.wordingOverride || core.wrapWordingResult(currentRendered, currentTemplateId, project, event);
+            // Recompute fresh rather than closing over the templateId/rendered/eventIndex/event
+            // captured when this panel was first drawn: the user may have just filled in a field
+            // (e.g. the date) or changed the tone since then, and save() (called by those other
+            // handlers) runs the project through normalizeWeddingProject, which returns entirely
+            // new event objects each time. A stale "incomplete" rendered result, or a stale event
+            // object, would otherwise block saving or save wording generated from outdated fields.
+            var idx = findEventIndexById(eventId);
+            var currentEvent = project.events[idx];
+            var currentTemplateId = templateSelector.selectTemplate(project, currentEvent);
+            var currentRendered = wording.renderWording(currentTemplateId, project, currentEvent);
+            var wrapped = currentEvent.wordingOverride || core.wrapWordingResult(currentRendered, currentTemplateId, project, currentEvent);
             if (!wrapped) {
                 var statusEl = document.querySelector('[data-wedding-save-status]');
                 if (statusEl) statusEl.textContent = 'Cannot save wording yet — missing: ' + currentRendered.missingFields.join(', ');
                 return;
             }
-            project.events[eventIndex].wordingOverride = core.applyWordingOverride(wrapped, textArea.value);
+            project.events[idx].wordingOverride = core.applyWordingOverride(wrapped, textArea.value);
             save();
             renderEditStep(eventId);
         };
