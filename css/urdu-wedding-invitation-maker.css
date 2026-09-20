@@ -58,6 +58,79 @@
     margin-bottom: var(--wu-space-5, 1.5rem);
 }
 
+[data-wedding-step-panel] h2 {
+    margin: 0 0 var(--wu-space-4, 1rem);
+    font-size: var(--wu-text-lg, 1.125rem);
+}
+
+[data-wedding-step-panel] label {
+    display: inline-grid;
+    gap: var(--wu-space-1, 0.25rem);
+    margin: 0 var(--wu-space-4, 1rem) var(--wu-space-3, 0.75rem) 0;
+    vertical-align: top;
+    color: var(--wu-color-ink, #17221c);
+    font-size: var(--wu-text-sm, 0.875rem);
+    font-weight: var(--wu-weight-medium, 500);
+}
+
+[data-wedding-events-list] > div,
+[data-wedding-families-list] > div,
+[data-wedding-schedule-list] > div,
+[data-wedding-wording-list] > div,
+[data-wedding-design-list] > div,
+[data-wedding-preview-list] > div {
+    margin-bottom: var(--wu-space-3, 0.75rem);
+}
+
+[data-wedding-step-panel] input[type="text"],
+[data-wedding-step-panel] input[type="date"],
+[data-wedding-step-panel] select,
+[data-wedding-step-panel] textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 360px;
+    min-height: var(--wu-control-height, 2.75rem);
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--wu-color-border-strong, #cbd9d1);
+    border-radius: var(--wu-radius-sm, 0.6rem);
+    color: var(--wu-color-ink, #17221c);
+    background: var(--wu-color-surface, #fff);
+    font: inherit;
+    font-size: var(--wu-text-base, 1rem);
+}
+
+[data-wedding-step-panel] textarea {
+    min-height: 6rem;
+    max-width: 480px;
+    resize: vertical;
+}
+
+[data-wedding-step-panel] input:focus,
+[data-wedding-step-panel] select:focus,
+[data-wedding-step-panel] textarea:focus {
+    outline: none;
+    border-color: var(--wu-color-brand, #15934d);
+    box-shadow: 0 0 0 3px var(--wu-shell-focus-ring, rgba(11, 111, 194, .28));
+}
+
+[data-wedding-step-panel] button:not(.wedding-design-option) {
+    min-height: var(--wu-control-height, 2.75rem);
+    padding: 0 var(--wu-space-4, 1rem);
+    border: 1px solid var(--wu-color-border-strong, #cbd9d1);
+    border-radius: var(--wu-radius-sm, 0.6rem);
+    background: var(--wu-color-surface, #fff);
+    color: var(--wu-color-ink, #17221c);
+    font: inherit;
+    font-size: var(--wu-text-sm, 0.875rem);
+    cursor: pointer;
+}
+
+[data-wedding-step-panel] button:not(.wedding-design-option):hover {
+    border-color: var(--wu-color-brand, #15934d);
+    background: var(--wu-color-brand-softer, #f4fbf6);
+}
+
 .wedding-maker-nav {
     display: flex;
     justify-content: space-between;
