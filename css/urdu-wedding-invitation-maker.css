@@ -73,7 +73,7 @@
     cursor: pointer;
 }
 
-[data-wedding-next] {
+.wedding-maker-nav button[data-wedding-next] {
     background: var(--wu-color-brand, #15934d);
     color: #fff;
     border-color: var(--wu-color-brand-strong, #0d783e);
