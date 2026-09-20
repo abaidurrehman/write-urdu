@@ -357,24 +357,40 @@
         return 'ltr';
     }
 
-    function stepCheck(project) {
-        var allEventsHaveDate = project.events.length > 0 && project.events.every(function (event) { return hasMeaningfulText(event.date); });
-        var hostsMissing = [];
-        if (!project.families.length) hostsMissing.push('families');
-        if (!hasMeaningfulText(project.couple.personA.displayName)) hostsMissing.push('couple.personA.displayName');
-        if (!hasMeaningfulText(project.couple.personB.displayName)) hostsMissing.push('couple.personB.displayName');
-        return [
-            { step: 'events', missingFields: project.events.length ? [] : ['events'] },
-            { step: 'hosts', missingFields: hostsMissing },
-            { step: 'schedule_venue', missingFields: allEventsHaveDate ? [] : ['events[].date'] },
-            { step: 'language_wording', missingFields: INVITATION_LANGUAGES.indexOf(project.invitationLanguage) >= 0 ? [] : ['invitationLanguage'] }
-        ];
+    function buildDynamicStepChecks(project, options) {
+        var opts = options && typeof options === 'object' ? options : {};
+        var suggestBackgroundCategory = typeof opts.suggestBackgroundCategory === 'function'
+            ? opts.suggestBackgroundCategory
+            : function () { return []; };
+
+        var introMissing = [];
+        if (!project.events.length) introMissing.push('events');
+        if (!project.families.length) introMissing.push('families');
+        if (!hasMeaningfulText(project.couple.personA.displayName)) introMissing.push('couple.personA.displayName');
+        if (!hasMeaningfulText(project.couple.personB.displayName)) introMissing.push('couple.personB.displayName');
+        if (INVITATION_LANGUAGES.indexOf(project.invitationLanguage) < 0) introMissing.push('invitationLanguage');
+
+        var checks = [{ step: 'intro', missingFields: introMissing }];
+
+        project.events.forEach(function (event) {
+            var designMissing = [];
+            if (!event.selectedBackgroundId && suggestBackgroundCategory(project, event).length > 0) {
+                designMissing.push('selectedBackgroundId');
+            }
+            checks.push({ step: 'design_' + event.id, eventId: event.id, missingFields: designMissing });
+
+            var editMissing = hasMeaningfulText(event.date) ? [] : ['events[].date'];
+            checks.push({ step: 'edit_' + event.id, eventId: event.id, missingFields: editMissing });
+        });
+
+        return checks;
     }
 
-    function evaluateComposerSteps(rawProject) {
+    function evaluateComposerSteps(rawProject, options) {
         var project = normalizeWeddingProject(rawProject);
         var blocked = false;
-        var steps = stepCheck(project).map(function (check) {
+        var checks = buildDynamicStepChecks(project, options);
+        var steps = checks.map(function (check) {
             var status;
             if (blocked) {
                 status = 'blocked';
@@ -384,21 +400,14 @@
             } else {
                 status = 'complete';
             }
-            return { step: check.step, status: status, missingFields: check.missingFields };
+            var stepObj = { step: check.step, status: status, missingFields: check.missingFields };
+            if (check.eventId) stepObj.eventId = check.eventId;
+            return stepObj;
         });
 
-        var priorComplete = !blocked;
-        // Step 5 (design) is a fixed-default stub for this slice: no picker exists yet,
-        // it always resolves to the same default the render adapter already uses.
         steps.push({
-            step: 'design',
-            status: priorComplete ? 'complete' : 'blocked',
-            missingFields: [],
-            designDefault: { templateId: 'classic-nastaliq', presetId: 'portrait' }
-        });
-        steps.push({
-            step: 'preview_export',
-            status: priorComplete ? 'available' : 'blocked',
+            step: 'review_export',
+            status: blocked ? 'blocked' : 'available',
             missingFields: []
         });
 
