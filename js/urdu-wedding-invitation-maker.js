@@ -7,19 +7,21 @@
     var storage = window.WriteUrduWeddingProjectStorage;
     if (!core || !wording || !templateSelector || !storage) return;
 
-    var STEP_IDS = ['events', 'hosts', 'schedule_venue', 'language_wording', 'design', 'preview_export'];
     var EVENT_LABELS = { nikah: 'Nikah', mehndi: 'Mehndi', mayun: 'Mayun', dholki: 'Dholki', baraat: 'Baraat', rukhsati: 'Rukhsati', walima: 'Walima', engagement: 'Engagement', custom: 'Custom' };
     var MISSING_FIELD_LABELS = {
         events: 'Add at least one event',
         families: 'Add at least one family',
         'couple.personA.displayName': "Enter Person A's name",
         'couple.personB.displayName': "Enter Person B's name",
-        'events[].date': 'Set a date for every event',
-        invitationLanguage: 'Choose an invitation language'
+        'events[].date': 'Set a date for this event',
+        invitationLanguage: 'Choose an invitation language',
+        selectedBackgroundId: 'Pick a card design'
     };
+    var PREVIEW_DEBOUNCE_MS = 200;
 
     var project = storage.loadDraft() || core.createDefaultWeddingProject();
     var currentStepIndex = 0;
+    var previewDebounceTimer = null;
 
     function save() {
         project = core.normalizeWeddingProject(project);
@@ -38,29 +40,83 @@
         return node;
     }
 
+    function currentSteps() {
+        return core.evaluateComposerSteps(project, { suggestBackgroundCategory: templateSelector.suggestBackgroundCategory });
+    }
+
+    function stepType(stepId) {
+        if (stepId === 'intro' || stepId === 'review_export') return stepId;
+        if (stepId.indexOf('design_') === 0) return 'design';
+        if (stepId.indexOf('edit_') === 0) return 'edit';
+        return null;
+    }
+
+    function eventIdFromStep(stepId) {
+        return stepId.replace(/^(design_|edit_)/, '');
+    }
+
+    function findEventById(eventId) {
+        for (var i = 0; i < project.events.length; i += 1) {
+            if (project.events[i].id === eventId) return project.events[i];
+        }
+        return null;
+    }
+
+    function findEventIndexById(eventId) {
+        for (var i = 0; i < project.events.length; i += 1) {
+            if (project.events[i].id === eventId) return i;
+        }
+        return -1;
+    }
+
+    function stepLabel(step) {
+        if (step.step === 'intro') return 'Details';
+        if (step.step === 'review_export') return 'Review & export';
+        var event = findEventById(step.eventId);
+        var label = event ? (EVENT_LABELS[event.type] || event.type) : 'Event';
+        return stepType(step.step) === 'design' ? label + ' design' : label + ' details';
+    }
+
     function renderStepRail(steps) {
         var rail = document.querySelector('[data-wedding-step-rail]');
         if (!rail) return;
-        STEP_IDS.forEach(function (stepId, index) {
-            var tab = rail.querySelector('[data-wedding-step-tab="' + stepId + '"]');
-            if (!tab) return;
-            tab.setAttribute('data-wedding-step-status', steps[index].status);
+        rail.innerHTML = '';
+        steps.forEach(function (step, index) {
+            var tab = el('li', { text: stepLabel(step) });
+            tab.setAttribute('data-wedding-step-status', step.status);
+            tab.setAttribute('data-wedding-step-tab', step.step);
             tab.onclick = function () {
-                if (steps[index].status === 'blocked') return;
+                if (step.status === 'blocked') return;
                 currentStepIndex = index;
                 renderCurrentStep();
             };
+            rail.appendChild(tab);
         });
     }
 
-    function showPanel(stepId) {
-        STEP_IDS.forEach(function (id) {
-            var panel = document.querySelector('[data-wedding-step-panel="' + id + '"]');
-            if (panel) panel.hidden = id !== stepId;
+    function showPanel(panelType) {
+        ['intro', 'design', 'edit', 'review_export'].forEach(function (type) {
+            var panel = document.querySelector('[data-wedding-step-panel="' + type + '"]');
+            if (panel) panel.hidden = type !== panelType;
         });
+        // The edit step's live-preview pane leaves its last .wedding-preview-card in the DOM
+        // when the panel is hidden (only its ancestor <section> gets [hidden]). Clear it whenever
+        // the edit panel is not the active one so a stray, invisible card never coexists with the
+        // review step's own card under an unscoped ".wedding-preview-card" query.
+        if (panelType !== 'edit') {
+            var editPreview = document.querySelector('[data-wedding-edit-preview]');
+            if (editPreview) editPreview.innerHTML = '';
+            // A pending debounced preview refresh (see schedulePreviewRefresh) would otherwise
+            // fire after navigation and re-inject a .wedding-preview-card into the now-hidden
+            // edit pane. Cancel it whenever we navigate away from the edit step.
+            if (previewDebounceTimer) {
+                clearTimeout(previewDebounceTimer);
+                previewDebounceTimer = null;
+            }
+        }
     }
 
-    function renderEventsStep() {
+    function renderEventsList() {
         var list = document.querySelector('[data-wedding-events-list]');
         if (!list) return;
         list.innerHTML = '';
@@ -86,7 +142,13 @@
         refreshAll();
     }
 
-    function renderFamiliesStep() {
+    function addFamily() {
+        project.families.push(core.normalizeWeddingProject({ families: [{ role: 'both' }] }).families[0]);
+        save();
+        refreshAll();
+    }
+
+    function renderIntroStep() {
         var personAInput = document.querySelector('[data-wedding-couple-person-a]');
         if (personAInput) {
             personAInput.value = project.couple.personA.displayName;
@@ -106,139 +168,61 @@
             };
         }
         var list = document.querySelector('[data-wedding-families-list]');
-        if (!list) return;
-        list.innerHTML = '';
-        project.families.forEach(function (family, index) {
-            var input = el('input', { value: family.displayName, placeholder: 'Family name' });
-            input.oninput = function () {
-                project.families[index].displayName = input.value;
-                save();
-                refreshNavState();
-            };
-            list.appendChild(el('div', {}, [input]));
-        });
-    }
-
-    function addFamily() {
-        project.families.push(core.normalizeWeddingProject({ families: [{ role: 'both' }] }).families[0]);
-        save();
-        refreshAll();
-    }
-
-    function renderScheduleStep() {
-        var list = document.querySelector('[data-wedding-schedule-list]');
-        if (!list) return;
-        list.innerHTML = '';
-        project.events.forEach(function (event, index) {
-            var dateInput = el('input', { type: 'date', value: event.date || '' });
-            dateInput.onchange = function () {
-                project.events[index].date = dateInput.value;
-                save();
-                refreshNavState();
-            };
-            list.appendChild(el('div', {}, [el('label', { text: EVENT_LABELS[event.type] || event.type }), dateInput]));
-        });
-    }
-
-    function renderWordingStep() {
+        if (list) {
+            list.innerHTML = '';
+            project.families.forEach(function (family, index) {
+                var input = el('input', { value: family.displayName, placeholder: 'Family name' });
+                input.oninput = function () {
+                    project.families[index].displayName = input.value;
+                    save();
+                    refreshNavState();
+                };
+                list.appendChild(el('div', {}, [input]));
+            });
+        }
         var languageSelect = document.querySelector('[data-wedding-invitation-language]');
         if (languageSelect) {
             languageSelect.value = project.invitationLanguage;
             languageSelect.onchange = function () {
                 project.invitationLanguage = languageSelect.value;
                 save();
-                refreshAll();
+                refreshNavState();
             };
         }
-        var list = document.querySelector('[data-wedding-wording-list]');
-        if (!list) return;
-        list.innerHTML = '';
-        project.events.forEach(function (event, index) {
-            var container = el('div', {});
-            container.appendChild(el('h3', { text: EVENT_LABELS[event.type] || event.type }));
-
-            var toneSelect = el('select', {});
-            templateSelector.WORDING_TONES.forEach(function (tone) {
-                var option = el('option', { value: tone, text: tone });
-                if (event.wordingTone === tone) option.setAttribute('selected', 'selected');
-                toneSelect.appendChild(option);
-            });
-            toneSelect.onchange = function () {
-                project.events[index].wordingTone = toneSelect.value;
-                save();
-                renderWordingStep();
-            };
-            container.appendChild(toneSelect);
-
-            var templateId = templateSelector.selectTemplate(project, event);
-            var rendered = wording.renderWording(templateId, project, event);
-            if (!event.wordingOverride && !rendered.complete) {
-                container.appendChild(el('p', { text: 'Missing: ' + rendered.missingFields.join(', ') }));
-            }
-            var textArea = el('textarea', {});
-            textArea.value = event.wordingOverride ? event.wordingOverride.text : (rendered.complete ? rendered.text : '');
-            textArea.dir = core.firstStrongDirection(textArea.value);
-            textArea.oninput = function () {
-                textArea.dir = core.firstStrongDirection(textArea.value);
-            };
-            container.appendChild(textArea);
-
-            if (event.wordingOverride && core.isWordingStale(event.wordingOverride, project, event)) {
-                container.appendChild(el('p', { text: 'Wording may be outdated — regenerate?' }));
-                var regenerateButton = el('button', { type: 'button', text: 'Regenerate' });
-                regenerateButton.onclick = function () {
-                    project.events[index].wordingOverride = null;
-                    save();
-                    renderWordingStep();
-                };
-                container.appendChild(regenerateButton);
-            }
-
-            var saveOverrideButton = el('button', { type: 'button', text: 'Save wording' });
-            saveOverrideButton.onclick = function () {
-                var wrapped = event.wordingOverride || core.wrapWordingResult(rendered, templateId, project, event);
-                if (!wrapped) {
-                    var statusEl = document.querySelector('[data-wedding-save-status]');
-                    if (statusEl) statusEl.textContent = 'Cannot save wording yet — missing: ' + rendered.missingFields.join(', ');
-                    return;
-                }
-                project.events[index].wordingOverride = core.applyWordingOverride(wrapped, textArea.value);
-                save();
-                renderWordingStep();
-            };
-            container.appendChild(saveOverrideButton);
-
-            list.appendChild(container);
-        });
+        renderEventsList();
     }
 
-    function renderDesignStep() {
+    function renderDesignStep(eventId) {
+        var heading = document.querySelector('[data-wedding-design-heading]');
+        var event = findEventById(eventId);
+        var eventIndex = findEventIndexById(eventId);
+        if (heading) heading.textContent = 'Choose a design for ' + (event ? (EVENT_LABELS[event.type] || event.type) : 'this event');
         var list = document.querySelector('[data-wedding-design-list]');
-        if (!list) return;
+        if (!list || !event) return;
         list.innerHTML = '';
-        project.events.forEach(function (event, index) {
-            var container = el('div', {});
-            container.appendChild(el('h3', { text: EVENT_LABELS[event.type] || event.type }));
-
-            var suggestions = templateSelector.suggestBackgroundCategory(project, event);
-            if (!suggestions.length) {
-                container.appendChild(el('div', { 'class': 'wedding-design-option wedding-design-fallback' }));
-                container.appendChild(el('p', { text: 'No matching design yet for this event type.' }));
-            } else {
-                suggestions.forEach(function (variantId) {
-                    var variant = templateSelector.getBackgroundVariant(variantId);
-                    var option = el('button', { type: 'button', 'class': 'wedding-design-option', style: 'background-image:url(' + variant.src + ')' });
-                    option.setAttribute('aria-pressed', String(event.selectedBackgroundId === variantId));
-                    option.onclick = function () {
-                        project.events[index].selectedBackgroundId = variantId;
-                        save();
-                        renderDesignStep();
-                    };
-                    container.appendChild(option);
-                });
-            }
-            list.appendChild(container);
-        });
+        var suggestions = templateSelector.suggestBackgroundCategory(project, event);
+        if (!suggestions.length) {
+            list.appendChild(el('div', { 'class': 'wedding-design-option wedding-design-fallback' }));
+            list.appendChild(el('p', { text: 'No matching design yet for this event type — a plain card will be used.' }));
+        } else {
+            suggestions.forEach(function (variantId) {
+                var variant = templateSelector.getBackgroundVariant(variantId);
+                var option = el('button', { type: 'button', 'class': 'wedding-design-option', style: 'background-image:url(' + variant.src + ')' });
+                option.setAttribute('aria-pressed', String(event.selectedBackgroundId === variantId));
+                option.onclick = function () {
+                    project.events[eventIndex].selectedBackgroundId = variantId;
+                    save();
+                    // Picking a card advances straight to that event's edit step (spec §2)
+                    // instead of re-rendering the same design step and requiring a manual Next.
+                    var steps = currentSteps();
+                    if (currentStepIndex < steps.length - 1 && steps[currentStepIndex + 1].status !== 'blocked') {
+                        currentStepIndex += 1;
+                    }
+                    renderCurrentStep();
+                };
+                list.appendChild(option);
+            });
+        }
     }
 
     function applyPreviewCardStyle(cardEl, textEl, variant) {
@@ -261,27 +245,143 @@
         }
     }
 
-    function renderPreviewStep() {
+    // Shared by the live-preview pane (edit step) and the review/export step - the one
+    // place that builds a .wedding-preview-card. overrideText, when a string, is shown
+    // verbatim instead of the event's saved/rendered wording: this is what lets the
+    // preview follow the user's typing before they click "Save wording".
+    function renderInvitationPreview(sourceProject, event, containerEl, overrideText) {
+        containerEl.innerHTML = '';
+        var templateId = templateSelector.selectTemplate(sourceProject, event);
+        var rendered = wording.renderWording(templateId, sourceProject, event);
+        var text = typeof overrideText === 'string'
+            ? overrideText
+            : (event.wordingOverride ? event.wordingOverride.text : (rendered.complete ? rendered.text : ('Missing: ' + rendered.missingFields.join(', '))));
+
+        var backgroundId = templateSelector.resolveEventBackground(sourceProject, event);
+        var variant = backgroundId ? templateSelector.getBackgroundVariant(backgroundId) : null;
+
+        var textEl = el('div', { 'class': 'wedding-preview-text', text: text });
+        var direction = core.firstStrongDirection(text);
+        textEl.style.direction = direction;
+        textEl.style.unicodeBidi = 'plaintext';
+        textEl.style.textAlign = direction === 'rtl' ? 'right' : 'left';
+        var cardEl = el('div', { 'class': 'wedding-preview-card' }, [textEl]);
+        applyPreviewCardStyle(cardEl, textEl, variant);
+        containerEl.appendChild(cardEl);
+        return cardEl;
+    }
+
+    function schedulePreviewRefresh(eventId, overrideText) {
+        if (previewDebounceTimer) clearTimeout(previewDebounceTimer);
+        previewDebounceTimer = setTimeout(function () {
+            var previewEl = document.querySelector('[data-wedding-edit-preview]');
+            var event = findEventById(eventId);
+            if (previewEl && event) renderInvitationPreview(project, event, previewEl, overrideText);
+        }, PREVIEW_DEBOUNCE_MS);
+    }
+
+    function renderEditStep(eventId) {
+        var heading = document.querySelector('[data-wedding-edit-heading]');
+        var event = findEventById(eventId);
+        var eventIndex = findEventIndexById(eventId);
+        if (heading) heading.textContent = (event ? (EVENT_LABELS[event.type] || event.type) : 'Event') + ' details';
+        var fields = document.querySelector('[data-wedding-edit-fields]');
+        if (!fields || !event) return;
+        fields.innerHTML = '';
+
+        var dateInput = el('input', { type: 'date', value: event.date || '' });
+        dateInput.onchange = function () {
+            project.events[eventIndex].date = dateInput.value;
+            save();
+            refreshNavState();
+            schedulePreviewRefresh(eventId);
+        };
+        fields.appendChild(el('div', {}, [el('label', { text: 'Date' }), dateInput]));
+
+        var toneSelect = el('select', {});
+        templateSelector.WORDING_TONES.forEach(function (tone) {
+            var option = el('option', { value: tone, text: tone });
+            if (event.wordingTone === tone) option.setAttribute('selected', 'selected');
+            toneSelect.appendChild(option);
+        });
+        toneSelect.onchange = function () {
+            project.events[eventIndex].wordingTone = toneSelect.value;
+            save();
+            // Re-render the whole panel (rather than schedulePreviewRefresh) so the wording
+            // textarea itself reflects the newly selected tone's generated text. Without this,
+            // the textarea kept showing the old tone's text, and clicking "Save wording" would
+            // silently freeze that stale text into a permanent override.
+            renderEditStep(eventId);
+        };
+        fields.appendChild(el('div', {}, [el('label', { text: 'Wording tone' }), toneSelect]));
+
+        var templateId = templateSelector.selectTemplate(project, event);
+        var rendered = wording.renderWording(templateId, project, event);
+        if (!event.wordingOverride && !rendered.complete) {
+            fields.appendChild(el('p', { text: 'Missing: ' + rendered.missingFields.join(', ') }));
+        }
+        var textArea = el('textarea', {});
+        textArea.value = event.wordingOverride ? event.wordingOverride.text : (rendered.complete ? rendered.text : '');
+        textArea.dir = core.firstStrongDirection(textArea.value);
+        textArea.oninput = function () {
+            textArea.dir = core.firstStrongDirection(textArea.value);
+            schedulePreviewRefresh(eventId, textArea.value);
+        };
+        fields.appendChild(textArea);
+
+        if (event.wordingOverride && core.isWordingStale(event.wordingOverride, project, event)) {
+            fields.appendChild(el('p', { text: 'Wording may be outdated — regenerate?' }));
+            var regenerateButton = el('button', { type: 'button', text: 'Regenerate' });
+            regenerateButton.onclick = function () {
+                // Re-resolve the event index fresh: save() (called by other handlers in this
+                // same panel visit, e.g. date/tone changes) runs the project through
+                // normalizeWeddingProject, which returns entirely new event objects each time,
+                // so the eventIndex/event captured when this panel was drawn can go stale after
+                // a second field edit.
+                var idx = findEventIndexById(eventId);
+                project.events[idx].wordingOverride = null;
+                save();
+                renderEditStep(eventId);
+            };
+            fields.appendChild(regenerateButton);
+        }
+
+        var saveOverrideButton = el('button', { type: 'button', text: 'Save wording' });
+        saveOverrideButton.onclick = function () {
+            // Recompute fresh rather than closing over the templateId/rendered/eventIndex/event
+            // captured when this panel was first drawn: the user may have just filled in a field
+            // (e.g. the date) or changed the tone since then, and save() (called by those other
+            // handlers) runs the project through normalizeWeddingProject, which returns entirely
+            // new event objects each time. A stale "incomplete" rendered result, or a stale event
+            // object, would otherwise block saving or save wording generated from outdated fields.
+            var idx = findEventIndexById(eventId);
+            var currentEvent = project.events[idx];
+            var currentTemplateId = templateSelector.selectTemplate(project, currentEvent);
+            var currentRendered = wording.renderWording(currentTemplateId, project, currentEvent);
+            var wrapped = currentEvent.wordingOverride || core.wrapWordingResult(currentRendered, currentTemplateId, project, currentEvent);
+            if (!wrapped) {
+                var statusEl = document.querySelector('[data-wedding-save-status]');
+                if (statusEl) statusEl.textContent = 'Cannot save wording yet — missing: ' + currentRendered.missingFields.join(', ');
+                return;
+            }
+            project.events[idx].wordingOverride = core.applyWordingOverride(wrapped, textArea.value);
+            save();
+            renderEditStep(eventId);
+        };
+        fields.appendChild(saveOverrideButton);
+
+        var previewEl = document.querySelector('[data-wedding-edit-preview]');
+        if (previewEl) renderInvitationPreview(project, event, previewEl);
+    }
+
+    function renderReviewStep() {
         var list = document.querySelector('[data-wedding-preview-list]');
         if (!list) return;
         list.innerHTML = '';
-        project.events.forEach(function (event, index) {
-            var templateId = templateSelector.selectTemplate(project, event);
-            var rendered = wording.renderWording(templateId, project, event);
-            var text = event.wordingOverride
-                ? event.wordingOverride.text
-                : (rendered.complete ? rendered.text : ('Missing: ' + rendered.missingFields.join(', ')));
-
-            var backgroundId = templateSelector.resolveEventBackground(project, event);
-            var variant = backgroundId ? templateSelector.getBackgroundVariant(backgroundId) : null;
-
-            var textEl = el('div', { 'class': 'wedding-preview-text', text: text });
-            var direction = core.firstStrongDirection(text);
-            textEl.style.direction = direction;
-            textEl.style.unicodeBidi = 'plaintext';
-            textEl.style.textAlign = direction === 'rtl' ? 'right' : 'left';
-            var cardEl = el('div', { 'class': 'wedding-preview-card' }, [textEl]);
-            applyPreviewCardStyle(cardEl, textEl, variant);
+        project.events.forEach(function (event) {
+            var cardHolder = el('div', {});
+            list.appendChild(cardHolder);
+            var cardEl = renderInvitationPreview(project, event, cardHolder);
 
             var downloadButton = el('button', { type: 'button', text: 'Download image' });
             downloadButton.onclick = function () {
@@ -292,29 +392,26 @@
                     link.click();
                 });
             };
-
-            list.appendChild(el('div', {}, [cardEl, downloadButton]));
+            cardHolder.appendChild(downloadButton);
         });
     }
 
-    var STEP_RENDERERS = {
-        events: renderEventsStep,
-        hosts: renderFamiliesStep,
-        schedule_venue: renderScheduleStep,
-        language_wording: renderWordingStep,
-        design: renderDesignStep,
-        preview_export: renderPreviewStep
-    };
-
     function renderCurrentStep() {
-        var stepId = STEP_IDS[currentStepIndex];
-        showPanel(stepId);
-        STEP_RENDERERS[stepId]();
-        refreshNavState();
+        var steps = currentSteps();
+        if (currentStepIndex >= steps.length) currentStepIndex = steps.length - 1;
+        var step = steps[currentStepIndex];
+        var type = stepType(step.step);
+        showPanel(type);
+        if (type === 'intro') renderIntroStep();
+        else if (type === 'design') renderDesignStep(eventIdFromStep(step.step));
+        else if (type === 'edit') renderEditStep(eventIdFromStep(step.step));
+        else if (type === 'review_export') renderReviewStep();
+        renderStepRail(steps);
+        renderNextState(steps);
     }
 
     function refreshNavState() {
-        var steps = core.evaluateComposerSteps(project);
+        var steps = currentSteps();
         renderStepRail(steps);
         renderNextState(steps);
     }
@@ -322,7 +419,7 @@
     function renderNextState(steps) {
         var nextButton = document.querySelector('[data-wedding-next]');
         var hintEl = document.querySelector('[data-wedding-next-hint]');
-        var isLastStep = currentStepIndex >= STEP_IDS.length - 1;
+        var isLastStep = currentStepIndex >= steps.length - 1;
         var willBlock = !isLastStep && steps[currentStepIndex + 1].status === 'blocked';
         if (nextButton) nextButton.disabled = willBlock;
         if (hintEl) {
@@ -349,8 +446,8 @@
             renderCurrentStep();
         };
         if (nextButton) nextButton.onclick = function () {
-            if (currentStepIndex < STEP_IDS.length - 1) {
-                var steps = core.evaluateComposerSteps(project);
+            var steps = currentSteps();
+            if (currentStepIndex < steps.length - 1) {
                 if (steps[currentStepIndex + 1].status !== 'blocked') {
                     currentStepIndex += 1;
                 }

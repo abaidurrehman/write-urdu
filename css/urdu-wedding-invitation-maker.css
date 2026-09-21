@@ -75,8 +75,7 @@
 
 [data-wedding-events-list] > div,
 [data-wedding-families-list] > div,
-[data-wedding-schedule-list] > div,
-[data-wedding-wording-list] > div,
+[data-wedding-edit-fields] > div,
 [data-wedding-design-list] > div,
 [data-wedding-preview-list] > div {
     margin-bottom: var(--wu-space-3, 0.75rem);
@@ -163,6 +162,34 @@
     color: var(--wu-color-muted, #68766e);
     font-size: var(--wu-text-sm, 0.875rem);
     margin: var(--wu-space-2, 0.5rem) 0 0;
+}
+
+.wedding-edit-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wu-space-5, 1.5rem);
+    align-items: flex-start;
+}
+
+.wedding-edit-fields {
+    flex: 1 1 320px;
+    min-width: 280px;
+}
+
+.wedding-edit-preview {
+    flex: 1 1 280px;
+    min-width: 240px;
+    max-width: 360px;
+}
+
+@media (max-width: 700px) {
+    .wedding-edit-layout {
+        flex-direction: column;
+    }
+
+    .wedding-edit-preview {
+        max-width: 100%;
+    }
 }
 
 .wedding-design-option {

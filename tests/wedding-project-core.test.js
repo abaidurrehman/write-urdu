@@ -144,29 +144,85 @@ const invalidToneProject = core.normalizeWeddingProject({
 });
 assert.equal(invalidToneProject.events[0].wordingTone, 'formal', 'unknown wordingTone must fall back to the default, never throw');
 
-// --- Slice 1: evaluateComposerSteps ---
+// --- Slice 2: evaluateComposerSteps is now dynamic, one design/edit pair per event ---
 const emptyProject = core.createDefaultWeddingProject(new Date('2026-09-18T00:00:00Z'));
 const emptySteps = core.evaluateComposerSteps(emptyProject);
-assert.deepEqual(emptySteps.map((step) => step.step), ['events', 'hosts', 'schedule_venue', 'language_wording', 'design', 'preview_export']);
-assert.equal(emptySteps[0].status, 'current', 'The first incomplete step on an empty project must be "current"');
-assert.deepEqual(emptySteps[0].missingFields, ['events']);
-assert.equal(emptySteps[1].status, 'blocked', 'Steps after the current incomplete step must be blocked');
-assert.equal(emptySteps[4].status, 'blocked', 'Design step must be blocked until steps 1-4 are complete');
-assert.equal(emptySteps[5].status, 'blocked', 'Preview/export must be blocked until steps 1-5 are complete');
+assert.deepEqual(emptySteps.map((step) => step.step), ['intro', 'review_export'], 'A project with zero events has only intro and review_export steps');
+assert.equal(emptySteps[0].status, 'current', 'intro must be current when nothing is filled in yet');
+assert.deepEqual(emptySteps[0].missingFields.sort(), ['couple.personA.displayName', 'couple.personB.displayName', 'events', 'families'].sort());
+assert.equal(emptySteps[1].status, 'blocked', 'review_export must be blocked while intro is incomplete');
 
-const completeProject = core.normalizeWeddingProject({
+const oneEventProject = core.normalizeWeddingProject({
   invitationLanguage: 'urdu',
   couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
   families: [{ id: 'fam-1', role: 'both', displayName: 'The Khan Family' }],
   events: [{ id: 'evt-nikah', type: 'nikah', date: '2026-12-05' }]
 });
-const completeSteps = core.evaluateComposerSteps(completeProject);
-assert.ok(completeSteps.slice(0, 4).every((step) => step.status === 'complete'), 'All four content steps must report complete once satisfied');
-assert.equal(completeSteps[4].step, 'design');
-assert.equal(completeSteps[4].status, 'complete', 'Design step 5 is a fixed-default stub: complete once steps 1-4 are done');
-assert.deepEqual(completeSteps[4].designDefault, { templateId: 'classic-nastaliq', presetId: 'portrait' }, 'Design default must match the render adapter default');
-assert.equal(completeSteps[5].step, 'preview_export');
-assert.equal(completeSteps[5].status, 'available', 'Preview/export becomes available once steps 1-5 are complete');
+const oneEventSteps = core.evaluateComposerSteps(oneEventProject);
+assert.deepEqual(oneEventSteps.map((step) => step.step), ['intro', 'design_evt-nikah', 'edit_evt-nikah', 'review_export']);
+assert.equal(oneEventSteps[0].status, 'complete', 'intro is complete once couple/family/events/language are filled');
+assert.equal(oneEventSteps[1].status, 'complete', 'design step with no injected suggester never blocks');
+assert.equal(oneEventSteps[1].eventId, 'evt-nikah');
+assert.equal(oneEventSteps[2].status, 'complete', 'edit step is complete once the event has a date');
+assert.equal(oneEventSteps[2].eventId, 'evt-nikah');
+assert.equal(oneEventSteps[3].step, 'review_export');
+assert.equal(oneEventSteps[3].status, 'available');
+
+const twoEventProject = core.normalizeWeddingProject({
+  invitationLanguage: 'urdu',
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  families: [{ id: 'fam-1', role: 'both', displayName: 'The Khan Family' }],
+  events: [
+    { id: 'evt-mehndi', type: 'mehndi', date: '2026-12-01' },
+    { id: 'evt-walima', type: 'walima', date: '' }
+  ]
+});
+const twoEventSteps = core.evaluateComposerSteps(twoEventProject);
+assert.deepEqual(
+  twoEventSteps.map((step) => step.step),
+  ['intro', 'design_evt-mehndi', 'edit_evt-mehndi', 'design_evt-walima', 'edit_evt-walima', 'review_export'],
+  'Steps must be generated in project.events order, one design/edit pair per event'
+);
+assert.equal(twoEventSteps[2].status, 'complete', 'Mehndi has a date, so its edit step is complete');
+assert.equal(twoEventSteps[3].status, 'complete', 'Walima design step must remain reachable even though Walima has no date yet');
+assert.equal(twoEventSteps[4].status, 'current', 'Walima edit step is current: it is missing a date');
+assert.deepEqual(twoEventSteps[4].missingFields, ['events[].date']);
+assert.equal(twoEventSteps[5].step, 'review_export');
+assert.equal(twoEventSteps[5].status, 'blocked', 'review_export is blocked while Walima has no date');
+
+// A suggestBackgroundCategory injected via options can force a design step to block
+// until the caller explicitly picks a background — but only when a real suggestion exists.
+const suggestingOptions = {
+  suggestBackgroundCategory: function (project, event) {
+    return event.type === 'mehndi' ? ['riwaayat-mehndi-yellow'] : [];
+  }
+};
+const suggestedSteps = core.evaluateComposerSteps(twoEventProject, suggestingOptions);
+assert.equal(suggestedSteps[1].status, 'current', 'Mehndi design step blocks when a suggestion exists and none is picked yet');
+assert.deepEqual(suggestedSteps[1].missingFields, ['selectedBackgroundId']);
+assert.equal(suggestedSteps[2].status, 'blocked', 'Everything after a blocking design step must be blocked');
+assert.equal(suggestedSteps[3].status, 'blocked');
+
+const pickedBackgroundProject = core.normalizeWeddingProject({
+  invitationLanguage: 'urdu',
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  families: [{ id: 'fam-1', role: 'both', displayName: 'The Khan Family' }],
+  events: [{ id: 'evt-mehndi', type: 'mehndi', date: '2026-12-01', selectedBackgroundId: 'riwaayat-mehndi-yellow' }]
+});
+const pickedSteps = core.evaluateComposerSteps(pickedBackgroundProject, suggestingOptions);
+assert.equal(pickedSteps[1].status, 'complete', 'An explicit selectedBackgroundId satisfies the design step even when suggestions exist');
+
+// An event type with zero design suggestions (e.g. rukhsati) must never be blocked on
+// selectedBackgroundId — the fallback card is treated as already "chosen".
+const noSuggestionsProject = core.normalizeWeddingProject({
+  invitationLanguage: 'urdu',
+  couple: { personA: { displayName: 'Ali' }, personB: { displayName: 'Sara' } },
+  families: [{ id: 'fam-1', role: 'both', displayName: 'The Khan Family' }],
+  events: [{ id: 'evt-rukhsati', type: 'rukhsati', date: '2026-12-06' }]
+});
+const noSuggestionsSteps = core.evaluateComposerSteps(noSuggestionsProject, suggestingOptions);
+assert.equal(noSuggestionsSteps[1].status, 'complete', 'No matching design suggestions must never hard-block progress');
+assert.deepEqual(noSuggestionsSteps[1].missingFields, []);
 
 // --- Slice 1: wording-override tracking ---
 const overrideProject = core.normalizeWeddingProject({
