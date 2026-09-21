@@ -99,6 +99,17 @@
     font-size: var(--wu-text-base, 1rem);
 }
 
+[data-wedding-step-panel] select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2368766e' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    cursor: pointer;
+}
+
 [data-wedding-step-panel] textarea {
     min-height: 6rem;
     max-width: 480px;
@@ -233,7 +244,13 @@
 
 .wedding-preview-text {
     position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     white-space: pre-line;
     text-align: center;
     font-family: var(--wu-font-urdu, serif);
+    font-size: clamp(0.7rem, 3.4vw, 1rem);
+    line-height: 1.7;
 }
