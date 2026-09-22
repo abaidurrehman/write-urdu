@@ -9,7 +9,8 @@ test('InPage converter runs both directions in the browser', async ({ page }) =>
   const bodyText = await page.locator('body').innerText();
   expect(headingCount, `Expected the converter H1. URL=${page.url()} BODY=${bodyText.slice(0, 800)}`).toBe(1);
   await expect(heading).toBeVisible();
-  await expect(heading).toHaveText('InPage to Unicode Urdu Converter');
+  await expect(heading).toHaveText('Unicode to InPage & InPage to Unicode Urdu Converter');
+  await expect(page).toHaveTitle('Unicode to InPage & InPage to Unicode Converter | WriteUrdu');
 
   await page.getByRole('button', { name: 'Load example' }).click();
   await page.getByRole('button', { name: 'Convert to Unicode' }).click();
