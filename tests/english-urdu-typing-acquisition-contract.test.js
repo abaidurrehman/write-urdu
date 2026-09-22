@@ -13,6 +13,7 @@ const keyboard = seo.byPath['/urdu-keyboard'];
 const romanGuide = seo.byPath['/roman-urdu-transliteration'];
 const formattingGuide = seo.byPath['/urdu-editor-features'];
 const homeHtml = read('index.html');
+const romanHtml = read('roman-urdu-transliteration.html');
 const runtimeSeo = read('js/seo.js');
 const productionSeoCheck = read('scripts/check-live-production.js');
 const llms = read('llms.txt');
@@ -54,9 +55,11 @@ assert.doesNotMatch(richEditor.title, /^English to Urdu Typing Online/i, 'Rich E
 assert.match(keyboard.title, /Urdu Keyboard/i, 'Keyboard must retain direct-input ownership');
 assert.doesNotMatch(keyboard.title, /^English to Urdu Typing Online/i, 'Keyboard must not compete for the prime product title');
 assert.strictEqual(romanGuide.path, '/roman-urdu-transliteration', 'Existing secondary typing-guide canonical must remain stable');
-assert.match(romanGuide.title, /English to Urdu Typing with English Letters/i, 'Secondary typing guide must use the observed user-language job');
-assert.doesNotMatch(romanGuide.title, /^English to Urdu Typing Online\b/i, 'Secondary typing guide must not compete for the homepage prime product title');
-assert.doesNotMatch(romanGuide.title, /Roman Urdu|transliteration/i, 'Secondary guide title must not force internal linguistic terminology into search-facing copy');
+assert.match(romanGuide.title, /^Roman Urdu to Urdu Typing\b/i, 'Secondary guide must own the Roman Urdu to Urdu job');
+assert.doesNotMatch(romanGuide.title, /^English to Urdu Typing\b/i, 'Secondary Roman guide must not compete for the homepage broad typing title');
+assert.match(romanGuide.description, /Roman Urdu[\s\S]*English letters[\s\S]*Urdu script/i, 'Roman guide description must explain its specific input and output');
+assert.match(romanHtml, /<h1[^>]*>Roman Urdu to Urdu Typing<\/h1>/, 'Roman guide H1 must expose the Roman-specific job');
+assert.match(romanHtml, /href="\/"[^>]*>Start typing Urdu with English letters<\/a>/i, 'Roman guide must hand the actual writing job back to the homepage');
 assert.match(formattingGuide.title, /Formatting Guide/i, 'Formatting guide must retain formatting-reference ownership');
 
 assert.match(runtimeSeo, /home: \['English to Urdu typing'/, 'Homepage entity topics must include the prime typing phrase');
@@ -67,6 +70,7 @@ assert.match(runtimeSeo, /locale !== ['"]ur['"][\s\S]*applyResolvedSearchMetadat
 
 assert.match(llms, /homepage is the main English to Urdu typing/i, 'llms.txt must name the homepage as the English-to-Urdu typing owner');
 assert.match(llms, /English to Urdu typing \/ Urdu typing online/, 'llms.txt start-writing section must expose the prime acquisition job');
+assert.match(llms, /Roman Urdu to Urdu typing guide/i, 'llms.txt must describe the supporting Roman guide with Roman-specific ownership');
 const homeSitemapBlock = sitemap.match(/<url>[\s\S]*?<loc>https:\/\/write-urdu\.com\/<\/loc>[\s\S]*?<\/url>/);
 assert.ok(homeSitemapBlock, 'Homepage is missing from sitemap');
 assert.match(homeSitemapBlock[0], new RegExp(`<lastmod>${home.lastmod}<\\/lastmod>`), 'Homepage sitemap revision must match the SEO registry');
