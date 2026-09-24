@@ -7,12 +7,6 @@
         {
             id: 'write', icon: 'write',
             label: { en: 'Write', ur: 'لکھیں' },
-            preview: {
-                headline: { en: 'Type Urdu, instantly', ur: 'فوری طور پر اردو ٹائپ کریں' },
-                caption: { en: 'From English keys to perfect Urdu script — no new keyboard to learn, no habits to break.', ur: 'انگریزی کی بورڈ سے مکمل اردو رسم الخط تک — نئی کی بورڈ سیکھنے کی ضرورت نہیں۔' },
-                ctaHref: '/',
-                theme: 'write'
-            },
             items: [
                 { href: '/', icon: 'write', label: { en: 'Start writing in Urdu', ur: 'اردو لکھنا شروع کریں' }, tool: { en: 'English to Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ' } },
                 { href: '/urdu-keyboard', icon: 'keyboard', label: { en: 'Type directly in Urdu', ur: 'اردو براہِ راست ٹائپ کریں' }, tool: { en: 'Urdu Keyboard', ur: 'اردو کی بورڈ' } },
@@ -26,12 +20,6 @@
         {
             id: 'create', icon: 'create',
             label: { en: 'Create', ur: 'بنائیں' },
-            preview: {
-                headline: { en: 'Turn words into art', ur: 'الفاظ کو فن میں بدلیں' },
-                caption: { en: 'Cards, status updates and posts — carry your voice into every design, in Urdu.', ur: 'کارڈز، اسٹیٹس اور پوسٹس — اپنی آواز کو ہر ڈیزائن میں اردو کے ساتھ شامل کریں۔' },
-                ctaHref: '/urdu-card-studio',
-                theme: 'create'
-            },
             items: [
                 { href: '/urdu-cards', icon: 'grid', label: { en: 'Browse ready-made Urdu cards', ur: 'تیار شدہ اردو کارڈز دیکھیں' }, tool: { en: 'Ready-Made Urdu Cards', ur: 'تیار اردو کارڈز' }, section: { en: 'Cards', ur: 'کارڈز' } },
                 { href: '/urdu-card-gallery', icon: 'card', label: { en: 'Compare your Urdu text across card designs', ur: 'اپنے اردو متن کا مختلف ڈیزائنز میں موازنہ کریں' }, tool: { en: 'Card Gallery', ur: 'کارڈ گیلری' } },
@@ -48,12 +36,6 @@
         {
             id: 'work', icon: 'work',
             label: { en: 'Tools', ur: 'ٹولز' },
-            preview: {
-                headline: { en: 'Get it done in Urdu', ur: 'اردو میں کام مکمل کریں' },
-                caption: { en: 'Invoices, documents and formal writing — professional Urdu, ready when you are.', ur: 'انوائسز، دستاویزات اور رسمی تحریر — جب بھی ضرورت ہو، پیشہ ورانہ اردو تیار۔' },
-                ctaHref: '/urdu-invoice-generator',
-                theme: 'tools'
-            },
             items: [
                 { href: '/urdu-invoice-generator', icon: 'invoice', label: { en: 'Create an Urdu or English invoice', ur: 'اردو یا انگریزی انوائس بنائیں' }, tool: { en: 'Invoice Generator', ur: 'انوائس جنریٹر' } },
                 { href: '/urdu-bill-generator', icon: 'invoice', label: { en: 'Create a quick shop bill or receipt', ur: 'دکان کا بل یا رسید بنائیں' }, tool: { en: 'Bill Generator', ur: 'بل جنریٹر' } },
@@ -64,12 +46,6 @@
         {
             id: 'learn', icon: 'learn',
             label: { en: 'Learn', ur: 'سیکھیں' },
-            preview: {
-                headline: { en: 'Master Urdu typing', ur: 'اردو ٹائپنگ میں مہارت حاصل کریں' },
-                caption: { en: 'From the alphabet to advanced tools — everything you need to write with confidence.', ur: 'حروفِ تہجی سے لے کر جدید ٹولز تک — اعتماد کے ساتھ لکھنے کے لیے سب کچھ۔' },
-                ctaHref: '/urdu-typing-practice',
-                theme: 'learn'
-            },
             items: [
                 { href: '/urdu-typing-practice', icon: 'keyboard', label: { en: 'Practise Urdu typing and measure your speed', ur: 'اردو ٹائپنگ کی مشق کریں اور رفتار ناپیں' }, tool: { en: 'Typing Practice & Speed Test', ur: 'ٹائپنگ مشق اور رفتار ٹیسٹ' } },
                 { href: '/urdu-alphabet', icon: 'alphabet', label: { en: 'Learn the Urdu alphabet', ur: 'اردو حروف تہجی سیکھیں' }, tool: { en: 'Alphabet guide', ur: 'حروف تہجی گائیڈ' } },
@@ -93,12 +69,6 @@
     var EXPLORE_GROUP = {
         id: 'explore', icon: 'book',
         label: { en: 'Explore', ur: 'دریافت کریں' },
-        preview: {
-            headline: { en: 'Read real Urdu writing', ur: 'حقیقی اردو تحریر پڑھیں' },
-            caption: { en: 'Stories, posts and voices from writers just like you.', ur: 'آپ جیسے لکھاریوں کی کہانیاں، پوسٹس اور آوازیں۔' },
-            ctaHref: '/urdu-writers',
-            theme: 'explore'
-        },
         items: [
             { href: '/urdu-writers', icon: 'book', label: { en: 'Read Urdu writing from the community', ur: 'کمیونٹی کی اردو تحریر پڑھیں' }, tool: { en: 'Urdu Writers', ur: 'اردو رائٹرز' } }
         ]
@@ -248,29 +218,15 @@
         '</a>';
     }
 
-    function renderPreview(group, lang) {
-        var preview = group.preview;
-        if (!preview) return '';
-        var ctaLabel = lang === 'ur' ? 'شروع کریں' : 'Get started';
-        return '<div class="wu-nav-panel-preview wu-nav-preview--' + preview.theme + '">' +
-            '<span class="wu-nav-preview-icon" aria-hidden="true"><svg viewBox="0 0 24 24">' + (ICONS[group.icon] || ICONS.write) + '</svg></span>' +
-            '<span class="wu-nav-preview-headline">' + preview.headline[lang] + '</span>' +
-            '<span class="wu-nav-preview-caption">' + preview.caption[lang] + '</span>' +
-            '<a class="wu-nav-preview-cta" href="' + localizedHref(preview.ctaHref) + '">' + ctaLabel + '<span aria-hidden="true"> →</span></a>' +
-        '</div>';
-    }
-
     function renderGroup(group, lang) {
         var isActive = group.items.some(active);
         var panelId = 'wu-nav-panel-' + group.id;
-        var hasPreview = !!group.preview;
         return '<div class="wu-nav-more wu-outcome-menu" data-wu-nav-group="' + group.id + '">' +
             '<button type="button" class="wu-outcome-toggle' + (isActive ? ' is-active' : '') + '" aria-expanded="false" aria-controls="' + panelId + '">' +
                 icon(group.icon) + '<span>' + group.label[lang] + '</span><span class="wu-nav-chevron" aria-hidden="true">⌄</span>' +
             '</button>' +
-            '<div id="' + panelId + '" class="wu-nav-more-menu wu-outcome-menu-panel' + (hasPreview ? ' has-preview' : '') + '" hidden>' +
+            '<div id="' + panelId + '" class="wu-nav-more-menu wu-outcome-menu-panel" hidden>' +
                 '<div class="wu-nav-panel-list">' + group.items.map(function (item) { return renderItem(item, lang); }).join('') + '</div>' +
-                renderPreview(group, lang) +
             '</div>' +
         '</div>';
     }
