@@ -7,6 +7,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
 const home = read('index.html');
 const keyboard = read('urdu-keyboard.html');
+const documentation = read('write-urdu-documentation.html');
 const seoConfig = require(path.join(root, 'seo.config.js'));
 const experimentLog = read('docs/SEO-SERP-EXPERIMENTS.csv');
 const baseline = read('docs/WU-SEO-CTR-001-BASELINE-2026-08-22.md');
@@ -20,6 +21,7 @@ assert.match(keyboard, /Type Urdu directly—no installation required/, 'Keyboar
 assert.doesNotMatch(keyboard, /Roman Urdu words convert when you press Space/i, 'Keyboard instructions must not present English-letter conversion as a primary behavior');
 assert.doesNotMatch(keyboard, />Roman Urdu editor<\/a>/i, 'Keyboard links back to the homepage must use the measured acquisition language');
 assert.ok((keyboard.match(/<a href="\/">English to Urdu typing<\/a>/g) || []).length >= 3, 'Keyboard must use descriptive links for the secondary English-letter workflow');
+assert.match(documentation, /<a href="\/">Urdu typing online editor<\/a> if you prefer typing Urdu with English letters/, 'Documentation must give the homepage one contextual generic Urdu typing anchor');
 
 const expectedColumns = 'change_id,status,recorded_date,deployed_at,deployed_sha,page,changed_variable,previous_value,new_value,hypothesis,target_query,baseline_window,observation_window,outcome,decision,notes';
 assert.strictEqual(experimentLog.split(/\r?\n/, 1)[0], expectedColumns, 'SERP experiment log must preserve the evidence and decision fields');

@@ -51,6 +51,15 @@ test('Urdu Keyboard keeps direct input dominant and sends English-letter writers
   expect(labels.every(label => label.trim() === 'English to Urdu typing')).toBe(true);
 });
 
+test('documentation gives the homepage one contextual generic Urdu typing link', async ({ page }) => {
+  await open(page, '/write-urdu-documentation');
+  const link = page.locator('.docs-faq a[href="/"]', { hasText: 'Urdu typing online editor' });
+  await expect(link).toHaveCount(1);
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute('href', '/');
+  await expect(page.locator('h1')).toHaveText('Write Urdu, beautifully explained.');
+});
+
 test('secondary English-to-Urdu typing guide keeps its canonical route without technical search-facing language', async ({ page }) => {
   await open(page, '/roman-urdu-transliteration');
   await expect(page.locator('h1')).toHaveText('English to Urdu Typing with English Letters');
