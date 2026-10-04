@@ -7,6 +7,7 @@ Canonical outputs:
 - `specs/WU-SEO-CTR-001A-pakistan-search-capture.md` — reconciled findings and decisions;
 - `specs/WU-SEO-CTR-001A-IMPLEMENTATION-CHECKLIST.md` — ordered traffic actions;
 - `specs/WU-SEO-INTENT-001-second-opinion-investigation.md` — supporting independent analysis, not a separate execution plan.
+- `2026-10-04/A0-A1-BASELINE.md` — first execution record: partial attribution baseline and confirmed live `www` redirect defect.
 
 ## Pakistan Keyword Planner input
 

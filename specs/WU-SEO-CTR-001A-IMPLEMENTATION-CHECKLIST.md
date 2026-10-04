@@ -1,6 +1,6 @@
 # WU-SEO-CTR-001A — Traffic Action Checklist
 
-**Status:** Ready for evidence-gated execution
+**Status:** In execution — A0 partial; A1 `www` redirect defect confirmed
 
 **Canonical spec:** [`WU-SEO-CTR-001A-pakistan-search-capture.md`](WU-SEO-CTR-001A-pakistan-search-capture.md)
 
@@ -44,21 +44,21 @@ Increase qualified organic clicks and completed Urdu-writing tasks by improving 
 - [ ] Export landing pages for `online inpage`, `inpage online` and related variants.
 - [ ] Export keyboard queries split by apex and `www` URLs.
 - [ ] Export apex versus `www` by date; classify each as decaying, stable or growing.
-- [ ] Run live canonical/redirect checks for `/`, Roman, keyboard, InPage, stylish and editor routes.
-- [ ] Record releases around 2026-08-18/19, when impressions stepped up.
-- [ ] Exclude the 2026-09-26 outlier from baselines.
+- [x] Run live canonical/redirect checks for `/`, Roman, keyboard, InPage, stylish and editor routes. HTTPS `www` incorrectly returns `200`; see the [A0/A1 baseline](../docs/evidence/WU-SEO-CTR-001A/2026-10-04/A0-A1-BASELINE.md).
+- [x] Record releases around 2026-08-18/19, when impressions stepped up.
+- [x] Exclude the 2026-09-26 outlier from baselines.
 - [ ] Prefer Search Console API extraction beyond the 1,000-row UI limit.
-- [ ] Save a dated, privacy-safe baseline artifact and link it from the experiment log.
+- [x] Save a dated, privacy-safe partial baseline artifact. Query-by-page and host-by-date exports remain required before A0 exit.
 
 **Exit:** owner, host and baseline questions are answered. If unavailable, mark dependent actions blocked; do not substitute assumptions.
 
 ## A1 — Authority consolidation
 
-- [ ] Verify HTTP apex, HTTP `www` and HTTPS `www` resolve to HTTPS apex equivalents in one permanent hop.
+- [x] Verify HTTP apex, HTTP `www` and HTTPS `www`. Result: HTTP apex passes; both `www` variants fail the one-hop apex contract.
 - [ ] Verify canonical, sitemap, Open Graph, structured-data and internal URLs use apex.
 - [ ] Check priority `.html`, trailing-slash and historical editor/keyboard paths.
 - [ ] If no live defect exists, record **no redirect change**.
-- [ ] If a defect exists, fix only that defect and monitor homepage, stylish and editor clicks/position through a comparable window.
+- [ ] Fix only the confirmed Cloudflare `www` redirect defect, then monitor homepage, stylish and editor clicks/position through a comparable window.
 
 **Keep:** host share moves toward apex without loss of intended owners or material click decline.
 
