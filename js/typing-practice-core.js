@@ -8,6 +8,13 @@
 
     var BIDI_CONTROLS = /[\u200e\u200f\u202a-\u202e\u2066-\u2069]/g;
 
+    var KEYBOARD_ROWS = Object.freeze([
+        Object.freeze(['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=']),
+        Object.freeze(['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\']),
+        Object.freeze(['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'"]),
+        Object.freeze(['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'])
+    ]);
+
     var BASE_MAP = Object.freeze({
         '`': '`',
         '1': '۱', '2': '۲', '3': '۳', '4': '۴', '5': '۵',
@@ -106,6 +113,7 @@
     }
 
     return Object.freeze({
+        KEYBOARD_ROWS: KEYBOARD_ROWS,
         BASE_MAP: BASE_MAP,
         SHIFT_MAP: SHIFT_MAP,
         normalizeText: normalizeText,

@@ -78,12 +78,12 @@ Increase qualified organic clicks and completed Urdu-writing tasks by improving 
 
 ## A3 — Urdu keyboard owner
 
-- [ ] Resolve/explain the apex and `www` split first.
-- [ ] Reuse the existing key mapping source.
-- [ ] Add a usable physical-key/Shift reference, punctuation/numerals and mobile guidance.
-- [ ] Keep direct Urdu character input primary.
-- [ ] Link users seeking English-letter conversion to the Roman owner.
-- [ ] Test mobile/touch, keyboard-only use, RTL input and copy/save.
+- [ ] Resolve/explain the apex and `www` split first. Confirmed defect remains deferred with user approval because the active Cloudflare token lacks Single Redirect edit permission.
+- [x] Reuse the existing typing-practice key mapping source.
+- [x] Add a usable physical-key/Shift reference, punctuation/numerals and mobile guidance.
+- [x] Keep direct Urdu character input primary; remove English-letter transliteration initialization from this route.
+- [x] Link users seeking English-letter conversion to the homepage owner and Roman Urdu guidance.
+- [x] Test mobile/touch, keyboard-only use, RTL input and copy/save affordances.
 
 **Scenario:** 2–3% CTR on the four-query scenario is about 483–725 clicks per three months versus 197 now, but only if ranking and host ownership improve.
 

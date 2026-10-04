@@ -5,6 +5,8 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const core = require('../js/typing-practice-core.js');
 
+assert.deepEqual(core.KEYBOARD_ROWS[0], ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='], 'Shared keyboard rows should include the physical number row');
+assert.deepEqual(core.KEYBOARD_ROWS[3], ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/'], 'Shared keyboard rows should preserve the CRULP-style bottom row');
 assert.equal(core.mapKey('a'), 'ا', 'A key should map to alif');
 assert.equal(core.mapKey('s'), 'س', 'S key should map to seen');
 assert.equal(core.mapKey('q'), 'ق', 'Q key should map to qaaf');

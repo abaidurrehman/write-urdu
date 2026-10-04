@@ -7,11 +7,7 @@
 
     var STORAGE_KEY = 'writeUrdu.typingPractice.v1';
     var URDU_PATTERN = /[\u0600-\u06ff]/;
-    var KEYBOARD_ROWS = [
-        ['q','w','e','r','t','y','u','i','o','p'],
-        ['a','s','d','f','g','h','j','k','l'],
-        ['z','x','c','v','b','n','m',',','.','/']
-    ];
+    var KEYBOARD_ROWS = Core.KEYBOARD_ROWS.slice(1);
 
     var LESSONS = [
         { id:'home-row', group:'Foundation', number:1, title:'Home row', urdu:'درمیانی قطار', copy:'Build muscle memory for the easiest home-row letters.', target:'ا س د ف گ ح ج ک ل  ا س د ف گ ح ج ک ل  سال دل کل حال گل' },
