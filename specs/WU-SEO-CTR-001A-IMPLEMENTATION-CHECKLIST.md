@@ -66,10 +66,12 @@ Increase qualified organic clicks and completed Urdu-writing tasks by improving 
 
 ## A2 — Generic Urdu typing rank improvement
 
+**Execution note (2026-10-04):** founder directed A2 to proceed while the A1 redirect repair is deferred. Scope is limited to one contextual internal-anchor change from the documentation guide. Homepage metadata, H1, hero and editor remain unchanged.
+
 - [ ] Confirm homepage ownership for the three generic typing/writing clusters.
-- [ ] Audit static title/H1, first task proof, crawlable supporting copy and contextual internal anchors.
-- [ ] Select one change likely to improve relevance or usefulness, not only snippet wording.
-- [ ] Keep the editor in the first useful viewport and retain broad English-letter Urdu typing ownership.
+- [x] Audit static title/H1, first task proof, crawlable supporting copy and contextual internal anchors.
+- [x] Select one change likely to improve relevance or usefulness, not only snippet wording: replace one vague documentation link with a contextual `Urdu typing online editor` anchor.
+- [x] Keep the editor in the first useful viewport and retain broad English-letter Urdu typing ownership; no homepage layout or copy changes are included.
 - [ ] Log rank, clicks, CTR and editor activation for Pakistan/mobile and desktop.
 
 **Scenario:** moving `urdu typing` toward the site's position 4–5 band corresponds to about 819–1,365 clicks per three months versus 471 now. Rank movement, not a copy-only CTR target, is the hypothesis.
