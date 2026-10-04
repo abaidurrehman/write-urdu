@@ -263,13 +263,18 @@ Human/product gates:
 
 ## P1.1 — Defend and expand proven search demand
 
-**Spec:** [`WU-SEO-CTR-001`](WU-SEO-CTR-001-serp-intent-optimization.md)
+**Specs:** [`WU-SEO-CTR-001`](WU-SEO-CTR-001-serp-intent-optimization.md) + [`WU-SEO-CTR-001A`](WU-SEO-CTR-001A-pakistan-search-capture.md)
+**Execution:** [`WU-SEO-CTR-001A traffic action checklist`](WU-SEO-CTR-001A-IMPLEMENTATION-CHECKLIST.md)
 
-- [ ] Prioritize high-impression queries in positions 4–10 and strong-relevance 11–20 opportunities.
-- [ ] Protect simple query language such as `english to urdu typing` / `urdu typing`.
-- [ ] Improve CTR without destabilizing established query owners.
-- [ ] Resolve cannibalization from query/page evidence.
-- [ ] Address device-specific CTR gaps.
+- [ ] A0: capture query→page, host→date and dated release baseline; exclude the 2026-09-26 outlier.
+- [ ] A1: verify live apex/`www` and legacy-path contracts; repair only a proven defect while protecting the three highest-click pages.
+- [ ] A2: run one rank-moving homepage relevance/internal-link/task-proof slice for `urdu typing` / `urdu writing`; do not bundle a title test.
+- [ ] A3: resolve keyboard host ownership, then strengthen the existing direct-input page with a useful shared-mapping key reference.
+- [ ] A4: convert the Roman page into a working task after its query mix is confirmed; measure against Roman demand, not all page impressions.
+- [ ] A5: identify and protect the current `online InPage` winner before changing the bidirectional converter's direction emphasis.
+- [ ] A6: extend font intent on the proven stylish page before considering a standalone fonts product.
+- [ ] A7: run one homepage SERP variable only after indexed-state and Pakistan SERP evidence; use 0.2–0.5% as the plausible scenario range.
+- [ ] Keep voice acquisition, typing-test clones, generic translation, keyword-clone routes and broad backlink work on hold until new evidence supports them.
 
 ## P1.2 — Page-type AdSense experiments
 

@@ -8,6 +8,8 @@
 **Area:** Search acquisition / SERP CTR / intent ownership  
 **Priority:** P0
 
+**Active child:** `WU-SEO-CTR-001A-pakistan-search-capture.md` reconciles the 2026-10-04 evidence and supersedes only the earlier guide-only Roman-page rule. Its traffic action checklist is the current execution order.
+
 ## Purpose
 
 Improve click-through rate and search-result clarity for Write Urdu's highest-impression queries **without undoing the query-ownership and plain-language decisions already implemented in `WU-SEO-ETU-001`**.
@@ -65,7 +67,7 @@ The following are **not open for redesign in this initiative unless new Search C
 
 3. `/urdu-editor` remains the product owner for richer document formatting and export intent.
 
-4. `/roman-urdu-transliteration` remains a supporting explanation/guide route, not the primary owner for the large English-to-Urdu typing query.
+4. `/roman-urdu-transliteration` does not own the large broad English-to-Urdu typing query. Under `WU-SEO-CTR-001A`, it may become a working task page for the distinct Roman Urdu→Urdu job while `/` keeps broad ownership.
 
 5. The public acquisition language must prefer:
    - English to Urdu typing;
@@ -311,14 +313,14 @@ Do not add raw typed Urdu text, search queries, full referrers, user identity, I
 
 For `english to urdu typing`, the first objective is not a ranking promise. It is to improve CTR from the reported **0.1%** while preserving or improving query ownership and average position.
 
-A practical first validation milestone is:
+A practical first validation milestone, updated by the 2026-10-04 child evidence, is:
 
-- sustained CTR improvement toward **1%+** over a comparable period;
+- sustained CTR improvement toward **0.2–0.5%** over a comparable period;
 - no material loss of homepage ownership for the query;
 - no new cannibalization from supporting pages;
 - no reduction in actual editor usage from the acquired traffic.
 
-A move toward 1–2% CTR would be commercially meaningful at the reported impression scale, but this is a measurement target rather than a guarantee.
+A move toward 1% or more would be commercially meaningful, but it is not a current planning target. It requires new Pakistan SERP evidence showing that the translation-like head query has become more addressable.
 
 ## Workstream G — SEO change log discipline
 
