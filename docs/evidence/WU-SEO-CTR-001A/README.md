@@ -2,6 +2,12 @@
 
 This folder preserves the validated input data used for `WU-SEO-CTR-001A — Pakistan Search Capture`.
 
+Canonical outputs:
+
+- `specs/WU-SEO-CTR-001A-pakistan-search-capture.md` — reconciled findings and decisions;
+- `specs/WU-SEO-CTR-001A-IMPLEMENTATION-CHECKLIST.md` — ordered traffic actions;
+- `specs/WU-SEO-INTENT-001-second-opinion-investigation.md` — supporting independent analysis, not a separate execution plan.
+
 ## Pakistan Keyword Planner input
 
 `Keyword Stats 2026-10-04 at 11_49_18.csv.xz`

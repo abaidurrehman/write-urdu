@@ -1,12 +1,12 @@
 # WU-SEO-INTENT-001 — Second-Opinion Investigation and Reconciliation with WU-SEO-CTR-001A
 
-**Status:** v2 — grounded in the 2026-10-04 exports; reconciled with `spec/wu-seo-ctr-001a-pakistan-search-capture`
+**Status:** Supporting analysis memo — findings integrated into `WU-SEO-CTR-001A-pakistan-search-capture.md`; not a separate execution plan
 **Date:** 2026-10-04
 **Repo commit inspected:** `000e617` (both branches share this base)
-**Evidence used:** `docs/evidence/WU-SEO-CTR-001A/` on the other branch (Search Console zip extracted; Pakistan Keyword Planner `11_49_18` CSV, UTF-16, decompressed). The earlier `11_41_08` CSV is **not** in that bundle and was not analysed.
+**Evidence used:** `docs/evidence/WU-SEO-CTR-001A/` (Search Console zip extracted; Pakistan Keyword Planner `11_49_18` CSV, UTF-16, decompressed). The earlier `11_41_08` CSV is preserved only inside the raw archive, is US-targeted, and was not analysed for implementation decisions.
 **Still blocked:** live web, SERP, competitor pages, backlink data (egress proxy). All competitor and SERP statements below are therefore **hypotheses requiring external validation**.
 
-All numbers below were recomputed from the CSVs, not copied from the other spec. Where they match it, that is stated.
+All numbers below were recomputed from the CSVs, not copied from the other spec. Where they match it, that is stated. The canonical action order and resolved decisions live in `WU-SEO-CTR-001A-pakistan-search-capture.md` and `WU-SEO-CTR-001A-IMPLEMENTATION-CHECKLIST.md`.
 
 ## 0. Summary of where I agree and disagree with 001A
 

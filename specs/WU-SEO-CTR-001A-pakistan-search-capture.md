@@ -1,6 +1,6 @@
 # WU-SEO-CTR-001A — Pakistan Search Capture
 
-**Status:** Active child implementation spec — evidence locked to 2026-10-04 exports  
+**Status:** Reconciled execution spec v3 — canonical action order for the 2026-10-04 exports
 **Parent:** `WU-SEO-CTR-001-serp-intent-optimization.md`  
 **Depends on:** implemented `WU-SEO-ETU-001`, current canonical/redirect system, current privacy-safe analytics  
 **Primary market:** Pakistan  
@@ -8,19 +8,28 @@
 **Area:** Search acquisition / intent ownership / existing-impression harvesting  
 **Priority:** P0/P1
 
+**Reconciliation inputs:**
+
+- `d478724` — original Pakistan search-capture spec and implementation framing;
+- `2d8205a` — independent analysis of the same exports;
+- `9ee21cf` — raw/extracted evidence, reproducible analysis scripts and proposed amendment.
+
+This file is the authoritative decision record. `WU-SEO-INTENT-001-second-opinion-investigation.md` remains a supporting analysis memo; where its recommendations differed from the original spec, the decisions below resolve the difference. The ordered execution checklist is `WU-SEO-CTR-001A-IMPLEMENTATION-CHECKLIST.md`.
+
 ## 1. Purpose
 
-Turn the October 2026 Search Console, Pakistan Keyword Planner, competitor, and product evidence into a small implementation program that captures more traffic from search demand Google is already exposing to Write Urdu.
+Turn the October 2026 Search Console, Pakistan Keyword Planner and product evidence into a small implementation program that captures more traffic from search demand Google is already exposing to Write Urdu.
 
 This is **not** a broad SEO-content program and **not** a generic translation initiative.
 
-The working diagnosis is:
+The reconciled diagnosis is:
 
 1. Google already knows and ranks Write Urdu.
 2. Pakistan is the dominant search market.
-3. Several high-impression pages rank around positions 4–9 but convert impressions to clicks very poorly.
-4. Some Write Urdu pages with clearer, narrower jobs already achieve materially stronger CTR at similar positions.
-5. The highest-confidence opportunity is therefore to improve intent ownership, SERP promise, task completion on the ranking URL, and historical URL consolidation before creating many new pages or pursuing broad link building.
+3. Aggregate CTR fell while discovery expanded; that is not evidence of site-wide quality decline.
+4. The largest impression family, `english to urdu*`, behaves like translation intent and may be only partly addressable by a typing product.
+5. Narrow task pages and editor/brand queries already win materially stronger CTR, while many broad queries sit below the position 3–5 click cliff.
+6. The highest-confidence work is measurement and host/owner consolidation first, then usefulness and rank-moving changes on existing routes. Snippet experiments come later. New keyword routes and broad link building are not supported.
 
 ## 2. Why this child spec exists
 
@@ -68,6 +77,10 @@ Pakistan accounts for roughly **78.9% of clicks** and **74.7% of impressions** i
 
 Implementation and QA must therefore treat Pakistani mobile users as the primary acquisition audience.
 
+India is the second market with 77,874 impressions (11.3%) and 3.71% CTR. This is context for later locale decisions, not scope for this program.
+
+The 1,000-row query export covers 493,128 impressions (71% of the total) but only 13,635 clicks (53%). Do not treat it as the complete query set; use the Search Console API before making irreversible ownership decisions.
+
 ### 3.3 Device signal
 
 | Device | Impressions | Clicks | CTR | Avg. position |
@@ -79,21 +92,24 @@ Mobile receives materially more impressions and a better average position, yet m
 
 ### 3.4 Highest-priority query/page opportunities
 
-| Surface / query | Impressions | Clicks | CTR | Avg. position | Decision |
+| Surface / query | Impressions | Clicks | CTR | Avg. position | Reconciled decision |
 | --- | ---: | ---: | ---: | ---: | --- |
-| `english to urdu typing` | 164,935 | 135 | 0.08% | 7.02 | homepage SERP/ownership investigation |
-| `/roman-urdu-transliteration` | 45,493 | 120 | 0.26% | 6.73 | convert guide-first page into task-first tool |
-| `/tools/inpage-unicode-converter` | 82,953 | 450 | 0.54% | 6.72 | align first intent with Unicode → InPage demand |
-| `unicode to inpage` | 38,135 | 85 | 0.22% | 7.59 | stronger top-level framing |
+| `english to urdu typing` | 164,935 | 135 | 0.08% | 7.02 | keep `/` as owner; treat 0.2–0.5% as plausible, not 1–2%; investigate before copy change |
+| `urdu typing` | 27,294 | 471 | 1.73% | 6-range | rank-moving existing-route work after owner confirmation |
+| `/roman-urdu-transliteration` apex row | 45,493 | 120 | 0.26% | 6.73 | first prove query mix; build the task for Roman demand, not all page impressions |
+| Roman/transliteration query family | 8,083 | 144 | — | — | realistic market for the Roman tool in this export |
+| `/tools/inpage-unicode-converter` | 82,953 | 450 | 0.54% | 6.72 | keep one route; identify the separate `online InPage` winner before changing framing |
+| `unicode to inpage` | 38,135 | 85 | 0.22% | 7.59 | conditional rank/relevance bet, not a proven copy gap |
 | `inpage to unicode` | 16,062 | 155 | 0.97% | 4.33 | retain as prominent reverse mode |
-| `urdu keyboard online` | 9,360 | 79 | 0.84% | 7.42 | strengthen direct-keyboard task/reference |
-| `urdu keyboard` | 8,126 | 50 | 0.62% | 8.91 | same owner; no clone route |
+| `online InPage` family | ~9,000 | 896 | ~10.0% | 4.4 | find and protect current landing-page owner |
+| keyboard cluster (4 queries) | 24,150 | 197 | 0.82% | — | resolve host split, then strengthen direct-keyboard task/reference |
 | `/urdu-typing-practice` | 4,664 | 326 | 6.99% | 5.79 | preserve and extend; do not create `/urdu-typing-test` |
 | stylish Urdu generator page | 35,367 | 3,459 | 9.78% | 5.18 | internal control: narrow task pages can convert well |
+| `www` URLs | 105,172 | 4,946 | — | — | 14.1% of page impressions and 19.1% of clicks; investigate host trend before changing redirects |
 
 ### 3.5 Pakistan Keyword Planner interpretation
 
-The supplied Pakistan export uses coarse volume buckets. Treat these as relative demand signals, not exact obtainable traffic.
+The supplied Pakistan export uses coarse volume buckets. Treat these as relative demand signals for queries already observed in Search Console, not exact obtainable traffic or independent demand discovery. Of 786 Planner keywords, 785 already appear in the GSC query export.
 
 Important clusters include:
 
@@ -103,10 +119,10 @@ Important clusters include:
 - `unicode to inpage` — 50k bucket;
 - `inpage to unicode` — 50k bucket;
 - `urdu fonts` — 50k bucket;
-- `urdu transliteration` — very large relative bucket;
+- `urdu transliteration` — very large relative bucket, but translation-contaminated and not implementation evidence without a Pakistan SERP check;
 - `urdu typing test` — 5k bucket.
 
-Generic `english to urdu` volume must **not** be treated as addressable typing traffic because a large share is translation intent directly served by search engines and large translation products.
+Generic `english to urdu` volume must **not** be treated as addressable typing traffic because a large share is translation intent directly served by search engines and large translation products. The Planner export validates known-query scale; it does not justify new routes.
 
 ## 4. Governing decisions
 
@@ -182,7 +198,7 @@ Required verification:
 - Open Graph/structured-data URLs use apex URLs;
 - internal links do not introduce `www` variants.
 
-Do **not** change redirect architecture merely because GSC still contains historical `www` impressions. First prove a live defect.
+Do **not** change redirect architecture merely because GSC contains `www` impressions. First prove a live defect and export host-by-date data. The `www` share is too large to dismiss as harmless history, and changing direction without monitoring can cause a migration dip.
 
 ### P0.2 Legacy path audit
 
@@ -204,7 +220,12 @@ Requirements:
 
 ### P0.3 Query ownership audit
 
-For the priority clusters, record which Write Urdu page actually receives impressions.
+For the priority clusters, record which Write Urdu page actually receives impressions. Required first exports are:
+
+- `/` and `/roman-urdu-transliteration` filtered to `english to urdu typing`;
+- `urdu typing`, `urdu writing` and `urdu typing online` by landing page;
+- the `online InPage` family by landing page;
+- the keyboard family by apex/`www` landing page.
 
 The ownership artifact must include:
 
@@ -216,12 +237,22 @@ The ownership artifact must include:
 
 If GSC query×page export is unavailable, record that limitation rather than guessing.
 
+### P0.4 Baseline hygiene
+
+- Exclude the 2026-09-26 one-day outlier (26,039 impressions) from experiment baselines.
+- Record the 2026-08-18/19 impression step change as a known discontinuity and identify relevant releases before attributing later movement.
+- Prefer a full Search Console API export because the UI export omits 47% of clicks.
+- Protect `/`, `/stylish-urdu-text-generator` and `/urdu-editor` during host or metadata changes; together they account for about 91% of page-level clicks.
+
 ### P0 acceptance
 
 - [ ] Live apex redirect contract verified.
+- [ ] Host-by-date trend shows whether `www` is decaying, stable or growing.
 - [ ] No mixed-host canonical defect on priority pages.
 - [ ] Priority legacy URLs resolve in at most one redirect.
 - [ ] Priority query ownership map exists.
+- [ ] Roman-page query mix and `online InPage` landing-page owner are recorded.
+- [ ] Baseline excludes 2026-09-26 and annotates the 2026-08-18/19 discontinuity.
 - [ ] No new keyword-clone route introduced.
 - [ ] Existing SEO contract tests still pass.
 
@@ -230,8 +261,10 @@ If GSC query×page export is unavailable, record that limitation rather than gue
 **Route:** `/roman-urdu-transliteration`  
 **Priority:** P1  
 **Effort:** M  
-**Expected impact:** Very High  
-**Primary evidence:** 45,493 impressions, 0.26% CTR, avg. position 6.73
+**Expected impact:** Medium; bounded by verified Roman demand
+**Primary evidence:** apex page row 45,493 impressions / 0.26% CTR / position 6.73, but all visible Roman/transliteration queries total only 8,083 impressions and 144 clicks
+
+The page's title overlaps `english to urdu typing`, so most of its impressions may be non-Roman demand. The P0 query→page export gates scope and baseline attribution. The product change remains useful, but success must be measured against Roman queries rather than all page impressions.
 
 ### 6.1 Product job
 
@@ -258,6 +291,8 @@ Recommended title direction:
 `Roman Urdu to Urdu Converter – Urdu Transliteration Online | WriteUrdu`
 
 These are implementation directions; preserve title-length and existing SEO conventions.
+
+The final title must move away from the exact broad phrase `English to Urdu Typing`, which remains homepage-owned.
 
 ### 6.3 Required examples
 
@@ -313,6 +348,7 @@ Do not place a disruptive ad inside the active conversion workspace.
 - [ ] Conversion works on the page itself.
 - [ ] `/` still owns broad English-to-Urdu typing language.
 - [ ] Roman page title/H1 explicitly own Roman Urdu/transliteration intent.
+- [ ] Success reporting separates Roman-query clicks from non-Roman impressions leaving the page.
 - [ ] No duplicate transliteration engine introduced.
 - [ ] Mobile first useful viewport contains the task, not a long article intro.
 - [ ] Copy/editor next step works without sign-up.
@@ -324,12 +360,12 @@ Do not place a disruptive ad inside the active conversion workspace.
 **Route:** `/tools/inpage-unicode-converter`  
 **Priority:** P1  
 **Effort:** S–M  
-**Expected impact:** High  
-**Primary evidence:** page 82,953 impressions / 0.54% CTR; `unicode to inpage` has materially more impressions than `inpage to unicode`
+**Expected impact:** Medium; direction emphasis is conditional
+**Primary evidence:** page 82,953 impressions / 0.54% CTR; `unicode to inpage` has materially more impressions than `inpage to unicode`, while the separate `online InPage` family already earns about 896 clicks at about 10% CTR on an unknown page
 
 ### 7.1 Decision
 
-Keep one bidirectional route in this cycle.
+Keep one bidirectional route in this cycle. Identify and protect the current landing-page owner for `online InPage` before changing shared copy or internal links.
 
 Lead the search/task framing with **Unicode → InPage**, while retaining an obvious reverse mode.
 
@@ -342,7 +378,7 @@ At the top of the converter, expose an explicit two-mode control:
 - `Unicode to InPage`;
 - `InPage to Unicode`.
 
-Default to Unicode → InPage unless a fresh query/page export before implementation materially contradicts the 2026-10-04 evidence.
+Default to Unicode → InPage only if a fresh query/page export and Pakistan SERP review do not materially contradict the 2026-10-04 evidence.
 
 ### 7.3 Metadata direction
 
@@ -381,14 +417,17 @@ After conversion:
 - [ ] Metadata reflects both directions without keyword stuffing.
 - [ ] Compatibility wording matches actual capability.
 - [ ] Existing package/API contracts remain intact.
+- [ ] The current `online InPage` owner and its traffic are not displaced.
 
 ## 8. P1-C — Homepage CTR investigation, not redesign
 
 **Route:** `/`  
 **Priority:** P1  
 **Effort:** S per experiment  
-**Expected impact:** Very High if CTR improves  
+**Expected impact:** Bounded; query appears translation-like
 **Primary evidence:** `english to urdu typing` — 164,935 impressions, 0.08% CTR, avg. position 7.02
+
+The broader `english to urdu*` family has 193,003 impressions and 290 clicks. Bare variants perform like translation queries, while variants containing `online`, `roman` or `google` earn 3–5% CTR. Treat the head term as partially outside Write Urdu's control.
 
 ### 8.1 Do not reopen the core ownership decision
 
@@ -428,19 +467,20 @@ into one unmeasurable release.
 
 At fixed impressions, 164,935 impressions produce approximately:
 
-| CTR | Clicks | Increment vs ~135 current clicks |
-| ---: | ---: | ---: |
-| 0.5% | 825 | +690 |
-| 1.0% | 1,649 | +1,514 |
-| 2.0% | 3,299 | +3,164 |
+| CTR | Clicks | Increment vs 135 current clicks | Interpretation |
+| ---: | ---: | ---: | --- |
+| 0.2% | 330 | +195 | lower plausible bound |
+| 0.5% | 825 | +690 | upper plausible bound |
+| 1.0% | 1,649 | +1,514 | aspirational; requires new SERP evidence |
 
-These are **scenario calculations, not forecasts**.
+These are **scenario calculations, not forecasts**. Do not plan against 2% or treat impressions as obtainable clicks.
 
 ### 8.5 Homepage acceptance
 
 - [ ] Broad English-to-Urdu typing ownership remains on `/`.
 - [ ] No clone landing page created.
 - [ ] Any metadata change has a recorded baseline and deployment date.
+- [ ] One variable changes per experiment, after owner and indexed-state evidence exists.
 - [ ] Editor remains the primary first-screen product.
 - [ ] Roman-page strengthening does not replace homepage acquisition wording.
 
@@ -468,13 +508,15 @@ Coordinate with existing mobile activation contracts. This spec owns **search ac
 ## 10. P2 — Urdu keyboard strengthening
 
 **Route:** `/urdu-keyboard`  
-**Priority:** P2  
+**Priority:** P1 after P0 host/owner evidence
 **Effort:** M  
-**Expected impact:** High
+**Expected impact:** Medium–High; 24,150 cluster impressions and 197 clicks in the scenario set
 
 ### 10.1 Product boundary
 
 The keyboard page must remain direct-character input, not become another Roman Urdu converter.
+
+Resolve or explain the apex/`www` split before judging the page or changing metadata. Historical `www/urdu-keyboard` exposure ranks materially worse than apex.
 
 ### 10.2 First implementation slice
 
@@ -499,7 +541,7 @@ Only add full layout switching (Standard/CRULP/InPage/etc.) later if real query/
 - [ ] No duplicate keyboard engine added.
 - [ ] Roman Urdu/transliteration links to its canonical owner instead of being explained as the keyboard's main function.
 
-## 11. P2 — Preserve and strengthen typing practice
+## 11. P3 — Preserve and strengthen typing practice
 
 **Existing route:** `/urdu-typing-practice`  
 **Decision:** do not create `/urdu-typing-test`.
@@ -511,16 +553,18 @@ The existing route already has strong behavior for its rank and contains lessons
 - Urdu typing speed test;
 - WPM/accuracy intent.
 
-Enhancement work may include clearer title/H1/test entry, but only after checking current query ownership and existing product contracts.
+Enhancement work may include clearer title/H1/test entry, but only after checking current query ownership and existing product contracts. This is a small lever: the visible practice/test family is about 2,560 impressions across 22 queries.
 
 Pakistan job/exam-specific copy such as PPSC/FPSC must be evidence-backed and must not make stale or unverifiable claims about official requirements.
 
-## 12. P3 — Urdu fonts product, evidence gated
+## 12. P2 — Extend proven font demand before a new product
 
-**Candidate route:** `/urdu-fonts`  
-**Do not ship as a thin article.**
+**First owner:** `/stylish-urdu-text-generator`
+**Decision:** strengthen the proven owner for font copy/paste and preview intent before considering `/urdu-fonts`.
 
-A future surface becomes eligible only when it can provide a genuine product job:
+The visible fonts cluster already produces 16,691 impressions, 1,205 clicks and 7.2% CTR, largely through the stylish page. The head term `urdu fonts` has only 80 impressions at position 37.5 in the GSC export. Protect the winning page; do not split its authority for a speculative new route.
+
+A future standalone surface becomes eligible only when it can provide a genuine product job:
 
 `type/paste Urdu → preview across licensed/allowed fonts → choose → continue to editor/card workflow`
 
@@ -597,52 +641,67 @@ Every material title/H1/task-ownership change must record:
 
 ## 15. Implementation sequence
 
-### Slice A — Authority and ownership verification
+### Slice A — Attribution and baseline gate
 
-1. Verify live host redirects/canonicals rather than assuming GSC historical variants mean a live defect.
-2. Audit priority legacy paths and redirect chains.
-3. Record query→page ownership for the P1 clusters.
-4. Update the SEO intent registry/internal anchors only where evidence shows overlap.
-5. Produce a dated October baseline artifact.
+1. Export query→page ownership for homepage/Roman, generic typing, keyboard and InPage clusters.
+2. Export host-by-date data for apex versus `www`.
+3. Identify the landing page winning `online InPage` queries.
+4. Produce a dated baseline excluding 2026-09-26 and annotating the 2026-08-18/19 step change.
+5. Use the Search Console API when possible to recover the UI export's missing long tail.
 
-**No broad metadata rewrite in Slice A.**
+**Stop:** no traffic-facing change begins until its owner and baseline are known.
 
-### Slice B — Roman task conversion
+### Slice B — Authority consolidation and winner protection
 
-1. Convert `/roman-urdu-transliteration` to a working task-first surface using the existing transliteration engine.
-2. Update route classification/navigation/ads/SEO metadata/llms description as required.
-3. Keep homepage broad typing ownership intact.
-4. Add tests for page ownership and task presence.
+1. Run live apex/`www`, canonical and priority legacy-path checks.
+2. Change redirects only when a live defect is proven.
+3. If a defect exists, ship the narrow redirect/canonical repair and monitor `/`, `/stylish-urdu-text-generator` and `/urdu-editor` first.
+4. Record one-hop results and before/after host shares.
 
-### Slice C — InPage demand alignment
+### Slice C — Generic Urdu typing rank work
 
-1. Make conversion direction explicit.
-2. Default/lead with Unicode→InPage.
-3. Keep reverse mode equally reachable.
-4. Preserve the shared conversion core/package/API contract.
+1. Confirm `/` owns `urdu typing`, `urdu writing` and `urdu typing online`.
+2. Inspect current task copy, static metadata, crawlable supporting content and internal anchors for relevance gaps.
+3. Choose one bounded rank-moving hypothesis, such as stronger task proof or intent-specific internal links; do not combine it with a title experiment.
+4. Measure rank, clicks and editor activation over a comparable window.
 
-### Slice D — Homepage CTR experiment
+### Slice D — Keyboard task/reference enhancement
+
+1. Resolve the apex/`www` split and confirm query ownership.
+2. Reuse current mappings to add a physical-key/Shift reference, punctuation/numeral help and mobile guidance.
+3. Keep direct-character input primary and link Roman users to the Roman owner.
+4. Measure the keyboard cluster, not one query alone.
+
+### Slice E — Roman task conversion
+
+1. Proceed only after Slice A confirms the Roman page's query mix.
+2. Convert `/roman-urdu-transliteration` to a working task-first surface using the existing transliteration engine.
+3. Retitle/reframe it around Roman Urdu, away from the homepage's broad phrase.
+4. Measure Roman-query clicks separately from non-Roman impressions that leave the page.
+
+### Slice F — Conditional InPage alignment
+
+1. Preserve the current `online InPage` winner.
+2. Keep one bidirectional converter route and shared conversion core.
+3. Emphasize Unicode→InPage only when fresh owner/SERP evidence supports it.
+4. Measure direction-specific clicks and conversion use.
+
+### Slice G — Proven fonts extension
+
+1. Protect `/stylish-urdu-text-generator` metadata and core job.
+2. Test a bounded font copy/paste or preview enhancement on that route.
+3. Keep standalone `/urdu-fonts` blocked until licensing, performance and product gates pass.
+
+### Slice H — Homepage SERP experiment
 
 1. Confirm Google is processing the current homepage state.
-2. Select one SERP-message hypothesis.
-3. Log baseline.
-4. Deploy one controlled change.
-5. Evaluate after a comparable window.
+2. Select one SERP-message hypothesis supported by a Pakistan-localised SERP review.
+3. Log baseline, deploy one variable and evaluate after a comparable window.
+4. Use 0.2–0.5% as the plausible head-query scenario; protect broader homepage/editor traffic.
 
-### Slice E — Keyboard reference enhancement
+### Slice I — Small-lever hold
 
-1. Reuse existing mappings.
-2. Add interactive physical-key/Shift reference.
-3. Clarify direct keyboard versus Roman transliteration.
-4. Avoid speculative multi-engine layout work.
-
-### Slice F — Existing typing-practice refinement
-
-Only after the earlier slices are stable. Strengthen `/urdu-typing-practice`; do not create a new test route.
-
-### Slice G — Fonts discovery/product research
-
-Research/licensing/architecture only until the product gate is met.
+Typing practice refinement may follow after higher-value slices are stable. Do not create a typing-test route. Voice acquisition, a backlink campaign and a generic translator remain unsupported by this evidence.
 
 ## 16. Tests and validation
 
@@ -692,18 +751,21 @@ This program succeeds when it produces clearer ownership and measurable traffic 
 ### Technical
 
 - [ ] Apex/non-www canonical contract verified and documented.
+- [ ] Host-by-date trend and migration risk are recorded before redirect changes.
 - [ ] Priority legacy redirects are single-hop.
 - [ ] Intent registry/internal links reinforce canonical owners.
+- [ ] Query→page ownership exists for every implemented slice.
 
 ### Roman Urdu
 
 - [ ] Roman page is a working task page.
 - [ ] Roman/transliteration queries increasingly resolve to the Roman page while broad English-to-Urdu typing remains on `/`.
-- [ ] CTR improves from the 0.26% baseline over a comparable window without material ranking loss.
+- [ ] Roman-query clicks and activation improve over a comparable window without material ranking loss; total page CTR is not used as the sole baseline.
 
 ### InPage
 
-- [ ] Unicode→InPage is clearly discoverable as the primary mode.
+- [ ] The current `online InPage` landing-page owner is identified and protected.
+- [ ] Unicode→InPage is clearly discoverable as the primary mode only if fresh evidence supports that emphasis.
 - [ ] Reverse mode remains strong.
 - [ ] Direction-specific query CTR improves without splitting the route.
 
@@ -711,11 +773,13 @@ This program succeeds when it produces clearer ownership and measurable traffic 
 
 - [ ] `english to urdu typing` remains homepage-owned.
 - [ ] Every SERP experiment has a dated baseline/change record.
+- [ ] Scenario planning uses 0.2–0.5% unless new SERP evidence supports a higher range.
 - [ ] CTR improvement does not come with a material decline in actual editor use.
 
 ### Keyboard / practice
 
 - [ ] Keyboard page is more useful for direct-keyboard intent without absorbing Roman intent.
+- [ ] Keyboard host split is resolved or documented before judging the page change.
 - [ ] `/urdu-typing-practice` remains the single test/practice owner.
 
 ## 19. Stop / rollback rules
@@ -752,12 +816,12 @@ Before coding any slice:
 The objective is not to make every page mention every keyword. The objective is to make **one established Write Urdu URL the clearest, most useful answer to each distinct Urdu-writing job**.
 ---
 
-## 21. Amendment A — Independent second-opinion reconciliation (2026-10-04)
+## 21. Reconciliation ledger — source decisions (2026-10-04)
 
-**Status:** Proposed amendment. Sections 1–20 above are unchanged and remain the baseline. This amendment records where an independent re-analysis of the same exports agrees, disagrees, or adds evidence, and the resulting change to sequencing.
+**Status:** Integrated. Sections 1–20 now contain the reconciled decisions and execution order. This ledger preserves why the original and independent branches were resolved that way; it is not a second execution plan.
 **Full write-up:** `specs/WU-SEO-INTENT-001-second-opinion-investigation.md`
 **Scripts:** `docs/evidence/WU-SEO-CTR-001A/analysis/`
-**Limits:** no live SERP, competitor or backlink access was available; those items remain hypotheses. The earlier Planner export (`Keyword Stats 2026-10-04 at 11_41_08.csv`) is not in the evidence folder and was not analysed.
+**Limits:** no Pakistan-localised live SERP, competitor or backlink review was available; those items remain hypotheses. The earlier US-targeted Planner export is preserved only in the raw bundle and is not implementation evidence.
 
 ### 21.1 What was verified unchanged
 
@@ -780,7 +844,7 @@ All figures in §3 were reproduced from the CSVs: 28-day windows (221,081 → 35
 | A11 | Queries export is partial | 1,000 rows = 71% of impressions but 53% of clicks; unlisted impressions convert ≈6.1% | Use the Search Console API for fuller attribution before final decisions |
 | A12 | Second market | India: 77,874 impressions (11.3%), CTR 3.71% | Note for any future locale work; no change now |
 
-### 21.3 Revised sequencing
+### 21.3 Decisions applied to the execution order
 
 Gating measurements first (all XS, no engineering):
 
@@ -789,7 +853,7 @@ Gating measurements first (all XS, no engineering):
 3. **Identify the landing page for "online InPage" queries** and record the intended owner. Gates Slice C copy.
 4. **Baseline hygiene:** exclude 26 Sep; record 18–19 Aug as a known discontinuity.
 
-Then, with changes to the original slices:
+The following resolution table explains the integrated spec. Use §15 and `WU-SEO-CTR-001A-IMPLEMENTATION-CHECKLIST.md` for actual order.
 
 | Slice | Change |
 | --- | --- |
@@ -822,4 +886,4 @@ These are arithmetic scenarios, not forecasts.
 
 ### 21.6 Evidence still needed
 
-Query→page data; host×date data; the `11_41_08` Planner export; Pakistan-localised SERP review for `english to urdu typing`, `unicode to inpage` and `urdu keyboard online`; competitor age, authority and whether small domains outrank Write Urdu (needed to test the authority hypothesis, which this evidence neither supports nor rules out); the full-fidelity query set via the Search Console API.
+Query→page data; host×date data; Pakistan-localised SERP review for `english to urdu typing`, `unicode to inpage` and `urdu keyboard online`; competitor age, authority and whether small domains outrank Write Urdu (needed to test the authority hypothesis, which this evidence neither supports nor rules out); the full-fidelity query set via the Search Console API.
