@@ -35,8 +35,6 @@
 
     <script src="/main.js"></script>
 
-    <script src="/google_jsapi.js"></script>
-
     <script>
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
@@ -50,33 +48,6 @@
 
     </script>
     <script type="text/javascript">
-        // Load the Google Transliterate API
-        google.load("elements", "1", {
-            packages: "transliteration"
-        });
-
-        function onLoad() {
-            var options = {
-                sourceLanguage:
-                    google.elements.transliteration.LanguageCode.ENGLISH,
-                destinationLanguage:
-                    [google.elements.transliteration.LanguageCode.URDU],
-                shortcutKey: 'ctrl+g',
-                transliterationEnabled: true
-            };
-
-            // Create an instance on TransliterationControl with the required
-            // options.
-            var control =
-                new google.elements.transliteration.TransliterationControl(options);
-
-            // Enable transliteration in the textbox with id
-            // 'transliterateTextarea'.
-            control.makeTransliteratable(['write']);
-            window.writeUrduTransliterationReady = true;
-        }
-        google.setOnLoadCallback(onLoad);
-
         function clearText() {
             document.getElementById('write').value = '';
             document.getElementById('write').focus();
@@ -94,7 +65,8 @@
 <script src="/js/voice-input-core.js" defer></script>
 <script src="/js/unified-urdu-input.js" defer></script>
 <script src="/js/writer-voice-input.js" defer></script>
-<script src="/js/batch-transliteration.js" defer></script>
+<script src="/js/typing-practice-core.js" defer></script>
+<script src="/js/urdu-keyboard-reference.js" defer></script>
     <meta name="googlebot" content="index,follow,max-image-preview:large">
     <meta property="og:locale" content="ur_PK">
     <meta property="og:locale:alternate" content="en_US">
@@ -161,14 +133,6 @@
                 </div>
                 <div style="text-align:left;width:100%;width:100%;">
                     <label class="sr-only" for="write">اردو کی بورڈ ایڈیٹر</label>
-                    <div class="batch-transliteration-panel" data-batch-transliteration data-batch-target="#write" role="region" aria-labelledby="batch-transliteration-title-keyboard">
-                        <strong data-batch-title id="batch-transliteration-title-keyboard" data-wu-l10n="home.batchTitle">Two ways to write Urdu</strong>
-                        <span data-batch-guide data-wu-l10n="home.batchGuide">Type Urdu words using English letters and press Space after each word, or paste a longer passage and convert it to Urdu script in one step.</span>
-                        <small data-batch-note data-wu-l10n="home.batchNote">Use English letters to write Urdu words. This does not translate English sentences into Urdu.</small>
-                        <strong data-batch-prompt hidden data-wu-l10n="home.batchPrompt">Long English-letter Urdu text detected. Convert this passage to Urdu script?</strong>
-                        <button type="button" data-batch-action hidden data-wu-l10n="home.batchAction">Convert passage to Urdu script</button>
-                        <span data-batch-status role="status" aria-live="polite"></span>
-                    </div>
                     <textarea name="saisie" dir="rtl" lang="ur" rows="4" class="form-control" id="write"
                         placeholder="لکھنا شروع کریں"></textarea>
                     <br />
@@ -301,7 +265,24 @@
                     </ol>
 
                     <h2>فزیکل اردو کی بورڈ استعمال کریں</h2>
-                    <p>متن کا خانہ آپ کے آلے پر ترتیب دیے گئے فزیکل کی بورڈ سے اردو حروف قبول کرتا ہے۔ جو حروف تلاش کرنا مشکل ہوں ان کے لیے آن اسکرین کیز استعمال کریں۔ ترتیب میں مدد کے لیے <a href="/write-urdu-documentation">دستاویزات</a> کھولیں۔ اگر آپ انگریزی حروف سے اردو لکھنا چاہتے ہیں تو <a href="/urdu/">انگریزی سے اردو ٹائپنگ</a> استعمال کریں۔</p>
+                    <p>متن کا خانہ آپ کے آلے پر ترتیب دیے گئے فزیکل کی بورڈ سے اردو حروف قبول کرتا ہے۔ نیچے دی گئی رہنمائی وہی CRULP طرز کی صوتی ترتیب استعمال کرتی ہے جو <a href="/urdu-typing-practice">اردو ٹائپنگ مشق</a> میں ہے۔ <span lang="ur" dir="rtl">آ، ص، ڈ، غ، ڑ، ٹ، ں</span>، اردو رموزِ اوقاف اور اعداد کی قطار دیکھنے کے لیے <strong>شفٹ کیز</strong> منتخب کریں۔</p>
+                    <aside class="physical-key-reference" data-physical-key-reference aria-labelledby="physical-key-reference-title">
+                        <div class="physical-key-reference-head">
+                            <div>
+                                <h3 id="physical-key-reference-title">فزیکل کیز اور شفٹ کی رہنمائی</h3>
+                                <p>یہ رہنمائی کمپیوٹر پر نصب CRULP طرز کے اردو صوتی کی بورڈ کے ساتھ استعمال کریں۔ یہ صرف حوالہ ہے اور آپ کے آلے کا کی بورڈ تبدیل نہیں کرتی۔</p>
+                            </div>
+                            <div class="physical-key-reference-modes" role="group" aria-label="کی بورڈ حوالہ تہہ">
+                                <button type="button" data-key-reference-mode="base" aria-pressed="true">بنیادی کیز</button>
+                                <button type="button" data-key-reference-mode="shift" aria-pressed="false">شفٹ کیز</button>
+                            </div>
+                        </div>
+                        <div class="physical-key-reference-scroll" tabindex="0" aria-label="اسکرول ہونے والی فزیکل اردو کی بورڈ رہنمائی">
+                            <div class="physical-key-reference-rows" data-key-reference-rows></div>
+                        </div>
+                        <p class="physical-key-reference-note">فون یا ٹیبلٹ پر اپنا نصب شدہ اردو کی بورڈ استعمال کریں یا اوپر آن اسکرین اردو حروف پر ٹیپ کریں۔ اگر آپ انگریزی حروف سے اردو الفاظ لکھنا چاہتے ہیں تو <a href="/urdu/">انگریزی سے اردو ٹائپنگ</a> استعمال کریں۔</p>
+                    </aside>
+                    <p>آلے کی ترتیب میں مدد کے لیے <a href="/write-urdu-documentation">دستاویزات</a> کھولیں۔ جن حروف کو تلاش کرنا مشکل ہو ان کے لیے آن اسکرین کیز استعمال کریں۔</p>
 
                     <h2>اکثر پوچھے گئے سوالات</h2>
                     <div class="keyboard-faq">

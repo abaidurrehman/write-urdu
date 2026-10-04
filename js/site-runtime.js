@@ -51,6 +51,10 @@
             typeof google.elements.transliteration.TransliterationControl === 'function';
     }
 
+    function transliterationRequired() {
+        return Boolean(document.querySelector('script[src$="google_jsapi.js"]'));
+    }
+
     function copyText(button) {
         var selector = button.getAttribute('data-copy-target') || button.getAttribute('data-clipboard-target');
         var target = selector ? document.querySelector(selector) : null;
@@ -525,11 +529,11 @@
         new MutationObserver(removeInjectedExportButtons).observe(document.body, { childList: true });
 
         window.setTimeout(function () {
-            if (!window.writeUrduTransliterationReady || !transliterationAvailable()) showDependencyError();
+            if (transliterationRequired() && (!window.writeUrduTransliterationReady || !transliterationAvailable())) showDependencyError();
         }, 6500);
 
         window.addEventListener('offline', function () {
-            notify('You are offline. Urdu transliteration may be unavailable.', 'error');
+            if (transliterationRequired()) notify('You are offline. Urdu transliteration may be unavailable.', 'error');
         });
         window.addEventListener('online', function () {
             notify('Connection restored.', 'success');

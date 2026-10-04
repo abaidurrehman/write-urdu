@@ -80,6 +80,7 @@ jobs:
           tests/wedding-invitation-render-adapter.spec.js
           tests/whatsapp-status-discovery.spec.js
           tests/seo-acquisition.spec.js
+          tests/urdu-keyboard-reference.spec.js
           tests/role-journeys.spec.js
           tests/sitemap-directory.spec.js
           tests/account-documents-editors.spec.js

@@ -79,6 +79,7 @@ const tests = [
   'tests/qr-generator-core.test.js',
   'tests/stylish-urdu-core.test.js',
   'tests/typing-practice-core.test.js',
+  'tests/urdu-keyboard-reference-contract.test.js',
   'tests/urdu-text-cleaner-core.test.js',
   'tests/urdu-ocr-contract.test.js',
   'tests/voice-input-core.test.js',

@@ -21,6 +21,7 @@ module.exports = defineConfig({
     'home-featured-card.spec.js',
     'whatsapp-status-discovery.spec.js',
     'seo-acquisition.spec.js',
+    'urdu-keyboard-reference.spec.js',
     'role-journeys.spec.js',
     'sitemap-directory.spec.js',
     'account-documents-editors.spec.js',
