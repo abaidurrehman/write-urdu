@@ -750,3 +750,76 @@ Before coding any slice:
 9. Record evidence and release annotations before moving to the next SERP experiment.
 
 The objective is not to make every page mention every keyword. The objective is to make **one established Write Urdu URL the clearest, most useful answer to each distinct Urdu-writing job**.
+---
+
+## 21. Amendment A — Independent second-opinion reconciliation (2026-10-04)
+
+**Status:** Proposed amendment. Sections 1–20 above are unchanged and remain the baseline. This amendment records where an independent re-analysis of the same exports agrees, disagrees, or adds evidence, and the resulting change to sequencing.
+**Full write-up:** `specs/WU-SEO-INTENT-001-second-opinion-investigation.md`
+**Scripts:** `docs/evidence/WU-SEO-CTR-001A/analysis/`
+**Limits:** no live SERP, competitor or backlink access was available; those items remain hypotheses. The earlier Planner export (`Keyword Stats 2026-10-04 at 11_41_08.csv`) is not in the evidence folder and was not analysed.
+
+### 21.1 What was verified unchanged
+
+All figures in §3 were reproduced from the CSVs: 28-day windows (221,081 → 358,529 impressions; 8,831 → 10,975 clicks), Pakistan share (74.7% impressions / 78.9% clicks), device split, and every query/page row in §3.4.
+
+### 21.2 Corrections and additions to the evidence
+
+| # | Finding | Evidence | Effect on this spec |
+| --- | --- | --- | --- |
+| A1 | The `english to urdu*` family looks like a translation SERP | Family = 193,003 impressions (39% of the queries export), 290 clicks (2.1%). `english to urdu typing` 0.08% vs plain `english to urdu` 0.07% at similar positions. Variants with "online", "roman", "google" get 3–5% | §8.4 scenarios (0.5/1/2%) are optimistic; plan for 0.2–0.5%. Not a reason to change ownership |
+| A2 | Homepage CTR is mostly one query | If the family sat on `/`, the rest of the page runs ≈6.2% CTR. Query→page split not exported, so this is a bound | Reframe §8: investigation, not redesign (already the stated posture) |
+| A3 | Roman page impressions likely are not Roman demand | Page: 45,523 impressions. All Roman/transliteration queries in the export: 8,083 impressions / 144 clicks. Page title matches `english to urdu typing` | §6 "Very High" impact is overstated; expected ceiling ≈ Roman demand (≈8k impressions; ≈400 clicks per 3 months at 5% CTR). Diagnosis is "mismatched to the query supplying its impressions", not only "guide-first" |
+| A4 | InPage clicks mostly do not come from the converter | InPage/Unicode-term queries: 1,278 clicks on 83,655 impressions; converter page: 450 clicks. "online InPage" queries: ≈9,000 impressions, 896 clicks, 10% CTR at pos 4.4. `inpage to unicode` ranks 4.5 but gets 0.97% | §7: "lead with Unicode→InPage" is a reasonable bet on 51.7k impressions at pos 7.6 / 0.29% but not as well supported as stated; add owner identification for the "online InPage" cluster |
+| A5 | `www` is a live quantity, not only history | `www` = 14.1% of page impressions and 19.1% of clicks. `www/` 86,686 imps at 4.79% CTR vs apex 3.19%; `www/urdu-editor` 12,956 imps at pos 10.44 vs apex pos 7.38; `www/urdu-keyboard` 1,772 imps at pos 22 | §5 P0.1: keep "verify before changing" but add a host×date export; flag migration-dip risk (see 21.4) |
+| A6 | Planner is not independent demand evidence | 785 of 786 Planner keywords are queries already in GSC; buckets are coarse; YoY/3-month fields are bucket artefacts | §3.5: use Planner for volume validation of known queries only; do not cite it as new-demand discovery |
+| A7 | Ranking dominates snippet effects | CTR by position (excl. `english to urdu` family): 1 → 41.6%, 2 → 28.0%, 3 → 15.6%, 4 → 6.2%, 5 → 4.8%, 6 → 2.4%, 7 → 1.0% | Prioritise rank-moving work for `urdu typing` / `urdu writing` / keyboard over copy tweaks |
+| A8 | Click concentration | `/`, `/stylish-urdu-text-generator`, `/urdu-editor` ≈ 91% of page-level clicks; ≈50 navigational/editor queries = 28% of queries-export clicks | Protect these pages when changing host or metadata |
+| A9 | Fonts partly captured already | Fonts cluster 16,691 impressions, 1,205 clicks, 7.2% CTR (stylish page); head term `urdu fonts` = 80 impressions at pos 37.5 | §12: if pursued, extend the winning stylish page first |
+| A10 | Impression step change from 18–19 Aug | Daily impressions 5,711 → 9,549 → 12,805; daily clicks 306 → 304 → 392. 26 Sep is an outlier (26,039 impressions) | Exclude 26 Sep from baselines; identify what shipped around 18 Aug |
+| A11 | Queries export is partial | 1,000 rows = 71% of impressions but 53% of clicks; unlisted impressions convert ≈6.1% | Use the Search Console API for fuller attribution before final decisions |
+| A12 | Second market | India: 77,874 impressions (11.3%), CTR 3.71% | Note for any future locale work; no change now |
+
+### 21.3 Revised sequencing
+
+Gating measurements first (all XS, no engineering):
+
+1. **Query→page export** for `/` and `/roman-urdu-transliteration`, filtered to `english to urdu typing`. Result decides whether A3 holds. Gates Slice B scope.
+2. **Host×date export** (`www` vs apex) plus a live `npm run seo:live` check. Decides whether consolidation is progressing and whether it explains the 18 Aug step change. Gates Slice A conclusions.
+3. **Identify the landing page for "online InPage" queries** and record the intended owner. Gates Slice C copy.
+4. **Baseline hygiene:** exclude 26 Sep; record 18–19 Aug as a known discontinuity.
+
+Then, with changes to the original slices:
+
+| Slice | Change |
+| --- | --- |
+| A | Add items 1–4 above to P0 acceptance. Keep "no redirect changes without a proven live defect" but treat the `www` share as evidence to investigate, not as noise |
+| B | Keep the working Roman tool. Re-scope success to Roman demand (≈8k impressions), retitle away from the `english to urdu typing` phrase, and measure movement of the Roman page's non-Roman impressions separately |
+| C | Keep one bidirectional route. Softer claim: Unicode→InPage emphasis is a bet on a large query at pos 7.6, not a confirmed gap. Do not disturb whatever page currently wins "online InPage" |
+| D | Plan for 0.2–0.5% on `english to urdu typing`. Treat ≥1% as outside Write Urdu's control until SERP evidence shows otherwise |
+| E | Keyboard reference proceeds as specified; resolve the `www/urdu-keyboard` split first |
+| F | Unchanged. Typing practice/test ≈2,560 impressions across 22 queries is a small lever |
+| G | Start from the stylish page's font demand; no standalone fonts product yet |
+
+Not supported by this evidence: voice as an acquisition lever (≈57 impressions across 3 queries), a standalone typing-test route, a backlink campaign, and generic translation (agrees with §17).
+
+### 21.4 Risks not previously recorded
+
+- **Migration dip:** consolidating `www` → apex requires the ≈19% click share currently on `www` to move. An incomplete or slow move could reduce clicks, and may partly explain the impression pattern since 18 Aug. Monitor the three high-click pages first.
+- **Optimising the unwinnable:** the largest impression numbers belong to a query family that returns almost no clicks at any position. Success criteria should be defined on clicks and activation, not impressions or average position.
+
+### 21.5 Revised scenarios (constant impressions, per 3 months)
+
+| Query / cluster | Impressions | Now | Plausible | Basis |
+| --- | ---: | ---: | ---: | --- |
+| english to urdu typing | 164,935 | 135 (0.08%) | 330–825 (0.2–0.5%) | Translation-like SERP (A1) |
+| unicode to inpage | 38,135 | 85 (0.22%) | ≈380 (1%) | Requires rank ≈5–6 |
+| urdu typing | 27,294 | 471 (1.73%) | 819–1,365 (3–5%) | Requires rank ≈4–5 |
+| keyboard (4 queries) | 24,150 | 197 (0.82%) | 483–725 (2–3%) | Needs rank and `www` fix |
+| roman urdu to urdu | 4,862 | 47 (0.97%) | 146–243 (3–5%) | Roman demand only |
+
+These are arithmetic scenarios, not forecasts.
+
+### 21.6 Evidence still needed
+
+Query→page data; host×date data; the `11_41_08` Planner export; Pakistan-localised SERP review for `english to urdu typing`, `unicode to inpage` and `urdu keyboard online`; competitor age, authority and whether small domains outrank Write Urdu (needed to test the authority hypothesis, which this evidence neither supports nor rules out); the full-fidelity query set via the Search Console API.
