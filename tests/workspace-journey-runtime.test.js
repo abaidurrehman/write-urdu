@@ -17,6 +17,7 @@ assert.deepStrictEqual(registry.validate(), [], 'workspace registry must be inte
 assert.strictEqual(registry.findByRoute('/index.html').id, 'basic-writer');
 assert.strictEqual(registry.findByRoute('/tools/urdu-voice-typing/index.html').id, 'voice-typing');
 assert.strictEqual(registry.findByRoute('/tools/inpage-unicode-converter/').id, 'inpage-converter');
+assert.strictEqual(registry.findByRoute('/roman-urdu-transliteration').id, 'roman-converter');
 assert.strictEqual(registry.findByRoute('/s/example-share').id, 'public-share');
 assert.strictEqual(registry.get('image-to-urdu-text').label, 'Image to Urdu Text', 'plain-language image-to-text label must lead');
 assert.strictEqual(registry.get('image-to-urdu-text').technicalLabel, 'Urdu OCR', 'OCR stays available as a secondary technical/search term');

@@ -9,6 +9,7 @@
             label: { en: 'Write', ur: 'لکھیں' },
             items: [
                 { href: '/', icon: 'write', label: { en: 'Start writing in Urdu', ur: 'اردو لکھنا شروع کریں' }, tool: { en: 'English to Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ' } },
+                { href: '/roman-urdu-transliteration', icon: 'convert', label: { en: 'Convert Roman Urdu to Urdu script', ur: 'رومن اردو کو اردو رسم الخط میں بدلیں' }, tool: { en: 'Roman Urdu converter', ur: 'رومن اردو کنورٹر' } },
                 { href: '/urdu-keyboard', icon: 'keyboard', label: { en: 'Type directly in Urdu', ur: 'اردو براہِ راست ٹائپ کریں' }, tool: { en: 'Urdu Keyboard', ur: 'اردو کی بورڈ' } },
                 { href: '/urdu-editor', icon: 'document', label: { en: 'Format an assignment or document', ur: 'اسائنمنٹ یا دستاویز فارمیٹ کریں' }, tool: { en: 'Rich Text Editor', ur: 'رچ ٹیکسٹ ایڈیٹر' } },
                 { href: '/tools/urdu-voice-typing', icon: 'voice', label: { en: 'Speak and turn it into Urdu text', ur: 'بول کر اردو متن بنائیں' }, tool: { en: 'Urdu Voice Typing', ur: 'اردو وائس ٹائپنگ' } },
@@ -49,7 +50,6 @@
             items: [
                 { href: '/urdu-typing-practice', icon: 'keyboard', label: { en: 'Practise Urdu typing and measure your speed', ur: 'اردو ٹائپنگ کی مشق کریں اور رفتار ناپیں' }, tool: { en: 'Typing Practice & Speed Test', ur: 'ٹائپنگ مشق اور رفتار ٹیسٹ' } },
                 { href: '/urdu-alphabet', icon: 'alphabet', label: { en: 'Learn the Urdu alphabet', ur: 'اردو حروف تہجی سیکھیں' }, tool: { en: 'Alphabet guide', ur: 'حروف تہجی گائیڈ' } },
-                { href: '/roman-urdu-transliteration', icon: 'convert', label: { en: 'How English to Urdu typing works', ur: 'انگریزی سے اردو ٹائپنگ کیسے کام کرتی ہے' }, tool: { en: 'Typing guide', ur: 'ٹائپنگ گائیڈ' } },
                 { href: '/urdu-fonts-nastaliq-vs-naskh', icon: 'document', label: { en: 'Choose an Urdu font', ur: 'اردو فونٹ منتخب کریں' }, tool: { en: 'Nastaliq vs Naskh guide', ur: 'نستعلیق بمقابلہ نسخ گائیڈ' } },
                 { href: '/english-urdu-typing-tutorial', icon: 'keyboard', label: { en: 'Learn English-to-Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ سیکھیں' }, tool: { en: 'Typing tutorial', ur: 'ٹائپنگ سبق' } },
                 { href: '/how-to-write-urdu-on-photo', icon: 'image', label: { en: 'Learn to put Urdu on a photo', ur: 'تصویر پر اردو لکھنا سیکھیں' }, tool: { en: 'Photo guide', ur: 'تصویر گائیڈ' } },
@@ -87,6 +87,7 @@
             label: { en: 'Write Urdu', ur: 'اردو لکھیں' },
             items: [
                 { href: '/', label: { en: 'English to Urdu typing', ur: 'انگریزی سے اردو ٹائپنگ' } },
+                { href: '/roman-urdu-transliteration', label: { en: 'Roman Urdu converter', ur: 'رومن اردو کنورٹر' } },
                 { href: '/urdu-keyboard', label: { en: 'Urdu keyboard', ur: 'اردو کی بورڈ' } },
                 { href: '/urdu-editor', label: { en: 'Urdu editor', ur: 'اردو ایڈیٹر' } },
                 { href: '/tools/urdu-voice-typing', label: { en: 'Voice to Urdu', ur: 'آواز سے اردو' } },

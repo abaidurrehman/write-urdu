@@ -9,7 +9,7 @@ const PAGE_TOPICS = {
   home: ['English to Urdu typing', 'Urdu typing online', 'Urdu writing online'],
   'urdu-editor': ['Urdu document editing', 'Urdu document formatting'],
   'urdu-keyboard': ['Urdu keyboard', 'Direct Urdu typing'],
-  'roman-urdu-transliteration': ['English to Urdu typing', 'Roman Urdu typing'],
+  'roman-urdu-transliteration': ['Roman Urdu to Urdu', 'Urdu transliteration'],
   'urdu-alphabet': ['Urdu alphabet', 'Urdu script'],
   'write-urdu-documentation': ['Urdu typing', 'Urdu writing', 'Write Urdu help']
 };
@@ -111,7 +111,7 @@ function websiteNode(config) {
 function applicationCategory(pageId) {
   if (pageId === 'urdu-typing-practice') return 'EducationalApplication';
   if (['urdu-card-studio', 'urdu-card-gallery', 'urdu-cards', 'urdu-instagram-post-maker', 'urdu-whatsapp-status-maker', 'urdu-name-art-maker'].includes(pageId)) return 'DesignApplication';
-  if (['home', 'urdu-editor', 'urdu-writing-templates'].includes(pageId)) return 'WritingApplication';
+  if (['home', 'urdu-editor', 'urdu-writing-templates', 'roman-urdu-transliteration'].includes(pageId)) return 'WritingApplication';
   if (['urdu-invoice-generator', 'urdu-bill-generator'].includes(pageId)) return 'BusinessApplication';
   return 'UtilitiesApplication';
 }
@@ -121,6 +121,7 @@ function applicationFeatures(pageId) {
     home: ['Type Urdu with English letters', 'Urdu word suggestions', 'Direct Urdu typing', 'Copy and save drafts', 'Download text'],
     'urdu-editor': ['Format Urdu documents', 'Urdu fonts and alignment', 'Download Word, PDF and PNG'],
     'urdu-keyboard': ['On-screen Urdu keyboard', 'Physical keyboard input', 'Copy and download text'],
+    'roman-urdu-transliteration': ['Convert Roman Urdu to Urdu script', 'Edit and copy Urdu output', 'Continue editing without an account'],
     'urdu-typing-practice': ['12 guided Urdu typing lessons', '1, 2 and 5 minute speed tests', 'WPM and accuracy scoring', 'CRULP-style phonetic keyboard guide', 'Native Urdu keyboard mode', 'Progress history, streaks and personal bests'],
     'urdu-card-studio': ['Create Urdu quote and poetry images', 'Urdu fonts and templates', 'Use your own background image', 'Move and edit text on the design', 'Download PNG'],
     'urdu-card-gallery': ['Preview Urdu text across many card designs', 'Filter designs by category', 'Continue a selected design in Urdu Card Studio', 'Use without an account'],

@@ -25,7 +25,7 @@ assert.strictEqual(ads.normalizePath('/urdu-alphabet/'), '/urdu-alphabet', 'Trai
 assert.strictEqual(ads.resolvePageType('/'), 'write', 'Homepage must remain a conservative Write surface');
 assert.strictEqual(ads.resolvePageType('/urdu-editor'), 'write', 'Rich Editor must remain a conservative Write surface');
 assert.strictEqual(ads.resolvePageType('/urdu-keyboard'), 'write', 'Urdu Keyboard must remain a conservative Write surface');
-assert.strictEqual(ads.resolvePageType('/roman-urdu-transliteration'), 'learn', 'Roman Urdu guide must be a Learn surface');
+assert.strictEqual(ads.resolvePageType('/roman-urdu-transliteration'), 'write', 'Roman Urdu converter must receive write-surface ad protection');
 assert.strictEqual(ads.resolvePageType('/urdu-alphabet'), 'learn', 'Urdu Alphabet must be a Learn surface');
 assert.strictEqual(ads.resolvePageType('/urdu-card-studio'), 'create', 'Card Studio must be a Create surface');
 assert.strictEqual(ads.resolvePageType('/urdu-card-gallery'), 'create', 'Public Card Gallery must use the protected Create-page placement');

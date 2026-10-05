@@ -31,7 +31,7 @@ assert.match(shellRuntime, /Rich Text Editor/, 'v2 navigation must retain the Ri
 assert.match(shellRuntime, /Urdu Keyboard/, 'v2 navigation must retain the Urdu Keyboard route');
 assert.match(shellRuntime, /Invoice Generator/, 'v2 navigation must retain the business workflow');
 assert.match(shellRuntime, /Help and learning/, 'v2 navigation must provide a focused learning menu');
-assert.match(shellRuntime, /Roman Urdu guide/, 'v2 navigation must expose the Roman Urdu guide');
+assert.match(shellRuntime, /Roman Urdu converter/, 'v2 navigation must expose the Roman Urdu converter');
 
 assert.match(documentation, /class="documentation-page v2-content-page"/, 'Documentation must use the shared v2 content page contract');
 assert.match(documentation, /css\/v2-content\.css/, 'Documentation must load the v2 content system');

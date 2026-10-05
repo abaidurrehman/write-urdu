@@ -1,0 +1,144 @@
+body.roman-urdu-page .authority-hero {
+  grid-template-columns: minmax(0, .78fr) minmax(420px, 1.22fr);
+  align-items: start;
+}
+
+.roman-converter {
+  padding: clamp(18px, 3vw, 26px);
+  border: 1px solid var(--authority-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: 0 12px 32px rgba(20, 35, 28, .08);
+}
+
+.roman-converter h2 {
+  margin: 0;
+  color: var(--authority-ink);
+  font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+}
+
+.roman-converter-intro,
+.roman-converter-note {
+  color: var(--authority-muted);
+  font-size: .86rem;
+  line-height: 1.55;
+}
+
+.roman-converter-intro {
+  margin: 7px 0 16px;
+}
+
+.roman-converter-field {
+  display: grid;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.roman-converter-field label {
+  color: var(--authority-ink);
+  font-size: .82rem;
+  font-weight: 700;
+}
+
+.roman-converter textarea {
+  width: 100%;
+  min-height: 112px;
+  resize: vertical;
+  padding: 13px 14px;
+  border: 1px solid #b9cbc0;
+  border-radius: 11px;
+  color: var(--authority-ink);
+  background: #fff;
+  font: inherit;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.roman-converter textarea[data-roman-output] {
+  min-height: 126px;
+  font-family: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+  font-size: 1.15rem;
+}
+
+.roman-converter textarea:focus-visible {
+  border-color: var(--authority-brand);
+  outline: 3px solid rgba(23, 111, 69, .2);
+  outline-offset: 1px;
+}
+
+.roman-converter-examples,
+.roman-converter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.roman-converter-examples {
+  margin-top: 10px;
+}
+
+.roman-converter-examples button,
+.roman-converter-actions button {
+  min-height: 44px;
+  padding: 9px 13px;
+  border: 1px solid var(--authority-line);
+  border-radius: 10px;
+  color: var(--authority-brand-strong);
+  background: #fff;
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.roman-converter-actions {
+  margin-top: 14px;
+}
+
+.roman-converter-actions [data-roman-convert],
+.roman-converter-actions [data-roman-continue] {
+  border-color: var(--authority-brand);
+  color: #fff;
+  background: var(--authority-brand);
+}
+
+.roman-converter button:hover:not(:disabled) {
+  border-color: var(--authority-brand-strong);
+  background: var(--authority-soft);
+}
+
+.roman-converter-actions [data-roman-convert]:hover:not(:disabled),
+.roman-converter-actions [data-roman-continue]:hover:not(:disabled) {
+  color: #fff;
+  background: var(--authority-brand-strong);
+}
+
+.roman-converter button:disabled {
+  cursor: not-allowed;
+  opacity: .52;
+}
+
+.roman-converter-status {
+  min-height: 1.5em;
+  margin: 12px 0 0;
+  color: var(--authority-muted);
+  font-size: .8rem;
+}
+
+.roman-converter-status[data-state="success"] { color: var(--authority-brand-strong); }
+.roman-converter-status[data-state="error"] { color: #9a3412; }
+
+.roman-example-grid code {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+@media (max-width: 900px) {
+  body.roman-urdu-page .authority-hero { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .roman-converter { padding: 17px 14px; }
+  .roman-converter-actions { display: grid; }
+  .roman-converter-actions button { width: 100%; }
+}

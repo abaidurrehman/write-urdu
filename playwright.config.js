@@ -21,6 +21,7 @@ module.exports = defineConfig({
     'home-featured-card.spec.js',
     'whatsapp-status-discovery.spec.js',
     'seo-acquisition.spec.js',
+    'roman-urdu-converter.spec.js',
     'urdu-keyboard-reference.spec.js',
     'role-journeys.spec.js',
     'sitemap-directory.spec.js',
@@ -52,7 +53,7 @@ module.exports = defineConfig({
   ],
   webServer: {
     command: 'node tests/server.js',
-    url: testBaseUrl,
+    url: `${testBaseUrl}/roman-urdu-transliteration`,
     env: { ...process.env, PORT: testPort },
     reuseExistingServer: true
   }
