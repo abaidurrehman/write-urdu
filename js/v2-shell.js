@@ -102,7 +102,7 @@
             '<div class="wu-nav-menu-heading">' + customLabel('Help and learning', 'مدد اور رہنمائی') + '</div>',
             link('/write-urdu-documentation', label('documentation', 'Documentation')),
             link('/urdu-faq', label('faq', 'FAQ')),
-            link('/roman-urdu-transliteration', customLabel('Roman Urdu guide', 'رومن اردو رہنما')),
+            link('/roman-urdu-transliteration', customLabel('Roman Urdu converter', 'رومن اردو کنورٹر')),
             link('/urdu-alphabet', label('alphabet', 'Urdu Alphabet')),
             link('/english-urdu-typing-tutorial', label('tutorials', 'Tutorials')),
             link('/urdu-fonts-nastaliq-vs-naskh', customLabel('Urdu fonts', 'اردو فونٹس'))
@@ -148,7 +148,7 @@
                         '<div class="wu-footer-group"><h2>' + customLabel('Learn', 'سیکھیں') + '</h2>' +
                             link('/write-urdu-documentation', label('documentation', 'Documentation')) +
                             link('/urdu-faq', label('faq', 'FAQ')) +
-                            link('/roman-urdu-transliteration', customLabel('Roman Urdu guide', 'رومن اردو رہنما')) +
+                            link('/roman-urdu-transliteration', customLabel('Roman Urdu converter', 'رومن اردو کنورٹر')) +
                             link('/urdu-alphabet', label('alphabet', 'Urdu Alphabet')) +
                         '</div>' +
                         '<div class="wu-footer-group"><h2>' + customLabel('About', 'تعارف') + '</h2>' +

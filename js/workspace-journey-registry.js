@@ -11,6 +11,15 @@
 
     var WORKSPACES = [
         {
+            id: 'roman-converter', routes: ['/roman-urdu-transliteration'], status: 'current', category: 'Write', stages: ['Capture', 'Write'],
+            label: 'Convert Roman Urdu to Urdu', technicalLabel: 'Roman Urdu Converter',
+            jobs: ['convert Roman Urdu to Urdu script', 'review Roman Urdu transliteration'], accepts: ['plain-text'], produces: ['plain-text'],
+            persistence: 'source/result local only', conflictPolicy: 'never overwrite source input automatically',
+            next: [
+                { id: 'roman-to-basic', target: 'basic-writer', type: 'handoff', label: 'Continue editing', payloadKind: 'plain-text' }
+            ]
+        },
+        {
             id: 'basic-writer', routes: ['/'], status: 'current', category: 'Write', stages: ['Capture', 'Write'],
             label: 'Start writing in Urdu', technicalLabel: 'Basic writer',
             jobs: ['write a message', 'convert Roman Urdu to Urdu'], accepts: ['plain-text'], produces: ['plain-text'],

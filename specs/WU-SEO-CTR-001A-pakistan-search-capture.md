@@ -345,15 +345,15 @@ Do not place a disruptive ad inside the active conversion workspace.
 
 ### 6.7 Roman-page acceptance
 
-- [ ] Conversion works on the page itself.
-- [ ] `/` still owns broad English-to-Urdu typing language.
-- [ ] Roman page title/H1 explicitly own Roman Urdu/transliteration intent.
+- [x] Conversion works on the page itself.
+- [x] `/` still owns broad English-to-Urdu typing language.
+- [x] Roman page title/H1 explicitly own Roman Urdu/transliteration intent.
 - [ ] Success reporting separates Roman-query clicks from non-Roman impressions leaving the page.
-- [ ] No duplicate transliteration engine introduced.
-- [ ] Mobile first useful viewport contains the task, not a long article intro.
-- [ ] Copy/editor next step works without sign-up.
-- [ ] Translation distinction is accurate and non-promotional.
-- [ ] Existing privacy rules are preserved.
+- [x] No duplicate transliteration engine introduced.
+- [x] Mobile first useful viewport contains the task, not a long article intro.
+- [x] Copy/editor next step works without sign-up.
+- [x] Translation distinction is accurate and non-promotional.
+- [x] Existing privacy rules are preserved.
 
 ## 7. P1-B — InPage demand alignment
 

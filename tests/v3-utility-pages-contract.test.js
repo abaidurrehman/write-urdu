@@ -31,7 +31,7 @@ assert.match(search, /partner-pub-4727847909946286:e8ay8o1zxjh/, 'Google Custom 
 assert.match(search, /id=\"cse-search-results\"/, 'Google Custom Search result mount must be preserved');
 assert.match(search, /googleSearchIframeName/, 'Google Custom Search result configuration must be preserved');
 assert.match(search, /Search queries are sent to Google/, 'Search page must disclose third-party query processing');
-assert.match(search, /\/roman-urdu-transliteration/, 'Search page should offer a direct non-query route to the Roman Urdu guide');
+assert.match(search, /\/roman-urdu-transliteration/, 'Search page should offer a direct non-query route to the Roman Urdu converter');
 
 assert.strictEqual(ads.resolvePageType('/feedback'), 'trust', 'Feedback must remain in the ad-free trust group');
 assert.strictEqual(ads.resolvePageType('/write-urdu-feedback'), 'trust', 'Legacy feedback route must remain classified as trust during redirect migration');

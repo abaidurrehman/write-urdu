@@ -27,6 +27,7 @@ assert.match(navigation, /data-wu-drafts-utility-slot/, 'My drafts utility/accou
 
 assert.match(primaryNavigation, /Start writing in Urdu/, 'Write menu must lead with the user outcome, not Basic Writer');
 assert.match(primaryNavigation, /English to Urdu typing/, 'Primary typing language must match observed search intent');
+assert.match(primaryNavigation, /Convert Roman Urdu to Urdu script/, 'Write menu must expose the explicit Roman conversion task');
 assert.doesNotMatch(primaryNavigation, /Roman Urdu writer|Understand Roman Urdu transliteration/, 'User-facing navigation must avoid internal transliteration terminology');
 assert.match(primaryNavigation, /Format an assignment or document/, 'Write menu must expose document intent');
 assert.match(primaryNavigation, /Speak and turn it into Urdu text/, 'Voice Typing must be integrated as a current Write outcome');
@@ -65,7 +66,7 @@ assert.match(css, /body\.wu-v2-shell footer\.wu-footer\{color:#b9ccc1!important;
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer a,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group a\{color:#dce9e1!important\}/, 'Footer links must retain explicit light contrast');
 assert.match(css, /body\.wu-v2-shell footer\.wu-footer \.wu-footer-brand,body\.wu-v2-shell footer\.wu-footer \.wu-footer-group h2,body\.wu-v2-shell footer\.wu-footer strong\{color:#f4faf6!important\}/, 'Footer headings/brand must retain explicit high contrast');
 assert.match(css, /prefers-reduced-motion:reduce/, 'Outcome navigation must respect reduced-motion preferences');
-assert.match(sw, /write-urdu-shell-v52/, 'PWA cache version must include safe public-share remix assets');
+assert.match(sw, /write-urdu-shell-v53/, 'PWA cache version must include Roman converter assets');
 assert.match(sw, /js\/site-header-core\.js/, 'Preserved shell core must be cached for offline use');
 assert.match(sw, /js\/outcome-navigation\.js/, 'Outcome navigation runtime must be cached for offline use');
 assert.match(sw, /js\/core-workspace-convergence\.js/, 'Core workspace convergence runtime must be cached for offline use');

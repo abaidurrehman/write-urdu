@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const blockExternalServices = page => page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+const blockExternalServices = page => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?\/)/, route => route.abort());
 
 async function open(page, route) {
   await blockExternalServices(page);
@@ -60,13 +60,14 @@ test('documentation gives the homepage one contextual generic Urdu typing link',
   await expect(page.locator('h1')).toHaveText('Write Urdu, beautifully explained.');
 });
 
-test('secondary English-to-Urdu typing guide keeps its canonical route without technical search-facing language', async ({ page }) => {
+test('Roman Urdu route owns a task-first converter without taking the homepage phrase', async ({ page }) => {
   await open(page, '/roman-urdu-transliteration');
-  await expect(page.locator('h1')).toHaveText('English to Urdu Typing with English Letters');
-  await expect.poll(() => page.title()).toBe('English to Urdu Typing with English Letters | WriteUrdu');
+  await expect(page.locator('h1')).toHaveText('Roman Urdu to Urdu Converter');
+  await expect.poll(() => page.title()).toBe('Roman Urdu to Urdu Converter – Urdu Transliteration Online | WriteUrdu');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://write-urdu.com/roman-urdu-transliteration');
-  await expect(page.locator('h1')).not.toContainText('Roman Urdu');
-  expect(await page.title()).not.toMatch(/Roman Urdu|transliteration/i);
+  await expect(page.locator('[data-roman-urdu-converter]')).toBeVisible();
+  await expect(page.locator('[data-roman-source]')).toBeVisible();
+  expect(await page.title()).not.toMatch(/^English to Urdu Typing Online\b/i);
 });
 
 test('Card Studio keeps its acquisition metadata and application schema after shared shell initialization', async ({ page }) => {

@@ -1,5 +1,5 @@
-// WU-CARD-GALLERY: refresh cached authoring assets within the governed v51 shell generation.
-const CACHE_NAME = 'write-urdu-shell-v52';
+// Refresh cached authoring assets within the governed v53 shell generation.
+const CACHE_NAME = 'write-urdu-shell-v53';
 const APP_SHELL = [
   './',
   './index.html',
@@ -17,6 +17,7 @@ const APP_SHELL = [
   './urdu-fonts-nastaliq-vs-naskh.html',
   './css/site-header.css',
   './css/v2-shell.css',
+  './css/roman-urdu-converter.css',
   './css/v3-production-polish.css',
   './css/account.css',
   './css/account-documents.css',
@@ -129,6 +130,7 @@ const APP_SHELL = [
   './js/unified-urdu-input.js',
   './js/writer-voice-input.js',
   './js/batch-transliteration.js',
+  './js/roman-urdu-converter.js',
   './js/content-locale.js',
   './js/social-maker-core.js',
   './js/card-studio-core.js',

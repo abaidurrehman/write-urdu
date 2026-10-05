@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const blockExternalServices = page => page.route(/^https?:\/\/(?!127\.0\.0\.1:8765)/, route => route.abort());
+const blockExternalServices = page => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?\/)/, route => route.abort());
 
 async function open(page, route) {
   await blockExternalServices(page);
@@ -29,6 +29,7 @@ test('global navigation is organized by Write / Create / Tools / Learn outcomes'
   const firstWrite = groups.nth(0).locator('.wu-outcome-link').first();
   await expect(firstWrite.locator('strong')).toHaveText('Start writing in Urdu');
   await expect(firstWrite.locator('small')).toHaveText('English to Urdu typing');
+  await expect(groups.nth(0).locator('a[href="/roman-urdu-transliteration"] strong')).toHaveText('Convert Roman Urdu to Urdu script');
   await expect(groups.nth(0).locator('a[href="/tools/urdu-voice-typing"]')).toContainText('Speak and turn it into Urdu text');
   await expect(groups.nth(0).locator('a[href="/tools/inpage-unicode-converter"]')).toContainText('Convert older InPage Urdu');
 
@@ -48,10 +49,10 @@ test('global navigation is organized by Write / Create / Tools / Learn outcomes'
 
   await groups.nth(3).locator('.wu-outcome-toggle').click();
   await expect(groups.nth(3).locator('a[href="/urdu-alphabet"] strong')).toHaveText('Learn the Urdu alphabet');
-  await expect(groups.nth(3).locator('a[href="/roman-urdu-transliteration"] strong')).toHaveText('How English to Urdu typing works');
+  await expect(groups.nth(3).locator('a[href="/roman-urdu-transliteration"]')).toHaveCount(0);
   await expect(groups.nth(3).locator('a[href="/urdu-faq"] strong')).toHaveText('Get answers to common questions');
 
-  await expect(nav).not.toContainText('transliteration');
+  await expect(nav).not.toContainText('Understand Roman Urdu transliteration');
   await expect(nav).not.toContainText('Convert legacy InPage text');
   await expect(page.locator('[data-wu-drafts-utility-slot]')).toHaveCount(1);
   await expect(nav.locator('[data-wu-nav-group="my-drafts"], [data-wu-nav-group="drafts"]')).toHaveCount(0);
@@ -63,7 +64,7 @@ test('outcome navigation keeps established route owners and active category stat
     ['/urdu-editor.html', 'write'],
     ['/urdu-card-studio.html', 'create'],
     ['/urdu-invoice-generator.html', 'work'],
-    ['/roman-urdu-transliteration.html', 'learn'],
+    ['/roman-urdu-transliteration.html', 'write'],
     ['/tools/urdu-voice-typing', 'write'],
     ['/tools/inpage-unicode-converter', 'write']
   ];
@@ -86,7 +87,7 @@ test('footer is compact and organized around Write Urdu / Create / Help', async 
   await expect(footer.locator('[data-wu-footer-group="write-urdu"] a').first()).toHaveText('English to Urdu typing');
   await expect(footer.locator('a[href="/urdu-editor"]')).toHaveCount(1);
   await expect(footer.locator('a[href="/urdu-card-studio"]')).toHaveCount(1);
-  await expect(footer).not.toContainText('Roman Urdu');
+  await expect(footer.locator('a[href="/roman-urdu-transliteration"]')).toHaveText('Roman Urdu converter');
   await expect(footer).not.toContainText('transliteration');
 
   await expect(page.locator('.wu-footer-privacy-note')).toHaveText('Your writing is yours. See Privacy for details.');

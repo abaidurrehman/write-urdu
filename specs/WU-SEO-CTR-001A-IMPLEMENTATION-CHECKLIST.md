@@ -89,12 +89,14 @@ Increase qualified organic clicks and completed Urdu-writing tasks by improving 
 
 ## A4 — Roman Urdu task
 
-- [ ] Confirm the page's query mix before implementation.
-- [ ] Reuse the current transliteration engine/provider and failure handling.
-- [ ] Put working input/output before long explanation.
-- [ ] Use Roman-specific title/H1 language; remove overlap with the homepage's broad phrase.
-- [ ] Provide Copy and Continue Editing without sign-up.
-- [ ] Test common spelling ambiguity and only show examples reproduced by the production engine.
+**Execution note (2026-10-05):** the page-filtered Search Console export records 120 clicks and 45,493 impressions. Visible explicit Roman/transliteration queries account for 37 clicks and 3,018 impressions, while broad non-Roman wording accounts for 37,264 impressions at 0.06% CTR. A4 therefore targets qualified Roman demand and treats loss of broad overlap impressions as expected, not failure.
+
+- [x] Confirm the page's query mix before implementation. See [`A4-ROMAN-QUERY-MIX.md`](../docs/evidence/WU-SEO-CTR-001A/2026-10-04/A4-ROMAN-QUERY-MIX.md).
+- [x] Reuse the current transliteration engine/provider and failure handling.
+- [x] Put working input/output before long explanation.
+- [x] Use Roman-specific title/H1 language; remove overlap with the homepage's broad phrase.
+- [x] Provide Copy and Continue Editing without sign-up.
+- [x] Test common spelling ambiguity and only show examples reproduced by the production engine.
 - [ ] Report Roman-query clicks/activation separately from disappearing non-Roman impressions.
 
 **Scenario:** `roman urdu to urdu` at 3–5% is about 146–243 clicks per three months versus 47 now. Do not use all 45,493 page impressions as obtainable Roman traffic.
@@ -130,10 +132,10 @@ Increase qualified organic clicks and completed Urdu-writing tasks by improving 
 
 ## Required proof for every shipped action
 
-- [ ] Focused contract/static tests pass.
-- [ ] `npm run seo:check` passes when metadata/ownership changes.
-- [ ] `npm run governance:check` passes when governed public routes/specs change.
-- [ ] Focused desktop and Pakistani mobile viewport QA passes for UI changes.
+- [x] Focused contract/static tests pass.
+- [x] `npm run seo:check` passes when metadata/ownership changes.
+- [x] `npm run governance:check` passes when governed public routes/specs change.
+- [x] Focused desktop and Pakistani mobile viewport QA passes for UI changes.
 - [ ] Old/new values, deployed commit, baseline window and confounders are logged.
 - [ ] Search Console comparison uses the same country, device, query and page filters.
 - [ ] Decision is recorded as keep, iterate, rollback or insufficient evidence.

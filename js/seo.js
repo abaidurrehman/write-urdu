@@ -58,7 +58,7 @@
         home: ['English to Urdu typing', 'Urdu typing online', 'Urdu writing online', 'Roman Urdu transliteration'],
         'urdu-editor': ['Urdu rich text editing', 'Urdu document formatting'],
         'urdu-keyboard': ['Urdu keyboard', 'Direct Urdu typing'],
-        'roman-urdu-transliteration': ['Roman Urdu', 'Urdu transliteration'],
+        'roman-urdu-transliteration': ['Roman Urdu to Urdu', 'Urdu transliteration'],
         'urdu-alphabet': ['Urdu alphabet', 'Urdu script'],
         'write-urdu-documentation': ['Urdu typing', 'Urdu writing', 'Write Urdu documentation']
     };
