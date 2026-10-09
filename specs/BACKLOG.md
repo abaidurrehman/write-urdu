@@ -230,7 +230,7 @@ Human/product gates:
 - [x] `js/outcome-navigation.js` Create group/footer group gained `urdu-card-gallery` and `urdu-cards` entries (single nav source of truth; propagates via `npm run shell:sync`).
 - [x] Reciprocal on-page links added between all three routes (not nav-only).
 - [x] `js/workspace-journey-registry.js` status flipped from `planned` to `current` for `card-gallery` and `urdu-cards`.
-- [ ] Post-change Search Console/Product Pulse review of whether the split intent actually avoids cannibalizing `/urdu-card-studio` query ownership (owned by `WU-SEO-CTR-001`/P0.1G once volume supports it).
+- [x] Post-change Search Console review (28-day export, 2026-10): `/urdu-card-studio` grew to 141 clicks/1,331 impressions (pos 4.49) vs ~126 clicks/2,806 impressions over the prior 3-month window — accelerating, not losing ground. `/urdu-cards` (5 clicks/78 impr) and `/urdu-card-gallery` (3 clicks/50 impr, incl. variants) also grew over the same 28 days vs their prior 3-month totals. All three pages trending up together; zero "card"-containing queries appear in the top 500 site queries for either window, so impressions come from generic/long-tail terms, not competing branded queries. No cannibalization observed — additive, not stolen, volume.
 
 **Guardrail:** this exception covers indexing/nav/cross-linking only. It is not permission to change Card Studio's canvas/export/renderer, to duplicate the background registry, or to add live-canvas-per-preview architecture to the Gallery/Cards pages. If evidence later shows cannibalization, retitle/re-scope rather than de-index without a decision.
 

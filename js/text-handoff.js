@@ -101,6 +101,47 @@
         if (visible) preserveBasicSnapshot({ content: target.value, text: target.value, savedAt: Date.now() });
     }
 
+    function v2PathDetail(targetWorkspace) {
+        if (!root || !root.sessionStorage) return null;
+        try {
+            var envelope = JSON.parse(root.sessionStorage.getItem('write-urdu:workspace-handoff:v2:' + targetWorkspace) || 'null');
+            if (!envelope || !envelope.source || !envelope.source.workspace || !envelope.target || envelope.target.workspace !== targetWorkspace) return null;
+            var context = envelope.context && typeof envelope.context === 'object' ? envelope.context : {};
+            var recommendation = context.recommendationId || envelope.actionId;
+            if (!recommendation) return null;
+            return {
+                sourceWorkspace: envelope.source.workspace,
+                destinationWorkspace: targetWorkspace,
+                recommendationId: recommendation,
+                pathVersion: context.pathVersion,
+                releaseMarker: context.releaseMarker,
+                handoffRequired: context.handoffRequired !== false,
+                restoreRequired: context.restoreRequired !== false
+            };
+        } catch (error) {
+            return null;
+        }
+    }
+
+    // Product telemetry is injected after DOMContentLoaded, so the detail is
+    // captured synchronously (before the v2 envelope is discarded) and delivered
+    // once the client is available.
+    function reportDestinationImport(targetWorkspace) {
+        var detail = v2PathDetail(targetWorkspace);
+        if (!detail || !root) return;
+        var attempts = 0;
+        (function deliver() {
+            var telemetry = root.WriteUrduTelemetry;
+            if (telemetry && typeof telemetry.trackContinuationPath === 'function') {
+                telemetry.trackContinuationPath('destination_ready', detail);
+                telemetry.trackContinuationPath('payload_restored', detail);
+                return;
+            }
+            attempts += 1;
+            if (attempts < 60) root.setTimeout(deliver, 250);
+        }());
+    }
+
     function discardV2(targetWorkspace) {
         var runtime = root && root.WriteUrduWorkspaceHandoff;
         if (runtime && typeof runtime.discard === 'function') {
@@ -127,6 +168,7 @@
         target.dispatchEvent(new Event('change', { bubbles: true }));
         if (typeof target.focus === 'function') target.focus();
         try { target.setSelectionRange(target.value.length, target.value.length); } catch (error) { }
+        reportDestinationImport('basic-writer');
         discardV2('basic-writer');
         var notice = root.document.getElementById('appNotifications');
         if (notice) {
@@ -147,6 +189,7 @@
         source.dispatchEvent(new Event('input', { bubbles: true }));
         analyze.click();
         if (typeof source.focus === 'function') source.focus();
+        reportDestinationImport('text-cleaner');
         discardV2('text-cleaner');
         return true;
     }

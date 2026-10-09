@@ -225,7 +225,7 @@
             context: {
                 recommendationId: recommendationId || actionId(sourceWorkspace, targetWorkspace),
                 pathVersion: 'v2',
-                releaseMarker: Handoff.CONTINUATION_RELEASE_MARKER || 'wu-plat-002h-s1-2026-09-06-v1',
+                releaseMarker: Handoff.CONTINUATION_RELEASE_MARKER || 'wu-plat-002h-s1-2026-10-09-v2',
                 handoffRequired: true,
                 restoreRequired: true
             }

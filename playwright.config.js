@@ -7,6 +7,7 @@ module.exports = defineConfig({
   testMatch: [
     'sua.spec.js',
     'journey.spec.js',
+    'continuation-telemetry-honesty.spec.js',
     'outcome-navigation.spec.js',
     'workspace-next-step.spec.js',
     'core-workspace-convergence.spec.js',

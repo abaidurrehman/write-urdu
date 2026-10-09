@@ -440,7 +440,7 @@
       if (!paths.length) pathRows.innerHTML = '<tr><td colspan="9" class="os-empty">No Slice 1 continuation path data yet for this period.</td></tr>';
       paths.forEach(function (item) {
         var row = document.createElement('tr');
-        var pathLabel = item.source_workspace + ' → ' + item.destination_workspace + ' · ' + item.path_version;
+        var pathLabel = item.source_workspace + ' → ' + item.destination_workspace + ' · ' + item.path_version + ' · ' + String(item.release_marker || '').replace(/^wu-plat-002h-/, '');
         var loss = item.dominant_loss ? (item.dominant_loss.stage + ' · ' + fmt(item.dominant_loss.loss)) : '—';
         var values = [item.recommendation_id, pathLabel, fmt(item.eligible), fmt(item.shown), fmt(item.selected), fmt(item.destination_ready), item.restore_required ? fmt(item.payload_restored) : 'N/A', fmt(item.meaningful_start), loss];
         values.forEach(function (value, index) {
