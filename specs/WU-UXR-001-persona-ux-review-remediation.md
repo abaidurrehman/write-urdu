@@ -33,7 +33,7 @@ Finding IDs `F1`–`F34` below refer to the review report.
 | 0 | Production verification | Confirm the sandbox-uncertain findings | this doc | Not frozen | S |
 | A | Regression hotfixes | Wrong headings, wrong link, runtime errors, a11y names | maintenance | Not frozen | S |
 | B | Typing resilience | Visible failure state; provider risk | `WU-JOURNEY-001B`, `WU-INPUT-001` | B1 done; B2 recorded, provider change → `WU-JOURNEY-001B` §B5 | S |
-| C | Basic Writer mobile post-value | Restore, layout jump, duplicate guidance, voice, ad placement | `WU-PLAT-002H` / `WU-PLAT-004B` | Inside P0.1 | M |
+| C | Basic Writer mobile post-value | Ad inside workspace, duplicate status fixed; restore partly; rest re-scoped | `WU-PLAT-002H` / `WU-PLAT-004B` / `WU-PLAT-004C` | C5/C7 done; C2/C3 dropped; C1/C4/C6 need decision or evidence | S |
 | D | Card completion quality | Poetry line fit, Nastaliq default, artifact, mobile order | `WU-PLAT-002H` P0.1F, Card Studio | Inside P0.1F | M |
 | E | Export fidelity | PDF shaping, bill PDF, `.docx` | `WU-JOURNEY-001F` | E1–E2 audit allowed early; E4 gated | M–L |
 | F | Unified input in fields | Roman Urdu in card dialog, Card Studio, bill fields | `WU-VOICE-PLAT-001` / unified-input skill | Rollout gate | M |
@@ -113,17 +113,24 @@ Tests:
 
 ### Slice C — Basic Writer mobile post-value (inside `WU-PLAT-002H`)
 
-Must respect `WU-PLAT-004B` (Copy → Preview → Download ▾ → Share → Print → More) and `WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md`.
+**State:** Re-scoped and partly implemented 2026-10-10 on `claude/wu-uxr-001c-basic-writer-mobile` (stacked on Slice B).
 
-- [ ] **C1 (F9)** Draft restore: when a saved draft exists and the editor is empty, show Restore/Discard *above* the editor in the first viewport, or auto-restore with an Undo. Owner: `js/editor-tools.js:636`.
-- [ ] **C2 (F10)** No layout jump: the post-value action bar must not push the textarea down after the first keystroke on mobile (measured shift ≈200px). Render the bar below the editor or reserve its height. Owners: `js/basic-writer-command-toolbar.js`, `js/basic-writer-export-priority.js`.
-- [ ] **C3 (F10)** Mobile: collapse PDF/Word/PNG tiles into the single `Download ▾` that `WU-PLAT-004B` already prescribes for desktop.
-- [ ] **C4 (F11)** Merge the hero line, the "Two ways to write Urdu" panel and the example strip into one instruction on mobile.
-- [ ] **C5 (F12)** Hide "Convert passage" after success; show the success status once.
-- [ ] **C6 (F13)** One tap on "Speak Urdu" starts listening (permission prompt included); keep the panel for status.
-- [ ] **C7 (F14)** Mobile ad slot moves below the post-value action area, never directly under the editor (`WU-ADSENSE-OPERATING-CONTRACT`).
+Governance applied: `WU-PLAT-002H-MOBILE-ACTIVATION-REPAIR.md` §15 requires any post-2026-09-04 hierarchy change to `/` to be justified with **post-release production evidence**, and forbids anything masking the usable writing area (§5.3) and churn from pre-release data. This review was a sandbox persona walkthrough, not that evidence, so every item was re-measured on current code and split into *defects* (fixed) and *hierarchy/flow changes* (left for decision).
 
-Tests: extend `tests/mobile-editor-activation.spec.js` and `tests/workspace-next-step.spec.js` with layout-shift (editor top before/after first input ≤ 8px), restore-visible-in-first-viewport and one-tap voice cases.
+| # | Finding | Re-measured result | Outcome |
+| --- | --- | --- | --- |
+| C1 | Draft Restore below the fold (F9) | Fresh visit, 412×839: Restore at 1,177 px → **1,016 px** after the C7 fix (desktop 1,305 → 1,088). After a reload it is inside the first viewport (672 px). Still below the fold on a fresh visit. | **Partly fixed** by C7. Making it fully visible needs auto-restore, a prompt above the editor, or an in-editor overlay — each conflicts with privacy on shared devices or with the mobile repair's no-masking (§5.3) / editor-first rules. → decision **D-5** |
+| C2 | Editor jumps ~200 px at first keystroke (F10) | Viewport top of the editor is unchanged (437 → 437 px); `captureEditorAnchor()` in `js/basic-writer-command-toolbar.js` already compensates. The review compared document positions. | **Dropped — not reproducible** |
+| C3 | Collapse PDF/Word/PNG into `Download ▾` on mobile | `WU-PLAT-004C` (2026-09-13) deliberately keeps PDF/Word/PNG first-level on compact screens because they are ~98.6% of measured exports. | **Dropped — superseded by `WU-PLAT-004C` evidence** |
+| C4 | Duplicate guidance above the editor (F11) | Still present (hero line, "Two ways…" panel, example strip). | **Not changed** — hierarchy change; needs post-release evidence per §15 |
+| C5 | "Convert passage" stays visible; success shown twice (F12) | Confirmed: prompt and status both said "The passage was converted…", button stayed visible. | **Fixed** — success confirms once in the live `role="status"` line; prompt and button retire until new English-letter text needs them; "text changed" keeps the question for retry and explains once |
+| C6 | Two taps to start voice (F13) | Still two taps. Voice discovery/adoption is a measured `WU-PLAT-002H` decision ("Voice is an input choice"). | **Not changed** — flow change; needs Voice activation evidence |
+| C7 | Ad directly under the editor on mobile (F14) | Confirmed on `/` only: the ad sat between `#demo` and the editor's own `.editor-productivity` panel (status, punctuation, draft recovery), because `editor-tools.js` and `write-monetization.js` both insert "after `#demo`" and the ad script runs later. `/urdu-editor` and `/urdu-keyboard` already place the ad after their tools. | **Fixed** — the post-workspace ad boundary now includes the tools panel (set from either script, so load order cannot reintroduce it). One ad, still after the workspace, per `WU-ADSENSE-OPERATING-CONTRACT` |
+
+Tests:
+
+- [x] `tests/basic-writer-workspace-integrity.spec.js`: on `/` the tools panel carries the post-workspace boundary and precedes the ad; `/urdu-editor` keeps its ad after the tools; passage conversion confirms once, hides its button, and re-offers it for new English-letter text. The `/` and passage tests fail on the pre-change code.
+- [x] `tests/basic-writer-workspace-integrity-contract.test.js`; both registered in the contract runner, Playwright config and Quality workflow. Shell cache bumped to `write-urdu-shell-v57`.
 
 ### Slice D — Card completion quality (inside P0.1F)
 
@@ -188,6 +195,7 @@ Recorded so it isn't lost. Do not start before the freeze ends.
 | D-2 | Show button labels in one language based on the active locale instead of `English · اردو` pairs? | Affects screen readers and button width across cards/makers. | F33 |
 | D-3 | Approve `.docx` export as a format correction under the freeze? | Scope freeze lists new export formats. | E4 |
 | D-4 | Accept a transliteration provider fallback strategy after B2 benchmark? | Core-feature dependency on a deprecated Google API. | B2 follow-up |
+| D-5 | How should a returning visitor see their unsaved draft on a fresh visit? Options: auto-restore with Undo; a compact Restore line above the editor only when a draft exists; keep the current below-editor Restore (now ~160–220 px higher). | Auto-restore exposes drafts on shared devices; anything above or over the editor conflicts with `WU-PLAT-002H` mobile §5.3/§15 unless post-release evidence justifies it. | C1 |
 
 ---
 

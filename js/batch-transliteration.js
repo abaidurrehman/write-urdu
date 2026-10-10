@@ -270,17 +270,20 @@
             }).then(function (result) {
                 if (request !== activeRequest) return;
                 if (readValue(target) !== original) {
-                    if (prompt) prompt.textContent = text('changed');
+                    // Keep the question visible for a retry; explain once, in the live status.
+                    if (prompt) prompt.textContent = text('prompt');
                     if (status) status.textContent = text('changed');
                     return;
                 }
                 reportAvailability(true);
                 writeValue(target, result);
                 dispatchInput(target);
-                if (prompt) prompt.textContent = text('done');
-                if (prompt) prompt.hidden = false;
+                // Confirm once (announced via the live status) and retire the
+                // prompt and button until new English-letter text needs them.
+                if (prompt) prompt.hidden = true;
+                action.hidden = true;
                 if (note) note.textContent = text('note');
-                if (status) status.textContent = '';
+                if (status) status.textContent = text('done');
             }).catch(function () {
                 reportAvailability(false);
                 if (request !== activeRequest) return;
@@ -292,7 +295,6 @@
                 if (request !== activeRequest) return;
                 panel.dataset.batchBusy = '';
                 action.disabled = false;
-                if (status && !status.textContent) status.textContent = text('done');
             });
         });
         refresh();
