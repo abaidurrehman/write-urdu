@@ -43,7 +43,9 @@ const cleaner = NextStep.buildModel('text-cleaner', { hasContent: true });
 assert.deepStrictEqual(cleaner.visible.map(action => action.id), ['cleaner-to-basic', 'cleaner-to-rich', 'cleaner-to-card'], 'Cleaner must show its three highest-priority registry actions');
 assert.deepStrictEqual(cleaner.more.map(action => action.id), ['cleaner-to-qr'], 'Cleaner overflow should contain only the lower-priority QR transformation');
 
-assert.match(runtime, /<details class=\"wu-continue-more\"><summary>More options<\/summary>/, 'More options must be an accessible disclosure');
+assert.match(runtime, /<details class=\"wu-continue-more\"><summary>' \+ \(compact \? 'More ways to continue' : 'More options'\) \+ '<\/summary>/, 'The overflow must be an accessible disclosure');
+assert.match(runtime, /var compact = workspace\.id === 'basic-writer'/, 'Only the Basic Writer panel is compact; shared panels keep three visible actions');
+assert.match(runtime, /demo\.nextElementSibling/, 'Basic Writer continuation must mount directly under the editor');
 assert.match(runtime, /data-wu-continuity-target/, 'Shared actions must reuse the established v2 continuity target contract');
 assert.match(runtime, /data-wu-journey-panel/, 'Shared panel must preserve the journey placement contract used by visual tests');
 assert.match(runtime, /panel\.hidden = model\.visible\.length === 0/, 'Panel must be result/content-aware');

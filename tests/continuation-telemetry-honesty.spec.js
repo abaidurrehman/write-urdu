@@ -56,10 +56,10 @@ test.describe('continuation `shown` means the recommendation was actually in the
     await richAction.scrollIntoViewIfNeeded();
     await page.waitForTimeout(600);
     await flush(page);
-    for (const id of ['basic-to-rich', 'basic-to-card']) {
-      expect(pathEvents(events, 'shown', id).length, id + ' becomes shown once visible').toBe(1);
+    expect(pathEvents(events, 'shown', 'basic-to-rich').length, 'the primary action becomes shown once visible').toBe(1);
+    for (const id of ['basic-to-card', 'basic-to-qr', 'basic-to-templates']) {
+      expect(pathEvents(events, 'shown', id), id + ' sits in the closed disclosure and is never shown').toHaveLength(0);
     }
-    expect(pathEvents(events, 'shown', 'basic-to-templates'), 'closed "More options" actions are never shown').toHaveLength(0);
 
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.waitForTimeout(300);
@@ -150,5 +150,86 @@ test.describe('destination-side continuation events exist for Basic Writer and T
 
     await page.locator('#cleanerSource').pressSequentially(' اضافی');
     await expect.poll(countAfterFlush(page, events, 'meaningful_start', 'image-text-to-cleaner'), { message: 'first real edit counts', timeout: 8000 }).toBe(1);
+  });
+});
+
+test.describe('Basic Writer continuation sits directly under the editor as one primary action', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  const TEXT = 'میرا اردو اسائنمنٹ تیار ہے اور مکمل ہے';
+  const panelSelector = '[data-wu-next-step-version="2"]';
+
+  async function openWithText(page) {
+    await open(page, '/');
+    await page.locator('#transliterateTextarea').fill(TEXT);
+    await expect(page.locator(panelSelector + ' [data-wu-next-step-action="basic-to-rich"]')).toBeVisible({ timeout: 10000 });
+  }
+
+  test('the panel is the next block after the editor, close to it, and compact', async ({ page }) => {
+    await captureEvents(page);
+    await openWithText(page);
+    const layout = await page.evaluate(selector => {
+      const demo = document.getElementById('demo');
+      const panel = document.querySelector(selector);
+      const demoBox = demo.getBoundingClientRect();
+      const panelBox = panel.getBoundingClientRect();
+      return { directlyAfterEditor: demo.nextElementSibling === panel, gap: Math.round(panelBox.top - demoBox.bottom), height: Math.round(panelBox.height) };
+    }, panelSelector);
+    expect(layout.directlyAfterEditor, 'panel must follow #demo before the ad and productivity blocks').toBe(true);
+    expect(layout.gap, 'panel starts right under the editor').toBeLessThanOrEqual(40);
+    expect(layout.height, 'compact panel height').toBeLessThanOrEqual(170);
+  });
+
+  test('only the primary action is visible; the others are one disclosure away', async ({ page }) => {
+    await captureEvents(page);
+    await openWithText(page);
+    const panel = page.locator(panelSelector);
+    await expect(panel.locator('[data-wu-next-step-action="basic-to-rich"]')).toBeVisible();
+    await expect(panel.locator('details.wu-continue-more > summary')).toHaveText(/more ways to continue/i);
+    for (const id of ['basic-to-card', 'basic-to-qr', 'basic-to-templates']) {
+      await expect(panel.locator(`[data-wu-next-step-action="${id}"]`), id + ' starts collapsed').toBeHidden();
+    }
+    const summary = panel.locator('details.wu-continue-more > summary');
+    // Blur first: the editor resizes when it loses focus, which would move the
+    // summary between press and release of a real first tap (tracked separately).
+    await page.locator('#transliterateTextarea').evaluate(node => node.blur());
+    await page.waitForTimeout(300);
+    await summary.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+    await summary.click();
+    for (const id of ['basic-to-card', 'basic-to-qr', 'basic-to-templates']) {
+      await expect(panel.locator(`[data-wu-next-step-action="${id}"]`), id + ' opens with the disclosure').toBeVisible();
+    }
+  });
+
+  test('an ad slot that appears after the panel does not push the panel below it', async ({ page }) => {
+    await captureEvents(page);
+    await openWithText(page);
+    await page.evaluate(() => {
+      const ad = document.createElement('aside');
+      ad.setAttribute('data-wu-write-ad', '');
+      ad.className = 'wu-header-ad wu-write-ad';
+      ad.style.minHeight = '90px';
+      document.getElementById('demo').insertAdjacentElement('afterend', ad);
+    });
+    await page.locator('#transliterateTextarea').pressSequentially(' مزید');
+    await expect.poll(() => page.evaluate(selector => {
+      const panel = document.querySelector(selector);
+      const ad = document.querySelector('[data-wu-write-ad]');
+      return Boolean(panel && ad && (panel.compareDocumentPosition(ad) & Node.DOCUMENT_POSITION_FOLLOWING));
+    }, panelSelector), { message: 'panel must be re-seated before the late ad', timeout: 5000 }).toBe(true);
+  });
+
+  test('the collapsed actions are eligible but not shown until the disclosure is opened', async ({ page }) => {
+    const events = await captureEvents(page);
+    await openWithText(page);
+    const panel = page.locator(panelSelector);
+    await panel.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    await expect.poll(countAfterFlush(page, events, 'eligible', 'basic-to-card'), { message: 'card is eligible on render', timeout: 8000 }).toBe(1);
+    await expect.poll(countAfterFlush(page, events, 'shown', 'basic-to-rich'), { message: 'primary is shown', timeout: 8000 }).toBe(1);
+    expect(pathEvents(events, 'shown', 'basic-to-card'), 'collapsed card is not shown').toHaveLength(0);
+    expect(pathEvents(events, 'shown', 'basic-to-qr'), 'collapsed QR is not shown').toHaveLength(0);
+    expect(pathEvents(events, 'eligible', 'basic-to-rich')[0].release_marker).toBe('wu-plat-002h-s1-2026-10-10-v3');
   });
 });

@@ -199,7 +199,9 @@ test('Basic Writer keeps E0 task-first and promotes completion actions after fir
   const nextStep = page.locator('[data-wu-next-step-version="2"]');
   await editor.fill('ایک نئی تحریر');
   await expect(nextStep).toBeVisible();
-  await expect(nextStep.locator('.wu-continue-actions > [data-wu-next-step-action]')).toHaveCount(3);
+  // Compact Basic Writer panel: one primary action, the rest behind one disclosure.
+  await expect(nextStep.locator('.wu-continue-actions > [data-wu-next-step-action]')).toHaveCount(1);
+  await expect(nextStep.locator('details.wu-continue-more > summary')).toHaveText('More ways to continue');
   await expect(nextStep.locator('[data-wu-next-step-action]')).toHaveCount(4);
   await expect(nextStep.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeAttached();
 });
