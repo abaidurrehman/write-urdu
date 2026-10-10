@@ -48,10 +48,24 @@ test('core writing surfaces retire premature header creation and reveal contextu
   }
 });
 
+// The Basic Writer panel shows one primary action; the other continuations sit
+// behind one disclosure. Blur first: the editor resizes on blur, which would move
+// the summary between press and release of a real first tap.
+async function openMoreWaysToContinue(page) {
+  const summary = page.locator('[data-wu-next-step-version="2"] details.wu-continue-more > summary');
+  await expect(summary).toBeVisible({ timeout: 10000 });
+  await page.locator('#transliterateTextarea').evaluate(node => node.blur());
+  await page.waitForTimeout(300);
+  await summary.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(400);
+  await summary.click();
+}
+
 test('contextual Card Studio continuation carries current Urdu and exposes Publish & Share in Step 4', async ({ page }) => {
   await open(page, '/');
   await page.locator('#transliterateTextarea').fill('یہ میرا شیئر کرنے والا اردو متن ہے');
   const cardAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-card"]');
+  await openMoreWaysToContinue(page);
   await expect(cardAction).toBeVisible({ timeout: 10000 });
   await cardAction.click();
   await page.waitForURL(/urdu-card-studio/, { timeout: 10000 });
@@ -257,6 +271,7 @@ test('selected homepage text becomes a QR while the full Basic draft remains sav
     element.setSelectionRange(start, start + selected.length);
   }, selectedText);
   const qrAction = page.locator('[data-wu-next-step-version="2"] [data-wu-next-step-action="basic-to-qr"]');
+  await openMoreWaysToContinue(page);
   await expect(qrAction).toBeVisible({ timeout: 10000 });
   await qrAction.click();
   await page.waitForURL(/qr-code-generator/, { timeout: 10000 });

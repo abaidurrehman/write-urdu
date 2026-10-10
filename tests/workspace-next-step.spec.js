@@ -9,7 +9,7 @@ async function open(page, route) {
   await page.waitForFunction(() => Boolean(window.WriteUrduWorkspaceNextStep), null, { timeout: 10000 });
 }
 
-test('Basic Writer reveals three primary continuations and keeps Templates in More options', async ({ page }) => {
+test('Basic Writer shows one primary continuation directly under the editor and keeps the others behind More ways to continue', async ({ page }) => {
   await open(page, '/');
   const panel = page.locator('[data-wu-next-step-version="2"]');
   await expect(panel).toBeAttached();
@@ -17,17 +17,25 @@ test('Basic Writer reveals three primary continuations and keeps Templates in Mo
 
   await page.locator('#transliterateTextarea').fill('یہ میرا تیار اردو متن ہے');
   await expect(panel).toBeVisible();
-  await expect(panel.locator('.wu-continue-actions > .wu-continue-action')).toHaveCount(3);
+  await expect(panel.locator('.wu-continue-actions > .wu-continue-action')).toHaveCount(1);
   await expect(panel.locator('[data-wu-next-step-action="basic-to-rich"] strong')).toHaveText('Format this as a document');
-  await expect(panel.locator('[data-wu-next-step-action="basic-to-card"] strong')).toHaveText('Create a card with this text');
-  await expect(panel.locator('[data-wu-next-step-action="basic-to-qr"] strong')).toHaveText('Make a QR code from this text');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-rich"]')).toHaveAttribute('href', '/urdu-editor');
+  expect(await page.evaluate(() => document.getElementById('demo').nextElementSibling === document.querySelector('[data-wu-next-step-version="2"]'))).toBe(true);
 
   const more = panel.locator('.wu-continue-more');
   await expect(more).toHaveCount(1);
-  await expect(more.locator('summary')).toHaveText('More options');
-  await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeHidden();
+  await expect(more.locator('summary')).toHaveText('More ways to continue');
+  for (const id of ['basic-to-card', 'basic-to-qr', 'basic-to-templates']) {
+    await expect(panel.locator('[data-wu-next-step-action="' + id + '"]')).toBeHidden();
+  }
+  // The editor resizes on blur, which would move the summary between press and release.
+  await page.locator('#transliterateTextarea').evaluate(node => node.blur());
+  await page.waitForTimeout(300);
+  await more.locator('summary').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(400);
   await more.locator('summary').click();
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-card"] strong')).toHaveText('Create a card with this text');
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-qr"] strong')).toHaveText('Make a QR code from this text');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"] strong')).toHaveText('Start from a template');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeVisible();
   await expect(panel.locator('[data-create-stylish],[data-create-name-art]')).toHaveCount(0);

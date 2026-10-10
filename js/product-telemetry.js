@@ -22,7 +22,7 @@
     var trackedOnce = Object.create(null);
     var SHARE_REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
     var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true, urdu_cards: true };
-    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-10-09-v2';
+    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-10-10-v3';
 
     function normalizedPath(value) {
         if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(value || '/');

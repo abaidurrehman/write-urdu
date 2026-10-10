@@ -139,6 +139,10 @@
     function mountFor(workspaceId) {
         if (!root || !root.document) return null;
         if (workspaceId === 'basic-writer') {
+            // Directly under the editor, ahead of the ad and productivity blocks,
+            // so the next step is not a screen away from the text it acts on.
+            var demo = root.document.getElementById('demo');
+            if (demo && demo.nextElementSibling) return demo.nextElementSibling;
             var seo = root.document.querySelector('.homepage-seo');
             var beforeSeo = seo && seo.previousElementSibling;
             return (beforeSeo && beforeSeo.classList.contains('card')) ? beforeSeo : seo;
@@ -183,11 +187,14 @@
             '<strong>' + action.label + '</strong><small>' + action.technicalLabel + '</small></a>';
     }
 
-    function panelMarkup(model) {
-        var visible = model.visible.map(function (action, index) { return actionMarkup(action, index === 0); }).join('');
-        var more = model.more.length ?
-            '<details class="wu-continue-more"><summary>More options</summary><div class="wu-continue-more-actions">' +
-            model.more.map(function (action) { return actionMarkup(action, false); }).join('') + '</div></details>' : '';
+    function panelMarkup(model, compact) {
+        // Compact: one primary action; everything else sits behind one disclosure.
+        var shown = compact ? model.visible.slice(0, 1) : model.visible;
+        var hidden = compact ? model.visible.slice(1).concat(model.more) : model.more;
+        var visible = shown.map(function (action, index) { return actionMarkup(action, index === 0); }).join('');
+        var more = hidden.length ?
+            '<details class="wu-continue-more"><summary>' + (compact ? 'More ways to continue' : 'More options') + '</summary><div class="wu-continue-more-actions">' +
+            hidden.map(function (action) { return actionMarkup(action, false); }).join('') + '</div></details>' : '';
         return '<p class="wu-continue-eyebrow">Continue with…</p>' +
             '<h2 id="wu-next-step-title">What do you want to do next?</h2>' +
             '<p class="wu-continue-copy">Choose the next workspace for the Urdu text you just prepared.</p>' +
@@ -210,7 +217,8 @@
 
         var hasContent = Boolean(currentText(workspace.id));
         var model = buildModel(workspace.id, { hasContent: hasContent });
-        var signature = modelSignature(workspace.id, model);
+        var compact = workspace.id === 'basic-writer';
+        var signature = modelSignature(workspace.id, model) + (compact ? '|compact' : '');
         var panel = root.document.querySelector('[data-wu-next-step-version="2"]');
         if (!panel) {
             panel = root.document.createElement('section');
@@ -221,8 +229,15 @@
             mount.parentNode.insertBefore(panel, mount);
         }
         panel.setAttribute('data-wu-source-workspace', workspace.id);
+        panel.classList.toggle('is-compact', compact);
+        if (compact) {
+            // An ad slot inserted after the panel lands between the editor and
+            // the panel; keep the panel first.
+            var editorCard = root.document.getElementById('demo');
+            if (editorCard && panel.previousElementSibling !== editorCard) editorCard.insertAdjacentElement('afterend', panel);
+        }
         if (panel.getAttribute('data-wu-next-step-signature') !== signature) {
-            panel.innerHTML = panelMarkup(model);
+            panel.innerHTML = panelMarkup(model, compact);
             panel.setAttribute('data-wu-next-step-signature', signature);
         }
         panel.hidden = model.visible.length === 0;

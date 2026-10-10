@@ -31,6 +31,15 @@ body[data-wu-continuation-mode="shared-recommendations"] [data-voice-editor],
 body[data-wu-continuation-mode="shared-recommendations"] [data-inpage-clean],
 body[data-wu-continuation-mode="shared-recommendations"] [data-inpage-editor]{display:none!important}
 
+/* Basic Writer: a compact next step directly under the editor. */
+.wu-continue-panel.is-compact{margin:12px 0;padding:12px 14px;border-radius:14px;box-shadow:none}
+.wu-continue-panel.is-compact .wu-continue-eyebrow,.wu-continue-panel.is-compact .wu-continue-copy{display:none}
+.wu-continue-panel.is-compact h2{margin:0 0 6px;font-size:.95rem}
+.wu-continue-panel.is-compact .wu-continue-actions{grid-template-columns:1fr;margin-top:0}
+.wu-continue-panel.is-compact .wu-continue-action{min-height:52px;padding:9px 13px}
+.wu-continue-panel.is-compact .wu-continue-more{margin-top:8px}
+.wu-continue-panel.is-compact .wu-continue-more>summary{min-height:44px}
+
 @media(max-width:760px){.wu-continue-actions,.wu-continue-more-actions{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.wu-continue-panel{margin:18px 0;padding:15px}.rich-editor-page .col-12.col-md-9>.wu-continue-panel{margin-top:12px}.wu-continue-actions,.wu-continue-more-actions{grid-template-columns:1fr}.wu-continue-action{min-height:62px}.wu-continue-more>summary{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.wu-continue-action,.wu-continue-more>summary{transition:none}}

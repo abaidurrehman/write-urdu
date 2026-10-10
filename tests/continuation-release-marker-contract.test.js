@@ -5,11 +5,14 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-// `continuation_path_shown` changed meaning (in-viewport instead of present in
-// the DOM) and Basic Writer / Text Cleaner gained destination events, so the
-// funnel rows must be separable from earlier data by release marker.
-const CURRENT = 'wu-plat-002h-s1-2026-10-09-v2';
-const PREVIOUS = 'wu-plat-002h-s1-2026-09-06-v1';
+// v2: `continuation_path_shown` changed meaning (in-viewport instead of present
+// in the DOM) and Basic Writer / Text Cleaner gained destination events.
+// v3: the Basic Writer recommendation moved directly under the editor and
+// collapsed to one primary action plus a disclosure. Each generation must stay
+// separable from earlier data by release marker.
+const CURRENT = 'wu-plat-002h-s1-2026-10-10-v3';
+const PREVIOUS = 'wu-plat-002h-s1-2026-10-09-v2';
+const ORIGINAL = 'wu-plat-002h-s1-2026-09-06-v1';
 
 const telemetry = read('js/product-telemetry.js');
 const handoff = read('js/workspace-handoff.js');
@@ -25,6 +28,7 @@ const allowlist = events.match(/CONTINUATION_RELEASE_MARKERS = new Set\(\[([^\]]
 assert.ok(allowlist, 'server must keep a bounded release-marker allowlist');
 assert.ok(allowlist[1].includes("'" + CURRENT + "'"), 'server must accept the current marker or every continuation event is dropped');
 assert.ok(allowlist[1].includes("'" + PREVIOUS + "'"), 'server must keep accepting the previous marker for cached clients and in-flight handoffs');
+assert.ok(allowlist[1].includes("'" + ORIGINAL + "'"), 'server must keep accepting the original marker so historical rows stay valid');
 
 // Two marker generations of the same path coexist for the review window, so
 // the dashboard must label them instead of showing indistinguishable rows.
