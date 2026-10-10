@@ -135,8 +135,11 @@
 
     function placeFeaturedMethod(control, methodButton, note) {
         var directButton = control.querySelector('[data-input-mode-option="direct"]');
-        if (directButton) control.insertBefore(methodButton, directButton);
-        else control.insertBefore(methodButton, note || null);
+        // The anchor can be nested (e.g. Stylish Text wraps its options), so
+        // insert into its own parent rather than assuming it is a direct child.
+        var anchor = directButton || note;
+        if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(methodButton, anchor);
+        else control.appendChild(methodButton);
     }
 
     function promoteControlBeforeTarget(control, target) {

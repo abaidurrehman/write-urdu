@@ -134,7 +134,8 @@ const tests = [
   'tests/name-art-task-first-contract.test.js',
   'tests/create-social-voice-input-contract.test.js',
   'tests/ai-writing-contract.test.js',
-  'tests/ai-writing-editor-ui-contract.test.js'
+  'tests/ai-writing-editor-ui-contract.test.js',
+  'tests/page-integrity-contract.test.js'
 ];
 
 function annotationText(value) {

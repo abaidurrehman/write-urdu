@@ -61,23 +61,22 @@ Goal: turn every **verify** item into confirmed or dropped before code changes.
 
 ### Slice A — Regression hotfixes (one PR)
 
-| # | Finding | Change | Files |
-| --- | --- | --- | --- |
-| A1 | F1 — 6 pages get the homepage `<h1>`/title (sign-in, audio-to-text, document translator, dictionary, voice translator, text-to-speech) | Remove the `|| pageCopy['/index.html']` fallback: when the path has no entry, leave the page's own `<h1>`, subtitle and `document.title` untouched. Bump the service-worker shell cache (`sw.js`) so returning visitors get the fix | `js/site-header-core.js:477` (loaded by `site-header.js:338`), `sw.js` |
-| A2 | F4 — InPage converter "Open the Urdu editor" goes to `/` and drops the text | Point to `/urdu-editor`; add a "Continue in editor" action next to *Copy result* that sends the result through the existing `WriteUrduWorkspaceHandoff` `rich-editor` destination (new `inpage-converter>rich-editor` pair alongside `basic-writer>rich-editor`). `WriteUrduTextHandoff` is not suitable: it only feeds Basic Writer and Cleaner | `tools/inpage-unicode-converter.html:144`, converter script, `js/workspace-handoff.js` (~line 238), `js/workspace-journey-registry.js` |
-| A3 | F5 — `new Clipboard('.btn')` throws on every load (clipboard.js never loaded) | Delete the dead inline script | `urdu-keyboard.html:311-321` |
-| A4 | F5 — `insertBefore` NotFoundError on Stylish Text | Guard the reference node in `placeFeaturedMethod` (fall back to `appendChild` when the anchor is not a child) | `js/writer-voice-input.js:138` |
-| A5 | F32 — card buttons announce internal IDs ("Share dua-1 as an image") | Use the card's display title in `imageLabel` and sibling labels | `js/urdu-cards.js:21` |
-| A6 | F31 — unlabelled icon buttons (9 Rich Editor, 6 keyboard, 1 name art, 1 stylish) | Add `aria-label`s (Preview, Print, …) via existing i18n dictionary keys | `urdu-editor.html`, `urdu-keyboard.html`, related JS |
+**State:** Implemented 2026-10-10 on `claude/wu-uxr-001-persona-ux-plan`.
+
+| # | Finding | Change | Files | State |
+| --- | --- | --- | --- | --- |
+| A1 | F1 — pages without a `pageCopy` entry got the homepage `<h1>`: sign-in, audio-to-text, document translator, dictionary, voice translator, text-to-speech, and the Urdu-locale `/urdu/urdu-writing-templates` | `applyPageCopy` returns early when the path has no entry instead of falling back to `/index.html` copy. Shell cache bumped to `write-urdu-shell-v55` (with contract-test pins) so returning visitors get the fix | `js/site-header-core.js`, `sw.js` | [x] |
+| A2 | F4 — InPage converter's FAQ shortcut "Open the Urdu editor" pointed to `/` | Link now points to `/urdu-editor`. The review's "text does not carry over" note was a review miss: after conversion the governed next-step panel already offers `inpage-to-rich` / `inpage-to-basic` / `inpage-to-cleaner` handoffs (covered by `tests/capture-continuity.spec.js`); no handoff change needed | `tools/inpage-unicode-converter.html` | [x] |
+| A3 | F5 — `new Clipboard('.btn')` threw on every load (clipboard.js never loaded) | Dead inline script removed; Urdu locale copy regenerated | `urdu-keyboard.html`, `urdu/urdu-keyboard.html` | [x] |
+| A4 | F5 — `insertBefore` NotFoundError on Stylish Text | `placeFeaturedMethod` inserts into the anchor's own parent (the direct-mode option is nested on Stylish Text); appends when no anchor | `js/writer-voice-input.js` | [x] |
+| A5 | F32 — card buttons announced internal IDs ("Share dua-1 as an image") | Labels use the visible card name (`{name}`) in English and Urdu copy | `js/urdu-cards.js` | [x] |
+| A6 | F31 — "unlabelled" buttons | **Dropped — review false positive.** Every flagged control sits inside a closed `<details>` menu and has a text name (Preview, Print, Find & replace, …); the sweep read `innerText` of non-rendered content | — | n/a |
 
 Tests:
 
-- [ ] New contract test: for every page in `docs/WU-PUBLIC-PAGE-REGISTRY.csv`, the rendered `<h1>` equals the source `<h1>` unless `pageCopy` has an explicit entry (extend `tests/outcome-navigation-contract.test.js` or add `tests/page-heading-integrity.spec.js`).
-- [ ] Browser test: zero `pageerror` events on `/urdu-keyboard` and `/stylish-urdu-text-generator`.
-- [ ] Browser test: InPage example → Continue in editor → Rich Editor contains the converted text.
-- [ ] `npm run test:all` green; `npm run shell:check` green.
-
-**Exit:** the 48-page sweep shows no unexpected heading changes, no JS errors and no unlabelled visible buttons.
+- [x] `tests/page-integrity.spec.js`: every registered page keeps its source `<h1>` unless `pageCopy` owns it; no Clipboard/insertBefore page errors on `/urdu-keyboard` and `/stylish-urdu-text-generator`; card action labels use the visible name; converter shortcut targets `/urdu-editor`. Verified to fail on the pre-fix code (4 failures) and pass after.
+- [x] `tests/page-integrity-contract.test.js` (static guards for the same fixes), registered in `scripts/run-contract-tests.js`; spec registered in `playwright.config.js` and `.github/workflows/quality.yml`.
+- [x] `npm test`, `shell:check`, `seo:graph:check`, `collections:check`, `locale:check`, `seo:check`, `governance:check` green; affected browser specs (cards, capture continuity, voice input, keyboard, navigation, locale, sitemap, account/editors) green.
 
 ### Slice B — Typing resilience
 

@@ -16,18 +16,18 @@
             copied: 'Link copied.',
             shared: 'Share sheet opened.',
             edit: 'Make it mine · اپنی مرضی سے بنائیں',
-            editLabel: 'Personalize {id}',
+            editLabel: 'Personalize {name}',
             image: 'Share image · تصویر شیئر کریں',
-            imageLabel: 'Share {id} as an image',
+            imageLabel: 'Share {name} as an image',
             imagePreparing: 'Preparing image…',
             imageShared: 'Image share sheet opened.',
             imageDownloaded: 'PNG downloaded.',
             imageCancelled: 'Sharing cancelled.',
             imageFailed: 'Could not prepare this image. Try Make it mine.',
             share: 'Shareable link · شیئر لنک',
-            shareLabel: 'Publish a shareable link for {id}',
+            shareLabel: 'Publish a shareable link for {name}',
             whatsapp: 'WhatsApp Status · واٹس ایپ اسٹیٹس',
-            whatsappLabel: 'Share {id} to WhatsApp Status',
+            whatsappLabel: 'Share {name} to WhatsApp Status',
             statusPreparing: 'Preparing WhatsApp Status…',
             statusShared: 'Shared — choose WhatsApp and My Status when prompted.',
             statusDownloaded: 'PNG downloaded. Open WhatsApp → Updates → Add status.',
@@ -56,18 +56,18 @@
             copied: 'لنک کاپی ہو گیا۔',
             shared: 'شیئر مینو کھل گیا۔',
             edit: 'اپنی مرضی سے بنائیں',
-            editLabel: '{id} کارڈ اپنی مرضی سے بنائیں',
+            editLabel: '{name} کارڈ اپنی مرضی سے بنائیں',
             image: 'تصویر شیئر کریں',
-            imageLabel: '{id} کارڈ بطور تصویر شیئر کریں',
+            imageLabel: '{name} کارڈ بطور تصویر شیئر کریں',
             imagePreparing: 'تصویر تیار کی جا رہی ہے…',
             imageShared: 'تصویر کا شیئر مینو کھل گیا۔',
             imageDownloaded: 'PNG ڈاؤن لوڈ ہو گیا۔',
             imageCancelled: 'شیئر منسوخ کر دیا گیا۔',
             imageFailed: 'تصویر تیار نہیں ہو سکی۔ اپنی مرضی سے بنائیں کھول کر دوبارہ کوشش کریں۔',
             share: 'شیئر لنک',
-            shareLabel: '{id} کارڈ کے لیے شیئر کرنے کا لنک بنائیں',
+            shareLabel: '{name} کارڈ کے لیے شیئر کرنے کا لنک بنائیں',
             whatsapp: 'واٹس ایپ اسٹیٹس',
-            whatsappLabel: '{id} کارڈ واٹس ایپ اسٹیٹس پر شیئر کریں',
+            whatsappLabel: '{name} کارڈ واٹس ایپ اسٹیٹس پر شیئر کریں',
             statusPreparing: 'واٹس ایپ اسٹیٹس تیار کیا جا رہا ہے…',
             statusShared: 'شیئر مینو کھل گیا — واٹس ایپ اور پھر میرا اسٹیٹس منتخب کریں۔',
             statusDownloaded: 'PNG ڈاؤن لوڈ ہو گیا۔ واٹس ایپ → اپ ڈیٹس → اسٹیٹس شامل کریں کھولیں۔',
@@ -557,6 +557,8 @@
             names.className = 'card-gallery-card-names';
             var name = document.createElement('h2');
             name.textContent = locale() === 'ur' ? background.nameUr : background.name;
+            // Screen readers hear the same card name sighted users see, not the internal id.
+            var cardName = name.textContent;
             names.appendChild(name);
             details.appendChild(names);
 
@@ -568,7 +570,7 @@
             imageShare.className = 'urdu-cards-image';
             imageShare.dataset.urduCardsImageShare = card.id;
             imageShare.textContent = copyText('image');
-            imageShare.setAttribute('aria-label', copyText('imageLabel', { id: card.id }));
+            imageShare.setAttribute('aria-label', copyText('imageLabel', { name: cardName }));
             imageShare.addEventListener('click', function () { startImageShare(card, background, imageShare); });
 
             var edit = document.createElement('button');
@@ -576,7 +578,7 @@
             edit.className = 'urdu-cards-edit';
             edit.dataset.urduCardsEdit = card.id;
             edit.textContent = copyText('edit');
-            edit.setAttribute('aria-label', copyText('editLabel', { id: card.id }));
+            edit.setAttribute('aria-label', copyText('editLabel', { name: cardName }));
             edit.addEventListener('click', function () { openPersonalizer(card, background, edit, article); });
 
             actions.appendChild(imageShare);
@@ -590,7 +592,7 @@
             whatsapp.className = 'urdu-cards-whatsapp';
             whatsapp.dataset.urduCardsWhatsappStatus = card.id;
             whatsapp.textContent = copyText('whatsapp');
-            whatsapp.setAttribute('aria-label', copyText('whatsappLabel', { id: card.id }));
+            whatsapp.setAttribute('aria-label', copyText('whatsappLabel', { name: cardName }));
             whatsapp.addEventListener('click', function () { startWhatsAppStatus(card, background, whatsapp); });
 
             var share = document.createElement('button');
@@ -598,7 +600,7 @@
             share.className = 'urdu-cards-share';
             share.dataset.urduCardsShare = card.id;
             share.textContent = copyText('share');
-            share.setAttribute('aria-label', copyText('shareLabel', { id: card.id }));
+            share.setAttribute('aria-label', copyText('shareLabel', { name: cardName }));
             share.addEventListener('click', function () { startShare(card, share); });
 
             secondaryActions.appendChild(whatsapp);
