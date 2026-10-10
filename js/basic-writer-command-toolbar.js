@@ -655,6 +655,36 @@
         if (Math.abs(delta) >= 1) root.scrollBy({ top: delta, left: 0, behavior: 'instant' });
     }
 
+    // Pressing a control below the editor blurs it. The focus-only layout rules
+    // (editor height cap; header and toolbar hidden in keyboard-sized viewports)
+    // would release between press and release, move the target out from under
+    // the pointer and send the tap to something else. Latch them until the press
+    // has produced its click, then release.
+    var FOCUS_HOLD_PRESS_MS = 700;
+    var FOCUS_HOLD_MAX_MS = 900;
+
+    function holdFocusLayoutDuringPress(editor) {
+        var doc = root.document;
+        var lastPress = -Infinity;
+        var timer = null;
+        function now() { return root.performance && root.performance.now ? root.performance.now() : Date.now(); }
+        function release() {
+            if (timer) root.clearTimeout(timer);
+            timer = null;
+            if (doc.body) doc.body.removeAttribute('data-wu-focus-hold');
+        }
+        doc.addEventListener('pointerdown', function () { lastPress = now(); }, true);
+        doc.addEventListener('click', function () { if (timer) root.setTimeout(release, 0); }, true);
+        doc.addEventListener('pointercancel', function () { if (timer) release(); }, true);
+        editor.addEventListener('focus', release);
+        editor.addEventListener('blur', function () {
+            if (!doc.body || now() - lastPress > FOCUS_HOLD_PRESS_MS) return;
+            doc.body.setAttribute('data-wu-focus-hold', 'true');
+            if (timer) root.clearTimeout(timer);
+            timer = root.setTimeout(release, FOCUS_HOLD_MAX_MS);
+        });
+    }
+
     function syncState(surface) {
         if (!surface) return false;
         var enabled = hasContent();
@@ -881,6 +911,7 @@
         }
 
         editor.addEventListener('input', function () { syncState(surface); });
+        holdFocusLayoutDuringPress(editor);
         clear.addEventListener('click', function () { root.setTimeout(function () { syncState(surface); }, 0); });
         modeControl.addEventListener('write-urdu:input-mode-change', function () { root.setTimeout(function () { syncModeHelper(surface); }, 0); });
         root.document.addEventListener('write-urdu:handoff-imported', function () { root.setTimeout(function () { syncState(surface); }, 0); });
