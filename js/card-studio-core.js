@@ -286,6 +286,30 @@
         return { lines: lines, width: box.width, height: height, lineHeight: lineHeight, fontSize: size, attribution: attribution ? String(project.attribution.value).trim() : '', attributionSize: attributionSize, overflow: height > box.height };
     }
 
+    // Deliberate line breaks (a couplet, a short multi-line message) should not
+    // be split again just because a larger size would still fit the box's
+    // height. Prefer the largest size at which every written line stays whole,
+    // unless that size would be too small to read comfortably on the card, as
+    // with long paragraphs; those keep the height-based fit.
+    var WHOLE_LINE_MIN_WIDTH_RATIO = .05;
+
+    function preferWholeLines(ctx, project, box, minSize, heightFitSize) {
+        var text = project.text || {};
+        var written = normalizeLines(text.value).filter(function (line) { return line.trim(); }).length;
+        if (written < 2) return heightFitSize;
+        function layoutAt(size) { return layoutCardText(ctx, Object.assign({}, project, { text: Object.assign({}, text, { fontSize: size }) }), box); }
+        function keepsLinesWhole(layout) { return layout.lines.filter(function (line) { return !line.isBlank; }).length === written; }
+        if (keepsLinesWhole(layoutAt(heightFitSize))) return heightFitSize;
+        var floor = Math.max(minSize, Math.ceil(box.width * WHOLE_LINE_MIN_WIDTH_RATIO));
+        var low = floor, high = heightFitSize - 1, whole = 0;
+        while (low <= high) {
+            var size = Math.floor((low + high) / 2);
+            var layout = layoutAt(size);
+            if (keepsLinesWhole(layout) && layout.height <= box.height) { whole = size; low = size + 1; } else high = size - 1;
+        }
+        return whole || heightFitSize;
+    }
+
     function findBestFontSize(ctx, project, box) {
         var text = project.text || {};
         var low = Number(text.minFontSize) || 28;
@@ -297,6 +321,7 @@
             var layout = layoutCardText(ctx, candidate, box);
             if (layout.height <= box.height) { best = size; low = size + 1; } else high = size - 1;
         }
+        best = preferWholeLines(ctx, project, box, Number(text.minFontSize) || 28, best);
         var finalProject = Object.assign({}, project, { text: Object.assign({}, text, { fontSize: best }) });
         var result = layoutCardText(ctx, finalProject, box);
         result.fontSize = best;

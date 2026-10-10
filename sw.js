@@ -1,5 +1,5 @@
 // Refresh cached authoring assets within the governed v53 shell generation.
-const CACHE_NAME = 'write-urdu-shell-v57';
+const CACHE_NAME = 'write-urdu-shell-v58';
 const APP_SHELL = [
   './',
   './index.html',
