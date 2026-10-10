@@ -37,6 +37,11 @@
 
     function text(key) { return copy[language()][key]; }
 
+    // Shares provider health with the word-by-word input-mode notice.
+    function reportAvailability(available) {
+        document.dispatchEvent(new CustomEvent('write-urdu:transliteration-status', { detail: { available: available } }));
+    }
+
     function hasRomanText(value) { return /[A-Za-z]{3,}/.test(String(value || '')); }
 
     function isLongEnough(value) { return String(value || '').trim().length >= 24; }
@@ -269,6 +274,7 @@
                     if (status) status.textContent = text('changed');
                     return;
                 }
+                reportAvailability(true);
                 writeValue(target, result);
                 dispatchInput(target);
                 if (prompt) prompt.textContent = text('done');
@@ -276,6 +282,7 @@
                 if (note) note.textContent = text('note');
                 if (status) status.textContent = '';
             }).catch(function () {
+                reportAvailability(false);
                 if (request !== activeRequest) return;
                 if (status) status.textContent = text('error');
                 if (prompt) prompt.textContent = text('prompt');

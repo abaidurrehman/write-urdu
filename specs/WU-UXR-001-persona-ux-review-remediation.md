@@ -32,7 +32,7 @@ Finding IDs `F1`–`F34` below refer to the review report.
 | --- | --- | --- | --- | --- | --- |
 | 0 | Production verification | Confirm the sandbox-uncertain findings | this doc | Not frozen | S |
 | A | Regression hotfixes | Wrong headings, wrong link, runtime errors, a11y names | maintenance | Not frozen | S |
-| B | Typing resilience | Visible failure state; provider risk | `WU-JOURNEY-001B`, `WU-INPUT-001` | B1 not frozen; B2 benchmark | S + research |
+| B | Typing resilience | Visible failure state; provider risk | `WU-JOURNEY-001B`, `WU-INPUT-001` | B1 done; B2 recorded, provider change → `WU-JOURNEY-001B` §B5 | S |
 | C | Basic Writer mobile post-value | Restore, layout jump, duplicate guidance, voice, ad placement | `WU-PLAT-002H` / `WU-PLAT-004B` | Inside P0.1 | M |
 | D | Card completion quality | Poetry line fit, Nastaliq default, artifact, mobile order | `WU-PLAT-002H` P0.1F, Card Studio | Inside P0.1F | M |
 | E | Export fidelity | PDF shaping, bill PDF, `.docx` | `WU-JOURNEY-001F` | E1–E2 audit allowed early; E4 gated | M–L |
@@ -80,9 +80,36 @@ Tests:
 
 ### Slice B — Typing resilience
 
-- **B1 (F6), not frozen:** when either transliteration path fails or has not loaded within a few seconds, show an inline status near the writer: "Urdu conversion is unavailable right now — Retry · Type Urdu directly". Clear the endless "Loading Urdu typing..." label. Owners: `index.html` (control init around line 334), `js/batch-transliteration.js` (`error` copy already exists; surface it), `js/input-mode.js`.
-  - [ ] Browser test with `inputtools.google.com` and the jsapi host routed to fail: status visible within 5 s, Retry works once the route recovers, direct mode remains usable.
-- **B2 (F7), benchmark only:** document the dependency on the deprecated `google.elements.transliteration` control. Evaluate (a) moving word-by-word to the same `inputtools` request path as passage conversion, (b) a local rule-based fallback. Run under `WU-JOURNEY-001B`'s fixture corpus; no production switch without benchmark parity.
+**State:** B1 implemented 2026-10-10 on `claude/wu-uxr-001b-typing-resilience` (stacked on Slice A). B2 recorded as a dependency finding; no provider change.
+
+#### B1 — Visible conversion failure (F6)
+
+Root cause, measured with Google requests blocked in a browser:
+
+- The Google `elements` transliteration library is served from this origin (`google_jsapi.js`), so `writeUrduTransliterationReady` becomes true and the control is created even when Google is unreachable. The existing 6.5 s `showDependencyError()` in `js/site-runtime.js` therefore never fires for this case; it still covers a genuine library load failure.
+- Each typed word is a JSONP `<script>` appended to `<head>` for `www.google.com/inputtools/request`. When it fails, the word silently stays in English letters.
+- The control's `SERVER_UNREACHABLE` / `SERVER_REACHABLE` events never fire for these failures (waited 25 s).
+- After a failure the library backs off briefly (under 5 s) and then retries on the next word; it does not stay broken. The review's "endless Loading Urdu typing…" was screen-reader-only text, not a visible spinner.
+
+Change:
+
+- [x] `js/input-mode.js` watches `<head>` (direct children only) for word-request scripts and listens on each script's own `load`/`error` (the library removes them in its callback, so window-level capture misses `load`). A failure shows the existing input-mode alert in an `unavailable` state — "Urdu conversion is not responding, so words are staying in English letters. Your next word will try again." with a **Type Urdu directly** action (English + Urdu copy). The next successful request hides it.
+- [x] `js/batch-transliteration.js` reports passage-conversion success/failure through `write-urdu:transliteration-status`, so both paths share one provider state; its own inline error copy is unchanged.
+- [x] The alert sits above the editor, so every alert size change runs inside `keepFocusedTargetInPlace`: measure the focused editor, apply the change, correct with an `instant` scroll (the homepage sets `scroll-behavior: smooth`), and correct again on the next frame for browser scroll anchoring. Measured editor movement on show and hide: 0 px on mobile and desktop.
+- [x] Shell cache bumped to `write-urdu-shell-v56`.
+- Out of scope: the invoice generator uses the Google control without an input-mode control, so it has no alert slot; cover it if/when it adopts the shared input-mode control.
+
+Tests:
+
+- [x] `tests/transliteration-availability.spec.js`: failed word → visible `unavailable` alert, value unchanged, editor moves ≤ 1 px; recovery → alert hidden, word converted, editor ≤ 1 px; action switches to direct mode; passage-conversion status events drive the same alert. All three fail on the pre-change code.
+- [x] `tests/transliteration-availability-contract.test.js` static guards; both registered in the contract runner, Playwright config and Quality workflow.
+
+#### B2 — Provider dependency record (F7)
+
+- Interactive typing depends on Google's legacy `google.elements.transliteration` control (bundled locally) calling `www.google.com/inputtools/request` per word; passage conversion calls `inputtools.google.com/request` with `fetch`. Both are the same undocumented Input Tools service, so one outage affects both paths — B1 makes that visible but cannot work around it.
+- Quality is already benchmarked and closed under `WU-JOURNEY-001B` (Google baseline 59.2% on 103 scored fixtures, 71.8% after the passage protected-token transform). The open risk is **availability/longevity**, not quality.
+- Any provider change — moving per-word typing onto the `fetch` path, a local rule-based fallback, or another provider — belongs to `WU-JOURNEY-001B` §B5 (provider evaluation), which already requires a migration decision, latency/privacy and search-risk review. Decision **D-4** stays open until that evaluation is scheduled.
+- Suggested evidence before D-4: count `unavailable` alerts per session (would need a content-free telemetry event under the `WU-PLAT-002H` metrics contract; not added in this slice).
 
 ### Slice C — Basic Writer mobile post-value (inside `WU-PLAT-002H`)
 
