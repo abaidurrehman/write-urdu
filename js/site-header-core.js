@@ -474,7 +474,10 @@
     }
 
     function applyPageCopy() {
-        var copy = pageCopy[normalizedPath()] || pageCopy['/index.html'];
+        // Pages without an explicit entry own their heading and title; falling
+        // back to the homepage copy would overwrite them with the wrong H1.
+        var copy = pageCopy[normalizedPath()];
+        if (!copy) return;
         var title = document.querySelector('h1');
         if (title && copy.title && !title.hasAttribute('data-wu-l10n')) title.textContent = copy.title[currentLocale === 'ur' ? 1 : 0];
         var subtitle = title && title.nextElementSibling;
