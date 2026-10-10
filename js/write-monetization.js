@@ -15,7 +15,10 @@
     }
 
     function workspaceBoundary(path) {
-        if (path === '/') return document.getElementById('demo');
+        // The Basic Writer's status, punctuation and draft-recovery tools sit
+        // directly under the editor and belong to the workspace, as they do on
+        // the Rich Editor and Keyboard routes.
+        if (path === '/') return document.querySelector('#demo ~ .editor-productivity') || document.getElementById('demo');
         if (path === '/urdu-editor') {
             var richEditor = document.getElementById('basic-example');
             return richEditor ? richEditor.parentElement : null;

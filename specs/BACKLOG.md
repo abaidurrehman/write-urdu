@@ -262,8 +262,9 @@ Human/product gates:
 - [ ] Slice 0 — verify sandbox-uncertain findings on production (headings, PDF shaping, transliteration, TinyMCE promotion).
 - [x] Slice A — regression hotfixes: homepage `<h1>` overwriting 7 pages, InPage→editor link, two runtime errors, card accessible names (A6 dropped as a review false positive). Not frozen (maintenance).
 - [x] Slice B1 — failed word/passage conversion now shows the input-mode alert ("not responding … your next word will try again" + Type Urdu directly) and clears on recovery, with zero editor movement. B2 dependency recorded; any provider change routes to `WU-JOURNEY-001B` §B5. Not frozen (reliability).
-- [ ] Slices C–D run inside P0.1 / P0.1F; E–H follow `WU-JOURNEY-001F`, unified input, `WU-BILL-001` and `WU-JOURNEY-001E` gates; Slice I waits for backlog re-review.
-- [ ] Founder decisions D-1 (Send as text vs `WU-PLAT-004A`), D-2 (single-language labels), D-3 (`.docx`), D-4 (transliteration fallback).
+- [x] Slice C (re-scoped under `WU-PLAT-002H` mobile §15) — fixed the homepage ad sitting between the editor and its own tools, and the duplicated passage-conversion confirmation; C2 not reproducible, C3 superseded by `WU-PLAT-004C`; C1 (D-5), C4 and C6 await a decision or post-release evidence.
+- [ ] Slice D runs inside P0.1F; E–H follow `WU-JOURNEY-001F`, unified input, `WU-BILL-001` and `WU-JOURNEY-001E` gates; Slice I waits for backlog re-review.
+- [ ] Founder decisions D-1 (Send as text vs `WU-PLAT-004A`), D-2 (single-language labels), D-3 (`.docx`), D-4 (transliteration fallback), D-5 (returning-draft visibility).
 
 ## P0.6 — AI production external gate
 

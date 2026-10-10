@@ -380,6 +380,21 @@
         else notifyText('Sharing was blocked. Copy the text and share it manually.', 'Sharing was blocked. Copy the text and share it manually.', 'error');
     }
 
+    // These tools are part of the writing workspace. If the post-workspace ad
+    // boundary was set on the editor before this panel mounted, extend it to
+    // the panel so the ad never separates the editor from its own tools.
+    function keepAdAfterPanel(mount, panel) {
+        if (mount.getAttribute('data-wu-ad-boundary') !== 'post-workspace') return;
+        mount.removeAttribute('data-wu-ad-boundary');
+        panel.setAttribute('data-wu-ad-boundary', 'post-workspace');
+        var sibling = mount.nextElementSibling;
+        while (sibling && sibling !== panel) {
+            var next = sibling.nextElementSibling;
+            if (sibling.classList && sibling.classList.contains('wu-header-ad')) panel.insertAdjacentElement('afterend', sibling);
+            sibling = next;
+        }
+    }
+
     function initialiseTools(adapter) {
         if (!adapter || !adapter.mount || document.querySelector('.editor-productivity')) return;
 
@@ -421,6 +436,7 @@
         // Keep status, quick punctuation tools and recovery below the editor;
         // only the discoverability controls are promoted into the top bar.
         adapter.mount.insertAdjacentElement('afterend', panel);
+        keepAdAfterPanel(adapter.mount, panel);
         document.body.classList.add('has-editor-tools');
         markPageIntroduction();
 
