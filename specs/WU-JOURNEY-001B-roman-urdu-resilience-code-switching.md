@@ -1,11 +1,30 @@
 # WU-JOURNEY-001B — Roman Urdu Resilience & Code-Switching Benchmark
 
-**Status:** Planned benchmark / production changes gated  
+**Status:** Implemented — B0–B4 shipped 2026-09-09; benchmark retained as a regression control  
 **Priority:** P1 research; benchmark work may start earlier if isolated  
 **Parent:** `WU-JOURNEY-001`  
 **Depends on:** mature English-letter → Urdu behaviour on `/` and Rich Editor  
 **Related:** `WU-JOURNEY-001G` Dual-Script Confidence Companion  
 **Risk class:** High regression risk if production input behaviour changes
+
+---
+
+## 2026-09-09 implementation closeout
+
+The bounded benchmark-to-production sequence is complete:
+
+- **B0/B1:** 106 authored public-safe fixtures plus deterministic scoring/contract coverage were added.
+- **B2:** the live Google Input Tools baseline produced **61 pass / 42 fail / 3 manual / 0 error**, or **59.2%** across 103 scored fixtures. This aggregate intentionally overweights difficult mixed/protected-token cases and must not be presented as general WriteUrdu transliteration accuracy.
+- **B3:** a conservative protected-token transform was implemented only for explicit batch/passage conversion. It preserves high-confidence URL, email, @handle, numeric-shape, short ALL-CAPS acronym and internally mixed-case spans before provider transliteration and then reassembles them without changing line structure.
+- **B4:** the same 106-fixture live benchmark against production behaviour reached **74/103 = 71.8%**, a **+12.6 percentage-point** improvement over B2, with **13 recovered cases and zero fixture regressions**. Code-switching gained 11 passes and long-paste gained 2.
+
+Production boundaries remain unchanged for mature interactive per-word typing, Space/Backspace behaviour, suggestions, direct Urdu mode, provider choice, analytics and content telemetry. A future Roman spelling-alias experiment is a separate evidence-gated follow-up, not unfinished work in this slice.
+
+Evidence:
+
+- [`../benchmarks/roman-urdu/results/2026-09-09-google-input-tools-baseline.md`](../benchmarks/roman-urdu/results/2026-09-09-google-input-tools-baseline.md)
+- [`../benchmarks/roman-urdu/results/2026-09-09-protected-token-b3.md`](../benchmarks/roman-urdu/results/2026-09-09-protected-token-b3.md)
+- [`../benchmarks/roman-urdu/results/2026-09-09-production-b4.md`](../benchmarks/roman-urdu/results/2026-09-09-production-b4.md)
 
 ---
 
