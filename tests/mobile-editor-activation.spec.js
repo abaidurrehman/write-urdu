@@ -212,7 +212,7 @@ test.describe('the first tap after typing reaches the control that was tapped', 
       await expect(page.locator('[data-wu-basic-command-surface]')).toHaveAttribute('data-wu-has-content', 'true');
 
       const target = page.locator('.editor-productivity button:visible').first();
-      await target.evaluate(node => node.scrollIntoView({ block: 'center' }));
+      await target.evaluate(node => node.scrollIntoView({ block: 'center', behavior: 'instant' }));
       await page.waitForTimeout(300);
       await expect(editor).toBeFocused();
       const box = await target.boundingBox();
