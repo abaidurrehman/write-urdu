@@ -57,6 +57,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-TOOLS-EXPANSION-001` | Browser-first Urdu Tools Program | **Active umbrella** — implemented children are archived; new breadth is paused behind core activation evidence |
 | `WU-TOOLS-EXPANSION-006` | Urdu/Hindi Script Converter R&D | **Hold** — correctly unbuilt |
 | `WU-API-001` | InPage↔Unicode Developer API & npm Package | **Planned — founder-directed exception to the P0.1 freeze** — isolated, additive-only wrapper around the already-shipped `WU-TOOLS-EXPANSION-005` engine; Phase A (npm package) has no compute/infra cost and ships first, Phase B (beta API) follows |
+| `WU-UXR-001` | Persona UX Review Remediation (2026-10-10) | **Active** — sequencing-only plan from a five-persona browser review; Slice 0 (production verification) and Slice A (regression hotfixes) are unfrozen maintenance, later slices execute inside their owner specs' gates |
 
 ## Current P0 product/UX programme
 

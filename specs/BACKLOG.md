@@ -248,6 +248,17 @@ Human/product gates:
 
 **Guardrail:** this exception permits the defined first integrated release only. Favorites, shuffle, homepage filters/carousels, another content/background batch, new card SEO routes or broader Card Studio acquisition still require acceptance evidence and a fresh backlog decision. Writer first-value and Card Studio completion remain guardrail metrics.
 
+## P0.11 — Persona UX review remediation
+
+**Spec:** [`WU-UXR-001`](WU-UXR-001-persona-ux-review-remediation.md)
+**State:** Planned 2026-10-10 from a five-persona browser review of `main` at `2e776ec`. Sequencing only; behaviour stays with each slice's owner spec.
+
+- [ ] Slice 0 — verify sandbox-uncertain findings on production (headings, PDF shaping, transliteration, TinyMCE promotion).
+- [ ] Slice A — regression hotfixes: homepage `<h1>` overwriting 6 pages, InPage→editor link, two runtime errors, accessible names. Not frozen (maintenance).
+- [ ] Slice B1 — visible transliteration failure/retry state. Not frozen (reliability).
+- [ ] Slices C–D run inside P0.1 / P0.1F; E–H follow `WU-JOURNEY-001F`, unified input, `WU-BILL-001` and `WU-JOURNEY-001E` gates; Slice I waits for backlog re-review.
+- [ ] Founder decisions D-1 (Send as text vs `WU-PLAT-004A`), D-2 (single-language labels), D-3 (`.docx`), D-4 (transliteration fallback).
+
 ## P0.6 — AI production external gate
 
 **Spec:** [`WU-AI-001`](WU-AI-001-urdu-ai-writing-assistant-platform.md)  
