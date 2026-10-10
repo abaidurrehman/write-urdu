@@ -637,9 +637,28 @@
         if (source && target) target.textContent = source.textContent || '';
     }
 
+    // Revealing Copy / Preview / export on the first character grows the toolbar
+    // that sits above the editor. Browsers do not scroll-anchor at the top of the
+    // page, so the editor would jump away from the writer mid-typing. Keep the
+    // editor where it was and let the revealed actions appear above it.
+    function captureEditorAnchor() {
+        var editor = root && root.document && root.document.getElementById('transliterateTextarea');
+        if (!editor || root.document.activeElement !== editor) return null;
+        var top = editor.getBoundingClientRect().top;
+        if (top < 0 || top > (root.innerHeight || 0)) return null;
+        return { editor: editor, top: top };
+    }
+
+    function restoreEditorAnchor(anchor) {
+        if (!anchor || typeof root.scrollBy !== 'function') return;
+        var delta = anchor.editor.getBoundingClientRect().top - anchor.top;
+        if (Math.abs(delta) >= 1) root.scrollBy({ top: delta, left: 0, behavior: 'instant' });
+    }
+
     function syncState(surface) {
         if (!surface) return false;
         var enabled = hasContent();
+        var anchor = enabled && surface.getAttribute('data-wu-has-content') !== 'true' ? captureEditorAnchor() : null;
         surface.setAttribute('data-wu-has-content', enabled ? 'true' : 'false');
         surface.querySelectorAll('[data-wu-basic-content-action]').forEach(function (button) {
             if ('disabled' in button) button.disabled = !enabled;
@@ -650,6 +669,7 @@
             element.setAttribute('aria-hidden', enabled ? 'false' : 'true');
         });
         syncResponsiveOutputs(surface);
+        restoreEditorAnchor(anchor);
         return enabled;
     }
 

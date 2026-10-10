@@ -141,3 +141,60 @@ test('the empty Basic Writer shows no disabled export buttons and reveals them o
     await expect(direct.first()).toBeVisible();
   }
 });
+
+test.describe('first text does not move the editor the writer is typing into', () => {
+  const FIRST_VALUE_VIEWPORTS = [
+    { width: 360, height: 740 },
+    { width: 390, height: 844 },
+    { width: 412, height: 915 }
+  ];
+
+  const editorTop = page => page.locator('#transliterateTextarea').evaluate(node => node.getBoundingClientRect().top);
+
+  for (const viewport of FIRST_VALUE_VIEWPORTS) {
+    test(`${viewport.width}x${viewport.height}: revealing the post-text actions keeps the editor in place and the actions on screen`, async ({ page }) => {
+      await openMobileHome(page, viewport);
+      const editor = page.locator('#transliterateTextarea');
+      await editor.focus();
+      const before = await editorTop(page);
+
+      await editor.pressSequentially('mera');
+      await expect(page.locator('[data-wu-basic-command-surface]')).toHaveAttribute('data-wu-has-content', 'true');
+      await page.waitForTimeout(250);
+
+      const after = await editorTop(page);
+      expect(Math.abs(after - before), `editor moved ${after - before}px under the writer on the first character`).toBeLessThanOrEqual(1);
+
+      const copy = page.locator('[data-wu-basic-command-surface] [data-wu-command-action="copy"]');
+      await expect(copy).toBeVisible();
+      const copyBox = await copy.boundingBox();
+      expect(copyBox.y, 'Copy must stay on screen after it is revealed').toBeGreaterThanOrEqual(0);
+      expect(copyBox.y + copyBox.height).toBeLessThanOrEqual(viewport.height);
+    });
+  }
+
+  test('a writer who already scrolled the page is not shifted a second time', async ({ page }) => {
+    await openMobileHome(page, { width: 390, height: 844 });
+    const editor = page.locator('#transliterateTextarea');
+    await page.evaluate(() => window.scrollTo(0, 120));
+    await editor.focus();
+    const before = await editorTop(page);
+    await editor.pressSequentially('mera');
+    await expect(page.locator('[data-wu-basic-command-surface]')).toHaveAttribute('data-wu-has-content', 'true');
+    await page.waitForTimeout(250);
+    expect(Math.abs((await editorTop(page)) - before)).toBeLessThanOrEqual(1);
+  });
+
+  test('text that arrives while the editor is not focused does not scroll the page', async ({ page }) => {
+    await openMobileHome(page, { width: 390, height: 844 });
+    await page.evaluate(() => {
+      const editor = document.getElementById('transliterateTextarea');
+      editor.blur();
+      editor.value = 'متن';
+      editor.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await expect(page.locator('[data-wu-basic-command-surface]')).toHaveAttribute('data-wu-has-content', 'true');
+    await page.waitForTimeout(250);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  });
+});
