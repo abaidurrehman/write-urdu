@@ -16,7 +16,11 @@
     scroll-margin-block: 12px 20px !important;
   }
 
-  body.wu-v2-shell[data-wu-core-workspace="basic"] #transliterateTextarea:focus {
+  /* [data-wu-focus-hold] keeps these focus-only rules for the length of a press
+     that blurred the editor, so the page does not move between press and
+     release and the tap reaches the control that was pressed. */
+  body.wu-v2-shell[data-wu-core-workspace="basic"] #transliterateTextarea:focus,
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-focus-hold] #transliterateTextarea {
     min-height: clamp(180px, 48dvh, 320px) !important;
     max-height: 62dvh !important;
   }
@@ -140,6 +144,7 @@
      navigation and input choices available before/after writing, but let the
      focused editor own the constrained viewport while the keyboard is open. */
   body.wu-v2-shell[data-wu-core-workspace="basic"]:has(#transliterateTextarea:focus) .wu-site-header,
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-focus-hold] .wu-site-header,
   body.wu-v2-shell.rich-editor-page:has(.tox.tox-tinymce:focus-within) .wu-site-header {
     display: none !important;
   }
@@ -147,11 +152,13 @@
   /* Once the caret is active the user has already chosen an input method.
      Temporarily collapse that chooser in a keyboard-sized viewport so growth
      in shared navigation/discovery cannot squeeze the real writing surface. */
-  body.wu-v2-shell[data-wu-core-workspace="basic"]:has(#transliterateTextarea:focus) .wu-basic-command-surface {
+  body.wu-v2-shell[data-wu-core-workspace="basic"]:has(#transliterateTextarea:focus) .wu-basic-command-surface,
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-focus-hold] .wu-basic-command-surface {
     display: none !important;
   }
 
-  body.wu-v2-shell[data-wu-core-workspace="basic"] #transliterateTextarea:focus {
+  body.wu-v2-shell[data-wu-core-workspace="basic"] #transliterateTextarea:focus,
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-focus-hold] #transliterateTextarea {
     min-height: clamp(170px, 44dvh, 230px) !important;
     max-height: 54dvh !important;
     padding-top: 12px !important;
