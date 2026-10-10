@@ -70,7 +70,7 @@ Execution gates:
 **Acceptance:** [`WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md`](WU-PLAT-002H-MOBILE-ACCEPTANCE-MATRIX.md)  
 **Evidence:** [`docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md`](../docs/WU-MOBILE-ACTIVATION-EVIDENCE-2026-09-03.md)
 
-**State:** M2 Basic Writer first-viewport implementation shipped 2026-09-03; M3 focus/keyboard + M4 Rich Editor hierarchy shipped 2026-09-04. Remaining work is evidence closeout, real-device/manual validation and `/urdu-keyboard` audit — not another speculative redesign.
+**State:** M2 Basic Writer first-viewport implementation shipped 2026-09-03; M3 focus/keyboard + M4 Rich Editor hierarchy shipped 2026-09-04. A reproduced 375x667 visibility regression was repaired on 2026-09-09 and the full focused browser matrix passed; medium-laptop task-first fold acceptance was also repaired under the existing V3 visual-quality gate. Remaining work is post-release evidence and real-device/manual closeout — not another speculative redesign.
 
 - [ ] Reconcile a comparable mobile **Product Pulse first-value** baseline around the release. The 2026-09-04 GSC export is a pre-repair acquisition baseline, not an activation substitute. Blocking gap fixed 2026-09-04 (`9c50e85`): `product_hourly_device_metrics` rollup ships mobile-tagged `writer_first_input`/`writer_eligible` counters; deployed same day, data collection started at deploy. Item stays open until post-deploy mobile volume is enough to reconcile (see P0.1G 7-day window).
 - [x] Audit actual DOM/runtime-injected content before the editable surface on `/` and `/urdu-editor` during M2–M4 implementation.
@@ -105,14 +105,18 @@ Execution gates:
 
 **Related:** `WU-GROWTH-002`, `WU-COMMUNITY-001`, `WU-SHARE-001`
 
-- [ ] One growth request at a time: Keep vs Share vs Publish.
-- [ ] Substantial unsaved writing normally prioritizes `Keep this writing`.
-- [ ] Normal task commands remain available without signup.
-- [ ] Signed-in users never see account-acquisition copy.
-- [ ] Distinguish `Share link` from `Publish to Urdu Writers`.
-- [ ] Community publishing appears only when eligible/appropriate and not stacked with a higher-priority request.
+**State:** Shared runtime arbitration and Product Pulse diagnostics shipped 2026-09-06 and were reconciled against runtime/tests on 2026-09-09. The remaining growth decision is post-change evidence, not another competing prompt layer.
+
+- [x] One growth request at a time: Keep vs Share vs Publish.
+- [x] Substantial unsaved writing normally prioritizes `Keep this writing`.
+- [x] Normal task commands remain available without signup.
+- [x] Signed-in users never see account-acquisition copy.
+- [x] Distinguish `Share link` from `Publish to Urdu Writers`.
+- [x] Community publishing appears only when eligible/appropriate and not stacked with a higher-priority request.
 
 ### P0.1E — Share/referral continuity
+
+**State:** Transport, aggregate counters and Product Pulse stages are shipped; explicit reader-to-destination browser acceptance is still open and remains the next P0 acceptance slice.
 
 - [ ] Trace reader CTA → destination response → referral/handoff recognized → workspace ready → first creation input → meaningful start.
 - [ ] Verify `Use this text` restores public text where promised without putting content in URL.
@@ -121,7 +125,9 @@ Execution gates:
 
 ### P0.1F — Card Studio completion
 
-- [ ] Instrument visit → role/preset → content → canvas edit → export attempt → export complete.
+**State:** Completion funnel instrumentation is shipped in Product Pulse; diagnosis and any Quick-path experiment remain open. Acquisition expansion stays blocked until the completion evidence is understood.
+
+- [x] Instrument visit → role/preset → content → canvas edit → export attempt → export complete.
 - [ ] Diagnose the drop before redesigning.
 - [ ] If complexity is implicated, test an outcome-first Quick path (`what are you making? → text → preset → preview → Download`).
 - [ ] Keep Advanced capability available.
@@ -385,6 +391,27 @@ After the activation review:
 - [x] Slice 1 UI design open question — resolved 2026-09-19: `event.wordingOverride` (`{text, isOverridden, generatedFrom}`) is its own field on the event, alongside `wordingTemplateId`/`wordingTone`, not folded into `customWording`. Shipped in `docs/superpowers/plans/2026-09-19-wu-shaadi-001-slice-1-ui-implementation.md` Task 1 and consumed by the composer at `/urdu-wedding-invitation-maker`.
 
 **Guardrail:** this programme is not a generic wedding planner, vendor marketplace or second Card Studio. It digitizes the Pakistani invitation/envelope workflow around structured wedding data, guest households and WhatsApp/print outputs. If implementation permission is unclear, Slice 0 only.
+
+## P1.11 — Urdu Typography & Font Discovery Platform
+
+**Spec:** [`WU-FONT-001`](WU-FONT-001-urdu-typography-font-discovery-platform.md)  
+**Architecture:** [`WU-FONT-001-ARCHITECTURE-CONTRACT.md`](WU-FONT-001-ARCHITECTURE-CONTRACT.md)  
+**Skill:** `skills/wu-font-001/SKILL.md`  
+**State:** Founder-approved specification on 2026-09-13. Slice 0 evidence/licensing/performance work may proceed without launching a new public acquisition route. Existing-tool convergence is planned; `/urdu-fonts` indexing/promotion remains a later explicit release decision.
+
+**Progress (recorded when this spec was rescued from stale PR #199):** Slices 0, 1 and 1B shipped — see `docs/WU-FONT-001-SLICE-0-BASELINE-2026-09-14.md`, `docs/WU-FONT-001-SLICE-1-FOUNDATION-2026-09-14.md` and `docs/WU-FONT-001-SLICE-1B-CONVERGENCE-2026-09-14.md`. Next is Slice 1C; no `/urdu-fonts` public route exists yet.
+
+- [x] Slice 0 — audit every current Urdu font declaration/list, reconcile runtime vs documentation, preserve authoritative license evidence, capture real Urdu shaping fixtures and establish a font-request/byte baseline.
+- [x] Slice 1 — introduce one shared stable-ID Urdu font registry + deduplicated loader; preserve current default behavior and legacy Card Studio project compatibility.
+- [x] Slice 1B — converge Card Studio, Name Art and Rich Editor on the governed registry without redesigning those tools.
+- [ ] Slice 1C — add the first newly approved Pakistani web-font candidate only after authoritative redistribution/web-embedding evidence and shaping/performance acceptance; Mehr Nastaliq Web is the first research priority, not an automatic approval.
+- [ ] Slice 2 — build browser-local `/urdu-fonts` compare MVP using DOM text and truthful Web Font / This Device availability; keep it gated/noindex until acceptance.
+- [ ] Slice 3 — hand off selected text + stable `fontId` into Card Studio, Name Art and supported Rich Editor paths without text in URL/telemetry.
+- [ ] Slice 4 — add focused 2–4 font comparison and deterministic use-case guidance; no AI needed.
+- [ ] Slice 5 — only after acceptance, re-check intent ownership against `/urdu-fonts-nastaliq-vs-naskh` and `/stylish-urdu-text-generator`, then make an explicit index/nav/sitemap decision.
+- [ ] Slice 6 — expand the catalog/individual guides only where license + demand + unique value justify it; no thin font-page factory.
+
+**Guardrails:** do not commit famous font binaries from mirrors; do not label Noto fallback as Jameel Noori or another unavailable system face; do not load the catalog globally; do not break Urdu OpenType shaping during optimization; do not treat raw font downloads as the success metric. The strategic loop is `type once → compare real fonts → choose → create/share/export`.
 
 ---
 
