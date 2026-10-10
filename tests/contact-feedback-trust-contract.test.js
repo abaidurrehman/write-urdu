@@ -67,6 +67,9 @@ assert.match(mailer, /\[Write Urdu Feedback\]/, 'Mailer must restrict feedback s
 assert.match(mailer, /\[Write Urdu Contact\]/, 'Mailer must restrict contact subject prefixes');
 assert.match(mailer, /FORM_EMAIL\.send/, 'Mailer must use the destination-restricted send_email binding');
 assert.match(mailer, /FORM_TO_EMAIL/, 'Mailer destination must come from deployment configuration');
+assert.match(mailer, /from 'cloudflare:email'/, 'Mailer must use Cloudflare EmailMessage for verified-destination delivery');
+assert.match(mailer, /new EmailMessage\(from, to, raw\)/, 'Mailer must stay on the Email Routing-compatible raw message path');
+assert.doesNotMatch(mailer, /FORM_EMAIL\.send\(\{/, 'Mailer must not require arbitrary-recipient structured Email Sending');
 assert.doesNotMatch(mailer, /payload\?\.to|payload\?\.from/, 'Visitor payload must not choose mail sender or destination');
 
 assert.match(privacy, /id="contact-feedback-data"/, 'Privacy policy must expose a contact/feedback processing section');
