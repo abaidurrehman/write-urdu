@@ -2,7 +2,12 @@
     'use strict';
 
     var STORAGE_PREFIX = 'write-urdu:input-mode:v1:';
+    var PROVIDER_REQUEST = /inputtools(\.google\.com\/request|\/request)/;
     var currentControl = null;
+    // The Google control reports itself ready even when every word request
+    // later fails, and it never fires SERVER_UNREACHABLE for those failures.
+    // Track request outcomes directly so a failed conversion is not silent.
+    var providerUnavailable = false;
     var copy = {
         en: {
             title: 'Input mode',
@@ -11,7 +16,9 @@
             romanNote: 'Example: mera khayal hai → میرا خیال ہے. Type Urdu words using English letters and press Space after each word.',
             directNote: 'Conversion is off in this mode. Type or paste Urdu or English directly; existing text is kept unchanged.',
             directAlert: 'English-letter conversion is off. Switch back to English letters → Urdu to convert as you type.',
-            switchToRoman: 'Turn conversion on'
+            switchToRoman: 'Turn conversion on',
+            unavailableAlert: 'Urdu conversion is not responding, so words are staying in English letters. Your next word will try again.',
+            switchToDirect: 'Type Urdu directly'
         },
         ur: {
             title: 'تحریر کا طریقہ',
@@ -20,7 +27,9 @@
             romanNote: 'مثال: mera khayal hai → میرا خیال ہے۔ اردو الفاظ انگریزی حروف میں لکھیں اور ہر لفظ کے بعد Space دبائیں۔',
             directNote: 'اس طریقے میں تبدیلی بند ہے۔ اردو یا انگریزی براہِ راست لکھیں یا پیسٹ کریں؛ موجودہ متن تبدیل نہیں ہوگا۔',
             directAlert: 'انگریزی حروف سے اردو میں تبدیلی بند ہے۔ لکھتے وقت تبدیلی کے لیے انگریزی حروف → اردو منتخب کریں۔',
-            switchToRoman: 'تبدیلی آن کریں'
+            switchToRoman: 'تبدیلی آن کریں',
+            unavailableAlert: 'اردو میں تبدیلی جواب نہیں دے رہی، اس لیے الفاظ انگریزی حروف میں ہی رہ رہے ہیں۔ اگلا لفظ لکھنے پر دوبارہ کوشش ہوگی۔',
+            switchToDirect: 'اردو براہِ راست لکھیں'
         }
     };
 
@@ -105,7 +114,7 @@
         action.type = 'button';
         action.className = 'input-mode-alert-action';
         action.setAttribute('data-input-mode-alert-action', '');
-        action.addEventListener('click', function () { setMode(root, 'roman'); });
+        action.addEventListener('click', function () { setMode(root, root.dataset.inputMode === 'direct' ? 'roman' : 'direct'); });
         alert.appendChild(message);
         alert.appendChild(action);
         root.appendChild(alert);
@@ -127,14 +136,81 @@
         if (roman) roman.textContent = text('roman');
         if (direct) direct.textContent = text('direct');
         if (note) note.textContent = mode === 'roman' ? text('romanNote') : text('directNote');
+        renderAlert(root, mode);
+        targets(root).forEach(function (target) { syncTarget(target, mode); });
+        setTransliteration(mode);
+    }
+
+    function renderAlert(root, mode) {
         var alert = ensureModeAlert(root);
         var alertMessage = alert.querySelector('[data-input-mode-alert-message]');
         var alertAction = alert.querySelector('[data-input-mode-alert-action]');
-        alert.hidden = mode !== 'direct';
-        if (alertMessage) alertMessage.textContent = text('directAlert');
-        if (alertAction) alertAction.textContent = text('switchToRoman');
-        targets(root).forEach(function (target) { syncTarget(target, mode); });
-        setTransliteration(mode);
+        var unavailable = mode === 'roman' && providerUnavailable;
+        var hidden = mode !== 'direct' && !unavailable;
+        var message = text(unavailable ? 'unavailableAlert' : 'directAlert');
+        var actionLabel = text(unavailable ? 'switchToDirect' : 'switchToRoman');
+        alert.dataset.inputModeAlertState = mode === 'direct' ? 'direct' : (unavailable ? 'unavailable' : '');
+        var resizes = alert.hidden !== hidden || (!hidden && (
+            (alertMessage && alertMessage.textContent !== message) ||
+            (alertAction && alertAction.textContent !== actionLabel)));
+        if (!resizes) return;
+        // Every size change to the alert happens inside the compensated step.
+        // A hidden alert keeps its last copy so hiding never resizes it first.
+        keepFocusedTargetInPlace(root, function () {
+            alert.hidden = hidden;
+            if (hidden) return;
+            if (alertMessage) alertMessage.textContent = message;
+            if (alertAction) alertAction.textContent = actionLabel;
+        });
+    }
+
+    // The alert sits above the editor. When it appears or disappears while the
+    // writer is typing, hold the editor at the same on-screen position instead
+    // of pushing it down mid-word.
+    function keepFocusedTargetInPlace(root, change) {
+        var active = document.activeElement;
+        var focused = targets(root).filter(function (target) { return target === active; })[0];
+        var before = focused ? focused.getBoundingClientRect().top : 0;
+        change();
+        if (!focused) return;
+        function restore() {
+            var delta = focused.getBoundingClientRect().top - before;
+            // `instant` overrides the homepage's `scroll-behavior: smooth`, which
+            // would otherwise animate and be cut short by caret scrolling.
+            if (Math.abs(delta) >= 1) window.scrollBy({ top: delta, left: 0, behavior: 'instant' });
+        }
+        restore();
+        // Browser scroll anchoring can apply its own adjustment after ours;
+        // correct once more on the next frame against the original position.
+        if (typeof window.requestAnimationFrame === 'function') window.requestAnimationFrame(restore);
+    }
+
+    function setProviderAvailability(available) {
+        var unavailable = !available;
+        if (providerUnavailable === unavailable) return;
+        providerUnavailable = unavailable;
+        document.querySelectorAll('[data-input-mode-control]').forEach(function (root) {
+            if (root.dataset.inputModeBound) renderAlert(root, root.dataset.inputMode || readMode(root));
+        });
+    }
+
+    function watchProviderRequests() {
+        // Word requests are JSONP scripts appended to <head>; the library
+        // removes them in its callback, so listen on each script directly.
+        if (document.head && typeof MutationObserver === 'function') {
+            new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+                        if (!node || node.tagName !== 'SCRIPT' || !PROVIDER_REQUEST.test(node.src || '')) return;
+                        node.addEventListener('load', function () { setProviderAvailability(true); });
+                        node.addEventListener('error', function () { setProviderAvailability(false); });
+                    });
+                });
+            }).observe(document.head, { childList: true });
+        }
+        document.addEventListener('write-urdu:transliteration-status', function (event) {
+            if (event.detail && typeof event.detail.available === 'boolean') setProviderAvailability(event.detail.available);
+        });
     }
 
     function persist(root, mode) {
@@ -193,6 +269,7 @@
         refresh: bindAll
     };
 
+    watchProviderRequests();
     loadWriteMonetization();
     document.addEventListener('write-urdu:transliteration-ready', function (event) {
         currentControl = event.detail && event.detail.control || window.writeUrduTransliterationControl || null;

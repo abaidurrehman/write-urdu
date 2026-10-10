@@ -65,7 +65,7 @@ assert.match(shareFunction, /data-share-create[^]*data-share-use-text/, 'Public 
 assert.match(shareFunction, /share\.remix_mode === 'design' && share\.remix_payload[\s\S]*data-share-edit/, 'Public share page must add exact-design editing only for reconstructible shares');
 assert.match(shareFunction, /workspace-journey-registry\.js[\s\S]*create-publish-boundaries-registry\.js[\s\S]*workspace-handoff\.js/, 'Public share page must load the governed v2 runtime before its action script');
 
-assert.match(sw, /write-urdu-shell-v55/, 'PWA cache must retain Card Studio, Slice G, B4 and current authoring assets');
+assert.match(sw, /write-urdu-shell-v56/, 'PWA cache must retain Card Studio, Slice G, B4 and current authoring assets');
 ['create-publish-boundaries-registry.js', 'card-studio-handoff-adapter.js', 'qr-handoff-adapter.js', 'template-library-boundary.js', 'share-page.js'].forEach(asset => {
   assert.ok(sw.includes(asset), `${asset} must be cached with the current shell`);
 });
