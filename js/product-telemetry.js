@@ -22,7 +22,7 @@
     var trackedOnce = Object.create(null);
     var SHARE_REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
     var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true, urdu_cards: true };
-    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-09-06-v1';
+    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-10-09-v2';
 
     function normalizedPath(value) {
         if (typeof window !== 'undefined' && window.WriteUrduLocaleRoute && typeof window.WriteUrduLocaleRoute.productPath === 'function') return window.WriteUrduLocaleRoute.productPath(value || '/');
@@ -551,17 +551,43 @@
     }
 
     // Slice 1 keeps the coarse Gate A counters for historical continuity,
-    // while adding a bounded per-recommendation diagnostic path. Hidden
-    // overflow actions are eligible but are not counted as shown until their
-    // disclosure is opened. No recommendation identity is derived from text.
+    // while adding a bounded per-recommendation diagnostic path. `eligible`
+    // means the action exists in the DOM. `shown` means at least half of the
+    // action was inside the viewport, so actions below the fold or inside a
+    // closed "More options" disclosure are not shown until the writer can see
+    // them. No recommendation identity is derived from text.
+    var SHOWN_VISIBLE_RATIO = 0.5;
+    var observedRecommendations = typeof WeakSet === 'function' ? new WeakSet() : null;
+    var recommendationVisibility = null;
+
+    function observeRecommendationVisibility(control, meta) {
+        if (typeof window.IntersectionObserver !== 'function' || !observedRecommendations) {
+            var details = control.closest && control.closest('details');
+            if (!details || details.open) trackContinuationPath('shown', meta);
+            return;
+        }
+        if (observedRecommendations.has(control)) return;
+        observedRecommendations.add(control);
+        if (!recommendationVisibility) {
+            recommendationVisibility = new window.IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (!entry.isIntersecting) return;
+                    var visibleMeta = recommendationDetail(entry.target);
+                    if (visibleMeta) trackContinuationPath('shown', visibleMeta);
+                    recommendationVisibility.unobserve(entry.target);
+                });
+            }, { threshold: SHOWN_VISIBLE_RATIO });
+        }
+        recommendationVisibility.observe(control);
+    }
+
     function trackRecommendationControls() {
         var controls = Array.prototype.slice.call(document.querySelectorAll('[data-wu-next-step-action]'));
         controls.forEach(function (control) {
             var meta = recommendationDetail(control);
             if (!meta) return;
             trackContinuationPath('eligible', meta);
-            var details = control.closest && control.closest('details');
-            if (!details || details.open) trackContinuationPath('shown', meta);
+            observeRecommendationVisibility(control, meta);
         });
         document.querySelectorAll('[data-wu-next-step-version="2"] details').forEach(function (details) {
             if (details.getAttribute('data-wu-continuation-toggle-bound') === 'true') return;
@@ -571,12 +597,39 @@
         return controls.length > 0;
     }
 
+    // The recommendation panel is rendered on the writer's first meaningful
+    // input, which is often long after the discovery poll below has stopped.
+    // Re-scan when the panel itself changes instead of relying on a time limit.
+    function watchRecommendationPanel() {
+        if (typeof window.MutationObserver !== 'function' || !document.body) return;
+        var scheduled = false;
+        function touchesPanel(node) {
+            if (!node || node.nodeType !== 1) return false;
+            if (node.matches && node.matches('[data-wu-next-step-version="2"]')) return true;
+            return Boolean(node.closest && node.closest('[data-wu-next-step-version="2"]'));
+        }
+        new window.MutationObserver(function (mutations) {
+            if (scheduled) return;
+            var relevant = mutations.some(function (mutation) {
+                if (touchesPanel(mutation.target)) return true;
+                return Array.prototype.some.call(mutation.addedNodes || [], touchesPanel);
+            });
+            if (!relevant) return;
+            scheduled = true;
+            window.requestAnimationFrame(function () {
+                scheduled = false;
+                trackRecommendationControls();
+            });
+        }).observe(document.body, { childList: true, subtree: true });
+    }
+
     function bindContinuationSignals() {
         document.addEventListener('write-urdu:handoff-started', function (event) {
             track('continuation_stored');
             trackContinuationPath('handoff_created', event && event.detail || {});
         });
         document.addEventListener('write-urdu:handoff-imported', function () { track('continuation_payload_restored'); });
+        watchRecommendationPanel();
         var attempts = 0;
         var timer = window.setInterval(function () {
             attempts += 1;
@@ -666,6 +719,31 @@
             markEngaged();
             trackOnce('canvas-interaction', 'canvas_interaction');
         });
+    }
+
+    // Basic Writer and Text Cleaner receive handoffs through text-handoff.js and
+    // are not creation tools, so their first real interaction after an import
+    // is observed here. Programmatic import/analyze events are not trusted.
+    function bindTextDestinationSignals() {
+        var rootSelector = { '/': '#transliterateTextarea', '/urdu-text-cleaner': '[data-urdu-text-cleaner]' }[route];
+        if (!rootSelector) return;
+        var reported = false;
+        // Typing in the main editor is the hottest path, so a page with no
+        // pending handoff must cost one attribute lookup per event.
+        function report(event, target) {
+            if (reported || !document.documentElement.hasAttribute('data-wu-continuation-recommendation')) return;
+            if (!event.isTrusted || !target || !target.closest || !target.closest(rootSelector)) return;
+            reported = true;
+            trackContinuationMeaningfulInteraction();
+        }
+        ['input', 'change'].forEach(function (name) {
+            document.addEventListener(name, function (event) { report(event, event.target); }, true);
+        });
+        if (route !== '/urdu-text-cleaner') return;
+        document.addEventListener('click', function (event) {
+            var action = event.target && event.target.closest && event.target.closest('[data-cleaner-analyze], [data-cleaner-fix-safe], [data-cleaner-copy], [data-cleaner-clear]');
+            if (action) report(event, action);
+        }, true);
     }
 
     function formatFromFilename(filename) {
@@ -814,6 +892,7 @@
         bindPrimaryEditor();
         bindProductActions();
         bindCreationToolSignals();
+        bindTextDestinationSignals();
         bindContinuationSignals();
         bindCardStudioExportSignals();
         installOutcomeHooks();

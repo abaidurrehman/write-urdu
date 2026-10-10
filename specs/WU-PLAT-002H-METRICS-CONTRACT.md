@@ -101,6 +101,10 @@ Minimum dimensions while legacy/v2 or other independent paths coexist:
 - `destination_ready` means the destination workspace is actually initialized/able to accept the handoff, not merely that navigation started.
 - `payload restored` is applicable only to journeys that carry payload; a no-payload journey is N/A, not failure.
 - `meaningful start` means destination-task interaction beyond page load.
+- Release marker `wu-plat-002h-s1-2026-10-09-v2` changed two per-path definitions, so earlier `…-2026-09-06-v1` rows are **not** comparable for these stages:
+  - `eligible` = the recommendation exists in the DOM (unchanged); `shown` = at least half of the action was inside the viewport (`IntersectionObserver`, 0.5). Actions below the fold, or inside a closed "More options" disclosure, are eligible but not shown. The recommendation panel is now discovered whenever it renders instead of only within 20 seconds of page load.
+  - Basic Writer and Text Cleaner destinations now emit `destination_ready`, `payload_restored` and `meaningful_start` (previously only Rich Editor, Card Studio and QR could). Their `meaningful_start` is the first trusted edit or cleaner action after the import; the programmatic import and automatic analyze do not count.
+- The legacy coarse counters (`continuation_shown`, `continuation_destination_ready`, `continuation_payload_restored`) keep their original exposure-based semantics for historical continuity and carry no release marker. Use the per-path table for post-change decisions.
 - A click alone must never be called handoff success.
 - If two implementation paths emit the same conceptual state, they must be safely deduplicated or separated by path/version before aggregate conversion is calculated.
 

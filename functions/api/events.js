@@ -115,7 +115,7 @@ const CONTINUATION_WORKSPACES = new Set([
     'name-art', 'public-share', 'card-gallery', 'urdu-cards'
 ]);
 const CONTINUATION_PATH_VERSIONS = new Set(['v2', 'legacy-v1', 'card-gallery-v1', 'urdu-cards-v1']);
-const CONTINUATION_RELEASE_MARKERS = new Set(['wu-plat-002h-s1-2026-09-06-v1', 'wu-card-gallery-s2-2026-09-13-v1', 'wu-urdu-cards-s1-2026-09-13-v1']);
+const CONTINUATION_RELEASE_MARKERS = new Set(['wu-plat-002h-s1-2026-09-06-v1', 'wu-plat-002h-s1-2026-10-09-v2', 'wu-card-gallery-s2-2026-09-13-v1', 'wu-urdu-cards-s1-2026-09-13-v1']);
 const CONTINUATION_PATH_EVENTS = new Set([
     'continuation_path_eligible', 'continuation_path_shown', 'continuation_path_selected',
     'continuation_path_handoff_created', 'continuation_path_destination_ready',

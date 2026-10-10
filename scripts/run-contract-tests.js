@@ -25,6 +25,7 @@ const tests = [
   'tests/lighthouse-quickwins-3-contract.test.js',
   'tests/export-dependency-loading-contract.test.js',
   'tests/product-telemetry-contract.test.js',
+  'tests/continuation-release-marker-contract.test.js',
   'tests/product-video-embed-contract.test.js',
   'tests/acquisition-revenue-contract.test.js',
   'tests/product-pulse-contract.test.js',

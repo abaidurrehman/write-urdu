@@ -17,7 +17,7 @@
     var MAX_TEXT_LENGTH = 100000;
     var MAX_SERIALIZED_BYTES = 220000;
     var KEY_PREFIX = 'write-urdu:workspace-handoff:v2:';
-    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-09-06-v1';
+    var CONTINUATION_RELEASE_MARKER = 'wu-plat-002h-s1-2026-10-09-v2';
     var ALLOWED_KINDS = ['plain-text', 'rich-text', 'template-seed', 'visual-project-seed', 'structured-seed', 'draft-reference'];
 
     var LEGACY_TARGETS = {
