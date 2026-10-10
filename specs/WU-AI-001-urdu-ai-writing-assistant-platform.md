@@ -359,7 +359,7 @@ Provider/model facts are planning inputs and must be revalidated immediately bef
 | --- | --- | --- | --- |
 | Mistral Small 4 (`mistral-small-2603`) | primary benchmark | $0.15/M input, $0.60/M output | **Candidate** |
 | Groq `openai/gpt-oss-120b` | primary/fallback benchmark | $0.15/M input, $0.60/M output | **Candidate** |
-| Cerebras `gpt-oss-120b` | latency/capacity challenger | revalidate direct terms/pricing | **Candidate** |
+| Cerebras `gpt-oss-120b` | latency/capacity challenger | revalidate direct terms/pricing; a 2026-08-25 review (recorded from closed PR #120) found its Terms of Use prohibit use of the service for benchmarking or competitive analysis, so do not benchmark it without written permission | **Candidate / benchmark blocked-terms** |
 | Gemini Flash family | quality control | cheap, project-dependent limits | **Benchmark-only; not production-approved** |
 | DeepSeek | optional later research | inexpensive | **Not prioritized** |
 
