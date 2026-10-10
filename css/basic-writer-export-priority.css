@@ -177,3 +177,9 @@ body[data-wu-basic-command-toolbar="true"] .wu-basic-command-export-priority.is-
     flex-basis: 22px;
   }
 }
+
+/* P0.1B: the empty writer must not show a wall of disabled export commands.
+   The group (direct formats + Download) appears with the first text. */
+body[data-wu-basic-command-toolbar="true"] .wu-basic-command-surface[data-wu-has-content="false"] .wu-basic-command-download {
+  display: none !important;
+}

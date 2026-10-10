@@ -119,7 +119,8 @@ test('Basic Writer keeps E0 task-first and promotes completion actions after fir
   await expect(share).toBeHidden();
   await expect(print).toBeHidden();
   await expect(clear).toBeHidden();
-  await expect(downloadToggle).toBeVisible();
+  // P0.1B: no disabled export wall before there is text to export.
+  await expect(downloadToggle).toBeHidden();
   await expect(downloadToggle).toBeDisabled();
   await expect(mode.locator('[data-input-mode-option="roman"]')).toBeEnabled();
   await expect(moreToggle).toBeEnabled();

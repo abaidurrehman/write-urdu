@@ -95,3 +95,49 @@ test('Gate B2 M3 keeps focused Basic Writer usable when the effective viewport s
   await expect(editor).toBeFocused();
   await expect(editor).toHaveValue('میرا اردو متن');
 });
+
+test('phone input-method chips show their full labels instead of truncating them', async ({ page }) => {
+  for (const viewport of VIEWPORTS) {
+    await openMobileHome(page, viewport);
+    const chips = page.locator('[data-wu-basic-command-surface] .input-mode-option');
+    await expect(chips).toHaveCount(3);
+    for (let i = 0; i < 3; i += 1) {
+      const fit = await chips.nth(i).evaluate(node => ({
+        label: node.textContent.trim(),
+        clippedX: node.scrollWidth - node.clientWidth,
+        clippedY: node.scrollHeight - node.clientHeight,
+        ellipsis: getComputedStyle(node).textOverflow === 'ellipsis' && getComputedStyle(node).whiteSpace === 'nowrap' && node.scrollWidth > node.clientWidth
+      }));
+      expect(fit.clippedX, `${viewport.width}px "${fit.label}" is clipped horizontally`).toBeLessThanOrEqual(1);
+      expect(fit.clippedY, `${viewport.width}px "${fit.label}" is clipped vertically`).toBeLessThanOrEqual(1);
+      expect(fit.ellipsis, `${viewport.width}px "${fit.label}" shows an ellipsis`).toBe(false);
+    }
+  }
+});
+
+test('the empty Basic Writer shows no disabled export buttons and reveals them once there is text', async ({ page }) => {
+  for (const viewport of VIEWPORTS.slice(0, 3)) {
+    await openMobileHome(page, viewport);
+    const surface = page.locator('[data-wu-basic-command-surface]');
+    const direct = surface.locator('[data-wu-command-action="pdf"], [data-wu-command-action="word"], [data-wu-command-action="png"], [data-wu-command-action="download-menu"]');
+
+    for (const action of ['pdf', 'word', 'png', 'download-menu']) {
+      await expect(surface.locator(`[data-wu-command-action="${action}"]`), `${viewport.width}px empty state must not show a disabled ${action}`).toBeHidden();
+    }
+    const visibleDisabled = await surface.evaluate(node => Array.from(node.querySelectorAll('button')).filter(button => {
+      const box = button.getBoundingClientRect();
+      return button.disabled && box.width > 0 && box.height > 0 && getComputedStyle(button).visibility !== 'hidden';
+    }).map(button => button.textContent.trim()));
+    expect(visibleDisabled, `${viewport.width}px: no visible disabled command at the empty state`).toEqual([]);
+    await expect(surface.locator('[data-wu-basic-more-toggle]'), 'More stays available').toBeVisible();
+
+    await page.locator('#transliterateTextarea').fill('میرا اردو متن مکمل ہے');
+    await expect(surface).toHaveAttribute('data-wu-has-content', 'true');
+    for (const action of ['pdf', 'word', 'png', 'download-menu']) {
+      const control = surface.locator(`[data-wu-command-action="${action}"]`);
+      await expect(control, `${viewport.width}px ${action} appears with text`).toBeVisible();
+      await expect(control, `${viewport.width}px ${action} is enabled with text`).toBeEnabled();
+    }
+    await expect(direct.first()).toBeVisible();
+  }
+});
