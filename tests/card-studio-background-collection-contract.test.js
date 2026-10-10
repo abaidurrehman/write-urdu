@@ -125,6 +125,6 @@ assert.match(source, /input\.dispatchEvent\(new Event\('change'/, 'background mu
 assert.strictEqual(library.mount({ location: { pathname: '/urdu-editor' }, document: {} }), false, 'library must not mount on unrelated routes');
 assert.doesNotMatch(sw, /ajrak-heritage|truck-art-bloom|moonlit-lakeside/, 'large new artwork must not be eagerly precached');
 assert.match(sw, /\.\/js\/card-background-registry\.js/, 'shared registry must remain available offline with Card Studio');
-assert.match(sw, /write-urdu-shell-v53/, 'PWA cache revision must refresh current authoring code');
+assert.match(sw, /write-urdu-shell-v54/, 'PWA cache revision must refresh current authoring code');
 
 console.log(`Card Studio background collection contract passed: ${library.backgrounds.length} backgrounds, ${Math.round(fullBytes / 1024)} KB full, ${Math.round(thumbnailBytes / 1024)} KB thumbnails.`);
