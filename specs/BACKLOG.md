@@ -381,6 +381,27 @@ After the activation review:
 
 **Guardrail:** this programme is not a generic wedding planner, vendor marketplace or second Card Studio. It digitizes the Pakistani invitation/envelope workflow around structured wedding data, guest households and WhatsApp/print outputs. If implementation permission is unclear, Slice 0 only.
 
+## P1.11 — Urdu Typography & Font Discovery Platform
+
+**Spec:** [`WU-FONT-001`](WU-FONT-001-urdu-typography-font-discovery-platform.md)  
+**Architecture:** [`WU-FONT-001-ARCHITECTURE-CONTRACT.md`](WU-FONT-001-ARCHITECTURE-CONTRACT.md)  
+**Skill:** `skills/wu-font-001/SKILL.md`  
+**State:** Founder-approved specification on 2026-09-13. Slice 0 evidence/licensing/performance work may proceed without launching a new public acquisition route. Existing-tool convergence is planned; `/urdu-fonts` indexing/promotion remains a later explicit release decision.
+
+**Progress (recorded when this spec was rescued from stale PR #199):** Slices 0, 1 and 1B shipped — see `docs/WU-FONT-001-SLICE-0-BASELINE-2026-09-14.md`, `docs/WU-FONT-001-SLICE-1-FOUNDATION-2026-09-14.md` and `docs/WU-FONT-001-SLICE-1B-CONVERGENCE-2026-09-14.md`. Next is Slice 1C; no `/urdu-fonts` public route exists yet.
+
+- [x] Slice 0 — audit every current Urdu font declaration/list, reconcile runtime vs documentation, preserve authoritative license evidence, capture real Urdu shaping fixtures and establish a font-request/byte baseline.
+- [x] Slice 1 — introduce one shared stable-ID Urdu font registry + deduplicated loader; preserve current default behavior and legacy Card Studio project compatibility.
+- [x] Slice 1B — converge Card Studio, Name Art and Rich Editor on the governed registry without redesigning those tools.
+- [ ] Slice 1C — add the first newly approved Pakistani web-font candidate only after authoritative redistribution/web-embedding evidence and shaping/performance acceptance; Mehr Nastaliq Web is the first research priority, not an automatic approval.
+- [ ] Slice 2 — build browser-local `/urdu-fonts` compare MVP using DOM text and truthful Web Font / This Device availability; keep it gated/noindex until acceptance.
+- [ ] Slice 3 — hand off selected text + stable `fontId` into Card Studio, Name Art and supported Rich Editor paths without text in URL/telemetry.
+- [ ] Slice 4 — add focused 2–4 font comparison and deterministic use-case guidance; no AI needed.
+- [ ] Slice 5 — only after acceptance, re-check intent ownership against `/urdu-fonts-nastaliq-vs-naskh` and `/stylish-urdu-text-generator`, then make an explicit index/nav/sitemap decision.
+- [ ] Slice 6 — expand the catalog/individual guides only where license + demand + unique value justify it; no thin font-page factory.
+
+**Guardrails:** do not commit famous font binaries from mirrors; do not label Noto fallback as Jameel Noori or another unavailable system face; do not load the catalog globally; do not break Urdu OpenType shaping during optimization; do not treat raw font downloads as the success metric. The strategic loop is `type once → compare real fonts → choose → create/share/export`.
+
 ---
 
 # LATER — P2

@@ -37,6 +37,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-CARD-GALLERY-001A` | Social Background Collection Expansion | **Active implementation slice** — daily/Jumma Batch A adds eight original lightweight backgrounds; later visual families remain evidence-gated |
 | `WU-CARD-RETENTION-001` | Card Retention & Sharing Engine | **Active** — founder-directed coordinated programme connecting one contextual homepage card to existing share and Card Studio paths |
 | `WU-CARD-RETENTION-001A` | Homepage Contextual Featured Card | **Implemented core / acceptance pending** — one post-writer card with deterministic local contexts, Share and Card Studio handoff; post-release activation/performance evidence remains open |
+| `WU-FONT-001` | Urdu Typography & Font Discovery Platform | **Planned / founder-approved specification** — one governed Urdu font registry plus truthful compare/choose workflow; existing-tool convergence and license evidence first, `/urdu-fonts` public indexing remains separately gated |
 | `WU-ANALYTICS-003` | Acquisition and Returning Signal | **Implemented core** — acquisition signal shipped; `WU-PLAT-002H` adds first-value/continuation acceptance requirements using the approved telemetry boundary |
 | `WU-JOURNEY-001` | Pakistan Urdu Intent & Destination Journey Programme | **Planned / evidence-gated** — feedback-reconciled programme connecting existing input, messaging/social, document, practice and print capabilities around real user destination intent; core UI remains behind `WU-PLAT-002H` |
 | `WU-JOURNEY-001A` | Destination Intent Measurement | **Planned evidence foundation** — privacy-safe bounded destination categories + Product Pulse reporting; visible prompt only after first value and P0 gate approval |
@@ -162,6 +163,21 @@ The implementation package is:
 - [../docs/WU-SHAADI-001-CODEX-HANDOFF.md](../docs/WU-SHAADI-001-CODEX-HANDOFF.md) — ready-to-paste implementation handoff.
 
 The hard architecture rule is that Card Studio/canvas state is never the canonical wedding record. Guest and wedding data remain browser-local before explicit publication. Personalized public links, when implemented, are opaque, event-scoped, revocable and noindex. While the current activation roadmap remains the governing gate, implementation defaults to Slice 0 only unless the canonical backlog records explicit release permission.
+## Planned Urdu Typography & Font Discovery programme
+
+`WU-FONT-001` records the founder-approved 2026-09-13 direction to turn Urdu typography into a shared product capability rather than a set of unrelated dropdowns. It combines license-governed font infrastructure with a future interactive `/urdu-fonts` compare/choose surface and direct continuation into existing creation tools.
+
+The implementation package is:
+
+- [`WU-FONT-001-urdu-typography-font-discovery-platform.md`](WU-FONT-001-urdu-typography-font-discovery-platform.md) — parent product/roadmap contract;
+- [`WU-FONT-001-ARCHITECTURE-CONTRACT.md`](WU-FONT-001-ARCHITECTURE-CONTRACT.md) — shared registry, delivery, shaping, export and compatibility boundaries;
+- [`WU-FONT-001-IMPLEMENTATION-CHECKLIST.md`](WU-FONT-001-IMPLEMENTATION-CHECKLIST.md) — ordered Slice 0–6 plan;
+- [`WU-FONT-001-ACCEPTANCE-MATRIX.md`](WU-FONT-001-ACCEPTANCE-MATRIX.md) — licensing, shaping, browser, export, performance, privacy and SEO acceptance;
+- [`../docs/WU-FONT-001-MARKET-LICENSE-EVIDENCE-2026-09-13.md`](../docs/WU-FONT-001-MARKET-LICENSE-EVIDENCE-2026-09-13.md) — dated competitor and candidate-font evidence;
+- [`../skills/wu-font-001/SKILL.md`](../skills/wu-font-001/SKILL.md) — canonical Codex/Claude execution skill;
+- [`../docs/WU-FONT-001-CODEX-HANDOFF.md`](../docs/WU-FONT-001-CODEX-HANDOFF.md) — ready-to-paste implementation handoff.
+
+The strategic distinction is deliberate: competitors prove demand for Urdu font preview/download, but Write-Urdu should win on `type once → compare real fonts → choose → create/share/export`. Famous rights-sensitive fonts remain system/reference-only until authoritative redistribution/web-embedding evidence is preserved. Planning and existing-tool registry convergence may proceed when prioritized; public `/urdu-fonts` indexing remains a separate release decision.
 
 ## Archived contracts
 
