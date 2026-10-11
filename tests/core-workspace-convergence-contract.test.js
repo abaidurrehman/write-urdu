@@ -53,8 +53,8 @@ assert.match(runtime, /data-wu-core-actionbar', 'pre-editor'/, 'Basic Writer act
 assert.match(runtime, /loadBasicCommandToolbar\(\)/, 'Core convergence must load the dedicated Basic Writer command toolbar');
 assert.doesNotMatch(runtime, /parent\.insertBefore\(actions, hint\.nextSibling\)/, 'Legacy post-editor action-bar relocation must be retired');
 
-assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'word', 'png', 'svg', 'preview', 'print'], 'Output action registry changed unexpectedly');
-assert.deepStrictEqual(Toolbar.DOWNLOAD_ACTIONS, ['pdf', 'word', 'png', 'svg', 'text'], 'Download disclosure must own every downloadable format');
+assert.deepStrictEqual(Toolbar.OUTPUT_ACTIONS, ['pdf', 'pdf-print', 'word', 'png', 'svg', 'preview', 'print'], 'Output action registry changed unexpectedly');
+assert.deepStrictEqual(Toolbar.DOWNLOAD_ACTIONS, ['pdf', 'pdf-print', 'word', 'png', 'svg', 'text'], 'Download disclosure must own every downloadable format');
 assert.deepStrictEqual(Toolbar.PRIMARY_DOCUMENT_ACTIONS, ['copy', 'preview', 'share', 'print'], 'First-level document hierarchy changed unexpectedly');
 assert.strictEqual(Toolbar.MOBILE_QUERY, '(max-width: 767px)');
 assert.match(toolbarRuntime, /setAction\(share, 'share', 'Share'/, 'Current Share action is missing');
@@ -112,7 +112,7 @@ assert.match(toolbarCss, /\[data-wu-command-action="word"\] i[\s\S]*#185abd/, 'W
 assert.match(toolbarCss, /\[data-wu-command-action="png"\] i[\s\S]*#7042a1/, 'PNG icon needs a distinct image accent');
 assert.match(toolbarCss, /@media \(max-width: 767px\)/, 'Pixel/mobile toolbar behavior is missing');
 assert.doesNotMatch(toolbarCss, /position\s*:\s*(?:fixed|sticky)/, 'Basic Writer toolbar must not become fixed/sticky');
-assert.match(serviceWorker, /write-urdu-shell-v58/, 'PWA shell generation must include the current authoring generation');
+assert.match(serviceWorker, /write-urdu-shell-v59/, 'PWA shell generation must include the current authoring generation');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.css/, 'Toolbar CSS must be cached');
 assert.match(serviceWorker, /basic-writer-command-toolbar\.js/, 'Toolbar runtime must be cached');
 assert.match(serviceWorker, /basic-writer-publish\.js/, 'Basic public-link publisher must be cached');

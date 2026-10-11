@@ -197,6 +197,8 @@
                             <i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز</button>
                         <button type="button" class="btn btn-outline-editor btn-sm" id="exportPdf" onclick="DownloadAsPdf()">
                             <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز</button>
+                        <button type="button" class="btn btn-outline-editor btn-sm" id="exportPdfPrint" onclick="DownloadAsPrintPdf()">
+                            <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز (print quality)</button>
                         <button type="button" class="btn btn-outline-editor btn-sm" id="exportImage" onclick="DownloadAsImage()">
                             <i class="far fa-image" aria-hidden="true"></i> PNG تصویر</button>
                         <button type="button" class="btn btn-outline-editor btn-sm" id="exportSvg" onclick="DownloadAsSvg()">
@@ -412,6 +414,19 @@
             }
         }
 
+
+        async function DownloadAsPrintPdf() {
+            var element = getRichEditorElement();
+            try {
+                await WriteUrduExport.withBusyButton(document.getElementById('exportPdfPrint'), function () {
+                    return WriteUrduExport.printDocument(element, { richText: true, title: 'Write Urdu document' });
+                });
+                WriteUrduUI.notify('Choose "Save as PDF" as the destination in the print window.', 'success');
+            } catch (error) {
+                console.error(error);
+                WriteUrduUI.notify('Print-quality PDF could not be prepared. Use PDF instead.', 'error');
+            }
+        }
 
         async function DownloadAsPdf() {
             var element = getRichEditorElement();
