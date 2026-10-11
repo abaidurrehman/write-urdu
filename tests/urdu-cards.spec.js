@@ -121,6 +121,24 @@ test('WhatsApp Status sharing is lazy, branded and uses a 9:16 PNG file', async 
   expect(result.canvasCount).toBe(0);
 });
 
+test('Make it mine dialog offers the shared English letters / direct Urdu toggle', async ({ page }) => {
+  await openCards(page);
+  await page.locator('[data-urdu-cards-edit="dua-1"]').click();
+  const dialog = page.locator('[data-urdu-cards-personalizer="dua-1"]');
+  const control = dialog.locator('[data-input-mode-control]');
+  await expect(control).toBeVisible();
+  await expect(control.locator('[data-input-mode-option="roman"]')).toHaveText('English letters → Urdu');
+  await expect(control.locator('[data-input-mode-option="direct"]')).toHaveText('Type Urdu directly');
+  const textarea = dialog.locator('[data-urdu-cards-personalizer-text="dua-1"]');
+  await expect(control).toHaveAttribute('data-input-mode', 'roman');
+  await control.locator('[data-input-mode-option="direct"]').click();
+  await expect(control).toHaveAttribute('data-input-mode', 'direct');
+  await expect(textarea).toHaveAttribute('data-input-mode', 'direct');
+  const edited = 'آپ کو مبارک ہو۔';
+  await textarea.fill(edited);
+  await expect(dialog.locator('.urdu-cards-personalizer-preview .card-gallery-preview-text')).toHaveText(edited);
+});
+
 test('Make it mine opens a local personalization sheet with live preview and Escape close', async ({ page }) => {
   await openCards(page);
   const trigger = page.locator('[data-urdu-cards-edit="dua-1"]');

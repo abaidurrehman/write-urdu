@@ -2,7 +2,7 @@
     'use strict';
 
     function targetIds() {
-        return ['cardGalleryText', 'urduCardsOwnText'].filter(function (id) {
+        return ['cardGalleryText', 'urduCardsOwnText', 'urdu-cards-personalizer-text'].filter(function (id) {
             return Boolean(root.document.getElementById(id));
         });
     }

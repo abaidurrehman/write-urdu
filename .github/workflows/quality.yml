@@ -95,6 +95,7 @@ jobs:
           tests/basic-writer-workspace-integrity.spec.js
           tests/card-poetry-quality.spec.js
           tests/print-quality-pdf.spec.js
+          tests/bill-urdu-input.spec.js
 
       - name: Run V3 production visual-quality audit
         run: npx playwright test tests/v3-visual-quality.spec.js --project=desktop-chromium
