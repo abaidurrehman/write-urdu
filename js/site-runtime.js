@@ -357,7 +357,25 @@
         overlay.querySelector('[data-preview-close]').focus();
     }
 
+    function buildDocxBlob(source, richText) {
+        var docx = window.WriteUrduDocx;
+        if (!docx || typeof docx.buildBlob !== 'function') return null;
+        try {
+            return docx.buildBlob(richText ? source : String(source.value || source.textContent || ''));
+        } catch (error) {
+            return null;
+        }
+    }
+
     function downloadWord(source, filename, richText) {
+        var docxBlob = buildDocxBlob(source, richText);
+        if (docxBlob) {
+            var docxUrl = URL.createObjectURL(docxBlob);
+            downloadData(docxUrl, safeFilename(filename, 'write-urdu') + '.docx');
+            window.setTimeout(function () { URL.revokeObjectURL(docxUrl); }, 1000);
+            return;
+        }
+        // Fallback when the .docx builder is unavailable: HTML that Word opens.
         var body = richText ? source.innerHTML : String(source.value || source.textContent || '')
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, '<br>');
         var html = '<!doctype html><html lang="ur" dir="rtl"><head><meta charset="utf-8">' +
