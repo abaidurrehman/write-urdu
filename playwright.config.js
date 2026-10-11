@@ -40,7 +40,8 @@ module.exports = defineConfig({
     'transliteration-availability.spec.js',
     'basic-writer-workspace-integrity.spec.js',
     'card-poetry-quality.spec.js',
-    'print-quality-pdf.spec.js'
+    'print-quality-pdf.spec.js',
+    'bill-urdu-input.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },

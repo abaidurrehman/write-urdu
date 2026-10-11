@@ -166,9 +166,9 @@ Tests: `tests/print-quality-pdf-contract.test.js`, `tests/print-quality-pdf.spec
 
 Use `skills/unified-urdu-input` (rollout skill). Card Studio is the designated pilot, then social makers.
 
-- [ ] **F1 (F23)** "Make this card yours" dialog on `/urdu-cards`: add English letters → Urdu / Type Urdu directly toggle (`js/urdu-cards.js`).
-- [ ] **F2 (F23)** Card Studio / WhatsApp / Instagram text box: confirm the toggle works on the dedicated pages (seen present) and reuse it in the dialog.
-- [ ] **F3 (F17)** Bill shop name and item description fields: Roman Urdu assist (`WU-BILL-001` checklist line 275). Only through the shared engine; no new transliteration code inside bill files.
+- [x] **F1 (F23)** "Make this card yours" dialog on `/urdu-cards`: add English letters → Urdu / Type Urdu directly toggle (`js/urdu-cards.js`).
+- [x] **F2 (F23)** (verified: dedicated pages already have the toggle; no change needed) Card Studio / WhatsApp / Instagram text box: confirm the toggle works on the dedicated pages (seen present) and reuse it in the dialog.
+- [x] **F3 (F17)** Bill shop name and item description fields: Roman Urdu assist (`WU-BILL-001` checklist line 275). Only through the shared engine; no new transliteration code inside bill files. Done via `js/bill-generator-urdu-input.js` (registers shop name, customer name and item descriptions with the shared control; item rows re-registered on re-render).
 
 ### Slice G — Bill completeness (`WU-BILL-001` open items)
 

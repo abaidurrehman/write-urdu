@@ -337,6 +337,47 @@
             });
         }
 
+        // Shared English letters → Urdu engine (input-mode.js + the Google
+        // control); no transliteration code lives here.
+        function loadOnce(tag, attr, url, ready) {
+            if (ready()) return Promise.resolve();
+            var existing = document.querySelector('[' + attr + ']');
+            if (existing) {
+                return new Promise(function (resolve) {
+                    if (ready()) resolve();
+                    else existing.addEventListener('load', resolve, { once: true });
+                });
+            }
+            return new Promise(function (resolve, reject) {
+                var node = document.createElement(tag);
+                if (tag === 'link') { node.rel = 'stylesheet'; node.href = url; } else { node.src = url; node.async = true; }
+                node.setAttribute(attr, 'true');
+                node.onload = resolve;
+                node.onerror = reject;
+                document.head.appendChild(node);
+            });
+        }
+
+        function mountPersonalizerInput(textarea) {
+            loadOnce('link', 'data-urdu-cards-input-mode-style', '/css/input-mode.css', function () { return false; }).catch(function () {});
+            loadOnce('script', 'data-urdu-cards-input-mode-script', '/js/input-mode.js', function () { return Boolean(root.WriteUrduInputMode); })
+                .then(function () {
+                    if (root.WriteUrduInputMode && root.WriteUrduInputMode.refresh) root.WriteUrduInputMode.refresh();
+                    return loadOnce('script', 'data-urdu-cards-transliteration-script', '/js/card-gallery-transliteration.js', function () { return Boolean(root.writeUrduTransliterationControl); });
+                })
+                .then(function () {
+                    function attach() {
+                        var control = root.writeUrduTransliterationControl;
+                        if (control && document.contains(textarea) && typeof control.makeTransliteratable === 'function') {
+                            try { control.makeTransliteratable([textarea.id]); } catch (error) { /* optional */ }
+                        }
+                    }
+                    attach();
+                    document.addEventListener('write-urdu:transliteration-ready', attach, { once: true });
+                })
+                .catch(function () { /* direct Urdu input keeps working */ });
+        }
+
         function openPersonalizer(card, background, trigger, article) {
             var previous = document.querySelector('[data-urdu-cards-personalizer]');
             if (previous) previous.remove();
@@ -411,7 +452,20 @@
             actions.appendChild(shareButton);
             actions.appendChild(advancedButton);
 
+            var inputMode = document.createElement('div');
+            inputMode.className = 'input-mode-control input-mode-control-card urdu-cards-personalizer-input-mode';
+            inputMode.setAttribute('data-input-mode-control', '');
+            inputMode.setAttribute('data-input-mode-storage', 'urdu-cards-personalizer');
+            inputMode.setAttribute('data-input-mode-targets', '#urdu-cards-personalizer-text');
+            inputMode.setAttribute('role', 'group');
+            inputMode.setAttribute('aria-label', document.documentElement.lang === 'ur' ? 'تحریر کا طریقہ' : 'Input mode');
+            inputMode.innerHTML = '<span class="input-mode-title" data-input-mode-title>Input mode</span>' +
+                '<button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">English letters → Urdu</button>' +
+                '<button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Type Urdu directly</button>' +
+                '<span class="input-mode-note" data-input-mode-note></span>';
+
             form.appendChild(label);
+            form.appendChild(inputMode);
             form.appendChild(textarea);
             form.appendChild(modalStatus);
             form.appendChild(actions);
@@ -468,6 +522,7 @@
             closeButton.addEventListener('click', function () { close(); });
             overlay.addEventListener('click', function (event) { if (event.target === overlay) close(); });
             document.addEventListener('keydown', onKeydown, true);
+            mountPersonalizerInput(textarea);
             textarea.focus();
             textarea.setSelectionRange(textarea.value.length, textarea.value.length);
         }
