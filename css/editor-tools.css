@@ -4,7 +4,7 @@
    their hidden state must remain effective after they leave this container. */
 [data-find-panel][hidden],[data-history-panel][hidden]{display:none!important}
 .editor-productivity button,.editor-productivity input{font:inherit}
-.editor-draft-recovery{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #bfe4ce;border-radius:11px 11px 0 0;background:#eaf8f0;color:#164f31;font-size:.82rem}
+.editor-draft-recovery{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px;padding:8px 12px;border:1px solid #bfe4ce;border-radius:11px;background:#eaf8f0;color:#164f31;font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:.82rem}.editor-draft-recovery[hidden]{display:none!important}
 .editor-draft-actions{display:flex;gap:6px}.editor-draft-actions button{padding:5px 9px;border:1px solid #a6d4b8;border-radius:7px;background:#fff;color:#145f38;font-weight:700;cursor:pointer}
 .editor-productivity-main{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px}
 .editor-stats{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0!important;color:#61746a!important;font-size:.76rem!important;line-height:1.4!important}
