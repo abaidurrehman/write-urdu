@@ -73,12 +73,12 @@ Update checklist/BACKLOG, commit, stop.
 ```
 
 ## Slice C — Protect local work (CARD-UX-002, 034)
-- [ ] `hasUserWork()` + `forkProject()`; fork in hand-off adapter and init paths
-- [ ] Thumbnails saved with projects (≤ 12 KB)
-- [ ] Recent cards UI (≥ 2 projects), en + ur, local-only note
-- [ ] Cap 20/scope + orphan asset cleanup
-- [ ] Optional D-UX2-4 line on `/urdu-cards`
-- [ ] Tests registered; hand-off/gallery/cards specs green; SW bump
+- [x] `hasUserWork()` + `forkProject()`; fork in hand-off adapter and init paths
+- [x] Thumbnails saved with projects (≤ 12 KB)
+- [x] Recent cards UI (≥ 2 projects), en + ur, local-only note
+- [x] Cap 20/scope + orphan asset cleanup
+- [ ] Optional D-UX2-4 line on `/urdu-cards` (not done: D-UX2-4 not recorded)
+- [x] Tests registered; hand-off/gallery/cards specs green; SW bump (v63 → v64)
 
 **Prompt**
 ```text

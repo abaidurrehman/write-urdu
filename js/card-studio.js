@@ -28,6 +28,11 @@
     var dbPromise = null;
     var locale = 'en';
     var userChanged = false;
+    // A hand-off, template link or incoming text starts a new card; the latest saved card must not replace it (CARD-UX-002).
+    var startedFresh = false;
+    var savePending = false;
+    var RECENT_LIMIT = 20;
+    var HANDOFF_KEY = 'write-urdu:workspace-handoff:v2:card-studio';
     var transliterationAttempt = 0;
     var transliterationStatusKey = 'transliterationLoading';
     var interactionState = { selectedObjectId: null, editingObjectId: null };
@@ -58,6 +63,8 @@
     copy.ur.exportHelp = 'آپ کا پیش منظر کینوس پر دکھائے گئے عین طول و عرض میں برآمد کیا جائے گا۔';
     copy.en.exportPrivacy = 'Download saves a picture for WhatsApp Status or Instagram. Publish & Share makes a public link anyone can open, best for WhatsApp chats and Facebook.';
     copy.ur.exportPrivacy = 'ڈاؤن لوڈ سے تصویر آپ کے آلے میں محفوظ ہو جاتی ہے، جو واٹس ایپ اسٹیٹس یا انسٹاگرام کے لیے ہے۔ شائع اور شیئر کریں سے ایک عوامی لنک بنتا ہے جسے کوئی بھی کھول سکتا ہے؛ یہ واٹس ایپ چیٹ اور فیس بک کے لیے بہتر ہے۔';
+    Object.assign(copy.en, { recentTitle:'Recent cards on this device', recentNote:'Saved only in this browser. Other phones and cleared browsers won\'t have them.', recentOpen:'Open', recentCurrent:'Open now', recentEmpty:'Empty card', forked:'Started a new card. Your previous card is in Recent cards.' });
+    Object.assign(copy.ur, { recentTitle:'اس آلے پر حالیہ کارڈ', recentNote:'صرف اسی براؤزر میں محفوظ ہیں۔ دوسرے فون یا صاف کیا گیا براؤزر انہیں نہیں دکھائے گا۔', recentOpen:'کھولیں', recentCurrent:'کھلا ہوا ہے', recentEmpty:'خالی کارڈ', forked:'نیا کارڈ شروع ہو گیا۔ آپ کا پچھلا کارڈ حالیہ کارڈز میں موجود ہے۔' });
 
     if (socialConfig) {
         copy.en.title = socialConfig.title;
@@ -204,6 +211,12 @@
     }
     function dbPut(storeName, value) { return openDb().then(function (db) { return new Promise(function (resolve, reject) { var tx = db.transaction(storeName, 'readwrite'); tx.objectStore(storeName).put(value); tx.oncomplete = resolve; tx.onerror = function () { reject(tx.error); }; }); }); }
     function dbGetLatest() { return openDb().then(function (db) { return new Promise(function (resolve, reject) { var tx = db.transaction('projects', 'readonly'); var request = tx.objectStore('projects').index('updatedAt').openCursor(null, 'prev'); request.onsuccess = function () { var cursor = request.result; if (!cursor) { resolve(null); return; } var value = cursor.value; if ((value.scope || 'card-studio') === (socialConfig ? socialConfig.id : 'card-studio')) resolve(value); else { cursor.continue(); } }; request.onerror = function () { reject(request.error); }; }); }); }
+    function scopeId() { return socialConfig ? socialConfig.id : 'card-studio'; }
+    function dbGetProject(id) { return openDb().then(function (db) { return new Promise(function (resolve, reject) { var request = db.transaction('projects', 'readonly').objectStore('projects').get(id); request.onsuccess = function () { resolve(request.result || null); }; request.onerror = function () { reject(request.error); }; }); }); }
+    // Newest first, this scope only. Thumbnails stay in the record and never enter the live project.
+    function dbListRecent(limit) { return openDb().then(function (db) { return new Promise(function (resolve, reject) { var items = []; var request = db.transaction('projects', 'readonly').objectStore('projects').index('updatedAt').openCursor(null, 'prev'); request.onsuccess = function () { var cursor = request.result; if (!cursor || items.length >= limit) { resolve(items); return; } var value = cursor.value; if ((value.scope || 'card-studio') === scopeId()) items.push({ id: value.id, name: value.name, excerpt: excerpt(value.text && value.text.value), thumbnail: typeof value.thumbnail === 'string' ? value.thumbnail : '', updatedAt: value.updatedAt }); cursor.continue(); }; request.onerror = function () { reject(request.error); }; }); }); }
+    // Keep the newest RECENT_LIMIT cards per scope; delete older cards and their background images.
+    function dbPrune() { return openDb().then(function (db) { return new Promise(function (resolve) { var tx = db.transaction(['projects', 'assets'], 'readwrite'); var projects = tx.objectStore('projects'); var assets = tx.objectStore('assets'); var kept = 0; var request = projects.index('updatedAt').openCursor(null, 'prev'); request.onsuccess = function () { var cursor = request.result; if (!cursor) return; var value = cursor.value; if ((value.scope || 'card-studio') === scopeId() && value.id !== state.id && ++kept >= RECENT_LIMIT) { var projectId = value.id; cursor.delete(); assets.index('projectId').openCursor(IDBKeyRange.only(projectId)).onsuccess = function (event) { var assetCursor = event.target.result; if (assetCursor) { assetCursor.delete(); assetCursor.continue(); } }; } cursor.continue(); }; tx.oncomplete = resolve; tx.onerror = function () { resolve(); }; tx.onabort = function () { resolve(); }; }); }); }
     function dbGetAsset(id) { return id ? openDb().then(function (db) { return new Promise(function (resolve, reject) { var request = db.transaction('assets', 'readonly').objectStore('assets').get(id); request.onsuccess = function () { resolve(request.result || null); }; request.onerror = function () { reject(request.error); }; }); }) : Promise.resolve(null); }
 
     function readIncoming() { try { var raw = sessionStorage.getItem(incomingKey); if (!raw) return null; sessionStorage.removeItem(incomingKey); var value = JSON.parse(raw); return value && typeof value.text === 'string' ? value.text : null; } catch (error) { return null; } }
@@ -217,13 +230,94 @@
     function readLocalProject() { try { var raw = localStorage.getItem(projectKey); return raw ? core.normalizeCardProject(JSON.parse(raw)) : null; } catch (error) { return null; } }
     // Autosave reports in its own quiet indicator, so it never replaces an error in [data-card-status].
     function setSaveState(key) { saveStateKey = key || ''; var target = root.querySelector('[data-card-save-indicator]'); if (target) target.textContent = saveStateKey ? t(saveStateKey) : ''; }
+    // A 160 px JPEG for Recent cards (≤ 12 KB). A tainted or blank canvas gives no thumbnail.
+    function thumbnail() {
+        try {
+            if (!canvas.width || !canvas.height) return '';
+            var small = document.createElement('canvas'); small.width = 160; small.height = Math.max(1, Math.round(canvas.height * 160 / canvas.width));
+            small.getContext('2d').drawImage(canvas, 0, 0, small.width, small.height);
+            var url = small.toDataURL('image/jpeg', .6);
+            return url.length <= 12 * 1024 ? url : '';
+        } catch (error) { return ''; }
+    }
     function saveProject() {
+        savePending = false; window.clearTimeout(saveTimer);
         state.updatedAt = new Date().toISOString();
         var serializable = JSON.parse(JSON.stringify(state));
-        serializable.scope = socialConfig ? socialConfig.id : 'card-studio';
-        dbPut('projects', serializable).then(function () { setSaveState('saved'); }).catch(function () { try { localStorage.setItem(projectKey, JSON.stringify(serializable)); setSaveState('saved'); } catch (error) { setSaveState(''); if (!storageWarningShown) { storageWarningShown = true; setStatus(t('storageUnavailable'), 'error'); } } });
+        serializable.scope = scopeId();
+        var image = thumbnail(); if (image) serializable.thumbnail = image;
+        dbPut('projects', serializable).then(function () { setSaveState('saved'); return dbPrune(); }).then(renderRecent).catch(function () { try { localStorage.setItem(projectKey, JSON.stringify(serializable)); setSaveState('saved'); } catch (error) { setSaveState(''); if (!storageWarningShown) { storageWarningShown = true; setStatus(t('storageUnavailable'), 'error'); } } });
     }
-    function scheduleSave() { window.clearTimeout(saveTimer); setSaveState('saving'); saveTimer = window.setTimeout(saveProject, 700); }
+    function scheduleSave() { window.clearTimeout(saveTimer); savePending = true; setSaveState('saving'); saveTimer = window.setTimeout(saveProject, 700); }
+    function flushSave() { if (savePending) saveProject(); }
+
+    // "Has user work": real text (not empty, the placeholder or a sample), an uploaded image, or edits saved after creation.
+    function isPlaceholderText(value) {
+        var text = String(value || '').trim(); if (!text || text === String(core.DEFAULT_TEXT || '').trim()) return true;
+        var samples = core.SAMPLE_TEXTS || {}; return Object.keys(samples).some(function (key) { return String(samples[key] || '').trim() === text; });
+    }
+    function hasUserWork(project) {
+        project = project || state; if (!project) return false;
+        if (!isPlaceholderText(project.text && project.text.value)) return true;
+        if (project.background && project.background.imageAssetId) return true;
+        var created = Date.parse(project.createdAt || ''), updated = Date.parse(project.updatedAt || '');
+        return isFinite(created) && isFinite(updated) && updated > created + 2000;
+    }
+    function freshProject() { return socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(''), socialConfig.id) : core.createDefaultCardProject(''); }
+    function clearAsset() { currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+    function clearHistory() { var api = window.WriteUrduCardStudioInteractionApi; if (api && api.clearHistory) api.clearHistory(); }
+    var forkNoticeShown = false;
+    function announceFork() { forkNoticeShown = true; setStatus(t('forked')); }
+    // The hand-off's own messages (e.g. the designer background) arrive later; say where the old card went last.
+    function repeatForkNotice() { if (forkNoticeShown) setStatus(t('forked')); }
+    // Save the current card under its own id, then continue on a new card so a hand-off never overwrites it.
+    function forkProject(options) {
+        options = options || {};
+        if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit();
+        flushSave();
+        var previousId = state.id;
+        state = freshProject();
+        if (!options.keepAsset) clearAsset();
+        userChanged = true; startedFresh = true;
+        clearHistory(); syncControls(); requestRender(); announceFork(); renderRecent();
+        return previousId;
+    }
+    function fromRecord(record) { var project = JSON.parse(JSON.stringify(record)); delete project.thumbnail; return core.normalizeCardProject(project); }
+    function openProject(id) {
+        if (!id || id === state.id) return Promise.resolve(false);
+        if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit();
+        flushSave();
+        return dbGetProject(id).then(function (record) {
+            if (!record) return false;
+            clearAsset(); replaceState(fromRecord(record), { save: false }); clearHistory(); restoreAsset(); syncControls(); setSaveState('saved'); renderRecent();
+            return true;
+        }).catch(function () { return false; });
+    }
+    function excerpt(value) { var text = String(value || '').replace(/\s+/g, ' ').trim(); return text.length > 48 ? text.slice(0, 47) + '…' : text; }
+    function renderRecent() {
+        var section = root.querySelector('[data-card-recent]'); var list = section && section.querySelector('[data-card-recent-list]');
+        if (!list) return Promise.resolve();
+        return dbListRecent(RECENT_LIMIT).then(function (items) {
+            if (!items.some(function (item) { return item.id === state.id; })) items.unshift({ id: state.id, excerpt: excerpt(state.text.value), thumbnail: '' });
+            list.textContent = '';
+            items.forEach(function (item) {
+                var current = item.id === state.id;
+                var entry = document.createElement('li'); var button = document.createElement('button');
+                button.type = 'button'; button.className = 'card-studio-recent-item' + (current ? ' is-current' : ''); button.dataset.cardRecentOpen = item.id;
+                if (current) button.setAttribute('aria-current', 'true');
+                if (item.thumbnail) { var image = document.createElement('img'); image.src = item.thumbnail; image.alt = ''; image.width = 64; button.appendChild(image); }
+                var text = document.createElement('span'); text.className = 'card-studio-recent-excerpt'; text.dir = 'auto'; text.textContent = item.excerpt || t('recentEmpty'); button.appendChild(text);
+                var label = document.createElement('span'); label.className = 'card-studio-recent-label'; label.textContent = current ? t('recentCurrent') : t('recentOpen'); button.appendChild(label);
+                button.addEventListener('click', function () { openProject(item.id); });
+                entry.appendChild(button); list.appendChild(entry);
+            });
+            section.hidden = items.length < 2;
+        }).catch(function () { section.hidden = true; });
+    }
+    // A hand-off waiting in sessionStorage means this visit starts a new card (the adapter applies it after start-up).
+    function pendingHandoff() {
+        try { var raw = sessionStorage.getItem(HANDOFF_KEY); if (!raw) return false; var envelope = JSON.parse(raw); return Boolean(envelope && (!envelope.expiresAt || Number(envelope.expiresAt) > Date.now())); } catch (error) { return false; }
+    }
 
     function applyLocale() {
         locale = window.WriteUrduLocale && window.WriteUrduLocale.get ? window.WriteUrduLocale.get() : 'en';
@@ -522,6 +616,10 @@
             requestRender: requestRender,
             syncControls: syncControls,
             scheduleSave: scheduleSave,
+            hasUserWork: function () { return hasUserWork(state); },
+            forkProject: forkProject,
+            openProject: openProject,
+            repeatForkNotice: repeatForkNotice,
             ensureFont: ensureFont,
             ensureProjectFonts: ensureProjectFonts,
             notify: notify
@@ -531,7 +629,9 @@
         fillOptions();
         var incoming = readIncoming();
         var selectedTemplate = readTemplateSelection();
-        var saved = incoming || selectedTemplate ? null : readLocalProject();
+        var handoffPending = !socialConfig && !nameArtMode && pendingHandoff();
+        startedFresh = Boolean(incoming || selectedTemplate || handoffPending);
+        var saved = startedFresh ? null : readLocalProject();
         if (selectedTemplate && templateLibrary && typeof templateLibrary.applyToCardProject === 'function') {
             state = templateLibrary.applyToCardProject(
                 core,
@@ -544,14 +644,16 @@
         }
         bindControls(); syncControls(); restoreAsset(); exposeApplication(); requestRender(); initialiseTransliteration(); watchInputModeAlert();
         document.dispatchEvent(new CustomEvent('write-urdu:card-studio-ready'));
-        if (!incoming && !saved && !selectedTemplate && !nameArtMode) {
-            setStatus(t('privacy'));
+        if (!saved && !nameArtMode) {
+            if (!startedFresh) setStatus(t('privacy'));
             dbGetLatest().then(function (latest) {
-                if (!latest || userChanged) return;
-                state = core.normalizeCardProject(latest); syncControls(); restoreAsset(); requestRender();
+                // The previous card stays saved under its own id; say where it went.
+                if (latest && startedFresh && latest.id !== state.id && hasUserWork(latest)) announceFork();
+                if (!latest || userChanged || startedFresh) { renderRecent(); return; }
+                state = fromRecord(latest); syncControls(); restoreAsset(); requestRender(); renderRecent();
             }).catch(function () {});
         }
-        document.addEventListener('write-urdu:locale-change', applyLocale);
+        document.addEventListener('write-urdu:locale-change', function () { applyLocale(); renderRecent(); });
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialise); else initialise();
 }());

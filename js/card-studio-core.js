@@ -142,7 +142,7 @@
         var preset = PRESETS[0];
         var now = new Date().toISOString();
         return {
-            version: 2, id: 'card_' + Date.now().toString(36), name: 'Untitled card', createdAt: now, updatedAt: now, useCase: null,
+            version: 2, id: 'card_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: 'Untitled card', createdAt: now, updatedAt: now, useCase: null,
             presetId: 'square', templateId: template.id,
             text: { value: String(incomingText || '').trim() || DEFAULT_TEXT, fontFamily: template.fontFamily, fontMode: 'auto', fontSize: 64, minFontSize: 28, maxFontSize: 160, color: template.textColor, align: template.textAlign, verticalAlign: template.verticalAlign, lineHeight: template.lineHeight, shadow: 'none', transform: defaultTransform(preset, 'text') },
             attribution: { enabled: false, value: '', fontFamily: 'Noto Naskh Arabic', fontSizeRatio: .44, color: template.attributionColor, transform: defaultTransform(preset, 'attribution') },

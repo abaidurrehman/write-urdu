@@ -94,3 +94,11 @@ html[lang="en"] #cardText[data-input-mode="roman"]::placeholder{font-family:Inte
 .card-studio-toast{position:fixed;z-index:10000;max-width:min(92vw,380px);padding:11px 14px;border-radius:10px;background:#8a1f1f;color:#fff;font:600 .86rem/1.45 "Segoe UI",Arial,sans-serif;box-shadow:0 10px 28px rgba(0,0,0,.24)}
 .card-studio-toast.is-docked{left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:none}
 @media(max-width:900px){.card-studio-toast{top:auto!important;left:12px!important;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:none}}
+.card-studio-recent{margin:12px 0 4px;padding:10px;border:1px solid var(--card-line,#d9e4dd);border-radius:10px;background:#fbfdfc}.card-studio-recent[hidden]{display:none}.card-studio-recent h3{margin:0 0 8px;font-size:.82rem}
+.card-studio-recent ul{display:grid;gap:6px;margin:0;padding:0;list-style:none;max-height:260px;overflow-y:auto}
+.card-studio-recent-item{display:flex;align-items:center;gap:9px;width:100%;min-height:44px;padding:6px 8px;border:1px solid var(--card-line,#d9e4dd);border-radius:8px;background:#fff;color:inherit;font:inherit;text-align:start;cursor:pointer}
+.card-studio-recent-item img{flex:0 0 auto;width:44px;height:auto;max-height:56px;object-fit:cover;border-radius:4px}
+.card-studio-recent-excerpt{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:.78rem}
+.card-studio-recent-label{flex:0 0 auto;color:#147a49;font-size:.72rem;font-weight:700}
+.card-studio-recent-item.is-current{border-color:#147a49;background:#eef8f1;cursor:default}.card-studio-recent-item.is-current .card-studio-recent-label{color:var(--card-muted,#5d6f65);font-weight:600}
+.card-studio-recent .card-studio-help{margin:8px 0 0}

@@ -96,6 +96,7 @@ jobs:
           tests/card-poetry-quality.spec.js
           tests/card-bidi-render.spec.js
           tests/card-studio-feedback.spec.js
+          tests/card-studio-recent.spec.js
           tests/print-quality-pdf.spec.js
           tests/bill-urdu-input.spec.js
           tests/bill-completeness.spec.js

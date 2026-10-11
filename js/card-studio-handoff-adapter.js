@@ -72,6 +72,19 @@
         }
     }
 
+    // Never write a hand-off into a card that already holds the person's work: save it and start a new card
+    // first (WU-UXR-002 Slice C, CARD-UX-002). Once per envelope, so a retried consume() cannot fork twice.
+    var forkedEnvelopes = {};
+    function forkIfNeeded(envelope) {
+        var app = root.WriteUrduCardStudioApp;
+        var key = envelope && (envelope.id || envelope.createdAt) || 'handoff';
+        if (forkedEnvelopes[key] || !app || typeof app.hasUserWork !== 'function' || typeof app.forkProject !== 'function') return false;
+        forkedEnvelopes[key] = true;
+        if (!app.hasUserWork()) return false;
+        app.forkProject({ source: 'handoff' });
+        return true;
+    }
+
     function applyToRunningApp(envelope, template) {
         var app = root.WriteUrduCardStudioApp;
         var core = root.WriteUrduCardStudio;
@@ -89,6 +102,7 @@
             } catch (error) {
                 return false;
             }
+            forkIfNeeded(envelope);
             app.replaceState(restored, { save: false });
         } else if (template && library && typeof library.applyToCardProject === 'function') {
             var next = library.applyToCardProject(
@@ -97,9 +111,11 @@
                 template,
                 { useSampleText: !text.trim() }
             );
+            forkIfNeeded(envelope);
             if (typeof app.replaceState === 'function') app.replaceState(next);
             else return false;
         } else if (text.trim() && typeof app.updateObjectText === 'function') {
+            forkIfNeeded(envelope);
             app.updateObjectText('text', text);
         } else return false;
 
@@ -114,6 +130,7 @@
         var library = root.WriteUrduCardStudioBackgroundLibrary;
         if (!app || typeof app.updateObjectText !== 'function' || !library || typeof library.applyById !== 'function') return null;
         var text = payloadText(envelope);
+        forkIfNeeded(envelope);
         app.updateObjectText('text', text, { save: false });
         return library.applyById(envelope.payload.backgroundId).then(function (result) {
             if (typeof app.syncControls === 'function') app.syncControls();
@@ -172,6 +189,7 @@
                 if (root.WriteUrduTelemetry && root.WriteUrduTelemetry.track) root.WriteUrduTelemetry.track('continuation_payload_restored', { target_route: '/urdu-card-studio' });
                 path('payload_restored', handoff, envelope);
                 galleryTelemetry(envelope, result);
+                if (typeof app.repeatForkNotice === 'function') app.repeatForkNotice();
                 if (root.document && root.document.documentElement) {
                     root.document.documentElement.setAttribute('data-wu-card-seed-kind', kind);
                     root.document.documentElement.setAttribute('data-wu-card-seed-applied', result && result.ok ? 'live' : 'text-only');
@@ -196,6 +214,7 @@
             if (continuityProject(envelope)) root.document.documentElement.setAttribute('data-wu-create-continuity-restored', 'true');
             if (publicShareProject(envelope)) root.document.documentElement.setAttribute('data-wu-public-share-remix-restored', 'true');
         }
+        if (typeof app.repeatForkNotice === 'function') app.repeatForkNotice();
         return envelope;
     }
 
@@ -222,6 +241,7 @@
         templateFromId: templateFromId,
         applyToRunningApp: applyToRunningApp,
         continuityProject: continuityProject,
-        publicShareProject: publicShareProject
+        publicShareProject: publicShareProject,
+        forkIfNeeded: forkIfNeeded
     };
 }(window));
