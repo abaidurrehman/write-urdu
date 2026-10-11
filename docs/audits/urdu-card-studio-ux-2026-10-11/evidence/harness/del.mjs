@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
-import { DEVICES, BASE, shot } from './lib.mjs';
-const c = await chromium.launchPersistentContext(process.cwd() + '/profile-p7', { executablePath: '/opt/pw-browsers/chromium', ...DEVICES.android });
+import { DEVICES, BASE, shot, EVID, LAUNCH } from './lib.mjs';
+const c = await chromium.launchPersistentContext(EVID + '/profile-p7', { ...LAUNCH, ...DEVICES.android });
 const p = c.pages()[0]; p.on('dialog', d => d.accept());
 await p.goto(BASE + '/urdu-card-studio'); await p.waitForTimeout(2500);
 await p.locator('.wu-share-manage-trigger').scrollIntoViewIfNeeded(); await p.locator('.wu-share-manage-trigger').tap(); await p.waitForTimeout(500);

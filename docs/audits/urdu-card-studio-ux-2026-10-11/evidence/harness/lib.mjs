@@ -1,9 +1,14 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-export const BASE = 'http://127.0.0.1:8790';
-export const EVID = '/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence';
+export const HERE = path.dirname(fileURLToPath(import.meta.url));
+
+export const BASE = process.env.WU_BASE || 'http://127.0.0.1:8790';
+// New runs write here (git-ignored) so the committed 2026-10-11 evidence is never overwritten.
+export const EVID = process.env.WU_AUDIT_OUT || path.join(HERE, 'out');
+export const LAUNCH = process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {};
 fs.mkdirSync(EVID, { recursive: true });
 
 export const DEVICES = {
@@ -15,7 +20,7 @@ export const DEVICES = {
 };
 
 export async function launch() {
-  return chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--font-render-hinting=none'] });
+  return chromium.launch({ ...LAUNCH, args: ['--font-render-hinting=none'] });
 }
 
 export async function newSession(browser, device, opts = {}) {
@@ -32,7 +37,7 @@ export async function newSession(browser, device, opts = {}) {
 export async function shot(page, name, full = false) {
   const file = path.join(EVID, name + '.png');
   await page.screenshot({ path: file, fullPage: full });
-  return 'evidence/' + name + '.png';
+  return path.relative(HERE, file);
 }
 
 export function step(trace, text, extra) { const s = { t: Date.now(), text, ...(extra || {}) }; trace.steps.push(s); console.log('  ·', text, extra ? JSON.stringify(extra).slice(0, 300) : ''); }

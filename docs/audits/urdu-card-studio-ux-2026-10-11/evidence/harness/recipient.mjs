@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const id = process.argv[2]; const browser = await launch(); const R = { id };
 for (const device of ['android', 'desktop']) {
@@ -32,5 +32,5 @@ for (const device of ['android', 'desktop']) {
   r.errors = summarize(trace);
   R[device] = r; await context.close();
 }
-fs.writeFileSync('recipient-' + id + '.json', JSON.stringify(R, null, 1)); console.log(JSON.stringify(R, null, 1).slice(0, 6000));
+fs.writeFileSync(EVID + '/recipient-' + id + '.json', JSON.stringify(R, null, 1)); console.log(JSON.stringify(R, null, 1).slice(0, 6000));
 await browser.close();

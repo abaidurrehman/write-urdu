@@ -1,9 +1,9 @@
 import { chromium } from 'playwright';
-import { DEVICES, shot, step, summarize, BASE } from './lib.mjs';
+import { DEVICES, shot, step, summarize, BASE, EVID, LAUNCH } from './lib.mjs';
 import fs from 'node:fs';
-const dir = process.cwd() + '/profile-p7'; fs.rmSync(dir, { recursive: true, force: true });
+const dir = EVID + '/profile-p7'; fs.rmSync(dir, { recursive: true, force: true });
 const R = { persona: 'P7 returning user', device: 'android 393x852 (persistent profile)' }; const trace = { steps: [], console: [], pageErrors: [], failed: [] };
-const open = async () => { const c = await chromium.launchPersistentContext(dir, { executablePath: '/opt/pw-browsers/chromium', ...DEVICES.android, acceptDownloads: true }); const p = c.pages()[0] || await c.newPage(); p.on('dialog', async d => { trace.steps.push({ dialog: d.message() }); await d.accept(); }); p.on('pageerror', e => trace.pageErrors.push(String(e))); return [c, p]; };
+const open = async () => { const c = await chromium.launchPersistentContext(dir, { ...LAUNCH, ...DEVICES.android, acceptDownloads: true }); const p = c.pages()[0] || await c.newPage(); p.on('dialog', async d => { trace.steps.push({ dialog: d.message() }); await d.accept(); }); p.on('pageerror', e => trace.pageErrors.push(String(e))); return [c, p]; };
 const S = (p) => p.evaluate(() => { const s = WriteUrduCardStudioApp.getState(); return { id: s.id, text: s.text.value.slice(0, 40), bg: s.background.type, img: s.background.imageAssetId, preset: s.presetId }; });
 // Week 0: make and publish a card
 let [c, p] = await open();
@@ -51,4 +51,4 @@ await p.locator('[data-card-action="reset"]').scrollIntoViewIfNeeded(); await p.
 R.afterReset = await S(p); R.undoAfterReset = await p.locator('[data-card-ui-action="undo"]').isEnabled();
 step(trace, 'Reset (confirm accepted)', { state: R.afterReset, undoAvailable: R.undoAfterReset });
 R.trace = trace.steps; R.pageErrors = trace.pageErrors;
-fs.writeFileSync('p7.json', JSON.stringify(R, null, 1)); await c.close();
+fs.writeFileSync(EVID + '/p7.json', JSON.stringify(R, null, 1)); await c.close();

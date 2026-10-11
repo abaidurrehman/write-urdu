@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const browser = await launch();
 const { context, page, trace } = await newSession(browser, 'android');
@@ -64,5 +64,5 @@ if (await ta.count()) {
   }
 }
 R.elapsedMs = Date.now() - t0; R.trace = trace.steps; R.errors = summarize(trace);
-fs.writeFileSync('p4.json', JSON.stringify(R, null, 1));
+fs.writeFileSync(EVID + '/p4.json', JSON.stringify(R, null, 1));
 await browser.close();

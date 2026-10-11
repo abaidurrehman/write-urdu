@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const browser = await launch();
 const { context, page, trace } = await newSession(browser, 'android');
@@ -78,7 +78,7 @@ page.once('download', d => dl = d); dl = null;
 await page.locator('.card-studio-top-actions [data-card-action="download"]').scrollIntoViewIfNeeded();
 await page.locator('.card-studio-top-actions [data-card-action="download"]').tap();
 await page.waitForTimeout(3000);
-if (dl) { const p = '/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P1-downloaded-card.png'; await dl.saveAs(p); R.download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
+if (dl) { const p = EVID + '/P1-downloaded-card.png'; await dl.saveAs(p); R.download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
 R.downloadStatus = await page.locator('[data-card-status]').innerText();
 R.downloadStatusInViewport = await page.evaluate(() => { const r = document.querySelector('[data-card-status]').getBoundingClientRect(); return r.top > 0 && r.bottom < innerHeight; });
 step(trace, 'Download PNG', { download: R.download, status: R.downloadStatus, statusVisible: R.downloadStatusInViewport });
@@ -91,5 +91,5 @@ R.shareImageOnly = { downloadedInstead: !!dl, status: await page.locator('[data-
 step(trace, 'Share image only', R.shareImageOnly);
 R.elapsedMs = Date.now() - t0;
 R.trace = trace.steps; R.errors = summarize(trace);
-fs.writeFileSync('p1.json', JSON.stringify(R, null, 1));
+fs.writeFileSync(EVID + '/p1.json', JSON.stringify(R, null, 1));
 await context.close(); await browser.close();

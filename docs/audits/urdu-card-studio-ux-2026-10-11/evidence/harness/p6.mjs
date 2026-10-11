@@ -1,6 +1,8 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID, HERE } from './lib.mjs';
 import fs from 'node:fs';
-const FX = process.cwd() + '/fixtures/';
+const FX = HERE + '/fixtures/';
+// The 6000×4500 upload case is optional: drop any large JPG at fixtures/synthetic-large.jpg to include it.
+const HAS_LARGE = fs.existsSync(FX + 'synthetic-large.jpg');
 const browser = await launch();
 const { context, page, trace } = await newSession(browser, 'desktop');
 const R = { persona: 'P6 advanced creator', device: 'desktop 1440x900' }; const t0 = Date.now();
@@ -65,12 +67,12 @@ step(trace, 'Undo template change', R.s7);
 await page.locator('[data-card-ui-mode="quick"]').click(); R.s8 = await S();
 // Large image
 await page.locator('.card-studio-stepper [data-card-step="style"]').click();
-const tl = Date.now(); await page.locator('#cardImage').setInputFiles(FX + 'synthetic-large.jpg'); await page.waitForTimeout(2500); R.largeMs = Date.now() - tl;
+const tl = Date.now(); if (HAS_LARGE) await page.locator('#cardImage').setInputFiles(FX + 'synthetic-large.jpg'); await page.waitForTimeout(2500); R.largeMs = Date.now() - tl;
 R.s9 = await S(); step(trace, 'Uploaded 6000x4500 JPG', { state: R.s9 });
 await page.locator('.card-studio-stepper [data-card-step="export"]').click(); await page.waitForTimeout(300);
 let dl = null; page.once('download', d => dl = d);
 await page.locator('.card-studio-export-section [data-card-action="download"]').click(); await page.waitForTimeout(3000);
-if (dl) { const p = '/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P6-photo-export.png'; await dl.saveAs(p); R.download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
+if (dl) { const p = EVID + '/P6-photo-export.png'; await dl.saveAs(p); R.download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
 step(trace, 'Exported', R.download);
 await shot(page, 'P6-export-step-desktop');
 // Reload: is uploaded image restored?
@@ -78,5 +80,5 @@ await page.reload(); await page.waitForTimeout(3000); R.afterReload = await S();
 await shot(page, 'P6-after-reload');
 step(trace, 'Reloaded page', R.afterReload);
 R.elapsedMs = Date.now() - t0; R.trace = trace.steps; R.errors = summarize(trace);
-fs.writeFileSync('p6.json', JSON.stringify(R, null, 1));
+fs.writeFileSync(EVID + '/p6.json', JSON.stringify(R, null, 1));
 await browser.close();

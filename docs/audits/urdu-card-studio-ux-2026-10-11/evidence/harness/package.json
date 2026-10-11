@@ -1,0 +1,17 @@
+{
+  "name": "write-urdu-card-studio-audit-harness",
+  "private": true,
+  "type": "module",
+  "description": "Re-runnable Playwright journeys from the 2026-10-11 Card Studio UX audit. Not part of the product build or test suite.",
+  "scripts": {
+    "server": "node harness-server.mjs",
+    "server:share-down": "FAIL_SHARES=1 PORT=8791 node harness-server.mjs",
+    "first-impression": "node 01-first-impression.mjs",
+    "personas": "node p1.mjs && node p2.mjs && node p3.mjs && node p4.mjs && node p5.mjs && node p6.mjs && node p7.mjs && node p8.mjs",
+    "journeys": "node j04j07.mjs",
+    "resilience": "node resilience.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.0"
+  }
+}

@@ -59,6 +59,7 @@ Feature work uses stable `WU-<AREA>-<NUMBER>` IDs. The **runtime code and regres
 | `WU-TOOLS-EXPANSION-006` | Urdu/Hindi Script Converter R&D | **Hold** — correctly unbuilt |
 | `WU-API-001` | InPage↔Unicode Developer API & npm Package | **Planned — founder-directed exception to the P0.1 freeze** — isolated, additive-only wrapper around the already-shipped `WU-TOOLS-EXPANSION-005` engine; Phase A (npm package) has no compute/infra cost and ships first, Phase B (beta API) follows |
 | `WU-UXR-001` | Persona UX Review Remediation (2026-10-10) | **Active** — sequencing-only plan from a five-persona browser review; Slice 0 (production verification) and Slice A (regression hotfixes) are unfrozen maintenance, later slices execute inside their owner specs' gates |
+| `WU-UXR-002` | Card Studio UX Remediation (2026-10-11 field study) | **Planned / implementation-ready** — 8-persona Card Studio audit (`docs/audits/urdu-card-studio-ux-2026-10-11/`); slices A–G, J, K are unfrozen correctness/data-loss/privacy/accessibility work; H, L, M, N need a backlog decision line; I needs D-UX2-2; O (mobile hierarchy) is gated by production evidence + D-UX2-1. Execution skill `skills/wu-uxr-002-card-studio/` |
 
 ## Current P0 product/UX programme
 

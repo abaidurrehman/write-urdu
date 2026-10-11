@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const browser = await launch();
 const { context, page, trace } = await newSession(browser, 'desktop');
@@ -20,7 +20,7 @@ await page.locator('#cardCanvas').scrollIntoViewIfNeeded(); await shot(page, 'P5
 await page.locator('.card-studio-stepper [data-card-step="export"]').click();
 let dl = null; page.once('download', d => dl = d);
 await page.locator('.card-studio-export-section [data-card-action="download"]').click(); await page.waitForTimeout(3000);
-if (dl) { await dl.saveAs('/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P5-announcement-export.png'); R.download = dl.suggestedFilename(); }
+if (dl) { await dl.saveAs(EVID + '/P5-announcement-export.png'); R.download = dl.suggestedFilename(); }
 // Try square for WhatsApp
 await page.locator('.card-studio-stepper [data-card-step="format"]').click();
 await page.locator('#cardPreset').selectOption('square'); await page.waitForTimeout(800);
@@ -28,8 +28,8 @@ R.squareSize = await page.evaluate(() => WriteUrduCardStudioApp.getState().text.
 await page.locator('.card-studio-stepper [data-card-step="export"]').click();
 dl = null; page.once('download', d => dl = d);
 await page.locator('.card-studio-export-section [data-card-action="download"]').click(); await page.waitForTimeout(3000);
-if (dl) await dl.saveAs('/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P5-announcement-square.png');
+if (dl) await dl.saveAs(EVID + '/P5-announcement-square.png');
 step(trace, 'Switched to Square and exported', { fontSize: R.squareSize });
 R.elapsedMs = Date.now() - t0; R.trace = trace.steps; R.errors = summarize(trace);
-fs.writeFileSync('p5.json', JSON.stringify(R, null, 1));
+fs.writeFileSync(EVID + '/p5.json', JSON.stringify(R, null, 1));
 await browser.close();

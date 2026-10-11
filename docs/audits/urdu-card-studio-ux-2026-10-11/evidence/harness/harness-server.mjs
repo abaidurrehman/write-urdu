@@ -5,9 +5,10 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
-const root = '/home/user/write-urdu';
+// Repository root: docs/audits/<audit>/evidence/harness -> five levels up.
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../..');
 const port = Number(process.env.PORT || 8790);
 const failShares = process.env.FAIL_SHARES === '1';
 const sqlite = new DatabaseSync(':memory:');

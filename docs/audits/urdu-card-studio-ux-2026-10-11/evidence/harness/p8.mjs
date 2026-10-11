@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const browser = await launch();
 const { context, page, trace } = await newSession(browser, 'android-small');
@@ -31,7 +31,7 @@ const pre = await ta.inputValue(); await ta.fill(pre + '\nآپ کا بھائی،
 let dl = null; page.once('download', d => dl = d);
 await page.locator('[data-urdu-cards-personalizer-share]').scrollIntoViewIfNeeded();
 await page.locator('[data-urdu-cards-personalizer-share]').tap(); await page.waitForTimeout(2500);
-if (dl) { const p = '/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P8-eid-personalized.png'; await dl.saveAs(p); R.download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
+if (dl) { const p = EVID + '/P8-eid-personalized.png'; await dl.saveAs(p); R.download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
 R.status = await page.locator('[data-urdu-cards-personalizer-status]').innerText().catch(() => '');
 step(trace, 'Share this image (no Web Share → download)', { download: R.download, status: R.status });
 await page.keyboard.press('Escape'); await page.waitForTimeout(400);
@@ -42,5 +42,5 @@ R.stockLink = { dialogs: await page.evaluate(() => [...document.querySelectorAll
 await shot(page, 'P8-stock-shareable-link');
 step(trace, 'Tapped "Shareable link" on stock Eid card', R.stockLink);
 R.elapsedMs = Date.now() - t0; R.trace = trace.steps; R.errors = summarize(trace);
-fs.writeFileSync('p8.json', JSON.stringify(R, null, 1));
+fs.writeFileSync(EVID + '/p8.json', JSON.stringify(R, null, 1));
 await browser.close();

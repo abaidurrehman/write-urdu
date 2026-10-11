@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const browser = await launch(); const R = {};
 { // J04 Gallery
@@ -33,9 +33,9 @@ const browser = await launch(); const R = {};
   R.w_guide = await page.locator('[data-social-safe-warning]').evaluate(e => ({ hidden: e.hidden, text: e.textContent })).catch(() => null);
   let dl = null; page.once('download', d => dl = d);
   await page.locator('[data-card-action="download"]').first().scrollIntoViewIfNeeded(); await page.locator('[data-card-action="download"]').first().tap(); await page.waitForTimeout(3000);
-  if (dl) { const p = '/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/J07-whatsapp-status.png'; await dl.saveAs(p); R.w_download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
+  if (dl) { const p = EVID + '/J07-whatsapp-status.png'; await dl.saveAs(p); R.w_download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
   R.w_guideInExport = await page.evaluate(() => 'checked by pixel later');
   step(trace, 'Downloaded status image', R.w_download);
   R.w_trace = trace.steps; R.w_errors = summarize(trace); await context.close();
 }
-fs.writeFileSync('j04j07.json', JSON.stringify(R, null, 1)); await browser.close();
+fs.writeFileSync(EVID + '/j04j07.json', JSON.stringify(R, null, 1)); await browser.close();

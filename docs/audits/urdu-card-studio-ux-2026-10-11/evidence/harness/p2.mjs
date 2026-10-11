@@ -1,6 +1,6 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
-const EV='/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/';
+const EV=EVID + '/';
 const browser = await launch();
 const { context, page, trace } = await newSession(browser, 'iphone');
 const R = { persona: 'P2 Poetry → Instagram', device: 'iphone 390x844' };
@@ -92,5 +92,5 @@ R.captionStatus = await page.locator('[data-card-status]').innerText();
 R.caption = await page.evaluate(() => navigator.clipboard.readText()).catch(e => String(e));
 step(trace, 'Copy caption', { status: R.captionStatus, caption: R.caption });
 R.elapsedMs = Date.now() - t0; R.trace = trace.steps; R.errors = summarize(trace);
-fs.writeFileSync('p2.json', JSON.stringify(R, null, 1));
+fs.writeFileSync(EVID + '/p2.json', JSON.stringify(R, null, 1));
 await browser.close();

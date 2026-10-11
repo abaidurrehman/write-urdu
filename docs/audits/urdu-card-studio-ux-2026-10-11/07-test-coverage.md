@@ -83,12 +83,10 @@ The repository test suite was **not run** for this audit, since no code changed.
 
 ## 7. Reproducing
 
+See [`evidence/harness/README.md`](evidence/harness/README.md). The scripts are portable: the target, output folder and browser come from `WU_BASE`, `WU_AUDIT_OUT` and `PW_CHROMIUM`. New runs write to the git-ignored `evidence/harness/out/`, so the committed baseline is never overwritten.
+
 ```bash
 cd docs/audits/urdu-card-studio-ux-2026-10-11/evidence/harness
-npm i playwright@1.56.0            # in a scratch dir; scripts import from ./lib.mjs
-node harness-server.mjs &           # port 8790 (FAIL_SHARES=1 PORT=8791 for the outage case)
-node 01-first-impression.mjs; node p1.mjs; node p2.mjs; node p3.mjs; node p4.mjs
-node p5.mjs; node p6.mjs; node p7.mjs; node p8.mjs; node j04j07.mjs; node resilience.mjs
-node recipient.mjs <shareId>
+npm install && npm run server &
+npm run first-impression && npm run personas && npm run journeys
 ```
-The scripts write screenshots to `../` and JSON traces to the working directory. `p6.mjs` expects `fixtures/` (synthetic images generated with Pillow, no real photos).

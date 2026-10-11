@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const browser = await launch();
 const R = { persona: 'P3 Roman Urdu beginner', device: 'android-small 360x780' };
@@ -79,5 +79,5 @@ const ROMAN = 'Aap sab ko Jumma Mubarak. Allah aap ko hamesha khush rakhe.';
   R.B_trace = trace.steps; R.B_errors = summarize(trace);
   await context.close();
 }
-fs.writeFileSync('p3.json', JSON.stringify(R, null, 1));
+fs.writeFileSync(EVID + '/p3.json', JSON.stringify(R, null, 1));
 await browser.close();

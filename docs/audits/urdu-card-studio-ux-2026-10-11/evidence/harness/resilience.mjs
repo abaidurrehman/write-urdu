@@ -1,4 +1,4 @@
-import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import { launch, newSession, shot, box, step, summarize, BASE, EVID } from './lib.mjs';
 import fs from 'node:fs';
 const browser = await launch(); const R = {};
 const fillDirect = async (page, text) => { await page.locator('#cardText').scrollIntoViewIfNeeded(); await page.locator('[data-input-mode-option="direct"]').click(); await page.locator('#cardText').fill(text); await page.waitForTimeout(1200); };
@@ -81,5 +81,5 @@ const fillDirect = async (page, text) => { await page.locator('#cardText').scrol
   R.contrast = await page.evaluate(() => { const els = [...document.querySelectorAll('.card-studio-action-group-label, .card-studio-help, .wu-share-publish-note, .card-studio-step small, .card-studio-mode-label')]; return els.filter(e => e.offsetParent).slice(0, 8).map(e => { const s = getComputedStyle(e); return [e.className.split(' ')[0], s.color, s.fontSize]; }); });
   await context.close();
 }
-fs.writeFileSync('resilience.json', JSON.stringify(R, null, 1)); console.log(JSON.stringify(R, null, 1).slice(0, 7000));
+fs.writeFileSync(EVID + '/resilience.json', JSON.stringify(R, null, 1)); console.log(JSON.stringify(R, null, 1).slice(0, 7000));
 await browser.close();
