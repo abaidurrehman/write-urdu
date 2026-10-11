@@ -1,0 +1,46 @@
+import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import fs from 'node:fs';
+const browser = await launch();
+const { context, page, trace } = await newSession(browser, 'android-small');
+await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
+const R = { persona: 'P8 older user Eid', device: 'android-small 360x780' }; const t0 = Date.now();
+// Starts from homepage (how an older user arrives via search/bookmark)
+await page.goto(BASE + '/'); await page.waitForTimeout(2500);
+R.homeCardEntry = await page.evaluate(() => [...document.querySelectorAll('a[href*="card"]')].filter(a => a.offsetParent).map(a => ({ text: a.innerText.trim().replace(/\s+/g, ' ').slice(0, 60), href: a.getAttribute('href'), top: Math.round(a.getBoundingClientRect().top + scrollY) })).slice(0, 8));
+R.homeH = await page.evaluate(() => document.documentElement.scrollHeight);
+step(trace, 'Homepage: visible card entry points', { entries: R.homeCardEntry });
+await shot(page, 'P8-home-first-viewport');
+await page.goto(BASE + '/urdu-cards'); await page.waitForTimeout(2000);
+const eid = page.locator('[data-urdu-cards-filter="eid-greeting"]');
+await eid.scrollIntoViewIfNeeded(); await eid.tap(); await page.waitForTimeout(600);
+R.eidCards = await page.$$eval('[data-category="eid-greeting"]', c => c.filter(x => x.offsetParent).length);
+R.chipFont = await page.$eval('[data-urdu-cards-filter="eid-greeting"]', e => getComputedStyle(e).fontSize);
+R.cardWidth = await page.$eval('[data-category="eid-greeting"]', e => Math.round(e.getBoundingClientRect().width));
+R.actionFont = await page.$eval('[data-category="eid-greeting"] [data-urdu-cards-format]', e => getComputedStyle(e).fontSize);
+R.smallestCardAction = await page.$$eval('[data-category="eid-greeting"] button', b => b.filter(x => x.offsetParent).map(x => { const r = x.getBoundingClientRect(); return [x.innerText.trim().replace(/\s+/g, ' ').slice(0, 20), Math.round(r.width), Math.round(r.height)]; }).slice(0, 8));
+step(trace, 'Eid filter', { cards: R.eidCards, cardWidth: R.cardWidth, actionFont: R.actionFont, buttons: R.smallestCardAction });
+const card = page.locator('[data-category="eid-greeting"]').first(); await card.scrollIntoViewIfNeeded(); await shot(page, 'P8-eid-card');
+await card.locator('[data-urdu-cards-edit]').tap(); await page.waitForTimeout(1000);
+await shot(page, 'P8-eid-personalizer');
+R.personalizerScroll = await page.evaluate(() => { const d = document.querySelector('[data-urdu-cards-personalizer]'); return { h: d.scrollHeight, client: d.clientHeight, vh: innerHeight }; });
+R.shareInView = await page.evaluate(() => { const b = document.querySelector('[data-urdu-cards-personalizer-share]').getBoundingClientRect(); return { top: Math.round(b.top), inView: b.bottom < innerHeight }; });
+step(trace, 'Personalizer on small phone', { scroll: R.personalizerScroll, shareButton: R.shareInView });
+await page.locator('[data-urdu-cards-personalizer] [data-input-mode-option="direct"]').tap().catch(() => {});
+const ta = page.locator('[data-urdu-cards-personalizer-text]');
+const pre = await ta.inputValue(); await ta.fill(pre + '\nآپ کا بھائی، سلیم'); await page.waitForTimeout(600);
+let dl = null; page.once('download', d => dl = d);
+await page.locator('[data-urdu-cards-personalizer-share]').scrollIntoViewIfNeeded();
+await page.locator('[data-urdu-cards-personalizer-share]').tap(); await page.waitForTimeout(2500);
+if (dl) { const p = '/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P8-eid-personalized.png'; await dl.saveAs(p); R.download = { name: dl.suggestedFilename(), bytes: fs.statSync(p).size }; }
+R.status = await page.locator('[data-urdu-cards-personalizer-status]').innerText().catch(() => '');
+step(trace, 'Share this image (no Web Share → download)', { download: R.download, status: R.status });
+await page.keyboard.press('Escape'); await page.waitForTimeout(400);
+// Stock card shareable link
+const link = card.locator('[data-urdu-cards-share]');
+await link.scrollIntoViewIfNeeded(); await link.tap(); await page.waitForTimeout(2500);
+R.stockLink = { dialogs: await page.evaluate(() => [...document.querySelectorAll('dialog[open], [role="dialog"]:not([hidden])')].map(d => d.innerText.replace(/\s+/g, ' ').slice(0, 400))), clip: await page.evaluate(() => navigator.clipboard.readText()).catch(() => ''), toast: await page.evaluate(() => [...document.querySelectorAll('[role="status"]')].map(s => s.innerText.trim()).filter(Boolean).join(' | ')) };
+await shot(page, 'P8-stock-shareable-link');
+step(trace, 'Tapped "Shareable link" on stock Eid card', R.stockLink);
+R.elapsedMs = Date.now() - t0; R.trace = trace.steps; R.errors = summarize(trace);
+fs.writeFileSync('p8.json', JSON.stringify(R, null, 1));
+await browser.close();

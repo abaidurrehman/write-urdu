@@ -1,0 +1,65 @@
+{
+ "persona": "P5 shop/community announcement",
+ "device": "desktop 1440x900",
+ "fieldsForStructure": [
+  "cardText",
+  "cardAttribution"
+ ],
+ "state": {
+  "preset": "landscape",
+  "tpl": "botanical-frame",
+  "font": "Noto Nastaliq Urdu",
+  "size": 52,
+  "align": "right"
+ },
+ "warning": {
+  "hidden": true,
+  "text": ""
+ },
+ "download": "Untitled card-2026-10-11.png",
+ "squareSize": 67,
+ "elapsedMs": 13497,
+ "trace": [
+  {
+   "t": 1791713671079,
+   "text": "Typed 5-line announcement (heading, body, date, place, phone)",
+   "textFields": [
+    "cardText",
+    "cardAttribution"
+   ]
+  },
+  {
+   "t": 1791713671875,
+   "text": "State after text + attribution",
+   "state": {
+    "preset": "landscape",
+    "tpl": "botanical-frame",
+    "font": "Noto Nastaliq Urdu",
+    "size": 52,
+    "align": "right"
+   },
+   "warning": {
+    "hidden": true,
+    "text": ""
+   }
+  },
+  {
+   "t": 1791713679054,
+   "text": "Switched to Square and exported",
+   "fontSize": 67
+  }
+ ],
+ "errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "pageErrors": [],
+  "failed": [
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+  ]
+ }
+}

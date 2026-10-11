@@ -1,0 +1,121 @@
+{
+ "storage": {
+  "status": "Your card can still be created, but this browser could not save it locally.",
+  "pageErrors": [
+   "SecurityError: blocked"
+  ],
+  "publishBtn": 1,
+  "download": true
+ },
+ "shareDown": "Could not publish this card The local card is unchanged. × Public sharing storage is not connected to this deployment yet. Close Try again",
+ "slow": {
+  "dcl": 21851,
+  "appReady": 21879,
+  "nastaliqReady": 34624,
+  "load": 34625,
+  "transferKB": 1363,
+  "resources": 76
+ },
+ "weight": {
+  "totalKB": 1500,
+  "byType": {
+   "script": 909,
+   "link": 127,
+   "video": 350,
+   "css": 64,
+   "img": 46,
+   "fetch": 1,
+   "other": 4
+  },
+  "scripts": 41
+ },
+ "urduToggle": 1,
+ "urduUi": {
+  "url": "http://127.0.0.1:8790/urdu/urdu-card-studio",
+  "dir": "rtl",
+  "h1": "اردو کارڈ اسٹوڈیو",
+  "buttons": [
+   "کارڈ اسٹوڈیو",
+   "واٹس ایپ اسٹیٹس",
+   "انسٹاگرام پوسٹ",
+   "Undo",
+   "Redo",
+   "ایڈیٹر پر واپس جائیں",
+   "دوبارہ ترتیب دیں",
+   "Share image only",
+   "PNG ڈاؤن لوڈ کریں",
+   "Publish & Share",
+   "Submit to Urdu Writers",
+   "1 Content",
+   "2 Format",
+   "3 Style",
+   "4 Export",
+   "Quick mode",
+   "Advanced mode",
+   "سب",
+   "کلاسیکی",
+   "پاکستان",
+   "ٹرک آرٹ",
+   "شاعری",
+   "قدرت",
+   "جدید",
+   "شادی",
+   "پُرتعیش",
+   "محبت",
+   "زمردی مغلیہ",
+   "چاندنی رات",
+   "پھولوں کی نزاکت"
+  ]
+ },
+ "long": {
+  "chars": 746,
+  "fontSize": 37,
+  "warning": "This text is larger than the available card area. Reduce the text or switch on auto-fit."
+ },
+ "twoTabs": {
+  "reopened": "پہلا ٹیب — آخری ترمیم",
+  "tab2Still": "دوسرا ٹیب",
+  "sameId": false
+ },
+ "keyboard": {
+  "tabsToTextField": 84,
+  "first15": [
+   "Write Urdu\nWrite Urdu, si",
+   "Write\n⌄",
+   "Create\n⌄",
+   "Tools\n⌄",
+   "Learn\n⌄",
+   "文\nاردو",
+   "Write Urdu",
+   "Tools",
+   "Back to Urdu Cards",
+   "WhatsApp Status",
+   "Instagram Post",
+   "Browse templates",
+   "back",
+   "reset",
+   "share"
+  ]
+ },
+ "focusStyle": {
+  "outline": "solid 3px rgba(11, 111, 194, 0.28)",
+  "boxShadow": "rgba(21, 147, 77, 0.1) 0px 0px 0px 3px"
+ },
+ "canvasA11y": {
+  "canvasHidden": "true",
+  "caption": "یہاں اپنا اردو متن لکھیں۔",
+  "statusLive": "polite"
+ },
+ "contrast": [
+  [
+   "wu-share-publish-note",
+   "rgb(100, 119, 110)",
+   "12px"
+  ],
+  [
+   "card-studio-help",
+   "rgb(51, 69, 59)",
+   "12.32px"
+  ]
+ ]
+}

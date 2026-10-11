@@ -1,0 +1,398 @@
+{
+ "persona": "P6 advanced creator",
+ "device": "desktop 1440x900",
+ "panelScroll": {
+  "scrollH": 2105,
+  "clientH": 772,
+  "overflowY": "auto"
+ },
+ "s1": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0.089,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "solid",
+  "ov": 0,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": null
+ },
+ "undoEnabledAfterTyping": false,
+ "quickStyleControls": [
+  "Text style",
+  "Font",
+  "Auto-fit text to the card",
+  "Font size160 px",
+  "Alignment",
+  "Vertical",
+  "Background",
+  "Background type",
+  "Background colour",
+  "Branding",
+  "Show Write-Urdu.com watermark"
+ ],
+ "brokenUpload": "Saved on this device",
+ "s2": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0.089,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "overlayVisibleQuick": false,
+ "advancedVisible": 5,
+ "selection": {
+  "selectedObjectId": "text",
+  "editingObjectId": null
+ },
+ "s3": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0.45,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "s4": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0.089,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0.45,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "s5": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0.45,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "canvasEditor": true,
+ "layoutX": "8.9",
+ "templates": [
+  "Classic Nastaliq",
+  "Midnight",
+  "Minimal White",
+  "Emerald",
+  "Paper",
+  "Photo Quote",
+  "Sunflower Bloom",
+  "Golden Mandala",
+  "Botanical Frame"
+ ],
+ "s6": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0,
+   0.822
+  ],
+  "font": "Noto Naskh Arabic",
+  "bg": "gradient",
+  "ov": 0,
+  "tpl": "midnight",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "s7": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0.089,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0.45,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "s8": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0.089,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0.45,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "largeMs": 2519,
+ "s9": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0.089,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0.45,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "download": {
+  "name": "Untitled card-2026-10-11.png",
+  "bytes": 502141
+ },
+ "afterReload": {
+  "text": "اپنی پہچان خود بنائیں",
+  "tx": [
+   0.089,
+   0.089,
+   0.822
+  ],
+  "font": "Noto Nastaliq Urdu",
+  "bg": "image",
+  "ov": 0.45,
+  "tpl": "classic-nastaliq",
+  "preset": "square",
+  "img": "card_mv3o0tsj_image"
+ },
+ "elapsedMs": 23814,
+ "trace": [
+  {
+   "t": 1791713613609,
+   "text": "Desktop panel",
+   "scrollH": 2105,
+   "clientH": 772,
+   "overflowY": "auto"
+  },
+  {
+   "t": 1791713614282,
+   "text": "اپنی پہچان خود بنائیں",
+   "tx": [
+    0.089,
+    0.089,
+    0.822
+   ],
+   "font": "Noto Nastaliq Urdu",
+   "bg": "solid",
+   "ov": 0,
+   "tpl": "classic-nastaliq",
+   "preset": "square",
+   "img": null
+  },
+  {
+   "t": 1791713614311,
+   "text": "Undo enabled after typing in the text box?",
+   "enabled": false
+  },
+  {
+   "t": 1791713614786,
+   "text": "Style step (Quick) visible labels",
+   "labels": [
+    "Text style",
+    "Font",
+    "Auto-fit text to the card",
+    "Font size160 px",
+    "Alignment",
+    "Vertical",
+    "Background",
+    "Background type",
+    "Background colour",
+    "Branding",
+    "Show Write-Urdu.com watermark"
+   ]
+  },
+  {
+   "t": 1791713616327,
+   "text": "Uploaded a broken .png",
+   "status": "Saved on this device"
+  },
+  {
+   "t": 1791713617851,
+   "text": "اپنی پہچان خود بنائیں",
+   "tx": [
+    0.089,
+    0.089,
+    0.822
+   ],
+   "font": "Noto Nastaliq Urdu",
+   "bg": "image",
+   "ov": 0,
+   "tpl": "classic-nastaliq",
+   "preset": "square",
+   "img": "card_mv3o0tsj_image"
+  },
+  {
+   "t": 1791713618531,
+   "text": "Advanced mode: overlay set",
+   "overlayVisibleInQuick": false,
+   "advancedBlocks": 5
+  },
+  {
+   "t": 1791713619931,
+   "text": "Selected and dragged text up 150px",
+   "selection": {
+    "selectedObjectId": "text",
+    "editingObjectId": null
+   },
+   "state": {
+    "text": "اپنی پہچان خود بنائیں",
+    "tx": [
+     0.089,
+     0,
+     0.822
+    ],
+    "font": "Noto Nastaliq Urdu",
+    "bg": "image",
+    "ov": 0.45,
+    "tpl": "classic-nastaliq",
+    "preset": "square",
+    "img": "card_mv3o0tsj_image"
+   }
+  },
+  {
+   "t": 1791713620823,
+   "text": "Undo then Redo",
+   "afterUndo": [
+    0.089,
+    0.089,
+    0.822
+   ],
+   "afterRedo": [
+    0.089,
+    0,
+    0.822
+   ]
+  },
+  {
+   "t": 1791713621586,
+   "text": "Double-click opens on-canvas editor?",
+   "visible": true
+  },
+  {
+   "t": 1791713622788,
+   "text": "Changed template to Midnight after upload/drag",
+   "templates": [
+    "Classic Nastaliq",
+    "Midnight",
+    "Minimal White",
+    "Emerald",
+    "Paper",
+    "Photo Quote",
+    "Sunflower Bloom",
+    "Golden Mandala",
+    "Botanical Frame"
+   ],
+   "state": {
+    "text": "اپنی پہچان خود بنائیں",
+    "tx": [
+     0.089,
+     0,
+     0.822
+    ],
+    "font": "Noto Naskh Arabic",
+    "bg": "gradient",
+    "ov": 0,
+    "tpl": "midnight",
+    "preset": "square",
+    "img": "card_mv3o0tsj_image"
+   }
+  },
+  {
+   "t": 1791713623481,
+   "text": "اپنی پہچان خود بنائیں",
+   "tx": [
+    0.089,
+    0.089,
+    0.822
+   ],
+   "font": "Noto Nastaliq Urdu",
+   "bg": "image",
+   "ov": 0.45,
+   "tpl": "classic-nastaliq",
+   "preset": "square",
+   "img": "card_mv3o0tsj_image"
+  },
+  {
+   "t": 1791713626091,
+   "text": "Uploaded 6000x4500 JPG",
+   "state": {
+    "text": "اپنی پہچان خود بنائیں",
+    "tx": [
+     0.089,
+     0.089,
+     0.822
+    ],
+    "font": "Noto Nastaliq Urdu",
+    "bg": "image",
+    "ov": 0.45,
+    "tpl": "classic-nastaliq",
+    "preset": "square",
+    "img": "card_mv3o0tsj_image"
+   }
+  },
+  {
+   "t": 1791713629475,
+   "text": "Exported",
+   "name": "Untitled card-2026-10-11.png",
+   "bytes": 502141
+  },
+  {
+   "t": 1791713633860,
+   "text": "اپنی پہچان خود بنائیں",
+   "tx": [
+    0.089,
+    0.089,
+    0.822
+   ],
+   "font": "Noto Nastaliq Urdu",
+   "bg": "image",
+   "ov": 0.45,
+   "tpl": "classic-nastaliq",
+   "preset": "square",
+   "img": "card_mv3o0tsj_image"
+  }
+ ],
+ "errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "pageErrors": [],
+  "failed": [
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+  ]
+ }
+}

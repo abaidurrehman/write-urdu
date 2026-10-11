@@ -1,0 +1,35 @@
+import { launch, newSession, shot, box, step, summarize, BASE } from './lib.mjs';
+import fs from 'node:fs';
+const browser = await launch();
+const { context, page, trace } = await newSession(browser, 'desktop');
+const R = { persona: 'P5 shop/community announcement', device: 'desktop 1440x900' }; const t0 = Date.now();
+await page.goto(BASE + '/urdu-card-studio'); await page.waitForTimeout(2500);
+await page.locator('.card-studio-stepper [data-card-step="format"]').click(); await page.waitForTimeout(300);
+await page.locator('[data-card-use-case="announcement"]').click(); await page.waitForTimeout(600);
+await page.locator('.card-studio-stepper [data-card-step="content"]').click();
+await page.locator('#cardText').scrollIntoViewIfNeeded(); await page.locator('[data-input-mode-option="direct"]').click();
+const TEXT = 'اعلانِ عام\nمحلہ کمیٹی کا ماہانہ اجلاس\nبروز اتوار، 19 اکتوبر 2026، شام 5 بجے\nبمقام: جامع مسجد ہال، گلشن اقبال\nرابطہ: 0300-1234567';
+await page.locator('#cardText').fill(TEXT); await page.waitForTimeout(800);
+R.fieldsForStructure = await page.$$eval('.card-studio-panel input[type=text], .card-studio-panel textarea', i => i.filter(x => x.offsetParent).map(x => x.id || x.dataset.cardField));
+step(trace, 'Typed 5-line announcement (heading, body, date, place, phone)', { textFields: R.fieldsForStructure });
+await page.locator('#cardAttribution').fill('منجانب: محلہ کمیٹی'); await page.locator('[data-card-field="attribution.enabled"]').check(); await page.waitForTimeout(600);
+R.state = await page.evaluate(() => { const s = WriteUrduCardStudioApp.getState(); return { preset: s.presetId, tpl: s.templateId, font: s.text.fontFamily, size: s.text.fontSize, align: s.text.align }; });
+R.warning = await page.locator('[data-card-text-warning]').evaluate(e => ({ hidden: e.hidden, text: e.textContent }));
+step(trace, 'State after text + attribution', { state: R.state, warning: R.warning });
+await page.locator('#cardCanvas').scrollIntoViewIfNeeded(); await shot(page, 'P5-announcement-preview');
+await page.locator('.card-studio-stepper [data-card-step="export"]').click();
+let dl = null; page.once('download', d => dl = d);
+await page.locator('.card-studio-export-section [data-card-action="download"]').click(); await page.waitForTimeout(3000);
+if (dl) { await dl.saveAs('/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P5-announcement-export.png'); R.download = dl.suggestedFilename(); }
+// Try square for WhatsApp
+await page.locator('.card-studio-stepper [data-card-step="format"]').click();
+await page.locator('#cardPreset').selectOption('square'); await page.waitForTimeout(800);
+R.squareSize = await page.evaluate(() => WriteUrduCardStudioApp.getState().text.fontSize);
+await page.locator('.card-studio-stepper [data-card-step="export"]').click();
+dl = null; page.once('download', d => dl = d);
+await page.locator('.card-studio-export-section [data-card-action="download"]').click(); await page.waitForTimeout(3000);
+if (dl) await dl.saveAs('/home/user/write-urdu/docs/audits/urdu-card-studio-ux-2026-10-11/evidence/P5-announcement-square.png');
+step(trace, 'Switched to Square and exported', { fontSize: R.squareSize });
+R.elapsedMs = Date.now() - t0; R.trace = trace.steps; R.errors = summarize(trace);
+fs.writeFileSync('p5.json', JSON.stringify(R, null, 1));
+await browser.close();

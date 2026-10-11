@@ -1,0 +1,164 @@
+{
+ "id": "Bo6Kjoxr",
+ "android": {
+  "status": 200,
+  "loadMs": 1284,
+  "headers": {
+   "robots": "noindex, follow",
+   "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+  },
+  "meta": {
+   "title": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday! | Write Urdu",
+   "description": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+   "og:type": "article",
+   "og:site_name": "Write Urdu",
+   "og:locale": "ur_PK",
+   "og:title": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday! | Write Urdu",
+   "og:description": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+   "og:url": "http://127.0.0.1:8790/s/Bo6Kjoxr",
+   "og:image": "http://127.0.0.1:8790/share-media/Bo6Kjoxr",
+   "og:image:width": "1280",
+   "og:image:height": "720",
+   "og:image:type": "image/png",
+   "og:image:alt": "Urdu writing shared from Write Urdu",
+   "twitter:card": "summary_large_image",
+   "twitter:title": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday! | Write Urdu",
+   "twitter:description": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+   "twitter:image": "http://127.0.0.1:8790/share-media/Bo6Kjoxr",
+   "twitter:image:alt": "Urdu writing shared from Write Urdu"
+  },
+  "img": {
+   "top": 71,
+   "left": 20,
+   "w": 353,
+   "h": 199,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "cta": {
+   "top": 684,
+   "left": 28,
+   "w": 337,
+   "h": 79,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "useWords": {
+   "top": 775,
+   "left": 28,
+   "w": 337,
+   "h": 49,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "urduFont": "\"Noto Nastaliq Urdu\", \"Noto Naskh Arabic\", serif",
+  "fontsLoaded": [],
+  "pageHeight": 1309,
+  "shot": "evidence/J10-recipient-android.png",
+  "mediaBytes": 119996,
+  "shareBtn": {
+   "status": "Link copied.",
+   "clip": "http://127.0.0.1:8790/s/Bo6Kjoxr"
+  },
+  "copyUrdu": {
+   "status": "Urdu text copied.",
+   "clip": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!"
+  },
+  "editDesign": 1,
+  "useWordsLanding": {
+   "url": "http://127.0.0.1:8790/urdu-cards",
+   "h1": "Ready-made Urdu cards"
+  },
+  "useWordsShot": "evidence/J10-recipient-use-these-words-landing.png",
+  "useWordsTextInEditor": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+  "createOwnLanding": {
+   "url": "http://127.0.0.1:8790/urdu-cards",
+   "h1": "Ready-made Urdu cards"
+  },
+  "errors": {
+   "console": [
+    "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pageErrors": [],
+   "failed": [
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/events",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+   ]
+  }
+ },
+ "desktop": {
+  "status": 200,
+  "loadMs": 1264,
+  "headers": {
+   "robots": "noindex, follow",
+   "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'"
+  },
+  "meta": {
+   "title": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday! | Write Urdu",
+   "description": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+   "og:type": "article",
+   "og:site_name": "Write Urdu",
+   "og:locale": "ur_PK",
+   "og:title": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday! | Write Urdu",
+   "og:description": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+   "og:url": "http://127.0.0.1:8790/s/Bo6Kjoxr",
+   "og:image": "http://127.0.0.1:8790/share-media/Bo6Kjoxr",
+   "og:image:width": "1280",
+   "og:image:height": "720",
+   "og:image:type": "image/png",
+   "og:image:alt": "Urdu writing shared from Write Urdu",
+   "twitter:card": "summary_large_image",
+   "twitter:title": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday! | Write Urdu",
+   "twitter:description": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+   "twitter:image": "http://127.0.0.1:8790/share-media/Bo6Kjoxr",
+   "twitter:image:alt": "Urdu writing shared from Write Urdu"
+  },
+  "img": {
+   "top": 89,
+   "left": 195,
+   "w": 684,
+   "h": 385,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "cta": {
+   "top": 278,
+   "left": 941,
+   "w": 294,
+   "h": 103,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "useWords": {
+   "top": 393,
+   "left": 941,
+   "w": 294,
+   "h": 51,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "urduFont": "\"Noto Nastaliq Urdu\", \"Noto Naskh Arabic\", serif",
+  "fontsLoaded": [],
+  "pageHeight": 941,
+  "shot": "evidence/J10-recipient-desktop.png",
+  "mediaBytes": 119996,
+  "shareBtn": {
+   "status": "Link copied.",
+   "clip": "http://127.0.0.1:8790/s/Bo6Kjoxr"
+  },
+  "copyUrdu": {
+   "status": "Urdu text copied.",
+   "clip": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!"
+  },
+  "editDesign": 1,
+  "errors": {
+   "console": [],
+   "pageErrors": [],
+   "failed": [
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+   ]
+  }
+ }
+}

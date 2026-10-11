@@ -1,0 +1,359 @@
+{
+ "persona": "P2 Poetry → Instagram",
+ "device": "iphone 390x844",
+ "url": "http://127.0.0.1:8790/urdu-instagram-post-maker",
+ "h1": "Urdu Instagram Post Maker",
+ "preset": {
+  "preset": "square",
+  "font": "Noto Naskh Arabic",
+  "value": "اپنی بات خوب صورت انداز میں شیئر کریں۔",
+  "social": "instagram"
+ },
+ "textareaTop": 1360,
+ "canvasTop": 2329,
+ "igAttributionVisible": false,
+ "igPublishButton": 0,
+ "igFontVisible": true,
+ "igControls": [
+  "English letters → Urdu",
+  "Speak Urdu",
+  "Type Urdu directly",
+  "Turn conversion on",
+  "Square\n1080 × 1080",
+  "Portrait\n1080 × 1350",
+  "Story\n1080 × 1920",
+  "checkbox",
+  "PNG\nJPEG",
+  "Download PNG",
+  "Share image",
+  "Copy caption text",
+  "Submit to Urdu Writers",
+  "All",
+  "Classic",
+  "Pakistan",
+  "Truck Art",
+  "Poetry",
+  "Nature",
+  "Modern",
+  "Wedding",
+  "Luxury",
+  "Love",
+  "Emerald Mughal",
+  "Moonlit Lanterns",
+  "Vintage Floral",
+  "Burgundy Arch",
+  "Emerald Jasmine",
+  "Midnight Crescent",
+  "Eid Emerald",
+  "Blush Rose",
+  "Rose Garden",
+  "Heritage Garden",
+  "Teal & Gold",
+  "Ivory Arabesque",
+  "Ajrak Heritage",
+  "Truck Art Bloom",
+  "Peacock Festival",
+  "Ink Wash Poetry",
+  "Moon Paper",
+  "Old Lahore Journal",
+  "Moonlit Lakeside",
+  "Lantern Sunrise",
+  "Pastel Glass",
+  "Black Gold Classic",
+  "Maroon Wedding",
+  "Regal Gold Arabesque",
+  "Soft Sunrise Garden",
+  "Window Light & Tea",
+  "Quiet Moon Sky",
+  "Rainy Window Reflection",
+  "Jumma Ivory Geometry",
+  "Jumma Midnight Silhouette",
+  "Emerald Prayer Light",
+  "Warm Paper Reflection",
+  "Minimal Cream Poetry",
+  "Ink & Moon Poetry",
+  "Rose Mist Affection",
+  "Quiet Blue Distance",
+  "Self-Respect Black & Sand",
+  "Friendship Bright Modern",
+  "Family Warm Interior",
+  "Ajrak Modern Frame",
+  "Truck Art Modern Bloom",
+  "Ramadan Lantern Night",
+  "Eid Morning Gold",
+  "Pakistan Green Heritage",
+  "Classic Nastaliq",
+  "Midnight",
+  "Minimal White",
+  "Emerald",
+  "Paper",
+  "Photo Quote",
+  "Sunflower Bloom",
+  "Golden Mandala",
+  "Botanical Frame",
+  "Noto Nastaliq Urdu\nNoto Naskh ",
+  "cardTextColor",
+  "checkbox",
+  "cardFontSize",
+  "Right\nCentre\nLeft",
+  "Top\nCentre\nBottom",
+  "Solid colour\nBuilt-in gradient",
+  "cardBackgroundColor"
+ ],
+ "igState": {
+  "font": "Noto Naskh Arabic",
+  "preset": "square",
+  "size": 66
+ },
+ "igDownload": {
+  "name": "urdu-instagram-post-2026-10-11.png",
+  "bytes": 74475
+ },
+ "studioCarriedText": "یہاں اپنا اردو متن لکھیں۔",
+ "attrEnabledAfterTyping": false,
+ "presetOptions": [
+  "square:Square Post · 1080 × 1080",
+  "landscape:Landscape Post · 1280 × 720",
+  "facebook:Wide Social Post · 1200 × 630",
+  "portrait:Portrait Post · 1080 × 1350",
+  "story:Story / Status · 1080 × 1920"
+ ],
+ "fontVisibleOnContentStep": false,
+ "afterStyleTap": {
+  "scrollY": 1908,
+  "font": {
+   "top": 2935,
+   "left": 26,
+   "w": 338,
+   "h": 41,
+   "visible": true,
+   "inFirstViewport": false
+  }
+ },
+ "fontOptions": [
+  "Noto Nastaliq Urdu",
+  "Noto Naskh Arabic",
+  "Amiri",
+  "Lateef",
+  "Scheherazade New",
+  "Tajawal"
+ ],
+ "poetryChipVisible": true,
+ "poetryTiles": [
+  "ink-wash-poetry",
+  "moon-paper",
+  "warm-paper-reflection",
+  "minimal-cream-poetry",
+  "ink-moon-poetry"
+ ],
+ "state": {
+  "font": "Noto Nastaliq Urdu",
+  "size": 62,
+  "lh": 1.8,
+  "align": "center",
+  "preset": "portrait",
+  "bg": "image",
+  "attr": {
+   "enabled": true,
+   "value": "فیض احمد فیض",
+   "fontFamily": "Noto Naskh Arabic",
+   "fontSizeRatio": 0.44,
+   "color": "#64748b",
+   "transform": {
+    "x": 0.08888888888888889,
+    "y": 0.8637037037037038,
+    "width": 0.8222222222222222,
+    "height": 0.047407407407407405,
+    "horizontalAnchor": "left",
+    "verticalAnchor": "top",
+    "rotation": 0,
+    "positionCustomized": false,
+    "widthCustomized": false
+   }
+  }
+ },
+ "layouts": "{\"text\":{\"lines\":[{\"text\":\"دل ناامید تو نہیں ناکام ہی تو ہے\",\"width\":663.4622802734375,\"paragraphIndex\":0,\"isParagraphEnd\":true},{\"text\":\"لمبی ہے غم کی شام مگر شام ہی تو ہے\",\"width\":767.4983520507812,\"paragraphIndex\":1,\"isParagraphEnd\":true}],\"width\":777.6,\"height\":247.752,\"lineHeight\":111.60000000000001,\"fontSize\":62,\"attribution\":\"\",\"attributionSize\":27,\"overflow\":false},\"attribution\":{\"lines\":[{\"text\":\"فیض احمد فیض\",\"width\":174.17129516601562,\"paragraphIndex\":0,\"isParagraphEnd\":true}],\"width\":888,\"height\":36.45,\"lineHeight\":36.45,\"fontSize\":27,\"attribution\":\"\",\"attributionSize\":16,\"overflow",
+ "safeWarning": {
+  "hidden": true,
+  "text": ""
+ },
+ "exportStep": {
+  "scrollY": 1002,
+  "social": {
+   "top": 1002,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "stepPublish": {
+   "top": 1888,
+   "left": 26,
+   "w": 338,
+   "h": 59,
+   "visible": true,
+   "inFirstViewport": false
+  }
+ },
+ "exportCopy": "READY TO SHARE? Finish your card Your preview is exported at the exact dimensions shown on the canvas. Publish & Share Create a public Write-Urdu.com link Download PNG Share image only Best for social sharing: publish this snapshot to get a short link with the Urdu artwork as its social preview. How it works Download saves the image only. Publish & Share keeps your writing safe on a free Write-Urdu.com link you can post straight to WhatsApp, Instagram or Facebook.",
+ "download": {
+  "name": "Untitled card-2026-10-11.png",
+  "bytes": 2217961
+ },
+ "captionStatus": "PNG downloaded. Want a link to share too? Try Publish & Share above.",
+ "caption": "",
+ "elapsedMs": 85717,
+ "trace": [
+  {
+   "t": 1791713252163,
+   "text": "Opened Instagram maker",
+   "url": "http://127.0.0.1:8790/urdu-instagram-post-maker",
+   "h1": "Urdu Instagram Post Maker",
+   "preset": {
+    "preset": "square",
+    "font": "Noto Naskh Arabic",
+    "value": "اپنی بات خوب صورت انداز میں شیئر کریں۔",
+    "social": "instagram"
+   },
+   "textareaTop": 1360,
+   "canvasTop": 2329
+  },
+  {
+   "t": 1791713253692,
+   "text": "Instagram maker: looks for poet-name field / publish / font",
+   "attributionVisible": false,
+   "publishButtons": 0,
+   "fontVisible": true
+  },
+  {
+   "t": 1791713257704,
+   "text": "Downloaded from Instagram maker",
+   "state": {
+    "font": "Noto Naskh Arabic",
+    "preset": "square",
+    "size": 66
+   },
+   "dl": {
+    "name": "urdu-instagram-post-2026-10-11.png",
+    "bytes": 74475
+   }
+  },
+  {
+   "t": 1791713260799,
+   "text": "Followed \"Open the full Urdu Card Studio\" link; was the couplet carried over?",
+   "value": "یہاں اپنا اردو متن لکھیں۔"
+  },
+  {
+   "t": 1791713261637,
+   "text": "Typed poet name in Card Studio",
+   "attributionShownWithoutCheckbox": false
+  },
+  {
+   "t": 1791713262666,
+   "text": "Font control visible on Content step?",
+   "visible": false
+  },
+  {
+   "t": 1791713263341,
+   "text": "Tapped Style step",
+   "scrollY": 1908,
+   "font": {
+    "top": 2935,
+    "left": 26,
+    "w": 338,
+    "h": 41,
+    "visible": true,
+    "inFirstViewport": false
+   }
+  },
+  {
+   "t": 1791713264691,
+   "text": "Poetry filter",
+   "chipVisible": true,
+   "tiles": [
+    "ink-wash-poetry",
+    "moon-paper",
+    "warm-paper-reflection",
+    "minimal-cream-poetry",
+    "ink-moon-poetry"
+   ]
+  },
+  {
+   "t": 1791713298209,
+   "text": "After poetry background + attribution",
+   "font": "Noto Nastaliq Urdu",
+   "size": 62,
+   "lh": 1.8,
+   "align": "center",
+   "preset": "portrait",
+   "bg": "image",
+   "attr": {
+    "enabled": true,
+    "value": "فیض احمد فیض",
+    "fontFamily": "Noto Naskh Arabic",
+    "fontSizeRatio": 0.44,
+    "color": "#64748b",
+    "transform": {
+     "x": 0.08888888888888889,
+     "y": 0.8637037037037038,
+     "width": 0.8222222222222222,
+     "height": 0.047407407407407405,
+     "horizontalAnchor": "left",
+     "verticalAnchor": "top",
+     "rotation": 0,
+     "positionCustomized": false,
+     "widthCustomized": false
+    }
+   }
+  },
+  {
+   "t": 1791713300458,
+   "text": "Export step",
+   "exportStep": {
+    "scrollY": 1002,
+    "social": {
+     "top": 1002,
+     "left": 0,
+     "w": 0,
+     "h": 0,
+     "visible": false,
+     "inFirstViewport": false
+    },
+    "stepPublish": {
+     "top": 1888,
+     "left": 26,
+     "w": 338,
+     "h": 59,
+     "visible": true,
+     "inFirstViewport": false
+    }
+   }
+  },
+  {
+   "t": 1791713303560,
+   "text": "Downloaded",
+   "name": "Untitled card-2026-10-11.png",
+   "bytes": 2217961
+  },
+  {
+   "t": 1791713333980,
+   "text": "Copy caption",
+   "status": "PNG downloaded. Want a link to share too? Try Publish & Share above.",
+   "caption": ""
+  }
+ ],
+ "errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "pageErrors": [],
+  "failed": [
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  ]
+ }
+}

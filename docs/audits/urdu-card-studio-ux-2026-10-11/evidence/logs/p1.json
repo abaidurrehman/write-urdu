@@ -1,0 +1,230 @@
+{
+ "persona": "P1 WhatsApp greeting",
+ "device": "android 393x852",
+ "horizontalOverflow": {
+  "scrollWidth": 393,
+  "innerWidth": 393
+ },
+ "bgLibraryStep": {
+  "step": "format",
+  "hidden": false,
+  "activeStep": "content"
+ },
+ "afterContentTapScrollY": 0,
+ "textareaViewportTop": 2208,
+ "scrollToTextarea": 1812,
+ "defaultValue": "یہاں اپنا اردو متن لکھیں۔",
+ "sampleValue": "یہاں اپنا اردو متن لکھیں۔",
+ "downloadWithSample": {
+  "downloaded": false,
+  "status": "Saved on this device"
+ },
+ "downloadWithSampleStatusBox": {
+  "top": 3680,
+  "left": 26,
+  "w": 341,
+  "h": 21,
+  "visible": true,
+  "inFirstViewport": false
+ },
+ "romanResult": "subah bakhair ",
+ "romanAlert": {
+  "hidden": false,
+  "text": "Urdu conversion is not responding, so words are staying in English letters. Your next word will try again.\nType Urdu directly"
+ },
+ "translitStatus": "Roman Urdu input is ready. Press Space after each word, including when editing on the card.",
+ "libBox": {
+  "top": 1685,
+  "left": 26,
+  "w": 341,
+  "h": 1049,
+  "visible": true,
+  "inFirstViewport": false
+ },
+ "chips": [
+  "All",
+  "Classic",
+  "Pakistan",
+  "Truck Art",
+  "Poetry",
+  "Nature",
+  "Modern",
+  "Wedding",
+  "Luxury",
+  "Love"
+ ],
+ "tiles": 44,
+ "firstTileSize": [
+  132,
+  435
+ ],
+ "canvasVisibleWhenTappingBg": {
+  "top": -367,
+  "bottom": -24,
+  "inViewport": false
+ },
+ "state": {
+  "bg": "image",
+  "font": "Noto Nastaliq Urdu",
+  "size": 65,
+  "color": "#4b2e2c",
+  "preset": "square",
+  "wm": true
+ },
+ "download": {
+  "name": "Untitled card-2026-10-11.png",
+  "bytes": 213826
+ },
+ "downloadStatus": "PNG downloaded. Want a link to share too? Try Publish & Share above.",
+ "downloadStatusInViewport": false,
+ "hasShare": {
+  "share": false,
+  "canShare": false
+ },
+ "shareImageOnly": {
+  "downloadedInstead": true,
+  "status": "Sharing is not supported here. The PNG was downloaded instead.",
+  "webShare": {
+   "share": false,
+   "canShare": false
+  }
+ },
+ "elapsedMs": 21540,
+ "trace": [
+  {
+   "t": 1791713138402,
+   "text": "Lands on Card Studio",
+   "scrollWidth": 393,
+   "innerWidth": 393
+  },
+  {
+   "t": 1791713138404,
+   "text": "Background library vs active step",
+   "step": "format",
+   "hidden": false,
+   "activeStep": "content"
+  },
+  {
+   "t": 1791713139107,
+   "text": "Tapped bottom bar \"Content\"",
+   "scrollY": 0,
+   "textareaViewportTop": 2208
+  },
+  {
+   "t": 1791713139769,
+   "text": "Scrolled to text field",
+   "scrollY": 1812
+  },
+  {
+   "t": 1791713140247,
+   "text": "Tapped Use sample text",
+   "value": "یہاں اپنا اردو متن لکھیں۔"
+  },
+  {
+   "t": 1791713141856,
+   "text": "Download with sample text",
+   "downloaded": false,
+   "status": "Saved on this device"
+  },
+  {
+   "t": 1791713145771,
+   "text": "Typed Roman \"subah bakhair \" (Google blocked in env)",
+   "value": "subah bakhair ",
+   "alert": {
+    "hidden": false,
+    "text": "Urdu conversion is not responding, so words are staying in English letters. Your next word will try again.\nType Urdu directly"
+   },
+   "status": "Roman Urdu input is ready. Press Space after each word, including when editing on the card."
+  },
+  {
+   "t": 1791713147004,
+   "text": "Direct Urdu greeting typed",
+   "value": "صبح بخیر\nاللہ آپ کا دن خوشیوں سے بھر دے"
+  },
+  {
+   "t": 1791713147020,
+   "text": "Background library inspected",
+   "box": {
+    "top": 1685,
+    "left": 26,
+    "w": 341,
+    "h": 1049,
+    "visible": true,
+    "inFirstViewport": false
+   },
+   "chips": [
+    "All",
+    "Classic",
+    "Pakistan",
+    "Truck Art",
+    "Poetry",
+    "Nature",
+    "Modern",
+    "Wedding",
+    "Luxury",
+    "Love"
+   ],
+   "tiles": 44,
+   "tile": [
+    132,
+    435
+   ]
+  },
+  {
+   "t": 1791713149125,
+   "text": "Tapped Vintage Floral; is the preview visible at that moment?",
+   "top": -367,
+   "bottom": -24,
+   "inViewport": false
+  },
+  {
+   "t": 1791713150876,
+   "text": "Card state",
+   "bg": "image",
+   "font": "Noto Nastaliq Urdu",
+   "size": 65,
+   "color": "#4b2e2c",
+   "preset": "square",
+   "wm": true
+  },
+  {
+   "t": 1791713153976,
+   "text": "Download PNG",
+   "download": {
+    "name": "Untitled card-2026-10-11.png",
+    "bytes": 213826
+   },
+   "status": "PNG downloaded. Want a link to share too? Try Publish & Share above.",
+   "statusVisible": false
+  },
+  {
+   "t": 1791713156525,
+   "text": "Share image only",
+   "downloadedInstead": true,
+   "status": "Sharing is not supported here. The PNG was downloaded instead.",
+   "webShare": {
+    "share": false,
+    "canShare": false
+   }
+  }
+ ],
+ "errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "error: Failed to load resource: net::ERR_NAME_NOT_RESOLVED"
+  ],
+  "pageErrors": [
+   "Error: empty",
+   "TypeError: Cannot read properties of null (reading '0')"
+  ],
+  "failed": [
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events",
+   "net::ERR_NAME_NOT_RESOLVED http://www.google.com/inputtools/request",
+   "net::ERR_NAME_NOT_RESOLVED http://csi.gstatic.com/csi"
+  ]
+ }
+}

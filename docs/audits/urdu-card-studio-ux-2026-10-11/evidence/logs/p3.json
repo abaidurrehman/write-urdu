@@ -1,0 +1,132 @@
+{
+ "persona": "P3 Roman Urdu beginner",
+ "device": "android-small 360x780",
+ "A_modeDefault": "true",
+ "A_wordByWord": {
+  "value": "Aap sab ko ",
+  "alert": "Urdu conversion is not responding, so words are staying in English letters. Your next word will try again.\nType Urdu directly",
+  "status": "Roman Urdu input is ready. Press Space after each word, including when editing on the card."
+ },
+ "A_batchPrompt": {
+  "prompt": "Long Urdu text written with English letters detected. Convert this passage to Urdu script?",
+  "button": "Convert passage to Urdu script",
+  "buttonTop": -114,
+  "textareaTop": 361
+ },
+ "A_batchResult": {
+  "value": "Aap sab ko Jumma Mubarak. Allah aap ko hamesha khush rakhe.",
+  "status": "The passage could not be converted. Check your connection and try again."
+ },
+ "A_canvasText": "Aap sab ko Jumma Mubarak. Allah aap ko hamesha khush rakhe.",
+ "A_trace": [
+  {
+   "t": 1791713401370,
+   "text": "Word-by-word Roman during outage",
+   "value": "Aap sab ko ",
+   "alert": "Urdu conversion is not responding, so words are staying in English letters. Your next word will try again.\nType Urdu directly",
+   "status": "Roman Urdu input is ready. Press Space after each word, including when editing on the card."
+  },
+  {
+   "t": 1791713402334,
+   "text": "Pasted full Roman passage",
+   "prompt": "Long Urdu text written with English letters detected. Convert this passage to Urdu script?",
+   "button": "Convert passage to Urdu script",
+   "buttonTop": -114,
+   "textareaTop": 361
+  },
+  {
+   "t": 1791713406404,
+   "text": "Convert passage during outage",
+   "value": "Aap sab ko Jumma Mubarak. Allah aap ko hamesha khush rakhe.",
+   "status": "The passage could not be converted. Check your connection and try again."
+  }
+ ],
+ "A_errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "error: Failed to load resource: net::ERR_NAME_NOT_RESOLVED"
+  ],
+  "pageErrors": [
+   "TypeError: Cannot read properties of null (reading '0')"
+  ],
+  "failed": [
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_NAME_NOT_RESOLVED http://www.google.com/inputtools/request",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events",
+   "net::ERR_NAME_NOT_RESOLVED http://csi.gstatic.com/csi",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://inputtools.google.com/request"
+  ]
+ },
+ "B_buttonVisible": true,
+ "B_result": {
+  "value": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+  "status": ""
+ },
+ "B_correctionUi": false,
+ "B_afterUseCase": {
+  "preset": "landscape",
+  "template": "botanical-frame",
+  "value": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خو"
+ },
+ "B_publishLabel": "Publish & Share",
+ "B_confirm": "Publish this card as a public link?\n\nThis creates a new Write-Urdu.com share page for this snapshot.\n\n×\nWU\nPublic to anyone with the link\nYour selected card image, Urdu text and enabled attribution are uploaded. Your other local drafts and project history stay in this browser.\nThe hosted image always carries one small Write-Urdu.com mark.\nDownload PNG and Share image only still do not create a public page.\nYou can delete this published link later from this browser.\n\nDo not publish confidential or private writing. Public share pages are unlisted and marked noindex, but the link can be forwarded.\n\nCancel\nPublish & get link",
+ "B_publishMs": 255,
+ "B_url": "http://127.0.0.1:8790/s/Bo6Kjoxr",
+ "B_success": "✓ Your public Write Urdu link is ready Share the link so people get the visual preview and can continue into Write Urdu. × Copy link This is an immutable snapshot. Editing your local card will not change this published link. Delete published link Open public page Share link",
+ "B_shareLink": {
+  "toast": "Public link copied.",
+  "clipboard": "http://127.0.0.1:8790/s/Bo6Kjoxr"
+ },
+ "B_trace": [
+  {
+   "t": 1791713413405,
+   "text": "[STUB] Convert passage incl. English \"Happy Friday!\"",
+   "value": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خوش رکھے۔ Happy Friday!",
+   "status": ""
+  },
+  {
+   "t": 1791713413407,
+   "text": "[STUB] Any per-word correction UI after batch conversion?",
+   "present": false
+  },
+  {
+   "t": 1791713416276,
+   "text": "Chose \"Greeting / Announcement\" use case",
+   "preset": "landscape",
+   "template": "botanical-frame",
+   "value": "آپ سب کو جمعہ مبارک۔ اللہ آپ کو ہمیشہ خو"
+  },
+  {
+   "t": 1791713418284,
+   "text": "Publish this card as a public link? This creates a new Write-Urdu.com share page for this snapshot. × WU Public to anyone with the link Your selected card image, Urdu text and enabled attribution are uploaded. Your other local drafts and project history stay in this browser. The hosted image always carries one small Write-Urdu.com mark. Download PNG and Share image only still do not create a publi"
+  },
+  {
+   "t": 1791713418830,
+   "text": "Published",
+   "ms": 255,
+   "url": "http://127.0.0.1:8790/s/Bo6Kjoxr"
+  },
+  {
+   "t": 1791713419684,
+   "text": "Tapped \"Share link\" (Web Share API unavailable)",
+   "toast": "Public link copied.",
+   "clipboard": "http://127.0.0.1:8790/s/Bo6Kjoxr"
+  }
+ ],
+ "B_errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "pageErrors": [],
+  "failed": [
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+  ]
+ }
+}

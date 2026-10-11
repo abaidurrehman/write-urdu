@@ -1,0 +1,1036 @@
+{
+ "android-small": {
+  "loadMs": 4043,
+  "firstViewport": "evidence/first-impression-card-studio-android-small.png",
+  "full": "evidence/full-card-studio-android-small.png",
+  "h1": {
+   "top": 463,
+   "left": 27,
+   "w": 306,
+   "h": 31,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "textarea": {
+   "top": 3354,
+   "left": 26,
+   "w": 308,
+   "h": 132,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "canvas": {
+   "top": 1287,
+   "left": 65,
+   "w": 310,
+   "h": 310,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "publish": {
+   "top": 739,
+   "left": 246,
+   "w": 79,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepPublish": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "download": {
+   "top": 695,
+   "left": 246,
+   "w": 79,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "shareImg": {
+   "top": 651,
+   "left": 246,
+   "w": 79,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepper": {
+   "top": 1126,
+   "left": 19,
+   "w": 322,
+   "h": 50,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "mobileStepbar": {
+   "top": 718,
+   "left": 6,
+   "w": 348,
+   "h": 56,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "modeSwitch": {
+   "top": 1184,
+   "left": 19,
+   "w": 322,
+   "h": 49,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "sample": {
+   "top": 3501,
+   "left": 26,
+   "w": 151,
+   "h": 44,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "templates": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "inputMode": {
+   "top": 3107,
+   "left": 26,
+   "w": 308,
+   "h": 247,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "batch": {
+   "top": 2853,
+   "left": 26,
+   "w": 308,
+   "h": 156,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "submitCommunity": {
+   "top": 783,
+   "left": 246,
+   "w": 79,
+   "h": 36,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "pageHeight": 8637,
+  "visibleButtonsFirstViewport": [
+   "Back to Urdu Cards",
+   "Card Studio",
+   "WhatsApp Status",
+   "Instagram Post",
+   "Undo",
+   "Redo",
+   "Browse templates",
+   "Back to editor",
+   "Reset",
+   "Share image only",
+   "Download PNG",
+   "Publish & Share",
+   "1 Content",
+   "2 Format",
+   "3 Style",
+   "4 Export"
+  ],
+  "allVisibleControlsInMain": 87,
+  "status": "Your text and images stay in this browser and are not uploaded.",
+  "translitStatus": "Roman Urdu input is ready. Press Space after each word, including when editing on the card.",
+  "textareaValue": "یہاں اپنا اردو متن لکھیں۔",
+  "smallTargets": [
+   "Back to Urdu Cards 114x20",
+   "Card Studio 318x40",
+   "WhatsApp Status 318x40",
+   "Instagram Post 318x40",
+   "Undo 79x38",
+   "Redo 79x38",
+   "Browse templates 79x38",
+   "Back to editor 79x38",
+   "Reset 79x38",
+   "Share image only 79x38",
+   "Download PNG 79x38",
+   "Publish & Share 79x38",
+   "Submit to Urdu Writers 79x36",
+   "Quick mode 84x39",
+   "Advanced mode 107x39",
+   "All 35x33",
+   "Classic 61x33",
+   "Pakistan 68x33",
+   "Truck Art 73x33",
+   "Poetry 57x33",
+   "Nature 58x33",
+   "Modern 64x33",
+   "Wedding 70x33",
+   "Luxury 59x33",
+   "Love 47x33",
+   "Got it 45x23",
+   "text 308x42",
+   "checkbox 17x17",
+   "1\nContent 81x42",
+   "2\nFormat 81x42",
+   "3\nStyle 81x42",
+   "4\nExport 81x42"
+  ],
+  "errors": {
+   "console": [
+    "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pageErrors": [],
+   "failed": [
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+   ]
+  }
+ },
+ "android": {
+  "loadMs": 3413,
+  "firstViewport": "evidence/first-impression-card-studio-android.png",
+  "full": "evidence/full-card-studio-android.png",
+  "h1": {
+   "top": 463,
+   "left": 27,
+   "w": 339,
+   "h": 31,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "textarea": {
+   "top": 3248,
+   "left": 26,
+   "w": 341,
+   "h": 132,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "canvas": {
+   "top": 1221,
+   "left": 65,
+   "w": 343,
+   "h": 343,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "publish": {
+   "top": 739,
+   "left": 268,
+   "w": 90,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepPublish": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "download": {
+   "top": 695,
+   "left": 268,
+   "w": 90,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "shareImg": {
+   "top": 651,
+   "left": 268,
+   "w": 90,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepper": {
+   "top": 1067,
+   "left": 19,
+   "w": 355,
+   "h": 50,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "mobileStepbar": {
+   "top": 790,
+   "left": 6,
+   "w": 381,
+   "h": 56,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "modeSwitch": {
+   "top": 1125,
+   "left": 19,
+   "w": 355,
+   "h": 42,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "sample": {
+   "top": 3396,
+   "left": 26,
+   "w": 167,
+   "h": 44,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "templates": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "inputMode": {
+   "top": 3017,
+   "left": 26,
+   "w": 341,
+   "h": 231,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "batch": {
+   "top": 2781,
+   "left": 26,
+   "w": 341,
+   "h": 138,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "submitCommunity": {
+   "top": 783,
+   "left": 268,
+   "w": 90,
+   "h": 36,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "pageHeight": 8344,
+  "visibleButtonsFirstViewport": [
+   "Back to Urdu Cards",
+   "Card Studio",
+   "WhatsApp Status",
+   "Instagram Post",
+   "Undo",
+   "Redo",
+   "Browse templates",
+   "Back to editor",
+   "Reset",
+   "Share image only",
+   "Download PNG",
+   "Publish & Share",
+   "Submit to Urdu Writers",
+   "1 Content",
+   "2 Format",
+   "3 Style",
+   "4 Export"
+  ],
+  "allVisibleControlsInMain": 87,
+  "status": "Your text and images stay in this browser and are not uploaded.",
+  "translitStatus": "Roman Urdu input is ready. Press Space after each word, including when editing on the card.",
+  "textareaValue": "یہاں اپنا اردو متن لکھیں۔",
+  "smallTargets": [
+   "Back to Urdu Cards 114x20",
+   "Card Studio 351x40",
+   "WhatsApp Status 351x40",
+   "Instagram Post 351x40",
+   "Undo 90x38",
+   "Redo 90x38",
+   "Browse templates 90x38",
+   "Back to editor 90x38",
+   "Reset 90x38",
+   "Share image only 90x38",
+   "Download PNG 90x38",
+   "Publish & Share 90x38",
+   "Submit to Urdu Writers 90x36",
+   "How public sharing works 90x40",
+   "Quick mode 87x32",
+   "Advanced mode 112x32",
+   "All 35x33",
+   "Classic 61x33",
+   "Pakistan 68x33",
+   "Truck Art 73x33",
+   "Poetry 57x33",
+   "Nature 58x33",
+   "Modern 64x33",
+   "Wedding 70x33",
+   "Luxury 59x33",
+   "Love 47x33",
+   "Got it 45x23",
+   "text 341x42",
+   "checkbox 17x17",
+   "1\nContent 89x42",
+   "2\nFormat 89x42",
+   "3\nStyle 89x42",
+   "4\nExport 89x42"
+  ],
+  "errors": {
+   "console": [
+    "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pageErrors": [],
+   "failed": [
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+   ]
+  }
+ },
+ "iphone": {
+  "loadMs": 3540,
+  "firstViewport": "evidence/first-impression-card-studio-iphone.png",
+  "full": "evidence/full-card-studio-iphone.png",
+  "h1": {
+   "top": 463,
+   "left": 27,
+   "w": 336,
+   "h": 31,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "textarea": {
+   "top": 3265,
+   "left": 26,
+   "w": 338,
+   "h": 132,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "canvas": {
+   "top": 1221,
+   "left": 65,
+   "w": 340,
+   "h": 340,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "publish": {
+   "top": 739,
+   "left": 266,
+   "w": 89,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepPublish": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "download": {
+   "top": 695,
+   "left": 266,
+   "w": 89,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "shareImg": {
+   "top": 651,
+   "left": 266,
+   "w": 89,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepper": {
+   "top": 1067,
+   "left": 19,
+   "w": 352,
+   "h": 50,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "mobileStepbar": {
+   "top": 782,
+   "left": 6,
+   "w": 378,
+   "h": 56,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "modeSwitch": {
+   "top": 1125,
+   "left": 19,
+   "w": 352,
+   "h": 42,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "sample": {
+   "top": 3412,
+   "left": 26,
+   "w": 166,
+   "h": 44,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "templates": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "inputMode": {
+   "top": 3034,
+   "left": 26,
+   "w": 338,
+   "h": 231,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "batch": {
+   "top": 2798,
+   "left": 26,
+   "w": 338,
+   "h": 138,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "submitCommunity": {
+   "top": 783,
+   "left": 266,
+   "w": 89,
+   "h": 36,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "pageHeight": 8385,
+  "visibleButtonsFirstViewport": [
+   "Back to Urdu Cards",
+   "Card Studio",
+   "WhatsApp Status",
+   "Instagram Post",
+   "Undo",
+   "Redo",
+   "Browse templates",
+   "Back to editor",
+   "Reset",
+   "Share image only",
+   "Download PNG",
+   "Publish & Share",
+   "Submit to Urdu Writers",
+   "1 Content",
+   "2 Format",
+   "3 Style",
+   "4 Export"
+  ],
+  "allVisibleControlsInMain": 87,
+  "status": "Your text and images stay in this browser and are not uploaded.",
+  "translitStatus": "Roman Urdu input is ready. Press Space after each word, including when editing on the card.",
+  "textareaValue": "یہاں اپنا اردو متن لکھیں۔",
+  "smallTargets": [
+   "Back to Urdu Cards 114x20",
+   "Card Studio 348x40",
+   "WhatsApp Status 348x40",
+   "Instagram Post 348x40",
+   "Undo 89x38",
+   "Redo 89x38",
+   "Browse templates 89x38",
+   "Back to editor 89x38",
+   "Reset 89x38",
+   "Share image only 89x38",
+   "Download PNG 89x38",
+   "Publish & Share 89x38",
+   "Submit to Urdu Writers 89x36",
+   "How public sharing works 89x40",
+   "Quick mode 87x32",
+   "Advanced mode 112x32",
+   "All 35x33",
+   "Classic 61x33",
+   "Pakistan 68x33",
+   "Truck Art 73x33",
+   "Poetry 57x33",
+   "Nature 58x33",
+   "Modern 64x33",
+   "Wedding 70x33",
+   "Luxury 59x33",
+   "Love 47x33",
+   "Got it 45x23",
+   "text 338x42",
+   "checkbox 17x17",
+   "1\nContent 88x42",
+   "2\nFormat 88x42",
+   "3\nStyle 88x42",
+   "4\nExport 88x42"
+  ],
+  "errors": {
+   "console": [
+    "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pageErrors": [],
+   "failed": [
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+   ]
+  }
+ },
+ "tablet": {
+  "loadMs": 3380,
+  "firstViewport": "evidence/first-impression-card-studio-tablet.png",
+  "full": "evidence/full-card-studio-tablet.png",
+  "h1": {
+   "top": 338,
+   "left": 41,
+   "w": 686,
+   "h": 31,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "textarea": {
+   "top": 3129,
+   "left": 40,
+   "w": 688,
+   "h": 132,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "canvas": {
+   "top": 919,
+   "left": 79,
+   "w": 690,
+   "h": 690,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "publish": {
+   "top": 534,
+   "left": 513,
+   "w": 206,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepPublish": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "download": {
+   "top": 491,
+   "left": 513,
+   "w": 206,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "shareImg": {
+   "top": 448,
+   "left": 582,
+   "w": 137,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepper": {
+   "top": 763,
+   "left": 37,
+   "w": 694,
+   "h": 50,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "mobileStepbar": {
+   "top": 958,
+   "left": 10,
+   "w": 748,
+   "h": 56,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "modeSwitch": {
+   "top": 821,
+   "left": 37,
+   "w": 694,
+   "h": 42,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "sample": {
+   "top": 3276,
+   "left": 40,
+   "w": 112,
+   "h": 34,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "templates": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "inputMode": {
+   "top": 2975,
+   "left": 40,
+   "w": 688,
+   "h": 154,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "batch": {
+   "top": 2781,
+   "left": 40,
+   "w": 688,
+   "h": 106,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "submitCommunity": {
+   "top": 577,
+   "left": 513,
+   "w": 206,
+   "h": 36,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "pageHeight": 6368,
+  "visibleButtonsFirstViewport": [
+   "Back to Urdu Cards",
+   "Card Studio",
+   "WhatsApp Status",
+   "Instagram Post",
+   "Undo",
+   "Redo",
+   "Browse templates",
+   "Back to editor",
+   "Reset",
+   "Share image only",
+   "Download PNG",
+   "Publish & Share",
+   "Submit to Urdu Writers",
+   "How public sharing works",
+   "1 Content",
+   "2 Format",
+   "3 Style",
+   "4 Export",
+   "Quick mode",
+   "Advanced mode",
+   "1 Content",
+   "2 Format",
+   "3 Style",
+   "4 Export"
+  ],
+  "allVisibleControlsInMain": 87,
+  "status": "Your text and images stay in this browser and are not uploaded.",
+  "translitStatus": "Roman Urdu input is ready. Press Space after each word, including when editing on the card.",
+  "textareaValue": "یہاں اپنا اردو متن لکھیں۔",
+  "smallTargets": [
+   "Back to Urdu Cards 114x20",
+   "Card Studio 225x40",
+   "WhatsApp Status 225x40",
+   "Instagram Post 225x40",
+   "Undo 101x38",
+   "Redo 100x38",
+   "Browse templates 206x38",
+   "Back to editor 206x38",
+   "Reset 64x38",
+   "Share image only 137x38",
+   "Download PNG 206x38",
+   "Publish & Share 206x38",
+   "Submit to Urdu Writers 206x36",
+   "How public sharing works 147x20",
+   "Quick mode 87x32",
+   "Advanced mode 112x32",
+   "All 35x33",
+   "Classic 61x33",
+   "Pakistan 68x33",
+   "Truck Art 73x33",
+   "Poetry 57x33",
+   "Nature 58x33",
+   "Modern 64x33",
+   "Wedding 70x33",
+   "Luxury 59x33",
+   "Love 47x33",
+   "Got it 45x23",
+   "English letters → Urdu 144x30",
+   "Speak Urdu 128x40",
+   "Type Urdu directly 124x30",
+   "Use sample text 112x34",
+   "Clear text 77x34",
+   "text 688x42",
+   "checkbox 17x17",
+   "1\nContent 181x42",
+   "2\nFormat 181x42",
+   "3\nStyle 181x42",
+   "4\nExport 181x42"
+  ],
+  "errors": {
+   "console": [
+    "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pageErrors": [],
+   "failed": [
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+   ]
+  }
+ },
+ "desktop": {
+  "loadMs": 3539,
+  "firstViewport": "evidence/first-impression-card-studio-desktop.png",
+  "full": "evidence/full-card-studio-desktop.png",
+  "h1": {
+   "top": 325,
+   "left": 75,
+   "w": 300,
+   "h": 43,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "textarea": {
+   "top": 2155,
+   "left": 76,
+   "w": 298,
+   "h": 132,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "canvas": {
+   "top": 557,
+   "left": 559,
+   "w": 670,
+   "h": 670,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "publish": {
+   "top": 309,
+   "left": 1050,
+   "w": 154,
+   "h": 34,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepPublish": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "download": {
+   "top": 309,
+   "left": 939,
+   "w": 106,
+   "h": 34,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "shareImg": {
+   "top": 309,
+   "left": 814,
+   "w": 120,
+   "h": 34,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "stepper": {
+   "top": 442,
+   "left": 69,
+   "w": 1079,
+   "h": 38,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "mobileStepbar": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "modeSwitch": {
+   "top": 439,
+   "left": 1158,
+   "w": 213,
+   "h": 44,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "sample": {
+   "top": 2302,
+   "left": 76,
+   "w": 112,
+   "h": 34,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "templates": {
+   "top": 0,
+   "left": 0,
+   "w": 0,
+   "h": 0,
+   "visible": false,
+   "inFirstViewport": false
+  },
+  "inputMode": {
+   "top": 1931,
+   "left": 76,
+   "w": 298,
+   "h": 224,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "batch": {
+   "top": 1661,
+   "left": 76,
+   "w": 298,
+   "h": 156,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "submitCommunity": {
+   "top": 309,
+   "left": 1209,
+   "w": 156,
+   "h": 34,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "pageHeight": 3960,
+  "visibleButtonsFirstViewport": [
+   "Back to Urdu Cards",
+   "Card Studio",
+   "WhatsApp Status",
+   "Instagram Post",
+   "Undo",
+   "Redo",
+   "Browse templates",
+   "Back to editor",
+   "Reset",
+   "Share image only",
+   "Download PNG",
+   "Publish & Share",
+   "Submit to Urdu Writers",
+   "How public sharing works",
+   "1 Content",
+   "2 Format",
+   "3 Style",
+   "4 Export",
+   "Quick mode",
+   "Advanced mode",
+   "All",
+   "Classic",
+   "Pakistan",
+   "Truck Art",
+   "Poetry",
+   "Nature",
+   "Modern",
+   "Wedding",
+   "Luxury",
+   "Love",
+   "Emerald Mughal",
+   "Vintage Floral",
+   "Emerald Jasmine",
+   "Eid Emerald",
+   "Rose Garden",
+   "Teal & Gold",
+   "Ajrak Heritage",
+   "Peacock Festival",
+   "Moon Paper",
+   "Moonlit Lakeside",
+   "Pastel Glass",
+   "Maroon Wedding",
+   "Soft Sunrise Garden",
+   "Quiet Moon Sky",
+   "Jumma Ivory Geometry",
+   "Emerald Prayer Light",
+   "Minimal Cream Poetry",
+   "Rose Mist Affection",
+   "Self-Respect Black & Sand",
+   "Family Warm Interior",
+   "Truck Art Modern Bloom",
+   "Eid Morning Gold"
+  ],
+  "allVisibleControlsInMain": 83,
+  "status": "Your text and images stay in this browser and are not uploaded.",
+  "translitStatus": "Roman Urdu input is ready. Press Space after each word, including when editing on the card.",
+  "textareaValue": "یہاں اپنا اردو متن لکھیں۔",
+  "smallTargets": [
+   "Back to Urdu Cards 114x20",
+   "Card Studio 379x40",
+   "WhatsApp Status 379x40",
+   "Instagram Post 379x40",
+   "Undo 51x34",
+   "Redo 49x34",
+   "Browse templates 123x34",
+   "Back to editor 100x34",
+   "Reset 53x34",
+   "Share image only 120x34",
+   "Download PNG 106x34",
+   "Publish & Share 154x34",
+   "Submit to Urdu Writers 156x34",
+   "How public sharing works 147x20",
+   "1\nContent 267x38",
+   "2\nFormat 267x38",
+   "3\nStyle 267x38",
+   "4\nExport 267x38",
+   "Quick mode 87x34",
+   "Advanced mode 112x34",
+   "All 35x33",
+   "Classic 61x33",
+   "Pakistan 68x33",
+   "Truck Art 73x33",
+   "Poetry 57x33",
+   "Nature 58x33",
+   "Modern 64x33",
+   "Wedding 70x33",
+   "Luxury 59x33",
+   "Love 47x33",
+   "Got it 45x23",
+   "English letters → Urdu 144x30",
+   "Speak Urdu 128x40",
+   "Type Urdu directly 124x30",
+   "Use sample text 112x34",
+   "Clear text 76x34",
+   "text 298x42",
+   "checkbox 17x17"
+  ],
+  "errors": {
+   "console": [
+    "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "pageErrors": [],
+   "failed": [
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+    "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+    "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition"
+   ]
+  }
+ }
+}

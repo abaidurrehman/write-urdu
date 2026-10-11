@@ -1,0 +1,145 @@
+{
+ "persona": "P7 returning user",
+ "device": "android 393x852 (persistent profile)",
+ "week0": {
+  "id": "card_mv3o4ngu",
+  "text": "[TEST] پچھلے ہفتے کا کارڈ — امی کے لیے د",
+  "bg": "image",
+  "img": "card_mv3o4ngu_image",
+  "preset": "square"
+ },
+ "publishedUrl": "http://127.0.0.1:8790/s/Juxc5hOj",
+ "week1Direct": {
+  "id": "card_mv3o4ngu",
+  "text": "[TEST] پچھلے ہفتے کا کارڈ — امی کے لیے د",
+  "bg": "image",
+  "img": "card_mv3o4ngu_image",
+  "preset": "square"
+ },
+ "resumeCue": [
+  "[TEST] پچھلے ہفتے کا کارڈ — امی کے لیے دعا"
+ ],
+ "manageLinksVisible": true,
+ "manageDialog": "Published links from this browser Management tokens stay on this device and are never part of the public URL. × http://127.0.0.1:8790/s/Juxc5hOj Published 10/11/2026, 10:16:35 AM Open Delete",
+ "cardsReturnCue": [],
+ "afterHandoff": {
+  "id": "card_mv3o4ngu",
+  "text": "اللہ آپ کی حفاظت فرمائے اور ہر مشکل میں ",
+  "bg": "image",
+  "img": "card_mv3o4ngu_image",
+  "preset": "square"
+ },
+ "week0Recoverable": {
+  "id": "card_mv3o4ngu",
+  "text": "[TEST] نیا کارڈ",
+  "bg": "image",
+  "img": "card_mv3o4ngu_image",
+  "preset": "square"
+ },
+ "idbProjects": [
+  {
+   "id": "card_mv3o4ngu",
+   "scope": "card-studio",
+   "text": "[TEST] نیا کارڈ",
+   "updatedAt": "2026-10-11T10:16:48.666Z"
+  }
+ ],
+ "editDesignBtn": 0,
+ "urlNow": "http://127.0.0.1:8790/s/Juxc5hOj",
+ "afterReset": {
+  "id": "card_mv3o5a5d",
+  "text": "یہاں اپنا اردو متن لکھیں۔",
+  "bg": "solid",
+  "img": null,
+  "preset": "square"
+ },
+ "undoAfterReset": false,
+ "trace": [
+  {
+   "t": 1791713794453,
+   "text": "[TEST] پچھلے ہفتے کا کارڈ — امی کے لیے د",
+   "id": "card_mv3o4ngu",
+   "bg": "image",
+   "img": "card_mv3o4ngu_image",
+   "preset": "square"
+  },
+  {
+   "t": 1791713795213,
+   "text": "Week 0: published",
+   "url": "http://127.0.0.1:8790/s/Juxc5hOj"
+  },
+  {
+   "t": 1791713799735,
+   "text": "Week 1: opened Card Studio directly",
+   "state": {
+    "id": "card_mv3o4ngu",
+    "text": "[TEST] پچھلے ہفتے کا کارڈ — امی کے لیے د",
+    "bg": "image",
+    "img": "card_mv3o4ngu_image",
+    "preset": "square"
+   },
+   "resumeCues": [
+    "[TEST] پچھلے ہفتے کا کارڈ — امی کے لیے دعا"
+   ],
+   "manageLinksVisible": true
+  },
+  {
+   "t": 1791713800888,
+   "text": "Opened \"Manage published links\"",
+   "dialog": "Published links from this browser Management tokens stay on this device and are never part of the public URL. × http://127.0.0.1:8790/s/Juxc5hOj Published 10/11/2026, 10:16:35 AM Open Delete"
+  },
+  {
+   "t": 1791713803746,
+   "text": "/urdu-cards: any return cue?",
+   "cues": []
+  },
+  {
+   "t": 1791713807837,
+   "text": "اللہ آپ کی حفاظت فرمائے اور ہر مشکل میں ",
+   "id": "card_mv3o4ngu",
+   "bg": "image",
+   "img": "card_mv3o4ngu_image",
+   "preset": "square"
+  },
+  {
+   "t": 1791713813201,
+   "text": "[TEST] نیا کارڈ",
+   "id": "card_mv3o4ngu",
+   "bg": "image",
+   "img": "card_mv3o4ngu_image",
+   "preset": "square"
+  },
+  {
+   "t": 1791713813205,
+   "text": "Projects stored in IndexedDB (invisible to user)",
+   "projects": [
+    {
+     "id": "card_mv3o4ngu",
+     "scope": "card-studio",
+     "text": "[TEST] نیا کارڈ",
+     "updatedAt": "2026-10-11T10:16:48.666Z"
+    }
+   ]
+  },
+  {
+   "t": 1791713814968,
+   "text": "From own published link: \"Edit this design\""
+  },
+  {
+   "dialog": "Reset this card and discard its current design?"
+  },
+  {
+   "t": 1791713819105,
+   "text": "Reset (confirm accepted)",
+   "state": {
+    "id": "card_mv3o5a5d",
+    "text": "یہاں اپنا اردو متن لکھیں۔",
+    "bg": "solid",
+    "img": null,
+    "preset": "square"
+   },
+   "undoAvailable": false
+  }
+ ],
+ "pageErrors": []
+}
