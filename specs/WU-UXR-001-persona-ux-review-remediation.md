@@ -34,7 +34,7 @@ Finding IDs `F1`–`F34` below refer to the review report.
 | A | Regression hotfixes | Wrong headings, wrong link, runtime errors, a11y names | maintenance | Not frozen | S |
 | B | Typing resilience | Visible failure state; provider risk | `WU-JOURNEY-001B`, `WU-INPUT-001` | B1 done; B2 recorded, provider change → `WU-JOURNEY-001B` §B5 | S |
 | C | Basic Writer mobile post-value | Ad inside workspace, duplicate status fixed; restore partly; rest re-scoped | `WU-PLAT-002H` / `WU-PLAT-004B` / `WU-PLAT-004C` | C5/C7 done; C2/C3 dropped; C1/C4/C6 need decision or evidence | S |
-| D | Card completion quality | Poetry line fit, Nastaliq default, artifact, mobile order | `WU-PLAT-002H` P0.1F, Card Studio | Inside P0.1F | M |
+| D | Card completion quality | Poetry line fit, Nastaliq, accent artifact, safe area; mobile order deferred | `WU-PLAT-002H` P0.1F, Card Studio | D1–D4 done; D5–D6 need funnel evidence | M |
 | E | Export fidelity | PDF shaping, bill PDF, `.docx` | `WU-JOURNEY-001F` | E1–E2 audit allowed early; E4 gated | M–L |
 | F | Unified input in fields | Roman Urdu in card dialog, Card Studio, bill fields | `WU-VOICE-PLAT-001` / unified-input skill | Rollout gate | M |
 | G | Bill completeness | Persistence, totals hierarchy, Urdu mode, mobile sticky bar | `WU-BILL-001` | P0.8 exception guardrail | M |
@@ -134,16 +134,22 @@ Tests:
 
 ### Slice D — Card completion quality (inside P0.1F)
 
-These fix output quality, not acquisition, so they serve the Card completion diagnosis. The `P0.9` guardrail forbids renderer changes for *indexing* work; this slice is renderer quality work under P0.1F and needs that noted in the PR.
+**State:** D1–D4 implemented 2026-10-10 on `claude/wu-uxr-001d-card-quality` (stacked on Slice C). D5–D6 deferred. This is output-quality work on the Card Studio renderer under the P0.1F completion gate; it is not the indexing/cross-linking scope of the P0.9 exception and does not touch acquisition.
 
-- [ ] **D1 (F3)** Poetry line fit: when text has explicit line breaks and the role/background is poetry, keep each line whole and shrink the font to the widest line (with a minimum size, then wrap as last resort). Owner: `wrapRtlText` / `layoutCardText` in `js/card-studio-core.js:232-271`.
-- [ ] **D2 (F26)** Backgrounds tagged `goodFor: ['poetry', …]` default to Noto Nastaliq Urdu.
-- [ ] **D3 (F3)** Find and remove the stray white bar at the top-right of the Ink Wash Poetry export (background asset or overlay); add a pixel-check fixture.
-- [ ] **D4 (F3)** Respect background safe areas so text doesn't overlap the artwork.
-- [ ] **D5 (F24)** Mobile maker order: write → design → preview → download; preview stays in view (sticky mini preview) while choosing backgrounds. Owners: `js/social-direct-workspace.js`, `js/social-direct-instagram.js`.
-- [ ] **D6 (F25)** Mobile background picker: compact 3-column thumbnail grid instead of tall horizontal tiles.
+| # | Finding | Root cause | Outcome |
+| --- | --- | --- | --- |
+| D1 | A two-line couplet exported as 5 wrapped lines (F3) | `findBestFontSize` maximised size against box **height** only, so short verse grew until each line wrapped | **Fixed** (`js/card-studio-core.js`): when text has ≥ 2 written lines, prefer the largest size at which every written line stays whole, if that size is still readable (≥ 5% of the text-box width); otherwise keep the height-based fit. Single-line text and long paragraphs are unchanged |
+| D2 | Poetry design defaulted to Naskh (F26) | Font comes only from the post-style template; backgrounds never set it | **Fixed** (`js/card-studio-background-library.js`): a `poetry`-category background switches to Noto Nastaliq Urdu and raises line height to ≥ 1.8 (the built-in Nastaliq styles' value), unless the writer chose a font themselves (trusted `change` on the font select). Line height is set through `WriteUrduCardStudioApp.updateTextStyle` because some maker pages' range input has no `step` |
+| D3 | Stray white bar at top-right of the export (F3) | The non-centred accent was drawn with `fillRect` after setting only `strokeStyle` (inherited white), and for right alignment it started at the margin and extended **off** the canvas | **Fixed** (`js/card-studio.js`): accent uses the template accent colour and ends at the right margin |
+| D4 | Text over the artwork (F3) | Each background's `safeArea` was used only by the Gallery/Cards DOM previews; the canvas export ignored it. The default text box exceeded the safe area in **132 of 132** background × (square, portrait, story) pairs, by up to ~20% of the height | **Fixed**: the background library hands its safe area to Card Studio with the image; untouched text (not moved/resized) is laid out inside it in every canvas size; uploading your own image clears it. Alignment is intentionally not taken from the background (every record defaults to `center`, which would override the chosen post style) |
+| D5 | Mobile maker order (download before design/preview) | — | **Deferred** — layout change on a creation surface; `WU-PLAT-002H` decision log: do not assume complexity causes the Card Studio completion drop until the funnel identifies it |
+| D6 | Tall horizontal background tiles on mobile | — | **Deferred** — same reason as D5 |
 
-Tests: golden-image fixtures for a two-line couplet at 1080×1080, 1080×1350 and 1080×1920 (each line on one row, no clipping); extend `tests/v3-visual-quality.spec.js` and `tests/card-studio-background-collection.spec.js`.
+Tests:
+
+- [x] `tests/card-text-fit-contract.test.js`: couplet stays on its written lines at a readable size; single-line and long-paragraph text keep the height-only size; static guards for the accent, safe-area and poetry-font rules. Fails on the pre-change code.
+- [x] `tests/card-poetry-quality.spec.js` (Instagram maker): poetry background → Nastaliq, line height ≥ 1.8, two lines, text box inside the safe area; a writer-chosen font is kept; uploading an image clears the safe area; right-aligned accent pixel is accent-coloured inside the margin and absent beyond it. Three of four fail on the pre-change code (the font-kept test is a regression guard).
+- [x] Existing `tests/wedding-invitation-render-adapter.test.js` (renderer fit for wedding wording) still passes. Shell cache bumped to `write-urdu-shell-v58`.
 
 ### Slice E — Export fidelity (`WU-JOURNEY-001F`)
 

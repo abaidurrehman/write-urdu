@@ -137,7 +137,8 @@ const tests = [
   'tests/ai-writing-editor-ui-contract.test.js',
   'tests/page-integrity-contract.test.js',
   'tests/transliteration-availability-contract.test.js',
-  'tests/basic-writer-workspace-integrity-contract.test.js'
+  'tests/basic-writer-workspace-integrity-contract.test.js',
+  'tests/card-text-fit-contract.test.js'
 ];
 
 function annotationText(value) {

@@ -85,6 +85,20 @@
         });
     }
 
+    var NASTALIQ_LINE_HEIGHT = 1.8;
+
+    function fontChosenByWriter() {
+        var select = root.querySelector('[data-card-field="text.fontFamily"]');
+        return Boolean(select && select.dataset.wuWriterChosen === 'true');
+    }
+
+    function trackWriterFontChoice() {
+        var select = root.querySelector('[data-card-field="text.fontFamily"]');
+        if (!select || select.dataset.wuWriterChoiceTracked) return;
+        select.dataset.wuWriterChoiceTracked = 'true';
+        select.addEventListener('change', function (event) { if (event.isTrusted) select.dataset.wuWriterChosen = 'true'; });
+    }
+
     function applyBackground(background, button) {
         var input = document.getElementById('cardImage');
         if (!input || typeof window.fetch !== 'function' || typeof window.DataTransfer !== 'function') {
@@ -119,7 +133,25 @@
                 dispatchField('background.overlayColor', background.overlayColor);
                 dispatchField('background.overlayOpacity', background.overlayOpacity);
                 dispatchField('text.color', background.textColor);
+                // Poetry designs read as poetry in Nastaliq; keep a font the
+                // writer picked themselves.
+                if (background.category === 'poetry' && !fontChosenByWriter()) {
+                    dispatchField('text.fontFamily', 'Noto Nastaliq Urdu');
+                    // Nastaliq needs the taller line spacing the built-in Nastaliq styles use.
+                    // Compare with Card Studio's state; the range input is not
+                    // kept in sync on every maker page.
+                    var app = window.WriteUrduCardStudioApp;
+                    var current = app && typeof app.getState === 'function' ? Number(app.getState().text.lineHeight) : NaN;
+                    if (!(current >= NASTALIQ_LINE_HEIGHT)) {
+                        // Some range inputs have no step, which would round 1.8 to 2.
+                        if (app && typeof app.updateTextStyle === 'function') app.updateTextStyle({ lineHeight: NASTALIQ_LINE_HEIGHT });
+                        else dispatchField('text.lineHeight', NASTALIQ_LINE_HEIGHT);
+                    }
+                }
 
+                // Card Studio reads this once to keep untouched text inside the
+                // artwork-free area of the designer background.
+                input.dataset.wuBackgroundSafeArea = JSON.stringify(background.safeArea || {});
                 input.dispatchEvent(new Event('change', { bubbles: true }));
                 setPressed(background.id);
                 announce(text('Designer background applied. Your text is still fully editable.', 'خوبصورت پس منظر لگا دیا گیا ہے۔ آپ کا متن اب بھی مکمل طور پر قابلِ ترمیم ہے۔'));
@@ -273,6 +305,7 @@
     }
 
     renderLibrary();
+    trackWriterFontChoice();
     window.WriteUrduCardStudioBackgroundLibrary.applyBackground = applyBackground;
     window.WriteUrduCardStudioBackgroundLibrary.applyById = applyById;
     document.dispatchEvent(new CustomEvent('write-urdu:card-background-library-ready'));

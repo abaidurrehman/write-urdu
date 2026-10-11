@@ -38,7 +38,8 @@ module.exports = defineConfig({
     'urdu-wedding-invitation-maker.spec.js',
     'page-integrity.spec.js',
     'transliteration-availability.spec.js',
-    'basic-writer-workspace-integrity.spec.js'
+    'basic-writer-workspace-integrity.spec.js',
+    'card-poetry-quality.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },

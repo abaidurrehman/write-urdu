@@ -148,7 +148,20 @@
     function inputValue(element) { if (element.type === 'checkbox') return element.checked; if (element.type === 'range') return Number(element.value); return element.value; }
     function formatBytes(bytes) { return Math.round(bytes / 1024 / 1024 * 10) / 10; }
     function getPreset() { return core.PRESETS.find(function (item) { return item.id === state.presetId; }) || core.PRESETS[0]; }
-    function objectTransform(objectId) { return state[objectId] && state[objectId].transform ? state[objectId].transform : core.defaultTransform(getPreset(), objectId); }
+    function objectTransform(objectId) {
+        var transform = state[objectId] && state[objectId].transform ? state[objectId].transform : core.defaultTransform(getPreset(), objectId);
+        // Until the writer moves or resizes the text, keep it inside the area a
+        // designer background leaves clear of artwork, in every canvas size.
+        var safe = objectId === 'text' && state.background.type === 'image' ? safeAreaInsets(state.background.safeArea) : null;
+        if (!safe || transform.positionCustomized || transform.widthCustomized) return transform;
+        return Object.assign({}, transform, { x: safe.left, y: safe.top, width: 1 - safe.left - safe.right, height: 1 - safe.top - safe.bottom });
+    }
+    function safeAreaInsets(area) {
+        if (!area || typeof area !== 'object') return null;
+        var insets = {};
+        var valid = ['top', 'right', 'bottom', 'left'].every(function (side) { var value = Number(area[side]); insets[side] = value; return isFinite(value) && value >= 0 && value < .45; });
+        return valid ? insets : null;
+    }
     function objectRect(objectId) { return core.transformToRect(objectTransform(objectId), getPreset(), objectId); }
     function setObjectRect(objectId, rect, flags) {
         var preset = getPreset(); var object = state[objectId]; if (!object) return;
@@ -395,7 +408,7 @@
         var motif = libraryStyle && libraryStyle.id ? libraryStyle.id : template.decoration && template.decoration.motif;
         if (motif) drawMotif(motif, preset, minSide);
         if (template.decoration && template.decoration.border && template.decoration.border.enabled) { ctx.strokeStyle = template.decoration.border.color; ctx.lineWidth = Math.max(2, minSide * .004); ctx.strokeRect(preset.marginX * .55, preset.marginY * .55, preset.width - preset.marginX * 1.1, preset.height - preset.marginY * 1.1); }
-        ctx.strokeStyle = template.decoration.accent; ctx.lineWidth = Math.max(3, minSide * .006); if (state.text.align === 'center') ctx.beginPath(), ctx.moveTo(preset.width / 2 - minSide * .09, preset.marginY * .82), ctx.lineTo(preset.width / 2 + minSide * .09, preset.marginY * .82), ctx.stroke(); else ctx.fillRect(state.text.align === 'right' ? preset.width - preset.marginX : preset.marginX, preset.marginY * .82, minSide * .12, Math.max(3, minSide * .006));
+        ctx.strokeStyle = template.decoration.accent; ctx.lineWidth = Math.max(3, minSide * .006); if (state.text.align === 'center') ctx.beginPath(), ctx.moveTo(preset.width / 2 - minSide * .09, preset.marginY * .82), ctx.lineTo(preset.width / 2 + minSide * .09, preset.marginY * .82), ctx.stroke(); else { ctx.fillStyle = template.decoration.accent; var accentWidth = minSide * .12; ctx.fillRect(state.text.align === 'right' ? preset.width - preset.marginX - accentWidth : preset.marginX, preset.marginY * .82, accentWidth, Math.max(3, minSide * .006)); }
         currentLayouts = {};
         var textBox = objectRect('text');
         if (String(state.text.value || '').trim()) drawTextObject('text', textBox, preset);
@@ -426,7 +439,7 @@
         root.querySelector('[data-card-action="back"]').addEventListener('click', function () { window.location.href = '/'; });
         root.querySelector('[data-card-action="reset"]').addEventListener('click', function () { if (window.confirm(t('resetConfirm'))) { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(''), socialConfig.id) : core.createDefaultCardProject(''); currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; syncControls(); requestRender(); scheduleSave(); } });
         document.getElementById('cardPreset').addEventListener('change', function (event) { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = core.applyPreset(state, event.target.value); syncControls(); requestRender(); scheduleSave(); });
-        document.getElementById('cardImage').addEventListener('change', function (event) { var file = event.target.files && event.target.files[0]; if (!file) return; if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 15 * 1024 * 1024) { setStatus(t('imageError'), 'error'); event.target.value = ''; return; } userChanged = true; var url = URL.createObjectURL(file); var image = new Image(); image.onload = function () { if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = url; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight }; state.background.type = 'image'; state.background.imageAssetId = state.id + '_image'; syncControls(); requestRender(); scheduleSave(); dbPut('assets', { id: state.background.imageAssetId, projectId: state.id, blob: file, updatedAt: new Date().toISOString() }).catch(function () {}); }; image.onerror = function () { URL.revokeObjectURL(url); setStatus(t('imageError'), 'error'); }; image.src = url; });
+        document.getElementById('cardImage').addEventListener('change', function (event) { var file = event.target.files && event.target.files[0]; if (!file) return; if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 15 * 1024 * 1024) { setStatus(t('imageError'), 'error'); event.target.value = ''; return; } userChanged = true; var designerSafeArea = event.target.dataset.wuBackgroundSafeArea; delete event.target.dataset.wuBackgroundSafeArea; try { state.background.safeArea = designerSafeArea ? JSON.parse(designerSafeArea) : null; } catch (error) { state.background.safeArea = null; } var url = URL.createObjectURL(file); var image = new Image(); image.onload = function () { if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = url; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight }; state.background.type = 'image'; state.background.imageAssetId = state.id + '_image'; syncControls(); requestRender(); scheduleSave(); dbPut('assets', { id: state.background.imageAssetId, projectId: state.id, blob: file, updatedAt: new Date().toISOString() }).catch(function () {}); }; image.onerror = function () { URL.revokeObjectURL(url); setStatus(t('imageError'), 'error'); }; image.src = url; });
         root.querySelector('[data-card-action="remove-image"]').addEventListener('click', function () { userChanged = true; var template = core.TEMPLATES.find(function (item) { return item.id === state.templateId; }) || core.TEMPLATES[0]; state.background.type = template.background.type; state.background.color = template.background.color || state.background.color; state.background.gradientId = template.background.gradientId || null; state.background.imageAssetId = null; currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; syncControls(); requestRender(); scheduleSave(); setStatus(t('imageRemoved')); });
         root.querySelector('[data-card-transliteration-retry]').addEventListener('click', initialiseTransliteration);
         if (socialConfig) {
