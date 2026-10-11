@@ -229,9 +229,27 @@
         return String(text == null ? '' : text).replace(/\r\n?/g, '\n').split('\n');
     }
 
+    // Card lines are drawn RTL, so digits that follow Urdu letters become Arabic numbers (Unicode bidi
+    // rule W2) and "رابطہ: 0300-1234567" draws as "1234567-0300". Wrap each Latin or number run in
+    // LEFT-TO-RIGHT ISOLATE ... POP DIRECTIONAL ISOLATE so it keeps its typed order (WU-UXR-002 Slice A).
+    // Render-only: never write the result back into project state, public_text or remix payloads.
+    var LRI = '\u2066', PDI = '\u2069';
+    var BIDI_RUN = /[A-Za-z][A-Za-z0-9 .,'’@#&_\-\/:]*[A-Za-z0-9][!?.,:;)]*|[A-Za-z][!?.,:;)]*|[0-9۰-۹][0-9۰-۹\-\/.:+, ]*[0-9۰-۹]|[0-9۰-۹]/g;
+    var ISOLATED_RUN = /(\u2066[^\u2069]*\u2069)/;
+
+    function isolateBidiRuns(text) {
+        var value = String(text == null ? '' : text);
+        if (!/[A-Za-z0-9۰-۹]/.test(value) || !/[\u0600-\u06FF]/.test(value)) return value; // pure LTR or pure Urdu: untouched
+        return value.split(ISOLATED_RUN).map(function (part) {
+            return part.charAt(0) === LRI ? part : part.replace(BIDI_RUN, function (run) { return LRI + run + PDI; });
+        }).join('');
+    }
+
     function wrapRtlText(ctx, text, maxWidth, options) {
         options = options || {};
         var lines = [];
+        // Measure each candidate line as it will be drawn.
+        function measure(value) { return ctx.measureText(isolateBidiRuns(value)).width; }
         normalizeLines(text).forEach(function (paragraph, paragraphIndex) {
             if (!paragraph) {
                 lines.push({ text: '', width: 0, paragraphIndex: paragraphIndex, isParagraphEnd: true, isBlank: true });
@@ -241,18 +259,18 @@
             var current = '';
             function pushCurrent(isEnd) {
                 if (!current) return;
-                lines.push({ text: current, width: ctx.measureText(current).width, paragraphIndex: paragraphIndex, isParagraphEnd: !!isEnd });
+                lines.push({ text: current, width: measure(current), paragraphIndex: paragraphIndex, isParagraphEnd: !!isEnd });
                 current = '';
             }
             words.forEach(function (word) {
                 var candidate = current ? current + ' ' + word : word;
-                if (ctx.measureText(candidate).width <= maxWidth || !current) {
-                    if (!current && ctx.measureText(word).width > maxWidth) {
+                if (measure(candidate) <= maxWidth || !current) {
+                    if (!current && measure(word) > maxWidth) {
                         var chunk = '';
                         Array.from(word).forEach(function (character) {
                             var next = chunk + character;
-                            if (chunk && ctx.measureText(next).width > maxWidth) {
-                                lines.push({ text: chunk, width: ctx.measureText(chunk).width, paragraphIndex: paragraphIndex, isParagraphEnd: false });
+                            if (chunk && measure(next) > maxWidth) {
+                                lines.push({ text: chunk, width: measure(chunk), paragraphIndex: paragraphIndex, isParagraphEnd: false });
                                 chunk = character;
                             } else chunk = next;
                         });
@@ -349,5 +367,5 @@
         return { valid: Boolean(project.text.value.trim()), project: project, errors: project.text.value.trim() ? [] : ['Text is empty.'] };
     }
 
-    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, SUPPORTED_FONTS: SUPPORTED_FONTS, DEFAULT_TEXT: DEFAULT_TEXT, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, normalizeFontFamily: normalizeFontFamily, applyTemplate: applyTemplate, applyPreset: applyPreset, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
+    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, SUPPORTED_FONTS: SUPPORTED_FONTS, DEFAULT_TEXT: DEFAULT_TEXT, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, normalizeFontFamily: normalizeFontFamily, applyTemplate: applyTemplate, applyPreset: applyPreset, isolateBidiRuns: isolateBidiRuns, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
 }));

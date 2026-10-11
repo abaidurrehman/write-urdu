@@ -38,11 +38,11 @@ Tell me exactly which manual WhatsApp/iPhone checks remain for me. Do not change
 ```
 
 ## Slice A — Bidi-safe canvas text (CARD-UX-003, 028 part)
-- [ ] `isolateBidiRuns` in `js/card-studio-core.js`, used for measuring + drawing only
-- [ ] Wedding renderer checked
-- [ ] `tests/card-bidi-render-contract.test.js` + `tests/card-bidi-render.spec.js` registered (contract runner, playwright.config.js, quality.yml)
-- [ ] Pure-Urdu / pure-Latin unchanged; card/wedding specs green
-- [ ] SW cache bumped + pins updated
+- [x] `isolateBidiRuns` in `js/card-studio-core.js`, used for measuring + drawing only
+- [x] Wedding renderer checked: it exports the HTML card with html2canvas and does not draw through the card core, so no change
+- [x] `tests/card-bidi-render-contract.test.js` + `tests/card-bidi-render.spec.js` registered (contract runner, playwright.config.js, quality.yml)
+- [x] Pure-Urdu / pure-Latin unchanged; card/wedding specs green
+- [x] SW cache bumped + pins updated (v61 → v62)
 
 **Prompt**
 ```text

@@ -388,7 +388,7 @@
         if (interactionState.editingObjectId === objectId) return layout;
         ctx.save(); ctx.direction = 'rtl'; ctx.textAlign = state.text.align === 'left' ? 'left' : state.text.align === 'right' ? 'right' : 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = object.color || state.text.color || '#172a21'; var shadow = objectId === 'text' ? shadowFor(state.text.shadow) : null; if (shadow) { ctx.shadowColor = shadow.color; ctx.shadowBlur = shadow.blur; ctx.shadowOffsetY = shadow.y; }
         ctx.font = layout.fontSize + 'px "' + (object.fontFamily || state.text.fontFamily) + '"'; var ascent = layout.fontSize * .88; var y = state.text.verticalAlign === 'top' || objectId === 'attribution' ? box.y + ascent : state.text.verticalAlign === 'bottom' ? box.y + availableHeight - layout.height + ascent : box.y + (availableHeight - layout.height) / 2 + ascent; var x = state.text.align === 'right' ? box.x + box.width : state.text.align === 'left' ? box.x : box.x + box.width / 2;
-        layout.lines.forEach(function (line, index) { if (line.text) ctx.fillText(line.text, x, y); y += layout.lineHeight; if (line.isParagraphEnd && index < layout.lines.length - 1) y += layout.lineHeight * .22; });
+        layout.lines.forEach(function (line, index) { if (line.text) ctx.fillText(core.isolateBidiRuns(line.text), x, y); y += layout.lineHeight; if (line.isParagraphEnd && index < layout.lines.length - 1) y += layout.lineHeight * .22; });
         ctx.restore();
         return layout;
     }

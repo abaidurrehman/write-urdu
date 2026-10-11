@@ -40,6 +40,7 @@ module.exports = defineConfig({
     'transliteration-availability.spec.js',
     'basic-writer-workspace-integrity.spec.js',
     'card-poetry-quality.spec.js',
+    'card-bidi-render.spec.js',
     'print-quality-pdf.spec.js',
     'bill-urdu-input.spec.js',
     'bill-completeness.spec.js',
