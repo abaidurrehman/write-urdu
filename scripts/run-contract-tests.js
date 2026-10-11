@@ -143,6 +143,7 @@ const tests = [
   'tests/card-bidi-render-contract.test.js',
   'tests/card-studio-feedback-contract.test.js',
   'tests/card-studio-recent-contract.test.js',
+  'tests/card-attribution-quality-contract.test.js',
   'tests/print-quality-pdf-contract.test.js',
   'tests/unified-urdu-input-fields-contract.test.js'
 ];

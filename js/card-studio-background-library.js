@@ -39,6 +39,18 @@
         element.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
+    // The credit line follows the design: its colour, a Nastaliq face when the text is Nastaliq, and a readable size.
+    // Registry entries carry no separate credit colour, so use the text colour at 85% (hex alpha d9) as a fallback.
+    function restyleAttribution(background) {
+        var app = window.WriteUrduCardStudioApp;
+        if (!app || typeof app.updateAttribution !== 'function' || typeof app.getState !== 'function') return;
+        var color = background.attributionColor || (/^#[0-9a-f]{6}$/i.test(background.textColor || '') ? background.textColor + 'd9' : background.textColor);
+        var patch = { minFontSizeRatio: 0.5 };
+        if (color) patch.color = color;
+        if (app.getState().text.fontFamily === 'Noto Nastaliq Urdu') patch.fontFamily = 'Noto Nastaliq Urdu';
+        app.updateAttribution(patch, { save: false });
+    }
+
     function announce(message, isError) {
         var status = root.querySelector('[data-card-status]');
         if (!status) return;
@@ -149,6 +161,7 @@
                     }
                 }
 
+                restyleAttribution(background);
                 // Card Studio reads this once to keep untouched text inside the
                 // artwork-free area of the designer background.
                 input.dataset.wuBackgroundSafeArea = JSON.stringify(background.safeArea || {});

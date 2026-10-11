@@ -30,6 +30,7 @@
     var userChanged = false;
     // A hand-off, template link or incoming text starts a new card; the latest saved card must not replace it (CARD-UX-002).
     var startedFresh = false;
+    var attributionUnticked = false;
     var savePending = false;
     var RECENT_LIMIT = 20;
     var HANDOFF_KEY = 'write-urdu:workspace-handoff:v2:card-studio';
@@ -63,8 +64,8 @@
     copy.ur.exportHelp = 'آپ کا پیش منظر کینوس پر دکھائے گئے عین طول و عرض میں برآمد کیا جائے گا۔';
     copy.en.exportPrivacy = 'Download saves a picture for WhatsApp Status or Instagram. Publish & Share makes a public link anyone can open, best for WhatsApp chats and Facebook.';
     copy.ur.exportPrivacy = 'ڈاؤن لوڈ سے تصویر آپ کے آلے میں محفوظ ہو جاتی ہے، جو واٹس ایپ اسٹیٹس یا انسٹاگرام کے لیے ہے۔ شائع اور شیئر کریں سے ایک عوامی لنک بنتا ہے جسے کوئی بھی کھول سکتا ہے؛ یہ واٹس ایپ چیٹ اور فیس بک کے لیے بہتر ہے۔';
-    Object.assign(copy.en, { recentTitle:'Recent cards on this device', recentNote:'Saved only in this browser. Other phones and cleared browsers won\'t have them.', recentOpen:'Open', recentCurrent:'Open now', recentEmpty:'Empty card', forked:'Started a new card. Your previous card is in Recent cards.' });
-    Object.assign(copy.ur, { recentTitle:'اس آلے پر حالیہ کارڈ', recentNote:'صرف اسی براؤزر میں محفوظ ہیں۔ دوسرے فون یا صاف کیا گیا براؤزر انہیں نہیں دکھائے گا۔', recentOpen:'کھولیں', recentCurrent:'کھلا ہوا ہے', recentEmpty:'خالی کارڈ', forked:'نیا کارڈ شروع ہو گیا۔ آپ کا پچھلا کارڈ حالیہ کارڈز میں موجود ہے۔' });
+    Object.assign(copy.en, { recentTitle:'Recent cards on this device', recentNote:'Saved only in this browser. Other phones and cleared browsers won\'t have them.', recentOpen:'Open', recentCurrent:'Open now', recentEmpty:'Empty card', makerAuthor:'Poet / author (optional)', makerShowAuthor:'Show poet / author', forked:'Started a new card. Your previous card is in Recent cards.' });
+    Object.assign(copy.ur, { recentTitle:'اس آلے پر حالیہ کارڈ', recentNote:'صرف اسی براؤزر میں محفوظ ہیں۔ دوسرے فون یا صاف کیا گیا براؤزر انہیں نہیں دکھائے گا۔', recentOpen:'کھولیں', recentCurrent:'کھلا ہوا ہے', recentEmpty:'خالی کارڈ', makerAuthor:'شاعر / مصنف (اختیاری)', makerShowAuthor:'شاعر / مصنف دکھائیں', forked:'نیا کارڈ شروع ہو گیا۔ آپ کا پچھلا کارڈ حالیہ کارڈز میں موجود ہے۔' });
 
     if (socialConfig) {
         copy.en.title = socialConfig.title;
@@ -177,8 +178,14 @@
         var transform = state[objectId] && state[objectId].transform ? state[objectId].transform : core.defaultTransform(getPreset(), objectId);
         // Until the writer moves or resizes the text, keep it inside the area a
         // designer background leaves clear of artwork, in every canvas size.
-        var safe = objectId === 'text' && state.background.type === 'image' ? safeAreaInsets(state.background.safeArea) : null;
+        var safe = state.background.type === 'image' ? safeAreaInsets(state.background.safeArea) : null;
         if (!safe || transform.positionCustomized || transform.widthCustomized) return transform;
+        if (objectId === 'attribution') {
+            // The credit line sits at the bottom of the same artwork-free area (WU-UXR-002 Slice D, CARD-UX-006).
+            var height = transform.height == null ? 64 / getPreset().height : transform.height;
+            return Object.assign({}, transform, { x: safe.left, y: Math.max(safe.top, 1 - safe.bottom - height), width: 1 - safe.left - safe.right });
+        }
+        if (objectId !== 'text') return transform;
         return Object.assign({}, transform, { x: safe.left, y: safe.top, width: 1 - safe.left - safe.right, height: 1 - safe.top - safe.bottom });
     }
     function safeAreaInsets(area) {
@@ -333,6 +340,8 @@
         var names = copy[locale] && copy[locale].templateNames;
         root.querySelector('[data-card-templates]').querySelectorAll('[data-card-template]').forEach(function (button) { var item = core.TEMPLATES.find(function (template) { return template.id === button.dataset.cardTemplate; }); if (item) button.textContent = names && names[item.id] || item.name; });
         setSaveState(saveStateKey);
+        var makerAuthor = root.querySelector('[data-social-author-label]'); if (makerAuthor) makerAuthor.textContent = t('makerAuthor');
+        var makerShow = root.querySelector('[data-social-author-check]'); if (makerShow) makerShow.textContent = t('makerShowAuthor');
         var transliterationStatus = root.querySelector('[data-card-transliteration-status]'); if (transliterationStatus) transliterationStatus.textContent = t(transliterationStatusKey); var retry = root.querySelector('[data-card-transliteration-retry]'); if (retry) retry.textContent = t('retryTransliteration');
         var tooltipCopy = copy[locale] && copy[locale].tooltips || copy.en.tooltips;
         root.querySelectorAll('[data-card-tooltip]').forEach(function (button) { var label = tooltipCopy[button.getAttribute('data-card-tooltip')]; var labelElement = button.querySelector('[data-card-i18n]'); if (label) { button.title = label; button.setAttribute('aria-label', labelElement ? t(labelElement.getAttribute('data-card-i18n')) : label); } });
@@ -521,9 +530,11 @@
         var libraryStyle = libraryTemplate && libraryTemplate.style ? libraryTemplate.style : null;
         var minSide = Math.min(preset.width, preset.height);
         var motif = libraryStyle && libraryStyle.id ? libraryStyle.id : template.decoration && template.decoration.motif;
-        if (motif) drawMotif(motif, preset, minSide);
-        if (template.decoration && template.decoration.border && template.decoration.border.enabled) { ctx.strokeStyle = template.decoration.border.color; ctx.lineWidth = Math.max(2, minSide * .004); ctx.strokeRect(preset.marginX * .55, preset.marginY * .55, preset.width - preset.marginX * 1.1, preset.height - preset.marginY * 1.1); }
-        ctx.strokeStyle = template.decoration.accent; ctx.lineWidth = Math.max(3, minSide * .006); if (state.text.align === 'center') ctx.beginPath(), ctx.moveTo(preset.width / 2 - minSide * .09, preset.marginY * .82), ctx.lineTo(preset.width / 2 + minSide * .09, preset.marginY * .82), ctx.stroke(); else { ctx.fillStyle = template.decoration.accent; var accentWidth = minSide * .12; ctx.fillRect(state.text.align === 'right' ? preset.width - preset.marginX - accentWidth : preset.marginX, preset.marginY * .82, accentWidth, Math.max(3, minSide * .006)); }
+        // A designer background is finished artwork: no template motif, frame or accent on top of it (CARD-UX-007).
+        var designer = state.background.type === 'image' && safeAreaInsets(state.background.safeArea);
+        if (motif && !designer) drawMotif(motif, preset, minSide);
+        if (!designer && template.decoration && template.decoration.border && template.decoration.border.enabled) { ctx.strokeStyle = template.decoration.border.color; ctx.lineWidth = Math.max(2, minSide * .004); ctx.strokeRect(preset.marginX * .55, preset.marginY * .55, preset.width - preset.marginX * 1.1, preset.height - preset.marginY * 1.1); }
+        if (!designer) { ctx.strokeStyle = template.decoration.accent; ctx.lineWidth = Math.max(3, minSide * .006); if (state.text.align === 'center') ctx.beginPath(), ctx.moveTo(preset.width / 2 - minSide * .09, preset.marginY * .82), ctx.lineTo(preset.width / 2 + minSide * .09, preset.marginY * .82), ctx.stroke(); else { ctx.fillStyle = template.decoration.accent; var accentWidth = minSide * .12; ctx.fillRect(state.text.align === 'right' ? preset.width - preset.marginX - accentWidth : preset.marginX, preset.marginY * .82, accentWidth, Math.max(3, minSide * .006)); } }
         currentLayouts = {};
         var textBox = objectRect('text');
         if (String(state.text.value || '').trim()) drawTextObject('text', textBox, preset);
@@ -568,6 +579,14 @@
             syncEmptyStateGuidance();
         });
         root.querySelectorAll('[data-card-field]').forEach(function (element) { element.addEventListener('input', function () { userChanged = true; setNested(state, element.dataset.cardField, inputValue(element)); state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }); element.addEventListener('change', function () { userChanged = true; setNested(state, element.dataset.cardField, inputValue(element)); state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }); });
+        // Typing an author switches the credit line on, unless the writer has switched it off themselves (CARD-UX-006).
+        var attributionField = document.getElementById('cardAttribution');
+        var attributionBox = root.querySelector('[data-card-field="attribution.enabled"]');
+        if (attributionBox) attributionBox.addEventListener('change', function () { attributionUnticked = !attributionBox.checked; state.attribution.unticked = attributionUnticked; });
+        if (attributionField) attributionField.addEventListener('input', function () {
+            if (state.attribution.enabled || attributionUnticked || state.attribution.unticked || !String(state.attribution.value || '').trim()) return;
+            state.attribution.enabled = true; state = core.normalizeCardProject(state); syncControls(); requestRender(); scheduleSave();
+        });
         root.querySelector('[data-card-font-auto]').addEventListener('change', function (event) { userChanged = true; state.text.fontMode = event.target.checked ? 'auto' : 'manual'; document.getElementById('cardFontSize').disabled = event.target.checked; requestRender(); scheduleSave(); });
         root.querySelectorAll('[data-card-action="download"]').forEach(function (button) { button.addEventListener('click', function () { exportPng().catch(function () {}); }); }); root.querySelectorAll('[data-card-action="share"]').forEach(function (button) { button.addEventListener('click', shareCard); });
         root.querySelector('[data-card-action="back"]').addEventListener('click', function () { window.location.href = '/'; });
@@ -594,6 +613,16 @@
     function updateObjectText(objectId, value, options) { userChanged = true; if (objectId === 'attribution') state.attribution.value = String(value == null ? '' : value); else state.text.value = String(value == null ? '' : value); state = core.normalizeCardProject(state); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
     function updateTextStyle(patch, options) { userChanged = true; state.text = Object.assign({}, state.text, patch || {}); state = core.normalizeCardProject(state); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
     function replaceState(next, options) { userChanged = true; state = core.normalizeCardProject(next); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
+    // The background library restyles the credit line to match a designer background; the writer's own bigger size stays.
+    function updateAttribution(patch, options) {
+        userChanged = true; patch = patch || {};
+        var next = Object.assign({}, state.attribution);
+        if (patch.color) next.color = patch.color;
+        if (patch.fontFamily) next.fontFamily = patch.fontFamily;
+        if (patch.minFontSizeRatio) next.fontSizeRatio = Math.max(Number(next.fontSizeRatio) || 0, patch.minFontSizeRatio);
+        state.attribution = next; state = core.normalizeCardProject(state); requestRender(); syncControls();
+        if (!options || options.save !== false) scheduleSave();
+    }
     function setObjectAlignment(value) { state.text.align = ['left', 'center', 'right'].includes(value) ? value : state.text.align; state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }
     function resetObject(objectId) { var preset = getPreset(); state[objectId].transform = core.defaultTransform(preset, objectId); state[objectId].transform.positionCustomized = false; state[objectId].transform.widthCustomized = false; state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }
     function exposeApplication() {
@@ -609,6 +638,7 @@
             updateObjectText: updateObjectText,
             updateTextStyle: updateTextStyle,
             replaceState: replaceState,
+            updateAttribution: updateAttribution,
             setObjectAlignment: setObjectAlignment,
             resetObject: resetObject,
             setInteractionState: setInteractionState,

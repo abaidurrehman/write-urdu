@@ -43,6 +43,7 @@ module.exports = defineConfig({
     'card-bidi-render.spec.js',
     'card-studio-feedback.spec.js',
     'card-studio-recent.spec.js',
+    'card-attribution-quality.spec.js',
     'print-quality-pdf.spec.js',
     'bill-urdu-input.spec.js',
     'bill-completeness.spec.js',

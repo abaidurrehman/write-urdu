@@ -90,12 +90,12 @@ race described under Risks. Standard validation + harness p7. Update checklist/B
 ```
 
 ## Slice D — Legible credit & clean designer backgrounds (CARD-UX-006, 007)
-- [ ] Attribution colour/font/size follow the background
-- [ ] Attribution inside the safe area when untouched
-- [ ] No motif/border/accent on designer backgrounds
-- [ ] Author auto-enables; author field visible on makers
-- [ ] `card-attribution-quality.spec.js` (contrast ≥ 4.5 over backgrounds × sizes) registered
-- [ ] SW bump
+- [x] Attribution colour/font/size follow the background
+- [x] Attribution inside the safe area when untouched
+- [x] No motif/border/accent on designer backgrounds
+- [x] Author auto-enables; author field visible on makers
+- [x] `card-attribution-quality.spec.js` (contrast ≥ 4.5 over backgrounds × sizes) registered
+- [x] SW bump (v64 → v65)
 
 **Prompt**
 ```text
