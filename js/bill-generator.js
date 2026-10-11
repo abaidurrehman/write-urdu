@@ -203,6 +203,13 @@
             window.print();
             track('billing_output_completed', { format: 'print' });
         });
+        var pdfPrintButton = root.querySelector('[data-bill-pdf-print]');
+        if (pdfPrintButton) pdfPrintButton.addEventListener('click', function () {
+            track('billing_output_attempted', { format: 'pdf-print' });
+            setStatus('In the print window, choose Save as PDF for sharp Urdu text.', 'ready');
+            window.print();
+            track('billing_output_completed', { format: 'pdf-print' });
+        });
         var pdfButton = root.querySelector('[data-bill-pdf]');
         if (pdfButton) pdfButton.addEventListener('click', downloadPdf);
     }

@@ -142,7 +142,7 @@ test('Basic Writer keeps E0 task-first and promotes completion actions after fir
 
   await ensureDownloadOpen();
   await expect(downloadPanel.locator('#inputFileNameToSaveAs')).toBeVisible();
-  const downloadLabels = { pdf: 'PDF', word: 'Word', png: 'PNG', svg: 'SVG', text: 'Text file' };
+  const downloadLabels = { pdf: 'PDF', 'pdf-print': 'PDF (print quality)', word: 'Word', png: 'PNG', svg: 'SVG', text: 'Text file' };
   for (const action of Object.keys(downloadLabels)) {
     const control = downloadPanel.locator(`[data-wu-command-action="${action}"]`);
     await expect(control).toBeVisible();
@@ -227,7 +227,7 @@ test('Basic Writer uses one Download disclosure and keeps Print responsive', asy
   await downloadToggle.click();
   await expect(downloadPanel).toBeVisible();
 
-  for (const action of ['pdf', 'word', 'png', 'svg', 'text']) {
+  for (const action of ['pdf', 'pdf-print', 'word', 'png', 'svg', 'text']) {
     await expect(downloadPanel.locator(`[data-wu-command-action="${action}"]`)).toBeVisible();
     await expect(page.locator(`[data-wu-command-action="${action}"]`)).toHaveCount(1);
   }

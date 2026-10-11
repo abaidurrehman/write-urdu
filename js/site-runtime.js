@@ -485,6 +485,48 @@
         if (image.complete) image.onload();
     }
 
+    // Print-quality route: real text in a hidden frame, laid out by the browser's
+    // own engine (correct Nastaliq shaping, embedded fonts, selectable text).
+    // "Save as PDF" in the print dialog turns it into the best-quality PDF.
+    function printDocument(source, options) {
+        options = options || {};
+        if (!source) return Promise.reject(new Error('Export source is unavailable.'));
+        var richText = Boolean(options.richText);
+        var body = richText ? source.innerHTML : String(source.value || source.textContent || '')
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, '<br>');
+        var fontLinks = Array.prototype.map.call(document.querySelectorAll('link[rel~="stylesheet"][href*="fonts.googleapis.com"]'), function (link) {
+            return '<link rel="stylesheet" href="' + link.href.replace(/"/g, '&quot;') + '">';
+        }).join('');
+        var title = String(options.title || 'Write Urdu document').replace(/[<>&"]/g, '');
+        var frame = document.createElement('iframe');
+        frame.setAttribute('aria-hidden', 'true');
+        frame.setAttribute('data-wu-print-frame', '');
+        frame.style.cssText = 'position:fixed;left:-12000px;top:0;width:794px;height:1123px;border:0;visibility:hidden';
+        document.body.appendChild(frame);
+        var frameDoc = frame.contentDocument;
+        frameDoc.open();
+        frameDoc.write('<!doctype html><html lang="ur" dir="rtl"><head><meta charset="utf-8"><title>' + title + '</title>' + fontLinks +
+            '<style>@page{size:A4;margin:18mm}html,body{margin:0;padding:0;background:#fff}' +
+            'body{direction:rtl;text-align:right;font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:18pt;line-height:2.2;color:#16251e}' +
+            '.wu-print-body{white-space:' + (richText ? 'normal' : 'pre-wrap') + ';overflow-wrap:anywhere}' +
+            'table{border-collapse:collapse;width:100%}td,th{border:1px solid #cbe0d4;padding:4pt 6pt}img{max-width:100%}' +
+            'footer{direction:ltr;text-align:left;margin-top:24pt;padding-top:8pt;border-top:1px solid #d1e1d7;font:8pt Arial,sans-serif;color:#6b7d73}' +
+            '</style></head><body><div class="wu-print-body">' + body + '</div>' +
+            (options.skipCredit ? '' : '<footer>Generated with Write Urdu \u00b7 Write-Urdu.com</footer>') + '</body></html>');
+        frameDoc.close();
+        function cleanup() { window.setTimeout(function () { frame.remove(); }, 1000); }
+        var fontsReady = frameDoc.fonts && frameDoc.fonts.ready ? frameDoc.fonts.ready : Promise.resolve();
+        var timeout = new Promise(function (resolve) { window.setTimeout(resolve, 4000); });
+        return Promise.race([fontsReady, timeout]).then(function () {
+            return new Promise(function (resolve) { window.requestAnimationFrame(function () { window.requestAnimationFrame(resolve); }); });
+        }).then(function () {
+            frame.contentWindow.focus();
+            frame.contentWindow.addEventListener('afterprint', cleanup);
+            frame.contentWindow.print();
+            window.setTimeout(cleanup, 60000);
+        }).catch(function (error) { frame.remove(); throw error; });
+    }
+
     function removeInjectedExportButtons() {
         var buttons = document.querySelectorAll('#exportImage');
         for (var i = 1; i < buttons.length; i++) buttons[i].remove();
@@ -550,6 +592,7 @@
         downloadPdf: downloadPdf,
         downloadSvg: downloadSvg,
         printCanvas: printCanvas,
+        printDocument: printDocument,
         safeFilename: safeFilename
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enhancePage);

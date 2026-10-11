@@ -153,10 +153,14 @@ Tests:
 
 ### Slice E — Export fidelity (`WU-JOURNEY-001F`)
 
-- [ ] **E1** Build the print-fidelity benchmark 001F already calls for: Nastaliq heading + paragraph, Naskh paragraph, mixed Urdu/English/numbers, a bill table. Compare current `html2canvas` → JPEG → jsPDF output against browser Print-to-PDF.
-- [ ] **E2 (F2)** Fix shaping in the shared PDF runtime. Options in order of preference: (a) offer the browser's Print → Save as PDF route with a print stylesheet as the default "PDF" for documents; (b) render text blocks as whole runs rather than per-glyph; (c) embed the font in jsPDF with a shaping step. Choose by benchmark.
-- [ ] **E3** Apply the same fix to the bill/invoice PDF path (`js/bill-generator.js`).
+Founder decision D-6: **do both** — keep the direct PDF download and add a print-quality PDF route.
+
+- [x] **E1** Benchmark (Chromium, Nastaliq heading + paragraph, Naskh, mixed Urdu/English/numbers, a bill table). Current `html2canvas` → JPEG → jsPDF breaks Arabic shaping and does not draw Nastaliq. `foreignObjectRendering` fixes shaping but not the Nastaliq font, even with ~1.9 MB of embedded data-URI fonts. The browser print engine (Print → Save as PDF) gives correct Nastaliq, embedded and selectable fonts and an intact bill table.
+- [x] **E2 (F2)** `WriteUrduExport.printDocument(source, { richText, title, skipCredit })` in `js/site-runtime.js` lays out real text in a hidden frame (same Google Fonts links as the page, A4 `@page`, waits for fonts) and opens the print dialog. Basic Writer, Rich Editor and their `/urdu/` mirrors get a **PDF (print quality)** action beside the unchanged direct **PDF** download (`#exportPdfPrint`; Basic Writer download menu action `pdf-print`; the first-level direct exports stay PDF, Word, PNG).
+- [x] **E3** Bill generator: **PDF (print quality)** button (`data-bill-pdf-print`) uses the existing bill print stylesheet through `window.print()`; the direct **Download PDF** is unchanged. Invoice generator is not changed in this slice.
 - [ ] **E4 (F29)** Real `.docx` instead of HTML renamed `.doc`. Gated: the freeze lists "new export formats". Treat as a format *correction* only with founder approval.
+
+Tests: `tests/print-quality-pdf-contract.test.js`, `tests/print-quality-pdf.spec.js` (frame holds real RTL Urdu text, Nastaliq font, no images, rich formatting kept). Shell cache bumped to `write-urdu-shell-v59`.
 
 ### Slice F — Unified Urdu input in fields
 

@@ -7,8 +7,8 @@
     'use strict';
 
     var MOBILE_QUERY = '(max-width: 767px)';
-    var OUTPUT_ACTIONS = ['pdf', 'word', 'png', 'svg', 'preview', 'print'];
-    var DOWNLOAD_ACTIONS = ['pdf', 'word', 'png', 'svg', 'text'];
+    var OUTPUT_ACTIONS = ['pdf', 'pdf-print', 'word', 'png', 'svg', 'preview', 'print'];
+    var DOWNLOAD_ACTIONS = ['pdf', 'pdf-print', 'word', 'png', 'svg', 'text'];
     var PRIMARY_DOCUMENT_ACTIONS = ['copy', 'preview', 'share', 'print'];
     var mediaQuery = null;
     var publishLoader = null;
@@ -772,6 +772,7 @@
         share.setAttribute('data-wu-basic-share', '');
         var copy = primary && primary.querySelector('[data-copy-target="#transliterateTextarea"]');
         var pdf = exportPanel && exportPanel.querySelector('#exportPdf');
+        var pdfPrint = exportPanel && exportPanel.querySelector('#exportPdfPrint');
         var word = exportPanel && exportPanel.querySelector('#exportWord');
         var png = exportPanel && exportPanel.querySelector('#exportImage');
         var svg = exportPanel && exportPanel.querySelector('#exportSvg');
@@ -817,6 +818,7 @@
         print.setAttribute('data-wu-basic-reveal-on-content', '');
 
         setAction(pdf, 'pdf', 'PDF', 'fas fa-file-pdf', 'download-item');
+        if (pdfPrint) setAction(pdfPrint, 'pdf-print', 'PDF (print quality)', 'fas fa-file-pdf', 'download-item');
         setAction(word, 'word', 'Word', 'fas fa-file-word', 'download-item');
         setAction(png, 'png', 'PNG', 'fas fa-image', 'download-item');
         if (svg) setAction(svg, 'svg', 'SVG', 'far fa-file-image', 'download-item');
@@ -825,7 +827,7 @@
         setAction(clear, 'clear', 'Clear document', 'far fa-trash-alt', 'clear');
         clear.setAttribute('data-wu-basic-reveal-on-content', '');
 
-        var download = createDownloadMenu(filenameLabel, filenameInput, textExport, [pdf, word, png, svg]);
+        var download = createDownloadMenu(filenameLabel, filenameInput, textExport, [pdf, pdfPrint, word, png, svg]);
         var more = createMoreMenu(settingsPanel, clear);
 
         primaryGroup.appendChild(copy);

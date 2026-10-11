@@ -39,7 +39,8 @@ module.exports = defineConfig({
     'page-integrity.spec.js',
     'transliteration-availability.spec.js',
     'basic-writer-workspace-integrity.spec.js',
-    'card-poetry-quality.spec.js'
+    'card-poetry-quality.spec.js',
+    'print-quality-pdf.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },

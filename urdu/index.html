@@ -141,6 +141,8 @@
                                 <button type="button" id="exportPdf" onclick="DownloadAsPdf()">
                                     <i class="far fa-file-pdf" aria-hidden="true"></i> PDF دستاویز
                                 </button>
+                        <button type="button" id="exportPdfPrint" onclick="DownloadAsPrintPdf()">
+                                    <i class="far fa-file-pdf" aria-hidden="true"></i> PDF (print quality)</button>
                                 <button type="button" class="ExportToWord" id="exportWord" onclick="DownloadAsWord()">
                                     <i class="far fa-file-word" aria-hidden="true"></i> Word دستاویز
                                 </button>
@@ -417,6 +419,19 @@
         } catch (error) {
             console.error(error);
             WriteUrduUI.notify('Word دستاویز محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔', 'error');
+        }
+    }
+
+    async function DownloadAsPrintPdf() {
+        var element = document.getElementById('transliterateTextarea');
+        try {
+            await WriteUrduExport.withBusyButton(document.getElementById('exportPdfPrint'), function () {
+                return WriteUrduExport.printDocument(element, { title: 'Write Urdu document' });
+            });
+            WriteUrduUI.notify('Choose "Save as PDF" as the destination in the print window.', 'success');
+        } catch (error) {
+            console.error(error);
+            WriteUrduUI.notify('Print-quality PDF could not be prepared. Use PDF instead.', 'error');
         }
     }
 
