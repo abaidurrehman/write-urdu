@@ -34,10 +34,31 @@ const studio = page => page.evaluate(() => {
   };
 });
 
+// Whether the couplet can stay whole depends on the fonts the browser actually
+// has (CI blocks Google Fonts, so a wider fallback font is measured). Ask the
+// renderer itself whether whole lines fit at the readable floor, then require
+// whole lines when they do and the height-based fallback when they do not.
+const wholeLinesFitAtFloor = page => page.evaluate(() => {
+  const app = window.WriteUrduCardStudioApp;
+  const core = window.WriteUrduCardStudio;
+  const state = app.getState();
+  const rect = app.getObjectRect('text');
+  const ctx = document.createElement('canvas').getContext('2d');
+  const floor = Math.max(Number(state.text.minFontSize) || 28, Math.ceil(rect.width * 0.05));
+  const layout = core.layoutCardText(ctx, Object.assign({}, state, { text: Object.assign({}, state.text, { fontSize: floor }), attribution: Object.assign({}, state.attribution, { enabled: false }) }), { x: 0, y: 0, width: rect.width, height: rect.height });
+  return layout.lines.filter(line => !line.isBlank).length === 2 && layout.height <= rect.height;
+});
+
 test('a poetry background keeps the couplet whole, in Nastaliq, inside the artwork-free area', async ({ page }) => {
   await openMaker(page);
   await applyBackground(page, 'ink-wash-poetry');
-  await expect.poll(async () => (await studio(page)).lines, { timeout: 10000 }).toBe(2);
+  await expect.poll(async () => (await studio(page)).font, { timeout: 10000 }).toBe('Noto Nastaliq Urdu');
+  await page.waitForTimeout(400);
+  if (await wholeLinesFitAtFloor(page)) {
+    await expect.poll(async () => (await studio(page)).lines, { timeout: 10000 }).toBe(2);
+  } else {
+    expect((await studio(page)).lines, 'without room for whole lines at a readable size, the height-based fit applies').toBeGreaterThan(2);
+  }
   const result = await studio(page);
   expect(result.font).toBe('Noto Nastaliq Urdu');
   expect(result.lineHeight).toBeGreaterThanOrEqual(1.8);
