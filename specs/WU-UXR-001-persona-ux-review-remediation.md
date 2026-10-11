@@ -181,8 +181,8 @@ Guardrail from P0.8 applies: no Basic/Rich/invoice-protected file may change.
 
 ### Slice H — Learning
 
-- [ ] **H1 (F21), not frozen:** Lesson 1–4 drill text without spaces between letters, or say clearly that Space is expected; highlight the next expected key on the on-screen keyboard. Owners: `js/typing-practice-core.js`, typing-practice page script.
-- [ ] **H2 (F22)** One line on the practice page explaining phonetic key layout vs. word-level English letters → Urdu, linking each to its tool.
+- [x] **H1 (F21), not frozen:** Lesson 1–4 drill text without spaces between letters, or say clearly that Space is expected; highlight the next expected key on the on-screen keyboard. Owners: `js/typing-practice-core.js`, typing-practice page script.
+- [x] **H2 (F22)** One line on the practice page explaining phonetic key layout vs. word-level English letters → Urdu, linking each to its tool.
 - [ ] **H3 (opportunity)** Interactive alphabet (audio, positional forms, mapped key, printable sheet): new feature, so it is gated behind `WU-JOURNEY-001E` / backlog re-review.
 
 ### Slice I — Discovery (frozen until backlog re-review)

@@ -67,6 +67,28 @@
         return null;
     }
 
+    var REVERSE_MAP = (function () {
+        var map = {};
+        Object.keys(SHIFT_MAP).forEach(function (key) {
+            if (/^[A-Z]$/.test(key)) map[SHIFT_MAP[key]] = { key: key.toLowerCase(), shift: true };
+        });
+        Object.keys(BASE_MAP).forEach(function (key) {
+            map[BASE_MAP[key]] = { key: key, shift: false };
+        });
+        return Object.freeze(map);
+    }());
+
+    function keyForChar(char) {
+        if (char === ' ') return { key: ' ', shift: false };
+        return Object.prototype.hasOwnProperty.call(REVERSE_MAP, char) ? REVERSE_MAP[char] : null;
+    }
+
+    function nextKey(targetValue, typedValue) {
+        var target = graphemes(targetValue);
+        var index = graphemes(typedValue).length;
+        return index < target.length ? keyForChar(target[index]) : null;
+    }
+
     function measure(targetValue, typedValue, elapsedSeconds) {
         var target = graphemes(targetValue);
         var typed = graphemes(typedValue);
@@ -119,6 +141,8 @@
         normalizeText: normalizeText,
         graphemes: graphemes,
         mapKey: mapKey,
+        keyForChar: keyForChar,
+        nextKey: nextKey,
         measure: measure,
         buildTimedTarget: buildTimedTarget
     });

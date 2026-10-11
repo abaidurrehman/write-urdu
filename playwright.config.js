@@ -42,7 +42,8 @@ module.exports = defineConfig({
     'card-poetry-quality.spec.js',
     'print-quality-pdf.spec.js',
     'bill-urdu-input.spec.js',
-    'bill-completeness.spec.js'
+    'bill-completeness.spec.js',
+    'typing-practice-learning.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },
