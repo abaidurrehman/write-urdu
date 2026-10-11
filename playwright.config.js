@@ -44,7 +44,8 @@ module.exports = defineConfig({
     'bill-urdu-input.spec.js',
     'bill-completeness.spec.js',
     'typing-practice-learning.spec.js',
-    'docx-export.spec.js'
+    'docx-export.spec.js',
+    'draft-restore-position.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },
