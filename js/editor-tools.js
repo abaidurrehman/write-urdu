@@ -444,6 +444,9 @@
         var historyKey = HISTORY_PREFIX + adapter.kind;
         var recovery = panel.querySelector('[data-draft-recovery]');
         var recoveryDescription = panel.querySelector('[data-draft-description]');
+        // A saved draft is only useful if the visitor sees it before they
+        // start typing, so the recovery line sits directly above the editor.
+        adapter.mount.insertAdjacentElement('beforebegin', recovery);
         var wordCount = panel.querySelector('[data-word-count]');
         var characterCount = panel.querySelector('[data-character-count]');
         var saveStatus = panel.querySelector('[data-save-status]');
@@ -657,7 +660,7 @@
             saveStatus.textContent = uiText('Local saving unavailable', 'Local saving unavailable');
         }
 
-        panel.querySelector('[data-action="restore-draft"]').addEventListener('click', function () {
+        recovery.querySelector('[data-action="restore-draft"]').addEventListener('click', function () {
             if (!pendingDraft) return;
             var content = pendingDraft.content;
             pendingDraft = null;
@@ -667,7 +670,7 @@
             notifyText('Your local draft has been restored.', 'Your local draft has been restored.', 'success');
         });
 
-        panel.querySelector('[data-action="discard-draft"]').addEventListener('click', function () {
+        recovery.querySelector('[data-action="discard-draft"]').addEventListener('click', function () {
             if (storage) storage.removeItem(storageKey);
             pendingDraft = null;
             recovery.hidden = true;
