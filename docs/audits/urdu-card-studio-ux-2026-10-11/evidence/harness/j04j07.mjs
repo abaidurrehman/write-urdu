@@ -15,6 +15,9 @@ const browser = await launch(); const R = {};
   await page.locator('[data-card-gallery-grid]').scrollIntoViewIfNeeded(); await shot(page, 'J04-gallery-with-text');
   step(trace, 'Gallery: typed once, compared designs', { input: R.g_input, count: R.g_count, tiles: R.g_tiles, tile: R.g_tileBox, actions: R.g_tileActions, previewShowsText: R.g_previewShowsText });
   const first = page.locator('[data-card-gallery-grid] > *').first().locator('a, button').first();
+  // On production a sticky anchor ad can cover a button scrolled to the viewport edge; centre it first and record the overlap.
+  await first.evaluate(e => e.scrollIntoView({ block: 'center' }));
+  R.g_chooseCoveredBy = await first.evaluate(e => { const r = e.getBoundingClientRect(); const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return top && !e.contains(top) ? (top.className || top.tagName).toString().slice(0, 80) : null; });
   await first.tap(); await page.waitForLoadState('load'); await page.waitForTimeout(3000);
   R.g_open = { url: page.url(), state: await page.evaluate(() => window.WriteUrduCardStudioApp && (s => ({ text: s.text.value, bg: s.background.type }))(WriteUrduCardStudioApp.getState())) };
   step(trace, 'Chose first design', R.g_open);

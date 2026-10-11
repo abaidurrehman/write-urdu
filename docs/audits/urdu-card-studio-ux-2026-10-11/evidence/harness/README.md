@@ -39,6 +39,8 @@ Environment variables:
 
 `WU_BASE=https://write-urdu.com` works for **read-only** journeys: `01-first-impression`, `p2` (download only), `p5`, `p6`, `j04j07`, and `recipient` with an existing id.
 
+Production can show Google's ad-consent dialog and a sticky anchor ad. `newSession()` in `lib.mjs` declines the consent dialog and logs that it did ("Ad-consent dialog dismissed" in the trace). `j04j07` centres the Gallery button before tapping it and records any element covering it (`g_chooseCoveredBy`).
+
 **Do not** run `p3`, `p7`, `p8` or `del` against production unchanged. They publish public pages:
 
 - `p8` taps a stock card's "Shareable link", which (before slice F) **cannot be deleted**.

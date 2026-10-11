@@ -30,6 +30,13 @@ export async function newSession(browser, device, opts = {}) {
   page.on('console', m => { if (['error', 'warning'].includes(m.type())) trace.console.push(`${m.type()}: ${m.text()}`.slice(0, 300)); });
   page.on('pageerror', e => trace.pageErrors.push(String(e).slice(0, 300)));
   page.on('requestfailed', r => trace.failed.push(`${r.failure()?.errorText} ${r.url().slice(0, 140)}`));
+  // Production shows Google's ad-consent dialog (Funding Choices) to some regions; it blocks every tap.
+  // Decline it once so the journey can continue, and record that it appeared.
+  await page.addLocatorHandler(page.locator('.fc-consent-root .fc-dialog-overlay').first(), async () => {
+    trace.steps.push({ t: Date.now(), text: 'Ad-consent dialog dismissed (Do not consent)' });
+    const decline = page.locator('.fc-consent-root .fc-cta-do-not-consent, .fc-consent-root .fc-close').first();
+    await (await decline.count() ? decline : page.locator('.fc-consent-root .fc-cta-consent').first()).click();
+  }, { noWaitAfter: false });
   page.on('dialog', async d => { trace.steps.push({ dialog: d.type(), message: d.message() }); await (trace.dialogAnswer === false ? d.dismiss() : d.accept()); });
   return { context, page, trace };
 }

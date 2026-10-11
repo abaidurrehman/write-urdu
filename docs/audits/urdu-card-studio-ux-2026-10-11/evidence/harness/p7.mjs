@@ -10,7 +10,8 @@ let [c, p] = await open();
 await p.goto(BASE + '/urdu-card-studio'); await p.waitForTimeout(2500);
 await p.locator('#cardText').scrollIntoViewIfNeeded(); await p.locator('[data-input-mode-option="direct"]').tap();
 await p.locator('#cardText').fill('[TEST] پچھلے ہفتے کا کارڈ — امی کے لیے دعا'); await p.waitForTimeout(400);
-await p.locator('[data-card-built-in-background="emerald-mughal"]').scrollIntoViewIfNeeded(); await p.locator('[data-card-built-in-background="emerald-mughal"]').tap(); await p.waitForTimeout(2000);
+// tap() scrolls itself and retries if the library re-renders the tile (a separate scrollIntoViewIfNeeded() throws on detach).
+await p.locator('[data-card-built-in-background="emerald-mughal"]').tap(); await p.waitForTimeout(2000);
 R.week0 = await S(p); step(trace, 'Week 0: created card with designer background', R.week0);
 await p.locator('[data-card-action="publish"]').scrollIntoViewIfNeeded(); await p.locator('[data-card-action="publish"]').tap(); await p.waitForTimeout(500);
 await p.locator('[data-wu-share-confirm]').tap(); await p.locator('[data-wu-share-url]').waitFor();

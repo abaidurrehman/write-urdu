@@ -22,10 +22,10 @@ Fastest path: paste the handover prompt in [`docs/WU-UXR-002-CLAUDE-HANDOFF.md`]
 ---
 
 ## Slice 0 — Baseline & production verification
-- [ ] Local harness baseline captured (`out/` kept locally, not committed)
-- [ ] Production read-only runs: first-impression, p5, p6, j04j07
+- [x] Local harness baseline captured (`out/` kept locally, not committed) — 2026-10-11, all journeys green after two harness fixes (p7 detach, production consent/anchor ad)
+- [x] Production read-only runs: first-impression, p5, p6, j04j07 — 2026-10-11
 - [ ] Real Android + iPhone: WhatsApp preview for a designer-background link and a gradient link (then delete both)
-- [ ] §9 verification log in the spec updated
+- [x] §9 verification log in the spec updated (WhatsApp/iPhone rows still pending)
 
 **Prompt**
 ```text

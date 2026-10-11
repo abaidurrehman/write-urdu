@@ -45,7 +45,7 @@ Production follow-up (Product Pulse, content-free events): `card_export_complete
 
 1. **One slice = one branch = one PR.** Branch name `claude/wu-uxr-002<letter>-<slug>` (for example `claude/wu-uxr-002a-bidi`). Stack on the previous slice's branch only if it depends on unmerged code.
 2. **Copy in both languages.** Card Studio strings live in the `copy.en` / `copy.ur` tables in `js/card-studio.js` (lines ~39–40 plus the overrides below them). Labels set in `js/card-studio-ui.js` / `js/card-studio-publish.js` must also have Urdu text. After changing `urdu-card-studio.html`, `urdu-cards.html` or a maker page, run `npm run locale:generate` and commit the regenerated `urdu/*.html`.
-3. **Service-worker cache.** If you change any file listed in `sw.js` `APP_SHELL` (most `js/card-*`, `css/card-studio*.css`, the card HTML pages), bump `CACHE_NAME` in `sw.js` (currently `write-urdu-shell-v60`). Then update every pinned test: `grep -rl "write-urdu-shell-v60" tests | xargs sed -i 's/write-urdu-shell-v60/write-urdu-shell-v61/g'` (use the next free number).
+3. **Service-worker cache.** If you change any file listed in `sw.js` `APP_SHELL` (most `js/card-*`, `css/card-studio*.css`, the card HTML pages), bump `CACHE_NAME` in `sw.js` (currently `write-urdu-shell-v61` on `main` after #256; this branch still shows v60 until it is rebased). Then update every pinned test: `grep -rl "write-urdu-shell-v61" tests | xargs sed -i 's/write-urdu-shell-v61/write-urdu-shell-v62/g'` (use the next free number).
 4. **Tests.** Every slice adds:
    - a **contract test** `tests/<name>-contract.test.js`, registered in `scripts/run-contract-tests.js`;
    - a **browser spec** `tests/<name>.spec.js`, registered in `playwright.config.js` `testMatch` **and** in `.github/workflows/quality.yml` (the `npx playwright test` list under the step **Run focused product browser acceptance**).
@@ -620,16 +620,25 @@ Update `create-publish-boundaries.spec.js` and `core-workspace-convergence.spec.
 
 ## 9. Verification log
 
+**Slice 0 run (2026-10-11).** Harness against the local tree (branch `claude/write-urdu-card-studio-audit-tefvyq` @ `acb088c`) and read-only against `https://write-urdu.com` (`01-first-impression`, `p5`, `p6`, `j04j07`; Chrome 141 via `PW_CHROMIUM`). The Card Studio scripts served by production (`card-studio.js`, `card-studio-core.js`, `card-studio-ui.js`, `card-studio-handoff-adapter.js`, `card-studio-publish.js`, `curated-card-share.js`) are byte-identical to the repo, ignoring line endings. So findings that need `p3`/`p7`/`p8` (which publish) were reproduced locally against code identical to production, and are marked *confirmed (code parity)*. Production `sw.js` is already at `write-urdu-shell-v61` (`main` #256), so the next slice that touches `APP_SHELL` bumps to **v62** (§4.3 updated).
+
 | Finding | Slice 0 production result | Fixed in | Verified (harness / device) |
 |---|---|---|---|
-| CARD-UX-001 | — | E (partial), O | — |
-| CARD-UX-002 | — | C | — |
-| CARD-UX-003 | — | A | — |
-| CARD-UX-004 | — | B | — |
-| CARD-UX-005 | — | O | — |
-| CARD-UX-006 | — | D | — |
-| CARD-UX-012 | — | F | — |
-| CARD-UX-032 | — (device check) | I | — |
+| CARD-UX-001 | **Confirmed on production.** `#cardText` top is 3,252 px @360, 3,229 @393, 3,226 @390 and 3,129 @768; the canvas is at 1,222 px @360. Baseline: 3,354 / 3,248 / 3,265 / 3,129. | E (partial), O | — |
+| CARD-UX-002 | **Confirmed (code parity).** Local `p7`: after the `/urdu-cards` hand-off, IndexedDB holds one project (`[TEST] نیا کارڈ`) under the week-0 id, and the week-0 card is gone. Not run on production because it publishes. | C | — |
+| CARD-UX-003 | **Confirmed on production.** The `p5` export shows `رابطہ: 0300-1234567` as `1234567-0300`. | A | — |
+| CARD-UX-004 | **Confirmed.** Production `p6`: a broken upload leaves the status at "Saved on this device". Local `p1`: sample text then Download gives no file, and the status says "Saved on this device". | B | — |
+| CARD-UX-005 | **Confirmed on production.** WhatsApp Status maker @360: text box at 3,191 px, preview at 4,005 px (baseline 3,214 / 4,024). Local `p1`: the canvas is at −368…−25 when Vintage Floral is tapped. | O | — |
+| CARD-UX-006 | **Confirmed.** Production `p5` export: the credit line is small grey text over the leaf art. Local `p2`: the Instagram maker's attribution field is hidden. Code is identical to production. | D | — |
+| CARD-UX-008 | **Confirmed on production.** Phones show 87 visible controls in main and 16–17 buttons in the first viewport, unchanged from the baseline. | E (labels), O | — |
+| CARD-UX-012 | **Confirmed (code parity).** `curated-card-share.js` on production has no `manageToken` and no confirmation step; it POSTs `/api/shares` directly. Local `p8`: tapping "Shareable link" shows no dialog. Not run on production because the link cannot be deleted. | F | — |
+| CARD-UX-032 | **Pending:** owner's Android and iPhone WhatsApp check (Slice 0 step 3). | I | — |
+
+Other Slice 0 observations (no action in this plan):
+
+- **Production only:** Google's ad-consent dialog (`.fc-consent-root`) covers Card Studio and the Gallery on first visit from this test region and blocks every tap until it is answered. On the mobile Gallery, the sticky anchor ad (`ins.adsbygoogle[data-anchor-shown]`) covered "Use this design" when that button was scrolled to the bottom edge. Ads are out of scope (§3), so this goes to the ads owner. The harness now declines the consent dialog and centres the tap target, and records both.
+- **Local environment:** Roman Urdu conversion was reachable, so the outage half of CARD-UX-022 was not reproduced. Re-test it with the provider blocked (Slice B). Desktop Chrome exposes the Web Share API, so the `p1`/`p4`/`p8` "Share this image" steps went to `navigator.share` instead of downloading. Those deltas are environmental.
+- **CARD-UX-029:** local `resilience` measured 2,208 KB and 43 scripts, against 1,500 KB and 41 in the baseline. The local tree loads real ad and provider requests that the sandbox blocked, so re-measure on production before Slice P1.
 
 (Add rows for every closed finding as slices land; the CSV in the audit folder lists all 39.)
 
