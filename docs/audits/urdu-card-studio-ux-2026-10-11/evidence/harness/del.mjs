@@ -1,0 +1,11 @@
+import { chromium } from 'playwright';
+import { DEVICES, BASE, shot, EVID, LAUNCH } from './lib.mjs';
+const c = await chromium.launchPersistentContext(EVID + '/profile-p7', { ...LAUNCH, ...DEVICES.android });
+const p = c.pages()[0]; p.on('dialog', d => d.accept());
+await p.goto(BASE + '/urdu-card-studio'); await p.waitForTimeout(2500);
+await p.locator('.wu-share-manage-trigger').scrollIntoViewIfNeeded(); await p.locator('.wu-share-manage-trigger').tap(); await p.waitForTimeout(500);
+await p.locator('dialog[open] .wu-share-list-actions button').first().tap(); await p.waitForTimeout(1500);
+const toast = await p.locator('.wu-share-toast').innerText().catch(() => '');
+const r = await p.request.get(BASE + '/s/Juxc5hOj'); const m = await p.request.get(BASE + '/share-media/Juxc5hOj');
+console.log(JSON.stringify({ toast, pageStatus: r.status(), mediaStatus: m.status() }));
+await c.close();

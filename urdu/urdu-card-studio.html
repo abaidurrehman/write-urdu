@@ -63,6 +63,7 @@
                     <div class="card-studio-action-group-buttons">
                         <button class="card-studio-button quiet" type="button" data-card-ui-action="undo" title="Undo last change" disabled>Undo</button>
                         <button class="card-studio-button quiet" type="button" data-card-ui-action="redo" title="Redo last change" disabled>Redo</button>
+                        <span class="card-studio-save-indicator" data-card-save-indicator aria-live="off"></span>
                     </div>
                 </div>
                 <div class="card-studio-action-group" role="group" aria-label="Workspace">
@@ -128,14 +129,6 @@
 
                 <section class="card-studio-section" data-card-step="content" data-card-step-panel>
                     <h2 data-card-i18n="textHeading">Content</h2>
-                    <div class="batch-transliteration-panel" data-batch-transliteration data-batch-input-mode="card" data-batch-target="#cardText" role="region" aria-labelledby="card-batch-transliteration-title">
-                        <strong data-batch-title id="card-batch-transliteration-title">Two ways to write Urdu</strong>
-                        <span data-batch-guide>Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.</span>
-                        <small data-batch-note>This is transliteration: it changes sounds into Urdu script, not English meaning.</small>
-                        <strong data-batch-prompt hidden>Long Roman Urdu text detected. Convert this passage to Urdu script?</strong>
-                        <button type="button" data-batch-action hidden>Convert passage to Urdu script</button>
-                        <span data-batch-status role="status" aria-live="polite"></span>
-                    </div>
                     <label class="card-studio-label" for="cardText" data-card-i18n="textLabel">Card text</label>
                     <div class="card-studio-empty-cue" data-card-empty-cue hidden aria-live="polite">
                         <span class="card-studio-empty-cue-icon" aria-hidden="true">↗</span>
@@ -143,10 +136,20 @@
                         <button type="button" class="card-studio-empty-cue-dismiss" data-card-empty-cue-dismiss data-card-i18n="emptyCueDismiss">Got it</button>
                     </div>
                     <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
+                    <!-- The convert prompt and button come first, directly under the field (WU-UXR-002 Slice B, CARD-UX-022). -->
+                    <div class="batch-transliteration-panel" data-batch-transliteration data-batch-input-mode="card" data-batch-target="#cardText" role="region" aria-labelledby="card-batch-transliteration-title">
+                        <strong data-batch-prompt hidden>Long Roman Urdu text detected. Convert this passage to Urdu script?</strong>
+                        <button type="button" data-batch-action hidden>Convert passage to Urdu script</button>
+                        <span data-batch-status role="status" aria-live="polite"></span>
+                        <strong data-batch-title id="card-batch-transliteration-title">Two ways to write Urdu</strong>
+                        <span data-batch-guide>Type Roman Urdu and press Space after each word, or paste/finish a longer passage and convert it to Urdu script in one step.</span>
+                        <small data-batch-note>This is transliteration: it changes sounds into Urdu script, not English meaning.</small>
+                    </div>
                     <div class="card-studio-content-actions" role="group" aria-label="Text actions">
                         <button type="button" class="card-studio-button" data-card-content-action="sample">Use sample text</button>
                         <button type="button" class="card-studio-button quiet" data-card-content-action="clear">Clear text</button>
                     </div>
+                    <section class="card-studio-recent" data-card-recent hidden aria-labelledby="cardRecentTitle"><h3 id="cardRecentTitle" data-card-i18n="recentTitle">Recent cards on this device</h3><ul data-card-recent-list></ul><p class="card-studio-help" data-card-i18n="recentNote">Saved only in this browser. Other phones and cleared browsers won't have them.</p></section>
                     <div class="card-studio-transliteration" aria-live="polite"><span data-card-transliteration-status>Roman Urdu input is loading…</span><button class="card-studio-transliteration-retry" type="button" data-card-transliteration-retry hidden>Retry</button></div>
                     <div class="input-mode-control input-mode-control-card" data-input-mode-control data-input-mode-storage="card" data-input-mode-targets="#cardText,#cardCanvasEditor" role="group" aria-label="Input mode">
                         <span class="input-mode-title" data-input-mode-title>Input mode</span>
@@ -204,7 +207,7 @@
                     <select class="card-studio-select" id="cardBackgroundType" data-card-field="background.type"><option value="solid">Solid colour</option><option value="gradient">Built-in gradient</option><option value="image">Uploaded image</option></select>
                     <div data-card-background-solid><label class="card-studio-label" for="cardBackgroundColor" data-card-i18n="backgroundColorLabel">Background colour</label><input class="card-studio-input" id="cardBackgroundColor" data-card-field="background.color" type="color"></div>
                     <div data-card-background-gradient><label class="card-studio-label" for="cardGradient" data-card-i18n="gradientLabel">Gradient</label><select class="card-studio-select" id="cardGradient" data-card-field="background.gradientId"></select></div>
-                    <div class="card-studio-upload" data-card-background-image><label class="card-studio-label" for="cardImage" data-card-i18n="uploadLabel">Choose a JPG, PNG or WebP</label><input id="cardImage" type="file" accept="image/jpeg,image/png,image/webp"><p class="card-studio-help" data-card-i18n="privacy">Choose a background image, then adjust its fit, position and overlay.</p><button class="card-studio-button" type="button" data-card-action="remove-image" data-card-i18n="removeImage">Remove image</button></div>
+                    <div class="card-studio-upload" data-card-background-image><label class="card-studio-label" for="cardImage" data-card-i18n="uploadLabel">Choose a JPG, PNG or WebP</label><input id="cardImage" type="file" accept="image/jpeg,image/png,image/webp"><p class="card-studio-help" data-card-i18n="privacy">Saved only on this device. Nothing is uploaded unless you choose Publish &amp; Share.</p><button class="card-studio-button" type="button" data-card-action="remove-image" data-card-i18n="removeImage">Remove image</button></div>
                     <div data-card-background-image data-card-advanced="true">
                         <div class="card-studio-field-row"><div><label class="card-studio-label" for="cardImageFit" data-card-i18n="fitLabel">Image fit</label><select class="card-studio-select" id="cardImageFit" data-card-field="background.fit"><option value="cover">Cover</option><option value="contain">Contain</option></select></div><div><label class="card-studio-label" for="cardOverlayColor" data-card-i18n="overlayColorLabel">Overlay</label><input class="card-studio-input" id="cardOverlayColor" data-card-field="background.overlayColor" type="color"></div></div>
                         <label class="card-studio-label" for="cardOverlay" data-card-i18n="overlayLabel">Overlay strength <span class="card-studio-range-value" data-card-overlay-value></span></label><input class="card-studio-range" id="cardOverlay" data-card-field="background.overlayOpacity" type="range" min="0" max=".8" step=".01">
@@ -225,7 +228,7 @@
                         <button class="card-studio-button primary" type="button" data-card-action="download" data-card-i18n="download" data-wu-l10n="urdu-card-studio.exportDownload">PNG ڈاؤن لوڈ کریں</button>
                         <button class="card-studio-button secondary" type="button" data-card-action="share" data-card-i18n="share" data-wu-l10n="urdu-card-studio.exportShare">شیئر کریں</button>
                     </div>
-                <p class="card-studio-privacy" data-card-i18n="exportPrivacy" data-wu-l10n="urdu-card-studio.exportPrivacy">آپ کا متن اور تصاویر اسی آلے پر رہتی ہیں، جب تک آپ خود Publish & Share منتخب نہ کریں۔</p>
+                <p class="card-studio-privacy" data-card-i18n="exportPrivacy" data-wu-l10n="urdu-card-studio.exportPrivacy">ڈاؤن لوڈ سے تصویر آپ کے آلے میں محفوظ ہو جاتی ہے، جو واٹس ایپ اسٹیٹس یا انسٹاگرام کے لیے ہے۔ شائع اور شیئر کریں سے ایک عوامی لنک بنتا ہے جسے کوئی بھی کھول سکتا ہے؛ یہ واٹس ایپ چیٹ اور فیس بک کے لیے بہتر ہے۔</p>
                     <div class="social-maker-controls" data-social-only hidden>
                         <h3>Social export</h3>
                         <p class="card-studio-help" data-social-guide></p>

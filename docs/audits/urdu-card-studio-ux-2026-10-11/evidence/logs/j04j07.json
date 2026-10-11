@@ -1,0 +1,189 @@
+{
+ "g_input": {
+  "top": 709,
+  "left": 25,
+  "w": 343,
+  "h": 96,
+  "visible": true,
+  "inFirstViewport": true
+ },
+ "g_count": "44 designs",
+ "g_inputTag": "TEXTAREA rtl",
+ "g_tiles": 44,
+ "g_tileActions": [
+  "Use this design · یہ ڈیزائن استعمال کریں"
+ ],
+ "g_tileBox": [
+  180,
+  345
+ ],
+ "g_previewShowsText": true,
+ "g_open": {
+  "url": "http://127.0.0.1:8790/urdu-card-studio",
+  "state": {
+   "text": "صبح بخیر، آپ کا دن اچھا گزرے",
+   "bg": "image"
+  }
+ },
+ "g_trace": [
+  {
+   "t": 1791713851061,
+   "text": "Gallery: typed once, compared designs",
+   "input": {
+    "top": 709,
+    "left": 25,
+    "w": 343,
+    "h": 96,
+    "visible": true,
+    "inFirstViewport": true
+   },
+   "count": "44 designs",
+   "tiles": 44,
+   "tile": [
+    180,
+    345
+   ],
+   "actions": [
+    "Use this design · یہ ڈیزائن استعمال کریں"
+   ],
+   "previewShowsText": true
+  },
+  {
+   "t": 1791713854181,
+   "text": "Chose first design",
+   "url": "http://127.0.0.1:8790/urdu-card-studio",
+   "state": {
+    "text": "صبح بخیر، آپ کا دن اچھا گزرے",
+    "bg": "image"
+   }
+  }
+ ],
+ "g_errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "pageErrors": [],
+  "failed": [
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  ]
+ },
+ "w_h1": "Urdu WhatsApp Status",
+ "w_layout": {
+  "textarea": {
+   "top": 3214,
+   "left": 32,
+   "w": 296,
+   "h": 132,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "canvas": {
+   "top": 4024,
+   "left": 31,
+   "w": 298,
+   "h": 530,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "discovery": {
+   "top": 510,
+   "left": 10,
+   "w": 340,
+   "h": 1799,
+   "visible": true,
+   "inFirstViewport": true
+  },
+  "download": {
+   "top": 3669,
+   "left": 32,
+   "w": 296,
+   "h": 42,
+   "visible": true,
+   "inFirstViewport": false
+  },
+  "publish": 0
+ },
+ "w_state": {
+  "preset": "story",
+  "font": "Noto Naskh Arabic",
+  "text": "آج کا دن ایک نئی شروعات ہے۔"
+ },
+ "w_guide": {
+  "hidden": false,
+  "text": "Some text extends outside the recommended safe area. Move or resize it before downloading."
+ },
+ "w_download": {
+  "name": "urdu-whatsapp-status-2026-10-11.png",
+  "bytes": 1557068
+ },
+ "w_guideInExport": "checked by pixel later",
+ "w_trace": [
+  {
+   "t": 1791713858003,
+   "text": "Opened WhatsApp Status maker",
+   "h1": "Urdu WhatsApp Status",
+   "layout": {
+    "textarea": {
+     "top": 3214,
+     "left": 32,
+     "w": 296,
+     "h": 132,
+     "visible": true,
+     "inFirstViewport": false
+    },
+    "canvas": {
+     "top": 4024,
+     "left": 31,
+     "w": 298,
+     "h": 530,
+     "visible": true,
+     "inFirstViewport": false
+    },
+    "discovery": {
+     "top": 510,
+     "left": 10,
+     "w": 340,
+     "h": 1799,
+     "visible": true,
+     "inFirstViewport": true
+    },
+    "download": {
+     "top": 3669,
+     "left": 32,
+     "w": 296,
+     "h": 42,
+     "visible": true,
+     "inFirstViewport": false
+    },
+    "publish": 0
+   },
+   "state": {
+    "preset": "story",
+    "font": "Noto Naskh Arabic",
+    "text": "آج کا دن ایک نئی شروعات ہے۔"
+   }
+  },
+  {
+   "t": 1791713861878,
+   "text": "Downloaded status image",
+   "name": "urdu-whatsapp-status-2026-10-11.png",
+   "bytes": 1557068
+  }
+ ],
+ "w_errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "pageErrors": [],
+  "failed": [
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events"
+  ]
+ }
+}

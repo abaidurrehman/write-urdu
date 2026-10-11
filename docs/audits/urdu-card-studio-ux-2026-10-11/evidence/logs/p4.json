@@ -1,0 +1,212 @@
+{
+ "persona": "P4 ready-made birthday/congrats",
+ "device": "android 393x852",
+ "firstViewport": [
+  "Ready-made Urdu cards",
+  "How do you want to start?",
+  "Find a ready-made message Browse dua, Jumma, love,",
+  "Use my own words Type or paste your Urdu once, the",
+  "All · سب",
+  "Dua · دعا",
+  "Eid Greeting · عید مبارک",
+  "Wedding · شادی",
+  "Congratulations · مبارکباد",
+  "Love & Friendship · محبت و دوستی",
+  "Poetry & Quotes · شاعری و اقتباس",
+  "Condolence · تعزیت",
+  "Everyday Greeting · روزمرہ سلام",
+  "Morning · صبح بخیر",
+  "Night · شب بخیر",
+  "Jumma · جمعہ مبارک",
+  "Reflection · دعا و خوبصورت بات",
+  "Family · خاندان",
+  "Friendship · دوستی",
+  "Love · محبت",
+  "Self-Respect · خودداری",
+  "♡",
+  "♡"
+ ],
+ "filters": [
+  "All · سب",
+  "Dua · دعا",
+  "Eid Greeting · عید مبارک",
+  "Wedding · شادی",
+  "Congratulations · مبارکباد",
+  "Love & Friendship · محبت و دوستی",
+  "Poetry & Quotes · شاعری و اقتباس",
+  "Condolence · تعزیت",
+  "Everyday Greeting · روزمرہ سلام",
+  "Morning · صبح بخیر",
+  "Night · شب بخیر",
+  "Jumma · جمعہ مبارک",
+  "Reflection · دعا و خوبصورت بات",
+  "Family · خاندان",
+  "Friendship · دوستی",
+  "Love · محبت",
+  "Self-Respect · خودداری"
+ ],
+ "search": 0,
+ "cardCount": 157,
+ "birthdayFound": false,
+ "congratsChip": {
+  "top": 673,
+  "left": 109,
+  "w": 175,
+  "h": 42,
+  "visible": true,
+  "inFirstViewport": true
+ },
+ "visibleCards": 4,
+ "cardActions": [
+  "♡ [urduCardsFavorite]",
+  "Share image · تصویر شیئر کریں [urduCardsImageShare]",
+  "Make it mine · اپنی مرضی سے بنائیں [urduCardsEdit]",
+  "Card [urduCardsFormat,cardId]",
+  "WhatsApp Status [urduCardsFormat,cardId]",
+  "Instagram Post [urduCardsFormat,cardId]",
+  "WhatsApp Status · واٹس ایپ اسٹیٹس [urduCardsWhatsappStatus]",
+  "Shareable link · شیئر لنک [urduCardsShare]"
+ ],
+ "cardText": "مبارک ہو! آپ کی محنت رنگ لائی۔\n\n♡\nTeal & Gold\nShare image · تصویر شیئر کریں\nMake it mine · اپنی مرضی سے بنائیں\nUse this design for\nCard\nWhatsApp Status\nInstagram Post\nWhatsApp Status · واٹس ایپ اسٹیٹس\nShareable link · شیئر لنک",
+ "personalLabel": "Make it mine · اپنی مرضی سے بنائیں",
+ "afterPersonalUrl": "http://127.0.0.1:8790/urdu-cards",
+ "dialog": {
+  "open": true,
+  "text": "Make this card yours Change the Urdu words below. Your edit stays in this browser unless you choose to share the image or continue to Card Studio. × مبارک ہو! آپ کی محنت رنگ لائی۔ ♡ Your Urdu message Input mode English letters → Urdu Type Urdu directly Example: mera khayal hai → میرا خیال ہے. Type Urdu words using English letters and press Space after each word. Share this image More editing in Card Studio"
+ },
+ "prefill": "مبارک ہو! آپ کی محنت رنگ لائی۔",
+ "previewUpdates": true,
+ "personalizerButtons": [
+  "× []",
+  "♡ [urduCardsFavorite]",
+  "English letters → Urdu [inputModeOption]",
+  "Type Urdu directly [inputModeOption]",
+  "Turn conversion on [inputModeAlertAction]",
+  "Share this image [urduCardsPersonalizerShare]",
+  "More editing in Card Studio [urduCardsPersonalizerAdvanced]"
+ ],
+ "shareLabel": "Share this image",
+ "afterShare": {
+  "url": "http://127.0.0.1:8790/urdu-cards",
+  "dialog": [],
+  "status": "PNG downloaded.",
+  "downloaded": true,
+  "clip": ""
+ },
+ "advLabel": "More editing in Card Studio",
+ "studio": {
+  "url": "http://127.0.0.1:8790/urdu-card-studio",
+  "state": {
+   "text": "احمد بھائی، مبارک ہو! آپ کی محنت رنگ لائی۔",
+   "bg": "image",
+   "preset": "square"
+  }
+ },
+ "elapsedMs": 17198,
+ "trace": [
+  {
+   "t": 1791713498889,
+   "text": "Opened /urdu-cards",
+   "filters": [
+    "All · سب",
+    "Dua · دعا",
+    "Eid Greeting · عید مبارک",
+    "Wedding · شادی",
+    "Congratulations · مبارکباد",
+    "Love & Friendship · محبت و دوستی",
+    "Poetry & Quotes · شاعری و اقتباس",
+    "Condolence · تعزیت",
+    "Everyday Greeting · روزمرہ سلام",
+    "Morning · صبح بخیر",
+    "Night · شب بخیر",
+    "Jumma · جمعہ مبارک",
+    "Reflection · دعا و خوبصورت بات",
+    "Family · خاندان",
+    "Friendship · دوستی",
+    "Love · محبت",
+    "Self-Respect · خودداری"
+   ],
+   "search": 0,
+   "cards": 157
+  },
+  {
+   "t": 1791713498889,
+   "text": "Looks for Birthday filter",
+   "found": false
+  },
+  {
+   "t": 1791713500220,
+   "text": "مبارک ہو! آپ کی محنت رنگ لائی۔\n\n♡\nTeal & Gold\nShare image · تصویر شیئر کریں\nMake it mine · اپنی مرضی سے بنائیں\nUse this ",
+   "actions": [
+    "♡ [urduCardsFavorite]",
+    "Share image · تصویر شیئر کریں [urduCardsImageShare]",
+    "Make it mine · اپنی مرضی سے بنائیں [urduCardsEdit]",
+    "Card [urduCardsFormat,cardId]",
+    "WhatsApp Status [urduCardsFormat,cardId]",
+    "Instagram Post [urduCardsFormat,cardId]",
+    "WhatsApp Status · واٹس ایپ اسٹیٹس [urduCardsWhatsappStatus]",
+    "Shareable link · شیئر لنک [urduCardsShare]"
+   ]
+  },
+  {
+   "t": 1791713502296,
+   "text": "Tapped Make it mine · اپنی مرضی سے بنائیں",
+   "url": "http://127.0.0.1:8790/urdu-cards",
+   "dialog": {
+    "open": true,
+    "text": "Make this card yours Change the Urdu words below. Your edit stays in this browser unless you choose to share the image or continue to Card Studio. × مبارک ہو! آپ کی محنت رنگ لائی۔ ♡ Your Urdu message Input mode English letters → Urdu Type Urdu directly Example: mera khayal hai → میرا خیال ہے. Type Urdu words using English letters and press Space after each word. Share this image More editing in Card Studio"
+   }
+  },
+  {
+   "t": 1791713503606,
+   "text": "Added recipient name",
+   "prefill": "مبارک ہو! آپ کی محنت رنگ لائی۔",
+   "previewShowsName": true
+  },
+  {
+   "t": 1791713503621,
+   "text": "Personalizer actions",
+   "buttons": [
+    "× []",
+    "♡ [urduCardsFavorite]",
+    "English letters → Urdu [inputModeOption]",
+    "Type Urdu directly [inputModeOption]",
+    "Turn conversion on [inputModeAlertAction]",
+    "Share this image [urduCardsPersonalizerShare]",
+    "More editing in Card Studio [urduCardsPersonalizerAdvanced]"
+   ]
+  },
+  {
+   "t": 1791713506535,
+   "text": "Tapped Share this image",
+   "url": "http://127.0.0.1:8790/urdu-cards",
+   "dialog": [],
+   "status": "PNG downloaded.",
+   "downloaded": true,
+   "clip": ""
+  },
+  {
+   "t": 1791713511686,
+   "text": "Tapped More editing in Card Studio",
+   "url": "http://127.0.0.1:8790/urdu-card-studio",
+   "state": {
+    "text": "احمد بھائی، مبارک ہو! آپ کی محنت رنگ لائی۔",
+    "bg": "image",
+    "preset": "square"
+   }
+  }
+ ],
+ "errors": {
+  "console": [
+   "error: Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "pageErrors": [],
+  "failed": [
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/community/publications",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/acquisition",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+   "net::ERR_ABORTED http://127.0.0.1:8790/api/events",
+   "net::ERR_TUNNEL_CONNECTION_FAILED https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  ]
+ }
+}

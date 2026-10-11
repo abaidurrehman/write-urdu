@@ -267,6 +267,34 @@ Human/product gates:
 - [ ] E–H follow `WU-JOURNEY-001F`, unified input, `WU-BILL-001` and `WU-JOURNEY-001E` gates; Slice I waits for backlog re-review.
 - [ ] Founder decisions D-1 (Send as text vs `WU-PLAT-004A`), D-2 (single-language labels), D-3 (`.docx`), D-4 (transliteration fallback), D-5 (returning-draft visibility).
 
+## P0.12 — Card Studio UX remediation (2026-10-11 field study)
+
+**Spec:** [`WU-UXR-002`](WU-UXR-002-card-studio-ux-remediation.md) · **Checklist/prompts:** [`WU-UXR-002-IMPLEMENTATION-CHECKLIST.md`](WU-UXR-002-IMPLEMENTATION-CHECKLIST.md) · **Evidence:** [`docs/audits/urdu-card-studio-ux-2026-10-11/`](../docs/audits/urdu-card-studio-ux-2026-10-11/01-executive-summary.md)
+**State:** Planned 2026-10-11 from an 8-persona browser study of `main` @ `7a14bde` (39 findings, 8 × P1). Continues `WU-UXR-001` Slice D. One slice per PR; tests first.
+
+- [ ] Slice 0 — production verification + harness baseline; WhatsApp preview device check (input to D-UX2-2). _2026-10-11: harness baseline (local) and read-only production runs done; all 8 P1 findings confirmed (001, 003, 004, 005, 008 on production; 002, 006, 012 by code parity). Open: owner Android + iPhone WhatsApp preview check for D-UX2-2._
+- [x] Slice A — bidi-safe canvas text (reversed phone numbers). Not frozen (output correctness). _2026-10-11: `isolateBidiRuns` in `card-studio-core.js` wraps Latin and number runs in LTR isolates for measuring and drawing only; stored text and payloads are unchanged. Branch `claude/wu-uxr-002a-bidi`, SW v62._
+- [x] Slice B — truthful feedback: real sample text, persistent errors, separate save indicator, label/privacy copy, filename. Not frozen. _2026-10-11: real sample texts per use case, quiet autosave indicator, sticky errors plus a six-second refusal toast, plain publish errors with Download picture, one Roman Urdu status during an outage, convert button under the field (Card Studio and both makers), `urdu-<use case>-<date>.png` filenames. Branch `claude/wu-uxr-002b-feedback`, SW v63._
+- [x] Slice C — never overwrite a saved card on hand-off; Recent cards on this device. Not frozen (data loss). _2026-10-11: a hand-off, template link or incoming text starts a new card and the saved card keeps its own id; "Recent cards on this device" (thumbnails, en/ur, local-only note) opens any of the last 20 cards per scope; older cards and their images are pruned. Optional D-UX2-4 line on `/urdu-cards` not done (decision not recorded). Branch `claude/wu-uxr-002c-recent-cards`, SW v64._
+- [x] Slice D — legible attribution; no template frame on designer backgrounds. Not frozen (output quality, P0.1F lineage). _2026-10-11: the credit follows the design (colour, Nastaliq, ≥ 0.5 size) and sits inside the safe area; no template motif, frame or accent on designer backgrounds; typing an author switches the credit on; author field visible on both makers. Branch `claude/wu-uxr-002d-attribution`, SW v65._
+- [ ] Slice E — reachability fixes (step panels sync/scroll, 360 px overflow, skip link). Not frozen (defect/a11y); no hierarchy change.
+- [ ] Slice-1 gate — re-run personas locally + production subset; 7-day Product Pulse; decide D-UX2-1.
+- [ ] Slice F — consent/manage/dedupe for ready-made "Shareable link" (also homepage featured card: D-UX2-3); personaliser "Get link". Not frozen (privacy).
+- [ ] Slice G — undo for all edits and Reset; photo-aware text; template keeps photo. Not frozen.
+- [ ] Slice H — Send sheet (Picture vs Link; WhatsApp/Facebook links). **Decision line required.**
+- [ ] Slice I — lightweight og:image preview. **Needs D-UX2-2.**
+- [ ] Slice J — remix designer backgrounds ("Edit this design"); Your published cards. Not frozen.
+- [ ] Slice K — Urdu UI completeness; focus ring; storage guard; long tokens. Not frozen (a11y).
+- [ ] Slice L — Greeting vs Notice defaults; emphasised first line. **Decision line required.**
+- [ ] Slice M — WhatsApp/Instagram maker parity. **Decision line required.**
+- [ ] Slice N — ready-made tile simplification; Birthday + occasion depth. **Content-owner gates.**
+- [ ] Slice O 🔒 — mobile hierarchy (sticky preview, finish row, ⋯ More). **Gated: production evidence + D-UX2-1.**
+- [ ] Slice P — later: performance, recipient font/CTA, word-level Roman correction, homepage hand-off copy.
+
+**Decision lines** (add one dated line here before starting H, L, M or N):
+
+- _none yet_
+
 ## P0.6 — AI production external gate
 
 **Spec:** [`WU-AI-001`](WU-AI-001-urdu-ai-writing-assistant-platform.md)  

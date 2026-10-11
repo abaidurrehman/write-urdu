@@ -217,7 +217,7 @@
             requestAnimationFrame(function () { scrollQueued = false; clampToolbarPosition(); });
         }, { passive: true });
         document.addEventListener('write-urdu:locale-change', refreshSelection);
-        window.WriteUrduCardStudioInteractionApi = { commit: commitEdit, cancel: cancelEdit, refresh: refreshSelection, select: select, undo: undo, redo: redo, getHistoryState: historyState, recordHistory: recordHistory };
+        window.WriteUrduCardStudioInteractionApi = { commit: commitEdit, cancel: cancelEdit, refresh: refreshSelection, select: select, undo: undo, redo: redo, getHistoryState: historyState, recordHistory: recordHistory, clearHistory: function () { history = []; future = []; syncHistoryButtons(); } };
         syncHistoryButtons();
     }
     function loadBackgroundLibrary() {

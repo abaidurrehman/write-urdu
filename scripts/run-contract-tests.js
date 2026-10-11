@@ -140,6 +140,10 @@ const tests = [
   'tests/transliteration-availability-contract.test.js',
   'tests/basic-writer-workspace-integrity-contract.test.js',
   'tests/card-text-fit-contract.test.js',
+  'tests/card-bidi-render-contract.test.js',
+  'tests/card-studio-feedback-contract.test.js',
+  'tests/card-studio-recent-contract.test.js',
+  'tests/card-attribution-quality-contract.test.js',
   'tests/print-quality-pdf-contract.test.js',
   'tests/unified-urdu-input-fields-contract.test.js'
 ];
