@@ -172,10 +172,10 @@ Use `skills/unified-urdu-input` (rollout skill). Card Studio is the designated p
 
 ### Slice G — Bill completeness (`WU-BILL-001` open items)
 
-- [ ] **G1 (F18)** Save business profile (name, phone) and last bill on this device; versioned state with New bill reset (checklist line 249). Auto-increment bill number.
-- [ ] **G2 (F19)** Total visually dominant over Subtotal (checklist line 181). Primary button uses the brand green.
-- [ ] **G3 (F17)** Urdu mode: currency label `روپے` option; payment method labels in Urdu only.
-- [ ] **G4 (F20)** Mobile: sticky footer with live Total + Download; preview reachable without long scroll.
+- [x] **G1 (F18)** Save business profile (name, phone) and last bill on this device; versioned state with New bill reset (checklist line 249). Auto-increment bill number.
+- [x] **G2 (F19)** Total visually dominant over Subtotal (checklist line 181). Primary button uses the brand green.
+- [x] **G3 (F17)** Urdu mode: currency label `روپے` option; payment method labels in Urdu only.
+- [x] **G4 (F20)** Mobile: sticky footer with live Total + Download; preview reachable without long scroll.
 
 Guardrail from P0.8 applies: no Basic/Rich/invoice-protected file may change.
 
