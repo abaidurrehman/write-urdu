@@ -4,6 +4,8 @@ Spec: [`WU-UXR-002-card-studio-ux-remediation.md`](WU-UXR-002-card-studio-ux-rem
 
 ## How to run this in VS Code with Claude Code
 
+Fastest path: paste the handover prompt in [`docs/WU-UXR-002-CLAUDE-HANDOFF.md`](../docs/WU-UXR-002-CLAUDE-HANDOFF.md) into a new Claude Code session. It picks up the next unticked slice.
+
 1. Check out the plan branch and pull it: `git fetch origin && git checkout claude/write-urdu-card-studio-audit-tefvyq`. Create each slice branch **from `main`** after the plan is merged, or from this branch if it is not merged yet.
 2. One-time setup:
    ```bash
