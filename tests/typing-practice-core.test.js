@@ -74,3 +74,9 @@ assert.match(css, /\.practice-glyph\.is-wrong/, 'Wrong characters need a visible
 assert.match(css, /\.practice-glyph\.is-current/, 'Current character needs a visible focus state');
 
 console.log('Urdu typing practice core and page contract passed.');
+
+assert.deepEqual(core.nextKey('اس', ''), { key: 'a', shift: false }, 'Next key should be the first letter\'s key');
+assert.deepEqual(core.nextKey('اس', 'ا'), { key: 's', shift: false });
+assert.deepEqual(core.nextKey('ا س', 'ا'), { key: ' ', shift: false }, 'Next key should be Space between spaced letters');
+assert.deepEqual(core.nextKey('ٹ', ''), { key: 't', shift: true }, 'Shift letters should name the lowercase key with shift');
+assert.equal(core.nextKey('ا', 'ا'), null, 'No next key at the end of the target');

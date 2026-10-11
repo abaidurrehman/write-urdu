@@ -159,3 +159,7 @@
 @media (prefers-reduced-motion:reduce) {
   .practice-progress-bar, .practice-glyph { transition:none; }
 }
+
+.phonetic-key.is-next, .phonetic-shift.is-next { border-color:#e3c65a; background:#fff0b8; box-shadow:0 0 0 2px #e3c65a; }
+.phonetic-space { width:min(18rem,70%); margin:.45rem auto 0; padding:.4rem; border:1px solid #cdd5d0; border-bottom-width:3px; border-radius:.48rem; background:#fff; color:var(--wu-color-muted); font-size:.72rem; font-weight:800; text-align:center; }
+.phonetic-space.is-next { border-color:#e3c65a; background:#fff0b8; color:#493800; box-shadow:0 0 0 2px #e3c65a; }

@@ -10,10 +10,10 @@
     var KEYBOARD_ROWS = Core.KEYBOARD_ROWS.slice(1);
 
     var LESSONS = [
-        { id:'home-row', group:'Foundation', number:1, title:'Home row', urdu:'درمیانی قطار', copy:'Build muscle memory for the easiest home-row letters.', target:'ا س د ف گ ح ج ک ل  ا س د ف گ ح ج ک ل  سال دل کل حال گل' },
-        { id:'top-row', group:'Foundation', number:2, title:'Top row', urdu:'اوپری قطار', copy:'Practice the most useful letters on the top row.', target:'ق و ع ر ت ے ء ی ہ پ  ق و ع ر ت ے ی ہ پ  یہ وہ پر تو پھر' },
-        { id:'bottom-row', group:'Foundation', number:3, title:'Bottom row', urdu:'نچلی قطار', copy:'Add bottom-row letters and Urdu punctuation.', target:'ز ش چ ط ب ن م  ز ش چ ط ب ن م  نام بات شب چمن زمان' },
-        { id:'shift-letters', group:'Foundation', number:4, title:'Shift letters', urdu:'شفٹ والے حروف', copy:'Learn common Urdu letters that use Shift on the phonetic layout.', target:'آ ص ڈ غ ھ ض خ ذ ژ ث ظ ں ڑ ٹ  بڑا گھر خاص ٹھنڈا آغاز' },
+        { id:'home-row', group:'Foundation', number:1, title:'Home row', urdu:'درمیانی قطار', copy:'Build muscle memory for the easiest home-row letters. Press Space between letters, as shown in the text.', target:'ا س د ف گ ح ج ک ل  ا س د ف گ ح ج ک ل  سال دل کل حال گل' },
+        { id:'top-row', group:'Foundation', number:2, title:'Top row', urdu:'اوپری قطار', copy:'Practice the most useful letters on the top row. Press Space between letters, as shown in the text.', target:'ق و ع ر ت ے ء ی ہ پ  ق و ع ر ت ے ی ہ پ  یہ وہ پر تو پھر' },
+        { id:'bottom-row', group:'Foundation', number:3, title:'Bottom row', urdu:'نچلی قطار', copy:'Add bottom-row letters and Urdu punctuation. Press Space between letters, as shown in the text.', target:'ز ش چ ط ب ن م  ز ش چ ط ب ن م  نام بات شب چمن زمان' },
+        { id:'shift-letters', group:'Foundation', number:4, title:'Shift letters', urdu:'شفٹ والے حروف', copy:'Learn common Urdu letters that use Shift on the phonetic layout. Press Space between letters, as shown in the text.', target:'آ ص ڈ غ ھ ض خ ذ ژ ث ظ ں ڑ ٹ  بڑا گھر خاص ٹھنڈا آغاز' },
         { id:'common-words', group:'Words', number:5, title:'Common words', urdu:'عام الفاظ', copy:'Move from individual keys to everyday Urdu words.', target:'میں آپ ہم تم یہ وہ ایک اور ہے ہیں تھا تھی کے کی کو سے پر بھی' },
         { id:'daily-words', group:'Words', number:6, title:'Daily life', urdu:'روزمرہ کے الفاظ', copy:'Practice useful words with repeated letter patterns.', target:'گھر کتاب پانی سکول بازار دوست وقت کام صبح شام خوشی دنیا زندگی' },
         { id:'short-sentences', group:'Sentences', number:7, title:'Short sentences', urdu:'مختصر جملے', copy:'Keep a steady rhythm across spaces and complete phrases.', target:'آج موسم اچھا ہے۔ میں اردو لکھ رہا ہوں۔ آپ کیسے ہیں؟ ہم وقت پر گھر جائیں گے۔' },
@@ -46,7 +46,7 @@
         progressText: root.querySelector('[data-progress-text]'), title: root.querySelector('[data-current-title]'),
         description: root.querySelector('[data-current-description]'), keyboard: root.querySelector('[data-phonetic-keyboard]'),
         keyboardRows: root.querySelector('[data-keyboard-rows]'), shift: root.querySelector('[data-keyboard-shift]'),
-        keyboardHint: root.querySelector('[data-keyboard-hint]'), restart: root.querySelector('[data-practice-restart]'),
+        keyboardHint: root.querySelector('[data-keyboard-hint]'), spaceCue: root.querySelector('[data-keyboard-space]'), restart: root.querySelector('[data-practice-restart]'),
         result: root.querySelector('[data-practice-result]'), resultTitle: root.querySelector('[data-result-title]'),
         resultWpm: root.querySelector('[data-result-wpm]'), resultAccuracy: root.querySelector('[data-result-accuracy]'),
         resultErrors: root.querySelector('[data-result-errors]'), resultBest: root.querySelector('[data-result-best]'),
@@ -184,6 +184,7 @@
         }
         if (end < length) { var after=document.createElement('span'); after.className='practice-ellipsis'; after.textContent=' …'; fragment.appendChild(after); }
         dom.target.replaceChildren(fragment);
+        renderNextKey();
     }
 
     function updateStats() {
@@ -219,7 +220,7 @@
                 var lookup=key;
                 if (state.shift) lookup = key === ',' ? '<' : key === '.' ? '>' : key === '/' ? '?' : key.toUpperCase();
                 var urdu = state.shift ? Core.SHIFT_MAP[lookup] : Core.BASE_MAP[key];
-                var button=document.createElement('button'); button.type='button'; button.className='phonetic-key'; button.disabled=!urdu;
+                var button=document.createElement('button'); button.type='button'; button.className='phonetic-key'; button.disabled=!urdu; button.setAttribute('data-key', key);
                 var latin=document.createElement('span'); latin.className='phonetic-key-latin'; latin.textContent=state.shift ? lookup : key.toUpperCase();
                 var glyph=document.createElement('span'); glyph.className='phonetic-key-urdu'; glyph.lang='ur'; glyph.dir='rtl'; glyph.textContent=urdu || '—';
                 button.append(latin,glyph); if (urdu) button.addEventListener('click', function () { insertText(urdu); }); rowNode.appendChild(button);
@@ -227,6 +228,17 @@
             dom.keyboardRows.appendChild(rowNode);
         });
         dom.shift.classList.toggle('is-active', state.shift); dom.shift.setAttribute('aria-pressed', state.shift ? 'true':'false');
+        renderNextKey();
+    }
+
+    function renderNextKey() {
+        var next = state.complete ? null : Core.nextKey(state.target, state.typed);
+        var keys = dom.keyboardRows.querySelectorAll('.phonetic-key');
+        keys.forEach(function (node) {
+            node.classList.toggle('is-next', !!next && next.key !== ' ' && next.shift === state.shift && node.getAttribute('data-key') === next.key);
+        });
+        dom.shift.classList.toggle('is-next', !!next && next.shift && !state.shift);
+        if (dom.spaceCue) dom.spaceCue.classList.toggle('is-next', !!next && next.key === ' ');
     }
 
     function countNewErrors(previous, next) {
