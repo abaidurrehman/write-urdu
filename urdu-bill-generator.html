@@ -39,7 +39,7 @@
                 <h1>Urdu Bill Generator</h1>
                 <p class="bill-lede">Make a simple Urdu, English or bilingual bill for a customer in under a minute. Track paid and balance, then print it. No account required.</p>
             </div>
-            <aside class="bill-privacy"><strong>Your bill stays private</strong><span>Everything is created and printed in your browser. Nothing is sent to Write Urdu servers.</span></aside>
+            <aside class="bill-privacy"><strong>Your bill stays private</strong><span>Everything is created and printed in your browser. Nothing is sent to Write Urdu servers. Your shop details and last bill are remembered on this device only.</span></aside>
         </header>
 
         <div class="bill-actionbar" role="toolbar" aria-label="Bill actions">
@@ -73,8 +73,10 @@
                 </div></details>
                 <details class="bill-panel"><summary>Notes</summary><div class="bill-panel-body"><label>Notes<textarea data-field="notes" rows="2"></textarea></label></div></details>
             </section>
-            <section class="bill-preview-workspace" aria-label="Bill preview"><div class="bill-preview-toolbar"><strong>Live preview</strong></div><div class="bill-preview-frame"><article class="bill-page" data-bill-preview aria-label="Bill preview"></article></div></section>
+            <section class="bill-preview-workspace" id="bill-preview" aria-label="Bill preview"><div class="bill-preview-toolbar"><strong>Live preview</strong></div><div class="bill-preview-frame"><article class="bill-page" data-bill-preview aria-label="Bill preview"></article></div></section>
         </div>
+
+        <div class="bill-mobile-bar" data-bill-mobile-bar role="region" aria-label="Bill total and actions"><div class="bill-mobile-total"><span>Total</span><strong data-bill-mobile-total>PKR 0.00</strong></div><a class="bill-button bill-button-secondary" href="#bill-preview">Preview</a><button type="button" class="bill-button bill-button-primary" data-bill-mobile-pdf>Download PDF</button></div>
 
         <section class="bill-about" aria-labelledby="bill-about-title">
             <h2 id="bill-about-title">A simple everyday bill, not accounting software</h2>

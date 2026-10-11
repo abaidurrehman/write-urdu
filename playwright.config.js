@@ -41,7 +41,8 @@ module.exports = defineConfig({
     'basic-writer-workspace-integrity.spec.js',
     'card-poetry-quality.spec.js',
     'print-quality-pdf.spec.js',
-    'bill-urdu-input.spec.js'
+    'bill-urdu-input.spec.js',
+    'bill-completeness.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },

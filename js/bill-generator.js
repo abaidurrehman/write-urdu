@@ -49,6 +49,41 @@
     }
 
     function money(minor) { return core.formatMoneyMinor(minor); }
+    // Urdu mode shows the amount followed by روپے instead of the PKR prefix.
+    function previewMoney(minor) {
+        if (state.languageMode !== 'urdu') return money(minor);
+        return money(minor).replace(/^PKR\s*/, '') + ' روپے';
+    }
+
+    var STORAGE_KEY = 'write-urdu:bill:v1';
+    var STORAGE_VERSION = 1;
+
+    function readSaved() {
+        try {
+            var saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || 'null');
+            return saved && saved.v === STORAGE_VERSION && saved.bill ? saved : null;
+        } catch (error) { return null; }
+    }
+
+    function writeSaved() {
+        try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                v: STORAGE_VERSION,
+                profile: { name: state.business.name, phone: state.business.phone },
+                bill: state
+            }));
+        } catch (error) { /* private browsing or full storage: the bill still works */ }
+    }
+
+    // BILL-20261011-001 -> next sequence on the same date, -001 on a new date.
+    function nextBillNumber(previous, dateIso) {
+        var match = /^(.*?)(\d{8})-(\d+)$/.exec(String(previous || ''));
+        var stamp = String(dateIso || '').replace(/-/g, '');
+        if (!match || match[2] !== stamp) return null;
+        var next = String(Number(match[3]) + 1);
+        while (next.length < match[3].length) next = '0' + next;
+        return match[1] + match[2] + '-' + next;
+    }
 
     function setStatus(message, type) {
         if (!statusNode) return;
@@ -108,17 +143,21 @@
             var descDir = core.directionForValue(item.description, 'text');
             return '<tr><td>' + (index + 1) + '</td><td dir="' + descDir + '">' + (esc(item.description) || '—') + '</td>' +
                 '<td class="bill-numeric"><bdi>' + esc(item.quantity || 0) + '</bdi></td>' +
-                '<td class="bill-numeric"><bdi>' + esc(money(core.toMinor(item.rate))) + '</bdi></td>' +
-                '<td class="bill-numeric"><bdi>' + esc(money(totals.lineAmounts[index] || 0)) + '</bdi></td></tr>';
+                '<td class="bill-numeric"><bdi>' + esc(previewMoney(core.toMinor(item.rate))) + '</bdi></td>' +
+                '<td class="bill-numeric"><bdi>' + esc(previewMoney(totals.lineAmounts[index] || 0)) + '</bdi></td></tr>';
         }).join('');
 
-        var totalsRows = '<tr><td>' + label('Subtotal', 'جمع') + '</td><td class="bill-numeric"><bdi>' + esc(money(totals.subtotalMinor)) + '</bdi></td></tr>' +
-            (totals.discountMinor > 0 ? '<tr><td>' + label('Discount', 'رعایت') + '</td><td class="bill-numeric"><bdi>−' + esc(money(totals.discountMinor)) + '</bdi></td></tr>' : '') +
-            '<tr class="bill-grand-total"><td>' + label('Total', 'کل رقم') + '</td><td class="bill-numeric"><bdi>' + esc(money(totals.totalMinor)) + '</bdi></td></tr>' +
-            '<tr><td>' + label('Paid', 'ادا شدہ') + '</td><td class="bill-numeric"><bdi>' + esc(money(totals.amountPaidMinor)) + '</bdi></td></tr>' +
-            '<tr class="' + (totals.balanceMinor > 0 ? 'bill-balance-positive' : '') + '"><td>' + label('Balance', 'بقایا') + '</td><td class="bill-numeric"><bdi>' + esc(money(totals.balanceMinor)) + '</bdi></td></tr>';
+        var totalsRows = '<tr><td>' + label('Subtotal', 'جمع') + '</td><td class="bill-numeric"><bdi>' + esc(previewMoney(totals.subtotalMinor)) + '</bdi></td></tr>' +
+            (totals.discountMinor > 0 ? '<tr><td>' + label('Discount', 'رعایت') + '</td><td class="bill-numeric"><bdi>−' + esc(previewMoney(totals.discountMinor)) + '</bdi></td></tr>' : '') +
+            '<tr class="bill-grand-total"><td>' + label('Total', 'کل رقم') + '</td><td class="bill-numeric"><bdi>' + esc(previewMoney(totals.totalMinor)) + '</bdi></td></tr>' +
+            '<tr><td>' + label('Paid', 'ادا شدہ') + '</td><td class="bill-numeric"><bdi>' + esc(previewMoney(totals.amountPaidMinor)) + '</bdi></td></tr>' +
+            '<tr class="' + (totals.balanceMinor > 0 ? 'bill-balance-positive' : '') + '"><td>' + label('Balance', 'بقایا') + '</td><td class="bill-numeric"><bdi>' + esc(previewMoney(totals.balanceMinor)) + '</bdi></td></tr>';
 
-        var paymentLabelMap = { cash: 'Cash / نقد', raast: 'Raast', jazzcash: 'JazzCash', easypaisa: 'Easypaisa', 'bank-transfer': 'Bank transfer', udhaar: 'Udhaar / ادھار', other: 'Other' };
+        var paymentLabelMap = {
+            english: { cash: 'Cash', raast: 'Raast', jazzcash: 'JazzCash', easypaisa: 'Easypaisa', 'bank-transfer': 'Bank transfer', udhaar: 'Udhaar', other: 'Other' },
+            urdu: { cash: 'نقد', raast: 'راست', jazzcash: 'جاز کیش', easypaisa: 'ایزی پیسہ', 'bank-transfer': 'بینک ٹرانسفر', udhaar: 'ادھار', other: 'دیگر' },
+            bilingual: { cash: 'Cash / نقد', raast: 'Raast', jazzcash: 'JazzCash', easypaisa: 'Easypaisa', 'bank-transfer': 'Bank transfer', udhaar: 'Udhaar / ادھار', other: 'Other' }
+        }[state.languageMode] || {};
         var details = state.paymentDetails || {};
         var detailParts = [details.raastId, details.phoneOrAccount, details.accountTitle, details.ibanOrAccount, details.note].filter(function (value) { return value; });
         var paymentLine = '<p class="bill-payment-line">' + label('Payment method', 'طریقۂ ادائیگی') + ': ' + esc(paymentLabelMap[state.paymentMethod] || state.paymentMethod) +
@@ -140,6 +179,9 @@
             paymentLine +
             (state.notes ? '<p class="bill-payment-line">' + esc(state.notes) + '</p>' : '');
 
+        var mobileTotal = root.querySelector('[data-bill-mobile-total]');
+        if (mobileTotal) mobileTotal.textContent = previewMoney(totals.totalMinor);
+        writeSaved();
         track('billing_payment_state', { state: totals.paymentState });
     }
 
@@ -193,7 +235,11 @@
         var newButton = root.querySelector('[data-bill-new]');
         if (newButton) newButton.addEventListener('click', function () {
             if (!window.confirm('Start a new bill and clear the current fields?')) return;
+            var previous = state;
             state = core.createDefaultBillDocument(new Date());
+            state.business = { name: previous.business.name, phone: previous.business.phone };
+            state.languageMode = previous.languageMode;
+            state.documentNumber = nextBillNumber(previous.documentNumber, state.date) || state.documentNumber;
             startedTracked = false;
             renderItemsEditor(); renderFieldValues(); renderPreview();
         });
@@ -212,6 +258,8 @@
         });
         var pdfButton = root.querySelector('[data-bill-pdf]');
         if (pdfButton) pdfButton.addEventListener('click', downloadPdf);
+        var mobilePdf = root.querySelector('[data-bill-mobile-pdf]');
+        if (mobilePdf) mobilePdf.addEventListener('click', downloadPdf);
     }
 
     function safeFilename() {
@@ -239,6 +287,12 @@
             setStatus('Unable to create the PDF. Use Print instead.', 'error');
             track('billing_error', { category: 'pdf-failed' });
         });
+    }
+
+    var saved = readSaved();
+    if (saved) {
+        state = core.normalizeBillingDocument(saved.bill);
+        setStatus('Restored your last bill from this device.', 'ready');
     }
 
     track('billing_tool_viewed', { route: '/urdu-bill-generator' });
