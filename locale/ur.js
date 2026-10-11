@@ -402,7 +402,7 @@ module.exports = {
         'urdu-card-studio.exportHelp': 'آپ کا پیش منظر کینوس پر دکھائے گئے عین طول و عرض میں برآمد کیا جائے گا۔',
         'urdu-card-studio.exportDownload': 'PNG ڈاؤن لوڈ کریں',
         'urdu-card-studio.exportShare': 'شیئر کریں',
-        'urdu-card-studio.exportPrivacy': 'آپ کا متن اور تصاویر اسی آلے پر رہتی ہیں، جب تک آپ خود Publish & Share منتخب نہ کریں۔',
+        'urdu-card-studio.exportPrivacy': 'ڈاؤن لوڈ سے تصویر آپ کے آلے میں محفوظ ہو جاتی ہے، جو واٹس ایپ اسٹیٹس یا انسٹاگرام کے لیے ہے۔ شائع اور شیئر کریں سے ایک عوامی لنک بنتا ہے جسے کوئی بھی کھول سکتا ہے؛ یہ واٹس ایپ چیٹ اور فیس بک کے لیے بہتر ہے۔',
         'urdu-card-studio.videoEyebrow': 'مختصر ویڈیو گائیڈ',
         'urdu-card-studio.videoTitle': 'اردو کارڈ بنانے کا طریقہ دیکھیں',
         'urdu-card-studio.videoDescription': 'اپنا اردو متن لکھیں، ٹیمپلیٹ منتخب کریں، انداز بہتر بنائیں اور تیار کارڈ PNG میں ڈاؤن لوڈ کریں۔',

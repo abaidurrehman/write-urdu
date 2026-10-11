@@ -114,7 +114,11 @@
     }
     function contentAction(event) {
         var action = event.currentTarget.dataset.cardContentAction;
-        if (action === 'sample') app.updateObjectText('text', core.DEFAULT_TEXT);
+        if (action === 'sample') {
+            var samples = core.SAMPLE_TEXTS || {};
+            var current = app.getState && app.getState();
+            app.updateObjectText('text', samples[current && current.useCase] || samples.default);
+        }
         if (action === 'clear') app.updateObjectText('text', '');
         if (app.syncControls) app.syncControls();
         if (app.scheduleSave) app.scheduleSave();

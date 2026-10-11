@@ -141,6 +141,7 @@ const tests = [
   'tests/basic-writer-workspace-integrity-contract.test.js',
   'tests/card-text-fit-contract.test.js',
   'tests/card-bidi-render-contract.test.js',
+  'tests/card-studio-feedback-contract.test.js',
   'tests/print-quality-pdf-contract.test.js',
   'tests/unified-urdu-input-fields-contract.test.js'
 ];

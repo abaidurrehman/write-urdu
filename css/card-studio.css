@@ -88,3 +88,9 @@ html[lang="en"] #cardText[data-input-mode="roman"]::placeholder{font-family:Inte
 @media(max-width:520px){
   .card-studio-use-cases{grid-template-columns:1fr}.card-studio-export-actions{grid-template-columns:1fr}.card-studio-mobile-stepbar{left:6px;right:6px;bottom:6px}.card-studio-mobile-stepbar button{font-size:.66rem}.card-studio-mobile-stepbar button span{width:17px;height:17px}.card-studio-content-actions{flex-wrap:wrap}.card-studio-content-actions .card-studio-button{flex:1;min-height:44px}
 }
+/* WU-UXR-002 Slice B: quiet autosave indicator, refusal toast, single Roman Urdu status. */
+.card-studio-save-indicator{padding:0 4px;color:var(--card-muted);font-size:.7rem;white-space:nowrap}
+.card-studio-transliteration[hidden]{display:none}
+.card-studio-toast{position:fixed;z-index:10000;max-width:min(92vw,380px);padding:11px 14px;border-radius:10px;background:#8a1f1f;color:#fff;font:600 .86rem/1.45 "Segoe UI",Arial,sans-serif;box-shadow:0 10px 28px rgba(0,0,0,.24)}
+.card-studio-toast.is-docked{left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:none}
+@media(max-width:900px){.card-studio-toast{top:auto!important;left:12px!important;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));max-width:none}}

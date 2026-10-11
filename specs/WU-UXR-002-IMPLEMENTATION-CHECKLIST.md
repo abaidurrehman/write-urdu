@@ -54,13 +54,13 @@ re-run harness p5.mjs and report the before/after. Update the checklist and BACK
 ```
 
 ## Slice B — Truthful feedback & copy (CARD-UX-004, 015 copy, 021, 022 status/placement, 030, 031)
-- [ ] Real sample texts (≠ DEFAULT_TEXT)
-- [ ] Save indicator separate from `[data-card-status]`; sticky errors + toast
-- [ ] `removeImage`, `privacy`, `exportPrivacy` copy (en + ur), HTML + `locale:generate`
-- [ ] Publish error copy + Download picture button
-- [ ] One Roman-Urdu status during outage; convert button below the field (Card Studio + makers)
-- [ ] Filename without "Untitled"/spaces
-- [ ] Tests registered; `language:check` passes; SW bump
+- [x] Real sample texts (≠ DEFAULT_TEXT)
+- [x] Save indicator separate from `[data-card-status]`; sticky errors + toast
+- [x] `removeImage`, `privacy`, `exportPrivacy` copy (en + ur), HTML + `locale:generate`
+- [x] Publish error copy + Download picture button
+- [x] One Roman-Urdu status during outage; convert button below the field (Card Studio + makers)
+- [x] Filename without "Untitled"/spaces
+- [x] Tests registered; `language:check` passes; SW bump (v62 → v63)
 
 **Prompt**
 ```text

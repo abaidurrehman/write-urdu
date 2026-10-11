@@ -274,7 +274,7 @@ Human/product gates:
 
 - [ ] Slice 0 — production verification + harness baseline; WhatsApp preview device check (input to D-UX2-2). _2026-10-11: harness baseline (local) and read-only production runs done; all 8 P1 findings confirmed (001, 003, 004, 005, 008 on production; 002, 006, 012 by code parity). Open: owner Android + iPhone WhatsApp preview check for D-UX2-2._
 - [x] Slice A — bidi-safe canvas text (reversed phone numbers). Not frozen (output correctness). _2026-10-11: `isolateBidiRuns` in `card-studio-core.js` wraps Latin and number runs in LTR isolates for measuring and drawing only; stored text and payloads are unchanged. Branch `claude/wu-uxr-002a-bidi`, SW v62._
-- [ ] Slice B — truthful feedback: real sample text, persistent errors, separate save indicator, label/privacy copy, filename. Not frozen.
+- [x] Slice B — truthful feedback: real sample text, persistent errors, separate save indicator, label/privacy copy, filename. Not frozen. _2026-10-11: real sample texts per use case, quiet autosave indicator, sticky errors plus a six-second refusal toast, plain publish errors with Download picture, one Roman Urdu status during an outage, convert button under the field (Card Studio and both makers), `urdu-<use case>-<date>.png` filenames. Branch `claude/wu-uxr-002b-feedback`, SW v63._
 - [ ] Slice C — never overwrite a saved card on hand-off; Recent cards on this device. Not frozen (data loss).
 - [ ] Slice D — legible attribution; no template frame on designer backgrounds. Not frozen (output quality, P0.1F lineage).
 - [ ] Slice E — reachability fixes (step panels sync/scroll, 360 px overflow, skip link). Not frozen (defect/a11y); no hierarchy change.

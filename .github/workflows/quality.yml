@@ -95,6 +95,7 @@ jobs:
           tests/basic-writer-workspace-integrity.spec.js
           tests/card-poetry-quality.spec.js
           tests/card-bidi-render.spec.js
+          tests/card-studio-feedback.spec.js
           tests/print-quality-pdf.spec.js
           tests/bill-urdu-input.spec.js
           tests/bill-completeness.spec.js

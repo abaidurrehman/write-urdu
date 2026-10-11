@@ -73,15 +73,20 @@
     });
   }
 
+  function isUrdu() {
+    return !!(window.WriteUrduLocale && typeof window.WriteUrduLocale.get === 'function' && window.WriteUrduLocale.get() === 'ur');
+  }
+
   function toast(message, error) {
     var current = document.querySelector('.wu-share-toast');
     if (current) current.remove();
     var node = document.createElement('div');
     node.className = 'wu-share-toast' + (error ? ' is-error' : '');
-    node.setAttribute('role', 'status');
+    node.setAttribute('role', error ? 'alert' : 'status');
     node.textContent = message;
     document.body.appendChild(node);
-    window.setTimeout(function () { node.remove(); }, 3200);
+    // Refusals stay readable for at least six seconds (WU-UXR-002 Slice B).
+    window.setTimeout(function () { node.remove(); }, error ? 6500 : 3200);
   }
 
   function managementState() {
@@ -290,11 +295,25 @@
     openDialog('<div class="wu-share-dialog-shell"><div class="wu-share-dialog-head"><div><h2>Publishing your Urdu card</h2><p>Creating the public snapshot and short link…</p></div></div><div class="wu-share-progress"><span class="wu-share-spinner" aria-hidden="true"></span><span>Preparing the hosted image securely.</span></div></div>');
   }
 
+  function linkUnavailableMessage() {
+    return isUrdu()
+      ? 'ابھی لنک نہیں بن سکتا۔ آپ کا کارڈ یہاں محفوظ ہے، تصویر ڈاؤن لوڈ کر کے بھیج دیں۔'
+      : "Links can't be created right now. Your card is safe here. Download the picture and send it instead.";
+  }
+
   function errorDialog(message) {
-    var node = openDialog('<div class="wu-share-dialog-shell"><div class="wu-share-dialog-head"><div><h2>Could not publish this card</h2><p>The local card is unchanged.</p></div><button class="wu-share-dialog-close" type="button" data-wu-share-close>×</button></div><div class="wu-share-error" data-wu-share-error></div><div class="wu-share-dialog-actions"><button type="button" data-wu-share-close>Close</button><button class="primary" type="button" data-wu-share-retry>Try again</button></div></div>');
-    node.querySelector('[data-wu-share-error]').textContent = message || 'Publishing is temporarily unavailable. Please try again.';
+    var node = openDialog('<div class="wu-share-dialog-shell"><div class="wu-share-dialog-head"><div><h2>Could not publish this card</h2><p>The local card is unchanged.</p></div><button class="wu-share-dialog-close" type="button" data-wu-share-close>×</button></div><div class="wu-share-error" data-wu-share-error></div><div class="wu-share-dialog-actions"><button type="button" data-wu-share-close>Close</button><button type="button" data-wu-share-retry>Try again</button><button class="primary" type="button" data-wu-share-download></button></div></div>');
+    node.querySelector('[data-wu-share-error]').textContent = message || linkUnavailableMessage();
     node.querySelectorAll('[data-wu-share-close]').forEach(function (button) { button.addEventListener('click', closeDialog); });
     node.querySelector('[data-wu-share-retry]').addEventListener('click', publishCurrent);
+    // The picture does not need a link: offer it straight from the error (CARD-UX-031).
+    var download = node.querySelector('[data-wu-share-download]');
+    download.textContent = isUrdu() ? 'تصویر ڈاؤن لوڈ کریں' : 'Download picture';
+    download.addEventListener('click', function () {
+      closeDialog();
+      var button = document.querySelector('[data-card-action="download"]');
+      if (button) button.click();
+    });
   }
 
   function copyText(value) {
@@ -452,7 +471,7 @@
       var response = await fetch('/api/shares', { method: 'POST', body: form, credentials: 'same-origin' });
       var result = await response.json().catch(function () { return {}; });
       if (!response.ok || !result.ok || !result.id || !result.url || !result.manageToken) {
-        var message = result.error === 'share_storage_unavailable' ? 'Public sharing storage is not connected to this deployment yet.' : result.error === 'publish_rate_limited' ? 'Too many publish attempts were made recently. Please wait a few minutes.' : result.error === 'image_too_large' ? 'This published image is too large. Try a smaller card or background image.' : 'Publishing is temporarily unavailable. Please try again.';
+        var message = result.error === 'share_storage_unavailable' ? linkUnavailableMessage() : result.error === 'publish_rate_limited' ? 'Too many publish attempts were made recently. Please wait a few minutes.' : result.error === 'image_too_large' ? 'This published image is too large. Try a smaller card or background image.' : linkUnavailableMessage();
         throw new Error(message);
       }
       rememberShare(result);
@@ -464,7 +483,7 @@
       successDialog(result);
     } catch (error) {
       track('share_publish_failed', { tool: 'card_studio', success: false });
-      errorDialog(error && error.message ? error.message : 'Publishing is temporarily unavailable. Please try again.');
+      errorDialog(error && error.message && !/fetch|network|json/i.test(error.message) ? error.message : linkUnavailableMessage());
     } finally {
       busy = false;
       setPublishBusy(false);

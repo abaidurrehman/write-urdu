@@ -74,6 +74,15 @@
     ];
 
     var DEFAULT_TEXT = 'یہاں اپنا اردو متن لکھیں۔';
+    // "Use sample text" inserts a real, exportable card for the chosen use case (WU-UXR-002 Slice B).
+    // These must never equal DEFAULT_TEXT, which export and publish treat as empty.
+    var SAMPLE_TEXTS = {
+        default: 'صبح بخیر!\nاللہ آپ کا دن خوشیوں سے بھر دے۔',
+        quote: 'ہزاروں خواہشیں ایسی کہ ہر خواہش پہ دم نکلے\nبہت نکلے مرے ارمان لیکن پھر بھی کم نکلے',
+        social: 'جمعہ مبارک!\nاللہ آپ کو اور آپ کے گھر والوں کو ہمیشہ خوش رکھے۔',
+        story: 'ہر نیا دن ایک نیا موقع ہے۔\nمسکرائیے اور آگے بڑھیے۔',
+        announcement: 'اعلانِ عام\nمحلہ کمیٹی کا ماہانہ اجلاس اتوار کی شام ہوگا۔\nآپ کی شرکت ضروری ہے۔'
+    };
     var SUPPORTED_FONTS = ['Noto Nastaliq Urdu', 'Noto Naskh Arabic', 'Amiri', 'Lateef', 'Scheherazade New', 'Tajawal'];
 
     function normalizeFontFamily(value, fallback) {
@@ -367,5 +376,5 @@
         return { valid: Boolean(project.text.value.trim()), project: project, errors: project.text.value.trim() ? [] : ['Text is empty.'] };
     }
 
-    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, SUPPORTED_FONTS: SUPPORTED_FONTS, DEFAULT_TEXT: DEFAULT_TEXT, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, normalizeFontFamily: normalizeFontFamily, applyTemplate: applyTemplate, applyPreset: applyPreset, isolateBidiRuns: isolateBidiRuns, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
+    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, SUPPORTED_FONTS: SUPPORTED_FONTS, DEFAULT_TEXT: DEFAULT_TEXT, SAMPLE_TEXTS: SAMPLE_TEXTS, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, normalizeFontFamily: normalizeFontFamily, applyTemplate: applyTemplate, applyPreset: applyPreset, isolateBidiRuns: isolateBidiRuns, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
 }));
