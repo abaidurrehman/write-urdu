@@ -129,6 +129,7 @@ function applicationFeatures(pageId) {
     'urdu-bill-generator': ['Create Urdu, English and bilingual bills', 'Add line items with automatic totals', 'Track paid amount and remaining balance', 'Print bills and download PDF', 'Keep bill data in the browser'],
     'qr-code-generator': ['QR codes for Urdu text and links', 'Wi-Fi and WhatsApp QR codes', 'Download PNG and SVG'],
     'stylish-urdu-text-generator': ['Ready-made Urdu text styles', 'English-letter and direct Urdu input', 'Save favourites and copy text', 'Continue to Urdu Name Art'],
+    'inpage-unicode-converter': ['Convert InPage text to Unicode Urdu', 'Convert Unicode Urdu to InPage text', 'Unsupported characters kept and listed for review', 'Continue in the Urdu Text Cleaner or editor'],
     'urdu-name-art-maker': ['Create Urdu name images', 'Templates and direct editing', 'Use your own background image', 'Download PNG']
   };
   return values[pageId] || [];

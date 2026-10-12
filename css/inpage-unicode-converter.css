@@ -87,6 +87,18 @@
   line-height: 1.55;
 }
 
+.inpage-example {
+  margin: 1rem 0;
+  padding: .85rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+}
+
+.inpage-example figcaption { margin-bottom: .6rem; color: var(--wu-color-muted); }
+.inpage-example p { margin: .2rem 0 .75rem; font-size: 1.15rem; }
+.inpage-example div:last-child p { margin-bottom: 0; white-space: pre-wrap; }
+
 .inpage-legacy-example {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   overflow-wrap: anywhere;
