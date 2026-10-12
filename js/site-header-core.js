@@ -67,7 +67,7 @@
                 sitemap: 'Sitemap', search: 'Search', why: 'Why Write Urdu?', cardStudio: 'Card Studio', invoiceGenerator: 'Invoice Generator', stylishText: 'Stylish Urdu Text', nameArt: 'Urdu Name Art', templates: 'Templates', qrGenerator: 'QR Code Generator', textCleaner: 'Fix Urdu Text', urduOcr: 'Image to Urdu Text', quran: 'Learn Quran Online',
                 eyebrow: 'WRITE URDU TOOLS', description: 'A simple, private space to type, format, and share Urdu online.',
                 local: 'Runs in your browser', noAccount: 'No account required', tools: 'Tools', learn: 'Learn and explore',
-                about: 'About Write Urdu', privacyNote: 'Your writing stays on this device unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'How English to Urdu typing works', fonts: 'Compare Urdu fonts',
+                about: 'About Write Urdu', privacyNote: 'Your writing stays on this device unless you choose to export or share it.', made: 'Made for Urdu writers everywhere', transliteration: 'Roman Urdu to Urdu converter', fonts: 'Compare Urdu fonts',
                 note: '© Write Urdu. Free Urdu writing and creative tools.'
             },
             header: { local: 'Runs in your browser', noAccount: 'No account required', free: 'Free to use', privacy: 'Private by default · export or share when ready.' },
@@ -362,7 +362,7 @@
                             '<a href="/urdu-editor-features" data-wu-i18n-key="footer.formatting">Editor formatting guide</a>' +
                             '<a href="/english-urdu-typing-tutorial" data-wu-i18n-key="footer.tutorials">Tutorials</a>' +
                             '<a href="/how-to-share-urdu-writing-online" data-wu-i18n-key="nav.shareGuide">Share Urdu Guide</a>' +
-                            '<a href="/roman-urdu-transliteration" data-wu-i18n-key="footer.transliteration">How English to Urdu typing works</a>' +
+                            '<a href="/roman-urdu-transliteration" data-wu-i18n-key="footer.transliteration">Roman Urdu to Urdu converter</a>' +
                             '<a href="/urdu-fonts-nastaliq-vs-naskh" data-wu-i18n-key="footer.fonts">Urdu font comparison</a>' +
                         '</div>' +
                         '<div class="wu-footer-group">' +
