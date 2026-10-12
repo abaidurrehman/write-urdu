@@ -12,6 +12,7 @@ const tests = [
   'tests/v2-shell-content-contract.test.js',
   'tests/v2-authority-contract.test.js',
   'tests/seo-authority-contract.test.js',
+  'tests/llm-citation-discovery-contract.test.js',
   'tests/public-language-leakage-contract.test.js',
   'tests/public-source-crawlability-contract.test.js',
   'tests/static-html-sanity.test.js',
