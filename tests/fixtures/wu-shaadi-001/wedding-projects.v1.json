@@ -196,14 +196,14 @@
       "expected": { "valid": true }
     },
     {
-      "id": "bismillah-opening-pending-review",
+      "id": "bismillah-opening-founder-approved",
       "document": {
         "couple": { "personA": { "displayName": "Ahmed" }, "personB": { "displayName": "Fatima" } },
         "religiousOpening": { "mode": "verified_library", "libraryId": "bismillah-standard" },
         "events": [{ "id": "evt-nikah", "type": "nikah", "date": "2026-11-02" }],
         "guests": []
       },
-      "expected": { "valid": false, "errors": ["religiousOpening:unapproved_library_entry"] }
+      "expected": { "valid": true }
     },
     {
       "id": "custom-religious-text-provided",

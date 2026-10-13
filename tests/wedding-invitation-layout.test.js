@@ -124,10 +124,16 @@ assert.equal(layout.formatTime('00:15', 'en'), '12:15 AM');
   assert.equal(layout.eventSummary(p, 'n'), 'Nikah · Sat 19 Dec');
 }
 
-// The religious opening appears only once its library entry has passed human review.
+// The religious opening is opt-in, comes first and renders the approved text verbatim.
 {
+  assert.ok(!roles(layout.composeInvitation(project(), 'e1')).includes('opening'), 'Bismillah is never added unless chosen');
   const p = project({ religiousOpening: { mode: 'verified_library', libraryId: 'bismillah-standard' } });
-  assert.ok(!roles(layout.composeInvitation(p, 'e1')).includes('opening'), 'Unreviewed religious text must not render');
+  const opening = layout.composeInvitation(p, 'e1').blocks[0];
+  assert.equal(opening.role, 'opening');
+  assert.equal(opening.script, 'ar');
+  assert.equal(opening.text, 'بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ');
+  const unknown = project({ religiousOpening: { mode: 'verified_library', libraryId: 'not-in-library' } });
+  assert.ok(!roles(layout.composeInvitation(unknown, 'e1')).includes('opening'), 'Unknown library ids must not render');
 }
 
 // Location QR only for a real http(s) link and only when asked.

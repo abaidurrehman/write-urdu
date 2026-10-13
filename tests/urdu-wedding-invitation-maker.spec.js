@@ -206,6 +206,21 @@ test('WU-SHAADI-001 maker: complete flow at 360px without horizontal overflow', 
   expect(errors).toEqual([]);
 });
 
+test('WU-SHAADI-001 maker: Bismillah is opt-in and saved with the approved library entry', async ({ page }) => {
+  await open(page, { width: 1366, height: 900 });
+  await goToStep(page, 'details');
+  await page.locator('details.wm-more > summary').click();
+  const toggle = page.locator('[data-wm-field="bismillah"]');
+  await expect(toggle).toBeVisible();
+  await expect(toggle).not.toBeChecked();
+  await toggle.check();
+  await page.waitForTimeout(400);
+  expect((await draft(page)).religiousOpening).toMatchObject({ mode: 'verified_library', libraryId: 'bismillah-standard' });
+  await toggle.uncheck();
+  await page.waitForTimeout(400);
+  expect((await draft(page)).religiousOpening.mode).toBe('none');
+});
+
 test('WU-SHAADI-001 maker: keyboard users can choose events and designs', async ({ page }) => {
   await open(page, { width: 1366, height: 900 });
   await page.locator('.wm-event-tile[data-wm-event-type="nikah"]').focus();

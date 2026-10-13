@@ -26,13 +26,25 @@ assert.deepEqual(core.INVITATION_LANGUAGES, ['urdu', 'english', 'bilingual']);
 assert.deepEqual(core.GUEST_SCOPES, ['individual', 'couple', 'family', 'custom']);
 assert.deepEqual(core.RELIGIOUS_OPENING_MODES, ['none', 'verified_library', 'custom_user_text']);
 
-// The religious-text safety gate: no seeded library entry may be pre-approved by this module.
+// The religious-text safety gate: an entry is usable only after a named human review of its
+// exact text, and the approved text is pinned so it can never drift.
 core.RELIGIOUS_LIBRARY.forEach((entry) => {
-  assert.notEqual(entry.reviewStatus, 'approved', `Library entry ${entry.id} must not ship pre-approved by Slice 0 code`);
+  if (entry.reviewStatus === 'approved') {
+    assert.ok(entry.reviewedBy && /^\d{4}-\d{2}-\d{2}$/.test(entry.reviewedAt), `Approved library entry ${entry.id} must record reviewer and date`);
+  }
 });
-// The composer's lookup only ever returns approved entries.
-assert.equal(core.approvedLibraryEntry('bismillah-standard'), null);
+assert.equal(core.RELIGIOUS_LIBRARY[0].displayText, 'بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ', 'Founder-approved basmala text must stay verbatim');
+assert.equal(core.approvedLibraryEntry('bismillah-standard').reviewedBy, 'founder');
+// The composer's lookup only ever returns approved entries, and validation still fails closed.
+assert.equal(core.approvedLibraryEntry('x', [{ id: 'x', reviewStatus: 'pending_human_review', displayText: 't' }]), null);
 assert.equal(core.approvedLibraryEntry('x', [{ id: 'x', reviewStatus: 'approved', displayText: 't' }]).displayText, 't');
+assert.deepEqual(
+  core.validateWeddingProject(
+    { events: [{ type: 'nikah' }], religiousOpening: { mode: 'verified_library', libraryId: 'x' } },
+    { religiousLibrary: [{ id: 'x', displayText: 't', reviewStatus: 'pending_human_review' }] }
+  ).errors,
+  ['religiousOpening:unapproved_library_entry']
+);
 
 // Visual-composer fields are additive and normalize safely from old drafts.
 {

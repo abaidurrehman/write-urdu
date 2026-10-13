@@ -18,16 +18,20 @@
     var LETTERING_STYLES = ['calligraphic', 'classic', 'modern'];
 
     // Only the fixed, universally identical opening formula (the basmala) is seeded here.
-    // reviewStatus stays 'pending_human_review' until Write Urdu's own religious-content
-    // review process signs off; verified_library mode is deliberately blocked until then.
-    // No other Quranic/hadith text is generated, paraphrased or invented by this module.
+    // An entry may be used in verified_library mode only once a named human reviewer has
+    // approved its exact text (reviewStatus 'approved' + reviewedBy + reviewedAt); until then
+    // verified_library mode is blocked. Approved text is rendered verbatim. No other
+    // Quranic/hadith text is generated, paraphrased or invented by this module.
     var RELIGIOUS_LIBRARY = Object.freeze([
         Object.freeze({
             id: 'bismillah-standard',
-            displayText: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+            // Exact text supplied and approved by the founder on 2026-10-13.
+            displayText: 'بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ',
             language: 'ur',
             source: 'Standard printed Quranic basmala (opening formula of Surah Al-Fatiha).',
-            reviewStatus: 'pending_human_review'
+            reviewStatus: 'approved',
+            reviewedBy: 'founder',
+            reviewedAt: '2026-10-13'
         })
     ]);
 
