@@ -6,3 +6,5 @@
 @media(max-width:720px){.template-library-page{width:min(100% - 22px,680px);padding:28px 0 58px}.template-library-hero{display:block}.template-library-local-note{margin-top:14px}.template-library-controls{position:static;padding:12px}.template-search-row{display:block}.template-search{margin-bottom:8px}.template-filter-row{align-items:stretch}.template-filter-divider{display:none}.template-select{flex:1;min-width:140px}.template-grid,.template-skeleton-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.template-card-body{padding:11px}.template-card-description{font-size:.76rem}.template-library-guidance{margin-top:40px;padding:22px 18px}}
 @media(max-width:440px){.template-grid,.template-skeleton-grid{grid-template-columns:1fr}.template-card-preview{aspect-ratio:1.91/1}.template-library-section h2{font-size:1.3rem}}
 @media(prefers-reduced-motion:reduce){.template-card{transition:none}.template-skeleton{animation:none}}
+
+.template-card-alt{display:inline-block;margin-top:10px;font-size:.88rem;font-weight:700;color:#177245;text-decoration:underline;text-underline-offset:3px}

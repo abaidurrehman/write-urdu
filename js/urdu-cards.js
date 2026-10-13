@@ -37,6 +37,8 @@
             browseTitle: 'Find a ready-made message',
             browseCopy: 'Browse dua, Jumma, love, family, wedding and more. Pick a card and share it or personalize it.',
             browseCta: 'Browse 157 cards',
+            weddingNote: 'These are congratulation messages. Need to invite guests to a Nikah, Mehndi, Baraat or Walima?',
+            weddingNoteCta: 'Make a wedding invitation',
             ownTitle: 'Use my own words',
             ownCopy: 'Type or paste your Urdu once, then compare it across every card design before you choose.',
             ownCta: 'Use my words',
@@ -77,6 +79,8 @@
             browseTitle: 'تیار شدہ پیغام منتخب کریں',
             browseCopy: 'دعا، جمعہ، محبت، خاندان، شادی اور مزید پیغامات دیکھیں۔ کارڈ منتخب کریں، شیئر کریں یا اپنی مرضی سے بدلیں۔',
             browseCta: '157 کارڈز دیکھیں',
+            weddingNote: 'یہ مبارکباد کے پیغامات ہیں۔ نکاح، مہندی، بارات یا ولیمہ کی دعوت دینا چاہتے ہیں؟',
+            weddingNoteCta: 'شادی کا دعوت نامہ بنائیں',
             ownTitle: 'اپنا پیغام استعمال کریں',
             ownCopy: 'اپنا اردو متن ایک بار لکھیں یا پیسٹ کریں، پھر منتخب کرنے سے پہلے اسے تمام کارڈ ڈیزائنز پر دیکھیں۔',
             ownCta: 'اپنا پیغام استعمال کریں',
@@ -670,8 +674,19 @@
             cardRecords.push({ article: article, card: card });
         }
 
+        var weddingNote = document.createElement('p');
+        weddingNote.className = 'urdu-cards-wedding-note';
+        weddingNote.hidden = true;
+        weddingNote.appendChild(document.createTextNode(copyText('weddingNote') + ' '));
+        var weddingLink = document.createElement('a');
+        weddingLink.href = '/urdu-wedding-invitation-maker';
+        weddingLink.textContent = copyText('weddingNoteCta');
+        weddingNote.appendChild(weddingLink);
+        filters.insertAdjacentElement('afterend', weddingNote);
+
         function selectFilter(button) {
             var category = button.dataset.urduCardsFilter;
+            weddingNote.hidden = category !== 'wedding';
             filters.querySelectorAll('[data-urdu-cards-filter]').forEach(function (item) {
                 item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
             });

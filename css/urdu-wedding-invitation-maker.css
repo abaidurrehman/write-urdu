@@ -866,3 +866,5 @@
     .wm-step-nav { justify-content: flex-start; }
     .wm-personalise-label { flex-basis: 100%; }
 }
+
+.wm-related ul { margin: 0; padding-left: 1.25rem; display: grid; gap: 0.4rem; }
