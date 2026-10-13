@@ -76,6 +76,8 @@ const tests = [
   'tests/wedding-invitation-render-adapter.test.js',
   'tests/wedding-template-selector.test.js',
   'tests/wedding-project-storage.test.js',
+  'tests/wedding-design-library.test.js',
+  'tests/wedding-invitation-layout.test.js',
   'tests/wu-shaadi-riwaayat-svg-pack.test.js',
   'tests/riwaayat-manifest-sync-contract.test.js',
   'tests/sitemap-directory-contract.test.js',

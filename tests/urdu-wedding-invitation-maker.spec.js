@@ -1,133 +1,235 @@
 const { test, expect } = require('@playwright/test');
 
-// html2canvas is loaded eagerly from cdnjs by urdu-wedding-invitation-maker.html (a real,
-// reviewed part of the page's export flow, not something this test suite should rewrite);
-// the image-download test needs it to actually load, so it is allow-listed through the
-// otherwise-total external block used by every other spec in this suite.
-const blockExternal = (page) => Promise.all([
-  page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, (route) => route.abort()),
-  page.route(/cdnjs\.cloudflare\.com\/ajax\/libs\/html2canvas/, (route) => route.continue())
-]);
+// The wedding maker draws every card (hero, thumbnails, preview, export) with one canvas
+// renderer and needs no third-party script; web fonts are blocked like everywhere else in
+// this suite, so cards render with fallback fonts here.
+const blockExternal = (page) => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, (route) => route.abort());
 
-async function fillIntro(page, eventType) {
-  await page.fill('[data-wedding-couple-person-a]', 'Ayesha');
-  await page.fill('[data-wedding-couple-person-b]', 'Bilal');
-  await page.click('[data-wedding-add-family]');
-  await page.fill('[data-wedding-families-list] input', 'The Khan Family');
-  await page.selectOption('[data-wedding-invitation-language]', 'urdu');
-  await page.click('[data-wedding-add-event]');
-  await page.selectOption('[data-wedding-events-list] select', eventType);
+const DRAFT_KEY = 'writeUrdu.weddingProject.draft.v1';
+
+async function open(page, viewport) {
+  if (viewport) await page.setViewportSize(viewport);
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await blockExternal(page);
+  await page.goto('/urdu-wedding-invitation-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await expect(page.locator('[data-wm-event-tile], [data-wm-event-type]').first()).toBeVisible();
+  return errors;
 }
 
-test('WU-SHAADI-001 composer: design-first happy path picks a card before typing details', async ({ page }) => {
-  await blockExternal(page);
-  await page.goto('/urdu-wedding-invitation-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
+async function canvasHasInk(page, selector) {
+  return page.locator(selector).first().evaluate((canvas) => {
+    const ctx = canvas.getContext('2d');
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let painted = 0;
+    for (let i = 3; i < data.length; i += 4 * 97) if (data[i] > 0) painted += 1;
+    return painted > 50;
+  });
+}
 
-  await fillIntro(page, 'mehndi');
-  await page.click('[data-wedding-next]');
+async function draft(page) {
+  return page.evaluate((key) => JSON.parse(localStorage.getItem(key) || 'null'), DRAFT_KEY);
+}
 
-  // Design step for Mehndi: a card gallery must be visible before any date/wording field.
-  await expect(page.locator('[data-wedding-step-panel="design"]')).toBeVisible();
-  await expect(page.locator('[data-wedding-design-list] .wedding-design-option').first()).toBeVisible();
-  // Picking a card advances straight to that event's edit step (no manual Next needed).
-  await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
+async function goToStep(page, step) {
+  await page.locator(`[data-wm-progress] [data-wm-goto="${step}"]`).click();
+  await expect(page.locator(`[data-wm-step="${step}"]`)).toBeVisible();
+}
 
-  // Edit step: fields plus a live preview pane, still scoped to Mehndi.
-  await expect(page.locator('[data-wedding-step-panel="edit"]')).toBeVisible();
-  await expect(page.locator('[data-wedding-edit-preview] .wedding-preview-card')).toBeVisible();
-  await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-01');
-  await page.click('[data-wedding-next]');
-
-  await expect(page.locator('[data-wedding-step-panel="review_export"]')).toBeVisible();
-  await expect(page.locator('.wedding-preview-card')).toBeVisible();
-  await expect(page.locator('.wedding-preview-text')).not.toHaveText('');
+test('WU-SHAADI-001 maker: first visit shows real invitations before any typing', async ({ page }) => {
+  const errors = await open(page, { width: 1366, height: 900 });
+  await expect(page.locator('h1')).toHaveText('Urdu Wedding Invitation Maker');
+  await expect(page.locator('[data-wm-start]')).toBeVisible();
+  await expect.poll(() => canvasHasInk(page, '[data-wm-hero-card="1"]')).toBe(true);
+  await expect.poll(() => canvasHasInk(page, '[data-wm-preview-canvas]')).toBe(true);
+  // Nikah, Mehndi, Baraat and Walima are first-class, visual choices.
+  for (const type of ['nikah', 'mehndi', 'baraat', 'walima']) {
+    await expect(page.locator(`.wm-event-tile[data-wm-event-type="${type}"]`)).toBeVisible();
+  }
+  await expect(page.locator('.wm-event-tile[aria-checked="true"]')).toHaveCount(1);
+  // Empty fields are shown with flagged sample text, never an empty rectangle.
+  await expect(page.locator('[data-wm-sample-note]')).toBeVisible();
+  expect(errors).toEqual([]);
 });
 
-test('WU-SHAADI-001 composer: live preview updates as the user types wording', async ({ page }) => {
-  await blockExternal(page);
-  await page.goto('/urdu-wedding-invitation-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
-
-  await fillIntro(page, 'nikah');
-  await page.click('[data-wedding-next]');
-  // Picking a card advances straight to that event's edit step (no manual Next needed).
-  await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-
-  await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-05');
-  await page.fill('[data-wedding-edit-fields] textarea', 'My own hand-typed wording');
-  await expect(page.locator('[data-wedding-edit-preview] .wedding-preview-text')).toHaveText('My own hand-typed wording', { timeout: 2000 });
+test('WU-SHAADI-001 maker: picking an event re-orders designs and the picker uses large previews', async ({ page }) => {
+  await open(page, { width: 1366, height: 900 });
+  await page.locator('.wm-event-tile[data-wm-event-type="mehndi"]').click();
+  await goToStep(page, 'design');
+  const tiles = page.locator('[data-wm-design-grid] .wm-design-tile');
+  await expect(tiles).toHaveCount(6);
+  await expect(tiles.first()).toHaveAttribute('data-wm-design', 'mehndi-marigold');
+  const box = await tiles.first().locator('canvas').boundingBox();
+  expect(box.width).toBeGreaterThan(150);
+  await expect.poll(() => canvasHasInk(page, '[data-wm-design-grid] canvas')).toBe(true);
+  await page.locator('[data-wm-see-all]').click();
+  await expect(tiles).toHaveCount(16);
+  await page.locator('[data-wm-filter="modern"]').click();
+  const modern = await tiles.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-wm-design')));
+  expect(modern).toContain('minimal-modern');
+  expect(modern).not.toContain('royal-maroon');
 });
 
-test('WU-SHAADI-001 composer: blocked steps cannot be jumped to', async ({ page }) => {
-  await blockExternal(page);
-  await page.goto('/urdu-wedding-invitation-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
+test('WU-SHAADI-001 maker: Urdu Nikah details survive design changes and reload', async ({ page }) => {
+  await open(page, { width: 1366, height: 900 });
+  await goToStep(page, 'details');
+  await page.locator('[data-wm-language="urdu"]').click();
+  await page.fill('[data-wm-field="bride"]', 'عائشہ');
+  await page.fill('[data-wm-field="groom"]', 'احمد');
+  await page.fill('[data-wm-field="date"]', '2026-11-22');
+  await page.fill('[data-wm-field="time"]', '19:00');
+  await page.fill('[data-wm-field="venue"]', 'پرل گارڈن');
+  await expect(page.locator('[data-wm-field="bride"]')).toHaveAttribute('dir', 'rtl');
+  await page.locator('details.wm-more > summary').click();
+  await page.locator('[data-wm-host="bride_side"]').click();
+  await page.fill('[data-wm-field="brideFamily"]', 'جناب و بیگم طارق خان');
+  await page.fill('[data-wm-field="brideParents"]', 'بنتِ جناب طارق خان');
+  await page.fill('[data-wm-field="rsvp"]', '0300 1234567');
 
-  await fillIntro(page, 'walima');
-  // Do not fill the date - the edit step (and review_export after it) must stay blocked.
-  await page.click('[data-wedding-next]');
-  // Picking a card advances straight to that event's edit step (no manual Next needed).
-  await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
+  await goToStep(page, 'design');
+  await page.locator('[data-wm-filter="all"]').click();
+  await page.locator('[data-wm-design="jaali"]').click();
+  await expect(page.locator('[data-wm-design="jaali"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('[data-wm-colorway="sandstone"]').click();
 
-  await expect(page.locator('[data-wedding-step-panel="edit"]')).toBeVisible();
-  await expect(page.locator('[data-wedding-next]')).toBeDisabled();
-  await page.click('[data-wedding-step-tab="review_export"]');
-  await expect(page.locator('[data-wedding-step-panel="edit"]')).toBeVisible();
-  await expect(page.locator('[data-wedding-step-panel="review_export"]')).toBeHidden();
-});
+  await goToStep(page, 'details');
+  await expect(page.locator('[data-wm-field="bride"]')).toHaveValue('عائشہ');
+  await expect(page.locator('[data-wm-field="venue"]')).toHaveValue('پرل گارڈن');
 
-test('WU-SHAADI-001 composer: wording override survives and image export produces a file', async ({ page }) => {
-  await blockExternal(page);
-  await page.goto('/urdu-wedding-invitation-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
-
-  await fillIntro(page, 'nikah');
-  await page.click('[data-wedding-next]');
-  // Picking a card advances straight to that event's edit step (no manual Next needed).
-  await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-05');
-  await page.fill('[data-wedding-edit-fields] textarea', 'My own hand-edited wording');
-  await page.click('[data-wedding-edit-fields] button:has-text("Save wording")');
-  await page.click('[data-wedding-next]');
-
-  await expect(page.locator('.wedding-preview-text')).toHaveText('My own hand-edited wording');
-
-  const downloadPromise = page.waitForEvent('download');
-  await page.click('[data-wedding-preview-list] button:has-text("Download image")');
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/\.png$/);
-});
-
-test('WU-SHAADI-001 composer: two events each get their own design and edit steps', async ({ page }) => {
-  await blockExternal(page);
-  await page.goto('/urdu-wedding-invitation-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
-
-  await fillIntro(page, 'mehndi');
-  await page.click('[data-wedding-add-event]');
-  await page.selectOption('[data-wedding-events-list] select >> nth=1', 'baraat');
-  await page.click('[data-wedding-next]');
-
-  // Mehndi design -> Mehndi edit -> Baraat design -> Baraat edit -> review_export
-  await expect(page.locator('[data-wedding-design-heading]')).toContainText('Mehndi');
-  // Picking a card advances straight to that event's edit step (no manual Next needed).
-  await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-01');
-  await page.click('[data-wedding-next]');
-
-  await expect(page.locator('[data-wedding-design-heading]')).toContainText('Baraat');
-  await page.locator('[data-wedding-design-list] .wedding-design-option').first().click();
-  await page.fill('[data-wedding-edit-fields] input[type="date"]', '2026-12-05');
-  await page.click('[data-wedding-next]');
-
-  await expect(page.locator('[data-wedding-step-panel="review_export"]')).toBeVisible();
-  await expect(page.locator('[data-wedding-preview-list] .wedding-preview-card')).toHaveCount(2);
-});
-
-test('WU-SHAADI-001 composer: reload restores the in-progress draft', async ({ page }) => {
-  await blockExternal(page);
-  await page.goto('/urdu-wedding-invitation-maker.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
-
-  await page.click('[data-wedding-add-event]');
-  await page.selectOption('[data-wedding-events-list] select', 'mehndi');
-  await page.waitForTimeout(200); // allow the save() debounce-free write to localStorage
+  await page.waitForTimeout(400);
+  const saved = await draft(page);
+  expect(saved.couple.personA.displayName).toBe('عائشہ');
+  expect(saved.events[0].selectedBackgroundId).toBe('jaali');
+  expect(saved.events[0].designColorway).toBe('sandstone');
+  expect(saved.events[0].rsvpText).toBe('0300 1234567');
 
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await expect(page.locator('[data-wedding-events-list] select')).toHaveValue('mehndi');
+  await goToStep(page, 'details');
+  await expect(page.locator('[data-wm-field="groom"]')).toHaveValue('احمد');
+  await expect(page.locator('[data-wm-field="date"]')).toHaveValue('2026-11-22');
+});
+
+test('WU-SHAADI-001 maker: a wedding suite keeps each event’s details separate', async ({ page }) => {
+  await open(page, { width: 1366, height: 900 });
+  await page.locator('.wm-event-tile[data-wm-event-type="mehndi"]').click();
+  for (let i = 0; i < 3; i += 1) await page.locator('[data-wm-add-event]').first().click();
+  const chips = page.locator('[data-wm-events-bar] [data-wm-event-id]');
+  await expect(chips).toHaveCount(4);
+  await expect(chips).toContainText(['Mehndi', 'Nikah', 'Baraat', 'Walima']);
+
+  // One design for the suite; every event gets its own colourway.
+  await goToStep(page, 'design');
+  await page.locator('[data-wm-filter="all"]').click();
+  await page.locator('[data-wm-design="mughal-garden"]').click();
+
+  const dates = ['2026-12-17', '2026-12-18', '2026-12-19', '2026-12-20'];
+  await goToStep(page, 'details');
+  for (let i = 0; i < 4; i += 1) {
+    await chips.nth(i).click();
+    await page.fill('[data-wm-field="date"]', dates[i]);
+    await page.fill('[data-wm-field="venue"]', `Venue ${i + 1}`);
+  }
+  for (let i = 0; i < 4; i += 1) {
+    await chips.nth(i).click();
+    await expect(page.locator('[data-wm-field="date"]')).toHaveValue(dates[i]);
+    await expect(page.locator('[data-wm-field="venue"]')).toHaveValue(`Venue ${i + 1}`);
+  }
+  await page.waitForTimeout(400);
+  const saved = await draft(page);
+  expect(saved.events.map((event) => event.type)).toEqual(['mehndi', 'nikah', 'baraat', 'walima']);
+  expect(new Set(saved.events.map((event) => event.selectedBackgroundId))).toEqual(new Set(['mughal-garden']));
+  expect(saved.events.map((event) => event.date)).toEqual(dates);
+
+  await goToStep(page, 'share');
+  await expect(page.locator('[data-wm-download-all]')).toBeVisible();
+  await chips.nth(3).locator('xpath=following-sibling::button').click();
+  await expect(chips).toHaveCount(3);
+});
+
+test('WU-SHAADI-001 maker: share step exports a PNG and never invents missing details', async ({ page }) => {
+  await open(page, { width: 1366, height: 900 });
+  await goToStep(page, 'details');
+  await page.locator('[data-wm-language="english"]').click();
+  await page.fill('[data-wm-field="bride"]', 'Ayesha');
+  await goToStep(page, 'share');
+  await expect(page.locator('[data-wm-missing]')).toContainText('groom’s name');
+  await expect(page.locator('[data-wm-missing]')).toContainText('date');
+
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('[data-wm-download]').click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe('nikah-invitation.png');
+
+  await page.locator('[data-wm-size="print"]').click();
+  await expect(page.locator('[data-wm-size="print"]')).toHaveAttribute('aria-checked', 'true');
+  const printPromise = page.waitForEvent('download');
+  await page.locator('[data-wm-download]').click();
+  expect((await printPromise).suggestedFilename()).toBe('nikah-invitation-print.png');
+
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.locator('[data-wm-copy]').click();
+  await expect(page.locator('[data-wm-share-status]')).toContainText('copied');
+});
+
+test('WU-SHAADI-001 maker: complete flow at 360px without horizontal overflow', async ({ page }) => {
+  const errors = await open(page, { width: 360, height: 760 });
+  const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  await expect(page.locator('[data-wm-mobile-bar]')).toBeVisible();
+  await page.locator('.wm-event-tile[data-wm-event-type="walima"]').click();
+  await page.locator('[data-wm-mobile-next]').click();
+  await expect(page.locator('[data-wm-step="design"]')).toBeVisible();
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  await page.locator('[data-wm-mobile-next]').click();
+  await expect(page.locator('[data-wm-step="details"]')).toBeVisible();
+  await page.locator('[data-wm-language="bilingual"]').click();
+  await page.fill('[data-wm-field="bride"]', 'Ayesha Khan');
+  await page.fill('[data-wm-field="groom"]', 'Muhammad Abdul Rehman Yousafzai');
+  await page.fill('[data-wm-field="date"]', '2026-12-20');
+  await page.fill('[data-wm-field="venue"]', 'The Grand Marquee & Banquet Hall, Main Boulevard, DHA Phase 6');
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  await page.locator('.wm-mobile-preview').click();
+  await expect(page.locator('[data-wm-lightbox]')).toBeVisible();
+  await page.locator('[data-wm-lightbox] [data-wm-close-full]').first().click();
+  await page.locator('[data-wm-mobile-next]').click();
+  await expect(page.locator('[data-wm-step="share"]')).toBeVisible();
+  await expect(page.locator('[data-wm-share-card] canvas')).toBeVisible();
+  await expect.poll(() => canvasHasInk(page, '[data-wm-share-card] canvas')).toBe(true);
+  const whatsapp = page.locator('[data-wm-whatsapp]');
+  await expect(whatsapp).toBeVisible();
+  const box = await whatsapp.boundingBox();
+  expect(box.height).toBeGreaterThanOrEqual(44);
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('[data-wm-download]').click();
+  expect((await downloadPromise).suggestedFilename()).toBe('walima-invitation.png');
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  expect(errors).toEqual([]);
+});
+
+test('WU-SHAADI-001 maker: Bismillah is opt-in and saved with the approved library entry', async ({ page }) => {
+  await open(page, { width: 1366, height: 900 });
+  await goToStep(page, 'details');
+  await page.locator('details.wm-more > summary').click();
+  const toggle = page.locator('[data-wm-field="bismillah"]');
+  await expect(toggle).toBeVisible();
+  await expect(toggle).not.toBeChecked();
+  await toggle.check();
+  await page.waitForTimeout(400);
+  expect((await draft(page)).religiousOpening).toMatchObject({ mode: 'verified_library', libraryId: 'bismillah-standard' });
+  await toggle.uncheck();
+  await page.waitForTimeout(400);
+  expect((await draft(page)).religiousOpening.mode).toBe('none');
+});
+
+test('WU-SHAADI-001 maker: keyboard users can choose events and designs', async ({ page }) => {
+  await open(page, { width: 1366, height: 900 });
+  await page.locator('.wm-event-tile[data-wm-event-type="nikah"]').focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('.wm-event-tile[data-wm-event-type="mehndi"]')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.locator('.wm-event-tile[data-wm-event-type="mehndi"]')).toBeFocused();
+  await goToStep(page, 'design');
+  const second = page.locator('[data-wm-design-grid] .wm-design-tile').nth(1);
+  await second.focus();
+  await page.keyboard.press('Enter');
+  await expect(second).toHaveAttribute('aria-pressed', 'true');
 });

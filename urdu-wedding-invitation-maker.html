@@ -15,80 +15,236 @@
     <meta property="og:image" content="https://write-urdu.com/image/logo10.png">
     <link rel="icon" href="/image/logo10.png" type="image/png">
     <link rel="stylesheet" href="/css/site-header.css">
+    <link rel="stylesheet" href="/css/input-mode.css">
     <link rel="stylesheet" href="/css/urdu-wedding-invitation-maker.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Noto+Naskh+Arabic:wght@400;500;600;700&amp;family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;family=Tajawal:wght@400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&amp;family=Cinzel:wght@500;600&amp;family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&amp;family=Great+Vibes&amp;family=Jost:wght@400;500&amp;family=Noto+Naskh+Arabic:wght@400;500;600;700&amp;family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;display=swap">
     <script src="/seo.config.js" defer></script>
     <script src="/js/seo.js" defer></script>
     <script src="/site-header.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
-    <script src="/js/wedding-wording-registry.js" defer></script>
-    <script src="/js/riwaayat-manifest.js" defer></script>
     <script src="/js/wedding-project-core.js" defer></script>
-    <script src="/js/wedding-template-selector.js" defer></script>
     <script src="/js/wedding-project-storage.js" defer></script>
+    <script src="/js/wedding-design-library.js" defer></script>
+    <script src="/js/wedding-invitation-layout.js" defer></script>
+    <script src="/js/wedding-invitation-canvas.js" defer></script>
     <script src="/js/urdu-wedding-invitation-maker.js" defer></script>
+    <script src="/js/input-mode.js" defer></script>
+    <script src="/js/wedding-invitation-urdu-input.js" defer></script>
     <script type="application/ld+json" data-write-urdu-schema>{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://write-urdu.com/#website","url":"https://write-urdu.com/","name":"Write Urdu","alternateName":["WriteUrdu","Write-Urdu.com"],"description":"Tools for typing, formatting, designing and sharing Urdu.","inLanguage":["en","ur"],"publisher":{"@id":"https://write-urdu.com/#publisher"}},{"@type":"Organization","@id":"https://write-urdu.com/#publisher","name":"Write Urdu","url":"https://write-urdu.com/","description":"Write Urdu helps people type Urdu with English letters, type Urdu directly, format documents and create shareable Urdu designs.","logo":{"@type":"ImageObject","@id":"https://write-urdu.com/#logo","url":"https://write-urdu.com/image/logo10.png","contentUrl":"https://write-urdu.com/image/logo10.png"},"knowsLanguage":["en","ur"],"alternateName":["WriteUrdu","Write-Urdu.com"],"email":"admin@write-urdu.com","publishingPrinciples":"https://write-urdu.com/why-write-urdu","contactPoint":{"@type":"ContactPoint","contactType":"customer support","availableLanguage":["English","Urdu"],"email":"admin@write-urdu.com","url":"https://write-urdu.com/contact"}},{"@type":"WebPage","@id":"https://write-urdu.com/urdu-wedding-invitation-maker#webpage","url":"https://write-urdu.com/urdu-wedding-invitation-maker","name":"Free Urdu Wedding Invitation Maker — Nikah, Mehndi, Baraat & Walima Cards | WriteUrdu","description":"Build a Pakistani wedding invitation for Nikah, Mehndi, Baraat and Walima with Urdu, English or bilingual wording, a matching design and downloadable images — all kept private in your browser.","inLanguage":["en","ur"],"isPartOf":{"@id":"https://write-urdu.com/#website"},"publisher":{"@id":"https://write-urdu.com/#publisher"},"dateModified":"2026-09-19","breadcrumb":{"@id":"https://write-urdu.com/urdu-wedding-invitation-maker#breadcrumbs"},"mainEntity":{"@id":"https://write-urdu.com/urdu-wedding-invitation-maker#application"}},{"@type":"BreadcrumbList","@id":"https://write-urdu.com/urdu-wedding-invitation-maker#breadcrumbs","itemListElement":[{"@type":"ListItem","position":1,"name":"Write Urdu","item":"https://write-urdu.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://write-urdu.com/write-urdu-sitemap"},{"@type":"ListItem","position":3,"name":"Urdu Wedding Invitation Maker","item":"https://write-urdu.com/urdu-wedding-invitation-maker"}]},{"@type":"WebApplication","@id":"https://write-urdu.com/urdu-wedding-invitation-maker#application","name":"Free Urdu Wedding Invitation Maker","url":"https://write-urdu.com/urdu-wedding-invitation-maker","mainEntityOfPage":{"@id":"https://write-urdu.com/urdu-wedding-invitation-maker#webpage"},"applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Works in a modern web browser","isAccessibleForFree":true,"description":"Build a Pakistani wedding invitation for Nikah, Mehndi, Baraat and Walima with Urdu, English or bilingual wording, a matching design and downloadable images — all kept private in your browser.","inLanguage":"en","featureList":[],"publisher":{"@id":"https://write-urdu.com/#publisher"}}]}</script>
 </head>
 <body class="wedding-maker-page">
     <nav class="navbar wu-static-site-nav" data-wu-static-shell="nav" aria-label="Primary navigation"><a class="wu-static-brand" href="/">Write Urdu</a><div class="wu-static-nav-groups"><div class="wu-static-nav-group" data-wu-static-nav-group="write"><strong>Write</strong><a href="/">Start writing in Urdu</a><a href="/roman-urdu-transliteration">Convert Roman Urdu to Urdu script</a><a href="/urdu-keyboard">Type directly in Urdu</a><a href="/urdu-editor">Format an assignment or document</a><a href="/tools/urdu-voice-typing">Speak and turn it into Urdu text</a><a href="/urdu-ocr">Extract Urdu text from an image</a><a href="/urdu-text-cleaner">Fix broken or messy Urdu text</a><a href="/tools/inpage-unicode-converter">Convert older InPage Urdu</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="create"><strong>Create</strong><a href="/urdu-cards">Browse ready-made Urdu cards</a><a href="/urdu-card-gallery">Compare your Urdu text across card designs</a><a href="/urdu-card-studio">Make a poetry, quote or announcement image</a><a href="/urdu-whatsapp-status-maker">Create a WhatsApp Status</a><a href="/urdu-instagram-post-maker">Create an Instagram post</a><a href="/urdu-name-art-maker">Make Urdu Name Art or a profile image</a><a href="/stylish-urdu-text-generator">Create stylish copyable Urdu text</a><a href="/urdu-templates">Start from a ready-made design</a><a href="/qr-code-generator">Turn text or a link into a QR code</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="work"><strong>Tools</strong><a href="/urdu-invoice-generator">Create an Urdu or English invoice</a><a href="/urdu-bill-generator">Create a quick shop bill or receipt</a><a href="/urdu-editor">Prepare a formal Urdu document</a><a href="/urdu-wedding-invitation-maker">Build a wedding invitation</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="learn"><strong>Learn</strong><a href="/urdu-typing-practice">Practise Urdu typing and measure your speed</a><a href="/urdu-alphabet">Learn the Urdu alphabet</a><a href="/urdu-fonts-nastaliq-vs-naskh">Choose an Urdu font</a><a href="/english-urdu-typing-tutorial">Learn English-to-Urdu typing</a><a href="/how-to-write-urdu-on-photo">Learn to put Urdu on a photo</a><a href="/how-to-share-urdu-writing-online">Learn to share Urdu writing online</a><a href="/write-urdu-documentation">Use Write Urdu documentation</a><a href="/urdu-faq">Get answers to common questions</a></div></div></nav>
 
     <main class="wedding-maker-main">
-        <h1>Urdu Wedding Invitation Maker</h1>
-        <p class="wedding-maker-intro">Build your Nikah, Mehndi, Baraat or Walima invitation with matching wording and design, then download it as an image. No account required.</p>
-
-        <ol class="wedding-step-rail" data-wedding-step-rail></ol>
-
-        <section data-wedding-step-panel="intro" hidden>
-            <h2>Tell us about your wedding</h2>
-            <label>Person A
-                <input type="text" data-wedding-couple-person-a placeholder="Person A's name">
-            </label>
-            <label>Person B
-                <input type="text" data-wedding-couple-person-b placeholder="Person B's name">
-            </label>
-            <div data-wedding-families-list></div>
-            <button type="button" data-wedding-add-family>Add family</button>
-            <label>Invitation language
-                <select data-wedding-invitation-language>
-                    <option value="urdu">اردو</option>
-                    <option value="english">English</option>
-                    <option value="bilingual">Bilingual</option>
-                </select>
-            </label>
-            <h3>Which events are you inviting guests to?</h3>
-            <div data-wedding-events-list></div>
-            <button type="button" data-wedding-add-event>Add event</button>
-        </section>
-
-        <section data-wedding-step-panel="design" hidden>
-            <h2 data-wedding-design-heading>Choose a design</h2>
-            <div data-wedding-design-list></div>
-        </section>
-
-        <section data-wedding-step-panel="edit" hidden>
-            <h2 data-wedding-edit-heading>Event details</h2>
-            <div class="wedding-edit-layout">
-                <div class="wedding-edit-fields" data-wedding-edit-fields></div>
-                <div class="wedding-edit-preview" data-wedding-edit-preview></div>
+        <section class="wm-hero" aria-labelledby="wm-title">
+            <div class="wm-hero-copy">
+                <p class="wm-eyebrow">Free · No sign-up · Ready for WhatsApp</p>
+                <h1 id="wm-title">Urdu Wedding Invitation Maker</h1>
+                <p class="wm-hero-promise">Create your Nikah, Mehndi, Baraat or Walima invitation in minutes.</p>
+                <ul class="wm-hero-points">
+                    <li><span lang="ur" dir="rtl">اردو</span> · English · Bilingual</li>
+                    <li>16 original designs</li>
+                    <li>Download and share on WhatsApp</li>
+                </ul>
+                <div class="wm-hero-actions">
+                    <a class="wm-btn wm-btn-primary wm-btn-lg" href="#wm-maker" data-wm-start>Create my invitation</a>
+                    <a class="wm-btn wm-btn-ghost wm-btn-lg" href="#wm-maker" data-wm-browse>Browse designs</a>
+                </div>
+            </div>
+            <div class="wm-hero-art" data-wm-hero>
+                <figure class="wm-hero-card wm-hero-card-1"><canvas width="540" height="675" data-wm-hero-card="0" role="img" aria-label="Sample Urdu Nikah invitation on the Emerald Nikah design"></canvas></figure>
+                <figure class="wm-hero-card wm-hero-card-2"><canvas width="540" height="675" data-wm-hero-card="1" role="img" aria-label="Sample bilingual Mehndi invitation on the Marigold Mehndi design"></canvas></figure>
+                <figure class="wm-hero-card wm-hero-card-3"><canvas width="540" height="675" data-wm-hero-card="2" role="img" aria-label="Sample English Walima invitation on the Pastel Walima design"></canvas></figure>
             </div>
         </section>
 
-        <section data-wedding-step-panel="review_export" hidden>
-            <h2>Preview and download</h2>
-            <div data-wedding-preview-list></div>
+        <section id="wm-maker" class="wm-maker" data-wedding-maker aria-label="Invitation maker">
+            <ol class="wm-progress" data-wm-progress>
+                <li><button type="button" data-wm-goto="event"><span class="wm-progress-num">1</span><span>Event</span></button></li>
+                <li><button type="button" data-wm-goto="design"><span class="wm-progress-num">2</span><span>Design</span></button></li>
+                <li><button type="button" data-wm-goto="details"><span class="wm-progress-num">3</span><span>Details</span></button></li>
+                <li><button type="button" data-wm-goto="share"><span class="wm-progress-num">4</span><span>Share</span></button></li>
+            </ol>
+
+            <div class="wm-layout">
+                <div class="wm-panel">
+                    <div class="wm-events-bar" data-wm-events-bar hidden></div>
+
+                    <section class="wm-step" data-wm-step="event" aria-labelledby="wm-step-event-title">
+                        <header class="wm-step-head">
+                            <h2 id="wm-step-event-title">Which celebration is this card for?</h2>
+                            <p>Pick the event — we’ll suggest designs that suit it. You can add more events later.</p>
+                        </header>
+                        <div class="wm-event-tiles" data-wm-event-tiles role="radiogroup" aria-label="Event"></div>
+                        <div class="wm-more-events">
+                            <p class="wm-subtle">More ceremonies</p>
+                            <div class="wm-chip-row" data-wm-more-events></div>
+                            <label class="wm-field wm-custom-event" data-wm-custom-event hidden>
+                                <span>Event name</span>
+                                <input type="text" data-wm-field="customTypeLabel" maxlength="80" placeholder="e.g. Qawwali Night" data-wm-urdu-input>
+                            </label>
+                        </div>
+                        <div class="wm-suite-callout">
+                            <div>
+                                <strong>Planning several functions?</strong>
+                                <p>Add Mehndi, Nikah, Baraat and Walima to make a matching set — each card gets its own colours.</p>
+                            </div>
+                            <button type="button" class="wm-btn wm-btn-ghost" data-wm-add-event>+ Add another event</button>
+                        </div>
+                        <div class="wm-step-nav">
+                            <button type="button" class="wm-btn wm-btn-primary" data-wm-next="design">Next: choose a design</button>
+                        </div>
+                    </section>
+
+                    <section class="wm-step" data-wm-step="design" aria-labelledby="wm-step-design-title" hidden>
+                        <header class="wm-step-head">
+                            <h2 id="wm-step-design-title">Choose your look</h2>
+                            <p>Tap a design to try it — your names and details move with you.</p>
+                        </header>
+                        <div class="wm-filter-row" data-wm-design-filters role="group" aria-label="Filter designs"></div>
+                        <div class="wm-design-grid" data-wm-design-grid></div>
+                        <button type="button" class="wm-btn wm-btn-ghost wm-see-all" data-wm-see-all>See all designs</button>
+                        <div class="wm-personalise" data-wm-personalise>
+                            <div class="wm-personalise-row">
+                                <span class="wm-personalise-label" id="wm-colour-label">Colours</span>
+                                <div class="wm-swatches" data-wm-colorways role="radiogroup" aria-labelledby="wm-colour-label"></div>
+                            </div>
+                            <div class="wm-personalise-row">
+                                <span class="wm-personalise-label" id="wm-lettering-label">Lettering</span>
+                                <div class="wm-segmented" data-wm-lettering role="radiogroup" aria-labelledby="wm-lettering-label"></div>
+                            </div>
+                            <label class="wm-check" data-wm-apply-all-wrap hidden>
+                                <input type="checkbox" data-wm-apply-all checked>
+                                <span>Use this design for all my events (each keeps its own colours)</span>
+                            </label>
+                        </div>
+                        <div class="wm-step-nav">
+                            <button type="button" class="wm-btn wm-btn-ghost" data-wm-next="event">Back</button>
+                            <button type="button" class="wm-btn wm-btn-primary" data-wm-next="details">Next: add details</button>
+                        </div>
+                    </section>
+
+                    <section class="wm-step" data-wm-step="details" aria-labelledby="wm-step-details-title" hidden>
+                        <header class="wm-step-head">
+                            <h2 id="wm-step-details-title">Add your details</h2>
+                            <p>Names and date are enough. Everything else is optional.</p>
+                        </header>
+                        <div class="wm-details" data-wm-details></div>
+                        <div class="wm-step-nav">
+                            <button type="button" class="wm-btn wm-btn-ghost" data-wm-next="design">Back</button>
+                            <button type="button" class="wm-btn wm-btn-primary" data-wm-next="share">Preview my invitation</button>
+                        </div>
+                    </section>
+
+                    <section class="wm-step wm-step-share" data-wm-step="share" aria-labelledby="wm-step-share-title" hidden>
+                        <header class="wm-step-head">
+                            <h2 id="wm-step-share-title">Your invitation is ready <span aria-hidden="true">✨</span></h2>
+                            <p>Download it, send it on WhatsApp, or print it.</p>
+                        </header>
+                        <p class="wm-missing" data-wm-missing hidden></p>
+                        <div class="wm-share-card" data-wm-share-card></div>
+                        <div class="wm-share-actions">
+                            <button type="button" class="wm-btn wm-btn-primary wm-btn-lg" data-wm-download>Download invitation</button>
+                            <button type="button" class="wm-btn wm-btn-whatsapp wm-btn-lg" data-wm-whatsapp>
+                                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+                                Share on WhatsApp
+                            </button>
+                        </div>
+                        <p class="wm-share-status" data-wm-share-status role="status" aria-live="polite"></p>
+                        <div class="wm-share-more">
+                            <div class="wm-personalise-row">
+                                <span class="wm-personalise-label" id="wm-size-label">Size</span>
+                                <div class="wm-segmented wm-sizes" data-wm-sizes role="radiogroup" aria-labelledby="wm-size-label"></div>
+                            </div>
+                            <div class="wm-share-secondary">
+                                <button type="button" class="wm-btn wm-btn-ghost" data-wm-print>Print or save as PDF</button>
+                                <button type="button" class="wm-btn wm-btn-ghost" data-wm-copy>Copy invitation wording</button>
+                                <button type="button" class="wm-btn wm-btn-ghost" data-wm-download-all hidden>Download all events</button>
+                            </div>
+                        </div>
+                        <p class="wm-privacy">Your details are yours — see <a href="/write-urdu-privacy">Privacy</a>. <button type="button" class="wm-link" data-wm-reset>Start a new invitation</button></p>
+                        <div class="wm-step-nav">
+                            <button type="button" class="wm-btn wm-btn-ghost" data-wm-next="details">Back to details</button>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="wm-preview" data-wm-preview aria-label="Live preview">
+                    <div class="wm-preview-frame">
+                        <canvas width="1080" height="1350" data-wm-preview-canvas role="img" aria-label="Live preview of your invitation"></canvas>
+                    </div>
+                    <p class="wm-sample-note" data-wm-sample-note hidden>Sample text fills empty fields — add yours in <button type="button" class="wm-link" data-wm-goto="details">Details</button>.</p>
+                    <div class="wm-preview-tools">
+                        <button type="button" class="wm-btn wm-btn-ghost wm-btn-sm" data-wm-open-full>Full view</button>
+                        <button type="button" class="wm-btn wm-btn-ghost wm-btn-sm" data-wm-goto="share">Download &amp; share</button>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="wm-mobile-bar" data-wm-mobile-bar>
+                <button type="button" class="wm-mobile-preview" data-wm-open-full aria-label="Open full preview">
+                    <canvas width="96" height="120" data-wm-mini-canvas aria-hidden="true"></canvas>
+                    <span>Preview</span>
+                </button>
+                <button type="button" class="wm-btn wm-btn-primary" data-wm-mobile-next>Next</button>
+            </div>
         </section>
 
-        <div class="wedding-maker-nav">
-            <button type="button" data-wedding-back>Back</button>
-            <button type="button" data-wedding-next>Next</button>
-        </div>
-        <p data-wedding-next-hint aria-live="polite"></p>
-        <p data-wedding-save-status aria-live="polite"></p>
+        <div data-wu-ad-boundary="post-workspace"></div>
+
+        <section class="wm-guide" aria-labelledby="wm-guide-title">
+            <h2 id="wm-guide-title">Make a wedding invitation in 3 steps</h2>
+            <ol class="wm-guide-steps">
+                <li><strong>Pick your event.</strong> Nikah, Mehndi, Baraat, Walima — or Mayun, Dholki and Engagement.</li>
+                <li><strong>Choose a design.</strong> Traditional Mughal arches, Ajrak and Phulkari, or soft modern florals.</li>
+                <li><strong>Add names, date and venue.</strong> Then download the card or send it straight to WhatsApp.</li>
+            </ol>
+
+            <h2>Cards for every wedding function</h2>
+            <div class="wm-guide-grid">
+                <article><h3>Nikah cards</h3><p>Formal wording, optional family names and a calm ivory, emerald or jaali design.</p></article>
+                <article><h3>Mehndi cards</h3><p>Marigold garlands, Mela folk colour and Phulkari borders for a festive evening.</p></article>
+                <article><h3>Baraat cards</h3><p>Royal maroon and gold, rose gardens and Mughal frames for the main day.</p></article>
+                <article><h3>Walima cards</h3><p>Pastel florals, midnight lanterns and minimal layouts for the reception.</p></article>
+            </div>
+
+            <h2>Urdu wedding invitation wording</h2>
+            <p>Choose Traditional, Simple or Modern wording and edit the invitation line if you like. Common lines used on Pakistani cards:</p>
+            <ul class="wm-wording-samples" lang="ur" dir="rtl">
+                <li>بسلسلۂ شادی خانہ آبادی</li>
+                <li>آپ کو ہماری خوشیوں میں شرکت کی دعوت ہے</li>
+                <li>آپ کی تشریف آوری ہمارے لیے باعثِ مسرت ہوگی</li>
+                <li>منجانب: اہلِ خانہ</li>
+            </ul>
+
+            <h2>Frequently asked questions</h2>
+            <div class="wm-faq">
+                <details><summary>Is the wedding invitation maker free?</summary><p>Yes. You can make, download and share as many invitations as you like without an account.</p></details>
+                <details><summary>Can I make an Urdu and English invitation?</summary><p>Yes. Choose Urdu, English or Urdu + English. The bilingual layout puts the event title and closing line in Urdu and the details in English.</p></details>
+                <details><summary>Can I type Urdu with English letters?</summary><p>Yes. Turn on “English letters → Urdu” above the name fields, type a word such as <em>ayesha</em> and press space. You can also type with any Urdu keyboard.</p></details>
+                <details><summary>Can I make matching cards for Mehndi, Nikah, Baraat and Walima?</summary><p>Yes. Add each event and keep “Use this design for all my events” on. Every card shares the design but gets colours suited to its function.</p></details>
+                <details><summary>How do I send the card on WhatsApp?</summary><p>Tap “Share on WhatsApp”. On most phones the card opens straight in WhatsApp; otherwise it is saved to your device so you can attach it.</p></details>
+                <details><summary>Can I print the invitation?</summary><p>Yes. Choose the 5×7 inch print size and use “Print or save as PDF”.</p></details>
+                <details><summary>Is my information private?</summary><p>Yes. Your wedding details are not published anywhere — the card only goes to the people you send it to. See <a href="/write-urdu-privacy">Privacy</a> for details.</p></details>
+            </div>
+        </section>
     </main>
+
+    <dialog class="wm-lightbox" data-wm-lightbox aria-label="Full preview">
+        <div class="wm-lightbox-inner">
+            <canvas width="1080" height="1350" data-wm-lightbox-canvas role="img" aria-label="Full preview of your invitation"></canvas>
+            <div class="wm-lightbox-actions">
+                <button type="button" class="wm-btn wm-btn-ghost" data-wm-close-full>Close</button>
+                <button type="button" class="wm-btn wm-btn-primary" data-wm-goto="share" data-wm-close-full>Download &amp; share</button>
+            </div>
+        </div>
+    </dialog>
+
+    <div class="wm-print-sheet" data-wm-print-sheet aria-hidden="true"></div>
 
     <footer data-wu-static-shell="footer"><nav class="wu-static-footer-nav" aria-label="Footer navigation"><div class="wu-static-footer-group" data-wu-static-footer-group="write-urdu"><strong>Write Urdu</strong><a href="/">English to Urdu typing</a><a href="/roman-urdu-transliteration">Roman Urdu converter</a><a href="/urdu-keyboard">Urdu keyboard</a><a href="/urdu-editor">Urdu editor</a><a href="/tools/urdu-voice-typing">Voice to Urdu</a><a href="/urdu-text-cleaner">Fix Urdu text</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="create"><strong>Create</strong><a href="/urdu-card-studio">Urdu image maker</a><a href="/urdu-card-gallery">Compare card designs</a><a href="/urdu-cards">Ready-made Urdu cards</a><a href="/urdu-whatsapp-status-maker">WhatsApp status</a><a href="/urdu-instagram-post-maker">Instagram post</a><a href="/urdu-name-art-maker">Urdu name art</a><a href="/qr-code-generator">QR code</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="help"><strong>Help</strong><a href="/urdu-typing-practice">Urdu typing practice</a><a href="/english-urdu-typing-tutorial">How to type Urdu</a><a href="/urdu-alphabet">Urdu alphabet</a><a href="/urdu-faq">FAQ</a><a href="/why-write-urdu">About</a><a href="/write-urdu-privacy">Privacy</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="trust"><strong>Help & trust</strong><a href="/changelog">What’s new</a><a href="/urdu-writing-templates">Writing templates</a><a href="/why-write-urdu">About Write Urdu</a><a href="/10-years-of-write-urdu">10 Years of Write Urdu</a><a href="/contact">Contact</a><a href="/write-urdu-privacy">Privacy and terms</a><a href="/write-urdu-sitemap">Sitemap</a></div></nav></footer>
 
+    <script src="/google_jsapi.js"></script>
 </body>
 </html>
