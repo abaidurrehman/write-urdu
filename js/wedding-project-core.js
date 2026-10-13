@@ -7,7 +7,7 @@
     var SCHEMA_VERSION = 1;
 
     var EVENT_TYPES = ['nikah', 'mehndi', 'mayun', 'dholki', 'baraat', 'rukhsati', 'walima', 'engagement', 'custom'];
-    var HOST_MODES = ['bride_side', 'groom_side', 'both', 'grandparents', 'custom'];
+    var HOST_MODES = ['bride_side', 'groom_side', 'both', 'grandparents', 'custom', 'couple'];
     var PROGRAMME_LABELS = ['gathering', 'nikah', 'baraat_arrival', 'dinner', 'rukhsati', 'reception', 'custom'];
     var INVITATION_LANGUAGES = ['urdu', 'english', 'bilingual'];
     var COUPLE_DISPLAY_MODES = ['both_names', 'lineage', 'family_led', 'custom'];
@@ -15,6 +15,7 @@
     var SUFFIX_STYLES = ['sahib', 'sahiba', 'with_family', 'none', 'custom'];
     var RELIGIOUS_OPENING_MODES = ['none', 'verified_library', 'custom_user_text'];
     var WORDING_TONES = ['formal', 'informal', 'concise'];
+    var LETTERING_STYLES = ['calligraphic', 'classic', 'modern'];
 
     // Only the fixed, universally identical opening formula (the basmala) is seeded here.
     // reviewStatus stays 'pending_human_review' until Write Urdu's own religious-content
@@ -29,6 +30,13 @@
             reviewStatus: 'pending_human_review'
         })
     ]);
+
+    // The visual composer only offers a religious opening whose library entry has passed
+    // human review; until then the option stays hidden rather than rendering unreviewed text.
+    function approvedLibraryEntry(libraryId, library) {
+        var entry = findLibraryEntry(libraryId, library);
+        return entry && entry.reviewStatus === 'approved' ? entry : null;
+    }
 
     function text(value) {
         return value === undefined || value === null ? '' : String(value);
@@ -149,7 +157,14 @@
             customWording: trimmed(source.customWording, 2000),
             notes: trimmed(source.notes, 500),
             selectedBackgroundId: trimmed(source.selectedBackgroundId, 80) || null,
-            wordingOverride: normalizeWordingOverride(source.wordingOverride)
+            wordingOverride: normalizeWordingOverride(source.wordingOverride),
+            // Visual-composer choices. Empty designColorway/lettering mean "use the design's
+            // own recommendation for this event type".
+            designColorway: trimmed(source.designColorway, 40),
+            lettering: LETTERING_STYLES.indexOf(source.lettering) >= 0 ? source.lettering : '',
+            rsvpText: trimmed(source.rsvpText, 160),
+            dressCode: trimmed(source.dressCode, 120),
+            showMapQr: source.showMapQr === true
         };
     }
 
@@ -473,6 +488,8 @@
         RELIGIOUS_OPENING_MODES: RELIGIOUS_OPENING_MODES,
         RELIGIOUS_LIBRARY: RELIGIOUS_LIBRARY,
         WORDING_TONES: WORDING_TONES,
+        LETTERING_STYLES: LETTERING_STYLES,
+        approvedLibraryEntry: approvedLibraryEntry,
         createDefaultWeddingProject: createDefaultWeddingProject,
         normalizeWeddingProject: normalizeWeddingProject,
         validateWeddingProject: validateWeddingProject,

@@ -21,7 +21,7 @@ const fixtureSet = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
 
 assert.equal(core.SCHEMA_VERSION, 1, 'Wedding schema must start at version 1');
 assert.deepEqual(core.EVENT_TYPES, ['nikah', 'mehndi', 'mayun', 'dholki', 'baraat', 'rukhsati', 'walima', 'engagement', 'custom']);
-assert.deepEqual(core.HOST_MODES, ['bride_side', 'groom_side', 'both', 'grandparents', 'custom']);
+assert.deepEqual(core.HOST_MODES, ['bride_side', 'groom_side', 'both', 'grandparents', 'custom', 'couple']);
 assert.deepEqual(core.INVITATION_LANGUAGES, ['urdu', 'english', 'bilingual']);
 assert.deepEqual(core.GUEST_SCOPES, ['individual', 'couple', 'family', 'custom']);
 assert.deepEqual(core.RELIGIOUS_OPENING_MODES, ['none', 'verified_library', 'custom_user_text']);
@@ -30,6 +30,24 @@ assert.deepEqual(core.RELIGIOUS_OPENING_MODES, ['none', 'verified_library', 'cus
 core.RELIGIOUS_LIBRARY.forEach((entry) => {
   assert.notEqual(entry.reviewStatus, 'approved', `Library entry ${entry.id} must not ship pre-approved by Slice 0 code`);
 });
+// The composer's lookup only ever returns approved entries.
+assert.equal(core.approvedLibraryEntry('bismillah-standard'), null);
+assert.equal(core.approvedLibraryEntry('x', [{ id: 'x', reviewStatus: 'approved', displayText: 't' }]).displayText, 't');
+
+// Visual-composer fields are additive and normalize safely from old drafts.
+{
+  const legacyEvent = core.normalizeWeddingProject({ events: [{ id: 'e1', type: 'mehndi' }] }).events[0];
+  assert.equal(legacyEvent.designColorway, '');
+  assert.equal(legacyEvent.lettering, '');
+  assert.equal(legacyEvent.rsvpText, '');
+  assert.equal(legacyEvent.dressCode, '');
+  assert.equal(legacyEvent.showMapQr, false);
+  const styled = core.normalizeWeddingProject({ events: [{ id: 'e1', type: 'nikah', lettering: 'modern', showMapQr: true, hostMode: 'couple' }] }).events[0];
+  assert.equal(styled.lettering, 'modern');
+  assert.equal(styled.showMapQr, true);
+  assert.equal(styled.hostMode, 'couple');
+  assert.equal(core.normalizeWeddingProject({ events: [{ lettering: 'comic-sans' }] }).events[0].lettering, '');
+}
 
 const defaultProject = core.createDefaultWeddingProject(new Date('2026-09-18T00:00:00Z'));
 assert.equal(defaultProject.schemaVersion, 1);

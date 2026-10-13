@@ -52,6 +52,7 @@
             '/urdu-instagram-post-maker': 'instagram_post',
             '/urdu-invoice-generator': 'invoice_generator',
             '/qr-code-generator': 'qr_generator',
+            '/urdu-wedding-invitation-maker': 'wedding_invitation',
             '/tools/urdu-voice-typing': 'voice_typing'
         };
         return tools[path] || 'content';
@@ -675,7 +676,8 @@
             whatsapp_status: '[data-social-direct-workspace="whatsapp"]',
             instagram_post: '[data-social-direct-workspace="instagram"]',
             invoice_generator: '[data-invoice-generator]',
-            qr_generator: '[data-qr-generator]'
+            qr_generator: '[data-qr-generator]',
+            wedding_invitation: '[data-wedding-maker]'
         };
         return selectors[tool] || null;
     }

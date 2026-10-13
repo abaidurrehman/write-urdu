@@ -1,256 +1,868 @@
+/* WU-SHAADI-001 — Urdu Wedding Invitation Maker.
+   The invitation artwork carries the colour; the editor around it stays quiet. */
+
 .wedding-maker-page {
-    background: var(--wu-color-page, #f6f8f7);
-    color: var(--wu-color-ink, #17221c);
-    font-family: var(--wu-font-ui, system-ui, sans-serif);
+    --wm-ink: var(--wu-color-ink, #1d2621);
+    --wm-muted: var(--wu-color-muted, #67736c);
+    --wm-line: #e7e1d6;
+    --wm-surface: #ffffff;
+    --wm-paper: #fbf8f2;
+    --wm-brand: var(--wu-color-brand, #15934d);
+    --wm-brand-strong: var(--wu-color-brand-strong, #0d783e);
+    --wm-brand-soft: var(--wu-color-brand-soft, #eaf8ef);
+    --wm-gold: #a87b3a;
+    --wm-gold-soft: #f6eddc;
+    --wm-whatsapp: #1fa855;
+    --wm-radius: 16px;
+    --wm-shadow-card: 0 18px 40px -18px rgba(60, 40, 20, 0.35), 0 4px 12px -6px rgba(60, 40, 20, 0.18);
+    --wm-urdu: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+    background: var(--wm-paper);
+    color: var(--wm-ink);
 }
 
 .wedding-maker-main {
-    max-width: var(--wu-content-width, 78rem);
+    max-width: 76rem;
     margin: 0 auto;
-    padding: var(--wu-space-6, 2rem) var(--wu-space-4, 1rem);
+    padding: 1.25rem 1rem 3rem;
 }
 
-.wedding-maker-intro {
-    color: var(--wu-color-muted, #68766e);
-    margin-bottom: var(--wu-space-5, 1.5rem);
+.wedding-maker-page [hidden] { display: none !important; }
+
+/* ---------- buttons ---------- */
+
+.wm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.6rem 1.15rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.wedding-step-rail {
+.wm-btn:focus-visible,
+.wm-link:focus-visible,
+.wedding-maker-page button:focus-visible,
+.wedding-maker-page input:focus-visible,
+.wedding-maker-page select:focus-visible,
+.wedding-maker-page textarea:focus-visible,
+.wedding-maker-page summary:focus-visible {
+    outline: 3px solid #c99a4a;
+    outline-offset: 2px;
+}
+
+.wm-btn-primary,
+.wedding-maker-page a.wm-btn-primary { background: var(--wm-brand); color: #fff; }
+.wm-btn-primary:hover { background: var(--wm-brand-strong); }
+.wm-btn-ghost,
+.wedding-maker-page a.wm-btn-ghost { background: var(--wm-surface); color: var(--wm-ink); border-color: var(--wm-line); }
+.wm-btn-ghost:hover { border-color: #cdbf9f; background: #fffdf8; }
+.wm-btn-whatsapp { background: var(--wm-whatsapp); color: #fff; }
+.wm-btn-whatsapp:hover { background: #178a45; }
+.wm-btn-lg { min-height: 52px; padding: 0.75rem 1.5rem; font-size: 1.02rem; }
+.wm-btn-sm { min-height: 38px; padding: 0.4rem 0.9rem; font-size: 0.88rem; }
+.wm-btn[disabled] { opacity: 0.6; cursor: progress; }
+
+.wm-link {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: var(--wm-brand-strong);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+/* ---------- hero ---------- */
+
+.wm-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: center;
+    padding: 0.5rem 0 1.75rem;
+}
+
+.wm-eyebrow {
+    margin: 0 0 0.5rem;
+    color: var(--wm-gold);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.wm-hero h1 {
+    margin: 0;
+    font-size: clamp(1.9rem, 6vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+}
+
+.wm-hero-promise {
+    margin: 0.75rem 0 0;
+    font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+    color: #3b463f;
+    max-width: 32rem;
+}
+
+.wm-hero-points {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--wu-space-2, 0.5rem);
-    list-style: none;
-    margin: 0 0 var(--wu-space-6, 2rem);
+    gap: 0.4rem 0.5rem;
+    margin: 1rem 0 0;
     padding: 0;
+    list-style: none;
 }
 
-.wedding-step-rail li {
-    padding: var(--wu-space-2, 0.5rem) var(--wu-space-4, 1rem);
-    border: 1px solid var(--wu-color-border, #dfe7e2);
-    border-radius: var(--wu-radius-pill, 999px);
-    font-size: var(--wu-text-sm, 0.875rem);
-    color: var(--wu-color-muted, #68766e);
-    background: var(--wu-color-surface, #fff);
+.wm-hero-points li {
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--wm-gold-soft);
+    color: #6b4d22;
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
-.wedding-step-rail li[data-wedding-step-status="complete"] {
-    border-color: var(--wu-color-brand, #15934d);
-    color: var(--wu-color-brand-strong, #0d783e);
+.wm-hero-points [lang="ur"] { font-family: var(--wm-urdu); line-height: 1; }
+
+.wm-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
 }
 
-.wedding-step-rail li[data-wedding-step-status="current"] {
-    border-color: var(--wu-color-brand, #15934d);
-    background: var(--wu-color-brand-soft, #eaf8ef);
-    color: var(--wu-color-brand-deep, #0a5d31);
-    font-weight: var(--wu-weight-semibold, 600);
-}
-
-.wedding-step-rail li[data-wedding-step-status="blocked"] {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-
-[data-wedding-step-panel] {
-    background: var(--wu-color-surface, #fff);
-    border: 1px solid var(--wu-color-border, #dfe7e2);
-    border-radius: var(--wu-radius-md, 0.8rem);
-    padding: var(--wu-space-5, 1.5rem);
-    margin-bottom: var(--wu-space-5, 1.5rem);
-}
-
-[data-wedding-step-panel] h2 {
-    margin: 0 0 var(--wu-space-4, 1rem);
-    font-size: var(--wu-text-lg, 1.125rem);
-}
-
-[data-wedding-step-panel] label {
-    display: inline-grid;
-    gap: var(--wu-space-1, 0.25rem);
-    margin: 0 var(--wu-space-4, 1rem) var(--wu-space-3, 0.75rem) 0;
-    vertical-align: top;
-    color: var(--wu-color-ink, #17221c);
-    font-size: var(--wu-text-sm, 0.875rem);
-    font-weight: var(--wu-weight-medium, 500);
-}
-
-[data-wedding-events-list] > div,
-[data-wedding-families-list] > div,
-[data-wedding-edit-fields] > div,
-[data-wedding-design-list] > div,
-[data-wedding-preview-list] > div {
-    margin-bottom: var(--wu-space-3, 0.75rem);
-}
-
-[data-wedding-step-panel] input[type="text"],
-[data-wedding-step-panel] input[type="date"],
-[data-wedding-step-panel] select,
-[data-wedding-step-panel] textarea {
-    display: block;
-    box-sizing: border-box;
+.wm-hero-art {
+    position: relative;
+    height: clamp(260px, 72vw, 460px);
+    max-width: 560px;
     width: 100%;
-    max-width: 360px;
-    min-height: var(--wu-control-height, 2.75rem);
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--wu-color-border-strong, #cbd9d1);
-    border-radius: var(--wu-radius-sm, 0.6rem);
-    color: var(--wu-color-ink, #17221c);
-    background: var(--wu-color-surface, #fff);
-    font: inherit;
-    font-size: var(--wu-text-base, 1rem);
+    margin: 0 auto;
 }
 
-[data-wedding-step-panel] select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    padding-right: 2.25rem;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2368766e' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.85rem center;
+.wm-hero-card {
+    position: absolute;
+    margin: 0;
+    width: 46%;
+    aspect-ratio: 4 / 5;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--wm-shadow-card);
+    background: #efe7d8;
+}
+
+.wm-hero-card canvas { display: block; width: 100%; height: 100%; }
+.wm-hero-card-1 { left: 2%; top: 9%; transform: rotate(-6deg); z-index: 1; }
+.wm-hero-card-2 { left: 27%; top: 0; z-index: 3; width: 50%; }
+.wm-hero-card-3 { right: 2%; top: 11%; transform: rotate(6deg); z-index: 2; }
+
+@media (min-width: 900px) {
+    .wm-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 2.5rem; padding: 1.5rem 0 2.5rem; }
+    .wm-hero-art { height: 470px; }
+}
+
+/* ---------- maker shell ---------- */
+
+.wm-maker {
+    scroll-margin-top: 88px;
+    background: var(--wm-surface);
+    border: 1px solid var(--wm-line);
+    border-radius: 22px;
+    padding: 1rem;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+
+.wm-progress {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.25rem;
+    margin: 0 0 1rem;
+    padding: 0;
+    list-style: none;
+    counter-reset: none;
+}
+
+.wm-progress li { position: relative; }
+
+.wm-progress li + li::before {
+    content: "";
+    position: absolute;
+    top: 21px;
+    right: calc(50% + 18px);
+    left: calc(-50% + 18px);
+    height: 2px;
+    background: var(--wm-line);
+}
+
+.wm-progress li.is-done + li::before,
+.wm-progress li.is-done + li.is-current::before { background: var(--wm-brand); }
+
+.wm-progress button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.2rem 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 0.82rem;
+    color: var(--wm-muted);
     cursor: pointer;
 }
 
-[data-wedding-step-panel] textarea {
-    min-height: 6rem;
-    max-width: 480px;
-    resize: vertical;
+.wm-progress-num {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin-top: 6px;
+    border-radius: 50%;
+    border: 2px solid var(--wm-line);
+    background: var(--wm-surface);
+    font-weight: 700;
+    font-size: 0.85rem;
 }
 
-[data-wedding-step-panel] input:focus,
-[data-wedding-step-panel] select:focus,
-[data-wedding-step-panel] textarea:focus {
-    outline: none;
-    border-color: var(--wu-color-brand, #15934d);
-    box-shadow: 0 0 0 3px var(--wu-shell-focus-ring, rgba(11, 111, 194, .28));
+.wm-progress .is-done .wm-progress-num { border-color: var(--wm-brand); background: var(--wm-brand-soft); color: var(--wm-brand-strong); }
+.wm-progress .is-current button { color: var(--wm-ink); font-weight: 600; }
+.wm-progress .is-current .wm-progress-num { border-color: var(--wm-brand); background: var(--wm-brand); color: #fff; }
+
+.wm-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
 }
 
-[data-wedding-step-panel] button:not(.wedding-design-option) {
-    min-height: var(--wu-control-height, 2.75rem);
-    padding: 0 var(--wu-space-4, 1rem);
-    border: 1px solid var(--wu-color-border-strong, #cbd9d1);
-    border-radius: var(--wu-radius-sm, 0.6rem);
-    background: var(--wu-color-surface, #fff);
-    color: var(--wu-color-ink, #17221c);
-    font: inherit;
-    font-size: var(--wu-text-sm, 0.875rem);
-    cursor: pointer;
+@media (min-width: 960px) {
+    .wm-maker { padding: 1.5rem; }
+    .wm-layout { grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); align-items: start; }
+    .wm-progress { max-width: 34rem; }
 }
 
-[data-wedding-step-panel] button:not(.wedding-design-option):hover {
-    border-color: var(--wu-color-brand, #15934d);
-    background: var(--wu-color-brand-softer, #f4fbf6);
+.wm-step-head h2 {
+    margin: 0;
+    font-size: clamp(1.3rem, 3.5vw, 1.6rem);
+    letter-spacing: -0.01em;
 }
 
-.wedding-maker-nav {
+.wm-step-head p { margin: 0.35rem 0 1rem; color: var(--wm-muted); }
+
+.wm-step-nav {
     display: flex;
     justify-content: space-between;
-    gap: var(--wu-space-3, 0.75rem);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--wm-line);
 }
 
-.wedding-maker-nav button {
-    min-height: var(--wu-control-height, 2.75rem);
-    padding: 0 var(--wu-space-5, 1.5rem);
-    border-radius: var(--wu-radius-sm, 0.6rem);
-    border: 1px solid var(--wu-color-border-strong, #cbd9d1);
-    background: var(--wu-color-surface, #fff);
+.wm-step-nav .wm-btn-primary:only-child { margin-left: auto; }
+.wm-subtle { margin: 0 0 0.5rem; color: var(--wm-muted); font-size: 0.88rem; }
+
+/* ---------- events bar ---------- */
+
+.wm-events-bar {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0 0 0.85rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--wm-line);
+    scrollbar-width: thin;
+}
+
+.wm-event-chip {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    border: 1px solid var(--wm-line);
+    border-radius: 999px;
+    background: var(--wm-surface);
+}
+
+.wm-event-chip-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 40px;
+    padding: 0.3rem 0.4rem 0.3rem 0.35rem;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 0.88rem;
+    cursor: pointer;
+    color: var(--wm-ink);
+}
+
+.wm-event-chip-dot { width: 22px; height: 22px; border-radius: 50%; background-size: cover; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); }
+.wm-event-chip small { color: var(--wm-muted); }
+.wm-event-chip.is-active { border-color: var(--wm-brand); background: var(--wm-brand-soft); }
+.wm-event-chip.is-active .wm-event-chip-main { font-weight: 600; }
+
+.wm-event-chip-remove {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    margin-right: 3px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--wm-muted);
+    font-size: 1.1rem;
     cursor: pointer;
 }
 
-.wedding-maker-nav button[data-wedding-next] {
-    background: var(--wu-color-brand, #15934d);
+.wm-event-chip-remove:hover { background: rgba(0, 0, 0, 0.06); color: var(--wm-ink); }
+
+.wm-events-add {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px dashed #cbbd9d;
+    border-radius: 999px;
+    background: none;
+    font: inherit;
+    font-size: 0.88rem;
+    color: var(--wm-gold);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ---------- event tiles ---------- */
+
+.wm-event-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+@media (min-width: 720px) {
+    .wm-event-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.wm-event-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 168px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: var(--wm-radius);
+    overflow: hidden;
+    background: #efe7d8 center / cover no-repeat;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.wm-event-tile:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.35); }
+
+.wm-event-tile-label {
+    display: block;
+    padding: 0.6rem 0.75rem 0.7rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 252, 245, 0.94) 32%);
+    color: var(--wm-ink);
+}
+
+.wm-event-tile-label strong { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; font-size: 1.05rem; }
+.wm-event-tile-label strong [lang="ur"] { font-family: var(--wm-urdu); font-weight: 600; font-size: 0.95rem; line-height: 1.4; color: #6b4d22; }
+.wm-event-tile-label span.wm-event-tile-desc { display: block; margin-top: 0.15rem; font-size: 0.8rem; color: var(--wm-muted); line-height: 1.3; }
+
+.wm-event-tile[aria-checked="true"] { border-color: var(--wm-brand); box-shadow: 0 0 0 3px rgba(21, 147, 77, 0.22), 0 10px 22px -12px rgba(0, 0, 0, 0.35); }
+
+.wm-tick {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: none;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--wm-brand);
     color: #fff;
-    border-color: var(--wu-color-brand-strong, #0d783e);
+    font-size: 0.9rem;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-.wedding-maker-nav button[data-wedding-next]:disabled {
-    background: var(--wu-color-border-strong, #cbd9d1);
-    border-color: var(--wu-color-border-strong, #cbd9d1);
-    color: var(--wu-color-muted, #68766e);
-    cursor: not-allowed;
+[aria-checked="true"] > .wm-tick,
+[aria-pressed="true"] > .wm-tick { display: grid; }
+
+.wm-more-events { margin-top: 1.1rem; }
+
+.wm-chip-row { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+
+.wm-chip {
+    min-height: 40px;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--wm-line);
+    border-radius: 999px;
+    background: var(--wm-surface);
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--wm-ink);
+    cursor: pointer;
 }
 
-[data-wedding-next-hint] {
-    color: var(--wu-color-muted, #68766e);
-    font-size: var(--wu-text-sm, 0.875rem);
-    margin: var(--wu-space-2, 0.5rem) 0 0;
-}
+.wm-chip:hover { border-color: #cdbf9f; }
+.wm-chip[aria-checked="true"], .wm-chip[aria-pressed="true"] { border-color: var(--wm-brand); background: var(--wm-brand-soft); color: var(--wm-brand-strong); font-weight: 600; }
+.wm-chip [lang="ur"] { font-family: var(--wm-urdu); font-size: 0.85em; margin-left: 0.45rem; color: var(--wm-muted); display: inline-block; }
 
-.wedding-edit-layout {
+.wm-custom-event { margin-top: 0.75rem; max-width: 22rem; }
+
+.wm-suite-callout {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--wu-space-5, 1.5rem);
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding: 0.9rem 1rem;
+    border-radius: 14px;
+    background: var(--wm-gold-soft);
 }
 
-.wedding-edit-fields {
-    flex: 1 1 320px;
-    min-width: 280px;
+.wm-suite-callout p { margin: 0.2rem 0 0; color: #6b5a3e; font-size: 0.9rem; }
+
+/* ---------- design picker ---------- */
+
+.wm-filter-row {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
+    scrollbar-width: thin;
 }
 
-.wedding-edit-preview {
-    flex: 1 1 280px;
-    min-width: 240px;
-    max-width: 360px;
+.wm-filter-row .wm-chip { flex: 0 0 auto; }
+
+.wm-design-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
 }
 
-@media (max-width: 700px) {
-    .wedding-edit-layout {
-        flex-direction: column;
-    }
-
-    .wedding-edit-preview {
-        max-width: 100%;
-    }
+@media (min-width: 640px) {
+    .wm-design-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-.wedding-design-option {
-    display: inline-block;
-    width: 120px;
-    margin: 0 var(--wu-space-2, 0.5rem) var(--wu-space-2, 0.5rem) 0;
-    border: 2px solid var(--wu-color-border, #dfe7e2);
-    border-radius: var(--wu-radius-sm, 0.6rem);
-    cursor: pointer;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    aspect-ratio: 4 / 5;
-}
-
-.wedding-design-option[aria-pressed="true"] {
-    border-color: var(--wu-color-brand, #15934d);
-}
-
-.wedding-design-fallback {
-    background: #fffdf7;
-    border: 1px solid #c9a75a;
-}
-
-.wedding-preview-card {
+.wm-design-tile {
     position: relative;
-    width: 100%;
-    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: left;
+    font: inherit;
+    color: var(--wm-ink);
+    cursor: pointer;
+}
+
+.wm-design-thumb {
+    position: relative;
+    display: block;
     aspect-ratio: 4 / 5;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: var(--wu-space-4, 1rem);
+    border-radius: 12px;
     overflow: hidden;
+    background: #efe7d8;
+    box-shadow: 0 3px 12px -6px rgba(0, 0, 0, 0.35);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.wedding-preview-card.wedding-design-fallback {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.wm-design-thumb canvas { display: block; width: 100%; height: 100%; }
+.wm-design-tile:hover .wm-design-thumb { transform: translateY(-2px); box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.4); }
+.wm-design-tile[aria-pressed="true"] .wm-design-thumb { outline-color: var(--wm-brand); box-shadow: 0 0 0 5px rgba(21, 147, 77, 0.18); }
+.wm-design-tile .wm-tick { top: 0.55rem; right: 0.55rem; }
+
+.wm-design-name { display: flex; flex-direction: column; padding: 0 0.15rem; }
+.wm-design-name strong { font-size: 0.95rem; }
+.wm-design-name span { font-size: 0.8rem; color: var(--wm-muted); }
+.wm-design-tile[aria-pressed="true"] .wm-design-name strong::after { content: " · Selected"; color: var(--wm-brand-strong); font-weight: 600; font-size: 0.8rem; }
+
+.wm-see-all { width: 100%; margin-top: 1rem; }
+
+.wm-personalise {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border: 1px solid var(--wm-line);
+    border-radius: 14px;
+    background: #fffdf9;
 }
 
-.wedding-preview-text {
-    position: absolute;
+.wm-personalise-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }
+.wm-personalise-label { min-width: 5.5rem; font-weight: 600; font-size: 0.9rem; }
+
+.wm-swatches { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+
+.wm-swatch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.25rem 0.75rem 0.25rem 0.3rem;
+    border: 1px solid var(--wm-line);
+    border-radius: 999px;
+    background: var(--wm-surface);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.wm-swatch-dots { display: inline-flex; }
+.wm-swatch-dots i { width: 18px; height: 34px; display: block; }
+.wm-swatch-dots i:first-child { border-radius: 17px 0 0 17px; }
+.wm-swatch-dots i:last-child { border-radius: 0 17px 17px 0; }
+.wm-swatch[aria-checked="true"] { border-color: var(--wm-brand); box-shadow: 0 0 0 2px var(--wm-brand); font-weight: 600; }
+
+.wm-segmented {
+    display: inline-flex;
+    flex-wrap: wrap;
+    padding: 3px;
+    border-radius: 999px;
+    background: #f1ece2;
+    gap: 2px;
+}
+
+.wm-segmented button {
+    min-height: 40px;
+    padding: 0.35rem 0.95rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font: inherit;
+    font-size: 0.9rem;
+    color: #4f574f;
+    cursor: pointer;
+}
+
+.wm-segmented button[aria-checked="true"] { background: var(--wm-surface); color: var(--wm-ink); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); }
+.wm-segmented [lang="ur"] { font-family: var(--wm-urdu); line-height: 1; }
+
+.wm-check { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.92rem; cursor: pointer; }
+.wm-check input { width: 20px; height: 20px; margin: 0.1rem 0 0; accent-color: var(--wm-brand); flex: 0 0 auto; }
+
+/* ---------- details form ---------- */
+
+.wm-details { display: grid; gap: 1.1rem; }
+
+.wm-fieldset {
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid var(--wm-line);
+    border-radius: 14px;
+    background: #fffdf9;
+    min-width: 0;
+}
+
+.wm-fieldset legend {
+    padding: 0 0.35rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.wm-fieldset-note { margin: -0.1rem 0 0.75rem; color: var(--wm-muted); font-size: 0.85rem; }
+
+.wm-grid-2 { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+
+@media (min-width: 560px) {
+    .wm-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.wm-field { display: grid; gap: 0.3rem; min-width: 0; }
+.wm-field > span { font-weight: 600; font-size: 0.88rem; }
+.wm-field > small { color: var(--wm-muted); font-size: 0.8rem; }
+
+.wm-field input[type="text"],
+.wm-field input[type="date"],
+.wm-field input[type="time"],
+.wm-field input[type="url"],
+.wm-field input[type="tel"],
+.wm-field select,
+.wm-field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #d9d1c2;
+    border-radius: 10px;
+    background: #fff;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--wm-ink);
+    box-sizing: border-box;
+}
+
+.wm-field textarea { min-height: 84px; resize: vertical; }
+
+.wm-field input[dir="rtl"],
+.wm-field textarea[dir="rtl"] {
+    font-family: var(--wm-urdu);
+    font-size: 1.05rem;
+    line-height: 2;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+}
+
+.wm-language-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }
+.wm-details .input-mode-control { margin: 0.75rem 0 0; }
+
+.wm-more {
+    border: 1px solid var(--wm-line);
+    border-radius: 14px;
+    background: #fffdf9;
+}
+
+.wm-more > summary {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    min-height: 52px;
+    padding: 0.6rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+}
+
+.wm-more > summary::-webkit-details-marker { display: none; }
+.wm-more > summary::after { content: "+"; font-size: 1.3rem; color: var(--wm-gold); }
+.wm-more[open] > summary::after { content: "−"; }
+.wm-more > summary small { display: block; font-weight: 400; color: var(--wm-muted); font-size: 0.82rem; }
+.wm-more-body { display: grid; gap: 1rem; padding: 0 1rem 1rem; }
+.wm-more-body .wm-fieldset { background: var(--wm-surface); }
+
+.wm-programme-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 44px; gap: 0.5rem; align-items: end; margin-top: 0.6rem; }
+
+.wm-icon-btn {
+    width: 44px;
+    height: 48px;
+    border: 1px solid var(--wm-line);
+    border-radius: 10px;
+    background: var(--wm-surface);
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--wm-muted);
+}
+
+/* ---------- preview ---------- */
+
+.wm-preview { display: none; }
+
+@media (min-width: 960px) {
+    .wm-preview { display: block; position: sticky; top: 88px; }
+}
+
+.wm-preview-frame {
+    position: relative;
+    border-radius: 12px;
     overflow: hidden;
-    white-space: pre-line;
-    text-align: center;
-    font-family: var(--wu-font-urdu, serif);
-    font-size: clamp(0.7rem, 3.4vw, 1rem);
-    line-height: 1.7;
+    background: #efe7d8;
+    box-shadow: var(--wm-shadow-card);
+    aspect-ratio: 4 / 5;
+}
+
+.wm-preview-frame canvas,
+.wm-share-card canvas { display: block; width: 100%; height: 100%; }
+
+.wm-sample-note {
+    margin: 0.75rem 0 0;
+    padding: 0.55rem 0.8rem;
+    border-radius: 10px;
+    background: var(--wm-gold-soft);
+    color: #6b4d22;
+    font-size: 0.85rem;
+}
+
+.wm-preview-tools { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.75rem; }
+
+/* ---------- share ---------- */
+
+.wm-share-card {
+    max-width: 420px;
+    margin: 0 auto 1.25rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--wm-shadow-card);
+    background: #efe7d8;
+}
+
+@media (min-width: 960px) {
+    .wm-share-card { display: none; }
+}
+
+.wm-share-actions { display: grid; gap: 0.6rem; }
+
+@media (min-width: 560px) {
+    .wm-share-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.wm-share-status { min-height: 1.4em; margin: 0.6rem 0 0; color: var(--wm-brand-strong); font-size: 0.9rem; }
+.wm-share-more { display: grid; gap: 1rem; margin-top: 1rem; }
+.wm-share-secondary { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.wm-sizes button small { display: block; font-size: 0.72rem; color: var(--wm-muted); font-weight: 400; }
+
+.wm-missing {
+    margin: 0 0 1rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    background: #fff4e0;
+    color: #6b4410;
+    font-size: 0.9rem;
+}
+
+.wm-privacy { margin: 1.25rem 0 0; color: var(--wm-muted); font-size: 0.85rem; }
+
+/* ---------- mobile bar ---------- */
+
+.wm-mobile-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 1rem -1rem -1rem;
+    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, 0.96);
+    border-top: 1px solid var(--wm-line);
+    border-radius: 0 0 22px 22px;
+    box-shadow: 0 -8px 20px -14px rgba(0, 0, 0, 0.35);
+}
+
+.wm-mobile-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 48px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--wm-ink);
+    cursor: pointer;
+}
+
+.wm-mobile-preview canvas {
+    width: 40px;
+    height: 50px;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    background: #efe7d8;
+}
+
+.wm-mobile-bar .wm-btn-primary { flex: 0 1 auto; min-width: 9rem; }
+
+@media (min-width: 960px) {
+    .wm-mobile-bar { display: none; }
+}
+
+/* ---------- lightbox ---------- */
+
+.wm-lightbox {
+    width: min(94vw, 560px);
+    max-height: 96vh;
+    padding: 0;
+    border: 0;
+    border-radius: 16px;
+    background: #1d1a16;
+}
+
+.wm-lightbox::backdrop { background: rgba(20, 16, 10, 0.72); }
+.wm-lightbox-inner { display: grid; gap: 0.75rem; padding: 0.75rem; }
+
+.wm-lightbox canvas {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: calc(96vh - 90px);
+    margin: 0 auto;
+    border-radius: 8px;
+}
+
+.wm-lightbox-actions { display: flex; justify-content: space-between; gap: 0.5rem; }
+
+/* ---------- guide / FAQ ---------- */
+
+.wm-guide { max-width: 50rem; margin: 2.5rem auto 0; }
+.wm-guide h2 { margin: 2rem 0 0.75rem; font-size: 1.35rem; }
+.wm-guide h3 { margin: 0 0 0.35rem; font-size: 1.02rem; }
+.wm-guide p { color: #46514a; }
+
+.wm-guide-steps { padding-left: 1.25rem; display: grid; gap: 0.4rem; }
+
+.wm-guide-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+
+@media (min-width: 640px) {
+    .wm-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.wm-guide-grid article { padding: 1rem; border: 1px solid var(--wm-line); border-radius: 14px; background: var(--wm-surface); }
+.wm-guide-grid article p { margin: 0; font-size: 0.92rem; }
+
+.wm-wording-samples {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0;
+    list-style: none;
+    font-family: var(--wm-urdu);
+    font-size: 1.15rem;
+    line-height: 2.1;
+}
+
+.wm-wording-samples li { padding: 0.15rem 1rem; border-right: 3px solid var(--wm-gold); background: var(--wm-surface); border-radius: 8px 0 0 8px; }
+
+.wm-faq details { border-bottom: 1px solid var(--wm-line); }
+.wm-faq summary { min-height: 48px; display: flex; align-items: center; font-weight: 600; cursor: pointer; padding: 0.5rem 0; }
+.wm-faq details p { margin: 0 0 1rem; }
+
+/* ---------- print ---------- */
+
+.wm-print-sheet { display: none; }
+
+@media print {
+    @page { size: 5in 7in; margin: 0; }
+    body.wm-printing > *:not(.wm-print-sheet) { display: none !important; }
+    body.wm-printing .wm-print-sheet { display: block !important; }
+    body.wm-printing .wm-print-sheet img { display: block; width: 5in; height: 7in; object-fit: cover; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wedding-maker-page *,
+    .wedding-maker-page *::before,
+    .wedding-maker-page *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+    .wm-hero-card-1, .wm-hero-card-3 { transform: none; }
+}
+
+/* Phones: the sticky bar carries "Next", so the in-panel primary is redundant there. */
+@media (max-width: 959px) {
+    .wm-step-nav .wm-btn-primary { display: none; }
+    .wm-step-nav { justify-content: flex-start; }
+    .wm-personalise-label { flex-basis: 100%; }
 }
