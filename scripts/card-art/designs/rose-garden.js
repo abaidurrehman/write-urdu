@@ -14,6 +14,12 @@ var PALETTES = {
         rose2: { deep: '#c76b55', mid: '#eba487', light: '#fde2d0', shade: '#6a2a18' },
         leaf: ['#41603f', '#7d9873'], euca: '#93ab98', stem: '#5d7556', dot: '#ffffff', frame: '#c9a46a'
     },
+    mist: {
+        paper: ['#fff7f8', '#f7e3e8'], wash: ['#f2c2cf', '#ead2dc', '#d7e2d6'],
+        rose: { deep: '#b03a5b', mid: '#e47d98', light: '#fcd6df', shade: '#5a1022' },
+        rose2: { deep: '#c9708a', mid: '#f0a9bc', light: '#fde6ec', shade: '#6a2a38' },
+        leaf: ['#4a6a4a', '#86a27e'], euca: '#9fb5a6', stem: '#5f7a5c', dot: '#ffffff', frame: '#d4a3ad'
+    },
     ivory: {
         paper: ['#fffdf8', '#f6f0e4'], wash: ['#efd9c8', '#e6e0cf', '#d3dccf'],
         rose: { deep: '#b28457', mid: '#e3c39d', light: '#fff4e3', shade: '#6b4a24' },
@@ -73,9 +79,15 @@ function render(W, H, options) {
     body += k.rect(76, 76, W - 152, H - 152, 'none', { stroke: p.frame, 'stroke-width': 0.8, opacity: 0.55 });
     // Soft drop shadow under each cluster.
     body += k.g({ filter: 'url(#rg-shadow)', opacity: 0.18, transform: 'translate(8 14)' },
-        k.at(W - 110, 150, 0, 1, cluster(k.seeded('rose-garden'), p, 1.25)));
-    body += k.at(W - 110, 150, 0, 1, cluster(rng, p, 1.25));
-    body += k.at(150, H - 150, 180, 1, cluster(k.seeded('rose-garden-low'), p, 0.82));
+        options && options.layout === 'cascade' ? k.at(110, 150, 0, [-1.3, 1.3], cluster(k.seeded('rose-garden'), p, 1)) : k.at(W - 110, 150, 0, 1, cluster(k.seeded('rose-garden'), p, 1.25)));
+    if (options && options.layout === 'cascade') {
+        // A single spray falls from the top-left corner; a lone bloom answers bottom-right.
+        body += k.at(110, 150, 0, [-1.3, 1.3], cluster(rng, p, 1));
+        body += k.at(W - 150, H - 150, 180, [-0.7, 0.7], cluster(k.seeded('rose-mist-low'), p, 1));
+    } else {
+        body += k.at(W - 110, 150, 0, 1, cluster(rng, p, 1.25));
+        body += k.at(150, H - 150, 180, 1, cluster(k.seeded('rose-garden-low'), p, 0.82));
+    }
     // A few drifting petals.
     [[260, 330, 30], [830, 620, -40], [190, 900, 70], [760, 1180, 10]].forEach(function (pt, i) {
         body += k.at(pt[0], pt[1], pt[2], 1, k.path('M0 0 C8 -10 22 -10 26 0 C22 9 8 9 0 0Z', i % 2 ? p.rose.mid : p.rose2.mid, { opacity: 0.55 }));

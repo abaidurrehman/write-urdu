@@ -671,7 +671,7 @@
             article.appendChild(secondaryActions);
             grid.appendChild(article);
 
-            cardRecords.push({ article: article, card: card });
+            cardRecords.push({ article: article, card: card, text: text });
         }
 
         var weddingNote = document.createElement('p');
@@ -696,6 +696,30 @@
                 if (!record.article.hidden) visible += 1;
             });
             updateCount(visible);
+            scheduleFit();
+        }
+
+        // Shrink any card whose wording overflows its design's safe area, so text never runs
+        // over the artwork (the same fit Card Gallery uses).
+        var fitTimer = 0;
+        function scheduleFit() {
+            if (typeof core.fitPreviewText !== 'function') return;
+            root.clearTimeout(fitTimer);
+            fitTimer = root.setTimeout(fitCards, 120);
+        }
+
+        function fitCards() {
+            var index = 0;
+            function step() {
+                var end = Math.min(index + 12, cardRecords.length);
+                for (; index < end; index += 1) {
+                    var record = cardRecords[index];
+                    if (record.article.hidden) continue;
+                    record.article.dataset.textFits = core.fitPreviewText(record.text, record.text.parentNode).fits ? 'true' : 'false';
+                }
+                if (index < cardRecords.length) root.requestAnimationFrame(step);
+            }
+            step();
         }
 
         data.getCardCategories().forEach(function (category) {
@@ -711,6 +735,9 @@
 
         data.getAllCards().forEach(createCard);
         updateCount(cardRecords.length);
+        scheduleFit();
+        root.addEventListener('resize', scheduleFit);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFit);
         page.dataset.urduCardsMounted = 'true';
         root.WriteUrduCardsApp = {
             getDiagnostics: function () {

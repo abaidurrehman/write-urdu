@@ -29,7 +29,7 @@ async function main() {
         var parts = targets[i].split(':');
         var spec = specs.find(parts[0]);
         var design = require('./designs/' + spec.module + '.js');
-        var markup = design.render(1080, 1350, { palette: parts[1] || spec.palette });
+        var markup = design.render(1080, 1350, { palette: parts[1] || spec.palette, layout: spec.layout });
         var dataUrl = 'data:image/svg+xml;base64,' + Buffer.from(markup).toString('base64');
         var safe = spec.safeArea;
         var tiles = Object.keys(SAMPLES).map(function (key) {

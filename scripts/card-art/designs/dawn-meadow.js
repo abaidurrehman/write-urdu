@@ -57,6 +57,17 @@ function render(W, H, options) {
         else meadow += k.blossom(fx, fy, 13 + rng() * 9, p.flower[Math.floor(rng() * p.flower.length)], p.flower[1], rng() * 70, { stamens: '#c98a2e' });
     }
     body += meadow;
+    if (options && options.layout === 'garden') {
+        // Tall flowering stems (hollyhock-like) rising up both sides frame the morning.
+        [[70, 1], [150, 0.8], [W - 70, 1], [W - 160, 0.75]].forEach(function (st) {
+            var top = H - 760 * st[1];
+            body += k.stroke('M' + st[0] + ' ' + H + ' C' + (st[0] + 10) + ' ' + (H - 300) + ' ' + (st[0] - 10) + ' ' + (top + 200) + ' ' + st[0] + ' ' + top, p.stem, 4);
+            for (var y = top; y < H - 160; y += 52) {
+                body += k.blossom(st[0] + (rng() - 0.5) * 18, y, 24 - (y - top) / 60, p.flower[st[0] < W / 2 ? 0 : 3], '#f7e08a', rng() * 70, { stamens: '#c98a2e' });
+                body += k.leaf(st[0], y + 26, 44, (y / 52) % 2 ? 20 : 160, p.stem, null, { width: 14 });
+            }
+        });
+    }
     body += k.grainLayer(W, H, 'dm-grain', 0.06);
     return k.svg(W, H, defs, body);
 }

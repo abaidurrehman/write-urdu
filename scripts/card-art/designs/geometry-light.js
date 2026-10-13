@@ -8,6 +8,7 @@ var k = require('../art-kit.js');
 
 var PALETTES = {
     teal: { ground: ['#0b3a40', '#082a30', '#051a1f'], line: '#d8b86a', light: '#fff1cc', arch: ['#14505a', '#0d3d45'], glass: 'rgba(255,214,140,0.55)', metal: '#d8b86a', arcade: '#04161a' },
+    emerald: { ground: ['#0f4a36', '#0a3627', '#06241a'], line: '#e2c27a', light: '#fff4d6', arch: ['#18654a', '#0f4a36'], glass: 'rgba(255,214,140,0.55)', metal: '#e2c27a', arcade: '#041a12' },
     ivory: { ground: ['#fbf6ea', '#f3e9d4', '#eadcc0'], line: '#b48a3e', light: '#ffffff', arch: ['#fffdf7', '#f6edda'], glass: 'rgba(255,200,110,0.6)', metal: '#a67c34', arcade: '#e2d2b0' }
 };
 

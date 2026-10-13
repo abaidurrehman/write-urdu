@@ -53,7 +53,7 @@ async function main() {
     for (var i = 0; i < list.length; i += 1) {
         var spec = list[i];
         var design = require('./designs/' + spec.module + '.js');
-        var markup = design.render(WIDTH, HEIGHT, { palette: spec.palette });
+        var markup = design.render(WIDTH, HEIGHT, { palette: spec.palette, layout: spec.layout });
         var full = await rasterise(page, markup, WIDTH, HEIGHT, spec.quality || 0.86);
         var thumb = await rasterise(page, markup, 320, 400, 0.84);
         fs.writeFileSync(path.join(OUT, spec.id + '.webp'), full);

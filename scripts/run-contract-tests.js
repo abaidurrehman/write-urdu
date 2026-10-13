@@ -120,6 +120,7 @@ const tests = [
   'tests/create-publish-boundaries-contract.test.js',
   'tests/v2-creation-contract.test.js',
   'tests/card-studio-background-collection-contract.test.js',
+  'tests/card-art-collection-contract.test.js',
   'tests/card-gallery-slice0-contract.test.js',
   'tests/card-gallery-slice1-contract.test.js',
   'tests/card-gallery-slice2-contract.test.js',
