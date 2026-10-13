@@ -346,3 +346,21 @@ test('share falls back to the card deep link when publishing fails', async ({ pa
   const copied = await page.evaluate(() => window.__copied);
   expect(copied).toBe('https://write-urdu.com/urdu-cards#card-dua-1');
 });
+test('wedding filter points invitation seekers to the wedding invitation maker', async ({ page }) => {
+  await openCards(page);
+  const note = page.locator('.urdu-cards-wedding-note');
+  await expect(note).toBeHidden();
+  await page.locator('[data-urdu-cards-filter="wedding"]').click();
+  await expect(note).toBeVisible();
+  await expect(note.getByRole('link', { name: 'Make a wedding invitation' })).toHaveAttribute('href', '/urdu-wedding-invitation-maker');
+  await page.locator('[data-urdu-cards-filter="all"]').click();
+  await expect(note).toBeHidden();
+});
+
+test('template library offers the wedding invitation maker on the wedding template', async ({ page }) => {
+  await blockExternal(page);
+  await page.goto('/urdu-templates', { waitUntil: 'domcontentloaded', timeout: 15000 });
+  const link = page.locator('[data-template-id] .template-card-alt');
+  await expect(link).toHaveCount(1);
+  await expect(link).toHaveAttribute('href', '/urdu-wedding-invitation-maker');
+});

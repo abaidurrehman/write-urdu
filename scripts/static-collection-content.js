@@ -78,6 +78,12 @@ function renderTemplateLibraryCategories() {
   return buttons.join('');
 }
 
+function weddingMakerLink(template) {
+  return template.slug === 'wedding-invitation'
+    ? '<a class="template-card-alt" href="/urdu-wedding-invitation-maker">Make a full set of wedding invitations</a>'
+    : '';
+}
+
 function renderTemplateLibraryCards() {
   return (templateLibrary.TEMPLATES || []).map(template => {
     const accent = template.style && template.style.accent ? template.style.accent : '#177245';
@@ -92,6 +98,7 @@ function renderTemplateLibraryCards() {
         '<p class="template-card-category">' + escapeHtml(templateCategoryLabel(template)) + '</p>' +
         '<p class="template-card-description">' + escapeHtml(template.description) + '</p>' +
         '<div class="template-card-footer"><span class="template-card-size">' + escapeHtml(templateDimensions(template)) + '</span><button type="button" class="template-open" data-template-open="' + escapeHtml(template.slug) + '">Edit in Card Studio</button></div>' +
+        weddingMakerLink(template) +
       '</div>' +
     '</article>';
   }).join('');
