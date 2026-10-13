@@ -29,7 +29,32 @@
         }, data);
     }
 
+    // Flagship designs (WU-CARD-ART-001) lead the collection. Their artwork is generated from
+    // scripts/card-art/ (one design module per family); `family` groups colourways and
+    // ceremony variants of the same artistic identity.
+    function flagship(data) {
+        return record(Object.assign({
+            src: '/assets/card-studio/backgrounds/' + data.id + '.webp',
+            thumbnailSrc: '/assets/card-studio/backgrounds/thumbs/' + data.id + '.webp',
+            overlayColor: '#000000',
+            overlayOpacity: 0,
+            preferredAlign: 'center',
+            flagship: true
+        }, data));
+    }
+
     var backgrounds = [
+        flagship({ id: 'royal-mughal-emerald', family: 'royal-mughal', name: 'Royal Mughal', nameUr: 'شاہی مغلیہ', category: 'wedding', textColor: '#173f30', safeArea: { top: 0.33, right: 0.24, bottom: 0.17, left: 0.24 }, textCapacity: 'long', goodFor: ['wedding', 'greeting', 'dua'] }),
+        flagship({ id: 'rose-garden-blush', family: 'garden-of-roses', name: 'Garden of Roses', nameUr: 'گلابوں کا باغ', category: 'love', textColor: '#5b2235', safeArea: { top: 0.33, right: 0.17, bottom: 0.31, left: 0.17 }, textCapacity: 'medium', goodFor: ['love', 'wedding', 'family'] }),
+        flagship({ id: 'mehndi-marigold-festival', family: 'mehndi-festival', name: 'Mehndi Marigolds', nameUr: 'مہندی کے گیندے', category: 'wedding', textColor: '#7a1c2e', safeArea: { top: 0.36, right: 0.24, bottom: 0.16, left: 0.24 }, textCapacity: 'long', goodFor: ['wedding', 'greeting', 'social'] }),
+        flagship({ id: 'moonlit-poetry-night', family: 'moonlit-poetry', name: 'Moonlit Poetry', nameUr: 'چاندنی میں شاعری', category: 'poetry', textColor: '#fdf1d8', safeArea: { top: 0.3, right: 0.13, bottom: 0.3, left: 0.13 }, textCapacity: 'long', goodFor: ['poetry', 'night', 'reflection'] }),
+        flagship({ id: 'jumma-geometry-light', family: 'geometry-light', name: 'Geometry & Light', nameUr: 'نقش اور نور', category: 'classic', textColor: '#fff3d6', safeArea: { top: 0.32, right: 0.25, bottom: 0.2, left: 0.25 }, textCapacity: 'long', goodFor: ['jumma', 'dua', 'ramadan'] }),
+        flagship({ id: 'phulkari-bagh-madder', family: 'phulkari', name: 'Phulkari Bagh', nameUr: 'پھلکاری باغ', category: 'pakistan', textColor: '#6b121b', safeArea: { top: 0.22, right: 0.26, bottom: 0.22, left: 0.26 }, textCapacity: 'long', goodFor: ['pakistan', 'family', 'greeting'] }),
+        flagship({ id: 'manuscript-paper-ink', family: 'paper-and-ink', name: 'Manuscript Paper & Ink', nameUr: 'قلمی نسخہ', category: 'poetry', textColor: '#2b241d', safeArea: { top: 0.24, right: 0.22, bottom: 0.22, left: 0.22 }, textCapacity: 'long', goodFor: ['poetry', 'reflection', 'quote'] }),
+        flagship({ id: 'rain-memory-window', family: 'rain-and-memory', name: 'Rain & Memory', nameUr: 'بارش اور یادیں', category: 'poetry', textColor: '#fff6e6', safeArea: { top: 0.22, right: 0.15, bottom: 0.36, left: 0.15 }, textCapacity: 'medium', goodFor: ['poetry', 'night', 'reflection'] }),
+        flagship({ id: 'dawn-meadow-sunrise', family: 'sunrise-and-nature', name: 'Dawn Meadow', nameUr: 'صبح کا سبزہ زار', category: 'nature', textColor: '#3b3a2a', safeArea: { top: 0.3, right: 0.14, bottom: 0.4, left: 0.14 }, textCapacity: 'medium', goodFor: ['morning', 'motivation', 'greeting'] }),
+        flagship({ id: 'celebration-balloons', family: 'celebration', name: 'Celebration Balloons', nameUr: 'خوشیوں کے غبارے', category: 'modern', textColor: '#23305a', safeArea: { top: 0.3, right: 0.19, bottom: 0.25, left: 0.19 }, textCapacity: 'long', goodFor: ['greeting', 'family', 'friendship'] }),
+        flagship({ id: 'editorial-terracotta-block', family: 'modern-editorial', name: 'Editorial Terracotta', nameUr: 'جدید ادارتی', category: 'modern', textColor: '#1f2a44', safeArea: { top: 0.28, right: 0.1, bottom: 0.14, left: 0.4 }, textCapacity: 'long', goodFor: ['social', 'motivation', 'quote'] }),
         record({ id: 'emerald-mughal', name: 'Emerald Mughal', nameUr: 'زمردی مغلیہ', category: 'classic', src: '/assets/card-studio/backgrounds/emerald-mughal.svg', textColor: '#fff7df', overlayColor: '#10291f', overlayOpacity: 0.08, goodFor: ['dua', 'greeting', 'quote'] }),
         record({ id: 'moonlit-lanterns', name: 'Moonlit Lanterns', nameUr: 'چاندنی رات', category: 'classic', src: '/assets/card-studio/backgrounds/moonlit-lanterns.svg', textColor: '#fff7df', overlayColor: '#071426', overlayOpacity: 0.12, goodFor: ['dua', 'greeting', 'poetry'] }),
         record({ id: 'vintage-floral', name: 'Vintage Floral', nameUr: 'پھولوں کی نزاکت', category: 'nature', src: '/assets/card-studio/backgrounds/vintage-floral.svg', textColor: '#4b2e2c', overlayColor: '#ffffff', overlayOpacity: 0, goodFor: ['poetry', 'quote', 'greeting'] }),

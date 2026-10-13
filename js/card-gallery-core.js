@@ -71,7 +71,29 @@
         return bucket;
     }
 
+    // Shrink a preview's text until it fits its safe area, instead of letting the tile clip
+    // it silently. Starts from the stylesheet size, steps down by 10% and stops at minPx.
+    // Returns { fits, fontSize }; callers show a "shorter text" hint when it cannot fit.
+    function fitPreviewText(text, box, options) {
+        var minPx = (options && options.minPx) || 9;
+        text.style.fontSize = '';
+        var view = text.ownerDocument && text.ownerDocument.defaultView;
+        var size = view ? parseFloat(view.getComputedStyle(text).fontSize) : NaN;
+        if (!Number.isFinite(size) || !box.clientHeight) return { fits: true, fontSize: size };
+        function overflows() {
+            return text.scrollHeight > box.clientHeight + 1 || text.scrollWidth > box.clientWidth + 1;
+        }
+        var steps = 0;
+        while (overflows() && size > minPx && steps < 10) {
+            size = Math.max(minPx, size * 0.9);
+            text.style.fontSize = size.toFixed(2) + 'px';
+            steps += 1;
+        }
+        return { fits: !overflows(), fontSize: size };
+    }
+
     return {
+        fitPreviewText: fitPreviewText,
         TEXT_CAPACITIES: TEXT_CAPACITIES,
         MAX_PREVIEW_TEXT_LENGTH: MAX_PREVIEW_TEXT_LENGTH,
         preserveText: preserveText,

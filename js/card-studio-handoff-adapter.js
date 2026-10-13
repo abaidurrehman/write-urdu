@@ -132,6 +132,13 @@
         var text = payloadText(envelope);
         forkIfNeeded(envelope);
         app.updateObjectText('text', text, { save: false });
+        // Designer backgrounds are composed and previewed at 4:5; open them in the matching
+        // Portrait preset so the square default does not crop their artwork.
+        var presetSelect = root.document.getElementById('cardPreset');
+        if (presetSelect && app.getState().presetId === 'square' && presetSelect.querySelector('option[value="portrait"]')) {
+            presetSelect.value = 'portrait';
+            presetSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
         return library.applyById(envelope.payload.backgroundId).then(function (result) {
             if (typeof app.syncControls === 'function') app.syncControls();
             if (typeof app.requestRender === 'function') app.requestRender();
