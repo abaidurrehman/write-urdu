@@ -140,3 +140,74 @@ test('invalid background preserves text without claiming design success', async 
   await expect(page.locator('[data-card-built-in-background][aria-pressed="true"]')).toHaveCount(0);
   expect(page.url()).not.toContain('INVALID-BACKGROUND-51');
 });
+
+test('family filters list only families with three or more designs and narrow the grid', async ({ page }) => {
+  await openGallery(page);
+  const counts = {};
+  backgrounds.forEach(background => { if (background.family) counts[background.family] = (counts[background.family] || 0) + 1; });
+  const large = Object.keys(counts).filter(family => counts[family] >= 3);
+  expect(large.length).toBeGreaterThan(0);
+  const buttons = page.locator('[data-card-gallery-family-filter]');
+  await expect(buttons).toHaveCount(large.length + 1);
+  for (const family of large) await expect(page.locator(`[data-card-gallery-family-filter="${family}"]`)).toHaveCount(1);
+  const family = large[0];
+  await page.locator(`[data-card-gallery-family-filter="${family}"]`).click();
+  await expect(page.locator('[data-card-gallery-preview]:not([hidden])')).toHaveCount(counts[family]);
+  await page.locator('[data-card-gallery-family-filter="all"]').click();
+  await expect(page.locator('[data-card-gallery-preview]:not([hidden])')).toHaveCount(backgroundCount);
+});
+
+test('inspect loads the full-size art only on demand and returns focus on close', async ({ page }) => {
+  const requested = [];
+  page.on('request', request => requested.push(request.url()));
+  await openGallery(page);
+  const target = backgrounds.find(background => background.id === 'emerald-mughal');
+  expect(requested.some(url => url.includes(target.src))).toBe(false);
+  const opener = page.locator(`[data-card-gallery-inspect="${target.id}"]`);
+  await opener.scrollIntoViewIfNeeded();
+  await opener.click();
+  const dialog = page.locator('[data-card-gallery-inspect]').filter({ has: page.locator('.card-gallery-dialog-body') }).first();
+  await expect(page.locator('dialog[open] .card-gallery-card-large')).toHaveCount(1);
+  await expect(page.locator('dialog[open] .card-gallery-preview-text')).toBeVisible();
+  await expect.poll(() => requested.some(url => url.includes(target.src))).toBe(true);
+  await page.locator('dialog[open] .card-gallery-dialog-close').click();
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+  await expect(opener).toBeFocused();
+  void dialog;
+});
+
+test('compare holds up to three designs and shows them side by side with the same text', async ({ page }) => {
+  await openGallery(page);
+  const ids = backgrounds.slice(0, 4).map(background => background.id);
+  const sample = 'محبت روشنی ہے\nدوسری سطر';
+  await page.locator('[data-card-gallery-input]').fill(sample);
+  const bar = page.locator('[data-card-gallery-compare-bar]');
+  await expect(bar).toBeHidden();
+  await page.locator(`[data-card-gallery-compare="${ids[0]}"]`).click();
+  await expect(bar).toBeVisible();
+  await expect(page.locator('[data-card-gallery-compare-open]')).toBeDisabled();
+  await page.locator(`[data-card-gallery-compare="${ids[1]}"]`).click();
+  await page.locator(`[data-card-gallery-compare="${ids[2]}"]`).click();
+  await page.locator(`[data-card-gallery-compare="${ids[3]}"]`).click();
+  await expect(page.locator('[data-card-gallery-status]')).toContainText('up to 3');
+  await expect(page.locator('[data-card-gallery-compare][aria-pressed="true"]')).toHaveCount(3);
+  await page.locator('[data-card-gallery-compare-open]').click();
+  await expect(page.locator('dialog[open] .card-gallery-card-large')).toHaveCount(3);
+  const texts = await page.locator('dialog[open] .card-gallery-preview-text').allTextContents();
+  expect(texts.every(text => text === sample)).toBe(true);
+});
+
+test('inspect and compare add no horizontal scroll at 390px', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openGallery(page);
+  await page.locator('[data-card-gallery-input]').fill('محبت روشنی ہے');
+  const ids = backgrounds.slice(0, 3).map(background => background.id);
+  for (const id of ids.slice(0, 2)) await page.locator(`[data-card-gallery-compare="${id}"]`).click();
+  const overflow = () => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(await overflow()).toBeLessThanOrEqual(0);
+  await page.locator('[data-card-gallery-compare-open]').click();
+  await expect(page.locator('dialog[open] .card-gallery-card-large')).toHaveCount(2);
+  const dialogBox = await page.locator('dialog[open]').boundingBox();
+  expect(dialogBox.x).toBeGreaterThanOrEqual(0);
+  expect(dialogBox.x + dialogBox.width).toBeLessThanOrEqual(390);
+});
