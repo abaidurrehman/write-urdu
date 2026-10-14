@@ -247,6 +247,14 @@
         throw new Error('Royal Mughal artwork unavailable');
     }
 
+    // The shared art kit (js/card-art-kit.js) supplies ornament for designs that need more than
+    // the helpers above; it is optional so Node tests and pages without it still work.
+    function kitArt() {
+        if (typeof window !== 'undefined' && window.WriteUrduCardArtKit) return window.WriteUrduCardArtKit;
+        if (typeof require === 'function') return require('./card-art-kit.js');
+        return null;
+    }
+
     define({
         id: 'royal-mughal',
         name: 'Royal Mughal',
@@ -361,6 +369,13 @@
             var panelY = 170 * s;
             var panelW = W - panelX * 2;
             var panelH = H - panelY - 130 * s;
+            var k = kitArt();
+            var band = '';
+            if (k) {
+                defs += k.lozengePattern('en-loz', 34 * s, 34 * s, c.frame, c.frame, c.bg2);
+                band = el('rect', { x: n(m + 22 * s), y: n(H - m - 66 * s), width: n(W - (m + 22 * s) * 2), height: n(34 * s), fill: 'url(#en-loz)', opacity: 0.5 }) +
+                    el('path', { d: 'M' + n(m + 22 * s) + ' ' + n(H - m - 68 * s) + ' H' + n(W - m - 22 * s) + ' M' + n(m + 22 * s) + ' ' + n(H - m - 30 * s) + ' H' + n(W - m - 22 * s), stroke: c.frame, 'stroke-width': n(1.2 * s), opacity: 0.8 });
+            }
             var stars = '';
             [[m + 70 * s, m + 70 * s], [W - m - 70 * s, m + 70 * s], [m + 70 * s, H - m - 70 * s], [W - m - 70 * s, H - m - 70 * s]].forEach(function (p) {
                 stars += star8(p[0], p[1], 34 * s, 'none', c.frame, n(2 * s)) + star8(p[0], p[1], 18 * s, c.frame);
@@ -374,7 +389,7 @@
                 finial(W / 2, panelY - 6 * s, 18 * s, c.frame) +
                 rectFrame(m, m, W - m * 2, H - m * 2, c.frame, n(2.4 * s)) +
                 rectFrame(m + 10 * s, m + 10 * s, W - (m + 10 * s) * 2, H - (m + 10 * s) * 2, c.frame, n(1 * s)) +
-                stars +
+                stars + band +
                 el('path', { d: 'M' + n(W / 2 - 150 * s) + ' ' + n(H - 104 * s) + ' L' + n(W / 2 + 150 * s) + ' ' + n(H - 104 * s), stroke: c.frame, 'stroke-width': n(1.4 * s) }) +
                 star8(W / 2, H - 104 * s, 12 * s, c.frame);
             return { svg: wrapSvg(W, H, defs, body), safe: safeRect(panelX + 54 * s, panelY + panelH * 0.2, panelW - 108 * s, panelH * 0.76) };
@@ -414,7 +429,21 @@
             });
             domes += el('path', { d: 'M' + n(cx - 170 * s) + ' ' + n(baseY) + ' L' + n(cx + 170 * s) + ' ' + n(baseY), stroke: c.frame, 'stroke-width': n(1.4 * s) });
             var defs = linear('bg', [c.bg1, c.bg2], 0, 1);
+            var k = kitArt();
+            var extra = '';
+            if (k) {
+                // Soft arch panel, ghosted arabesque shoulders, hanging jewel and a lozenge border at the foot.
+                defs += k.lozengePattern('in-loz', 30 * s, 30 * s, c.frame, c.frame);
+                extra += el('path', { d: archPath(archX, archY, archW, archH, 0.3), fill: c.frame, opacity: 0.07 }) +
+                    k.at(0, 0, 0, s, k.arabesque(34, 640, 150, 0, c.frame, 'none', c.frame, false) + k.arabesque(1046, 640, 150, 0, c.frame, 'none', c.frame, true), { opacity: 0.5 }) +
+                    el('rect', { x: n(70 * s), y: n(H - 96 * s), width: n(W - 140 * s), height: n(30 * s), fill: 'url(#in-loz)', opacity: 0.4 }) +
+                    el('path', { d: 'M' + n(70 * s) + ' ' + n(H - 100 * s) + ' H' + n(W - 70 * s) + ' M' + n(70 * s) + ' ' + n(H - 62 * s) + ' H' + n(W - 70 * s), stroke: c.frame, 'stroke-width': n(1.2 * s), opacity: 0.7 }) +
+                    el('rect', { x: n(40 * s), y: n(40 * s), width: n(W - 80 * s), height: n(H - 80 * s), fill: 'none', stroke: c.frame, 'stroke-width': n(1.2 * s), opacity: 0.6 }) +
+                    el('path', { d: 'M' + n(cx) + ' ' + n(archY + 54 * s) + ' V' + n(archY + 96 * s), stroke: c.frame, 'stroke-width': n(1.2 * s) }) +
+                    el('path', { d: 'M' + n(cx) + ' ' + n(archY + 96 * s) + ' l' + n(10 * s) + ' ' + n(14 * s) + ' l' + n(-10 * s) + ' ' + n(18 * s) + ' l' + n(-10 * s) + ' ' + n(-18 * s) + 'z', fill: c.frame, opacity: 0.8 });
+            }
             var body = el('rect', { width: W, height: H, fill: 'url(#bg)' }) +
+                extra +
                 el('path', { d: archPath(archX, archY, archW, archH, 0.3), fill: 'none', stroke: c.frame, 'stroke-width': n(1.8 * s) }) +
                 el('path', { d: archPath(archX - 22 * s, archY - 26 * s, archW + 44 * s, archH + 26 * s, 0.3), fill: 'none', stroke: c.frame, 'stroke-width': n(0.9 * s), opacity: 0.7 }) +
                 finial(cx, archY - 30 * s, 10 * s, c.frame) +
