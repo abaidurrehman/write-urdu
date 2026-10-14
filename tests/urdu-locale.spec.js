@@ -111,8 +111,8 @@ test('newest card routes have crawlable Urdu pages and localized runtime control
   await page.goto('/urdu/urdu-card-gallery', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('lang', 'ur');
   await expect(page.locator('h1')).toHaveText('اپنا اردو متن ہر کارڈ پر دیکھیں');
-  await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(44);
-  await expect(page.locator('[data-card-gallery-count]')).toHaveText('44 ڈیزائنز');
+  await expect(page.locator('[data-card-gallery-preview]')).toHaveCount(55);
+  await expect(page.locator('[data-card-gallery-count]')).toHaveText('55 ڈیزائنز');
   await expect(page.locator('[data-card-gallery-filter="all"]')).toHaveText('سب');
   await expect(page.locator('[data-card-gallery-choose]').first()).toHaveText('یہ ڈیزائن استعمال کریں');
   await expect(page.locator('[data-wu-language-toggle]')).toHaveAttribute('href', '/urdu-card-gallery');
