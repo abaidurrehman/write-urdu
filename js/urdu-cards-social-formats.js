@@ -51,12 +51,12 @@
         style.textContent = [
             '.urdu-cards-format-presets{margin:0 12px 10px;padding:9px;border:1px solid #dce7e1;border-radius:12px;background:#fbfdfc}',
             '.urdu-cards-format-presets-label{display:block;margin:0 0 7px;color:#60736a;font-size:.64rem;font-weight:800;letter-spacing:.02em}',
-            '.urdu-cards-format-presets-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}',
+            '.urdu-cards-format-presets-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:6px}',
             '.urdu-cards-format-preset{min-width:0;min-height:36px;padding:6px 7px;border:1px solid #cdded5;border-radius:9px;background:#fff;color:#244d3b;font:inherit;font-size:.62rem;font-weight:800;line-height:1.25;cursor:pointer}',
             '.urdu-cards-format-preset:hover{background:#eef5f1;border-color:#9ebdab}',
             '.urdu-cards-format-preset:focus-visible{outline:3px solid rgba(23,107,75,.2);outline-offset:2px}',
             '.urdu-cards-format-preset:disabled{cursor:not-allowed;opacity:.5}',
-            '@media(max-width:720px){.urdu-cards-format-presets{margin:0 9px 9px;padding:8px}.urdu-cards-format-preset{font-size:.59rem;padding:6px 5px}}'
+            '@media(max-width:720px){.urdu-cards-format-presets{margin:0 9px 9px;padding:8px}.urdu-cards-format-preset{font-size:.66rem;padding:6px 8px}}'
         ].join('');
         document.head.appendChild(style);
     }
