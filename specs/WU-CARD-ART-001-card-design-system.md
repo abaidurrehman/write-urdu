@@ -67,9 +67,11 @@ Generated designs use `flagship()` (new family) or `refined()` (earlier ID, redr
 
 **Flagship families (11):** Royal Mughal (wedding suite: emerald / ruby / saffron / champagne), Garden of Roses (blush; mist cascade), Mehndi Marigolds, Moonlit Poetry, Geometry & Light (teal; ivory; emerald), Phulkari Bagh, Manuscript Paper & Ink, Rain & Memory (slate; plum), Dawn Meadow (peach; mint garden), Celebration Balloons, Editorial Terracotta.
 
-**Refined under existing IDs (20):** ajrak-modern-frame (Ajrak), ink-moon-poetry / quiet-blue-distance / quiet-moon-sky (Ink Wash), minimal-cream-poetry / warm-paper-reflection (Stationery), window-light-tea / family-warm-interior (Home Window), friendship-bright-modern / self-respect-black-sand (Modern Shapes), eid-morning-gold / ramadan-lantern-night / pakistan-green-heritage / jumma-midnight-silhouette (Crescent), jumma-ivory-geometry / emerald-prayer-light (Geometry & Light), rose-mist-affection, soft-sunrise-garden, rainy-window-reflection, truck-art-modern-bloom (Truck Art).
+**Refined under existing IDs (20, WU-CARD-ART-001):** ajrak-modern-frame (Ajrak), ink-moon-poetry / quiet-blue-distance / quiet-moon-sky (Ink Wash), minimal-cream-poetry / warm-paper-reflection (Stationery), window-light-tea / family-warm-interior (Home Window), friendship-bright-modern / self-respect-black-sand (Modern Shapes), eid-morning-gold / ramadan-lantern-night / pakistan-green-heritage / jumma-midnight-silhouette (Crescent), jumma-ivory-geometry / emerald-prayer-light (Geometry & Light), rose-mist-affection, soft-sunrise-garden, rainy-window-reflection, truck-art-modern-bloom (Truck Art).
 
-**Kept as-is (24):** the 12 painterly WebP designs (strong) and the 12 earlier "swag arch" SVGs. The swag-arch set (emerald-mughal, ivory-arabesque, blush-rose-lanterns, burgundy-arch, emerald-jasmine-lanterns, emerald-eid-lanterns, teal-gold-botanical, rose-garden-frame, vintage-floral, heritage-mughal-garden, moonlit-lanterns, midnight-crescent-city) shares one frame recipe; they are the next refinement candidates. Skyline designs received measured safe areas.
+**Redrawn in WU-CARD-ART-002 Slice A (12):** the earlier "swag arch" SVGs, each rebuilt under its existing ID with a different composition rather than one shared frame: emerald-mughal (Mughal Niche, one tall cusped-arch niche with a parchin dado), burgundy-arch (Mughal Niche, five-bay cloister arcade), ivory-arabesque (Gold Ornament, illuminated folio with corner arabesques), teal-gold-botanical (Gold Ornament, a gold vine up the left edge), blush-rose-lanterns (Lantern Garden, rose garland with lanterns), emerald-jasmine-lanterns (Lantern Garden, jasmine columns), emerald-eid-lanterns (Lantern Garden, diagonal lantern string under a crescent), rose-garden-frame (Vintage Florals, oval rose wreath), vintage-floral (Vintage Florals, wallpaper-band dado), heritage-mughal-garden (Skyline Scenes, garden pavilion), moonlit-lanterns (Skyline Scenes, full moon over water) and midnight-crescent-city (Skyline Scenes, layered skyline). They are registered with `refined()`, sit after the painterly set, and no longer ship as SVG or precache.
+
+**Kept as-is (12):** the 12 painterly WebP designs (strong).
 
 ## 7. Product changes
 
@@ -79,7 +81,6 @@ Generated designs use `flagship()` (new family) or `refined()` (earlier ID, redr
 
 ## 8. Not done / next
 
-- Redraw the 12 swag-arch legacy SVGs.
 - Larger "inspect" view and side-by-side comparison in Card Gallery; family-level gallery filters once each family has three or more members.
 - Ready-made card action buttons truncate at 390 px ("WhatsAp…") — pre-existing layout issue.
 - Consider Royal Mughal as the default Nikah/Baraat design (founder decision).
