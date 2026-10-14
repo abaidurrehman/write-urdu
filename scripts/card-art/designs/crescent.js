@@ -137,11 +137,12 @@ function render(W, H, options) {
         });
         body += k.rect(0, H - 10, W, 10, p.white, { opacity: 0.85 });
     } else {
-        defs += k.linear('cr-sky', p.sky);
-        defs += k.radial('cr-glow', [[p.glow, 0.5], [p.glow, 0]]);
+        // Keep the warm horizon low so the text field above the domes stays dark and legible.
+        defs += k.linear('cr-sky', [[p.sky[0], 1, 0], [p.sky[1], 1, 0.52], [p.sky[2], 1, 0.8], [p.sky[3], 1, 0.98]]);
+        defs += k.radial('cr-glow', [[p.glow, 0.32], [p.glow, 0]]);
         body += k.rect(0, 0, W, H, 'url(#cr-sky)');
         body += k.stars(W, H, 80, rng, '#ffffff', 600, 0.6, 2);
-        body += k.circle(W / 2, H - 420, 420, 'url(#cr-glow)');
+        body += k.circle(W / 2, H - 300, 380, 'url(#cr-glow)');
         body += k.path(crescentPath(830, 220, 56, 0.82), p.moon, { transform: 'rotate(-20 830 220)' });
         body += mosque(W, H - 120, p.silhouette);
         // Lit arch windows in the prayer hall.
