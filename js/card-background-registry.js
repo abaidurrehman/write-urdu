@@ -50,7 +50,7 @@
     }
 
     var backgrounds = [
-        flagship({ id: 'royal-mughal-emerald', family: 'royal-mughal', name: 'Royal Mughal', nameUr: 'شاہی مغلیہ', category: 'wedding', textColor: '#173f30', safeArea: { top: 0.33, right: 0.24, bottom: 0.17, left: 0.24 }, textCapacity: 'long', goodFor: ['wedding', 'greeting', 'dua'] }),
+        flagship({ id: 'royal-mughal-emerald', family: 'royal-mughal', name: 'Royal Mughal', nameUr: 'شاہی مغلیہ', category: 'wedding', textColor: '#173f30', safeArea: { top: 0.36, right: 0.24, bottom: 0.17, left: 0.24 }, textCapacity: 'long', goodFor: ['wedding', 'greeting', 'dua'] }),
         flagship({ id: 'rose-garden-blush', family: 'garden-of-roses', name: 'Garden of Roses', nameUr: 'گلابوں کا باغ', category: 'love', textColor: '#5b2235', safeArea: { top: 0.33, right: 0.17, bottom: 0.31, left: 0.17 }, textCapacity: 'medium', goodFor: ['love', 'wedding', 'family'] }),
         flagship({ id: 'mehndi-marigold-festival', family: 'mehndi-festival', name: 'Mehndi Marigolds', nameUr: 'مہندی کے گیندے', category: 'wedding', textColor: '#7a1c2e', safeArea: { top: 0.36, right: 0.24, bottom: 0.16, left: 0.24 }, textCapacity: 'long', goodFor: ['wedding', 'greeting', 'social'] }),
         flagship({ id: 'moonlit-poetry-night', family: 'moonlit-poetry', name: 'Moonlit Poetry', nameUr: 'چاندنی میں شاعری', category: 'poetry', textColor: '#fdf1d8', safeArea: { top: 0.3, right: 0.13, bottom: 0.3, left: 0.13 }, textCapacity: 'long', goodFor: ['poetry', 'night', 'reflection'] }),

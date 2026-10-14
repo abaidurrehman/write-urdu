@@ -208,6 +208,8 @@
         path('destination_ready', handoff, preview);
         if (template) applyTemplateRoute(template);
         if (!applyToRunningApp(preview, template)) return null;
+        var backgrounds = root.WriteUrduCardStudioBackgroundLibrary;
+        if (template && template.backgroundId && backgrounds && typeof backgrounds.applyById === 'function') backgrounds.applyById(template.backgroundId);
 
         var envelope = handoff.take(TARGET);
         if (!envelope || !envelope.payload) return null;
