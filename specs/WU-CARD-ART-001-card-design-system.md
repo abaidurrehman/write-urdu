@@ -76,11 +76,13 @@ Generated designs use `flagship()` (new family) or `refined()` (earlier ID, redr
 ## 7. Product changes
 
 - **Ready-made cards:** 28 cards re-paired with designs that match their wording (IDs and text unchanged); wording is fitted to each design's safe area.
-- **Template Library:** 34 poetry/social/religious/event templates open with a matching design at 1080x1350 and preview the real artwork with sample Urdu; education and business templates keep flat landscape layouts.
+- **Template Library:** All 46 templates open with category-matched shared artwork at 1080x1350 and preview the real artwork with sample Urdu. Education uses manuscript, Phulkari, landscape, Lahore-journal, editorial and soft-glass compositions. Business uses black-and-gold, modern geometry, celebration, cream stationery, warm interior and editorial compositions. Existing template IDs and Card Studio handoff remain stable.
 - **Wedding maker:** Royal Mughal leads recommendations for Nikah, Baraat, Walima and Mehndi with a ceremony palette each. Event defaults are unchanged.
 
 ## 8. Not done / next
 
 - Larger "inspect" view and side-by-side comparison in Card Gallery; family-level gallery filters once each family has three or more members.
 - Ready-made card action buttons truncate at 390 px ("WhatsAp…") — pre-existing layout issue.
+- Audit the remaining 129 ready-made cards for wording-to-art fit and text fit at 390 px.
+- Validate Royal Mughal wedding exports at Status and print sizes.
 - Consider Royal Mughal as the default Nikah/Baraat design (founder decision).
