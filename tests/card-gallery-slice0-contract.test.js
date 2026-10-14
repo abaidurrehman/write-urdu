@@ -14,7 +14,7 @@ const allowedGoodFor = new Set(['dua', 'eid', 'family', 'friendship', 'greeting'
 const backgrounds = registry.getAllBackgrounds();
 
 assert.notStrictEqual(backgrounds, registry.backgrounds, 'registry reads must return a collection copy');
-assert.strictEqual(backgrounds.length, 44, 'cultural/seasonal pack expansion must retain all 44 backgrounds');
+assert.strictEqual(backgrounds.length, 55, 'flagship expansion must retain all 44 earlier backgrounds and add 11 flagships');
 assert.strictEqual(new Set(backgrounds.map((item) => item.id)).size, backgrounds.length, 'background IDs must be unique');
 previousIds.forEach((id) => assert.ok(registry.getBackgroundById(id), `existing background removed: ${id}`));
 

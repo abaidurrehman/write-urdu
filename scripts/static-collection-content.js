@@ -1,6 +1,7 @@
 'use strict';
 
 const templateLibrary = require('../js/template-library-core.js');
+const backgroundRegistry = require('../js/card-background-registry.js');
 const writingTemplates = require('../js/writing-template-catalog.js');
 const writingRuntime = require('../js/writing-templates-runtime.js');
 const stylishCore = require('../js/stylish-urdu-core.js');
@@ -88,11 +89,19 @@ function renderTemplateLibraryCards() {
   return (templateLibrary.TEMPLATES || []).map(template => {
     const accent = template.style && template.style.accent ? template.style.accent : '#177245';
     const preview = template.nameUrdu || 'اپنا اردو متن لکھیں';
-    return '<article class="template-card" data-template-id="' + escapeHtml(template.id) + '" data-wu-static-catalogue-item>' +
-      '<div class="template-card-preview" style="background-color:' + escapeHtml(template.canvas.backgroundColor) + ';border-top:5px solid ' + escapeHtml(accent) + '">' +
+    const design = template.backgroundId ? backgroundRegistry.getBackgroundById(template.backgroundId) : null;
+    const previewMarkup = design
+      ? '<div class="template-card-preview template-card-preview-art">' +
+        '<img src="' + escapeHtml(template.thumbnail) + '" width="320" height="400" loading="lazy" decoding="async" alt="' + escapeHtml(template.name) + ' Urdu design template preview">' +
+        '<div class="template-card-art-safe" style="' + ['top', 'right', 'bottom', 'left'].map(side => side + ':' + (design.safeArea[side] * 100) + '%').join(';') + '">' +
+          '<p lang="ur" dir="rtl" style="color:' + escapeHtml(design.textColor) + '">' + escapeHtml(template.sampleText) + '</p></div>' +
+        '</div>'
+      : '<div class="template-card-preview" style="background-color:' + escapeHtml(template.canvas.backgroundColor) + ';border-top:5px solid ' + escapeHtml(accent) + '">' +
         '<img src="' + escapeHtml(template.thumbnail) + '" width="1200" height="630" loading="lazy" decoding="async" alt="' + escapeHtml(template.name) + ' Urdu design template preview" style="opacity:.42">' +
         '<div class="template-card-preview-copy" lang="ur" dir="rtl">' + escapeHtml(preview) + '</div>' +
-      '</div>' +
+        '</div>';
+    return '<article class="template-card" data-template-id="' + escapeHtml(template.id) + '" data-wu-static-catalogue-item>' +
+      previewMarkup +
       '<div class="template-card-body">' +
         '<div class="template-card-title-row"><h3>' + escapeHtml(template.name) + '</h3><button type="button" class="template-favorite" data-template-favorite="' + escapeHtml(template.id) + '" aria-pressed="false" aria-label="Add ' + escapeHtml(template.name) + ' to favorites">☆</button></div>' +
         '<p class="template-card-category">' + escapeHtml(templateCategoryLabel(template)) + '</p>' +

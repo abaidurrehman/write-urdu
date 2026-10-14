@@ -63,7 +63,7 @@ test('WU-SHAADI-001 maker: picking an event re-orders designs and the picker use
   expect(box.width).toBeGreaterThan(150);
   await expect.poll(() => canvasHasInk(page, '[data-wm-design-grid] canvas')).toBe(true);
   await page.locator('[data-wm-see-all]').click();
-  await expect(tiles).toHaveCount(16);
+  await expect(tiles).toHaveCount(17);
   await page.locator('[data-wm-filter="modern"]').click();
   const modern = await tiles.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('data-wm-design')));
   expect(modern).toContain('minimal-modern');

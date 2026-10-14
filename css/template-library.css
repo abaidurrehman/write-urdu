@@ -8,3 +8,6 @@
 @media(prefers-reduced-motion:reduce){.template-card{transition:none}.template-skeleton{animation:none}}
 
 .template-card-alt{display:inline-block;margin-top:10px;font-size:.88rem;font-weight:700;color:#177245;text-decoration:underline;text-underline-offset:3px}
+/* WU-CARD-ART-001: previews show the real 4:5 artwork; art templates overlay their sample Urdu in the design's safe area. */
+.template-card-preview{aspect-ratio:4/5}.template-card-preview:not(.template-card-preview-art) img{object-fit:contain}.template-card-preview-art{background:#f4efe6}.template-card-preview-art:after{display:none}.template-card-art-safe{position:absolute;z-index:1;display:flex;align-items:center;justify-content:center;container-type:size}.template-card-art-safe p{width:100%;max-height:100%;margin:0;overflow:hidden;font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:clamp(.75rem,10cqi,1.6rem);font-weight:600;line-height:1.85;text-align:center;overflow-wrap:anywhere;unicode-bidi:plaintext}
+@media(max-width:440px){.template-grid,.template-skeleton-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.template-card-preview{aspect-ratio:4/5}.template-card-description{display:none}.template-card-footer{flex-direction:column;align-items:stretch;gap:6px}}

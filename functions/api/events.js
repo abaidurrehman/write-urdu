@@ -150,7 +150,10 @@ const CARD_GALLERY_BACKGROUNDS = new Set([
     'minimal-cream-poetry', 'ink-moon-poetry', 'rose-mist-affection', 'quiet-blue-distance',
     'self-respect-black-sand', 'friendship-bright-modern', 'family-warm-interior',
     'ajrak-modern-frame', 'truck-art-modern-bloom', 'ramadan-lantern-night',
-    'eid-morning-gold', 'pakistan-green-heritage'
+    'eid-morning-gold', 'pakistan-green-heritage', 'royal-mughal-emerald', 'rose-garden-blush',
+    'mehndi-marigold-festival', 'moonlit-poetry-night', 'jumma-geometry-light', 'phulkari-bagh-madder',
+    'manuscript-paper-ink', 'rain-memory-window', 'dawn-meadow-sunrise', 'celebration-balloons',
+    'editorial-terracotta-block'
 ]);
 const CARD_GALLERY_CATEGORIES = new Set(['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury', 'love']);
 const CARD_GALLERY_TEXT_BUCKETS = new Set(['empty', 'short', 'medium', 'long']);

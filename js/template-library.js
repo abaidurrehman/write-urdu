@@ -76,9 +76,22 @@
     }
     function createCard(template) {
         var card = document.createElement('article'); card.className = 'template-card'; card.dataset.templateId = template.id;
-        var preview = document.createElement('div'); preview.className = 'template-card-preview'; preview.style.backgroundColor = template.canvas.backgroundColor; preview.style.borderTop = '5px solid ' + ((template.style && template.style.accent) || '#177245');
-        var image = document.createElement('img'); image.src = template.thumbnail; image.width = 1200; image.height = 630; image.loading = 'lazy'; image.decoding = 'async'; image.alt = template.name + ' Urdu design template preview'; image.style.opacity = '.42'; preview.appendChild(image);
-        var previewCopy = document.createElement('div'); previewCopy.className = 'template-card-preview-copy'; previewCopy.setAttribute('lang', 'ur'); previewCopy.setAttribute('dir', 'rtl'); previewCopy.textContent = template.nameUrdu || 'اپنا اردو متن لکھیں'; preview.appendChild(previewCopy); card.appendChild(preview);
+        var registry = window.WriteUrduCardBackgroundRegistry;
+        var design = template.backgroundId && registry ? registry.getBackgroundById(template.backgroundId) : null;
+        var preview = document.createElement('div'); preview.className = 'template-card-preview';
+        var image = document.createElement('img'); image.src = template.thumbnail; image.loading = 'lazy'; image.decoding = 'async'; image.alt = template.name + ' Urdu design template preview';
+        if (design) {
+            // The real artwork with the template's sample Urdu inside the design's text area.
+            preview.classList.add('template-card-preview-art'); image.width = 320; image.height = 400; preview.appendChild(image);
+            var safe = document.createElement('div'); safe.className = 'template-card-art-safe';
+            ['top', 'right', 'bottom', 'left'].forEach(function (side) { safe.style[side] = (design.safeArea[side] * 100) + '%'; });
+            var sample = document.createElement('p'); sample.lang = 'ur'; sample.dir = 'rtl'; sample.style.color = design.textColor; sample.textContent = template.sampleText; safe.appendChild(sample); preview.appendChild(safe);
+        } else {
+            preview.style.backgroundColor = template.canvas.backgroundColor; preview.style.borderTop = '5px solid ' + ((template.style && template.style.accent) || '#177245');
+            image.width = 1200; image.height = 630; image.style.opacity = '.42'; preview.appendChild(image);
+            var previewCopy = document.createElement('div'); previewCopy.className = 'template-card-preview-copy'; previewCopy.setAttribute('lang', 'ur'); previewCopy.setAttribute('dir', 'rtl'); previewCopy.textContent = template.nameUrdu || 'اپنا اردو متن لکھیں'; preview.appendChild(previewCopy);
+        }
+        card.appendChild(preview);
         var body = document.createElement('div'); body.className = 'template-card-body';
         var titleRow = document.createElement('div'); titleRow.className = 'template-card-title-row';
         var title = document.createElement('h3'); title.textContent = template.name; titleRow.appendChild(title);

@@ -305,7 +305,7 @@ test('personalized card continues to Card Studio with edited text and the select
   await expect(page).toHaveURL(/\/urdu-card-studio$/);
   await expect(page.locator('html')).toHaveAttribute('data-wu-card-seed-applied', 'live', { timeout: 20000 });
   await expect(page.locator('#cardText')).toHaveValue(personalized);
-  await expect(page.locator('[data-card-built-in-background="emerald-mughal"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('[data-card-built-in-background="emerald-prayer-light"]')).toHaveAttribute('aria-pressed', 'true');
   await page.evaluate(() => window.WriteUrduTelemetry && window.WriteUrduTelemetry.flush(true));
   await page.waitForTimeout(200);
   const eventNames = telemetryBodies.flatMap(body => {

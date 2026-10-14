@@ -299,9 +299,35 @@
                     root.requestAnimationFrame(step);
                 } else {
                     state.refreshes += 1;
+                    scheduleFit();
                 }
             }
 
+            step();
+        }
+
+        // After a refresh settles, shrink any tile whose text overflows its design's safe area;
+        // if it still cannot fit, say so on the tile instead of clipping the words.
+        var fitTimer = 0;
+        function scheduleFit() {
+            if (typeof core.fitPreviewText !== 'function') return;
+            root.clearTimeout(fitTimer);
+            fitTimer = root.setTimeout(fitPreviews, 160);
+        }
+
+        function fitPreviews() {
+            var index = 0;
+            function step() {
+                var end = Math.min(index + REFRESH_CHUNK_SIZE, previewRecords.length);
+                for (; index < end; index += 1) {
+                    var record = previewRecords[index];
+                    if (record.article.hidden) continue;
+                    var result = core.fitPreviewText(record.text, record.text.parentNode);
+                    record.article.dataset.textFits = result.fits ? 'true' : 'false';
+                    if (!result.fits && state.bucket !== 'empty') record.fit.hidden = false;
+                }
+                if (index < previewRecords.length) root.requestAnimationFrame(step);
+            }
             step();
         }
 
@@ -360,6 +386,7 @@
                 if (!record.article.hidden) visible += 1;
             });
             updateCount(visible);
+            scheduleFit();
             telemetry('card_gallery_category_used', null, category);
         }
 
@@ -379,6 +406,8 @@
         refreshPreviews();
         telemetry('card_gallery_previews_visible');
         input.addEventListener('input', onInput);
+        root.addEventListener('resize', scheduleFit);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFit);
         page.dataset.cardGalleryMounted = 'true';
         root.WriteUrduCardGalleryApp = {
             getDiagnostics: function () {

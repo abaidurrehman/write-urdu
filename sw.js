@@ -1,5 +1,5 @@
 // Refresh cached authoring assets within the governed v53 shell generation.
-const CACHE_NAME = 'write-urdu-shell-v65';
+const CACHE_NAME = 'write-urdu-shell-v66';
 const APP_SHELL = [
   './',
   './index.html',
@@ -79,14 +79,6 @@ const APP_SHELL = [
   './assets/card-studio/backgrounds/heritage-mughal-garden.svg',
   './assets/card-studio/backgrounds/teal-gold-botanical.svg',
   './assets/card-studio/backgrounds/ivory-arabesque.svg',
-  './assets/card-studio/backgrounds/soft-sunrise-garden.svg',
-  './assets/card-studio/backgrounds/window-light-tea.svg',
-  './assets/card-studio/backgrounds/quiet-moon-sky.svg',
-  './assets/card-studio/backgrounds/rainy-window-reflection.svg',
-  './assets/card-studio/backgrounds/jumma-ivory-geometry.svg',
-  './assets/card-studio/backgrounds/jumma-midnight-silhouette.svg',
-  './assets/card-studio/backgrounds/emerald-prayer-light.svg',
-  './assets/card-studio/backgrounds/warm-paper-reflection.svg',
   './site-header.js',
   './js/site-header-core.js',
   './locale.config.js',

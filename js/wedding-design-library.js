@@ -238,7 +238,37 @@
         DESIGNS.push(Object.freeze(design));
     }
 
-    // 1. Mughal Garden — the flagship suite: ivory arch climbed by rose vines.
+    // 0. Royal Mughal — the WU-CARD-ART-001 flagship, shared with Card Studio's backgrounds.
+    // One artistic identity, a ceremony palette each: emerald Nikah, ruby Baraat, saffron
+    // Mehndi, champagne Walima. Drawn by js/card-art-royal-mughal.js at any card size.
+    function royalMughalArt() {
+        if (typeof window !== 'undefined' && window.WriteUrduRoyalMughalArt) return window.WriteUrduRoyalMughalArt;
+        if (typeof require === 'function') return require('./card-art-royal-mughal.js');
+        throw new Error('Royal Mughal artwork unavailable');
+    }
+
+    define({
+        id: 'royal-mughal',
+        name: 'Royal Mughal',
+        nameUr: 'شاہی مغلیہ',
+        blurb: 'Cusped ivory arch in ruby and gold, a matching suite for every function',
+        bestFor: ['nikah', 'baraat', 'walima', 'mehndi', 'engagement', 'rukhsati'],
+        style: 'traditional',
+        lettering: 'calligraphic',
+        divider: 'flourish',
+        eventColorways: { nikah: 'emerald', baraat: 'ruby', mehndi: 'saffron', walima: 'champagne', engagement: 'emerald', rukhsati: 'ruby' },
+        colorways: [
+            { id: 'emerald', name: 'Nikah emerald', swatch: ['#0f4634', '#c99a45', '#fdf7ea'], c: { palette: 'emerald', ink: '#173f30', accent: '#7a1424', muted: '#7a6a4a' } },
+            { id: 'ruby', name: 'Baraat ruby', swatch: ['#6e1427', '#c99a45', '#fdf6ea'], c: { palette: 'ruby', ink: '#4d0d1b', accent: '#0f4634', muted: '#7a5a4a' } },
+            { id: 'saffron', name: 'Mehndi saffron', swatch: ['#d9821a', '#b5175b', '#fffaf0'], c: { palette: 'saffron', ink: '#6b1230', accent: '#b5175b', muted: '#8a5a2a' } },
+            { id: 'champagne', name: 'Walima champagne', swatch: ['#d9c3a5', '#7d9479', '#fffdf8'], c: { palette: 'champagne', ink: '#3f4a3a', accent: '#5c7259', muted: '#8a7a5e' } }
+        ],
+        art: function (W, H, c) {
+            return royalMughalArt().render(W, H, { palette: c.palette });
+        }
+    });
+
+    // 1. Mughal Garden — ivory arch climbed by rose vines.
     define({
         id: 'mughal-garden',
         name: 'Mughal Garden',

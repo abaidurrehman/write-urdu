@@ -33,11 +33,17 @@ const culturalIds = [
 ];
 const categoryIds = ['all', 'classic', 'pakistan', 'truck-art', 'poetry', 'nature', 'modern', 'wedding', 'luxury', 'love'];
 
-assert.strictEqual(library.backgrounds.length, 44, 'collection must include 32 shipped, 15 daily/emotional and 5 cultural/seasonal backgrounds');
+const flagshipIds = [
+  'royal-mughal-emerald', 'rose-garden-blush', 'mehndi-marigold-festival', 'moonlit-poetry-night',
+  'jumma-geometry-light', 'phulkari-bagh-madder', 'manuscript-paper-ink', 'rain-memory-window',
+  'dawn-meadow-sunrise', 'celebration-balloons', 'editorial-terracotta-block'
+];
+
+assert.strictEqual(library.backgrounds.length, 55, 'collection must include the 44 earlier backgrounds and 11 flagship designs');
 assert.strictEqual(library.backgrounds, registry.backgrounds, 'Card Studio must consume the shared background registry');
 assert.deepStrictEqual(library.categories.map((item) => item.id), categoryIds, 'category order changed');
 assert.deepStrictEqual(library.filterBackgrounds('all'), library.backgrounds, 'All must return every background');
-assert.strictEqual(new Set(library.backgrounds.map((item) => item.id)).size, 44, 'background IDs must be unique');
+assert.strictEqual(new Set(library.backgrounds.map((item) => item.id)).size, 55, 'background IDs must be unique');
 previousIds.forEach((id) => assert.ok(library.backgrounds.some((item) => item.id === id), `existing background removed: ${id}`));
 
 let fullBytes = 0;
@@ -70,44 +76,39 @@ newIds.forEach((id) => {
   assert.strictEqual(library.filterBackgrounds(background.category).some((item) => item.id === id), true, `${id} missing from filter`);
 });
 
-dailyIds.forEach((id) => {
+// The daily, emotional and cultural packs began as sub-10 KB SVGs; WU-CARD-ART-001 redrew
+// them with the shared art generator under the same IDs. They now ship like the raster
+// designs: a 1080x1350 WebP plus a lazy 320x400 thumbnail, within the same byte budgets.
+dailyIds.concat(emotionalIds, culturalIds).forEach((id) => {
   const background = library.backgrounds.find((item) => item.id === id);
-  assert.ok(background, `daily/Jumma background missing: ${id}`);
-  assert.match(background.src, new RegExp(`/backgrounds/${id}\\.svg$`));
-  assert.strictEqual(background.thumbnailSrc, undefined, `${id} lightweight SVG should not duplicate a thumbnail`);
+  assert.ok(background, `refined background missing: ${id}`);
+  assert.strictEqual(background.refined, true, `${id} must be marked as a refined design`);
+  assert.match(background.src, new RegExp(`/backgrounds/${id}\\.webp$`));
+  assert.match(background.thumbnailSrc, new RegExp(`/backgrounds/thumbs/${id}\\.webp$`));
   const full = path.join(root, background.src.replace(/^\//, ''));
-  assert.ok(fs.existsSync(full), `${id} SVG asset missing`);
-  assert.ok(fs.statSync(full).size < 10 * 1024, `${id} SVG must stay below 10 KB`);
-  assert.ok(['medium', 'long'].includes(background.textCapacity), `${id} needs honest medium/long capacity`);
-  assert.strictEqual(background.preferredAlign, 'center', `${id} needs a controlled preferred alignment`);
-});
-
-emotionalIds.forEach((id) => {
-  const background = library.backgrounds.find((item) => item.id === id);
-  assert.ok(background, `emotional/social background missing: ${id}`);
-  assert.match(background.src, new RegExp(`/backgrounds/${id}\\.svg$`));
-  assert.strictEqual(background.thumbnailSrc, undefined, `${id} lightweight SVG should not duplicate a thumbnail`);
-  const full = path.join(root, background.src.replace(/^\//, ''));
-  assert.ok(fs.existsSync(full), `${id} SVG asset missing`);
-  assert.ok(fs.statSync(full).size < 10 * 1024, `${id} SVG must stay below 10 KB`);
-  assert.ok(['medium', 'long'].includes(background.textCapacity), `${id} needs honest medium/long capacity`);
-  assert.strictEqual(background.preferredAlign, 'center', `${id} needs a controlled preferred alignment`);
-  assert.ok(Array.isArray(background.goodFor) && background.goodFor.length > 0, `${id} needs controlled suitability metadata`);
-});
-
-culturalIds.forEach((id) => {
-  const background = library.backgrounds.find((item) => item.id === id);
-  assert.ok(background, `cultural/seasonal background missing: ${id}`);
-  assert.match(background.src, new RegExp(`/backgrounds/${id}\\.svg$`));
-  assert.strictEqual(background.thumbnailSrc, undefined, `${id} lightweight SVG should not duplicate a thumbnail`);
-  const full = path.join(root, background.src.replace(/^\//, ''));
-  assert.ok(fs.existsSync(full), `${id} SVG asset missing`);
-  assert.ok(fs.statSync(full).size < 10 * 1024, `${id} SVG must stay below 10 KB`);
+  const thumb = path.join(root, background.thumbnailSrc.replace(/^\//, ''));
+  assert.ok(fs.existsSync(full) && fs.existsSync(thumb), `${id} assets missing`);
+  assert.ok(fs.statSync(full).size < 350 * 1024, `${id} full asset exceeds 350 KB`);
+  assert.ok(fs.statSync(thumb).size < 50 * 1024, `${id} thumbnail exceeds 50 KB`);
+  assert.ok(!fs.existsSync(path.join(root, 'assets', 'card-studio', 'backgrounds', id + '.svg')), `${id} superseded SVG should be removed`);
   assert.ok(['medium', 'long'].includes(background.textCapacity), `${id} needs honest medium/long capacity`);
   assert.strictEqual(background.preferredAlign, 'center', `${id} needs a controlled preferred alignment`);
   assert.ok(Array.isArray(background.goodFor) && background.goodFor.length > 0, `${id} needs controlled suitability metadata`);
   Object.values(background.safeArea).forEach((value) => assert.ok(value >= 0 && value <= 1, `${id} has invalid safe-area metadata`));
   assert.strictEqual(library.filterBackgrounds(background.category).some((item) => item.id === id), true, `${id} missing from filter`);
+  assert.doesNotMatch(sw, new RegExp(id + '\\.(svg|webp)'), `${id} artwork must load on demand, not be precached`);
+});
+
+flagshipIds.forEach((id, index) => {
+  const background = library.backgrounds[index];
+  assert.strictEqual(background.id, id, 'flagship designs lead the collection in order');
+  assert.strictEqual(background.flagship, true, `${id} must be marked as a flagship`);
+  assert.ok(background.family, `${id} needs a design family`);
+  assert.match(background.src, new RegExp(`/backgrounds/${id}\\.webp$`));
+  const full = path.join(root, background.src.replace(/^\//, ''));
+  const thumb = path.join(root, background.thumbnailSrc.replace(/^\//, ''));
+  assert.ok(fs.statSync(full).size < 350 * 1024 && fs.statSync(thumb).size < 50 * 1024, `${id} exceeds asset budget`);
+  assert.doesNotMatch(sw, new RegExp(id), `${id} artwork must not be precached`);
 });
 
 categoryIds.slice(1).forEach((category) => {
@@ -125,6 +126,6 @@ assert.match(source, /input\.dispatchEvent\(new Event\('change'/, 'background mu
 assert.strictEqual(library.mount({ location: { pathname: '/urdu-editor' }, document: {} }), false, 'library must not mount on unrelated routes');
 assert.doesNotMatch(sw, /ajrak-heritage|truck-art-bloom|moonlit-lakeside/, 'large new artwork must not be eagerly precached');
 assert.match(sw, /\.\/js\/card-background-registry\.js/, 'shared registry must remain available offline with Card Studio');
-assert.match(sw, /write-urdu-shell-v65/, 'PWA cache revision must refresh current authoring code');
+assert.match(sw, /write-urdu-shell-v66/, 'PWA cache revision must refresh current authoring code');
 
 console.log(`Card Studio background collection contract passed: ${library.backgrounds.length} backgrounds, ${Math.round(fullBytes / 1024)} KB full, ${Math.round(thumbnailBytes / 1024)} KB thumbnails.`);

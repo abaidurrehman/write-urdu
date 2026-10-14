@@ -29,7 +29,8 @@
         { width: 1080, height: 1080, presetId: 'square' },
         { width: 1280, height: 720, presetId: 'landscape' },
         { width: 1200, height: 630, presetId: 'facebook' },
-        { width: 1080, height: 1920, presetId: 'story' }
+        { width: 1080, height: 1920, presetId: 'story' },
+        { width: 1080, height: 1350, presetId: 'portrait' }
     ];
 
     var STYLES = [
@@ -46,7 +47,8 @@
     ];
     var DIMENSIONS = [
         { width: 1080, height: 1080 }, { width: 1280, height: 720 },
-        { width: 1200, height: 630 }, { width: 1080, height: 1920 }
+        { width: 1200, height: 630 }, { width: 1080, height: 1920 },
+        { width: 1080, height: 1350 }
     ];
 
     var NAMES = {
@@ -105,6 +107,16 @@
             'خاندان کے ساتھ ہر لمحہ یادگار ہے۔', 'آپ کو اس خوب صورت موقع پر خوش آمدید۔'
         ]
     };
+    // Designer artwork from the shared card background registry, chosen per template for its
+    // name and mood (WU-CARD-ART-001). Art templates open at the 4:5 size the artwork is
+    // composed for; education and business templates keep their flat layouts and landscape sizes.
+    var DESIGNS = {
+        poetry: ['dawn-meadow-sunrise', 'moonlit-poetry-night', 'ink-moon-poetry', 'manuscript-paper-ink', 'rose-garden-blush', 'ink-wash-poetry', 'old-lahore-journal', 'black-gold-classic', 'rain-memory-window', 'ajrak-heritage', 'rose-mist-affection', 'quiet-moon-sky'],
+        social: ['editorial-terracotta-block', 'friendship-bright-modern', 'self-respect-black-sand', 'minimal-cream-poetry', 'pastel-glass', 'lantern-sunrise', 'window-light-tea', 'truck-art-modern-bloom'],
+        religious: ['eid-morning-gold', 'ramadan-lantern-night', 'jumma-geometry-light', 'emerald-prayer-light', 'moonlit-lakeside', 'jumma-midnight-silhouette', 'jumma-ivory-geometry', 'regal-gold-arabesque'],
+        events: ['royal-mughal-emerald', 'celebration-balloons', 'warm-paper-reflection', 'maroon-wedding', 'phulkari-bagh-madder', 'peacock-festival']
+    };
+    var ART_CANVAS = { width: 1080, height: 1350 };
     var CATEGORY_COUNTS = { poetry: 12, social: 8, religious: 8, education: 6, business: 6, events: 6 };
     // Keep the starter designs visually appropriate to their category. A library
     // template is more than a label: its style is the design that Card Studio
@@ -129,7 +141,8 @@
         var category = findCategory(categoryId);
         var sequence = CATEGORY_STYLE_SEQUENCES[categoryId] || CATEGORY_STYLE_SEQUENCES.poetry;
         var style = STYLES.find(function (item) { return item.id === sequence[index % sequence.length]; }) || STYLES[0];
-        var dimension = findDimension(index, categoryId);
+        var backgroundId = DESIGNS[categoryId] ? DESIGNS[categoryId][index] || null : null;
+        var dimension = backgroundId ? ART_CANVAS : findDimension(index, categoryId);
         var name = NAMES[categoryId][index];
         var slug = slugify(name);
         var description = 'A polished ' + category.label.toLowerCase() + ' design for Urdu writing, sharing and local PNG export.';
@@ -147,7 +160,8 @@
             description: description,
             category: categoryId,
             tags: category.tags.concat([style.id, style.fontFamily === 'Noto Nastaliq Urdu' ? 'nastaliq' : 'naskh']),
-            thumbnail: THUMBNAILS[categoryId],
+            thumbnail: backgroundId ? '/assets/card-studio/backgrounds/thumbs/' + backgroundId + '.webp' : THUMBNAILS[categoryId],
+            backgroundId: backgroundId,
             featured: index < (categoryId === 'poetry' ? 4 : 2),
             canvas: { width: dimension.width, height: dimension.height, backgroundColor: style.backgroundColor },
             layers: layers,
@@ -222,6 +236,13 @@
         result.background.color = style.backgroundColor || result.background.color;
         result.background.gradientId = style.gradientId || null;
         result.background.overlayOpacity = Number(style.overlayOpacity) || 0;
+        // Art templates hand their designer background to Card Studio's background library,
+        // which loads it into the editable image layer with the design's text colour and safe area.
+        if (template.backgroundId) {
+            result.text.align = 'center';
+            result.text.verticalAlign = 'center';
+            result.libraryBackgroundId = template.backgroundId;
+        }
         result.watermark.enabled = true;
         result.watermark.position = style.watermarkPosition || 'bottom-left';
         result.updatedAt = new Date().toISOString();
@@ -236,6 +257,7 @@
         clone: clone,
         dimensionsLabel: dimensionsLabel,
         getCategoryLabel: getCategoryLabel,
+        DESIGNS: DESIGNS,
         getTemplateBySlug: getTemplateBySlug,
         validateTemplate: validateTemplate,
         validateRegistry: validateRegistry,

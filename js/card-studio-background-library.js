@@ -317,8 +317,20 @@
         templateSection.parentNode.insertBefore(library, templateSection);
     }
 
+    // A Template Library design opened directly (?template=slug) brings its designer background.
+    // Wait until Card Studio has built the template's project, then load the artwork into it.
+    function applyTemplateDesign() {
+        var templates = window.WriteUrduTemplateLibrary;
+        var slug = new URLSearchParams(window.location.search || '').get('template');
+        var template = slug && templates && typeof templates.getTemplateBySlug === 'function' ? templates.getTemplateBySlug(slug) : null;
+        if (!template || !template.backgroundId || !registry.getBackgroundById(template.backgroundId)) return;
+        applyById(template.backgroundId);
+    }
+
     renderLibrary();
     trackWriterFontChoice();
+    if (window.WriteUrduCardStudioApp) applyTemplateDesign();
+    else document.addEventListener('write-urdu:card-studio-ready', applyTemplateDesign, { once: true });
     window.WriteUrduCardStudioBackgroundLibrary.applyBackground = applyBackground;
     window.WriteUrduCardStudioBackgroundLibrary.applyById = applyById;
     document.dispatchEvent(new CustomEvent('write-urdu:card-background-library-ready'));
