@@ -364,3 +364,33 @@ test('template library offers the wedding invitation maker on the wedding templa
   await expect(link).toHaveCount(1);
   await expect(link).toHaveAttribute('href', '/urdu-wedding-invitation-maker');
 });
+
+for (const width of [320, 390, 768, 1024]) {
+  test(`card action buttons are never truncated at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await openCards(page);
+    const clipped = await page.evaluate(() => Array.from(document.querySelectorAll('.card-gallery-card button'))
+      .filter(button => button.scrollWidth > button.clientWidth + 1 || button.scrollHeight > button.clientHeight + 1)
+      .map(button => button.className));
+    expect(clipped).toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  });
+}
+
+test('every ready-made card is paired with art that suits its wording', async () => {
+  const registry = require('../js/card-background-registry.js');
+  const suits = {
+    dua: ['dua', 'reflection', 'jumma', 'ramadan'], 'eid-greeting': ['eid', 'greeting', 'family'], wedding: ['wedding', 'greeting', 'love'],
+    congratulations: ['greeting', 'family', 'wedding', 'social', 'friendship'], condolence: ['dua', 'reflection'],
+    'everyday-greeting': ['greeting', 'social', 'morning', 'family', 'friendship', 'jumma'], morning: ['morning', 'greeting', 'nature'],
+    night: ['night', 'dua', 'reflection', 'poetry'], jumma: ['jumma', 'dua', 'reflection', 'greeting'], love: ['love', 'poetry', 'family', 'friendship', 'wedding'],
+    'love-friendship': ['love', 'friendship', 'poetry', 'family'], friendship: ['friendship', 'greeting', 'social', 'family', 'quote'],
+    family: ['family', 'greeting', 'love', 'friendship'], 'self-respect': ['self-respect', 'quote', 'reflection'],
+    reflection: ['reflection', 'poetry', 'quote', 'dua', 'night', 'nature'], 'poetry-quote': ['poetry', 'quote', 'reflection', 'night', 'love']
+  };
+  const mismatched = cards.filter(card => {
+    const background = registry.getBackgroundById(card.backgroundId);
+    return !background || !background.goodFor.some(tag => (suits[card.category] || []).includes(tag));
+  }).map(card => `${card.id} -> ${card.backgroundId}`);
+  expect(mismatched).toEqual([]);
+});
