@@ -77,9 +77,10 @@ newIds.forEach((id) => {
 });
 
 // The daily, emotional and cultural packs began as sub-10 KB SVGs; WU-CARD-ART-001 redrew
-// them with the shared art generator under the same IDs. They now ship like the raster
+// them with the shared art generator under the same IDs, and WU-CARD-ART-002 Slice A did the
+// same for the twelve earlier swag-arch designs (previousIds). They now ship like the raster
 // designs: a 1080x1350 WebP plus a lazy 320x400 thumbnail, within the same byte budgets.
-dailyIds.concat(emotionalIds, culturalIds).forEach((id) => {
+dailyIds.concat(emotionalIds, culturalIds, previousIds).forEach((id) => {
   const background = library.backgrounds.find((item) => item.id === id);
   assert.ok(background, `refined background missing: ${id}`);
   assert.strictEqual(background.refined, true, `${id} must be marked as a refined design`);
@@ -126,6 +127,6 @@ assert.match(source, /input\.dispatchEvent\(new Event\('change'/, 'background mu
 assert.strictEqual(library.mount({ location: { pathname: '/urdu-editor' }, document: {} }), false, 'library must not mount on unrelated routes');
 assert.doesNotMatch(sw, /ajrak-heritage|truck-art-bloom|moonlit-lakeside/, 'large new artwork must not be eagerly precached');
 assert.match(sw, /\.\/js\/card-background-registry\.js/, 'shared registry must remain available offline with Card Studio');
-assert.match(sw, /write-urdu-shell-v66/, 'PWA cache revision must refresh current authoring code');
+assert.match(sw, /write-urdu-shell-v67/, 'PWA cache revision must refresh current authoring code');
 
 console.log(`Card Studio background collection contract passed: ${library.backgrounds.length} backgrounds, ${Math.round(fullBytes / 1024)} KB full, ${Math.round(thumbnailBytes / 1024)} KB thumbnails.`);

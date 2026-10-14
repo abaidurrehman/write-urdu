@@ -38,7 +38,19 @@ var designs = [
     { id: 'rose-mist-affection', module: 'rose-garden', palette: 'mist', layout: 'cascade' },
     { id: 'soft-sunrise-garden', module: 'dawn-meadow', palette: 'mint', layout: 'garden' },
     { id: 'rainy-window-reflection', module: 'rain-memory', palette: 'plum' },
-    { id: 'truck-art-modern-bloom', module: 'truck-art', palette: 'turquoise' }
+    { id: 'truck-art-modern-bloom', module: 'truck-art', palette: 'turquoise' },
+    { id: 'emerald-mughal', module: 'mughal-niche', palette: 'emerald', layout: 'niche' },
+    { id: 'blush-rose-lanterns', module: 'lantern-garden', palette: 'blush', layout: 'garland' },
+    { id: 'midnight-crescent-city', module: 'skyline-scenes', palette: 'city', layout: 'city' },
+    { id: 'ivory-arabesque', module: 'gold-ornament', palette: 'ivory', layout: 'illuminated' },
+    { id: 'heritage-mughal-garden', module: 'skyline-scenes', palette: 'garden', layout: 'garden' },
+    { id: 'burgundy-arch', module: 'mughal-niche', palette: 'burgundy', layout: 'arcade' },
+    { id: 'rose-garden-frame', module: 'floral-wreath', palette: 'blush', layout: 'wreath' },
+    { id: 'emerald-eid-lanterns', module: 'lantern-garden', palette: 'eid', layout: 'diagonal' },
+    { id: 'teal-gold-botanical', module: 'gold-ornament', palette: 'teal', layout: 'vine' },
+    { id: 'vintage-floral', module: 'floral-wreath', palette: 'cream', layout: 'dado' },
+    { id: 'moonlit-lanterns', module: 'skyline-scenes', palette: 'moonlit', layout: 'moonlit' },
+    { id: 'emerald-jasmine-lanterns', module: 'lantern-garden', palette: 'jasmine', layout: 'columns' }
 ];
 
 function find(id) {
