@@ -11,6 +11,7 @@ assert.deepEqual(core.DOCUMENT_TYPES, ['bill', 'cash-memo', 'receipt']);
 assert.deepEqual(core.LANGUAGE_MODES, ['english', 'urdu', 'bilingual']);
 assert.deepEqual(core.PAYMENT_METHODS, ['cash', 'raast', 'jazzcash', 'easypaisa', 'bank-transfer', 'udhaar', 'other']);
 assert.deepEqual(core.PAYMENT_STATES, ['paid', 'partially-paid', 'unpaid']);
+assert.deepEqual(core.ITEM_UNITS, ['piece', 'kg', 'meter', 'hour']);
 
 assert.equal(core.TERMINOLOGY.bill.urdu, 'بل');
 assert.equal(core.TERMINOLOGY.cashMemo.urdu, 'کیش میمو');
@@ -105,6 +106,23 @@ assert.equal(core.directionForValue('SKU-42 قمیض', 'text'), 'ltr');
 assert.equal(core.directionForValue('03001234567', 'phone'), 'ltr');
 assert.equal(core.directionForValue('PK36SCBL0000001123456702', 'identifier'), 'ltr');
 assert.equal(core.directionForValue('2026-09-12', 'date'), 'ltr');
+
+const excessiveValues = core.validateBillingDocument({
+  documentType: 'bill', languageMode: 'english', paymentMethod: 'cash',
+  business: { name: 'Test Shop' },
+  items: [{ id: '1', description: 'Rice', quantity: 1, unit: 'kg', rate: 100 }],
+  discount: 101, amountPaid: 150
+});
+assert.ok(excessiveValues.errors.includes('discount:exceeds-subtotal'));
+assert.ok(excessiveValues.errors.includes('amountPaid:exceeds-total'));
+
+const emptyItem = core.validateBillingDocument({
+  documentType: 'bill', languageMode: 'english', paymentMethod: 'cash',
+  business: { name: 'Test Shop' },
+  items: [{ id: '1', description: '', quantity: 1, unit: 'piece', rate: 100 }],
+  discount: 0, amountPaid: 0
+});
+assert.ok(emptyItem.errors.includes('items[0].description:required'));
 
 const normalizedMixed = core.normalizeBillingDocument({
   documentType: 'bill',
