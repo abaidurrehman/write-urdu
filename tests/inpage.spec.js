@@ -33,5 +33,5 @@ test('nested Urdu tools preserve their own shared-shell page identity', async ({
   await expect(page).toHaveTitle('Urdu Voice Typing — Speak Urdu to Text Online | WriteUrdu');
   await expect(page.locator('.urdu-voice-hero-demo')).toBeVisible();
   await expect(page.getByText('السلام علیکم، آج میں آواز سے اردو لکھ رہا ہوں۔')).toBeVisible();
-  await expect(page.locator('a[href="/write-urdu-privacy#voice-typing"]')).toBeVisible();
+  await expect(page.locator('.urdu-voice-privacy-link a[href="/write-urdu-privacy#voice-typing"]')).toBeVisible();
 });

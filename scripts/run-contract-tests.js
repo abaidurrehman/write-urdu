@@ -100,6 +100,7 @@ const tests = [
   'tests/service-worker-navigation-freshness-contract.test.js',
   'tests/inpage-unicode-core.test.js',
   'tests/inpage-unicode-contract.test.js',
+  'tests/llm-citation-answers-contract.test.js',
   'tests/document-translator-quick-win-contract.test.js',
   'tests/input-translation-foundation.test.mjs',
   'tests/audio-transcription-foundation.test.mjs',
