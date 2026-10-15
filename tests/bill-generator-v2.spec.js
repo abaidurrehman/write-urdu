@@ -154,7 +154,7 @@ test('320, 360 and 390px layouts keep actions usable without horizontal overflow
       expect(box?.height, `${selector} at ${width}px`).toBeGreaterThanOrEqual(44);
     }
     await page.locator('[data-bill-mobile-preview]').click();
-    await expect(page.locator('[data-bill-preview-workspace]')).toBeVisible();
+    await expect(page.locator('.bill-preview-workspace')).toBeVisible();
     await page.locator('[data-bill-preview-close]').click();
   }
 });
