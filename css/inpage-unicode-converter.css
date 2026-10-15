@@ -92,7 +92,55 @@
   overflow-wrap: anywhere;
 }
 
+.inpage-example {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.inpage-example-pane {
+  display: grid;
+  align-content: start;
+  gap: .45rem;
+  padding: .85rem 1rem;
+  border: 1px solid var(--wu-color-border);
+  border-radius: var(--wu-radius-md);
+  background: var(--wu-color-surface-soft);
+}
+
+.inpage-example-label {
+  color: var(--wu-color-ink-soft);
+  font: 600 .8rem/1.3 var(--wu-font-ui);
+}
+
+.inpage-example-legacy {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.inpage-example-pane p[lang="ur"] {
+  margin: 0;
+  font: 1.35rem/1.9 var(--wu-font-urdu);
+}
+
+.inpage-example figcaption {
+  grid-column: 1 / -1;
+  color: var(--wu-color-ink-soft);
+  font-size: .85rem;
+}
+
+.inpage-limits {
+  padding-left: 1.2rem;
+}
+
+.inpage-limits li + li {
+  margin-top: .35rem;
+}
+
 @media (max-width: 700px) {
+  .inpage-example { grid-template-columns: 1fr; }
   .inpage-mode-switch { width: 100%; }
   .inpage-mode-switch button { flex: 1; }
   .inpage-converter-page .urdu-tool-textarea { min-height: 15rem; }

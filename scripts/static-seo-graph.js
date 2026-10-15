@@ -126,6 +126,7 @@ function applicationFeatures(pageId) {
     'urdu-card-studio': ['Create Urdu quote and poetry images', 'Urdu fonts and templates', 'Use your own background image', 'Move and edit text on the design', 'Download PNG'],
     'urdu-card-gallery': ['Preview Urdu text across many card designs', 'Filter designs by category', 'Continue a selected design in Urdu Card Studio', 'Use without an account'],
     'urdu-cards': ['Browse ready-made Urdu cards by occasion', 'Filter cards by occasion and theme', 'Edit a selected card in Urdu Card Studio', 'Share links to ready-made cards'],
+    'inpage-unicode-converter': ['InPage to Unicode', 'Unicode to InPage', 'Unsupported characters listed for review', 'Copy or continue in the Urdu editor', 'Clean converted Urdu text'],
     'urdu-bill-generator': ['Create Urdu, English and bilingual bills', 'Add line items with automatic totals', 'Track paid amount and remaining balance', 'Print bills and download PDF', 'Keep bill data in the browser'],
     'qr-code-generator': ['QR codes for Urdu text and links', 'Wi-Fi and WhatsApp QR codes', 'Download PNG and SVG'],
     'stylish-urdu-text-generator': ['Ready-made Urdu text styles', 'English-letter and direct Urdu input', 'Save favourites and copy text', 'Continue to Urdu Name Art'],
