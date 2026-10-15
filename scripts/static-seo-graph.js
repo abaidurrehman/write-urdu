@@ -32,6 +32,8 @@ function plainText(value) {
   return decodeEntities(String(value || '')
     .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+    // Inline tags join their text to the surrounding words ("typing</a>," must stay "typing,").
+    .replace(/<\/?(?:a|abbr|b|bdi|bdo|code|em|i|kbd|mark|q|s|small|span|strong|sub|sup|u)\b[^>]*>/gi, '')
     .replace(/<[^>]+>/g, ' '))
     .replace(/\s+/g, ' ')
     .trim();
