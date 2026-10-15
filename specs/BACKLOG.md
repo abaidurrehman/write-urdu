@@ -156,7 +156,7 @@ Supporting contracts:
 **State:** Active commercial control plane; runs in parallel with P0.1 because the founder target is $5/day AdSense.
 
 - [ ] Create useful AdSense URL/custom channels.
-- [ ] Configure Auto-ads page exclusions/excluded areas around active workspaces.
+- [ ] Configure Auto-ads page exclusions/excluded areas around active workspaces. _2026-10-15 production evidence: in-page Auto Ads render inside `/`'s hero (`.editor-page-intro`, `.home-account-hero-layout`) and inside `section.wu-basic-command-surface`; the editor starts at 852–1056 px on 375–390 px phones vs 459–556 px locally without ads. This is the largest current first-screen defect and needs the account-side fix in `docs/WU-MOBILE-ADSENSE-CORE-WRITE-PAGE-EXCLUSIONS-2026-08-19.md`. See `docs/audits/ux-seo-ai-2026-10-15/`._
 - [ ] Capture a comparable current post-restoration baseline by earnings/page RPM/pageviews/country/device/format where available.
 - [ ] Finish the full GSC query/page/country/device opportunity map using the current exports.
 - [ ] Join query → route → page type → observed/proxy RPM.
@@ -294,6 +294,19 @@ Human/product gates:
 **Decision lines** (add one dated line here before starting H, L, M or N):
 
 - _none yet_
+
+## P0.13 — UX, SEO and AI-discovery initiative (2026-10-15)
+
+**Evidence/backlog:** [`docs/audits/ux-seo-ai-2026-10-15/`](../docs/audits/ux-seo-ai-2026-10-15/README.md)
+**State:** Baseline + LLM-citation Slices 2–3 implemented on branches 2026-10-15. The founder chose the unfrozen slice; homepage layout changes (X-7/X-8, spec 03) stay gated behind P0.1G or a dated founder exception.
+
+- [x] LLM audit Slice 2 (A-2) InPage explainer — branch `claude/llm-slice2-inpage-explainer`.
+- [x] LLM audit Slice 3 (A-5, A-6, A-7) Voice FAQ, WhatsApp answer, phrases links — branch `claude/llm-slice3-voice-whatsapp-phrases` (stacked on Slice 2).
+- [ ] X-1 AdSense in-page Auto Ads out of the core Write task (founder, account-side; see P0.2).
+- [ ] X-2 `www` → apex 301 (founder, Cloudflare; LLM audit A-1).
+- [ ] X-5 voice device checklist PASS records, then name browsers in the voice passage.
+- [ ] X-6 multi-engine AI baseline from Pakistan before Slices 2–3 deploy (one-engine US baseline recorded: WU in 0/10).
+- [ ] X-7/X-8 homepage post-text action hierarchy and hero — **gated**; prompt in `07-next-implementation-prompt.md`.
 
 ## P0.6 — AI production external gate
 
