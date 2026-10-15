@@ -5,7 +5,7 @@
     // Google control) on the bill's free-text fields. Bill state and rendering
     // stay in bill-generator.js; this file only registers fields.
     var document = root.document;
-    var FIELD_SELECTOR = '[data-field="business.name"],[data-field="customer.name"],[data-item-field="description"]';
+    var FIELD_SELECTOR = '[data-field="business.name"],[data-field="customer.name"],[data-field="receivedFrom.name"],[data-field="purpose"],[data-item-field="description"]';
     var counter = 0;
     var control = null;
 

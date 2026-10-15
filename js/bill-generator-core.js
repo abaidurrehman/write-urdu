@@ -9,6 +9,7 @@
     var LANGUAGE_MODES = ['english', 'urdu', 'bilingual'];
     var PAYMENT_METHODS = ['cash', 'raast', 'jazzcash', 'easypaisa', 'bank-transfer', 'udhaar', 'other'];
     var PAYMENT_STATES = ['paid', 'partially-paid', 'unpaid'];
+    var ITEM_UNITS = ['piece', 'kg', 'meter', 'hour'];
 
     var TERMINOLOGY = Object.freeze({
         bill: { english: 'Bill', urdu: 'بل' },
@@ -85,6 +86,7 @@
             id: trimmed(value.id, 80) || 'item-' + (index + 1),
             description: trimmed(value.description, 240),
             quantity: quantityValue(value.quantity),
+            unit: ITEM_UNITS.indexOf(value.unit) >= 0 ? value.unit : 'piece',
             rate: normalizeNonNegativeNumber(value.rate, 0)
         };
     }
@@ -108,7 +110,7 @@
             date: isoDate(date),
             business: { name: '', phone: '' },
             customer: { name: '', phone: '' },
-            items: [{ id: 'item-1', description: '', quantity: 1, rate: 0 }],
+            items: [{ id: 'item-1', description: '', quantity: 1, unit: 'piece', rate: 0 }],
             discount: 0,
             amountPaid: 0,
             paymentMethod: type === 'cash-memo' ? 'cash' : 'cash',
@@ -233,6 +235,7 @@
         if (DOCUMENT_TYPES.indexOf(source.documentType) < 0) errors.push('documentType:invalid');
         if (source.languageMode !== undefined && LANGUAGE_MODES.indexOf(source.languageMode) < 0) errors.push('languageMode:invalid');
         if (source.paymentMethod !== undefined && PAYMENT_METHODS.indexOf(source.paymentMethod) < 0) errors.push('paymentMethod:invalid');
+        if (!source.business || !hasMeaningfulText(source.business.name)) errors.push('business.name:required');
 
         if (source.documentType === 'receipt') {
             var receiptAmountError = numericFieldError(source.amountReceived, 'amountReceived', false);
@@ -246,7 +249,8 @@
                 var rateError = numericFieldError(row.rate, 'items[' + index + '].rate', true);
                 if (quantityError) errors.push(quantityError);
                 if (rateError) errors.push(rateError);
-                if (!hasMeaningfulText(row.description) && finiteNumber(row.rate) === 0) errors.push('items[' + index + ']:not-meaningful');
+                if (!hasMeaningfulText(row.description)) errors.push('items[' + index + '].description:required');
+                if (row.unit !== undefined && ITEM_UNITS.indexOf(row.unit) < 0) errors.push('items[' + index + '].unit:invalid');
             });
             if (source.discount !== undefined) {
                 var discountError = numericFieldError(source.discount, 'discount', true);
@@ -255,6 +259,11 @@
             if (source.amountPaid !== undefined) {
                 var paidError = numericFieldError(source.amountPaid, 'amountPaid', true);
                 if (paidError) errors.push(paidError);
+            }
+            if (!errors.some(function (error) { return /^items\[|^discount:|^amountPaid:/.test(error); })) {
+                var totals = calculateBillTotals(source);
+                if (toMinor(source.discount) > totals.subtotalMinor) errors.push('discount:exceeds-subtotal');
+                if (toMinor(source.amountPaid) > totals.totalMinor) errors.push('amountPaid:exceeds-total');
             }
         }
         return { valid: errors.length === 0, errors: errors };
@@ -281,6 +290,7 @@
         LANGUAGE_MODES: LANGUAGE_MODES,
         PAYMENT_METHODS: PAYMENT_METHODS,
         PAYMENT_STATES: PAYMENT_STATES,
+        ITEM_UNITS: ITEM_UNITS,
         TERMINOLOGY: TERMINOLOGY,
         createDefaultBillDocument: createDefaultBillDocument,
         createDefaultReceiptDocument: createDefaultReceiptDocument,

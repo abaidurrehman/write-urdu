@@ -35,48 +35,95 @@
     <main class="bill-shell" data-bill-generator>
         <header class="bill-intro">
             <div>
-                <p class="bill-eyebrow">FREE WRITE URDU TOOL</p>
+                <p class="bill-eyebrow">FREE · PRIVATE · MADE FOR PAKISTAN</p>
                 <h1>Urdu Bill Generator</h1>
-                <p class="bill-lede">Make a simple Urdu, English or bilingual bill for a customer in under a minute. Track paid and balance, then print it. No account required.</p>
+                <p class="bill-promise" lang="ur" dir="rtl">اپنی دکان کا خوبصورت بل صرف ایک منٹ میں بنائیں</p>
+                <p class="bill-lede">Create a professional Urdu, English or bilingual bill, cash memo or payment receipt. No account or accounting software needed.</p>
             </div>
-            <aside class="bill-privacy"><strong>Your bill stays private</strong><span>Everything is created and printed in your browser. Nothing is sent to Write Urdu servers. Your shop details and last bill are remembered on this device only.</span></aside>
+            <aside class="bill-privacy"><strong>Private by design</strong><span>Your bill is created locally. Nothing is uploaded when you edit, print or download it.</span></aside>
         </header>
 
-        <div class="bill-actionbar" role="toolbar" aria-label="Bill actions">
-            <button type="button" class="bill-button bill-button-secondary" data-bill-new>New bill</button>
+        <section class="bill-start" aria-labelledby="bill-start-title">
+            <div class="bill-section-heading"><p class="bill-step">1</p><div><h2 id="bill-start-title">What do you want to make?</h2><p>One simple workspace, with the right fields for each document.</p></div></div>
+            <div class="bill-mode-grid" role="group" aria-label="Document type">
+                <button type="button" class="bill-mode-card is-selected" data-document-type="bill" aria-pressed="true"><span class="bill-mode-icon">01</span><strong>Quick Bill <bdi lang="ur" dir="rtl">فوری بل</bdi></strong><small>Items, discount, paid and balance</small></button>
+                <button type="button" class="bill-mode-card" data-document-type="cash-memo" aria-pressed="false"><span class="bill-mode-icon">02</span><strong>Cash Memo <bdi lang="ur" dir="rtl">کیش میمو</bdi></strong><small>Fast paid counter sale</small></button>
+                <button type="button" class="bill-mode-card" data-document-type="receipt" aria-pressed="false"><span class="bill-mode-icon">03</span><strong>Payment Receipt <bdi lang="ur" dir="rtl">رسید</bdi></strong><small>Proof of money received</small></button>
+            </div>
+        </section>
+
+        <div class="bill-actionbar" role="toolbar" aria-label="Document actions">
+            <button type="button" class="bill-button bill-button-secondary" data-bill-new>New document</button>
             <span class="bill-status" data-bill-status role="status">Ready to edit</span>
-            <button type="button" class="bill-button bill-button-secondary" data-bill-print>Print</button>
-            <button type="button" class="bill-button bill-button-primary" data-bill-pdf>Download PDF</button>
-            <button type="button" class="bill-button bill-button-secondary" data-bill-pdf-print title="Opens the print window. Choose Save as PDF for sharp Urdu text.">PDF (print quality)</button>
+            <button type="button" class="bill-button bill-button-secondary" data-bill-print data-bill-pdf-print>Print / Save PDF</button>
+            <button type="button" class="bill-button bill-button-secondary" data-bill-pdf>Download PDF</button>
+            <button type="button" class="bill-button bill-button-primary" data-bill-share>Share bill</button>
         </div>
 
         <div class="bill-workspace">
-            <section class="bill-editor" aria-label="Bill details">
-                <details class="bill-panel" open><summary>Language &amp; bill details</summary><div class="bill-panel-body">
-                    <div class="bill-field-grid two"><label>Language mode<select data-field="languageMode"><option value="english">English</option><option value="urdu">اردو</option><option value="bilingual" selected>Bilingual / دو لسانی</option></select></label><label>Bill number<input data-field="documentNumber" dir="ltr"></label></div>
-                    <label>Date<input data-field="date" type="date" dir="ltr"></label>
-                </div></details>
-                <details class="bill-panel" open><summary>Business &amp; customer</summary><div class="bill-panel-body">
-                    <div class="input-mode-control" data-input-mode-control data-input-mode-storage="bill" data-input-mode-targets='[data-field="business.name"],[data-field="customer.name"],[data-item-field="description"]' role="group" aria-label="Input mode"><span class="input-mode-title" data-input-mode-title>Input mode</span><button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">English letters → Urdu</button><button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Type Urdu directly</button><span class="input-mode-note" data-input-mode-note></span></div>
-                    <div class="bill-field-grid two"><label>Business / shop name<input data-field="business.name" placeholder="Your shop name"></label><label>Business phone<input data-field="business.phone" dir="ltr" placeholder="+92 300 1234567"></label></div>
-                    <div class="bill-field-grid two"><label>Customer name (optional)<input data-field="customer.name" placeholder="Walk-in customer"></label><label>Customer phone (optional)<input data-field="customer.phone" dir="ltr"></label></div>
-                </div></details>
-                <details class="bill-panel" open><summary>Items</summary><div class="bill-panel-body"><div class="bill-item-row bill-item-row-header" aria-hidden="true"><span>Item / service</span><span>Qty</span><span>Rate</span><span>Amount</span><span></span></div><div data-bill-items></div><button type="button" class="bill-button bill-button-secondary" data-bill-add-item>Add item</button></div></details>
-                <details class="bill-panel" open><summary>Discount, paid &amp; payment</summary><div class="bill-panel-body">
-                    <div class="bill-field-grid two"><label>Discount<input data-field="discount" inputmode="decimal" placeholder="0"></label><label>Amount paid<input data-field="amountPaid" inputmode="decimal" placeholder="0"></label></div>
+            <section class="bill-editor" aria-label="Document details">
+                <section class="bill-panel bill-panel-essential" aria-labelledby="bill-essential-title"><div class="bill-panel-body">
+                    <div class="bill-section-heading compact"><p class="bill-step">2</p><div><h2 id="bill-essential-title">Add the essentials</h2><p>Your preview updates as you type.</p></div></div>
+                    <div class="bill-field-grid two"><label>Shop / business name <span aria-hidden="true">*</span><input data-field="business.name" placeholder="e.g. Madina Tailors" autocomplete="organization"></label><label>Language<select data-field="languageMode"><option value="english">English</option><option value="urdu">اردو</option><option value="bilingual" selected>Bilingual / دو لسانی</option></select></label></div>
+                    <div class="input-mode-control" data-input-mode-control data-input-mode-storage="bill" data-input-mode-targets='[data-field="business.name"],[data-field="customer.name"],[data-field="receivedFrom.name"],[data-field="purpose"],[data-item-field="description"]' role="group" aria-label="Urdu input mode"><span class="input-mode-title" data-input-mode-title>Urdu typing</span><button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">English letters → Urdu</button><button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Type Urdu directly</button><span class="input-mode-note" data-input-mode-note></span></div>
+
+                    <div data-billlike-fields>
+                        <label>Customer name <span class="bill-optional">Optional</span><input data-field="customer.name" placeholder="Walk-in customer" autocomplete="name"></label>
+                        <div class="bill-items-heading"><strong>Items or services</strong><span>Amount is calculated automatically</span></div>
+                        <div class="bill-item-row bill-item-row-header" aria-hidden="true"><span>Item / service</span><span>Qty</span><span>Unit</span><span>Rate</span><span>Amount</span><span></span></div>
+                        <div data-bill-items></div>
+                        <button type="button" class="bill-button bill-button-add" data-bill-add-item><span aria-hidden="true">＋</span> Add another item</button>
+
+                        <div class="bill-payment-entry">
+                            <div class="bill-field-grid two"><label>Discount <span class="bill-optional">Optional</span><input data-field="discount" inputmode="decimal" min="0" placeholder="0"></label><label>Amount received<input data-field="amountPaid" inputmode="decimal" min="0" placeholder="0"></label></div>
+                            <div class="bill-editor-totals" data-bill-editor-totals aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <div data-receipt-fields hidden>
+                        <div class="bill-field-grid two"><label>Received from<input data-field="receivedFrom.name" placeholder="Customer name"></label><label>Amount received <span aria-hidden="true">*</span><input data-field="amountReceived" inputmode="decimal" min="0" placeholder="0"></label></div>
+                        <label>Received for / purpose<input data-field="purpose" placeholder="e.g. Advance for stitching"></label>
+                    </div>
+                    <div class="bill-validation" data-bill-validation role="alert" hidden></div>
+                </div></section>
+
+                <details class="bill-panel bill-advanced"><summary><span>More details &amp; payment</span><small>Phone, payment method, notes</small></summary><div class="bill-panel-body">
+                    <div class="bill-field-grid two"><label>Business phone <span class="bill-optional">Optional</span><input data-field="business.phone" dir="ltr" inputmode="tel" placeholder="+92 300 1234567"></label><label data-customer-phone-field>Customer phone <span class="bill-optional">Optional</span><input data-field="customer.phone" dir="ltr" inputmode="tel"></label><label data-received-phone-field hidden>Customer phone <span class="bill-optional">Optional</span><input data-field="receivedFrom.phone" dir="ltr" inputmode="tel"></label></div>
+                    <div class="bill-field-grid two"><label>Document number<input data-field="documentNumber" dir="ltr"></label><label>Date<input data-field="date" type="date" dir="ltr"></label></div>
                     <label>Payment method<select data-field="paymentMethod"><option value="cash">Cash / نقد</option><option value="raast">Raast</option><option value="jazzcash">JazzCash</option><option value="easypaisa">Easypaisa</option><option value="bank-transfer">Bank transfer</option><option value="udhaar">Udhaar / ادھار</option><option value="other">Other</option></select></label>
                     <div class="bill-conditional" data-payment-field="raastId"><label>Raast ID<input data-field="paymentDetails.raastId" dir="ltr"></label></div>
                     <div class="bill-conditional" data-payment-field="phoneOrAccount"><label>Phone / account<input data-field="paymentDetails.phoneOrAccount" dir="ltr"></label></div>
                     <div class="bill-conditional" data-payment-field="accountTitle"><label>Account title<input data-field="paymentDetails.accountTitle"></label></div>
                     <div class="bill-conditional" data-payment-field="ibanOrAccount"><label>IBAN / account number<input data-field="paymentDetails.ibanOrAccount" dir="ltr"></label></div>
-                    <div class="bill-conditional" data-payment-field="note"><label>Note<input data-field="paymentDetails.note"></label></div>
+                    <div class="bill-conditional" data-payment-field="note"><label>Payment note<input data-field="paymentDetails.note"></label></div>
+                    <label>Service or customer note <span class="bill-optional">Optional</span><textarea data-field="notes" rows="2" placeholder="Warranty, delivery or payment instructions"></textarea></label>
                 </div></details>
-                <details class="bill-panel"><summary>Notes</summary><div class="bill-panel-body"><label>Notes<textarea data-field="notes" rows="2"></textarea></label></div></details>
+
+                <details class="bill-panel bill-design-panel"><summary><span>Design &amp; print size</span><small>Choose a ready-to-send look</small></summary><div class="bill-panel-body">
+                    <div class="bill-template-grid" role="group" aria-label="Bill design">
+                        <button type="button" data-template-option="classic" aria-pressed="true"><span class="bill-template-swatch classic"></span><strong>Classic Urdu</strong></button>
+                        <button type="button" data-template-option="modern" aria-pressed="false"><span class="bill-template-swatch modern"></span><strong>Modern Retail</strong></button>
+                        <button type="button" data-template-option="boutique" aria-pressed="false"><span class="bill-template-swatch boutique"></span><strong>Elegant Boutique</strong></button>
+                        <button type="button" data-template-option="service" aria-pressed="false"><span class="bill-template-swatch service"></span><strong>Service &amp; Repair</strong></button>
+                        <button type="button" data-template-option="thermal" aria-pressed="false"><span class="bill-template-swatch thermal"></span><strong>Thermal Receipt</strong></button>
+                    </div>
+                    <div class="bill-field-grid two"><label>Print size<select data-preference="printSize"><option value="a4">A4</option><option value="a5">A5 compact</option><option value="80mm">80mm receipt</option></select></label><label>Accent colour<input class="bill-color-input" data-preference="accentColor" type="color" value="#176b4b" aria-label="Accent colour"></label></div>
+                    <label class="bill-check"><input type="checkbox" data-preference="showContact" checked> Show business contact on the document</label>
+                    <label>Closing message <span class="bill-optional">Optional</span><input data-preference="closingMessage" placeholder="Thank you / شکریہ"></label>
+                </div></details>
+
+                <details class="bill-panel bill-local-panel"><summary><span>Saved on this device</span><small>Shop details and unfinished document</small></summary><div class="bill-panel-body"><p class="bill-help">Your reusable shop profile and current draft are stored separately in this browser. Starting a new document keeps the shop and clears the previous customer and items.</p><button type="button" class="bill-button bill-button-danger" data-bill-clear-local>Clear saved data</button></div></details>
             </section>
-            <section class="bill-preview-workspace" id="bill-preview" aria-label="Bill preview"><div class="bill-preview-toolbar"><strong>Live preview</strong></div><div class="bill-preview-frame"><article class="bill-page" data-bill-preview aria-label="Bill preview"></article></div></section>
+
+            <section class="bill-preview-workspace" id="bill-preview" aria-label="Document preview">
+                <div class="bill-preview-toolbar"><div><span>Live preview</span><strong data-bill-preview-name>Classic Urdu · A4</strong></div><button type="button" class="bill-preview-close" data-bill-preview-close>Back to editing</button></div>
+                <div class="bill-preview-frame"><article class="bill-page" data-bill-preview data-template="classic" aria-label="Document preview"></article></div>
+            </section>
         </div>
 
-        <div class="bill-mobile-bar" data-bill-mobile-bar role="region" aria-label="Bill total and actions"><div class="bill-mobile-total"><span>Total</span><strong data-bill-mobile-total>PKR 0.00</strong></div><a class="bill-button bill-button-secondary" href="#bill-preview">Preview</a><button type="button" class="bill-button bill-button-primary" data-bill-mobile-pdf>Download PDF</button></div>
+        <div class="bill-share-fallback" data-bill-share-fallback role="status" hidden><strong>Your PDF was downloaded.</strong><span>Open WhatsApp and attach the downloaded file. Bill details were not added to a public link.</span></div>
+
+        <div class="bill-mobile-bar" data-bill-mobile-bar role="region" aria-label="Document total and actions"><div class="bill-mobile-total"><span data-bill-mobile-label>Total</span><strong data-bill-mobile-total>PKR 0.00</strong></div><button type="button" class="bill-button bill-button-secondary" data-bill-mobile-preview>Preview</button><button type="button" class="bill-button bill-button-primary" data-bill-mobile-share>Share</button></div>
 
         <section class="bill-about" aria-labelledby="bill-about-title">
             <h2 id="bill-about-title">A simple everyday bill, not accounting software</h2>

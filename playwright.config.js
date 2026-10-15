@@ -47,6 +47,7 @@ module.exports = defineConfig({
     'print-quality-pdf.spec.js',
     'bill-urdu-input.spec.js',
     'bill-completeness.spec.js',
+    'bill-generator-v2.spec.js',
     'typing-practice-learning.spec.js',
     'docx-export.spec.js',
     'draft-restore-position.spec.js'
