@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.join(root, 'docs', 'audits', 'urdu-bill-generator-2');
 const pdfOutput = path.join(root, 'output', 'pdf');
-const baseURL = process.env.BILL_AUDIT_URL || 'http://127.0.0.1:4173';
+const baseURL = process.env.BILL_AUDIT_URL || 'http://127.0.0.1:8765';
 const browser = await chromium.launch();
 
 async function fillBill(page) {
