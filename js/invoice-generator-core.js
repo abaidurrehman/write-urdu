@@ -115,7 +115,7 @@
         result.design.accent = /^#[0-9a-f]{6}$/i.test(text(result.design.accent)) ? text(result.design.accent).toLowerCase() : ACCENTS[0];
         result.design.urduFont = URDU_FONTS.indexOf(result.design.urduFont) >= 0 ? result.design.urduFont : 'nastaliq';
         result.isSample = result.isSample === true;
-        result.seller.logoDataUrl = /^data:image\/(png|jpeg|webp);base64,/i.test(text(result.seller.logoDataUrl)) ? text(result.seller.logoDataUrl) : '';
+        result.seller.logoDataUrl = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+=*$/i.test(text(result.seller.logoDataUrl)) ? text(result.seller.logoDataUrl) : '';
         result.paymentDetails.walletProvider = WALLET_PROVIDERS.indexOf(text(result.paymentDetails.walletProvider)) >= 0 ? text(result.paymentDetails.walletProvider) : 'Other';
         result.items = (Array.isArray(result.items) ? result.items : []).slice(0, MAX_ITEMS).map(function (item) {
             return { id: text(item && item.id) || id('item'), description: text(item && item.description).slice(0, MAX_DESCRIPTION), quantity: text(item && item.quantity), unit: text(item && item.unit).slice(0, MAX_UNIT), unitPrice: text(item && item.unitPrice), taxRate: text(item && item.taxRate) };
@@ -424,5 +424,69 @@
         doc.paymentDetails.iban = 'PK36 MEZN 0000 1234 5678 9012';
         return normalizeInvoiceDocument(doc);
     }
-    return { MAX_ITEMS: MAX_ITEMS, CURRENCIES: CURRENCIES, STATUSES: STATUSES, SCHEMA_VERSION: SCHEMA_VERSION, createDefaultInvoiceDocument: createDefaultInvoiceDocument, normalizeInvoiceDocument: normalizeInvoiceDocument, migrateInvoiceDocument: normalizeInvoiceDocument, calculateInvoiceTotals: calculateInvoiceTotals, getVisibility: getVisibility, resolveNotesTermsVariant: resolveNotesTermsVariant, resolveNotesTermsHeading: resolveNotesTermsHeading, resolveHeaderContact: resolveHeaderContact, resolveSellerHeaderContent: resolveSellerHeaderContent, resolveInvoiceDensity: resolveInvoiceDensity, lowerSectionLayout: lowerSectionLayout, buildInvoicePreviewViewModel: buildInvoicePreviewViewModel, resolveQrCaption: resolveQrCaption, requiresZeroTotalConfirmation: requiresZeroTotalConfirmation, getQrPayload: getQrPayload, validateInvoice: validateInvoice, isMeaningfulDraft: isMeaningfulDraft, formatMoney: formatMoney, safeFilename: safeFilename, nextInvoiceNumber: nextInvoiceNumber, incrementInvoiceNumber: incrementInvoiceNumber, createSampleInvoice: createSampleInvoice, meaningfulItems: meaningfulItems, isMeaningfulItem: isMeaningfulItem, numberValue: numberValue, minor: minor, hasMeaningfulText: hasMeaningfulText, MAX_DESCRIPTION: MAX_DESCRIPTION, MAX_UNIT: MAX_UNIT, UNITS: UNITS, itemTaxRate: itemTaxRate, hasItemTax: hasItemTax, TEMPLATES: TEMPLATES, ACCENTS: ACCENTS, URDU_FONTS: URDU_FONTS, WALLET_PROVIDERS: WALLET_PROVIDERS };
+    /* ---------- Backup and spreadsheet export ---------- */
+    var BACKUP_FORMAT = 'write-urdu-invoices';
+    var BACKUP_VERSION = 1;
+    function savedTime(entry) { return Date.parse(entry && (entry.savedAt || entry.updatedAt)) || 0; }
+    function createBackup(history, business, date) {
+        return {
+            format: BACKUP_FORMAT,
+            version: BACKUP_VERSION,
+            exportedAt: (date instanceof Date ? date : new Date()).toISOString(),
+            invoices: (Array.isArray(history) ? history : []).filter(function (entry) { return entry && entry.id && entry.isSample !== true; }),
+            business: business && business.seller ? business : null
+        };
+    }
+    // Reads a backup file's text. Every invoice goes through the normaliser,
+    // so a hand-edited or damaged file can only ever produce valid drafts.
+    function parseBackup(raw) {
+        var data;
+        try { data = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch (error) { return { ok: false, error: 'not-backup' }; }
+        if (!data || data.format !== BACKUP_FORMAT || !Array.isArray(data.invoices)) return { ok: false, error: 'not-backup' };
+        if (Number(data.version) > BACKUP_VERSION) return { ok: false, error: 'newer-version' };
+        var invoices = data.invoices.filter(function (entry) { return entry && typeof entry === 'object' && entry.isSample !== true; }).map(function (entry) {
+            var savedAt = Date.parse(entry.savedAt || entry.updatedAt);
+            var doc = normalizeInvoiceDocument(entry);
+            doc.id = text(entry.id).slice(0, 60) || doc.id;
+            doc.savedAt = savedAt ? new Date(savedAt).toISOString() : doc.updatedAt;
+            return doc;
+        });
+        var business = null;
+        if (data.business && data.business.seller && hasMeaningfulText(data.business.seller.name)) {
+            var probe = normalizeInvoiceDocument({ seller: data.business.seller, paymentDetails: data.business.paymentDetails });
+            business = { seller: probe.seller, paymentDetails: probe.paymentDetails, savedAt: text(data.business.savedAt) };
+        }
+        return { ok: true, invoices: invoices, business: business };
+    }
+    // Merges restored invoices into the saved list: an invoice already on the
+    // device is replaced only when the backup copy is newer.
+    function mergeHistory(existing, incoming, limit) {
+        var byId = {}, added = 0, updated = 0;
+        (existing || []).forEach(function (entry) { if (entry && entry.id) byId[entry.id] = entry; });
+        (incoming || []).forEach(function (entry) {
+            var current = byId[entry.id];
+            if (!current) { byId[entry.id] = entry; added += 1; } else if (savedTime(entry) > savedTime(current)) { byId[entry.id] = entry; updated += 1; }
+        });
+        var list = Object.keys(byId).map(function (key) { return byId[key]; }).sort(function (a, b) { return savedTime(b) - savedTime(a); });
+        var max = limit || list.length;
+        return { list: list.slice(0, max), added: added, updated: updated, dropped: Math.max(0, list.length - max) };
+    }
+    function csvCell(value) {
+        var cell = text(value);
+        // Spreadsheet apps run cells that start with these characters as formulas.
+        if (/^[=+\-@\t\r]/.test(cell)) cell = "'" + cell;
+        return /[",\r\n]/.test(cell) ? '"' + cell.replace(/"/g, '""') + '"' : cell;
+    }
+    function historyToCsv(history) {
+        var header = ['Invoice number', 'Invoice date', 'Due date', 'Customer', 'Status', 'Currency', 'Subtotal', 'Discount', 'Tax', 'Extra charges', 'Total', 'Amount paid', 'Balance due', 'Items'];
+        var rows = (history || []).map(function (entry) {
+            var doc = normalizeInvoiceDocument(entry), t = calculateInvoiceTotals(doc);
+            function amount(value) { return (value / 100).toFixed(2); }
+            return [doc.invoiceNumber, doc.issueDate, doc.dueDate, doc.buyer.name, doc.status, doc.currency, amount(t.subtotalMinor), amount(t.discountMinor), amount(t.taxMinor), amount(t.additionalChargeMinor), amount(t.grandTotalMinor), amount(t.amountPaidMinor), amount(t.balanceDueMinor), meaningfulItems(doc).length];
+        });
+        // The byte-order mark lets Excel open Urdu names correctly.
+        return '﻿' + [header].concat(rows).map(function (row) { return row.map(csvCell).join(','); }).join('\r\n') + '\r\n';
+    }
+
+    return { createBackup: createBackup, parseBackup: parseBackup, mergeHistory: mergeHistory, historyToCsv: historyToCsv, BACKUP_FORMAT: BACKUP_FORMAT, MAX_ITEMS: MAX_ITEMS, CURRENCIES: CURRENCIES, STATUSES: STATUSES, SCHEMA_VERSION: SCHEMA_VERSION, createDefaultInvoiceDocument: createDefaultInvoiceDocument, normalizeInvoiceDocument: normalizeInvoiceDocument, migrateInvoiceDocument: normalizeInvoiceDocument, calculateInvoiceTotals: calculateInvoiceTotals, getVisibility: getVisibility, resolveNotesTermsVariant: resolveNotesTermsVariant, resolveNotesTermsHeading: resolveNotesTermsHeading, resolveHeaderContact: resolveHeaderContact, resolveSellerHeaderContent: resolveSellerHeaderContent, resolveInvoiceDensity: resolveInvoiceDensity, lowerSectionLayout: lowerSectionLayout, buildInvoicePreviewViewModel: buildInvoicePreviewViewModel, resolveQrCaption: resolveQrCaption, requiresZeroTotalConfirmation: requiresZeroTotalConfirmation, getQrPayload: getQrPayload, validateInvoice: validateInvoice, isMeaningfulDraft: isMeaningfulDraft, formatMoney: formatMoney, safeFilename: safeFilename, nextInvoiceNumber: nextInvoiceNumber, incrementInvoiceNumber: incrementInvoiceNumber, createSampleInvoice: createSampleInvoice, meaningfulItems: meaningfulItems, isMeaningfulItem: isMeaningfulItem, numberValue: numberValue, minor: minor, hasMeaningfulText: hasMeaningfulText, MAX_DESCRIPTION: MAX_DESCRIPTION, MAX_UNIT: MAX_UNIT, UNITS: UNITS, itemTaxRate: itemTaxRate, hasItemTax: hasItemTax, TEMPLATES: TEMPLATES, ACCENTS: ACCENTS, URDU_FONTS: URDU_FONTS, WALLET_PROVIDERS: WALLET_PROVIDERS };
 }));

@@ -12,7 +12,7 @@
     var HISTORY_KEY = 'writeUrdu.invoiceGenerator.history.v1';
     var BUSINESS_KEY = 'writeUrdu.invoiceGenerator.business.v1';
     var PREFS_KEY = 'writeUrdu.invoiceGenerator.prefs.v1';
-    var HISTORY_LIMIT = 12;
+    var HISTORY_LIMIT = 25;
     var PAGE_WIDTH = 794;
     var PAGE_HEIGHT = 1123;
     var PAGE_GAP = 24;
@@ -89,9 +89,15 @@
     /* ---------- Persistence ---------- */
     function prefsFrom(doc) { return { templateId: doc.templateId, languageMode: doc.languageMode, design: clone(doc.design), currency: doc.currency }; }
     function loadHistory() { var list = readJson(HISTORY_KEY); return Array.isArray(list) ? list.filter(function (entry) { return entry && entry.id; }) : []; }
+    // Logos are the largest part of a saved invoice. If storage runs out,
+    // older copies drop their logo first, and only then are the oldest
+    // invoices left out.
     function saveHistory(list) {
         var trimmed = list.slice(0, HISTORY_LIMIT);
+        if (writeJson(HISTORY_KEY, trimmed)) return trimmed.length;
+        trimmed = trimmed.map(function (entry, index) { if (index === 0 || !entry.seller || !entry.seller.logoDataUrl) return entry; var copy = clone(entry); copy.seller.logoDataUrl = ''; return copy; });
         while (trimmed.length && !writeJson(HISTORY_KEY, trimmed)) trimmed = trimmed.slice(0, Math.floor(trimmed.length / 2));
+        return trimmed.length;
     }
     function upsertHistory(doc) {
         var list = loadHistory().filter(function (entry) { return entry.id !== doc.id; });
@@ -541,6 +547,44 @@
         }
     }
 
+    /* ---------- Backup, restore and spreadsheet ---------- */
+    function fileStamp() { return todayIso(); }
+    function downloadBackup() {
+        if (core.isMeaningfulDraft(state) && !state.isSample) saveNow();
+        var entries = loadHistory();
+        if (!entries.length) { setStatus('There are no saved invoices to back up yet.', 'error'); return; }
+        var backup = core.createBackup(entries, businessProfile());
+        downloadBlob(new Blob([JSON.stringify(backup, null, 1)], { type: 'application/json' }), 'write-urdu-invoices-backup-' + fileStamp() + '.json');
+        setStatus('Backup downloaded with ' + backup.invoices.length + (backup.invoices.length === 1 ? ' invoice.' : ' invoices.'), 'ready');
+    }
+    function downloadCsv() {
+        if (core.isMeaningfulDraft(state) && !state.isSample) saveNow();
+        var entries = loadHistory();
+        if (!entries.length) { setStatus('There are no saved invoices to export yet.', 'error'); return; }
+        downloadBlob(new Blob([core.historyToCsv(entries)], { type: 'text/csv;charset=utf-8' }), 'write-urdu-invoices-' + fileStamp() + '.csv');
+        setStatus('Spreadsheet downloaded.', 'ready');
+    }
+    var BACKUP_ERRORS = { 'not-backup': 'This file is not a Write-Urdu invoice backup.', 'newer-version': 'This backup was made by a newer version of the page. Reload and try again.', 'too-large': 'This file is too large to be an invoice backup.', unreadable: 'The file could not be read.' };
+    function restoreBackup(file) {
+        if (!file) return;
+        if (file.size > 8 * 1024 * 1024) { setStatus(BACKUP_ERRORS['too-large'], 'error'); return; }
+        var reader = new FileReader();
+        reader.onerror = function () { setStatus(BACKUP_ERRORS.unreadable, 'error'); };
+        reader.onload = function () {
+            var parsed = core.parseBackup(String(reader.result || ''));
+            if (!parsed.ok) { setStatus(BACKUP_ERRORS[parsed.error] || BACKUP_ERRORS['not-backup'], 'error'); return; }
+            if (core.isMeaningfulDraft(state) && !state.isSample) saveNow();
+            var merged = core.mergeHistory(loadHistory(), parsed.invoices, HISTORY_LIMIT);
+            var kept = saveHistory(merged.list);
+            if (parsed.business && !businessProfile()) writeJson(BUSINESS_KEY, parsed.business);
+            renderHistory(); renderSavedBusiness();
+            var message = merged.added || merged.updated ? 'Restored ' + merged.added + (merged.added === 1 ? ' invoice' : ' invoices') + (merged.updated ? ' and updated ' + merged.updated : '') + '.' : 'Everything in this backup is already here.';
+            if (merged.dropped || kept < merged.list.length) message += ' Only the newest ' + Math.min(kept, HISTORY_LIMIT) + ' invoices are kept.';
+            setStatus(message, 'ready');
+        };
+        reader.readAsText(file);
+    }
+
     /* ---------- Validation ---------- */
     function clearError(path) {
         var node = root.querySelector('[data-error-for="' + path + '"]'); if (node) node.textContent = '';
@@ -780,6 +824,7 @@
                     var section = target.closest('[data-section]');
                     if (section) { leaveDemo(); var key = section.getAttribute('data-section'); state.sections[key].enabled = section.checked; if (key === 'qr') state.qr.enabled = section.checked; renderFieldValues(); requestRender(); scheduleSave(); }
                     if (target.matches('[data-invoice-logo-input]')) { readLogo(target.files && target.files[0]); target.value = ''; }
+                    if (target.matches('[data-history-restore]')) { restoreBackup(target.files && target.files[0]); target.value = ''; }
                     if (target.matches('[data-invoice-remember-business]')) {
                         if (target.checked) { if (core.hasMeaningfulText(state.seller.name)) { rememberBusiness(); setStatus('Business details will be filled in next time on this device.', 'ready'); } else { target.checked = false; setStatus('Add your business name first.', 'error'); focusField('seller.name'); } }
                         else { removeKey(BUSINESS_KEY); setStatus('Saved business details removed from this device.', 'ready'); }
@@ -811,6 +856,8 @@
             else if (target.matches('[data-invoice-start-own]')) startOwn();
             else if (target.matches('[data-invoice-new]')) newInvoice();
             else if (target.matches('[data-invoice-history]')) openHistory();
+            else if (target.matches('[data-history-backup]')) downloadBackup();
+            else if (target.matches('[data-history-csv]')) downloadCsv();
             else if (target.matches('[data-invoice-print]')) printInvoice();
             else if (target.matches('[data-invoice-pdf]')) downloadPdf();
             else if (target.matches('[data-invoice-png]')) downloadPng();
