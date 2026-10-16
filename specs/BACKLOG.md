@@ -311,9 +311,10 @@ Human/product gates:
 ## P0.14 — Invoice Studio redesign (founder-directed exception, 2026-10-16)
 
 **Spec:** [`WU-IG-004`](WU-IG-004-invoice-studio-redesign.md)
-**State:** Implemented on branch `ux/invoice-generator-redesign`. The founder explicitly requested a full redesign of `/urdu-invoice-generator`, which overrides the "Broad Invoice/QR expansion" HOLD item for this slice only. The route, metadata, ad boundary and telemetry contracts are unchanged.
+**State:** Redesign merged (PR #273, 2026-10-16); follow-ups in review. The founder explicitly requested a full redesign of `/urdu-invoice-generator`, which overrides the "Broad Invoice/QR expansion" HOLD item for this slice only. The route, metadata, ad boundary and telemetry contracts are unchanged.
 
 - [x] Shared document renderer, three templates, pagination, mobile Edit/Preview, local history, share fallback.
+- [x] Follow-ups ([`WU-IG-005`](WU-IG-005-invoice-studio-follow-ups.md), branch `feat/invoice-studio-next`): units and per-item tax, backup/restore/CSV, selectable PDF text, on-device Roman Urdu, Urdu editor labels.
 - [ ] Founder visual review of the three templates on real devices (Android Chrome, iOS Safari).
 - [ ] Post-release check of export telemetry (`export_completed` pdf/png) against the pre-change baseline.
 
