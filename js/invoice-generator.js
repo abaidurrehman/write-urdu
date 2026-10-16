@@ -5,6 +5,7 @@
     var renderer = window.WriteUrduInvoiceDocument;
     var pdfText = window.WriteUrduInvoicePdfText;
     var romanLocal = window.WriteUrduRomanLocal;
+    var uiText = window.WriteUrduInvoiceUiUrdu;
     if (!root || !core || !renderer) return;
 
     // Storage: the current draft keeps its original key so existing drafts
@@ -68,12 +69,121 @@
     }
     function setStatus(message, type) {
         if (!statusNode) return;
-        statusNode.textContent = message;
+        statusNode.textContent = t(message);
         statusNode.classList.toggle('is-error', type === 'error');
         statusNode.classList.toggle('is-ready', type === 'ready');
         statusNode.classList.add('is-visible');
         window.clearTimeout(toastTimer);
         toastTimer = window.setTimeout(function () { statusNode.classList.remove('is-visible'); }, type === 'error' ? 6000 : 3800);
+    }
+
+    /* ---------- Editor language ---------- */
+    // The editor can be shown in Urdu. It follows the invoice language until
+    // the person picks one with the switch, which is then remembered.
+    var UI_ATTRIBUTES = ['placeholder', 'aria-label', 'title'];
+    var translatedNodes = [];
+    var twinElements = [];
+    var uiObserver = null;
+    function uiLang() {
+        if (!uiText) return 'en';
+        var prefs = readJson(PREFS_KEY) || {};
+        if (prefs.uiLang === 'ur' || prefs.uiLang === 'en') return prefs.uiLang;
+        return state.languageMode === 'urdu' ? 'ur' : 'en';
+    }
+    function t(message) {
+        if (uiLang() !== 'ur') return message;
+        var urdu = uiText.translate(message);
+        return urdu === null ? message : urdu;
+    }
+    function keepsEnglish(element) { return !element || Boolean(element.closest('.inv-page, .inv-thumb-pages, .invoice-about, [data-ui-keep], script, style')); }
+    function translateTextNode(node) {
+        var element = node.parentElement;
+        if (keepsEnglish(element) || (node.wuUrdu !== undefined && node.nodeValue === node.wuUrdu)) return;
+        var value = node.nodeValue, trimmed = value.trim();
+        if (!trimmed || !/[A-Za-z]/.test(trimmed)) return;
+        // English text with an Urdu twin beside it ("Edit ترمیم") is hidden
+        // rather than translated, so the Urdu is not shown twice.
+        if (Array.prototype.some.call(element.children, function (child) { return child.getAttribute('lang') === 'ur'; })) {
+            node.wuEnglish = value; node.wuUrdu = ''; node.nodeValue = ''; translatedNodes.push(node); return;
+        }
+        var sibling = element.nextElementSibling || element.previousElementSibling;
+        var urduTwin = sibling && sibling.getAttribute('lang') === 'ur' && !/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(sibling.tagName) && /[\u0600-ۿ]/.test(sibling.textContent);
+        if (!element.children.length && urduTwin && !/^(BUTTON|LABEL|OPTION|A)$/.test(element.tagName)) {
+            element.setAttribute('data-wu-twin', ''); twinElements.push(element); return;
+        }
+        var urdu = uiText.translate(trimmed);
+        if (urdu === null) return;
+        node.wuEnglish = value;
+        node.wuUrdu = value.match(/^\s*/)[0] + urdu + value.match(/\s*$/)[0];
+        node.nodeValue = node.wuUrdu;
+        translatedNodes.push(node);
+    }
+    // data-wu-en-placeholder keeps the English, data-wu-en-placeholder-ur the Urdu.
+    function attributeKey(name) { return 'wuEn' + name.charAt(0).toUpperCase() + name.slice(1).replace(/-(.)/g, function (m, c) { return c.toUpperCase(); }); }
+    function translateAttributes(element) {
+        if (keepsEnglish(element)) return;
+        UI_ATTRIBUTES.forEach(function (name) {
+            var value = element.getAttribute(name), key = attributeKey(name);
+            if (!value || value === element.dataset[key + 'Ur']) return;
+            var urdu = uiText.translate(value);
+            if (urdu === null) return;
+            element.dataset[key] = value; element.dataset[key + 'Ur'] = urdu;
+            element.setAttribute(name, urdu);
+        });
+    }
+    function translateTree(scope) {
+        if (scope.nodeType === 3) { translateTextNode(scope); return; }
+        if (scope.nodeType !== 1 || keepsEnglish(scope)) return;
+        var walker = document.createTreeWalker(scope, 4, null), node;
+        while ((node = walker.nextNode())) translateTextNode(node);
+        translateAttributes(scope);
+        Array.prototype.forEach.call(scope.querySelectorAll('[placeholder],[aria-label],[title]'), translateAttributes);
+    }
+    function restoreEnglish() {
+        translatedNodes.forEach(function (node) { if (node.nodeValue === node.wuUrdu) node.nodeValue = node.wuEnglish; delete node.wuUrdu; delete node.wuEnglish; });
+        translatedNodes = [];
+        twinElements.forEach(function (element) { element.removeAttribute('data-wu-twin'); });
+        twinElements = [];
+        $$('[data-wu-en-placeholder],[data-wu-en-aria-label],[data-wu-en-title]').forEach(function (element) {
+            UI_ATTRIBUTES.forEach(function (name) {
+                var key = attributeKey(name);
+                if (element.dataset[key] === undefined) return;
+                if (element.getAttribute(name) === element.dataset[key + 'Ur']) element.setAttribute(name, element.dataset[key]);
+                delete element.dataset[key]; delete element.dataset[key + 'Ur'];
+            });
+        });
+    }
+    function applyUiLanguage() {
+        var lang = uiLang();
+        if (root.dataset.uiLang === lang && (lang === 'en' || uiObserver)) return;
+        root.dataset.uiLang = lang;
+        root.setAttribute('dir', lang === 'ur' ? 'rtl' : 'ltr');
+        var about = $('.invoice-about'); if (about) about.setAttribute('dir', 'ltr');
+        var toggle = $('[data-invoice-ui-lang]');
+        if (toggle) { toggle.textContent = lang === 'ur' ? 'View in English' : 'اردو میں دیکھیں'; toggle.setAttribute('lang', lang === 'ur' ? 'en' : 'ur'); }
+        if (lang === 'ur') {
+            translateTree(root);
+            if (!uiObserver && window.MutationObserver) {
+                uiObserver = new MutationObserver(function (records) {
+                    records.forEach(function (record) {
+                        if (record.type === 'childList') Array.prototype.forEach.call(record.addedNodes, translateTree);
+                        else if (record.type === 'characterData') translateTextNode(record.target);
+                        else if (record.type === 'attributes') translateAttributes(record.target);
+                    });
+                });
+                uiObserver.observe(root, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: UI_ATTRIBUTES });
+            }
+        } else {
+            if (uiObserver) { uiObserver.disconnect(); uiObserver = null; }
+            restoreEnglish();
+        }
+    }
+    function toggleUiLanguage() {
+        var prefs = readJson(PREFS_KEY) || {};
+        prefs.uiLang = uiLang() === 'ur' ? 'en' : 'ur';
+        writeJson(PREFS_KEY, prefs);
+        applyUiLanguage();
+        renderAll();
     }
 
     /* ---------- What the preview shows ---------- */
@@ -140,14 +250,14 @@
     function showBanner(message, actions) {
         var banner = $('[data-invoice-banner]');
         if (!banner) return;
-        $('[data-invoice-banner-copy]').textContent = message;
+        $('[data-invoice-banner-copy]').textContent = t(message);
         var host = $('[data-invoice-banner-actions]');
         host.innerHTML = '';
         (actions || []).forEach(function (action) {
             var button = document.createElement('button');
             button.type = 'button';
             button.className = action.primary ? 'inv-btn inv-btn-small inv-btn-secondary' : 'inv-link';
-            button.textContent = action.label;
+            button.textContent = t(action.label);
             button.addEventListener('click', function () { banner.hidden = true; action.run(); });
             host.appendChild(button);
         });
@@ -414,6 +524,7 @@
         if (state.languageMode === mode) return;
         state.languageMode = mode;
         syncInputMode();
+        applyUiLanguage();
         renderFieldValues(); renderItemsEditor(); requestRender(); scheduleSave();
     }
     function setTemplate(id) {
@@ -451,9 +562,9 @@
     function confirmAction(title, copy, okLabel) {
         var dialog = document.querySelector('[data-invoice-confirm-dialog]');
         if (!dialog || typeof dialog.showModal !== 'function') return Promise.resolve(window.confirm(title + '\n\n' + copy));
-        dialog.querySelector('[data-confirm-title]').textContent = title;
-        dialog.querySelector('[data-confirm-copy]').textContent = copy;
-        dialog.querySelector('[data-confirm-ok]').textContent = okLabel;
+        dialog.querySelector('[data-confirm-title]').textContent = t(title);
+        dialog.querySelector('[data-confirm-copy]').textContent = t(copy);
+        dialog.querySelector('[data-confirm-ok]').textContent = t(okLabel);
         dialog.returnValue = '';
         return new Promise(function (resolve) {
             dialog.addEventListener('close', function onClose() { dialog.removeEventListener('close', onClose); resolve(dialog.returnValue === 'confirm'); });
@@ -980,6 +1091,7 @@
             else if (target.matches('[data-invoice-start-own]')) startOwn();
             else if (target.matches('[data-invoice-new]')) newInvoice();
             else if (target.matches('[data-invoice-history]')) openHistory();
+            else if (target.matches('[data-invoice-ui-lang]')) toggleUiLanguage();
             else if (target.matches('[data-history-backup]')) downloadBackup();
             else if (target.matches('[data-history-csv]')) downloadCsv();
             else if (target.matches('[data-invoice-print]')) printInvoice();
@@ -1033,6 +1145,7 @@
             } else renderAll();
         }
         syncInputMode();
+        applyUiLanguage();
         setView('edit');
     }
 

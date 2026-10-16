@@ -52,8 +52,9 @@
     function invoiceOutcomes() {
         if (route !== '/urdu-invoice-generator') return;
         observeStatus('[data-invoice-fit-status]', function (message) {
-            if (/^PDF downloaded\.?$/i.test(message)) outcome('export_completed', { format: 'pdf', success: true });
-            else if (/^PNG downloaded\.?$/i.test(message)) outcome('export_completed', { format: 'png', success: true });
+            // The invoice editor can show these messages in Urdu.
+            if (/^PDF downloaded\.?$/i.test(message) || message === 'PDF ڈاؤن لوڈ ہو گئی۔') outcome('export_completed', { format: 'pdf', success: true });
+            else if (/^PNG downloaded\.?$/i.test(message) || message === 'PNG تصویر ڈاؤن لوڈ ہو گئی۔') outcome('export_completed', { format: 'png', success: true });
         });
         document.addEventListener('click', function (event) {
             if (event.target && event.target.closest && event.target.closest('[data-invoice-print]')) {

@@ -44,7 +44,7 @@
     var URDU_MONTHS = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
     var EN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var TEMPLATE_NAMES = { modern: 'Modern Professional', 'classic-urdu': 'Classic Urdu', contemporary: 'Contemporary Business' };
-    var URDU_PATTERN = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
+    var URDU_PATTERN = /[\u0600-ۿݐ-ݿﭐ-﷿ﹰ-\ufeff]/;
 
     function esc(value) {
         return String(value === undefined || value === null ? '' : value).replace(/[&<>"']/g, function (char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]; });

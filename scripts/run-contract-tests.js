@@ -73,6 +73,7 @@ const tests = [
   'tests/invoice-preview-footer-contract.test.js',
   'tests/invoice-pdf-text.test.js',
   'tests/roman-urdu-local.test.js',
+  'tests/invoice-ui-urdu.test.js',
   'tests/bill-generator-core.test.js',
   'tests/wedding-project-core.test.js',
   'tests/wedding-invitation-render-adapter.test.js',

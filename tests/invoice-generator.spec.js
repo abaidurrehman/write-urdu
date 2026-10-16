@@ -122,6 +122,38 @@ test('English letters turn into Urdu on the device without contacting Google', a
   expect(providerRequests).toEqual([]);
 });
 
+test('the editor can be shown in Urdu and switched back to English', async ({ page }) => {
+  await openClean(page);
+  await page.locator('[data-invoice-ui-lang]').click();
+  const root = page.locator('[data-invoice-generator]');
+  await expect(root).toHaveAttribute('data-ui-lang', 'ur');
+  await expect(root).toHaveAttribute('dir', 'rtl');
+  await page.locator('[data-invoice-start-own]').click();
+  await expect(page.locator('[data-section-card="items"] .inv-section-title')).toContainText('اشیاء اور قیمتیں');
+  await expect(page.locator('[data-invoice-add-item]')).toContainText('ایک اور چیز شامل کریں');
+  // Every visible editor string has Urdu wording; only names, codes and amounts stay in English letters.
+  const leftovers = await page.evaluate(() => {
+    const scope = document.querySelector('[data-invoice-generator]'), found = new Set();
+    const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      const element = node.parentElement;
+      if (element.closest('.inv-page, .inv-thumb-pages, .invoice-about, [data-ui-keep], [data-wu-twin], [hidden], script, style')) continue;
+      const value = node.nodeValue.trim();
+      if (/[A-Za-z]{3,}/.test(value) && !/[\u0600-ۿ]/.test(value)) found.add(value);
+    }
+    return [...found];
+  });
+  expect(leftovers.filter((value) => !/^(PKR [\d,.]+|IBAN|JazzCash|Easypaisa|SadaPay|NayaPay|Document)$/.test(value))).toEqual([]);
+  await (await pdfButton(page)).click();
+  await expect(page.locator('[data-error-for="buyer.name"]')).toHaveText('گاہک کا نام ضروری ہے۔');
+  await page.locator('[data-invoice-ui-lang]').click();
+  await expect(root).toHaveAttribute('data-ui-lang', 'en');
+  await expect(page.locator('[data-invoice-add-item]')).toContainText('Add another item');
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(root).toHaveAttribute('data-ui-lang', 'en');
+});
+
 test('discount, tax and partial payment produce the documented totals', async ({ page }) => {
   await openClean(page);
   await page.locator('[data-invoice-start-own]').click();

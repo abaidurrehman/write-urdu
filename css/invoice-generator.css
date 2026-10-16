@@ -410,3 +410,19 @@ body.invoice-generator-page .inv-studio .inv-intro h1, body.invoice-generator-pa
 @media (prefers-reduced-motion: reduce) {
     .inv-studio *, .inv-toast { transition: none !important; }
 }
+
+/* Editor shown in Urdu. Latin text keeps Inter; Urdu UI text uses Naskh,
+   which stays legible at small control sizes. Section titles and other
+   marked Urdu twins keep Nastaliq through their lang attribute. */
+.inv-ui-lang { flex: none; min-height: 34px; padding: 4px 14px; border: 1px solid var(--ui-border-strong); border-radius: 999px; background: var(--ui-surface); color: var(--ui-ink); font: 650 .84rem/1.6 var(--ui-font); cursor: pointer; }
+.inv-ui-lang[lang="ur"] { font-family: "Noto Nastaliq Urdu", var(--ui-urdu); line-height: 1.9; }
+.inv-ui-lang:hover { border-color: var(--ui-brand); color: var(--ui-brand-strong); }
+.inv-ui-lang:focus-visible { outline: none; box-shadow: var(--ui-focus); }
+.inv-studio[data-ui-lang="ur"] { --ui-font: Inter, "Noto Naskh Arabic", sans-serif; }
+.inv-studio[data-ui-lang="ur"] .inv-label, .inv-studio[data-ui-lang="ur"] .inv-item-label, .inv-studio[data-ui-lang="ur"] .inv-help, .inv-studio[data-ui-lang="ur"] .inv-check, .inv-studio[data-ui-lang="ur"] .inv-more > summary { line-height: 1.7; }
+.inv-studio [data-wu-twin] { display: none !important; }
+.inv-studio[data-ui-lang="ur"] .inv-section-title [lang="ur"], .inv-studio[data-ui-lang="ur"] legend [lang="ur"], .inv-studio[data-ui-lang="ur"] .inv-tabs [lang="ur"] { color: inherit; font-size: 1.05em; font-weight: 700; opacity: 1; }
+.inv-studio[data-ui-lang="ur"] .inv-intro-copy, .inv-studio[data-ui-lang="ur"] .invoice-about { text-align: start; }
+@media (max-width: 900px) {
+    .inv-studio[data-ui-lang="ur"].is-demo .inv-preview-bar::after { content: "نمونہ"; font-family: "Noto Naskh Arabic", sans-serif; }
+}

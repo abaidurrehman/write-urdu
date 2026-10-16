@@ -4,7 +4,7 @@ const pdfText = require('../js/invoice-pdf-text.js');
 // Typographic punctuation becomes plain ASCII so every PDF viewer copies it
 // back the same way.
 assert.equal(pdfText.toPdfText('Lawn fabric — 4 × 6,500'), 'Lawn fabric - 4 x 6,500');
-assert.equal(pdfText.toPdfText('⁦INV-2026-0001⁩'), 'INV-2026-0001', 'Bidi isolates are removed');
+assert.equal(pdfText.toPdfText('\u2066INV-2026-0001\u2069'), 'INV-2026-0001', 'Bidi isolates are removed');
 
 // Urdu words are skipped; numbers and Latin words beside them are kept.
 assert.deepEqual(pdfText.words('Lawn fabric — لان PKR 26,000').map((w) => w.text), ['Lawn', 'fabric', '-', 'PKR', '26,000']);

@@ -14,10 +14,10 @@
     var REPLACEMENTS = {
         '·': '-', '×': 'x', '—': '-', '–': '-', '−': '-', '•': '-',
         '‘': "'", '’': "'", '“': '"', '”': '"', '…': '...',
-        ' ': ' ', ' ': ' ', ' ': ' ',
-        '‎': '', '‏': '', '⁦': '', '⁧': '', '⁨': '', '⁩': ''
+        '\u00a0': ' ', '\u2009': ' ', '\u202f': ' ',
+        '\u200e': '', '\u200f': '', '\u2066': '', '\u2067': '', '\u2068': '', '\u2069': ''
     };
-    var REPLACEABLE = /[·×—–−•‘’“”…   ‎‏⁦-⁩]/g;
+    var REPLACEABLE = /[·×—–−•‘’“”…\u00a0\u2009\u202f\u200e\u200f\u2066-\u2069]/g;
     // Plain ASCII is the only range every PDF viewer maps back to the same
     // characters from the built-in fonts.
     var ENCODABLE = /^[ -~]+$/;
