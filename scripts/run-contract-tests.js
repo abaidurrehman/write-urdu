@@ -71,6 +71,7 @@ const tests = [
   'tests/urdu-locale-closeout-contract.test.js',
   'tests/invoice-generator-core.test.js',
   'tests/invoice-preview-footer-contract.test.js',
+  'tests/invoice-pdf-text.test.js',
   'tests/bill-generator-core.test.js',
   'tests/wedding-project-core.test.js',
   'tests/wedding-invitation-render-adapter.test.js',

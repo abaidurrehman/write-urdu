@@ -3,6 +3,7 @@
     var root = document.querySelector('[data-invoice-generator]');
     var core = window.WriteUrduInvoiceCore;
     var renderer = window.WriteUrduInvoiceDocument;
+    var pdfText = window.WriteUrduInvoicePdfText;
     if (!root || !core || !renderer) return;
 
     // Storage: the current draft keeps its original key so existing drafts
@@ -667,7 +668,8 @@
         var host = exportHost(), pages = Array.prototype.slice.call(host.querySelectorAll('.inv-page'));
         return pages.reduce(function (chain, page) {
             return chain.then(function (list) {
-                return window.html2canvas(page, { backgroundColor: getComputedStyle(page).backgroundColor || '#ffffff', scale: 2.5, useCORS: true, logging: false, width: PAGE_WIDTH, height: PAGE_HEIGHT, windowWidth: 1280, scrollX: 0, scrollY: 0 }).then(function (c) { list.push(c); return list; });
+                var runs = pdfText ? pdfText.collectRuns(page) : [];
+                return window.html2canvas(page, { backgroundColor: getComputedStyle(page).backgroundColor || '#ffffff', scale: 2.5, useCORS: true, logging: false, width: PAGE_WIDTH, height: PAGE_HEIGHT, windowWidth: 1280, scrollX: 0, scrollY: 0 }).then(function (c) { c.textRuns = runs; list.push(c); return list; });
             });
         }, Promise.resolve([]));
     }
@@ -675,7 +677,12 @@
         return capturePages().then(function (canvases) {
             if (!window.jspdf || typeof window.jspdf.jsPDF !== 'function') throw new Error('The PDF library did not load. Use Print and choose “Save as PDF”.');
             var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
-            canvases.forEach(function (c, index) { if (index) pdf.addPage('a4', 'portrait'); pdf.addImage(c.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, 210, 297, undefined, 'FAST'); });
+            canvases.forEach(function (c, index) {
+                if (index) pdf.addPage('a4', 'portrait');
+                pdf.addImage(c.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+                // Invisible text over the image makes numbers and English text selectable.
+                if (pdfText && c.textRuns && c.textRuns.length) { try { pdfText.addTextLayer(pdf, c.textRuns, PAGE_WIDTH, 210); } catch (error) { /* the image alone is still a complete invoice */ } }
+            });
             pdf.setProperties({ title: 'Invoice ' + state.invoiceNumber, creator: 'Write-Urdu Invoice Generator' });
             return pdf;
         });

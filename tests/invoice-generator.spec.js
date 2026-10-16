@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
+const zlib = require('zlib');
 
 // Export libraries and fonts come from public CDNs; everything else external
 // (ads, analytics, transliteration) is blocked to keep runs deterministic.
@@ -35,6 +36,24 @@ async function pdfButton(page) {
 
 function pdfPageCount(file) {
   return (fs.readFileSync(file, 'latin1').match(/\/Type \/Page[^s]/g) || []).length;
+}
+
+// Concatenates every decompressed content stream so tests can look for the
+// invisible text layer drawn over the page images.
+function pdfContent(file) {
+  const raw = fs.readFileSync(file);
+  const text = raw.toString('latin1');
+  const out = [];
+  const pattern = /stream\r?\n/g;
+  let match;
+  while ((match = pattern.exec(text))) {
+    const start = match.index + match[0].length;
+    const end = text.indexOf('endstream', start);
+    if (end < 0) break;
+    try { out.push(zlib.inflateSync(raw.subarray(start, end)).toString('latin1')); } catch (error) { /* images and other binary streams */ }
+    pattern.lastIndex = end + 'endstream'.length;
+  }
+  return out.join('\n');
 }
 
 test('first visit shows a marked sample that cannot be exported as the user’s invoice', async ({ page }) => {
@@ -144,6 +163,11 @@ test('long invoices continue onto extra A4 pages and the PDF matches', async ({ 
   const file = test.info().outputPath('long.pdf');
   await download.saveAs(file);
   expect(pdfPageCount(file)).toBe(pages);
+  const content = pdfContent(file);
+  expect(content).toContain('(Wholesale Customer)');
+  expect(content).toMatch(/\(INV-\d{4}-\d{4}\)/);
+  expect(content).toMatch(/\(Product line 24 with/);
+  expect(content).toMatch(/3 Tr/);
   await expect(page.locator('[data-invoice-fit-status]')).toHaveText('PDF downloaded.');
 });
 
