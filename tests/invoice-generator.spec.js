@@ -99,6 +99,29 @@ test('Urdu invoice renders right to left with Urdu labels and LTR numbers', asyn
   await expect(pageNode.locator('bdi.inv-ltr', { hasText: 'INV-' }).first()).toHaveAttribute('dir', 'ltr');
 });
 
+test('English letters turn into Urdu on the device without contacting Google', async ({ page }) => {
+  const providerRequests = [];
+  page.on('request', (request) => { if (/inputtools|google\.com\/(jsapi|uds|inputtools|transliterate)/.test(request.url())) providerRequests.push(request.url()); });
+  await openClean(page);
+  await page.locator('[data-lang-option="urdu"]').click();
+  await page.locator('[data-invoice-start-own]').click();
+  const seller = page.locator('[data-field="seller.name"]');
+  await seller.click();
+  await page.keyboard.type('noor kapra house ');
+  await expect(seller).toHaveValue('نور کپڑا ہاؤس ');
+  await page.keyboard.type('Malik ');
+  await page.keyboard.press('Backspace');
+  await expect(seller).toHaveValue('نور کپڑا ہاؤس Malik', { timeout: 2000 });
+  const buyer = page.locator('[data-field="buyer.name"]');
+  await buyer.click();
+  await page.keyboard.type('ahmed garments');
+  await page.locator('[data-field="seller.phone"]').click();
+  await expect(buyer).toHaveValue('احمد گارمنٹس');
+  await showPreview(page);
+  await expect(page.locator('[data-invoice-preview]')).toContainText('احمد گارمنٹس');
+  expect(providerRequests).toEqual([]);
+});
+
 test('discount, tax and partial payment produce the documented totals', async ({ page }) => {
   await openClean(page);
   await page.locator('[data-invoice-start-own]').click();

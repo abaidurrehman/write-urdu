@@ -194,6 +194,8 @@ body.invoice-generator-page .inv-studio .inv-intro h1, body.invoice-generator-pa
 
 /* Parties */
 .inv-input-mode { margin: 0; }
+.inv-google-typing { margin-top: -6px; font-size: .8rem; }
+.inv-google-typing .inv-opt { display: block; }
 /* The mode buttons and note already say conversion is off; the shared
    reminder banner would nag bilingual invoices, where direct typing is the default. */
 .inv-input-mode [data-input-mode-alert][data-input-mode-alert-state="direct"] { display: none !important; }

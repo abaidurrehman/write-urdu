@@ -4,6 +4,7 @@
     var core = window.WriteUrduInvoiceCore;
     var renderer = window.WriteUrduInvoiceDocument;
     var pdfText = window.WriteUrduInvoicePdfText;
+    var romanLocal = window.WriteUrduRomanLocal;
     if (!root || !core || !renderer) return;
 
     // Storage: the current draft keeps its original key so existing drafts
@@ -183,6 +184,7 @@
         renderLogoControls();
         renderSavedBusiness();
         var inputMode = $('[data-input-mode-control]'); if (inputMode) inputMode.hidden = state.languageMode === 'english';
+        renderTypingEngine();
         var taxValue = $('[data-tax-value-field]'); if (taxValue) taxValue.hidden = state.tax.mode === 'per-item';
         var taxHelp = $('[data-tax-per-item-help]'); if (taxHelp) taxHelp.hidden = state.tax.mode !== 'per-item';
         root.dataset.lang = state.languageMode;
@@ -801,22 +803,122 @@
         if (window.WriteUrduInputMode && window.WriteUrduInputMode.refresh) window.WriteUrduInputMode.refresh();
         enforceFieldDirection();
     }
-    function initTransliteration() {
+    /* ---------- On-device English-letter typing ---------- */
+    // English letters become Urdu on this device by default. Google Input
+    // Tools is only loaded when the person turns on its suggestions, because
+    // it sends each typed word to Google.
+    var BOUNDARY = /[\s,!?;)\]،؟]/;
+    var converting = false;
+    var romanUndo = null;
+    function romanEngine() { var prefs = readJson(PREFS_KEY) || {}; return prefs.romanEngine === 'google' ? 'google' : 'local'; }
+    function localTypingActive(field) {
+        return Boolean(romanLocal) && romanEngine() === 'local' && state.languageMode !== 'english' && field && field.matches && field.matches('[data-urdu-input]') && field.dataset.inputMode === 'roman';
+    }
+    // Converts the Latin word that ends `gap` characters before the caret.
+    function convertWordBeforeCaret(field, gap) {
+        var caret = field.selectionStart;
+        if (caret === null || caret !== field.selectionEnd) return false;
+        var value = field.value, end = caret - gap;
+        var match = value.slice(0, end).match(/[A-Za-z]+(?:'[A-Za-z]+)?$/);
+        if (!match) return false;
+        var word = match[0], start = end - word.length;
+        // Part of an email, link, handle or code such as INV-2026 or a.b: leave it.
+        if (/[\w@./:+\-#]/.test(value.charAt(start - 1))) return false;
+        if (field.dataset.romanKeep === start + ':' + word) return false;
+        var urdu = romanLocal.transliterateWord(word);
+        if (!urdu || urdu === word) return false;
+        var boundary = value.slice(end, caret);
+        var mark = romanLocal.PUNCTUATION[boundary] || boundary;
+        converting = true;
+        field.value = value.slice(0, start) + urdu + mark + value.slice(caret);
+        var position = start + urdu.length + mark.length;
+        field.setSelectionRange(position, position);
+        romanUndo = { field: field, start: start, roman: word, typed: boundary, converted: urdu + mark };
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        converting = false;
+        return true;
+    }
+    function onLocalInput(event) {
+        var field = event.target;
+        if (converting || !localTypingActive(field)) return;
+        if (!/^insert/.test(event.inputType || 'insertText')) return;
+        var caret = field.selectionStart;
+        if (caret && BOUNDARY.test(field.value.charAt(caret - 1))) convertWordBeforeCaret(field, 1);
+    }
+    // Backspace straight after a conversion brings back the English letters,
+    // and that word is then left alone.
+    function onLocalBeforeInput(event) {
+        var field = event.target, undo = romanUndo;
+        if (event.inputType !== 'deleteContentBackward') { if (!converting) romanUndo = null; return; }
+        if (!undo || undo.field !== field || !localTypingActive(field)) return;
+        var caret = field.selectionStart;
+        if (caret !== field.selectionEnd || caret !== undo.start + undo.converted.length || field.value.slice(undo.start, caret) !== undo.converted) return;
+        event.preventDefault();
+        romanUndo = null;
+        converting = true;
+        field.value = field.value.slice(0, undo.start) + undo.roman + field.value.slice(caret);
+        var position = undo.start + undo.roman.length;
+        field.setSelectionRange(position, position);
+        field.dataset.romanKeep = undo.start + ':' + undo.roman;
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        converting = false;
+    }
+    function onLocalKeydown(event) {
+        if (event.key === 'Enter' && !event.isComposing && localTypingActive(event.target) && event.target.tagName === 'INPUT') convertWordBeforeCaret(event.target, 0);
+    }
+    // Leaving a field converts a last word that was never followed by a space.
+    function onLocalBlur(event) {
+        var field = event.target;
+        if (!localTypingActive(field)) return;
+        var value = field.value, match = value.match(/([A-Za-z]+(?:'[A-Za-z]+)?)([.!?]*)$/);
+        if (!match) return;
+        var start = value.length - match[0].length;
+        if (/[\w@./:+\-#]/.test(value.charAt(start - 1)) || field.dataset.romanKeep === start + ':' + match[1]) return;
+        var urdu = romanLocal.transliterateWord(match[1]);
+        if (!urdu || urdu === match[1]) return;
+        converting = true;
+        field.value = value.slice(0, start) + urdu + match[2].replace(/\?/g, '؟');
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        converting = false;
+    }
+    function renderTypingEngine() {
+        var row = $('[data-invoice-google-typing-row]'), box = $('[data-invoice-google-typing]');
+        if (row) row.hidden = state.languageMode === 'english' || !romanLocal;
+        if (box) box.checked = romanEngine() === 'google';
+    }
+    function setRomanEngine(engine) {
+        var prefs = readJson(PREFS_KEY) || {};
+        prefs.romanEngine = engine === 'google' ? 'google' : 'local';
+        writeJson(PREFS_KEY, prefs);
+        if (prefs.romanEngine === 'google') {
+            if (transliterationControl) syncInputMode(); else initTransliteration(true);
+            setStatus('Google Input Tools suggestions are on. Each word you type is sent to Google.', 'ready');
+        } else {
+            if (transliterationControl) { try { transliterationControl.disableTransliteration(); } catch (error) { /* already off */ } }
+            setStatus('English letters now turn into Urdu on this device.', 'ready');
+        }
+        renderTypingEngine();
+    }
+
+    function initTransliteration(force) {
+        if (!force && romanLocal && romanEngine() === 'local') return;
         var google = window.google;
         if (!google || typeof google.load !== 'function' || typeof google.setOnLoadCallback !== 'function') return;
+        function ready() {
+            try {
+                var t = google.elements.transliteration;
+                transliterationControl = new t.TransliterationControl({ sourceLanguage: t.LanguageCode.ENGLISH, destinationLanguage: [t.LanguageCode.URDU], shortcutKey: 'ctrl+g', transliterationEnabled: state.languageMode !== 'english' });
+                window.writeUrduTransliterationControl = transliterationControl;
+                registerUrduFields();
+                document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: transliterationControl } }));
+                syncInputMode();
+            } catch (error) { /* optional enhancement */ }
+        }
         try {
-            google.load('elements', '1', { packages: 'transliteration' });
-            google.setOnLoadCallback(function () {
-                try {
-                    var t = google.elements.transliteration;
-                    transliterationControl = new t.TransliterationControl({ sourceLanguage: t.LanguageCode.ENGLISH, destinationLanguage: [t.LanguageCode.URDU], shortcutKey: 'ctrl+g', transliterationEnabled: state.languageMode !== 'english' });
-                    window.writeUrduTransliterationControl = transliterationControl;
-                    registerUrduFields();
-                    document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: transliterationControl } }));
-                    syncInputMode();
-                } catch (error) { /* optional enhancement */ }
-            });
-        } catch (error) { /* optional enhancement */ }
+            // After the page has loaded, the loader only accepts a callback.
+            if (force) google.load('elements', '1', { packages: 'transliteration', callback: ready });
+            else { google.load('elements', '1', { packages: 'transliteration' }); google.setOnLoadCallback(ready); }
+        } catch (error) { setStatus('Google Input Tools could not be loaded. English letters still turn into Urdu on this device.', 'error'); }
     }
 
     /* ---------- Events ---------- */
@@ -824,6 +926,7 @@
         ['input', 'change', 'keyup'].forEach(function (type) {
             root.addEventListener(type, function (event) {
                 var target = event.target;
+                if (target && target.matches && target.matches('[data-invoice-google-typing]')) { if (type === 'change') setRomanEngine(target.checked ? 'google' : 'local'); return; }
                 if (!target || !target.closest) return;
                 var field = target.closest('[data-field]'); if (field && field.type !== 'file') { onFieldChange(field); return; }
                 var item = target.closest('[data-item-field]'); if (item) { onItemChange(item); return; }
@@ -839,6 +942,20 @@
                 }
             });
         });
+        root.addEventListener('input', onLocalInput, true);
+        root.addEventListener('beforeinput', onLocalBeforeInput, true);
+        root.addEventListener('keydown', onLocalKeydown, true);
+        root.addEventListener('blur', onLocalBlur, true);
+        // Google's control replaces the word a moment after the key is
+        // released and fires no event, so read the field again shortly after.
+        root.addEventListener('keyup', function (event) {
+            var field = event.target;
+            if (!transliterationControl || romanEngine() !== 'google' || !field.matches || !field.matches('[data-urdu-input]')) return;
+            window.setTimeout(function () { field.dispatchEvent(new Event('input', { bubbles: true })); }, 450);
+        });
+        // Google's control turns itself back on whenever the typing mode
+        // changes, so keep it off while on-device conversion is in use.
+        root.addEventListener('write-urdu:input-mode-change', function () { if (transliterationControl && romanEngine() === 'local') { try { transliterationControl.disableTransliteration(); } catch (error) { /* already off */ } } });
         itemsHost.addEventListener('keydown', function (event) {
             if (event.key !== 'Enter' || !event.target.matches('[data-item-field]')) return;
             event.preventDefault();
