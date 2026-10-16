@@ -81,4 +81,42 @@ assert.equal(core.requiresZeroTotalConfirmation(Object.assign({}, invoice, {
 assert.equal(core.requiresZeroTotalConfirmation(invoice), false);
 assert.equal(core.safeFilename('INV/1', 'A:B', 'pdf'), 'Invoice-INV-1-A-B.pdf');
 
+// Redesign (templates, wallets, numbering, samples, long invoices).
+assert.equal(core.createDefaultInvoiceDocument().templateId, 'modern', 'New invoices start on Modern Professional');
+assert.equal(core.normalizeInvoiceDocument({ templateId: 'professional-bilingual' }).templateId, 'modern', 'Legacy template ids must migrate');
+assert.equal(core.normalizeInvoiceDocument({ templateId: 'unknown' }).templateId, 'modern');
+assert.equal(core.normalizeInvoiceDocument({ design: { accent: 'red' } }).design.accent, core.ACCENTS[0], 'Invalid accent colours fall back to the default');
+assert.equal(core.normalizeInvoiceDocument({ seller: { logoDataUrl: 'javascript:alert(1)' } }).seller.logoDataUrl, '', 'Only image data URLs are accepted as logos');
+assert.equal(core.incrementInvoiceNumber('INV-2026-0009'), 'INV-2026-0010');
+assert.equal(core.incrementInvoiceNumber('A-99'), 'A-100');
+assert.equal(core.incrementInvoiceNumber('Bill 7/B'), 'Bill 8/B');
+assert.ok(core.MAX_ITEMS >= 30, 'Long invoices paginate instead of stopping at six items');
+
+const walletOnly = core.createDefaultInvoiceDocument(new Date('2026-07-17T00:00:00Z'));
+walletOnly.paymentDetails.walletProvider = 'JazzCash';
+walletOnly.paymentDetails.walletNumber = '0300 1234567';
+assert.equal(core.getVisibility(walletOnly).paymentDetails, true, 'Mobile wallet details alone show the payment section');
+
+const withBlankRow = core.normalizeInvoiceDocument(invoice);
+withBlankRow.items.push({ id: 'blank', description: '', quantity: '1', unitPrice: '' });
+assert.equal(core.validateInvoice(withBlankRow).valid, true, 'An untouched extra row must not block export');
+
+['english', 'urdu', 'bilingual'].forEach((mode) => {
+  const sample = core.createSampleInvoice(mode, new Date('2026-07-17T00:00:00Z'));
+  assert.equal(sample.isSample, true, 'Sample invoices are flagged as samples');
+  assert.equal(sample.languageMode, mode);
+  assert.equal(core.validateInvoice(sample).valid, true, mode + ' sample must be a valid invoice');
+});
+
+const partial = core.normalizeInvoiceDocument(Object.assign({}, invoice, {
+  items: [{ id: 'a', description: 'Work', quantity: '2', unitPrice: '1000' }],
+  discount: { mode: 'percentage', value: '10' }, tax: { mode: 'percentage', value: '16' }, additionalCharge: '200', amountPaid: '1000'
+}));
+const partialTotals = core.calculateInvoiceTotals(partial);
+assert.equal(partialTotals.subtotalMinor, 200000);
+assert.equal(partialTotals.discountMinor, 20000, 'Discount applies to the subtotal');
+assert.equal(partialTotals.taxMinor, 28800, 'Tax applies after the discount');
+assert.equal(partialTotals.grandTotalMinor, 228800, 'Extra charges are added last');
+assert.equal(partialTotals.balanceDueMinor, 128800, 'Balance due subtracts the amount already paid');
+
 console.log('Invoice generator core tests passed.');

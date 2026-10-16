@@ -12,67 +12,345 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/site-header.css">
+    <link rel="stylesheet" href="css/input-mode.css">
     <link rel="stylesheet" href="css/invoice-generator.css">
-    <link rel="stylesheet" href="css/invoice-generator-preview.css">
-    <link rel="stylesheet" href="css/invoice-generator-tweaks.css">
+    <link rel="stylesheet" href="css/invoice-document.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Noto+Naskh+Arabic:wght@400;500;600;700&amp;family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;family=Tajawal:wght@400;500;700&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&amp;family=Inter:wght@300;400;500;600;700;800&amp;family=Noto+Naskh+Arabic:wght@400;500;600;700&amp;family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap">
     <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
     <script src="site-header.js" defer></script>
     <script src="google_jsapi.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
     <script src="js/vendor/qrcode.js" defer></script>
+    <script src="js/input-mode.js" defer></script>
     <script src="js/invoice-generator-core.js" defer></script>
+    <script src="js/invoice-document.js" defer></script>
     <script src="js/invoice-generator.js" defer></script>
     <script type="application/ld+json" data-write-urdu-schema>{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://write-urdu.com/#website","url":"https://write-urdu.com/","name":"Write Urdu","alternateName":["WriteUrdu","Write-Urdu.com"],"description":"Tools for typing, formatting, designing and sharing Urdu.","inLanguage":["en","ur"],"publisher":{"@id":"https://write-urdu.com/#publisher"}},{"@type":"Organization","@id":"https://write-urdu.com/#publisher","name":"Write Urdu","url":"https://write-urdu.com/","description":"Write Urdu helps people type Urdu with English letters, type Urdu directly, format documents and create shareable Urdu designs.","logo":{"@type":"ImageObject","@id":"https://write-urdu.com/#logo","url":"https://write-urdu.com/image/logo10.png","contentUrl":"https://write-urdu.com/image/logo10.png"},"knowsLanguage":["en","ur"],"alternateName":["WriteUrdu","Write-Urdu.com"],"email":"admin@write-urdu.com","publishingPrinciples":"https://write-urdu.com/why-write-urdu","contactPoint":{"@type":"ContactPoint","contactType":"customer support","availableLanguage":["English","Urdu"],"email":"admin@write-urdu.com","url":"https://write-urdu.com/contact"}},{"@type":"WebPage","@id":"https://write-urdu.com/urdu-invoice-generator#webpage","url":"https://write-urdu.com/urdu-invoice-generator","name":"Free Urdu Invoice Generator — English & Bilingual PDF | Write Urdu","description":"Create professional Urdu, English or bilingual invoices with automatic totals, Roman Urdu typing, QR codes and PDF or PNG download. No account required.","inLanguage":["en","ur"],"isPartOf":{"@id":"https://write-urdu.com/#website"},"publisher":{"@id":"https://write-urdu.com/#publisher"},"dateModified":"2026-07-17","breadcrumb":{"@id":"https://write-urdu.com/urdu-invoice-generator#breadcrumbs"},"mainEntity":{"@id":"https://write-urdu.com/urdu-invoice-generator#application"}},{"@type":"BreadcrumbList","@id":"https://write-urdu.com/urdu-invoice-generator#breadcrumbs","itemListElement":[{"@type":"ListItem","position":1,"name":"Write Urdu","item":"https://write-urdu.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://write-urdu.com/write-urdu-sitemap"},{"@type":"ListItem","position":3,"name":"Urdu & English Invoice Generator","item":"https://write-urdu.com/urdu-invoice-generator"}]},{"@type":"WebApplication","@id":"https://write-urdu.com/urdu-invoice-generator#application","name":"Free Urdu Invoice Generator","url":"https://write-urdu.com/urdu-invoice-generator","mainEntityOfPage":{"@id":"https://write-urdu.com/urdu-invoice-generator#webpage"},"applicationCategory":"BusinessApplication","operatingSystem":"Any","browserRequirements":"Works in a modern web browser","isAccessibleForFree":true,"description":"Create professional Urdu, English or bilingual invoices with automatic totals, Roman Urdu typing, QR codes and PDF or PNG download. No account required.","inLanguage":"en","featureList":[],"publisher":{"@id":"https://write-urdu.com/#publisher"}}]}</script>
 </head>
 <body class="invoice-generator-page">
     <nav class="navbar wu-static-site-nav" data-wu-static-shell="nav" aria-label="Primary navigation"><a class="wu-static-brand" href="/">Write Urdu</a><div class="wu-static-nav-groups"><div class="wu-static-nav-group" data-wu-static-nav-group="write"><strong>Write</strong><a href="/">Start writing in Urdu</a><a href="/roman-urdu-transliteration">Convert Roman Urdu to Urdu script</a><a href="/urdu-keyboard">Type directly in Urdu</a><a href="/urdu-editor">Format an assignment or document</a><a href="/tools/urdu-voice-typing">Speak and turn it into Urdu text</a><a href="/urdu-ocr">Extract Urdu text from an image</a><a href="/urdu-text-cleaner">Fix broken or messy Urdu text</a><a href="/tools/inpage-unicode-converter">Convert older InPage Urdu</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="create"><strong>Create</strong><a href="/urdu-cards">Browse ready-made Urdu cards</a><a href="/urdu-card-gallery">Compare your Urdu text across card designs</a><a href="/urdu-card-studio">Make a poetry, quote or announcement image</a><a href="/urdu-whatsapp-status-maker">Create a WhatsApp Status</a><a href="/urdu-instagram-post-maker">Create an Instagram post</a><a href="/urdu-name-art-maker">Make Urdu Name Art or a profile image</a><a href="/stylish-urdu-text-generator">Create stylish copyable Urdu text</a><a href="/urdu-templates">Start from a ready-made design</a><a href="/qr-code-generator">Turn text or a link into a QR code</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="work"><strong>Tools</strong><a href="/urdu-invoice-generator">Create an Urdu or English invoice</a><a href="/urdu-bill-generator">Create a quick shop bill or receipt</a><a href="/urdu-editor">Prepare a formal Urdu document</a><a href="/urdu-wedding-invitation-maker">Build a wedding invitation</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="learn"><strong>Learn</strong><a href="/urdu-typing-practice">Practise Urdu typing and measure your speed</a><a href="/urdu-alphabet">Learn the Urdu alphabet</a><a href="/urdu-fonts-nastaliq-vs-naskh">Choose an Urdu font</a><a href="/english-urdu-typing-tutorial">Learn English-to-Urdu typing</a><a href="/how-to-write-urdu-on-photo">Learn to put Urdu on a photo</a><a href="/how-to-share-urdu-writing-online">Learn to share Urdu writing online</a><a href="/write-urdu-documentation">Use Write Urdu documentation</a><a href="/urdu-faq">Get answers to common questions</a></div></div></nav>
-    <main class="invoice-shell" data-invoice-generator>
-        <header class="invoice-intro">
-            <div>
-                <p class="invoice-eyebrow">WRITE URDU TOOL</p>
+    <main class="invoice-shell inv-studio" data-invoice-generator data-view="edit">
+        <header class="inv-intro">
+            <div class="inv-intro-copy">
                 <h1>Urdu &amp; English Invoice Generator</h1>
-                <p class="invoice-lede">Create a professional one-page invoice in Urdu, English or both. Add only the sections you need and download it as PDF or PNG.</p>
+                <p class="inv-lede">Create a beautiful invoice in Urdu, English or both. See every change instantly, then download a PDF — no sign-up needed.</p>
             </div>
-            <aside class="invoice-privacy"><strong>Your invoice stays private</strong><span>Create, preview and download your invoice without creating an account.</span></aside>
+            <p class="inv-privacy"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.6 3 8.4 7 10 4-1.6 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><strong>Free, no sign-up.</strong> Your invoices are kept on your device. <a href="/write-urdu-privacy">Privacy</a></span></p>
         </header>
-        <div class="invoice-actionbar" role="toolbar" aria-label="Invoice actions">
-            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-new>New invoice</button>
-            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-reset>Reset</button>
-            <span class="invoice-fit-status" data-invoice-fit-status role="status">Ready to edit</span>
-            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-print>Print invoice</button>
-            <button type="button" class="invoice-button invoice-button-secondary" data-invoice-pdf>Download PDF</button>
-            <button type="button" class="invoice-button invoice-button-primary" data-invoice-png>Download PNG</button>
+
+        <div class="inv-toolbar invoice-actionbar" role="toolbar" aria-label="Invoice actions">
+            <div class="inv-segmented inv-lang-switch" role="radiogroup" aria-label="Invoice language">
+                <button type="button" role="radio" data-lang-option="english" aria-checked="true">English</button>
+                <button type="button" role="radio" data-lang-option="urdu" aria-checked="false" lang="ur">اردو</button>
+                <button type="button" role="radio" data-lang-option="bilingual" aria-checked="false">Both <span lang="ur">دونوں</span></button>
+            </div>
+            <span class="inv-save-state" data-invoice-save-state aria-live="polite"><span class="inv-dot" aria-hidden="true"></span><span data-invoice-save-text>Not saved yet</span></span>
+            <span class="inv-toolbar-spacer"></span>
+            <button type="button" class="inv-btn inv-btn-ghost" data-invoice-history><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg><span>My invoices</span></button>
+            <button type="button" class="inv-btn inv-btn-ghost" data-invoice-new><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>New invoice</span></button>
+            <button type="button" class="inv-btn inv-btn-secondary inv-hide-mobile" data-invoice-print><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg><span>Print</span></button>
+            <button type="button" class="inv-btn inv-btn-primary inv-hide-mobile" data-invoice-pdf><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg><span>Download PDF</span></button>
         </div>
-        <dialog class="invoice-zero-dialog" data-invoice-zero-dialog aria-labelledby="invoice-zero-dialog-title" aria-describedby="invoice-zero-dialog-copy">
+
+        <div class="inv-tabs" role="tablist" aria-label="Invoice workspace">
+            <button type="button" role="tab" id="inv-tab-edit" aria-controls="inv-panel-edit" aria-selected="true" data-view-tab="edit">Edit <span lang="ur">ترمیم</span></button>
+            <button type="button" role="tab" id="inv-tab-preview" aria-controls="inv-panel-preview" aria-selected="false" data-view-tab="preview">Preview <span lang="ur">پیش نظارہ</span></button>
+        </div>
+
+        <div class="invoice-workspace inv-workspace">
+            <section class="invoice-editor inv-editor" id="inv-panel-edit" role="tabpanel" aria-labelledby="inv-tab-edit" aria-label="Invoice details">
+                <div class="inv-banner" data-invoice-banner hidden><span class="inv-banner-copy" data-invoice-banner-copy></span><span class="inv-banner-actions" data-invoice-banner-actions></span></div>
+
+                <div class="inv-start" data-invoice-start hidden>
+                    <div>
+                        <h2>Your invoice in four short steps</h2>
+                        <p>The preview shows a sample so you can see the finished look. Nothing from the sample is used until you choose it.</p>
+                    </div>
+                    <div class="inv-start-actions">
+                        <button type="button" class="inv-btn inv-btn-primary" data-invoice-start-own>Start your own invoice</button>
+                        <button type="button" class="inv-btn inv-btn-secondary" data-invoice-sample>Try a sample invoice</button>
+                    </div>
+                </div>
+
+                <details class="inv-section" data-section-card="design" open>
+                    <summary><span class="inv-step">1</span><span class="inv-section-title"><strong>Design</strong><span lang="ur">ڈیزائن</span></span><span class="inv-section-hint" data-section-hint="design"></span></summary>
+                    <div class="inv-section-body">
+                        <div class="inv-field-label" id="inv-template-label">Invoice design</div>
+                        <div class="inv-templates" role="radiogroup" aria-labelledby="inv-template-label" data-invoice-templates>
+                            <button type="button" role="radio" class="inv-template" data-template-option="modern" aria-checked="true"><span class="inv-template-thumb" data-template-thumb="modern" aria-hidden="true"></span><span class="inv-template-name">Modern Professional</span><span class="inv-template-note">Clean and premium</span></button>
+                            <button type="button" role="radio" class="inv-template" data-template-option="classic-urdu" aria-checked="false"><span class="inv-template-thumb" data-template-thumb="classic-urdu" aria-hidden="true"></span><span class="inv-template-name">Classic Urdu</span><span class="inv-template-note">Framed Nastaliq stationery</span></button>
+                            <button type="button" role="radio" class="inv-template" data-template-option="contemporary" aria-checked="false"><span class="inv-template-thumb" data-template-thumb="contemporary" aria-hidden="true"></span><span class="inv-template-name">Contemporary</span><span class="inv-template-note">Bold colour, clear amount due</span></button>
+                        </div>
+                        <div class="inv-design-row">
+                            <div class="inv-design-group">
+                                <div class="inv-field-label" id="inv-accent-label">Colour</div>
+                                <div class="inv-swatches" role="radiogroup" aria-labelledby="inv-accent-label" data-invoice-swatches>
+                                    <button type="button" role="radio" class="inv-swatch" data-accent-option="#176b4b" style="--swatch:#176b4b" aria-label="Emerald green"></button>
+                                    <button type="button" role="radio" class="inv-swatch" data-accent-option="#1f3a68" style="--swatch:#1f3a68" aria-label="Navy blue"></button>
+                                    <button type="button" role="radio" class="inv-swatch" data-accent-option="#7a2e3a" style="--swatch:#7a2e3a" aria-label="Maroon"></button>
+                                    <button type="button" role="radio" class="inv-swatch" data-accent-option="#8a5a14" style="--swatch:#8a5a14" aria-label="Bronze"></button>
+                                    <button type="button" role="radio" class="inv-swatch" data-accent-option="#0f6e78" style="--swatch:#0f6e78" aria-label="Teal"></button>
+                                    <button type="button" role="radio" class="inv-swatch" data-accent-option="#2c2c34" style="--swatch:#2c2c34" aria-label="Charcoal"></button>
+                                    <label class="inv-swatch inv-swatch-custom" title="Choose your own colour"><input type="color" data-field="design.accent" aria-label="Custom colour"><span aria-hidden="true">+</span></label>
+                                </div>
+                            </div>
+                            <div class="inv-design-group">
+                                <div class="inv-field-label" id="inv-font-label">Urdu lettering</div>
+                                <div class="inv-segmented inv-segmented-small" role="radiogroup" aria-labelledby="inv-font-label">
+                                    <button type="button" role="radio" data-font-option="nastaliq" aria-checked="true"><span lang="ur" class="inv-font-nastaliq">نستعلیق</span> Nastaliq</button>
+                                    <button type="button" role="radio" data-font-option="naskh" aria-checked="false"><span lang="ur" class="inv-font-naskh">نسخ</span> Naskh</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="inv-logo-row">
+                            <div class="inv-logo-preview" data-invoice-logo-preview aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg></div>
+                            <div class="inv-logo-copy"><strong>Business logo</strong><span>PNG or JPG, shown at the top of your invoice.</span></div>
+                            <label class="inv-btn inv-btn-secondary inv-btn-small inv-file"><input type="file" accept="image/png,image/jpeg,image/webp" data-invoice-logo-input><span data-invoice-logo-action>Add logo</span></label>
+                            <button type="button" class="inv-link" data-invoice-logo-remove hidden>Remove</button>
+                        </div>
+                        <button type="button" class="inv-link inv-reset-style" data-invoice-reset-style>Reset design to default</button>
+                    </div>
+                </details>
+
+                <details class="inv-section" data-section-card="parties" open>
+                    <summary><span class="inv-step">2</span><span class="inv-section-title"><strong>Business and customer</strong><span lang="ur">کاروبار اور گاہک</span></span><span class="inv-section-hint" data-section-hint="parties"></span></summary>
+                    <div class="inv-section-body">
+                        <div class="input-mode-control inv-input-mode" data-input-mode-control data-input-mode-storage="invoice" data-input-mode-targets="[data-urdu-input]" role="group" aria-label="Urdu typing" hidden><span class="input-mode-title" data-input-mode-title>Urdu typing</span><button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">English letters → Urdu</button><button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Type Urdu directly</button><span class="input-mode-note" data-input-mode-note></span></div>
+                        <div class="inv-party-cards">
+                            <fieldset class="inv-card">
+                                <legend><span>Your business</span><span lang="ur">آپ کا کاروبار</span></legend>
+                                <div class="inv-saved-business" data-invoice-saved-business hidden></div>
+                                <label class="inv-field"><span class="inv-label">Business or your name <span class="inv-req" aria-hidden="true">*</span></span><input data-field="seller.name" data-urdu-input id="invoiceSellerName" autocomplete="organization" placeholder="e.g. Noor Textile House" required aria-describedby="err-seller-name"><span class="inv-error" id="err-seller-name" data-error-for="seller.name"></span></label>
+                                <label class="inv-field"><span class="inv-label">Phone <span class="inv-opt">optional</span></span><input data-field="seller.phone" dir="ltr" type="tel" inputmode="tel" autocomplete="tel" placeholder="+92 300 1234567"></label>
+                                <details class="inv-more" data-more="seller">
+                                    <summary>Add address, email and more</summary>
+                                    <div class="inv-more-body">
+                                        <label class="inv-field"><span class="inv-label">Tagline</span><input data-field="seller.tagline" data-urdu-input id="invoiceSellerTagline" placeholder="What you do, in a few words"></label>
+                                        <label class="inv-field"><span class="inv-label">Address</span><textarea data-field="seller.address" data-urdu-input id="invoiceSellerAddress" rows="2" autocomplete="street-address" placeholder="Shop or office address"></textarea></label>
+                                        <div class="inv-grid-2">
+                                            <label class="inv-field"><span class="inv-label">Email</span><input data-field="seller.email" dir="ltr" type="email" autocomplete="email" placeholder="you@example.com"></label>
+                                            <label class="inv-field"><span class="inv-label">Website</span><input data-field="seller.website" dir="ltr" inputmode="url" placeholder="example.com"></label>
+                                        </div>
+                                        <div class="inv-grid-2">
+                                            <label class="inv-field"><span class="inv-label">Reference name</span><input data-field="seller.referenceLabel" placeholder="e.g. NTN or STRN"></label>
+                                            <label class="inv-field"><span class="inv-label">Reference number</span><input data-field="seller.referenceValue" dir="ltr" placeholder="Optional"></label>
+                                            <label class="inv-field"><span class="inv-label">Second reference name</span><input data-field="seller.referenceLabel2" placeholder="Optional"></label>
+                                            <label class="inv-field"><span class="inv-label">Second reference number</span><input data-field="seller.referenceValue2" dir="ltr" placeholder="Optional"></label>
+                                        </div>
+                                    </div>
+                                </details>
+                                <label class="inv-check"><input type="checkbox" data-invoice-remember-business> <span>Remember my business details on this device</span></label>
+                            </fieldset>
+                            <fieldset class="inv-card">
+                                <legend><span>Customer</span><span lang="ur">گاہک</span></legend>
+                                <label class="inv-field"><span class="inv-label">Customer name <span class="inv-req" aria-hidden="true">*</span></span><input data-field="buyer.name" data-urdu-input id="invoiceBuyerName" placeholder="Person or company you are billing" required aria-describedby="err-buyer-name"><span class="inv-error" id="err-buyer-name" data-error-for="buyer.name"></span></label>
+                                <label class="inv-field"><span class="inv-label">Phone <span class="inv-opt">optional</span></span><input data-field="buyer.phone" dir="ltr" type="tel" inputmode="tel" placeholder="+92 3xx xxxxxxx"></label>
+                                <details class="inv-more" data-more="buyer">
+                                    <summary>Add address, email and reference</summary>
+                                    <div class="inv-more-body">
+                                        <label class="inv-field"><span class="inv-label">Address</span><textarea data-field="buyer.address" data-urdu-input id="invoiceBuyerAddress" rows="2" placeholder="Customer address"></textarea></label>
+                                        <label class="inv-field"><span class="inv-label">Email</span><input data-field="buyer.email" dir="ltr" type="email" placeholder="customer@example.com"></label>
+                                        <div class="inv-grid-2">
+                                            <label class="inv-field"><span class="inv-label">Reference name</span><input data-field="buyer.referenceLabel" placeholder="e.g. PO number"></label>
+                                            <label class="inv-field"><span class="inv-label">Reference number</span><input data-field="buyer.referenceValue" dir="ltr" placeholder="Optional"></label>
+                                        </div>
+                                    </div>
+                                </details>
+                            </fieldset>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="inv-section" data-section-card="items" open>
+                    <summary><span class="inv-step">3</span><span class="inv-section-title"><strong>Items and prices</strong><span lang="ur">اشیاء اور قیمتیں</span></span><span class="inv-section-hint" data-section-hint="items"></span></summary>
+                    <div class="inv-section-body">
+                        <div class="inv-item-list" data-invoice-items></div>
+                        <span class="inv-error" data-error-for="items"></span>
+                        <div class="inv-items-actions">
+                            <button type="button" class="inv-btn inv-btn-add" data-invoice-add-item><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add another item</button>
+                            <label class="inv-currency"><span>Currency</span><select data-field="currency"><option value="PKR">PKR — Pakistani rupee</option><option value="USD">USD — US dollar</option><option value="GBP">GBP — British pound</option><option value="EUR">EUR — Euro</option><option value="AED">AED — UAE dirham</option><option value="SAR">SAR — Saudi riyal</option></select></label>
+                        </div>
+                        <details class="inv-more" data-more="adjustments">
+                            <summary>Add discount, tax or extra charges</summary>
+                            <div class="inv-more-body">
+                                <div class="inv-adjust">
+                                    <label class="inv-field"><span class="inv-label">Discount</span><select data-field="discount.mode"><option value="disabled">No discount</option><option value="percentage">Percent (%)</option><option value="flat">Fixed amount</option></select></label>
+                                    <label class="inv-field"><span class="inv-label">Discount value</span><input data-field="discount.value" inputmode="decimal" placeholder="0"></label>
+                                </div>
+                                <div class="inv-adjust">
+                                    <label class="inv-field"><span class="inv-label">Tax</span><select data-field="tax.mode"><option value="disabled">No tax</option><option value="percentage">Percent (%)</option><option value="flat">Fixed amount</option></select></label>
+                                    <label class="inv-field"><span class="inv-label">Tax value</span><input data-field="tax.value" inputmode="decimal" placeholder="Enter your own rate"></label>
+                                </div>
+                                <label class="inv-field"><span class="inv-label">Extra charges <span class="inv-opt">delivery, packing, etc.</span></span><input data-field="additionalCharge" inputmode="decimal" placeholder="0"></label>
+                                <p class="inv-help">Discount comes off the subtotal first. Tax is then worked out on the discounted amount, and extra charges are added last. No tax is added unless you enter it.</p>
+                            </div>
+                        </details>
+                        <div class="inv-summary" data-invoice-summary aria-live="polite"></div>
+                    </div>
+                </details>
+
+                <details class="inv-section" data-section-card="finish" open>
+                    <summary><span class="inv-step">4</span><span class="inv-section-title"><strong>Payment and finishing</strong><span lang="ur">ادائیگی اور تکمیل</span></span><span class="inv-section-hint" data-section-hint="finish"></span></summary>
+                    <div class="inv-section-body">
+                        <div class="inv-grid-2">
+                            <label class="inv-field"><span class="inv-label">Invoice number <span class="inv-req" aria-hidden="true">*</span></span><input data-field="invoiceNumber" dir="ltr" placeholder="INV-2026-0001" aria-describedby="err-invoice-number"><span class="inv-error" id="err-invoice-number" data-error-for="invoiceNumber"></span></label>
+                            <label class="inv-field"><span class="inv-label">Invoice date <span class="inv-req" aria-hidden="true">*</span></span><input data-field="issueDate" type="date" dir="ltr"><span class="inv-error" data-error-for="issueDate"></span></label>
+                        </div>
+                        <div class="inv-field">
+                            <label class="inv-label" for="invoiceDueDate">Payment due by <span class="inv-opt">optional</span></label>
+                            <div class="inv-due-row"><input id="invoiceDueDate" data-field="dueDate" type="date" dir="ltr"><span class="inv-chips" role="group" aria-label="Quick due dates"><button type="button" class="inv-chip" data-due-days="7">7 days</button><button type="button" class="inv-chip" data-due-days="15">15 days</button><button type="button" class="inv-chip" data-due-days="30">30 days</button></span></div>
+                            <span class="inv-hint" data-invoice-due-warning></span>
+                        </div>
+                        <div class="inv-grid-2">
+                            <label class="inv-field"><span class="inv-label">Already received <span class="inv-opt">optional</span></span><input data-field="amountPaid" inputmode="decimal" placeholder="0"></label>
+                            <label class="inv-field"><span class="inv-label">Payment status</span><select data-field="status"><option value="Unpaid">Unpaid</option><option value="Partially paid">Partially paid</option><option value="Paid">Paid</option></select></label>
+                        </div>
+                        <details class="inv-more" data-more="payment">
+                            <summary>Add bank, JazzCash or Easypaisa details</summary>
+                            <div class="inv-more-body">
+                                <p class="inv-help">Shown on the invoice so your customer knows how to pay you. Write-Urdu does not process payments.</p>
+                                <div class="inv-grid-2">
+                                    <label class="inv-field"><span class="inv-label">Bank name</span><input data-field="paymentDetails.bankName" data-urdu-input id="invoiceBankName" placeholder="e.g. Meezan Bank"></label>
+                                    <label class="inv-field"><span class="inv-label">Account title</span><input data-field="paymentDetails.accountTitle" data-urdu-input id="invoiceAccountTitle" placeholder="Name on the account"></label>
+                                    <label class="inv-field"><span class="inv-label">Account number</span><input data-field="paymentDetails.accountNumber" dir="ltr" inputmode="numeric" placeholder="Optional"></label>
+                                    <label class="inv-field"><span class="inv-label">IBAN</span><input data-field="paymentDetails.iban" dir="ltr" placeholder="PK00 XXXX 0000 0000 0000 0000"></label>
+                                </div>
+                                <div class="inv-grid-2">
+                                    <label class="inv-field"><span class="inv-label">Mobile wallet</span><select data-field="paymentDetails.walletProvider"><option value="">None</option><option value="JazzCash">JazzCash</option><option value="Easypaisa">Easypaisa</option><option value="SadaPay">SadaPay</option><option value="NayaPay">NayaPay</option><option value="Other">Other wallet</option></select></label>
+                                    <label class="inv-field"><span class="inv-label">Wallet number</span><input data-field="paymentDetails.walletNumber" dir="ltr" type="tel" inputmode="tel" placeholder="03xx xxxxxxx"></label>
+                                </div>
+                                <label class="inv-field"><span class="inv-label">Wallet account name <span class="inv-opt">optional</span></span><input data-field="paymentDetails.walletTitle" data-urdu-input placeholder="Name on the wallet"></label>
+                                <label class="inv-field"><span class="inv-label">Payment instructions</span><textarea data-field="paymentDetails.instructions" data-urdu-input id="invoicePaymentInstructions" rows="2" placeholder="e.g. Please share the payment screenshot on WhatsApp."></textarea></label>
+                            </div>
+                        </details>
+                        <label class="inv-field"><span class="inv-label">Note for the customer <span class="inv-opt">optional</span></span><textarea data-field="notes" data-urdu-input id="invoiceNotes" rows="2" placeholder="Thank you for your business."></textarea></label>
+                        <details class="inv-more" data-more="extras">
+                            <summary>More options: terms, QR code, signature</summary>
+                            <div class="inv-more-body">
+                                <label class="inv-field"><span class="inv-label">Terms and conditions</span><textarea data-field="terms" data-urdu-input id="invoiceTerms" rows="2" placeholder="Payment terms, delivery or return policy"></textarea></label>
+                                <label class="inv-check"><input type="checkbox" data-section="qr"> <span>Add a QR code</span></label>
+                                <div class="inv-conditional" data-invoice-qr-fields hidden>
+                                    <label class="inv-field"><span class="inv-label">What should the QR code open?</span><select data-field="qr.purpose"><option value="business-contact">Save my contact details</option><option value="payment-information">Show payment details</option><option value="whatsapp">Chat on WhatsApp</option><option value="url">Open a website link</option><option value="custom">Custom text</option></select></label>
+                                    <div data-qr-purpose="custom"><label class="inv-field"><span class="inv-label">QR text</span><input data-field="qr.customContent" placeholder="Payment reference or note"></label></div>
+                                    <div data-qr-purpose="url"><label class="inv-field"><span class="inv-label">Website link</span><input data-field="qr.url" dir="ltr" inputmode="url" placeholder="https://example.com"></label></div>
+                                    <div data-qr-purpose="whatsapp"><label class="inv-field"><span class="inv-label">WhatsApp number</span><input data-field="qr.whatsappNumber" dir="ltr" type="tel" inputmode="tel" placeholder="+92 300 1234567"></label></div>
+                                    <label class="inv-field"><span class="inv-label">Caption <span class="inv-opt">optional</span></span><input data-field="qr.customCaption" data-urdu-input id="invoiceQrCaption" placeholder="Leave blank for an automatic caption"></label>
+                                    <span class="inv-error" data-error-for="qr"></span>
+                                </div>
+                                <label class="inv-check"><input type="checkbox" data-section="authorization"> <span>Add a signature line</span></label>
+                                <div class="inv-conditional" data-invoice-auth-fields hidden>
+                                    <div class="inv-grid-2">
+                                        <label class="inv-field"><span class="inv-label">Name</span><input data-field="authorization.name" data-urdu-input id="invoiceAuthName"></label>
+                                        <label class="inv-field"><span class="inv-label">Role or title</span><input data-field="authorization.role" data-urdu-input id="invoiceAuthRole" placeholder="e.g. Proprietor"></label>
+                                    </div>
+                                </div>
+                                <label class="inv-field"><span class="inv-label">Footer message</span><input data-field="footerMessage" data-urdu-input id="invoiceFooter" placeholder="Thank you for your trust and business!"></label>
+                                <label class="inv-check"><input type="checkbox" data-field="preferences.showGeneratorCredit"> <span>Show “Created with Write-Urdu” in the footer</span></label>
+                            </div>
+                        </details>
+                    </div>
+                </details>
+
+                <section class="inv-finish" aria-labelledby="inv-finish-title">
+                    <div class="inv-finish-total" data-invoice-finish-total></div>
+                    <h2 id="inv-finish-title" class="inv-visually-hidden">Download or share your invoice</h2>
+                    <ul class="inv-checklist" data-invoice-checklist></ul>
+                    <div class="inv-finish-actions">
+                        <button type="button" class="inv-btn inv-btn-primary inv-btn-large" data-invoice-pdf><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg>Download PDF</button>
+                        <button type="button" class="inv-btn inv-btn-secondary" data-invoice-share><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></svg>Share</button>
+                        <button type="button" class="inv-btn inv-btn-secondary" data-invoice-png>Download PNG</button>
+                        <button type="button" class="inv-btn inv-btn-secondary" data-invoice-print>Print</button>
+                    </div>
+                    <p class="inv-finish-note">Need a short shop bill, cash memo or receipt instead? Try the <a href="/urdu-bill-generator">Urdu Bill Generator</a>.</p>
+                </section>
+            </section>
+
+            <section class="invoice-preview-workspace inv-preview" id="inv-panel-preview" role="tabpanel" aria-labelledby="inv-tab-preview" aria-label="Invoice preview">
+                <div class="inv-preview-bar">
+                    <div class="inv-segmented inv-segmented-small inv-template-quick" role="radiogroup" aria-label="Invoice design">
+                        <button type="button" role="radio" data-template-option="modern" aria-checked="true">Modern</button>
+                        <button type="button" role="radio" data-template-option="classic-urdu" aria-checked="false">Classic</button>
+                        <button type="button" role="radio" data-template-option="contemporary" aria-checked="false">Contemporary</button>
+                    </div>
+                    <span class="inv-page-count" data-invoice-page-count>A4 · 1 page</span>
+                    <p class="inv-sample-badge" data-invoice-sample-badge hidden><span>Sample</span> Your details replace it as you type.</p>
+                    <span class="inv-preview-tools">
+                        <button type="button" class="inv-icon-btn" data-invoice-zoom="fit" aria-pressed="true" title="Fit the page to the panel">Fit</button>
+                        <button type="button" class="inv-icon-btn" data-invoice-zoom="width" aria-pressed="false" title="Fill the panel width">Width</button>
+                        <button type="button" class="inv-icon-btn" data-invoice-fullscreen aria-label="Open full-screen preview" title="Full-screen preview"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+                    </span>
+                </div>
+                <div class="inv-canvas" data-invoice-canvas>
+                    <div class="inv-pages-scaler" data-invoice-scaler><div class="inv-pages" data-invoice-preview aria-label="Invoice preview"></div></div>
+                </div>
+            </section>
+        </div>
+
+        <div class="inv-mobile-bar" data-invoice-mobile-bar>
+            <div class="inv-mobile-total" data-invoice-mobile-total></div>
+            <button type="button" class="inv-btn inv-btn-secondary" data-mobile-action="edit" hidden>Edit</button>
+            <button type="button" class="inv-btn inv-btn-secondary" data-invoice-share data-mobile-share hidden aria-label="Share invoice"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></svg></button>
+            <button type="button" class="inv-btn inv-btn-primary" data-mobile-action="preview">Preview invoice</button>
+            <button type="button" class="inv-btn inv-btn-primary" data-invoice-pdf data-mobile-pdf hidden>Download PDF</button>
+        </div>
+
+        <div class="inv-toast" data-invoice-fit-status role="status" aria-live="polite"></div>
+
+        <dialog class="inv-dialog invoice-zero-dialog" data-invoice-zero-dialog aria-labelledby="invoice-zero-dialog-title" aria-describedby="invoice-zero-dialog-copy">
             <form method="dialog">
                 <h2 id="invoice-zero-dialog-title">This invoice has a zero total</h2>
                 <p id="invoice-zero-dialog-copy">The invoice may be incomplete because all item amounts are zero.</p>
-                <div class="invoice-dialog-actions"><button type="submit" value="cancel" class="invoice-button invoice-button-secondary" data-invoice-zero-cancel>Cancel</button><button type="submit" value="confirm" class="invoice-button invoice-button-primary" data-invoice-zero-confirm>Download anyway</button></div>
+                <div class="inv-dialog-actions"><button type="submit" value="cancel" class="inv-btn inv-btn-secondary" data-invoice-zero-cancel>Cancel</button><button type="submit" value="confirm" class="inv-btn inv-btn-primary" data-invoice-zero-confirm>Download anyway</button></div>
             </form>
         </dialog>
-        <div class="invoice-workspace">
-            <section class="invoice-editor" aria-label="Invoice details">
-                <div class="invoice-restore" data-invoice-restore hidden><strong>Local invoice draft found.</strong><span data-invoice-restore-copy></span><button type="button" class="invoice-button invoice-button-small" data-invoice-restore-action>Restore</button><button type="button" class="invoice-link-button" data-invoice-discard>Start fresh</button></div>
-                <details class="invoice-panel" open><summary>Language &amp; invoice details</summary><div class="invoice-panel-body">
-                    <div class="invoice-field-grid two"><label>Language mode<select data-field="languageMode"><option value="english">English</option><option value="urdu">اردو</option><option value="bilingual">Bilingual / دو لسانی</option></select></label><label>Currency<select data-field="currency"><option>PKR</option><option>USD</option><option>GBP</option><option>EUR</option><option>AED</option><option>SAR</option></select></label></div>
-                    <div class="invoice-field-grid two"><label>Invoice number<input data-field="invoiceNumber" dir="ltr" placeholder="INV-2026-0001"></label><label>Invoice date<input data-field="issueDate" type="date" dir="ltr"></label></div>
-                    <div class="invoice-field-grid two"><label>Due date (optional)<input data-field="dueDate" type="date" dir="ltr"></label><label>Payment status<select data-field="status"><option>Unpaid</option><option>Partially paid</option><option>Paid</option></select></label></div>
-                </div></details>
-                <details class="invoice-panel" open><summary>Business details</summary><div class="invoice-panel-body"><label>Business name<input data-field="seller.name" id="invoiceSellerName" placeholder="Your business name"></label><div class="invoice-field-grid two"><label>Tagline<input data-field="seller.tagline" id="invoiceSellerTagline" placeholder="A short description"></label><label>Phone<input data-field="seller.phone" dir="ltr" placeholder="+92 300 1234567"></label></div><label>Address<textarea data-field="seller.address" id="invoiceSellerAddress" rows="2" placeholder="Business address"></textarea></label><div class="invoice-field-grid two"><label>Email<input data-field="seller.email" dir="ltr" type="email" placeholder="hello@example.com"></label><label>Website<input data-field="seller.website" dir="ltr" placeholder="example.com"></label></div><div class="invoice-field-grid two"><label>Reference label<input data-field="seller.referenceLabel" placeholder="Tax / registration label"></label><label>Reference value<input data-field="seller.referenceValue" dir="ltr" placeholder="Optional reference"></label><label>Second reference label<input data-field="seller.referenceLabel2" placeholder="Optional second label"></label><label>Second reference value<input data-field="seller.referenceValue2" dir="ltr" placeholder="Optional second value"></label></div></div></details>
-                <details class="invoice-panel" open><summary>Client details</summary><div class="invoice-panel-body"><label>Client name<input data-field="buyer.name" id="invoiceBuyerName" placeholder="Client or organisation"></label><label>Address<textarea data-field="buyer.address" id="invoiceBuyerAddress" rows="2" placeholder="Client address"></textarea></label><div class="invoice-field-grid two"><label>Phone<input data-field="buyer.phone" dir="ltr" placeholder="Phone"></label><label>Email<input data-field="buyer.email" dir="ltr" type="email" placeholder="Email"></label><label>Reference label<input data-field="buyer.referenceLabel" placeholder="Optional reference"></label><label>Reference value<input data-field="buyer.referenceValue" dir="ltr" placeholder="Optional reference value"></label></div></div></details>
-                <details class="invoice-panel" open><summary>Line items <span class="invoice-panel-note">up to 6</span></summary><div class="invoice-panel-body"><div data-invoice-items></div><button type="button" class="invoice-button invoice-button-secondary" data-invoice-add-item>Add line item</button><p class="invoice-help">The one-page invoice supports a maximum of six items.</p></div></details>
-                <details class="invoice-panel"><summary>Totals &amp; payment</summary><div class="invoice-panel-body"><div class="invoice-field-grid two"><label>Discount<select data-field="discount.mode"><option value="disabled">No discount</option><option value="percentage">Percentage</option><option value="flat">Flat amount</option></select></label><label>Discount value<input data-field="discount.value" inputmode="decimal" placeholder="0"></label></div><div class="invoice-field-grid two"><label>Tax<select data-field="tax.mode"><option value="disabled">No tax</option><option value="percentage">Percentage</option><option value="flat">Flat amount</option></select></label><label>Tax value<input data-field="tax.value" inputmode="decimal" placeholder="0"></label></div><div class="invoice-field-grid two"><label>Additional charge<input data-field="additionalCharge" inputmode="decimal" placeholder="0"></label><label>Amount paid<input data-field="amountPaid" inputmode="decimal" placeholder="0"></label></div></div></details>
-                <details class="invoice-panel"><summary>Notes, terms &amp; payment details</summary><div class="invoice-panel-body"><label>Notes<textarea data-field="notes" id="invoiceNotes" rows="3" placeholder="Thank you for your business."></textarea></label><label>Terms and conditions<textarea data-field="terms" id="invoiceTerms" rows="3" placeholder="Payment terms or delivery notes"></textarea></label><div class="invoice-subheading">Payment details (optional)</div><div class="invoice-field-grid two"><label>Bank name<input data-field="paymentDetails.bankName" id="invoiceBankName"></label><label>Account title<input data-field="paymentDetails.accountTitle" id="invoiceAccountTitle"></label><label>Account number<input data-field="paymentDetails.accountNumber" dir="ltr"></label><label>IBAN<input data-field="paymentDetails.iban" dir="ltr"></label></div><label>Payment instructions<textarea data-field="paymentDetails.instructions" rows="2"></textarea></label></div></details>
-        <details class="invoice-panel"><summary>Optional sections</summary><div class="invoice-panel-body"><label class="invoice-check"><input type="checkbox" data-section="qr"> Include a QR code</label><div class="invoice-conditional" data-invoice-qr-fields hidden><label>QR purpose<select data-field="qr.purpose"><option value="business-contact">Business contact</option><option value="payment-information">Payment details</option><option value="whatsapp">WhatsApp</option><option value="url">Website link</option><option value="custom">Custom content</option></select></label><div data-qr-purpose="custom"><label>QR content<input data-field="qr.customContent" placeholder="Payment reference or note"></label></div><div data-qr-purpose="url"><label>Website URL<input data-field="qr.url" dir="ltr" placeholder="https://example.com"></label></div><div data-qr-purpose="whatsapp"><label>WhatsApp number<input data-field="qr.whatsappNumber" dir="ltr" placeholder="+92 300 1234567"></label></div><label>Caption style<select data-field="qr.captionMode"><option value="automatic">Describe the QR purpose</option><option value="custom">Write my own caption</option></select></label><label>Custom caption (optional)<input data-field="qr.customCaption" placeholder="Scan for more details"></label><p class="invoice-help">Automatic captions tell people what the QR code is for without displaying the saved details.</p></div><label class="invoice-check"><input type="checkbox" data-section="authorization"> Show authorization</label><div class="invoice-conditional" data-invoice-auth-fields hidden><div class="invoice-field-grid two"><label>Authorised person<input data-field="authorization.name" id="invoiceAuthName"></label><label>Role / title<input data-field="authorization.role" id="invoiceAuthRole"></label></div></div><label>Footer message<textarea data-field="footerMessage" id="invoiceFooter" rows="2" placeholder="Thank you for your trust and business!"></textarea></label><label class="invoice-check"><input type="checkbox" data-field="preferences.showGeneratorCredit"> Show Write-Urdu credit</label></div></details>
-                <div class="invoice-sample-row"><button type="button" class="invoice-link-button" data-invoice-sample>Load sample invoice</button><span>Use a sample to explore the layout; it stays available while you work.</span></div>
-            </section>
-            <section class="invoice-preview-workspace" aria-label="Invoice preview"><div class="invoice-preview-toolbar"><strong>Live A4 preview</strong><span data-invoice-preview-label>Minimal Professional · 210 × 297 mm</span></div><div class="invoice-preview-frame"><article class="invoice-page" data-invoice-preview aria-label="Invoice preview"></article></div><p class="invoice-preview-hint">Preview is scaled on screen. Exports use the full A4 page.</p></section>
-        </div>
-        <section class="invoice-about seo-content" aria-labelledby="invoice-about-title"><h2 id="invoice-about-title">Create a professional invoice in Urdu or English</h2><p>Make an invoice for freelance work, teaching, consulting or a small business. Add seller and client details, items, automatic totals, payment information and an optional QR code, then print or download the finished one-page invoice.</p><p>Need a quicker shop bill, cash memo or customer receipt? Use the <a href="/urdu-bill-generator">Urdu Bill Generator</a> instead.</p><div class="invoice-about-grid"><article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-sliders-h"></i></span><h3>Show only what you need</h3><p>Optional sections appear only when you use them, so a simple invoice stays compact and bilingual labels remain easy to read.</p></article><article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-language"></i></span><h3>Made for Urdu invoices</h3><p>Choose Urdu or bilingual labels and type Urdu with English letters in supported text fields. Numbers, dates and account details keep their natural left-to-right order.</p></article><article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-lock"></i></span><h3>Private by default</h3><p>Invoice details, calculations and images stay available while you work. No account or online invoice library is required.</p></article><article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-external-link-alt"></i></span><h3>Need more invoicing options?</h3><p><a href="https://invoicecraftly.com/">InvoiceCraftly</a> offers a broader privacy-first invoice workspace for freelancers and small businesses, with no account required.</p></article></div></section>
+        <dialog class="inv-dialog" data-invoice-confirm-dialog aria-labelledby="inv-confirm-title" aria-describedby="inv-confirm-copy">
+            <form method="dialog">
+                <h2 id="inv-confirm-title" data-confirm-title></h2>
+                <p id="inv-confirm-copy" data-confirm-copy></p>
+                <div class="inv-dialog-actions"><button type="submit" value="cancel" class="inv-btn inv-btn-secondary" data-confirm-cancel>Cancel</button><button type="submit" value="confirm" class="inv-btn inv-btn-primary" data-confirm-ok></button></div>
+            </form>
+        </dialog>
+        <dialog class="inv-dialog inv-dialog-wide" data-invoice-history-dialog aria-labelledby="inv-history-title">
+            <form method="dialog">
+                <div class="inv-dialog-head"><h2 id="inv-history-title">My invoices on this device</h2><button type="submit" value="close" class="inv-icon-btn" aria-label="Close">✕</button></div>
+                <p class="inv-help">Invoices are kept only in this browser. Clearing browser data removes them.</p>
+                <ul class="inv-history" data-invoice-history-list></ul>
+            </form>
+        </dialog>
+        <dialog class="inv-dialog" data-invoice-share-dialog aria-labelledby="inv-share-title">
+            <form method="dialog">
+                <h2 id="inv-share-title">Send your invoice on WhatsApp</h2>
+                <p>Your PDF has been downloaded. WhatsApp cannot attach files from a link, so add it yourself:</p>
+                <ol class="inv-steps"><li>Open the chat with your customer.</li><li>Tap the attach (📎) button and choose <strong>Document</strong>.</li><li>Pick <strong data-share-filename>the invoice PDF</strong> from Downloads.</li></ol>
+                <div class="inv-dialog-actions"><button type="submit" value="close" class="inv-btn inv-btn-secondary">Done</button><a class="inv-btn inv-btn-primary" data-share-whatsapp href="https://wa.me/" target="_blank" rel="noopener">Open WhatsApp</a></div>
+                <p class="inv-help">“Open WhatsApp” starts a message with the invoice number and amount only. Nothing is sent until you press send.</p>
+            </form>
+        </dialog>
+        <dialog class="inv-dialog inv-dialog-full" data-invoice-fullscreen-dialog aria-label="Full-screen invoice preview">
+            <div class="inv-full-bar"><span data-full-zoom-label>100%</span><button type="button" class="inv-icon-btn" data-full-zoom="-1" aria-label="Zoom out">−</button><button type="button" class="inv-icon-btn" data-full-zoom="1" aria-label="Zoom in">+</button><button type="button" class="inv-icon-btn" data-full-zoom="0">Fit</button><span class="inv-toolbar-spacer"></span><button type="button" class="inv-btn inv-btn-primary inv-btn-small" data-invoice-pdf>Download PDF</button><button type="button" class="inv-icon-btn" data-full-close aria-label="Close full-screen preview">✕</button></div>
+            <div class="inv-full-canvas" data-full-canvas><div class="inv-pages-scaler" data-full-scaler><div class="inv-pages" data-full-pages></div></div></div>
+        </dialog>
+
+        <section class="invoice-about seo-content" aria-labelledby="invoice-about-title">
+            <h2 id="invoice-about-title">Create a professional invoice in Urdu or English</h2>
+            <p>Make an invoice for freelance work, tuition, consulting or a small business. Add your business and customer, list what you are charging for, and the totals, discount, tax and balance are worked out for you. Choose from three invoice designs, add your logo and payment details, then download a PDF, save a PNG, print it or share it on WhatsApp.</p>
+            <p>Need a quicker shop bill, cash memo or customer receipt? Use the <a href="/urdu-bill-generator">Urdu Bill Generator</a> instead.</p>
+            <ol class="invoice-howto">
+                <li><strong>Choose a look.</strong> Pick English, Urdu or both, then one of three designs and a colour.</li>
+                <li><strong>Add who it is from and for.</strong> Only your business name and the customer name are required.</li>
+                <li><strong>List items and prices.</strong> Quantities, line amounts and totals update instantly. Long invoices continue onto extra A4 pages.</li>
+                <li><strong>Finish and download.</strong> Add payment details, then download the PDF or share it.</li>
+            </ol>
+            <div class="invoice-about-grid">
+                <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-sliders-h"></i></span><h3>Show only what you need</h3><p>Optional sections appear only when you use them, so a simple invoice stays compact and bilingual labels remain easy to read.</p></article>
+                <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-language"></i></span><h3>Made for Urdu invoices</h3><p>Choose Urdu or bilingual labels in Nastaliq or Naskh lettering, and type Urdu with English letters in supported fields. Numbers, dates and account details keep their natural left-to-right order.</p></article>
+                <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-lock"></i></span><h3>Private by default</h3><p>Invoice details, calculations and your logo are kept on your device, so you can return to them later. No account or online invoice library is required.</p></article>
+                <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-external-link-alt"></i></span><h3>Need more invoicing options?</h3><p><a href="https://invoicecraftly.com/">InvoiceCraftly</a> offers a broader privacy-first invoice workspace for freelancers and small businesses, with no account required.</p></article>
+            </div>
+        </section>
     </main>
     <footer data-wu-static-shell="footer"><nav class="wu-static-footer-nav" aria-label="Footer navigation"><div class="wu-static-footer-group" data-wu-static-footer-group="write-urdu"><strong>Write Urdu</strong><a href="/">English to Urdu typing</a><a href="/roman-urdu-transliteration">Roman Urdu converter</a><a href="/urdu-keyboard">Urdu keyboard</a><a href="/urdu-editor">Urdu editor</a><a href="/tools/urdu-voice-typing">Voice to Urdu</a><a href="/urdu-text-cleaner">Fix Urdu text</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="create"><strong>Create</strong><a href="/urdu-card-studio">Urdu image maker</a><a href="/urdu-card-gallery">Compare card designs</a><a href="/urdu-cards">Ready-made Urdu cards</a><a href="/urdu-whatsapp-status-maker">WhatsApp status</a><a href="/urdu-instagram-post-maker">Instagram post</a><a href="/urdu-name-art-maker">Urdu name art</a><a href="/qr-code-generator">QR code</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="help"><strong>Help</strong><a href="/urdu-typing-practice">Urdu typing practice</a><a href="/english-urdu-typing-tutorial">How to type Urdu</a><a href="/urdu-alphabet">Urdu alphabet</a><a href="/urdu-faq">FAQ</a><a href="/why-write-urdu">About</a><a href="/write-urdu-privacy">Privacy</a></div><div class="wu-static-footer-group" data-wu-static-footer-group="trust"><strong>Help & trust</strong><a href="/changelog">What’s new</a><a href="/urdu-writing-templates">Writing templates</a><a href="/why-write-urdu">About Write Urdu</a><a href="/10-years-of-write-urdu">10 Years of Write Urdu</a><a href="/contact">Contact</a><a href="/write-urdu-privacy">Privacy and terms</a><a href="/write-urdu-sitemap">Sitemap</a></div></nav></footer>
 </body>

@@ -102,6 +102,7 @@ jobs:
           tests/bill-urdu-input.spec.js
           tests/bill-completeness.spec.js
           tests/bill-generator-v2.spec.js
+          tests/invoice-generator.spec.js
           tests/typing-practice-learning.spec.js
           tests/docx-export.spec.js
           tests/draft-restore-position.spec.js
