@@ -3,38 +3,52 @@ const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const invoiceUi = fs.readFileSync(path.join(root, 'js', 'invoice-generator.js'), 'utf8');
-const invoiceHtml = fs.readFileSync(path.join(root, 'urdu-invoice-generator.html'), 'utf8');
-const invoiceTweaks = fs.readFileSync(path.join(root, 'css', 'invoice-generator-tweaks.css'), 'utf8');
-const adsSource = fs.readFileSync(path.join(root, 'js', 'ads.js'), 'utf8');
-const registry = fs.readFileSync(path.join(root, 'docs', 'WU-PUBLIC-PAGE-REGISTRY.csv'), 'utf8');
+const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const invoiceUi = read('js/invoice-generator.js');
+const invoiceDocument = read('js/invoice-document.js');
+const invoiceHtml = read('urdu-invoice-generator.html');
+const workspaceCss = read('css/invoice-generator.css');
+const documentCss = read('css/invoice-document.css');
+const adsSource = read('js/ads.js');
+const registry = read('docs/WU-PUBLIC-PAGE-REGISTRY.csv');
 
-assert.doesNotMatch(
-  invoiceUi,
-  /<footer class=\"invoice-footer\">/,
-  'The document preview must not expose a footer landmark that the shared site shell can claim.'
-);
-assert.match(
-  invoiceUi,
-  /<div class=\"invoice-footer\">/,
-  'The invoice footer content must remain inside the export preview without becoming the page footer.'
-);
+// The shared document renderer owns the invoice footer. It must never emit a
+// <footer> landmark that the shared site shell could claim as the page footer.
+assert.doesNotMatch(invoiceDocument, /<footer class=\"invoice-footer/, 'The invoice document must not expose a footer landmark.');
+assert.match(invoiceDocument, /<div class=\"invoice-footer inv-footer\">/, 'The invoice footer must stay inside the exported document.');
+assert.doesNotMatch(invoiceUi, /<footer/, 'The editor must not render footer landmarks into the page.');
 
-// V3 workspace contract: the business tool keeps the functional markup and
-// export engine, while the final linked tweak layer owns the product-level
-// visual treatment.
-assert.match(invoiceHtml, /class=\"invoice-generator-page\"/, 'Invoice page must retain its dedicated V3 page hook');
-assert.match(invoiceHtml, /css\/invoice-generator-tweaks\.css/, 'Invoice page must load the final V3 workspace refinement layer');
+// One renderer for preview, thumbnails, PDF, PNG and print.
+assert.match(invoiceHtml, /js\/invoice-document\.js/, 'Invoice page must load the shared document renderer');
+assert.match(invoiceUi, /renderer\.renderPages\(/, 'Preview and exports must render through the shared document renderer');
+assert.doesNotMatch(invoiceUi, /html2canvas\(preview/, 'Exports must not capture the scaled on-screen preview');
+
+// Workspace contract: page hook, sticky actions and preview, responsive modes.
+assert.match(invoiceHtml, /class=\"invoice-generator-page\"/, 'Invoice page must retain its dedicated page hook');
+assert.match(invoiceHtml, /css\/invoice-generator\.css/, 'Invoice page must load the workspace stylesheet');
+assert.match(invoiceHtml, /css\/invoice-document\.css/, 'Invoice page must load the document template stylesheet');
 assert.doesNotMatch(invoiceHtml, /<ins[^>]+adsbygoogle/i, 'Invoice HTML must not hard-code AdSense units inside the authoring workflow');
-assert.match(invoiceTweaks, /\.invoice-generator-page \.invoice-actionbar[\s\S]*position:\s*sticky/, 'Desktop invoice actions should remain available below the shared header');
-assert.match(invoiceTweaks, /\.invoice-generator-page \.invoice-preview-workspace[\s\S]*position:\s*sticky/, 'Desktop live preview should remain visible while editing invoice details');
-assert.match(invoiceTweaks, /\.invoice-generator-page \.invoice-about-grid/, 'Supporting invoice content must use the V3 card system');
-assert.match(invoiceTweaks, /@media \(max-width: 900px\)/, 'Invoice V3 treatment needs a tablet/mobile stacking breakpoint');
-assert.match(invoiceTweaks, /@media \(max-width: 620px\)/, 'Invoice V3 treatment needs a narrow mobile control layout');
+assert.match(workspaceCss, /\.inv-toolbar \{[^}]*position: sticky/, 'Desktop invoice actions should remain available below the shared header');
+assert.match(workspaceCss, /\.inv-preview \{[^}]*position: sticky/, 'Desktop live preview should remain visible while editing invoice details');
+assert.match(workspaceCss, /\.invoice-generator-page \.invoice-about-grid/, 'Supporting invoice content must keep its card grid');
+assert.match(workspaceCss, /@media \(max-width: 900px\)[\s\S]*data-view="edit"\] \.inv-preview \{ display: none; \}/, 'Phones and tablets switch between Edit and Preview instead of stacking everything');
+assert.match(workspaceCss, /@media \(max-width: 620px\)/, 'Invoice workspace needs a narrow mobile control layout');
+assert.match(documentCss, /@media print[\s\S]*@page \{ size: A4; margin: 0; \}/, 'Printing must produce bare A4 pages');
 
 // Monetization must begin after the active two-column editor/preview workspace,
 // never between fields, actions, and the live invoice preview.
+assert.match(invoiceHtml, /class=\"invoice-workspace inv-workspace\"/, 'The editor and preview must stay inside the protected .invoice-workspace');
 assert.match(adsSource, /['\"]\.invoice-workspace['\"]/, 'Invoice workspace must be an explicit safe Create-page AdSense anchor');
 assert.match(registry, /urdu-invoice-generator\.html,\/urdu-invoice-generator,Business,[^\n]*,migrated,P1,/, 'Public-page registry must mark the invoice V3 migration complete');
 
-console.log('Invoice preview, V3 workspace and monetization contracts passed.');
+// Telemetry hooks read these status messages and the print button.
+assert.match(invoiceHtml, /data-invoice-fit-status/, 'Export status region used by telemetry must remain');
+assert.match(invoiceUi, /'PDF downloaded\.'/, 'PDF success message used by telemetry must remain');
+assert.match(invoiceUi, /'PNG downloaded\.'/, 'PNG success message used by telemetry must remain');
+assert.match(invoiceHtml, /data-invoice-print/, 'Print action used by telemetry must remain');
+
+// Privacy: drafts stay on the device and the existing draft key keeps working.
+assert.match(invoiceUi, /writeUrdu\.invoiceGenerator\.draft\.v1/, 'Existing local drafts must keep restoring');
+assert.doesNotMatch(invoiceUi, /fetch\(|XMLHttpRequest|sendBeacon/, 'Invoice data must never be sent to a server');
+
+console.log('Invoice document, workspace and monetization contracts passed.');

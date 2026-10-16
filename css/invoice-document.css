@@ -1,0 +1,245 @@
+/* Invoice document templates.
+   Rendered by js/invoice-document.js and shared by the live preview, template
+   thumbnails, PDF/PNG export and print. Colours stay plain hex/rgb values
+   because the canvas exporter cannot resolve color-mix() or other modern
+   colour functions. Theme variables are set per page by the renderer. */
+
+.inv-page.inv-page {
+    --inv-ink: #1b2430;
+    --inv-muted: #5d6877;
+    --inv-faint: #8a94a2;
+    --inv-line: #e3e7ec;
+    --inv-paper: #ffffff;
+    /* One Latin face only: system fallbacks such as Segoe UI carry their own
+       Arabic glyphs and would replace Nastaliq in mixed text. */
+    --inv-latin: Inter;
+    --inv-urdu: "Noto Nastaliq Urdu", "Noto Naskh Arabic", serif;
+    --inv-ur-lh: 1.95;
+    position: relative;
+    box-sizing: border-box;
+    width: 794px;
+    height: 1123px;
+    flex: none;
+    overflow: hidden;
+    background: var(--inv-paper);
+    color: var(--inv-ink);
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: start;
+    -webkit-font-smoothing: antialiased;
+}
+.inv-page.inv-page *, .inv-page.inv-page *::before, .inv-page.inv-page *::after { box-sizing: border-box; }
+.inv-page.inv-page.inv-urdu-naskh { --inv-urdu: "Noto Naskh Arabic", "Noto Nastaliq Urdu", serif; --inv-ur-lh: 1.6; }
+.inv-page.inv-page h2, .inv-page.inv-page h3, .inv-page.inv-page p, .inv-page.inv-page dl, .inv-page.inv-page dd, .inv-page.inv-page figure { margin: 0; }
+/* Mixed-direction user text keeps the page's alignment (Chromium has no
+   text-align: match-parent), except where the layout is centred. */
+.inv-page.inv-page[dir="ltr"] [dir="auto"] { text-align: left; }
+.inv-page.inv-page[dir="rtl"] [dir="auto"] { text-align: right; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-head [dir="auto"], .inv-page.inv-page .inv-footer [dir="auto"], .inv-page.inv-page .inv-sign [dir="auto"], .inv-page.inv-page .inv-qr [dir="auto"] { text-align: center; }
+.inv-page.inv-page .inv-ur { font-family: var(--inv-latin), var(--inv-urdu); line-height: var(--inv-ur-lh); letter-spacing: 0 !important; text-transform: none !important; }
+.inv-page.inv-page [lang="ur"] { font-family: var(--inv-urdu); line-height: var(--inv-ur-lh); letter-spacing: 0 !important; text-transform: none !important; }
+/* No font-feature tweaks (such as tabular-nums): the canvas exporter draws
+   glyphs without them, which would misplace characters in PDF/PNG files. */
+.inv-page.inv-page .inv-ltr, .inv-page.inv-page bdi[dir="ltr"] { font-family: var(--inv-latin), sans-serif; unicode-bidi: isolate; direction: ltr; }
+.inv-page.inv-page .inv-placeholder { color: #a9b1bc; font-weight: inherit; font-style: italic; }
+.inv-page.inv-page[dir="rtl"] .inv-placeholder { font-style: normal; }
+
+.inv-page.inv-page .inv-frame { position: relative; height: 100%; padding: 46px 52px 34px; font-family: var(--inv-latin), var(--inv-urdu), sans-serif; }
+/* Neutralise site-wide heading/paragraph styles inside the document. */
+.inv-page .inv-frame :is(h1, h2, h3, h4, p, li, dt, dd, strong) { color: inherit; font-family: inherit; letter-spacing: normal; }
+.inv-page .inv-frame :is(table, thead, tbody, tr, th, td) { font-family: inherit; font-size: inherit; line-height: inherit; color: inherit; text-align: start; }
+.inv-page .inv-frame table { max-width: none; border: 0; border-collapse: collapse; border-spacing: 0; border-radius: 0; overflow: visible; background: transparent; box-shadow: none; }
+.inv-page .inv-frame :is(th, td) { border-top: 0; background: transparent; }
+.inv-page.inv-page .inv-flow { display: flex; flex-direction: column; gap: 22px; }
+.inv-page.inv-page .inv-footer {
+    position: absolute; inset-inline: 52px; bottom: 26px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding-top: 10px; border-top: 1px solid var(--inv-line);
+    color: var(--inv-muted); font-size: 10.5px; text-align: center;
+}
+.inv-page.inv-page .inv-footer-message { color: var(--inv-ink); font-size: 11.5px; }
+.inv-page.inv-page .inv-footer-meta { display: flex; gap: 14px; justify-content: center; color: var(--inv-faint); font-size: 9.5px; }
+.inv-page.inv-page .inv-page-number:empty { display: none; }
+
+/* Labels: bilingual labels show English with the Urdu term beside or below. */
+.inv-page.inv-page .inv-l-bi { display: inline-flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.inv-page.inv-page .inv-l-bi .inv-l-ur { font-size: 1.08em; opacity: .82; }
+.inv-page.inv-page .inv-l-stack { display: inline-flex; flex-direction: column; align-items: inherit; gap: 0; }
+.inv-page.inv-page .inv-l-stack .inv-l-ur { line-height: 1.7; }
+
+.inv-page.inv-page .inv-logo { display: block; max-width: 132px; max-height: 64px; object-fit: contain; }
+.inv-page.inv-page .inv-business { font-size: 25px; font-weight: 750; line-height: 1.18; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.inv-page.inv-page .inv-business.inv-ur { font-size: 25px; font-weight: 700; line-height: 1.9; }
+.inv-page.inv-page .inv-tagline { margin-top: 2px; color: var(--inv-muted); font-size: 12px; }
+.inv-page.inv-page .inv-contact { display: flex; flex-direction: column; gap: 1px; margin-top: 6px; color: var(--inv-muted); font-size: 11px; }
+.inv-page.inv-page .inv-contact .inv-ur { line-height: 1.85; }
+.inv-page.inv-page .inv-address { white-space: pre-line; }
+.inv-page.inv-page .inv-title { display: flex; flex-direction: column; gap: 0; line-height: 1.1; }
+.inv-page.inv-page .inv-title-en { font-size: 30px; font-weight: 300; letter-spacing: .14em; text-transform: uppercase; }
+.inv-page.inv-page .inv-title-ur, .inv-page.inv-page .inv-title[lang="ur"] { font-size: 28px; font-weight: 700; }
+.inv-page.inv-page .inv-meta { display: grid; gap: 5px; font-size: 11.5px; }
+.inv-page.inv-page .inv-meta > div { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.inv-page.inv-page .inv-meta dt { color: var(--inv-muted); }
+.inv-page.inv-page .inv-meta dd { font-weight: 650; }
+
+.inv-page.inv-page .inv-status { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; background: #fff3d6; color: #8a5a00; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; }
+.inv-page.inv-page .inv-status-paid { background: #dff3e6; color: #17663a; }
+.inv-page.inv-page .inv-status-partially-paid { background: #e5edfb; color: #284c8f; }
+.inv-page.inv-page .inv-status [lang="ur"] { line-height: 1.6; }
+
+.inv-page.inv-page .inv-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.inv-page.inv-page .inv-party h3 { margin-bottom: 6px; color: var(--inv-accent-ink); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.inv-page.inv-page .inv-party-name { display: block; font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+.inv-page.inv-page .inv-party-name.inv-ur { font-size: 16px; line-height: 1.9; }
+.inv-page.inv-page .inv-party-status { display: flex; align-items: flex-start; justify-content: flex-end; }
+
+.inv-page.inv-page .inv-items { width: 100%; border-collapse: collapse; font-size: 12px; }
+.inv-page.inv-page .inv-items th { padding: 9px 10px; color: var(--inv-accent-ink); background: var(--inv-accent-soft); font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-align: start; text-transform: uppercase; vertical-align: bottom; }
+.inv-page.inv-page .inv-items td { padding: 10px; border-bottom: 1px solid var(--inv-line); vertical-align: top; }
+.inv-page.inv-page .inv-items td.inv-col-desc { overflow-wrap: anywhere; }
+.inv-page.inv-page .inv-items .inv-col-desc .inv-ur { line-height: 1.85; }
+.inv-page.inv-page .inv-items .inv-col-n { width: 34px; color: var(--inv-faint); text-align: center; }
+.inv-page.inv-page .inv-items .inv-col-qty { width: 62px; text-align: center; }
+.inv-page.inv-page .inv-items .inv-col-num { width: 112px; text-align: end; white-space: nowrap; }
+.inv-page.inv-page .inv-items .inv-cur { font-weight: 500; letter-spacing: 0; opacity: .75; }
+.inv-page.inv-page .inv-items thead .inv-col-n { color: var(--inv-accent-ink); }
+.inv-page.inv-page .inv-row-empty td { color: #a9b1bc; }
+
+.inv-page.inv-page .inv-lower { display: grid; grid-template-columns: minmax(0, 1fr) 286px; gap: 30px; align-items: start; }
+.inv-page.inv-page .inv-lower-side { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.inv-page.inv-page .inv-lower-main { display: flex; flex-direction: column; gap: 22px; }
+.inv-page.inv-page .inv-lower-full { display: block; }
+.inv-page.inv-page .inv-totals { display: flex; flex-direction: column; font-size: 12px; }
+.inv-page.inv-page .inv-total-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 6px 0; }
+.inv-page.inv-page .inv-total-row > span:first-child { color: var(--inv-muted); }
+.inv-page.inv-page .inv-total-row > span:last-child { font-weight: 600; white-space: nowrap; }
+.inv-page.inv-page .inv-total-grand { margin-top: 6px; padding: 11px 14px; border-radius: 8px; background: var(--inv-accent); color: var(--inv-on-accent); font-size: 15px; }
+.inv-page.inv-page .inv-total-grand > span:first-child { color: var(--inv-on-accent); font-weight: 600; }
+.inv-page.inv-page .inv-total-grand > span:last-child { font-weight: 800; }
+.inv-page.inv-page .inv-total-balance { margin-top: 4px; padding: 9px 14px; border: 1.5px solid var(--inv-accent); border-radius: 8px; font-size: 13.5px; }
+.inv-page.inv-page .inv-total-balance > span { color: var(--inv-accent-ink) !important; font-weight: 800 !important; }
+
+.inv-page.inv-page .inv-notes h3, .inv-page.inv-page .inv-payment h3 { margin-bottom: 7px; color: var(--inv-accent-ink); font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.inv-page.inv-page .inv-notes p { color: var(--inv-muted); font-size: 11.5px; white-space: pre-line; overflow-wrap: anywhere; }
+.inv-page.inv-page .inv-notes p + p { margin-top: 6px; }
+.inv-page.inv-page .inv-notes .inv-ur { font-size: 12.5px; }
+.inv-page.inv-page .inv-payment { display: flex; gap: 18px; align-items: flex-start; justify-content: space-between; padding: 14px 16px; border-radius: 10px; background: #f6f8fa; }
+.inv-page.inv-page .inv-payment > div { min-width: 0; flex: 1; }
+.inv-page.inv-page .inv-pay-row { display: grid; grid-template-columns: 100px minmax(0, 1fr); align-items: center; gap: 10px; padding: 2px 0; font-size: 11.5px; }
+.inv-page.inv-page.inv-lang-bilingual .inv-pay-row { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 3px 0; }
+.inv-page.inv-page.inv-lang-bilingual .inv-pay-label { font-size: 10.5px; }
+.inv-page.inv-page .inv-pay-label { color: var(--inv-muted); }
+.inv-page.inv-page .inv-pay-value { font-weight: 600; overflow-wrap: anywhere; }
+.inv-page.inv-page .inv-pay-note { margin-top: 6px; color: var(--inv-muted); font-size: 11px; white-space: pre-line; }
+.inv-page.inv-page .inv-qr { display: flex; flex-direction: column; align-items: center; gap: 4px; align-self: flex-end; width: 120px; text-align: center; }
+.inv-page.inv-page .inv-qr img, .inv-page.inv-page .inv-qr-pending { display: block; width: 84px; height: 84px; padding: 4px; border: 1px solid var(--inv-line); border-radius: 6px; background: #fff; }
+.inv-page.inv-page .inv-qr figcaption { color: var(--inv-muted); font-size: 9.5px; line-height: 1.35; white-space: pre-line; }
+.inv-page.inv-page .inv-qr figcaption .inv-ur { line-height: 1.7; }
+
+.inv-page.inv-page .inv-sign { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 18px; text-align: center; }
+.inv-page.inv-page .inv-sign-line { display: block; width: 190px; height: 1px; margin-bottom: 6px; background: var(--inv-ink); }
+.inv-page.inv-page .inv-sign strong { font-size: 12.5px; }
+.inv-page.inv-page .inv-sign span { color: var(--inv-muted); font-size: 11px; }
+.inv-page.inv-page .inv-sign-label { font-size: 10px !important; letter-spacing: .08em; text-transform: uppercase; }
+.inv-page.inv-page .inv-continued { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 2px solid var(--inv-accent); color: var(--inv-muted); font-size: 11.5px; }
+.inv-page.inv-page .inv-continued strong { color: var(--inv-ink); font-size: 14px; }
+
+/* Template A — Modern Professional: accent rule, quiet hierarchy. */
+.inv-page.inv-page.inv-tpl-modern .inv-frame { border-top: 8px solid var(--inv-accent); }
+.inv-page.inv-page.inv-tpl-modern .inv-head { display: flex; justify-content: space-between; gap: 32px; padding-bottom: 22px; border-bottom: 1px solid var(--inv-line); }
+.inv-page.inv-page.inv-tpl-modern .inv-head-brand { display: flex; gap: 16px; align-items: flex-start; min-width: 0; }
+.inv-page.inv-page.inv-tpl-modern .inv-head-doc { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; min-width: 206px; text-align: end; }
+.inv-page.inv-page.inv-tpl-modern .inv-title { align-items: flex-end; color: var(--inv-accent-ink); }
+.inv-page.inv-page.inv-tpl-modern .inv-meta { width: 100%; }
+.inv-page.inv-page.inv-tpl-modern .inv-parties { padding: 0 2px; }
+.inv-page.inv-page.inv-tpl-modern .inv-items th:first-child { border-start-start-radius: 7px; border-end-start-radius: 7px; }
+.inv-page.inv-page.inv-tpl-modern .inv-items th:last-child { border-start-end-radius: 7px; border-end-end-radius: 7px; }
+
+/* Template B — Classic Urdu: framed stationery, centred Nastaliq heading,
+   ledger table. Ornament stays small so it reads as a business document. */
+.inv-page.inv-page.inv-tpl-classic-urdu { --inv-paper: #fffdf7; --inv-line: #e7dfcc; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-frame { padding: 52px 58px 40px; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-frame::before { content: ""; position: absolute; inset: 18px; border: 1.5px solid var(--inv-accent); pointer-events: none; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-frame::after { content: ""; position: absolute; inset: 23px; border: .75px solid var(--inv-accent-line); pointer-events: none; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-footer { inset-inline: 58px; bottom: 32px; border-top-color: var(--inv-accent-line); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-head { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-logo { margin-bottom: 6px; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-business { color: var(--inv-accent-ink); font-size: 28px; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-business.inv-ur { font-size: 30px; line-height: 2; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-head .inv-contact { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 2px 14px; margin-top: 4px; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-ornament { display: flex; align-items: center; gap: 10px; width: 62%; margin: 12px 0 6px; color: var(--inv-accent); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-ornament span { flex: 1; height: 1px; background: var(--inv-accent-line); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-ornament svg { fill: none; stroke: currentColor; stroke-width: 1.2; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-ornament circle { fill: currentColor; stroke: none; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-title { align-items: center; color: var(--inv-ink); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-title-en { font-size: 15px; font-weight: 600; letter-spacing: .32em; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-title-ur, .inv-page.inv-page.inv-tpl-classic-urdu .inv-title[lang="ur"] { font-size: 30px; line-height: 1.9; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-lang-english .inv-title-en, .inv-page.inv-page.inv-tpl-classic-urdu.inv-lang-english .inv-title-en { font-size: 22px; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-strip { display: grid; grid-auto-columns: 1fr; grid-auto-flow: column; width: 100%; margin-top: 14px; border: 1px solid var(--inv-accent-line); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-strip > div { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-inline-start: 1px solid var(--inv-accent-line); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-strip > div:first-child { border-inline-start: 0; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-strip-label { color: var(--inv-muted); font-size: 10.5px; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-strip-value { font-size: 12.5px; font-weight: 700; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-parties { grid-template-columns: 1fr auto; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-party h3 { display: inline-block; padding-bottom: 3px; border-bottom: 1px solid var(--inv-accent-line); color: var(--inv-accent-ink); letter-spacing: .06em; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-items { border: 1px solid var(--inv-accent-line); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-items th { border: 1px solid var(--inv-accent-line); background: var(--inv-accent-soft); letter-spacing: .03em; text-align: center; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-items td { border: 1px solid var(--inv-line); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-items th.inv-col-desc { text-align: start; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-total-grand { border-radius: 0; background: transparent; color: var(--inv-accent-ink); border-top: 1.5px solid var(--inv-accent); border-bottom: 3px double var(--inv-accent); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-total-grand > span:first-child { color: var(--inv-accent-ink); }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-total-balance { border-radius: 0; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-payment { border: 1px solid var(--inv-line); border-radius: 0; background: #fffaf0; }
+.inv-page.inv-page.inv-tpl-classic-urdu .inv-continued { border-bottom: 1px solid var(--inv-accent-line); }
+
+/* Template C — Contemporary Business: bold colour band, amount-due card. */
+.inv-page.inv-page.inv-tpl-contemporary { --inv-latin: "Plus Jakarta Sans"; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-frame { padding-top: 0; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-head { display: flex; flex-direction: column; gap: 20px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-band { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin: 0 -52px; padding: 40px 52px 28px; background: var(--inv-accent); color: var(--inv-on-accent); }
+.inv-page.inv-page.inv-tpl-contemporary .inv-band-brand { display: flex; gap: 16px; align-items: center; min-width: 0; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-band .inv-logo { padding: 6px; border-radius: 8px; background: #ffffff; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-band .inv-business { color: var(--inv-on-accent); font-size: 27px; font-weight: 800; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-band .inv-tagline { color: var(--inv-on-accent); opacity: .82; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-band .inv-placeholder { color: var(--inv-on-accent); opacity: .6; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-title { align-items: flex-end; color: var(--inv-on-accent); }
+.inv-page.inv-page.inv-tpl-contemporary .inv-title-en { font-size: 34px; font-weight: 800; letter-spacing: -.01em; text-transform: none; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-head-row { display: flex; justify-content: space-between; align-items: stretch; gap: 20px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-meta-chips { display: flex; flex-wrap: wrap; align-content: center; gap: 10px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-meta-chips > div { flex-direction: column; justify-content: flex-start; gap: 1px; min-width: 112px; padding: 9px 12px; border-radius: 9px; background: var(--inv-accent-soft); }
+.inv-page.inv-page.inv-tpl-contemporary .inv-meta-chips dt { font-size: 10.5px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-due { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 220px; padding: 12px 18px; border: 2px solid var(--inv-accent); border-radius: 12px; text-align: end; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-due-label { color: var(--inv-accent-ink); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-due-value { font-size: 23px; font-weight: 800; line-height: 1.2; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-due-by { color: var(--inv-muted); font-size: 10.5px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-parties { grid-template-columns: 1fr 1fr auto; padding: 16px 18px; border: 1px solid var(--inv-line); border-radius: 12px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-items th { padding-top: 0; padding-bottom: 9px; border-bottom: 2.5px solid var(--inv-accent); background: transparent; color: var(--inv-ink); }
+.inv-page.inv-page.inv-tpl-contemporary .inv-items tbody tr:nth-child(even) td { background: #f7f8fa; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-items td { border-bottom: 0; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-total-grand { border-radius: 12px; padding: 14px 16px; font-size: 17px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-payment { border-inline-start: 4px solid var(--inv-accent); border-radius: 0 10px 10px 0; background: var(--inv-accent-soft); }
+.inv-page.inv-page.inv-tpl-contemporary[dir="rtl"] .inv-payment { border-radius: 10px 0 0 10px; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-footer { border-top: 0; }
+.inv-page.inv-page.inv-tpl-contemporary .inv-footer::before { content: ""; position: absolute; top: -2px; inset-inline-start: 0; width: 56px; height: 3px; border-radius: 3px; background: var(--inv-accent); }
+.inv-page.inv-page.inv-tpl-contemporary .inv-continued { margin: 0 -52px; padding: 32px 52px 16px; border-bottom: 0; background: var(--inv-accent); color: var(--inv-on-accent); }
+.inv-page.inv-page.inv-tpl-contemporary .inv-continued strong { color: var(--inv-on-accent); }
+
+/* Urdu-only invoices: right-to-left reading order. Amount columns stay
+   aligned to the end edge (left in RTL) and numbers remain LTR. */
+.inv-page.inv-page[dir="rtl"] { font-size: 12.5px; }
+.inv-page.inv-page[dir="rtl"] .inv-party h3, .inv-page.inv-page[dir="rtl"] .inv-notes h3, .inv-page.inv-page[dir="rtl"] .inv-payment h3, .inv-page.inv-page[dir="rtl"] .inv-items th, .inv-page.inv-page[dir="rtl"] .inv-due-label { font-size: 12.5px; letter-spacing: 0; }
+.inv-page.inv-page[dir="rtl"] .inv-items th { line-height: 1.7; vertical-align: middle; }
+.inv-page.inv-page[dir="rtl"] .inv-pay-row { grid-template-columns: 110px minmax(0, 1fr); }
+.inv-page.inv-page[dir="rtl"] .inv-contact > .inv-ltr, .inv-page.inv-page[dir="rtl"] .inv-pay-value > .inv-ltr:only-child { text-align: right; }
+.inv-page.inv-page[dir="rtl"] .inv-meta dt, .inv-page.inv-page[dir="rtl"] .inv-total-row > span:first-child { line-height: 1.75; }
+
+/* Print: only the rendered A4 pages, one per sheet. */
+@media print {
+    @page { size: A4; margin: 0; }
+    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+    body.inv-printing > *:not(.inv-export-host) { display: none !important; }
+    body.inv-printing .inv-export-host { display: block !important; position: static !important; left: auto !important; width: auto !important; }
+    body.inv-printing .inv-export-host .inv-page { width: 210mm; height: 297mm; margin: 0; box-shadow: none !important; break-after: page; page-break-after: always; }
+    body.inv-printing .inv-export-host .inv-page:last-child { break-after: auto; page-break-after: auto; }
+    .inv-page.inv-page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

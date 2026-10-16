@@ -4,8 +4,16 @@
 }(typeof self !== 'undefined' ? self : this, function () {
     'use strict';
 
-    var MAX_ITEMS = 6;
+    // Items paginate across A4 pages in the document renderer, so the editor
+    // limit only guards against runaway drafts rather than page overflow.
+    var MAX_ITEMS = 50;
+    var MAX_DESCRIPTION = 200;
     var SCHEMA_VERSION = 2;
+    var TEMPLATES = ['modern', 'classic-urdu', 'contemporary'];
+    var LEGACY_TEMPLATES = { 'professional-bilingual': 'modern' };
+    var ACCENTS = ['#176b4b', '#1f3a68', '#7a2e3a', '#8a5a14', '#0f6e78', '#2c2c34'];
+    var URDU_FONTS = ['nastaliq', 'naskh'];
+    var WALLET_PROVIDERS = ['', 'JazzCash', 'Easypaisa', 'SadaPay', 'NayaPay', 'Other'];
     var CURRENCIES = ['PKR', 'USD', 'GBP', 'EUR', 'AED', 'SAR'];
     var STATUSES = ['Unpaid', 'Partially paid', 'Paid'];
 
@@ -25,7 +33,7 @@
         return { mode: mode === 'percentage' || mode === 'flat' ? mode : 'disabled', value: text(value) };
     }
     function emptyParty() {
-        return { name: '', tagline: '', logoId: null, address: '', phone: '', email: '', website: '', referenceLabel: '', referenceValue: '', referenceLabel2: '', referenceValue2: '' };
+        return { name: '', tagline: '', logoId: null, logoDataUrl: '', address: '', phone: '', email: '', website: '', referenceLabel: '', referenceValue: '', referenceLabel2: '', referenceValue2: '' };
     }
     function emptyItem() { return { id: id('item'), description: '', quantity: '1', unitPrice: '' }; }
     function emptySections() {
@@ -47,7 +55,9 @@
             createdAt: stamp.toISOString(),
             updatedAt: stamp.toISOString(),
             languageMode: 'english',
-            templateId: 'professional-bilingual',
+            templateId: 'modern',
+            design: { accent: ACCENTS[0], urduFont: 'nastaliq' },
+            isSample: false,
             invoiceTitle: 'INVOICE',
             invoiceNumber: 'INV-' + year + '-0001',
             issueDate: isoDate,
@@ -64,7 +74,7 @@
             amountPaid: '',
             notes: '',
             terms: '',
-            paymentDetails: { bankName: '', accountTitle: '', accountNumber: '', iban: '', instructions: '' },
+            paymentDetails: { bankName: '', accountTitle: '', accountNumber: '', iban: '', walletProvider: '', walletNumber: '', walletTitle: '', instructions: '' },
             authorization: { name: '', role: '', signatureImageId: null, stampImageId: null },
             footerMessage: '',
             qr: { enabled: false, purpose: 'business-contact', captionMode: 'automatic', customCaption: '', caption: '', position: 'seller-section', whatsappNumber: '', url: '', customContent: '' },
@@ -92,8 +102,15 @@
         result.status = STATUSES.indexOf(result.status) >= 0 ? result.status : 'Unpaid';
         result.invoiceNumber = text(result.invoiceNumber).trim().slice(0, 60);
         result.invoiceTitle = text(result.invoiceTitle).trim().slice(0, 80) || (result.languageMode === 'urdu' ? 'انوائس' : 'INVOICE');
+        result.templateId = LEGACY_TEMPLATES[result.templateId] || (TEMPLATES.indexOf(result.templateId) >= 0 ? result.templateId : 'modern');
+        result.design = merge({ accent: ACCENTS[0], urduFont: 'nastaliq' }, result.design || {});
+        result.design.accent = /^#[0-9a-f]{6}$/i.test(text(result.design.accent)) ? text(result.design.accent).toLowerCase() : ACCENTS[0];
+        result.design.urduFont = URDU_FONTS.indexOf(result.design.urduFont) >= 0 ? result.design.urduFont : 'nastaliq';
+        result.isSample = result.isSample === true;
+        result.seller.logoDataUrl = /^data:image\/(png|jpeg|webp);base64,/i.test(text(result.seller.logoDataUrl)) ? text(result.seller.logoDataUrl) : '';
+        result.paymentDetails.walletProvider = WALLET_PROVIDERS.indexOf(text(result.paymentDetails.walletProvider)) >= 0 ? text(result.paymentDetails.walletProvider) : 'Other';
         result.items = (Array.isArray(result.items) ? result.items : []).slice(0, MAX_ITEMS).map(function (item) {
-            return { id: text(item && item.id) || id('item'), description: text(item && item.description).slice(0, 80), quantity: text(item && item.quantity), unitPrice: text(item && item.unitPrice) };
+            return { id: text(item && item.id) || id('item'), description: text(item && item.description).slice(0, MAX_DESCRIPTION), quantity: text(item && item.quantity), unitPrice: text(item && item.unitPrice) };
         });
         if (!result.items.length) result.items = [emptyItem()];
         result.discount = adjustment(result.discount && result.discount.mode, result.discount && result.discount.value);
@@ -151,7 +168,7 @@
     }
     function shouldShowPaymentDetails(invoice) {
         var p = invoice.paymentDetails || {};
-        return invoice.sections.paymentDetails.enabled !== false && ['bankName', 'accountTitle', 'accountNumber', 'iban', 'instructions'].some(function (key) { return hasMeaningfulText(p[key]); });
+        return invoice.sections.paymentDetails.enabled !== false && ['bankName', 'accountTitle', 'accountNumber', 'iban', 'walletNumber', 'instructions'].some(function (key) { return hasMeaningfulText(p[key]); });
     }
     function shouldShowAuthorization(invoice) {
         var a = invoice.authorization || {};
@@ -265,7 +282,7 @@
         }
         if (qr.purpose === 'payment-information') {
             var totals = calculateInvoiceTotals(invoice), payment = invoice.paymentDetails || {};
-            return [['Business', invoice.seller && invoice.seller.name], ['Invoice', invoice.invoiceNumber], ['Amount', formatMoney(totals.grandTotalMinor, invoice.currency)], ['Account title', payment.accountTitle], ['IBAN', payment.iban]].filter(function (row) { return hasMeaningfulText(row[1]); }).map(function (row) { return row[0] + ': ' + text(row[1]).trim(); }).join('\n');
+            return [['Business', invoice.seller && invoice.seller.name], ['Invoice', invoice.invoiceNumber], ['Amount', formatMoney(totals.grandTotalMinor, invoice.currency)], ['Account title', payment.accountTitle], ['IBAN', payment.iban], [payment.walletProvider && payment.walletProvider !== 'Other' ? payment.walletProvider : 'Mobile wallet', payment.walletNumber]].filter(function (row) { return hasMeaningfulText(row[1]); }).map(function (row) { return row[0] + ': ' + text(row[1]).trim(); }).join('\n');
         }
         if (qr.purpose === 'url') return text(qr.url).trim();
         if (qr.purpose === 'whatsapp') return text(qr.whatsappNumber).replace(/[^0-9]/g, '') ? 'https://wa.me/' + text(qr.whatsappNumber).replace(/[^0-9]/g, '') : '';
@@ -275,20 +292,22 @@
         var doc = normalizeInvoiceDocument(invoice);
         var errors = {};
         if (!hasMeaningfulText(doc.seller.name)) errors['seller.name'] = 'Business name is required.';
-        if (!hasMeaningfulText(doc.buyer.name)) errors['buyer.name'] = 'Client name is required.';
+        if (!hasMeaningfulText(doc.buyer.name)) errors['buyer.name'] = 'Customer name is required.';
         if (!hasMeaningfulText(doc.invoiceNumber)) errors.invoiceNumber = 'Invoice number is required.';
         if (!hasMeaningfulText(doc.issueDate)) errors.issueDate = 'Invoice date is required.';
         var validItems = 0;
         doc.items.forEach(function (item, index) {
             var quantity = numberValue(item.quantity, NaN);
             var rate = numberValue(item.unitPrice, NaN);
+            // A completely blank extra row is ignored rather than blocking export.
+            if (!isMeaningfulItem(item) && doc.items.length > 1) return;
             if (!hasMeaningfulText(item.description)) errors['items.' + index + '.description'] = 'Add a description.';
             if (!Number.isFinite(quantity) || quantity <= 0) errors['items.' + index + '.quantity'] = 'Quantity must be greater than zero.';
-            if (!Number.isFinite(rate) || rate < 0) errors['items.' + index + '.unitPrice'] = 'Unit price must be zero or greater.';
+            if (!Number.isFinite(rate) || rate < 0) errors['items.' + index + '.unitPrice'] = 'Price must be a number, zero or greater.';
             if (hasMeaningfulText(item.description) && Number.isFinite(quantity) && quantity > 0 && Number.isFinite(rate) && rate >= 0) validItems += 1;
         });
         if (!validItems) errors.items = 'Add at least one valid line item.';
-        if (doc.items.length > MAX_ITEMS) errors.items = 'This one-page invoice supports up to six items.';
+        if (doc.items.length > MAX_ITEMS) errors.items = 'An invoice supports up to ' + MAX_ITEMS + ' items.';
         if (doc.qr.enabled) {
             var qrPayload = getQrPayload(doc);
             if (!qrPayload) errors.qr = 'Add valid QR content or turn the QR section off.';
@@ -312,5 +331,76 @@
         return base + (extension && extension.charAt(0) === '.' ? extension : '.' + (extension || 'pdf'));
     }
     function nextInvoiceNumber(year, sequence) { return 'INV-' + year + '-' + String(Math.max(1, Math.floor(numberValue(sequence, 1)))).padStart(4, '0'); }
-    return { MAX_ITEMS: MAX_ITEMS, CURRENCIES: CURRENCIES, STATUSES: STATUSES, SCHEMA_VERSION: SCHEMA_VERSION, createDefaultInvoiceDocument: createDefaultInvoiceDocument, normalizeInvoiceDocument: normalizeInvoiceDocument, migrateInvoiceDocument: normalizeInvoiceDocument, calculateInvoiceTotals: calculateInvoiceTotals, getVisibility: getVisibility, resolveNotesTermsVariant: resolveNotesTermsVariant, resolveNotesTermsHeading: resolveNotesTermsHeading, resolveHeaderContact: resolveHeaderContact, resolveSellerHeaderContent: resolveSellerHeaderContent, resolveInvoiceDensity: resolveInvoiceDensity, lowerSectionLayout: lowerSectionLayout, buildInvoicePreviewViewModel: buildInvoicePreviewViewModel, resolveQrCaption: resolveQrCaption, requiresZeroTotalConfirmation: requiresZeroTotalConfirmation, getQrPayload: getQrPayload, validateInvoice: validateInvoice, isMeaningfulDraft: isMeaningfulDraft, formatMoney: formatMoney, safeFilename: safeFilename, nextInvoiceNumber: nextInvoiceNumber, hasMeaningfulText: hasMeaningfulText };
+    // Increments the trailing number of any invoice number while keeping the
+    // user's own prefix and zero padding: INV-2026-0009 -> INV-2026-0010.
+    function incrementInvoiceNumber(value, year) {
+        var current = text(value).trim();
+        var match = current.match(/^(.*?)(\d+)(\D*)$/);
+        if (!match) return nextInvoiceNumber(year || new Date().getFullYear(), 1);
+        var next = String(Number(match[2]) + 1);
+        while (next.length < match[2].length) next = '0' + next;
+        return match[1] + next + match[3];
+    }
+    function meaningfulItems(invoice) { return (invoice.items || []).filter(isMeaningfulItem); }
+    function createSampleInvoice(languageMode, date) {
+        var doc = createDefaultInvoiceDocument(date);
+        var mode = ['english', 'urdu', 'bilingual'].indexOf(languageMode) >= 0 ? languageMode : 'english';
+        var stamp = date instanceof Date ? date : new Date();
+        doc.languageMode = mode;
+        doc.isSample = true;
+        doc.invoiceNumber = 'INV-' + doc.generatedSequenceYear + '-0042';
+        doc.dueDate = new Date(stamp.getTime() + 14 * 86400000).toISOString().slice(0, 10);
+        if (mode === 'urdu') {
+            doc.seller.name = 'نور ٹیکسٹائل ہاؤس';
+            doc.seller.tagline = 'معیاری کپڑا، مناسب دام';
+            doc.seller.phone = '+92 300 1234567';
+            doc.seller.address = 'دکان نمبر 12، انارکلی بازار، لاہور';
+            doc.buyer.name = 'احمد گارمنٹس';
+            doc.buyer.address = 'صدر، کراچی';
+            doc.buyer.phone = '+92 321 7654321';
+            doc.items = [
+                { id: 'sample-1', description: 'لان کا کپڑا (تھان)', quantity: '4', unitPrice: '6500' },
+                { id: 'sample-2', description: 'کڑھائی والا دوپٹہ', quantity: '10', unitPrice: '1200' },
+                { id: 'sample-3', description: 'ترسیل اور پیکنگ', quantity: '1', unitPrice: '1500' }
+            ];
+            doc.notes = 'خریداری کا شکریہ۔ مال کی واپسی سات دن کے اندر ممکن ہے۔';
+            doc.paymentDetails.accountTitle = 'نور ٹیکسٹائل ہاؤس';
+            doc.footerMessage = 'آپ کے اعتماد کا شکریہ!';
+        } else if (mode === 'bilingual') {
+            doc.seller.name = 'Noor Textile House';
+            doc.seller.tagline = 'Quality fabrics · معیاری کپڑا';
+            doc.seller.phone = '+92 300 1234567';
+            doc.seller.address = 'Shop 12, Anarkali Bazaar, Lahore';
+            doc.buyer.name = 'احمد گارمنٹس';
+            doc.buyer.address = 'Saddar, Karachi';
+            doc.items = [
+                { id: 'sample-1', description: 'Lawn fabric — لان کا کپڑا', quantity: '4', unitPrice: '6500' },
+                { id: 'sample-2', description: 'Embroidered dupatta — کڑھائی والا دوپٹہ', quantity: '10', unitPrice: '1200' },
+                { id: 'sample-3', description: 'Delivery and packing', quantity: '1', unitPrice: '1500' }
+            ];
+            doc.notes = 'Thank you for your order. خریداری کا شکریہ۔';
+            doc.paymentDetails.accountTitle = 'Noor Textile House';
+            doc.footerMessage = 'Thank you for your trust and business!';
+        } else {
+            doc.seller.name = 'Ayesha Khan Design Studio';
+            doc.seller.tagline = 'Brand and web design';
+            doc.seller.phone = '+92 300 1234567';
+            doc.seller.email = 'hello@example.com';
+            doc.seller.address = 'DHA Phase 6, Karachi';
+            doc.buyer.name = 'Bright Future Academy';
+            doc.buyer.address = 'Gulberg III, Lahore';
+            doc.items = [
+                { id: 'sample-1', description: 'Logo design and brand guide', quantity: '1', unitPrice: '45000' },
+                { id: 'sample-2', description: 'Website landing page (responsive)', quantity: '1', unitPrice: '60000' },
+                { id: 'sample-3', description: 'Social media post templates', quantity: '6', unitPrice: '2500' }
+            ];
+            doc.notes = 'Thank you for your business. Payment within 14 days is appreciated.';
+            doc.paymentDetails.accountTitle = 'Ayesha Khan';
+            doc.footerMessage = 'Thank you for your trust and business!';
+        }
+        doc.paymentDetails.bankName = 'Meezan Bank';
+        doc.paymentDetails.iban = 'PK36 MEZN 0000 1234 5678 9012';
+        return normalizeInvoiceDocument(doc);
+    }
+    return { MAX_ITEMS: MAX_ITEMS, CURRENCIES: CURRENCIES, STATUSES: STATUSES, SCHEMA_VERSION: SCHEMA_VERSION, createDefaultInvoiceDocument: createDefaultInvoiceDocument, normalizeInvoiceDocument: normalizeInvoiceDocument, migrateInvoiceDocument: normalizeInvoiceDocument, calculateInvoiceTotals: calculateInvoiceTotals, getVisibility: getVisibility, resolveNotesTermsVariant: resolveNotesTermsVariant, resolveNotesTermsHeading: resolveNotesTermsHeading, resolveHeaderContact: resolveHeaderContact, resolveSellerHeaderContent: resolveSellerHeaderContent, resolveInvoiceDensity: resolveInvoiceDensity, lowerSectionLayout: lowerSectionLayout, buildInvoicePreviewViewModel: buildInvoicePreviewViewModel, resolveQrCaption: resolveQrCaption, requiresZeroTotalConfirmation: requiresZeroTotalConfirmation, getQrPayload: getQrPayload, validateInvoice: validateInvoice, isMeaningfulDraft: isMeaningfulDraft, formatMoney: formatMoney, safeFilename: safeFilename, nextInvoiceNumber: nextInvoiceNumber, incrementInvoiceNumber: incrementInvoiceNumber, createSampleInvoice: createSampleInvoice, meaningfulItems: meaningfulItems, isMeaningfulItem: isMeaningfulItem, numberValue: numberValue, minor: minor, hasMeaningfulText: hasMeaningfulText, MAX_DESCRIPTION: MAX_DESCRIPTION, TEMPLATES: TEMPLATES, ACCENTS: ACCENTS, URDU_FONTS: URDU_FONTS, WALLET_PROVIDERS: WALLET_PROVIDERS };
 }));
