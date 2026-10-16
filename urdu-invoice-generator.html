@@ -168,6 +168,7 @@
                     <summary><span class="inv-step">3</span><span class="inv-section-title"><strong>Items and prices</strong><span lang="ur">اشیاء اور قیمتیں</span></span><span class="inv-section-hint" data-section-hint="items"></span></summary>
                     <div class="inv-section-body">
                         <div class="inv-item-list" data-invoice-items></div>
+                        <datalist id="inv-unit-options"></datalist>
                         <span class="inv-error" data-error-for="items"></span>
                         <div class="inv-items-actions">
                             <button type="button" class="inv-btn inv-btn-add" data-invoice-add-item><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add another item</button>
@@ -181,11 +182,12 @@
                                     <label class="inv-field"><span class="inv-label">Discount value</span><input data-field="discount.value" inputmode="decimal" placeholder="0"></label>
                                 </div>
                                 <div class="inv-adjust">
-                                    <label class="inv-field"><span class="inv-label">Tax</span><select data-field="tax.mode"><option value="disabled">No tax</option><option value="percentage">Percent (%)</option><option value="flat">Fixed amount</option></select></label>
-                                    <label class="inv-field"><span class="inv-label">Tax value</span><input data-field="tax.value" inputmode="decimal" placeholder="Enter your own rate"></label>
+                                    <label class="inv-field"><span class="inv-label">Tax</span><select data-field="tax.mode"><option value="disabled">No tax</option><option value="percentage">Percent (%)</option><option value="flat">Fixed amount</option><option value="per-item">Rate for each item</option></select></label>
+                                    <label class="inv-field" data-tax-value-field><span class="inv-label">Tax value</span><input data-field="tax.value" inputmode="decimal" placeholder="Enter your own rate"></label>
+                                    <p class="inv-help" data-tax-per-item-help hidden>Enter a tax % on each item above. Items without a rate are not taxed.</p>
                                 </div>
                                 <label class="inv-field"><span class="inv-label">Extra charges <span class="inv-opt">delivery, packing, etc.</span></span><input data-field="additionalCharge" inputmode="decimal" placeholder="0"></label>
-                                <p class="inv-help">Discount comes off the subtotal first. Tax is then worked out on the discounted amount, and extra charges are added last. No tax is added unless you enter it.</p>
+                                <p class="inv-help">Discount comes off the subtotal first. Tax is then worked out on the discounted amount (for per-item rates, on each item’s share of it), and extra charges are added last. No tax is added unless you enter it.</p>
                             </div>
                         </details>
                         <div class="inv-summary" data-invoice-summary aria-live="polite"></div>

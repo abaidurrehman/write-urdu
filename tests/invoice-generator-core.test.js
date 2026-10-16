@@ -119,4 +119,30 @@ assert.equal(partialTotals.taxMinor, 28800, 'Tax applies after the discount');
 assert.equal(partialTotals.grandTotalMinor, 228800, 'Extra charges are added last');
 assert.equal(partialTotals.balanceDueMinor, 128800, 'Balance due subtracts the amount already paid');
 
+// Units are free text kept with each item; per-item tax rates are charged on
+// each line's share of the discounted subtotal.
+const perItem = core.normalizeInvoiceDocument(Object.assign({}, invoice, {
+  items: [
+    { id: 'a', description: 'Cement', quantity: '10', unit: 'bag', unitPrice: '1000', taxRate: '18' },
+    { id: 'b', description: 'Labour', quantity: '2', unit: 'دن', unitPrice: '5000', taxRate: '' }
+  ],
+  discount: { mode: 'percentage', value: '10' }, tax: { mode: 'per-item', value: '99' }
+}));
+assert.equal(perItem.tax.mode, 'per-item', 'Per-item tax mode survives normalisation');
+assert.equal(perItem.tax.value, '', 'Per-item mode ignores an invoice-level tax value');
+assert.equal(perItem.items[1].unit, 'دن', 'Urdu units are kept as typed');
+const perItemTotals = core.calculateInvoiceTotals(perItem);
+assert.equal(perItemTotals.subtotalMinor, 2000000);
+assert.equal(perItemTotals.discountMinor, 200000);
+assert.deepEqual(perItemTotals.lineTaxes, [162000, 0], 'Only taxed lines carry tax, after their share of the discount');
+assert.equal(perItemTotals.taxMinor, 162000);
+assert.equal(perItemTotals.grandTotalMinor, 1962000);
+assert.equal(core.hasItemTax(perItem), true);
+assert.equal(core.normalizeInvoiceDocument({ items: [{ description: 'x', unit: 'a'.repeat(40) }] }).items[0].unit.length, core.MAX_UNIT, 'Units are capped');
+const badRate = core.normalizeInvoiceDocument(perItem); badRate.items[0].taxRate = '140';
+assert.equal(core.validateInvoice(badRate).errors['items.0.taxRate'], 'Tax must be between 0 and 100%.');
+const legacyItem = core.normalizeInvoiceDocument({ items: [{ id: 'old', description: 'Old', quantity: '1', unitPrice: '5' }] }).items[0];
+assert.equal(legacyItem.unit, '', 'Older drafts gain an empty unit');
+assert.equal(legacyItem.taxRate, '', 'Older drafts gain an empty tax rate');
+
 console.log('Invoice generator core tests passed.');

@@ -16,6 +16,9 @@
     var WALLET_PROVIDERS = ['', 'JazzCash', 'Easypaisa', 'SadaPay', 'NayaPay', 'Other'];
     var CURRENCIES = ['PKR', 'USD', 'GBP', 'EUR', 'AED', 'SAR'];
     var STATUSES = ['Unpaid', 'Partially paid', 'Paid'];
+    var MAX_UNIT = 20;
+    // Suggestions only: the unit field is free text so any trade can use it.
+    var UNITS = [['pcs', 'عدد'], ['kg', 'کلو'], ['g', 'گرام'], ['litre', 'لیٹر'], ['metre', 'میٹر'], ['yard', 'گز'], ['dozen', 'درجن'], ['box', 'ڈبہ'], ['set', 'سیٹ'], ['hour', 'گھنٹہ'], ['day', 'دن'], ['month', 'مہینہ'], ['session', 'سیشن']];
 
     function nowIso() { return new Date().toISOString(); }
     function id(prefix) { return prefix + '_' + Math.random().toString(36).slice(2, 10); }
@@ -32,10 +35,15 @@
     function adjustment(mode, value) {
         return { mode: mode === 'percentage' || mode === 'flat' ? mode : 'disabled', value: text(value) };
     }
+    // Tax can also be charged per line ('per-item'); each item then carries
+    // its own rate and the invoice-level value is ignored.
+    function taxAdjustment(mode, value) {
+        return mode === 'per-item' ? { mode: 'per-item', value: '' } : adjustment(mode, value);
+    }
     function emptyParty() {
         return { name: '', tagline: '', logoId: null, logoDataUrl: '', address: '', phone: '', email: '', website: '', referenceLabel: '', referenceValue: '', referenceLabel2: '', referenceValue2: '' };
     }
-    function emptyItem() { return { id: id('item'), description: '', quantity: '1', unitPrice: '' }; }
+    function emptyItem() { return { id: id('item'), description: '', quantity: '1', unit: '', unitPrice: '', taxRate: '' }; }
     function emptySections() {
         return {
             qr: { enabled: false, visibilityMode: 'manual' },
@@ -110,11 +118,11 @@
         result.seller.logoDataUrl = /^data:image\/(png|jpeg|webp);base64,/i.test(text(result.seller.logoDataUrl)) ? text(result.seller.logoDataUrl) : '';
         result.paymentDetails.walletProvider = WALLET_PROVIDERS.indexOf(text(result.paymentDetails.walletProvider)) >= 0 ? text(result.paymentDetails.walletProvider) : 'Other';
         result.items = (Array.isArray(result.items) ? result.items : []).slice(0, MAX_ITEMS).map(function (item) {
-            return { id: text(item && item.id) || id('item'), description: text(item && item.description).slice(0, MAX_DESCRIPTION), quantity: text(item && item.quantity), unitPrice: text(item && item.unitPrice) };
+            return { id: text(item && item.id) || id('item'), description: text(item && item.description).slice(0, MAX_DESCRIPTION), quantity: text(item && item.quantity), unit: text(item && item.unit).slice(0, MAX_UNIT), unitPrice: text(item && item.unitPrice), taxRate: text(item && item.taxRate) };
         });
         if (!result.items.length) result.items = [emptyItem()];
         result.discount = adjustment(result.discount && result.discount.mode, result.discount && result.discount.value);
-        result.tax = adjustment(result.tax && result.tax.mode, result.tax && result.tax.value);
+        result.tax = taxAdjustment(result.tax && result.tax.mode, result.tax && result.tax.value);
         result.additionalCharge = text(result.additionalCharge);
         result.amountPaid = text(result.amountPaid);
         ['notes', 'terms', 'footerMessage'].forEach(function (key) { result[key] = text(result[key]); });
@@ -157,12 +165,22 @@
         var subtotal = lineAmounts.reduce(function (sum, value) { return sum + value; }, 0);
         var discount = calculateAdjustment(doc.discount, subtotal);
         var afterDiscount = Math.max(0, subtotal - discount);
-        var tax = calculateAdjustment(doc.tax, afterDiscount);
+        var lineTaxes = lineAmounts.map(function () { return 0; });
+        var tax;
+        if (doc.tax.mode === 'per-item') {
+            // Each line is taxed on its share of the discounted subtotal, so an
+            // invoice discount lowers the tax the same way it would on one line.
+            var factor = subtotal > 0 ? afterDiscount / subtotal : 0;
+            lineTaxes = lineAmounts.map(function (amount, index) { return Math.round(amount * factor * itemTaxRate(doc.items[index]) / 100); });
+            tax = lineTaxes.reduce(function (sum, value) { return sum + value; }, 0);
+        } else tax = calculateAdjustment(doc.tax, afterDiscount);
         var additional = minor(doc.additionalCharge);
         var grand = afterDiscount + tax + additional;
         var paid = Math.min(grand, minor(doc.amountPaid));
-        return { lineAmounts: lineAmounts, subtotalMinor: subtotal, discountMinor: discount, afterDiscountMinor: afterDiscount, taxMinor: tax, additionalChargeMinor: additional, grandTotalMinor: grand, amountPaidMinor: paid, balanceDueMinor: Math.max(0, grand - paid) };
+        return { lineAmounts: lineAmounts, lineTaxes: lineTaxes, subtotalMinor: subtotal, discountMinor: discount, afterDiscountMinor: afterDiscount, taxMinor: tax, additionalChargeMinor: additional, grandTotalMinor: grand, amountPaidMinor: paid, balanceDueMinor: Math.max(0, grand - paid) };
     }
+    function itemTaxRate(item) { return clamp(numberValue(item && item.taxRate, 0), 0, 100); }
+    function hasItemTax(invoice) { return invoice.tax && invoice.tax.mode === 'per-item' && (invoice.items || []).some(function (item) { return isMeaningfulItem(item) && itemTaxRate(item) > 0; }); }
     function shouldShowNotesTerms(invoice) {
         return invoice.sections.notesTerms.enabled !== false && (hasMeaningfulText(invoice.notes) || hasMeaningfulText(invoice.terms));
     }
@@ -304,6 +322,10 @@
             if (!hasMeaningfulText(item.description)) errors['items.' + index + '.description'] = 'Add a description.';
             if (!Number.isFinite(quantity) || quantity <= 0) errors['items.' + index + '.quantity'] = 'Quantity must be greater than zero.';
             if (!Number.isFinite(rate) || rate < 0) errors['items.' + index + '.unitPrice'] = 'Price must be a number, zero or greater.';
+            if (doc.tax.mode === 'per-item' && hasMeaningfulText(item.taxRate)) {
+                var taxRate = numberValue(item.taxRate, NaN);
+                if (!Number.isFinite(taxRate) || taxRate < 0 || taxRate > 100) errors['items.' + index + '.taxRate'] = 'Tax must be between 0 and 100%.';
+            }
             if (hasMeaningfulText(item.description) && Number.isFinite(quantity) && quantity > 0 && Number.isFinite(rate) && rate >= 0) validItems += 1;
         });
         if (!validItems) errors.items = 'Add at least one valid line item.';
@@ -402,5 +424,5 @@
         doc.paymentDetails.iban = 'PK36 MEZN 0000 1234 5678 9012';
         return normalizeInvoiceDocument(doc);
     }
-    return { MAX_ITEMS: MAX_ITEMS, CURRENCIES: CURRENCIES, STATUSES: STATUSES, SCHEMA_VERSION: SCHEMA_VERSION, createDefaultInvoiceDocument: createDefaultInvoiceDocument, normalizeInvoiceDocument: normalizeInvoiceDocument, migrateInvoiceDocument: normalizeInvoiceDocument, calculateInvoiceTotals: calculateInvoiceTotals, getVisibility: getVisibility, resolveNotesTermsVariant: resolveNotesTermsVariant, resolveNotesTermsHeading: resolveNotesTermsHeading, resolveHeaderContact: resolveHeaderContact, resolveSellerHeaderContent: resolveSellerHeaderContent, resolveInvoiceDensity: resolveInvoiceDensity, lowerSectionLayout: lowerSectionLayout, buildInvoicePreviewViewModel: buildInvoicePreviewViewModel, resolveQrCaption: resolveQrCaption, requiresZeroTotalConfirmation: requiresZeroTotalConfirmation, getQrPayload: getQrPayload, validateInvoice: validateInvoice, isMeaningfulDraft: isMeaningfulDraft, formatMoney: formatMoney, safeFilename: safeFilename, nextInvoiceNumber: nextInvoiceNumber, incrementInvoiceNumber: incrementInvoiceNumber, createSampleInvoice: createSampleInvoice, meaningfulItems: meaningfulItems, isMeaningfulItem: isMeaningfulItem, numberValue: numberValue, minor: minor, hasMeaningfulText: hasMeaningfulText, MAX_DESCRIPTION: MAX_DESCRIPTION, TEMPLATES: TEMPLATES, ACCENTS: ACCENTS, URDU_FONTS: URDU_FONTS, WALLET_PROVIDERS: WALLET_PROVIDERS };
+    return { MAX_ITEMS: MAX_ITEMS, CURRENCIES: CURRENCIES, STATUSES: STATUSES, SCHEMA_VERSION: SCHEMA_VERSION, createDefaultInvoiceDocument: createDefaultInvoiceDocument, normalizeInvoiceDocument: normalizeInvoiceDocument, migrateInvoiceDocument: normalizeInvoiceDocument, calculateInvoiceTotals: calculateInvoiceTotals, getVisibility: getVisibility, resolveNotesTermsVariant: resolveNotesTermsVariant, resolveNotesTermsHeading: resolveNotesTermsHeading, resolveHeaderContact: resolveHeaderContact, resolveSellerHeaderContent: resolveSellerHeaderContent, resolveInvoiceDensity: resolveInvoiceDensity, lowerSectionLayout: lowerSectionLayout, buildInvoicePreviewViewModel: buildInvoicePreviewViewModel, resolveQrCaption: resolveQrCaption, requiresZeroTotalConfirmation: requiresZeroTotalConfirmation, getQrPayload: getQrPayload, validateInvoice: validateInvoice, isMeaningfulDraft: isMeaningfulDraft, formatMoney: formatMoney, safeFilename: safeFilename, nextInvoiceNumber: nextInvoiceNumber, incrementInvoiceNumber: incrementInvoiceNumber, createSampleInvoice: createSampleInvoice, meaningfulItems: meaningfulItems, isMeaningfulItem: isMeaningfulItem, numberValue: numberValue, minor: minor, hasMeaningfulText: hasMeaningfulText, MAX_DESCRIPTION: MAX_DESCRIPTION, MAX_UNIT: MAX_UNIT, UNITS: UNITS, itemTaxRate: itemTaxRate, hasItemTax: hasItemTax, TEMPLATES: TEMPLATES, ACCENTS: ACCENTS, URDU_FONTS: URDU_FONTS, WALLET_PROVIDERS: WALLET_PROVIDERS };
 }));

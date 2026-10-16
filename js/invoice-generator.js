@@ -176,6 +176,8 @@
         renderLogoControls();
         renderSavedBusiness();
         var inputMode = $('[data-input-mode-control]'); if (inputMode) inputMode.hidden = state.languageMode === 'english';
+        var taxValue = $('[data-tax-value-field]'); if (taxValue) taxValue.hidden = state.tax.mode === 'per-item';
+        var taxHelp = $('[data-tax-per-item-help]'); if (taxHelp) taxHelp.hidden = state.tax.mode !== 'per-item';
         root.dataset.lang = state.languageMode;
     }
     function renderLogoControls() {
@@ -200,7 +202,9 @@
         return '<div class="inv-item" data-item-id="' + esc(item.id) + '" data-item-index="' + index + '">' +
             '<label class="inv-item-desc"><span class="inv-item-label">Item ' + (index + 1) + '</span><input data-item-field="description" data-urdu-input value="' + esc(item.description) + '" maxlength="' + core.MAX_DESCRIPTION + '" placeholder="Item or service" aria-label="Item ' + (index + 1) + ' description" aria-describedby="' + base + '-err"></label>' +
             '<label class="inv-item-qty"><span class="inv-item-label">Qty</span><input data-item-field="quantity" inputmode="decimal" dir="ltr" value="' + esc(item.quantity) + '" aria-label="Item ' + (index + 1) + ' quantity"></label>' +
+            '<label class="inv-item-unit"><span class="inv-item-label">Unit</span><input data-item-field="unit" dir="auto" list="inv-unit-options" maxlength="' + core.MAX_UNIT + '" value="' + esc(item.unit) + '" placeholder="' + (state.languageMode === 'urdu' ? 'عدد' : 'pcs') + '" aria-label="Item ' + (index + 1) + ' unit"></label>' +
             '<label class="inv-item-price"><span class="inv-item-label">Price</span><input data-item-field="unitPrice" inputmode="decimal" dir="ltr" value="' + esc(item.unitPrice) + '" placeholder="0" aria-label="Item ' + (index + 1) + ' price"></label>' +
+            '<label class="inv-item-tax"><span class="inv-item-label">Tax %</span><input data-item-field="taxRate" inputmode="decimal" dir="ltr" value="' + esc(item.taxRate) + '" placeholder="0" aria-label="Item ' + (index + 1) + ' tax rate"></label>' +
             '<output class="inv-item-amount" data-item-amount aria-label="Item ' + (index + 1) + ' amount">' + esc(money(amount)) + '</output>' +
             '<span class="inv-item-tools"><button type="button" class="inv-icon-btn" data-move-item="-1" aria-label="Move item ' + (index + 1) + ' up"' + (index === 0 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button><button type="button" class="inv-icon-btn" data-move-item="1" aria-label="Move item ' + (index + 1) + ' down"' + (index === state.items.length - 1 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><button type="button" class="inv-icon-btn inv-icon-danger" data-remove-item aria-label="Remove item ' + (index + 1) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 12h8l1-12M9 7V4h6v3"/></svg></button></span>' +
             '<span class="inv-error inv-item-error" id="' + base + '-err" data-item-error></span></div>';
@@ -209,9 +213,23 @@
         if (!itemsHost) return;
         var totals = core.calculateInvoiceTotals(state);
         itemsHost.innerHTML = state.items.map(function (item, index) { return itemRowHtml(item, index, totals.lineAmounts[index]); }).join('');
+        itemsHost.classList.toggle('has-item-tax', state.tax.mode === 'per-item');
+        renderUnitOptions();
         var add = $('[data-invoice-add-item]'); if (add) add.disabled = state.items.length >= core.MAX_ITEMS;
         registerUrduFields();
     }
+    // Unit suggestions follow the invoice language; people can still type any unit.
+    function renderUnitOptions() {
+        var list = document.getElementById('inv-unit-options');
+        if (!list) return;
+        var mode = state.languageMode;
+        if (list.dataset.mode === mode) return;
+        list.dataset.mode = mode;
+        list.innerHTML = core.UNITS.map(function (pair) {
+            return mode === 'urdu' ? '<option value="' + esc(pair[1]) + '">' : mode === 'bilingual' ? '<option value="' + esc(pair[0]) + '"><option value="' + esc(pair[1]) + '">' : '<option value="' + esc(pair[0]) + '">';
+        }).join('');
+    }
+    function newItem() { return { id: 'item_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), description: '', quantity: '1', unit: '', unitPrice: '', taxRate: '' }; }
     function updateItemAmounts() {
         var totals = core.calculateInvoiceTotals(state);
         $$('[data-item-amount]').forEach(function (node, index) { node.textContent = money(totals.lineAmounts[index]); });
@@ -346,6 +364,7 @@
         if (path === 'qr.customCaption') state.qr.captionMode = core.hasMeaningfulText(value) ? 'custom' : 'automatic';
         if (path === 'amountPaid') { syncStatusFromPayment(); renderFieldValues(); }
         if (path === 'qr.purpose' || path === 'design.accent') renderFieldValues();
+        if (path === 'tax.mode') { renderFieldValues(); renderItemsEditor(); }
         clearError(path);
         requestRender(); scheduleSave();
     }
@@ -364,7 +383,7 @@
     function addItem(focus) {
         if (state.items.length >= core.MAX_ITEMS) return;
         leaveDemo();
-        state.items.push({ id: 'item_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), description: '', quantity: '1', unitPrice: '' });
+        state.items.push(newItem());
         renderItemsEditor(); requestRender(); scheduleSave();
         if (focus) { var last = itemsHost.lastElementChild; var input = last && last.querySelector('[data-item-field="description"]'); if (input) input.focus(); }
     }
@@ -378,7 +397,7 @@
     function removeItem(index) {
         var item = state.items[index]; if (!item) return;
         state.items.splice(index, 1);
-        if (!state.items.length) state.items.push({ id: 'item_' + Date.now().toString(36), description: '', quantity: '1', unitPrice: '' });
+        if (!state.items.length) state.items.push(newItem());
         renderItemsEditor(); requestRender(); scheduleSave();
         if (core.isMeaningfulItem(item)) setStatus('Item removed.', 'ready');
     }
@@ -386,7 +405,7 @@
         if (state.languageMode === mode) return;
         state.languageMode = mode;
         syncInputMode();
-        renderFieldValues(); requestRender(); scheduleSave();
+        renderFieldValues(); renderItemsEditor(); requestRender(); scheduleSave();
     }
     function setTemplate(id) {
         if (state.templateId === id) return;

@@ -205,16 +205,20 @@ body.invoice-generator-page .inv-studio .inv-intro h1, body.invoice-generator-pa
 
 /* Items */
 .inv-item-list { display: flex; flex-direction: column; gap: 8px; }
-/* Each item is a small card: the description gets the full width, with
-   quantity, price, amount and row tools on the line below. */
-.inv-item { display: grid; grid-template-columns: 84px 132px minmax(0, 1fr) auto; grid-template-areas: "desc desc desc desc" "qty price amount tools" "error error error error"; gap: 8px 10px; align-items: end; padding: 12px; border: 1px solid var(--ui-border); border-radius: 12px; background: var(--ui-raised); transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease; }
+/* Each item is a small card: the description and row tools share the first
+   line, with quantity, unit, price, optional tax rate and amount below. */
+.inv-item { display: grid; grid-template-columns: 76px 92px 124px minmax(0, 1fr) auto; grid-template-areas: "desc desc desc desc tools" "qty unit price amount amount" "error error error error error"; gap: 8px 10px; align-items: end; padding: 12px; border: 1px solid var(--ui-border); border-radius: 12px; background: var(--ui-raised); transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease; }
 .inv-item:focus-within { border-color: #b9cdbf; background: #fff; box-shadow: 0 2px 10px rgba(23, 35, 28, .06); }
 .inv-item label { display: block; min-width: 0; }
 .inv-item-desc { grid-area: desc; }
 .inv-item-qty { grid-area: qty; }
 .inv-item-price { grid-area: price; }
+.inv-item-unit { grid-area: unit; }
+.inv-item-tax { grid-area: tax; }
+.inv-item-list:not(.has-item-tax) .inv-item-tax { display: none; }
+.inv-item-list.has-item-tax .inv-item { grid-template-columns: 70px 84px 112px 66px minmax(0, 1fr) auto; grid-template-areas: "desc desc desc desc desc tools" "qty unit price tax amount amount" "error error error error error error"; }
 .inv-item-amount { grid-area: amount; align-self: center; padding-top: 18px; overflow: hidden; color: var(--ui-ink); font-size: 1rem; font-variant-numeric: tabular-nums; font-weight: 700; text-align: end; text-overflow: ellipsis; white-space: nowrap; }
-.inv-item-tools { grid-area: tools; align-self: center; padding-top: 18px; }
+.inv-item-tools { grid-area: tools; align-self: end; padding-bottom: 2px; }
 .inv-item-error { grid-area: error; }
 .inv-item-label { display: block; margin-bottom: 4px; color: var(--ui-muted); font-size: .74rem; font-weight: 650; }
 .inv-item-tools { display: inline-flex; justify-content: flex-end; gap: 1px; }
@@ -377,8 +381,12 @@ body.invoice-generator-page .inv-studio .inv-intro h1, body.invoice-generator-pa
     .inv-template-note { display: none; }
     .inv-template-name { font-size: .74rem; line-height: 1.25; }
     .inv-party-cards { grid-template-columns: 1fr; }
-    .inv-item { grid-template-columns: 1fr 1fr; grid-template-areas: "desc desc" "qty price" "amount tools" "error error"; background: #fff; }
+    .inv-item, .inv-item-list.has-item-tax .inv-item { grid-template-columns: repeat(3, minmax(0, 1fr)); background: #fff; }
+    .inv-item { grid-template-areas: "desc desc desc" "qty unit price" "amount amount tools" "error error error"; }
+    .inv-item-list.has-item-tax .inv-item { grid-template-areas: "desc desc desc" "qty unit price" "tax amount amount" "tools tools tools" "error error error"; }
+    .inv-item-list.has-item-tax .inv-item-amount { text-align: end; }
     .inv-item-amount, .inv-item-tools { padding-top: 0; }
+    .inv-item-tools { align-self: center; }
     .inv-item-amount { text-align: start; }
     .inv-item-tools .inv-icon-btn { min-width: 40px; height: 40px; }
     .inv-items-actions { flex-direction: column; align-items: stretch; }
