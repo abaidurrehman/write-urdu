@@ -110,11 +110,22 @@ jobs:
       - name: Run V3 production visual-quality audit
         run: npx playwright test tests/v3-visual-quality.spec.js --project=desktop-chromium
 
-      - name: Upload V3 visual audit
+      - name: Upload V3 audit metrics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v3-visual-audit-${{ github.run_id }}
-          path: visual-audit
+          name: v3-visual-metrics-${{ github.run_id }}
+          path: visual-audit/report.json
+          if-no-files-found: warn
+          retention-days: 2
+
+      # Keep the full screenshot set for failures and explicitly requested visual reviews.
+      # A successful automatic PR/push run needs only the small audit metrics.
+      - name: Upload V3 screenshot gallery
+        if: ${{ failure() || github.event_name == 'workflow_dispatch' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: v3-visual-screenshots-${{ github.run_id }}
+          path: visual-audit/*.png
           if-no-files-found: warn
           retention-days: 2
