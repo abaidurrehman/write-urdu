@@ -58,8 +58,26 @@ jobs:
           regular_cutoff="$(date -u -d '7 days ago' +%s)"
           failure_cutoff="$(date -u -d '14 days ago' +%s)"
           removed=0
-          # Oldest first; cap deletions to avoid rate limits and long jobs.
-          while IFS=$'\t' read -r run_id created_at run_status conclusion; do
+          attempted=0
+          shard=$(( $(date -u +%s) / 86400 % 20 ))
+          # Rotate daily through old run IDs to bound API calls.
+          while IFS=
+            [[ -n "$run_id" && "$run_status" == "completed" ]] || continue
+            if (( run_id % 20 != shard )); then continue; fi
+            created="$(date -u -d "$created_at" +%s)"
+            cutoff="$regular_cutoff"
+            if [[ "$conclusion" == "failure" ]]; then cutoff="$failure_cutoff"; fi
+            if (( created < cutoff )); then
+              attempted=$((attempted + 1))
+              if gh api -X DELETE "repos/${GITHUB_REPOSITORY}/actions/runs/$run_id/logs" >/dev/null 2>&1; then
+                removed=$((removed + 1))
+              fi
+              if (( attempted >= 250 )); then break; fi
+              sleep 0.35
+            fi
+          done < "$rows"
+          echo "Deleted logs for $removed old workflow runs (recent logs and run history kept)" >> "$GITHUB_STEP_SUMMARY"
+\t' read -r run_id created_at run_status conclusion; do
             [[ -n "$run_id" && "$run_status" == "completed" ]] || continue
             created="$(date -u -d "$created_at" +%s)"
             cutoff="$regular_cutoff"
@@ -71,5 +89,5 @@ jobs:
               if (( removed >= 200 )); then break; fi
               sleep 0.35
             fi
-          done < <(tac "$rows")
+          done < "$rows"
           echo "Deleted logs for $removed old workflow runs (recent logs and run history kept)" >> "$GITHUB_STEP_SUMMARY"
