@@ -76,6 +76,12 @@
         if (voiceEventName) {
             var detail = { input_mode: 'voice' };
             if (voiceEventName === 'voice_error') detail.error_category = errorCategory;
+            // Exposure happens on page load, not by the writer: it must not mark
+            // the session engaged, record a first input or count as an outcome.
+            if (voiceEventName === 'voice_exposed' && typeof root.WriteUrduTelemetry.track === 'function') {
+                root.WriteUrduTelemetry.track(voiceEventName, detail);
+                return;
+            }
             root.WriteUrduTelemetry.trackOutcome(voiceEventName, detail);
             return;
         }
