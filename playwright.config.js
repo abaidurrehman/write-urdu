@@ -52,7 +52,8 @@ module.exports = defineConfig({
     'typing-practice-learning.spec.js',
     'docx-export.spec.js',
     'draft-restore-position.spec.js',
-    'first-use-telemetry-integrity.spec.js'
+    'first-use-telemetry-integrity.spec.js',
+    'home-first-paint-stability.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },

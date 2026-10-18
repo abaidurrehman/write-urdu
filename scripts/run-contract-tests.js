@@ -28,6 +28,7 @@ const tests = [
   'tests/product-telemetry-contract.test.js',
   'tests/voice-exposure-telemetry-honesty.test.js',
   'tests/telemetry-batch-resilience.test.js',
+  'tests/home-first-paint-stability-contract.test.js',
   'tests/continuation-release-marker-contract.test.js',
   'tests/product-video-embed-contract.test.js',
   'tests/acquisition-revenue-contract.test.js',

@@ -33,10 +33,17 @@
 <script src="js/card-studio-entry.js" defer></script>
 <script src="js/qr-generator-entry.js" defer></script>
 <script src="seo.config.js" defer></script><script src="js/seo.js" defer></script>
+    <!-- First-paint stability: load the shell and command-toolbar styles with the page and keep the
+         legacy toolbar out of the layout until the command surface is built, so the editor does not jump. -->
+    <script>(function(d){function done(){d.classList.remove('wu-basic-toolbar-pending');}d.classList.add('wu-basic-toolbar-pending');window.addEventListener('load',function(){window.setTimeout(done,3000);});document.addEventListener('DOMContentLoaded',function(){window.setTimeout(done,30000);});}(document.documentElement));</script>
+    <link href="/css/v2-shell.css" rel="stylesheet" type="text/css" data-write-urdu-v2-shell />
+    <link href="/css/core-workspace-convergence.css" rel="stylesheet" type="text/css" data-wu-core-convergence-style />
+    <link href="/css/basic-writer-command-toolbar.css" rel="stylesheet" type="text/css" data-wu-basic-command-toolbar-style />
+    <link href="/css/basic-writer-export-priority.css" rel="stylesheet" type="text/css" data-wu-basic-export-priority-style />
     <script type="application/ld+json" data-write-urdu-schema>{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://write-urdu.com/#website","url":"https://write-urdu.com/","name":"Write Urdu","alternateName":["WriteUrdu","Write-Urdu.com"],"description":"Tools for typing, formatting, designing and sharing Urdu.","inLanguage":["en","ur"],"publisher":{"@id":"https://write-urdu.com/#publisher"}},{"@type":"Organization","@id":"https://write-urdu.com/#publisher","name":"Write Urdu","url":"https://write-urdu.com/","description":"Write Urdu helps people type Urdu with English letters, type Urdu directly, format documents and create shareable Urdu designs.","logo":{"@type":"ImageObject","@id":"https://write-urdu.com/#logo","url":"https://write-urdu.com/image/logo10.png","contentUrl":"https://write-urdu.com/image/logo10.png"},"knowsLanguage":["en","ur"],"alternateName":["WriteUrdu","Write-Urdu.com"],"email":"admin@write-urdu.com","publishingPrinciples":"https://write-urdu.com/why-write-urdu","contactPoint":{"@type":"ContactPoint","contactType":"customer support","availableLanguage":["English","Urdu"],"email":"admin@write-urdu.com","url":"https://write-urdu.com/contact"}},{"@type":"WebPage","@id":"https://write-urdu.com/#webpage","url":"https://write-urdu.com/","name":"English to Urdu Typing Online | WriteUrdu","description":"English to Urdu typing online. Type Urdu words using English letters, press Space to get Urdu script, then copy, edit or download your text for free.","inLanguage":["en","ur"],"isPartOf":{"@id":"https://write-urdu.com/#website"},"publisher":{"@id":"https://write-urdu.com/#publisher"},"dateModified":"2026-08-19","about":[{"@type":"Thing","name":"English to Urdu typing"},{"@type":"Thing","name":"Urdu typing online"},{"@type":"Thing","name":"Urdu writing online"}],"mainEntity":{"@id":"https://write-urdu.com/#application"}},{"@type":"WebApplication","@id":"https://write-urdu.com/#application","name":"English to Urdu Typing Online | WriteUrdu","url":"https://write-urdu.com/","mainEntityOfPage":{"@id":"https://write-urdu.com/#webpage"},"applicationCategory":"WritingApplication","operatingSystem":"Any","browserRequirements":"Works in a modern web browser","isAccessibleForFree":true,"description":"English to Urdu typing online. Type Urdu words using English letters, press Space to get Urdu script, then copy, edit or download your text for free.","inLanguage":"en","featureList":["Type Urdu with English letters","Urdu word suggestions","Direct Urdu typing","Copy and save drafts","Download text"],"publisher":{"@id":"https://write-urdu.com/#publisher"}}]}</script>
 </head>
 
-<body>
+<body class="wu-v2-shell" data-wu-core-workspace="basic">
 <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 <link href="/favicon.ico" rel="icon" type="image/x-icon" />
 <link href="/css/menu.css" rel="stylesheet" type="text/css" />
@@ -95,8 +102,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm" style="padding-right:0px;">
-                        <h1 data-wu-l10n="home.h1">English to Urdu Typing Online</h1>
-                        <p class="page-intro answer-summary" data-wu-l10n="home.lede">Type Urdu using English letters — for example, mera khayal hai → میرا خیال ہے. Press Space after each word to get Urdu script; no Urdu keyboard or account needed.</p>
+                        <h1 class="wu-page-title" data-wu-l10n="home.h1">English to Urdu Typing Online</h1>
+                        <p class="page-intro answer-summary wu-page-subtitle" data-wu-l10n="home.lede">Type Urdu using English letters — for example, mera khayal hai → میرا خیال ہے. Press Space after each word to get Urdu script; no Urdu keyboard or account needed.</p>
 
                         <div class="home-hero-meta" aria-label="Editor highlights" data-wu-l10n="home.heroMeta"><span>English letters → Urdu</span><span>Type Urdu directly</span></div>
                         <div class="home-hero-actions" aria-label="Get started">
