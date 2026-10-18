@@ -84,4 +84,17 @@ test.describe('mobile first-use telemetry', () => {
     await flush(page);
     expect(named(events, 'writer_first_input'), 'typing after the mode choice is first input').toHaveLength(1);
   });
+
+  test('choosing Speak Urdu engages the session but is not input or an outcome', async ({ page }) => {
+    const events = await captureEvents(page);
+    await open(page);
+    const speak = page.locator('[data-wu-command-action="voice-select"]').first();
+    test.skip(!(await speak.isVisible()), 'Speak Urdu is not offered in this browser');
+    await speak.click();
+    await flush(page);
+    expect(named(events, 'voice_selected'), 'the voice choice is still measured').toHaveLength(1);
+    expect(named(events, 'editor_engaged'), 'a deliberate voice choice is engagement').toHaveLength(1);
+    expect(named(events, 'writer_first_input'), 'no text reached the editor').toHaveLength(0);
+    expect(named(events, 'writer_outcome_first'), 'opening Speak Urdu is not a completed task').toHaveLength(0);
+  });
 });

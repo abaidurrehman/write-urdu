@@ -54,7 +54,7 @@ Scope: the Product Pulse panels "How much people write" and "Active usage time",
 | AN-3 | `writer_first_input` fired with an empty editor (mode tap, modifier keys, toolbar click) | Reproduced on production and locally. This inflates Gate B2's primary metric, `mobile writer_first_input / visits`. | **Fixed**: requires non-empty editor text |
 | AN-4 | Keyup alone started engagement (Shift/Alt layout switch in the autofocused desktop editor) | Reproduced on production | **Fixed**: keyup only keeps an engaged session active |
 | AN-5 | Length panel mixes all tools under the label "Engaged writing sessions only" | D1 per-tool breakdown | **Relabelled**. A per-tool view is recommended (P2). |
-| AN-6 | Speak Urdu tap counts as `writer_first_input` and `writer_outcome_first` with no text | Reproduced on production | **Partly addressed**: AN-3 removes the first-input part. The outcome part is deliberately pinned by #277's test ("writer-initiated voice actions stay outcomes") but conflicts with the metrics contract's outcome list. **Owner decision needed.** |
+| AN-6 | Speak Urdu tap counts as `writer_first_input` and `writer_outcome_first` with no text | Reproduced on production | **Fixed** (owner decision, 2026-10-18): voice select/start/final/error are now interactions. They engage the session and keep `input_mode=voice`, but never record `writer_outcome_first`. Urdu success is still detected from the committed text. |
 | AN-7 | Summaries attributed to receipt hour; `pagehide`-only | Strongly suspected (see Q10) | Not changed. Changing it breaks comparability; needs its own slice. |
 | AN-8 | Rich Editor has no copy-completion tracking | D1: 0 Rich Editor copies in 7 days | Not changed |
 | AN-9 | Copy-continuation shown/share/dismiss measurements (Slice 4) were never recorded | They travel inside `basic_toolbar_action`, which the server does not accept and whose `action` field the payload does not carry | Not changed. Needs a bounded action dimension and a rollup. |
@@ -102,7 +102,7 @@ The AdSense in-page drift above the mobile editor (2026-10-17 note) was **not re
 
 ## F. Prioritised action plan
 
-**P0, done in this change:** AN-1 batch rejection, AN-2 toolbar outcome inflation, AN-3 first-input inflation, AN-4 keyup engagement, AN-5 labels.
+**P0, done in this change:** AN-1 batch rejection, AN-2 toolbar outcome inflation, AN-3 first-input inflation, AN-4 keyup engagement, AN-5 labels, AN-6 voice actions as outcomes.
 
 **P1, recommended next slices (one PR each):**
 1. **T-1 CLS.** Make the static homepage markup match the final toolbar and shell layout, or reserve space, so the JavaScript rebuild does not move the editor. Acceptance: lab CLS < 0.1 at 390×844 and 1366×768, with no change to the protected `#transliterateTextarea` contract.
@@ -114,7 +114,7 @@ The AdSense in-page drift above the mobile editor (2026-10-17 note) was **not re
 2. Send `session_summary` on the first `visibilitychange: hidden` as well as `pagehide` (AN-7), behind a release marker.
 3. Add the event names in AN-1 to the server allow-list **only** where a rollup will use them. Otherwise remove the client calls.
 4. Bounded time-to-first-input bucket (already specified in `WU-PLAT-002H-MOBILE-ACTIVATION-REPAIR.md` §9.1).
-5. Rich Editor copy completion (AN-8). Decide AN-6.
+5. Rich Editor copy completion (AN-8).
 
 **P3, separate projects:** transliteration accuracy (custom dictionary for common greetings), translation-intent entry point if Search Console confirms demand.
 
@@ -125,6 +125,7 @@ The AdSense in-page drift above the mobile editor (2026-10-17 note) was **not re
 | `functions/api/events.js` | Drop unrecognised events individually; reply `202 {accepted, dropped}`; still `400` when nothing is valid; the 10-event limit is unchanged | AN-1 |
 | `js/basic-writer-command-toolbar.js` | Non-voice toolbar clicks call `engage()` + `track('basic_toolbar_action')` instead of `trackOutcome()` | AN-2. `write-urdu:outcome` listeners only react to copy/export/print, so behaviour is unchanged. |
 | `js/product-telemetry.js` | `writer_first_input` requires non-empty trimmed editor text; textarea and TinyMCE `keyup` only refresh activity | AN-3, AN-4 |
+| `js/product-telemetry.js` `trackInteraction()`; `js/basic-writer-command-toolbar.js`, `js/writer-voice-input.js` | Writer-initiated voice events use `trackInteraction` instead of `trackOutcome` | AN-6 |
 | `os/product-pulse.html` | Accurate panel notes and tooltips | AN-5 |
 | `sw.js` + 12 contract tests | Shell cache v70 → v71 | Ship the updated precached toolbar script |
 | `tests/telemetry-batch-resilience.test.js` | New contract test | Mixed batches are accepted, fully invalid batches rejected, batch limit kept |

@@ -481,6 +481,16 @@
         }
     }
 
+    // A deliberate writer action that is not a completed task (for example
+    // choosing or using Speak Urdu). It engages the session and keeps the
+    // voice input mode for the summary, but never records a writer outcome.
+    function trackInteraction(name, detail) {
+        detail = detail || {};
+        markEngaged();
+        if (detail.input_mode === 'voice') currentInputMode = 'voice';
+        track(name, detail);
+    }
+
     function watchCopyConfirmation() {
         copyWatchToken += 1;
         var token = copyWatchToken;
@@ -921,6 +931,7 @@
         trackOnce: trackOnce,
         engage: markEngaged,
         trackOutcome: trackOutcome,
+        trackInteraction: trackInteraction,
         trackContinuationPath: trackContinuationPath,
         shareReferralReady: trackShareReferralDestinationReady,
         rememberContinuationContext: rememberContinuationContext,
