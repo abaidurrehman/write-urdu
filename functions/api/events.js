@@ -914,8 +914,11 @@ export async function onRequestPost(context) {
     const incoming = Array.isArray(body && body.events) ? body.events : [];
     if (!incoming.length || incoming.length > 10) return json(400, { error: 'invalid_event_batch' });
 
-    const events = incoming.map(cleanEvent);
-    if (events.some((event) => !event)) return json(400, { error: 'invalid_event' });
+    // Drop unrecognised events individually. Rejecting the whole batch for one
+    // unknown name silently discarded the valid events queued with it.
+    const events = incoming.map(cleanEvent).filter(Boolean);
+    const dropped = incoming.length - events.length;
+    if (!events.length) return json(400, { error: 'invalid_event' });
 
     try {
         const db = env.METRICS_DB;
@@ -935,7 +938,7 @@ export async function onRequestPost(context) {
             .concat(aggregated.growthRequests.map((item) => growthRequestUpsert(db, bucket, item)))
             .concat(aggregated.cardGalleryFunnel.map((item) => cardGalleryFunnelUpsert(db, bucket, item)));
         await db.batch(statements);
-        return json(202, { accepted: events.length, rollup_rows: statements.length });
+        return json(202, { accepted: events.length, dropped, rollup_rows: statements.length });
     } catch (error) {
         console.error('product telemetry rollup failed', error);
         return json(503, { error: 'metrics_write_failed' });

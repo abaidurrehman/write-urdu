@@ -58,6 +58,12 @@
             root.WriteUrduTelemetry.track(eventName, detail);
             return;
         }
+        // Choosing or using Speak Urdu is an interaction, not a completed
+        // task; Urdu success is detected from the committed editor text.
+        if (typeof root.WriteUrduTelemetry.trackInteraction === 'function') {
+            root.WriteUrduTelemetry.trackInteraction(eventName, detail);
+            return;
+        }
         root.WriteUrduTelemetry.trackOutcome(eventName, detail);
     }
 

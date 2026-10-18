@@ -27,6 +27,7 @@ const tests = [
   'tests/export-dependency-loading-contract.test.js',
   'tests/product-telemetry-contract.test.js',
   'tests/voice-exposure-telemetry-honesty.test.js',
+  'tests/telemetry-batch-resilience.test.js',
   'tests/continuation-release-marker-contract.test.js',
   'tests/product-video-embed-contract.test.js',
   'tests/acquisition-revenue-contract.test.js',
