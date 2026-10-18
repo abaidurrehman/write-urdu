@@ -66,6 +66,7 @@ jobs:
           tests/continuation-telemetry-honesty.spec.js
           tests/first-use-telemetry-integrity.spec.js
           tests/mobile-editor-activation.spec.js
+          tests/home-first-paint-stability.spec.js
           tests/outcome-navigation.spec.js
           tests/rich-editor-mobile-activation.spec.js
           tests/workspace-next-step.spec.js

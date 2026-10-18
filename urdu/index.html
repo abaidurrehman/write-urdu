@@ -33,11 +33,18 @@
 <script src="/js/card-studio-entry.js" defer></script>
 <script src="/js/qr-generator-entry.js" defer></script>
 <script src="/seo.config.js" defer></script><script src="/js/seo.js" defer></script>
+    <!-- First-paint stability: load the shell and command-toolbar styles with the page and keep the
+         legacy toolbar out of the layout until the command surface is built, so the editor does not jump. -->
+    <script>(function(d){function done(){d.classList.remove('wu-basic-toolbar-pending');}d.classList.add('wu-basic-toolbar-pending');window.addEventListener('load',function(){window.setTimeout(done,3000);});document.addEventListener('DOMContentLoaded',function(){window.setTimeout(done,30000);});}(document.documentElement));</script>
+    <link href="/css/v2-shell.css" rel="stylesheet" type="text/css" data-write-urdu-v2-shell />
+    <link href="/css/core-workspace-convergence.css" rel="stylesheet" type="text/css" data-wu-core-convergence-style />
+    <link href="/css/basic-writer-command-toolbar.css" rel="stylesheet" type="text/css" data-wu-basic-command-toolbar-style />
+    <link href="/css/basic-writer-export-priority.css" rel="stylesheet" type="text/css" data-wu-basic-export-priority-style />
     <meta name="googlebot" content="index,follow,max-image-preview:large">
     <script type="application/ld+json" data-wu-urdu-schema>{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://write-urdu.com/urdu/#webpage","url":"https://write-urdu.com/urdu/","name":"آن لائن اردو ٹائپنگ | انگریزی حروف سے اردو لکھیں | WriteUrdu","description":"انگریزی حروف میں اردو لکھیں اور ہر لفظ کے بعد Space دبا کر فوراً اردو رسم الخط حاصل کریں۔ متن کو کاپی، ایڈٹ یا ڈاؤن لوڈ کریں۔","inLanguage":"ur"},{"@type":"WebApplication","url":"https://write-urdu.com/urdu/","name":"انگریزی حروف سے اردو ٹائپ کریں","description":"انگریزی حروف میں اردو لکھیں اور ہر لفظ کے بعد Space دبا کر فوراً اردو رسم الخط حاصل کریں۔ متن کو کاپی، ایڈٹ یا ڈاؤن لوڈ کریں۔","inLanguage":"ur","operatingSystem":"Any","browserRequirements":"Requires JavaScript and a modern web browser","isAccessibleForFree":true,"applicationCategory":"WritingApplication"}]}</script>
 </head>
 
-<body>
+<body class="wu-v2-shell" data-wu-core-workspace="basic">
 <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 <link href="/favicon.ico" rel="icon" type="image/x-icon" />
 <link href="/css/menu.css" rel="stylesheet" type="text/css" />
@@ -96,8 +103,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm" style="padding-right:0px;">
-                        <h1 data-wu-l10n="home.h1">انگریزی حروف سے اردو ٹائپ کریں</h1>
-                        <p class="page-intro answer-summary" data-wu-l10n="home.lede">انگریزی حروف میں اردو لکھیں — مثال: mera khayal hai → میرا خیال ہے۔ ہر لفظ کے بعد Space دبائیں اور فوراً اردو رسم الخط حاصل کریں؛ اردو کی بورڈ یا اکاؤنٹ کی ضرورت نہیں۔</p>
+                        <h1 class="wu-page-title" data-wu-l10n="home.h1">انگریزی حروف سے اردو ٹائپ کریں</h1>
+                        <p class="page-intro answer-summary wu-page-subtitle" data-wu-l10n="home.lede">انگریزی حروف میں اردو لکھیں — مثال: mera khayal hai → میرا خیال ہے۔ ہر لفظ کے بعد Space دبائیں اور فوراً اردو رسم الخط حاصل کریں؛ اردو کی بورڈ یا اکاؤنٹ کی ضرورت نہیں۔</p>
 
                         <div class="home-hero-meta" aria-label="ایڈیٹر کی نمایاں خصوصیات" data-wu-l10n="home.heroMeta"><span>انگریزی حروف → اردو</span><span>اردو براہِ راست لکھیں</span></div>
                         <div class="home-hero-actions" aria-label="شروع کریں">
