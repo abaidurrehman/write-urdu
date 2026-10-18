@@ -60,14 +60,35 @@ test.describe('desktop first viewport', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => document.body.getAttribute('data-wu-basic-command-toolbar') === 'true', null, { timeout: 15000 });
     const editor = page.locator('#transliterateTextarea');
-    const top = await editor.evaluate(node => node.getBoundingClientRect().top);
-    expect(768 - top, 'at least 300px of the editor is visible on arrival (was ~210px)').toBeGreaterThanOrEqual(300);
+    const gap = await editor.evaluate(node => node.getBoundingClientRect().top - document.querySelector('.editor-page-intro').getBoundingClientRect().bottom);
+    expect(gap, 'only the command surface sits between the hero and the editor (was ~261px)').toBeLessThanOrEqual(180);
     await expect(page.locator('.batch-transliteration-panel [data-batch-title]'), 'the idle explainer repeats the lede').toBeHidden();
     await expect(page.locator('.wu-basic-command-helper'), 'the example strip repeats the lede').toBeHidden();
     await expect(page.locator('.page-intro')).toContainText(/mera khayal hai\s*→\s*میرا خیال ہے/);
 
     await editor.fill('mera naam abaid hai aur main lahore mein rehta hoon');
     await expect(page.locator('.batch-transliteration-panel [data-batch-action]'), 'the Convert action still appears for a long passage').toBeVisible();
+  });
+});
+
+test.describe('production account state', () => {
+  test.use({ viewport: { width: 1366, height: 768 } });
+
+  // In production the documents API answers, so basic-account-documents.mjs
+  // mounts the account card and its two-column hero ~2s after load. Static
+  // test servers have no API, which is how a 0.22 desktop shift went unseen.
+  test('the account hero layout does not move the page when the account module mounts', async ({ page }) => {
+    await blockExternalServices(page);
+    await page.route('**/api/documents', route => route.fulfill({ status: 401, contentType: 'application/json', body: '{"error":{"code":"unauthenticated"}}' }));
+    await page.route('**/api/me', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{"available":true,"authenticated":false}' }));
+    await observeShifts(page);
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('[data-home-account-continuity]')).toHaveCount(1, { timeout: 15000 });
+    const shift = await clsUntilToolbar(page);
+    await page.waitForTimeout(800);
+    const total = await page.evaluate(() => window.__wuShift);
+    expect(total.cls, total.sources.join(' | ')).toBeLessThan(0.1);
+    expect(shift.cls).toBeLessThan(0.1);
   });
 });
 
