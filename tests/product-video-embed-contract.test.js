@@ -29,6 +29,11 @@ Object.values(pages).forEach((html) => {
   assert.match(html, /<video\b[^>]*\bcontrols\b[^>]*\bplaysinline\b[^>]*\bpreload="none"/);
   assert.doesNotMatch(html, /<video\b[^>]*\bautoplay\b/);
   assert.match(html, /<link[^>]+href="\/css\/product-video\.css"/);
+  // Browsers fetch a poster eagerly even with preload="none"; the PNG posters
+  // (316-468 KB) competed with first paint on slow connections.
+  const posters = html.match(/<video\b[^>]*\bposter="[^"]*"/g) || [];
+  assert.ok(posters.length > 0, 'Product video must declare a poster');
+  posters.forEach((tag) => assert.match(tag, /poster="\/assets\/videos\/[a-z-]+-poster\.webp"/, 'Product video posters must use the lightweight WebP version'));
 });
 
 [
@@ -39,7 +44,16 @@ Object.values(pages).forEach((html) => {
   'urdu-card-studio.webm',
   'urdu-card-studio-poster.png',
   'urdu-templates.webm',
-  'urdu-templates-poster.png'
+  'urdu-templates-poster.png',
+  'english-to-urdu-typing-poster.webp',
+  'urdu-voice-typing-poster.webp',
+  'urdu-card-studio-poster.webp',
+  'urdu-templates-poster.webp'
 ].forEach((file) => assert.ok(fs.existsSync(path.join(root, 'assets', 'videos', file)), `Missing published video asset: ${file}`));
+
+fs.readdirSync(path.join(root, 'assets', 'videos')).filter((file) => file.endsWith('-poster.webp')).forEach((file) => {
+  const size = fs.statSync(path.join(root, 'assets', 'videos', file)).size;
+  assert.ok(size < 80 * 1024, `${file} is ${Math.round(size / 1024)} KB; re-encode with node scripts/encode-video-posters.mjs`);
+});
 
 console.log('Product video embed contracts passed.');
