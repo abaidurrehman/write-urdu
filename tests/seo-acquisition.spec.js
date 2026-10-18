@@ -25,8 +25,9 @@ test('homepage keeps plain-language English to Urdu typing metadata and writing 
   await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /English to Urdu typing online.*English letters.*Urdu script/i);
   await expect(page.locator('.page-intro')).toContainText('Type Urdu using English letters');
   await expect(page.locator('.input-mode-option').first()).toHaveText('English letters → Urdu');
-  const compact = await page.evaluate(() => window.matchMedia('(max-width: 767px)').matches);
-  const proof = compact ? page.locator('.page-intro') : page.locator('[data-wu-basic-mode-helper]');
+  // The lede carries the worked example on every width; the repeated example
+  // strip above the editor was removed from the first viewport (2026-10-18).
+  const proof = page.locator('.page-intro');
   await expect(proof).toBeVisible();
   await expect(proof).toHaveText(/mera khayal hai\s*→\s*میرا خیال ہے/);
   await expect(proof).toContainText(/press Space after each word/i);

@@ -52,6 +52,25 @@ for (const route of ['/', '/urdu/']) {
   });
 }
 
+test.describe('desktop first viewport', () => {
+  test.use({ viewport: { width: 1366, height: 768 } });
+
+  test('the editor fills most of a 1366x768 first screen and long-passage conversion still appears', async ({ page }) => {
+    await blockExternalServices(page);
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => document.body.getAttribute('data-wu-basic-command-toolbar') === 'true', null, { timeout: 15000 });
+    const editor = page.locator('#transliterateTextarea');
+    const top = await editor.evaluate(node => node.getBoundingClientRect().top);
+    expect(768 - top, 'at least 300px of the editor is visible on arrival (was ~210px)').toBeGreaterThanOrEqual(300);
+    await expect(page.locator('.batch-transliteration-panel [data-batch-title]'), 'the idle explainer repeats the lede').toBeHidden();
+    await expect(page.locator('.wu-basic-command-helper'), 'the example strip repeats the lede').toBeHidden();
+    await expect(page.locator('.page-intro')).toContainText(/mera khayal hai\s*→\s*میرا خیال ہے/);
+
+    await editor.fill('mera naam abaid hai aur main lahore mein rehta hoon');
+    await expect(page.locator('.batch-transliteration-panel [data-batch-action]'), 'the Convert action still appears for a long passage').toBeVisible();
+  });
+});
+
 test.describe('fallback when the toolbar runtime fails', () => {
   test.use({ viewport: { width: 1366, height: 768 } });
   test('legacy input-mode controls return shortly after load', async ({ page }) => {
