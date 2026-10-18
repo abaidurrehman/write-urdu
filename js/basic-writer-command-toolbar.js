@@ -90,6 +90,13 @@
             action: action,
             hasContent: hasContent()
         };
+        // A toolbar click is an interaction, not an outcome: Copy, export and
+        // print record their own completion events when they succeed.
+        if (typeof root.WriteUrduTelemetry.track === 'function' && typeof root.WriteUrduTelemetry.engage === 'function') {
+            root.WriteUrduTelemetry.engage();
+            root.WriteUrduTelemetry.track('basic_toolbar_action', detail);
+            return;
+        }
         root.WriteUrduTelemetry.trackOutcome('basic_toolbar_action', detail);
     }
 

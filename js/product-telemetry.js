@@ -362,9 +362,11 @@
 
     function trackWriterFunnel() {
         if (!writerFunnelEligible()) return;
-        trackOnce('writer-first-input', 'writer_first_input');
         var text = textLength() === null ? '' : String(editorReader() || '');
         var trimmedLength = text.trim().length;
+        // First input means text reached the editor. Mode taps, toolbar clicks
+        // and modifier keys on an empty editor are interactions, not input.
+        if (trimmedLength > 0) trackOnce('writer-first-input', 'writer_first_input');
         if (URDU_CHAR_PATTERN.test(text)) {
             var liveInputMode = selectedInputMode();
             trackOnce('writer-first-urdu-success', 'writer_first_urdu_success', {
@@ -402,11 +404,16 @@
     function attachTextarea(node) {
         if (!node) return false;
         editorReader = function () { return node.value; };
-        ['input', 'keyup', 'paste', 'change'].forEach(function (name) {
+        ['input', 'paste', 'change'].forEach(function (name) {
             node.addEventListener(name, function (event) {
                 if (event.isTrusted) markEngaged();
             }, { passive: true });
         });
+        // A keyup alone (Shift/Alt layout switch, arrows) changes no text: it
+        // keeps an engaged session active but does not start engagement.
+        node.addEventListener('keyup', function (event) {
+            if (event.isTrusted) noteActivity();
+        }, { passive: true });
         node.addEventListener('focus', noteWriterFocus, { passive: true });
         return true;
     }
@@ -423,7 +430,8 @@
         if (!window.tinymce || !window.tinymce.activeEditor) return false;
         var editor = window.tinymce.activeEditor;
         editorReader = function () { return editor.getContent({ format: 'text' }); };
-        editor.on('input change keyup paste', markEngaged);
+        editor.on('input change paste', markEngaged);
+        editor.on('keyup', noteActivity);
         editor.on('input keyup paste', trackContinuationMeaningfulStart);
         editor.on('focus', noteWriterFocus);
         return true;

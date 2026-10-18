@@ -51,7 +51,8 @@ module.exports = defineConfig({
     'invoice-generator.spec.js',
     'typing-practice-learning.spec.js',
     'docx-export.spec.js',
-    'draft-restore-position.spec.js'
+    'draft-restore-position.spec.js',
+    'first-use-telemetry-integrity.spec.js'
   ],
   timeout: 45000,
   expect: { timeout: 10000 },

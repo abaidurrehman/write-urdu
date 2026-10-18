@@ -64,6 +64,7 @@ jobs:
           tests/sua.spec.js
           tests/journey.spec.js
           tests/continuation-telemetry-honesty.spec.js
+          tests/first-use-telemetry-integrity.spec.js
           tests/mobile-editor-activation.spec.js
           tests/outcome-navigation.spec.js
           tests/rich-editor-mobile-activation.spec.js
