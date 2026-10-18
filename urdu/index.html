@@ -36,6 +36,7 @@
     <!-- First-paint stability: load the shell and command-toolbar styles with the page and keep the
          legacy toolbar out of the layout until the command surface is built, so the editor does not jump. -->
     <script>(function(d){function done(){d.classList.remove('wu-basic-toolbar-pending');}d.classList.add('wu-basic-toolbar-pending');window.addEventListener('load',function(){window.setTimeout(done,3000);});document.addEventListener('DOMContentLoaded',function(){window.setTimeout(done,30000);});}(document.documentElement));</script>
+    <link href="/css/account-documents.css" rel="stylesheet" type="text/css" />
     <link href="/css/v2-shell.css" rel="stylesheet" type="text/css" data-write-urdu-v2-shell />
     <link href="/css/core-workspace-convergence.css" rel="stylesheet" type="text/css" data-wu-core-convergence-style />
     <link href="/css/basic-writer-command-toolbar.css" rel="stylesheet" type="text/css" data-wu-basic-command-toolbar-style />
@@ -101,8 +102,8 @@
                     title="English to Urdu typing editor" /> </a>
 
             <div class="container">
-                <div class="row">
-                    <div class="col-sm" style="padding-right:0px;">
+                <div class="row home-account-hero-layout">
+                    <div class="col-sm home-account-hero-copy" style="padding-right:0px;">
                         <h1 class="wu-page-title" data-wu-l10n="home.h1">انگریزی حروف سے اردو ٹائپ کریں</h1>
                         <p class="page-intro answer-summary wu-page-subtitle" data-wu-l10n="home.lede">انگریزی حروف میں اردو لکھیں — مثال: mera khayal hai → میرا خیال ہے۔ ہر لفظ کے بعد Space دبائیں اور فوراً اردو رسم الخط حاصل کریں؛ اردو کی بورڈ یا اکاؤنٹ کی ضرورت نہیں۔</p>
 

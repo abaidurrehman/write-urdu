@@ -18,6 +18,10 @@ for (const page of ['index.html', path.join('urdu', 'index.html')]) {
 
   assert.match(html, /<body class="wu-v2-shell" data-wu-core-workspace="basic">/, `${page}: shell body markers must be present at first paint`);
   assert.match(html, /<h1 class="wu-page-title"/, `${page}: the H1 must carry its final title class at first paint`);
+  // basic-account-documents.mjs turns the hero into a two-column grid (reserving the
+  // account card's column) about 2s after load in production; ship that layout statically.
+  assert.match(html, /<div class="row home-account-hero-layout">\s*<div class="col-sm home-account-hero-copy"/, `${page}: the hero must use its final account layout at first paint`);
+  assert.ok(html.slice(0, html.indexOf('</head>')).includes('<link href="/css/account-documents.css" rel="stylesheet" type="text/css" />'), `${page}: account-documents.css must be linked with the exact href site-header.js checks`);
   assert.match(html, /class="page-intro answer-summary wu-page-subtitle"/, `${page}: the lede must carry its final subtitle class at first paint`);
 
   // Each static link carries the attribute its runtime injector checks, so no stylesheet is added twice.
