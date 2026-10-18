@@ -700,19 +700,10 @@ html.wu-basic-toolbar-pending body:not([data-wu-basic-command-toolbar]) #demo {
 
 /* Measured distance from the preceding block to the editor once the surface is built, including
    the editor's own top margin (2026-10-18). */
-html.wu-basic-toolbar-pending { --wu-basic-surface-reserve: 140px; }
+html.wu-basic-toolbar-pending { --wu-basic-surface-reserve: 90px; }
 
 @media (max-width: 1180px) {
-  html.wu-basic-toolbar-pending { --wu-basic-surface-reserve: 198px; }
-}
-
-@media (max-width: 865px) {
-  html.wu-basic-toolbar-pending { --wu-basic-surface-reserve: 216px; }
-}
-
-@media (min-width: 768px) and (max-width: 865px) {
-  /* Urdu toolbar labels are shorter and do not wrap to a second row here. */
-  html[lang="ur"].wu-basic-toolbar-pending { --wu-basic-surface-reserve: 198px; }
+  html.wu-basic-toolbar-pending { --wu-basic-surface-reserve: 148px; }
 }
 
 @media (max-width: 767px) {

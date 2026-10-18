@@ -44,7 +44,7 @@ for (const page of ['index.html', path.join('urdu', 'index.html')]) {
 const css = read('css', 'basic-writer-command-toolbar.css');
 assert.match(css, /html\.wu-basic-toolbar-pending body:not\(\[data-wu-basic-command-toolbar\]\) \.container:has\(> \.row > \.home-actions\),\s*html\.wu-basic-toolbar-pending body:not\(\[data-wu-basic-command-toolbar\]\) \.editor-chrome \{\s*display: none !important;/, 'Legacy controls must stay out of the layout only while the toolbar is pending');
 assert.match(css, /html\.wu-basic-toolbar-pending body:not\(\[data-wu-basic-command-toolbar\]\) #demo \{\s*margin-top: var\(--wu-basic-surface-reserve, 0px\) !important;/, 'The editor must keep the command surface\'s space while pending');
-for (const reserve of ['140px', '198px', '216px', '134px']) {
+for (const reserve of ['90px', '148px', '134px']) {
   assert.match(css, new RegExp(`--wu-basic-surface-reserve: ${reserve};`), `Measured surface reserve ${reserve} is missing`);
 }
 
