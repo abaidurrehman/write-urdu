@@ -27,6 +27,9 @@
     <script src="js/input-mode.js" defer></script>
     <script src="js/invoice-generator-core.js" defer></script>
     <script src="js/invoice-document.js" defer></script>
+    <script src="js/invoice-pdf-text.js" defer></script>
+    <script src="js/roman-urdu-local.js" defer></script>
+    <script src="js/invoice-ui-urdu.js" defer></script>
     <script src="js/invoice-generator.js" defer></script>
     <script type="application/ld+json" data-write-urdu-schema>{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://write-urdu.com/#website","url":"https://write-urdu.com/","name":"Write Urdu","alternateName":["WriteUrdu","Write-Urdu.com"],"description":"Tools for typing, formatting, designing and sharing Urdu.","inLanguage":["en","ur"],"publisher":{"@id":"https://write-urdu.com/#publisher"}},{"@type":"Organization","@id":"https://write-urdu.com/#publisher","name":"Write Urdu","url":"https://write-urdu.com/","description":"Write Urdu helps people type Urdu with English letters, type Urdu directly, format documents and create shareable Urdu designs.","logo":{"@type":"ImageObject","@id":"https://write-urdu.com/#logo","url":"https://write-urdu.com/image/logo10.png","contentUrl":"https://write-urdu.com/image/logo10.png"},"knowsLanguage":["en","ur"],"alternateName":["WriteUrdu","Write-Urdu.com"],"email":"admin@write-urdu.com","publishingPrinciples":"https://write-urdu.com/why-write-urdu","contactPoint":{"@type":"ContactPoint","contactType":"customer support","availableLanguage":["English","Urdu"],"email":"admin@write-urdu.com","url":"https://write-urdu.com/contact"}},{"@type":"WebPage","@id":"https://write-urdu.com/urdu-invoice-generator#webpage","url":"https://write-urdu.com/urdu-invoice-generator","name":"Free Urdu Invoice Generator — English & Bilingual PDF | Write Urdu","description":"Create professional Urdu, English or bilingual invoices with automatic totals, Roman Urdu typing, QR codes and PDF or PNG download. No account required.","inLanguage":["en","ur"],"isPartOf":{"@id":"https://write-urdu.com/#website"},"publisher":{"@id":"https://write-urdu.com/#publisher"},"dateModified":"2026-07-17","breadcrumb":{"@id":"https://write-urdu.com/urdu-invoice-generator#breadcrumbs"},"mainEntity":{"@id":"https://write-urdu.com/urdu-invoice-generator#application"}},{"@type":"BreadcrumbList","@id":"https://write-urdu.com/urdu-invoice-generator#breadcrumbs","itemListElement":[{"@type":"ListItem","position":1,"name":"Write Urdu","item":"https://write-urdu.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://write-urdu.com/write-urdu-sitemap"},{"@type":"ListItem","position":3,"name":"Urdu & English Invoice Generator","item":"https://write-urdu.com/urdu-invoice-generator"}]},{"@type":"WebApplication","@id":"https://write-urdu.com/urdu-invoice-generator#application","name":"Free Urdu Invoice Generator","url":"https://write-urdu.com/urdu-invoice-generator","mainEntityOfPage":{"@id":"https://write-urdu.com/urdu-invoice-generator#webpage"},"applicationCategory":"BusinessApplication","operatingSystem":"Any","browserRequirements":"Works in a modern web browser","isAccessibleForFree":true,"description":"Create professional Urdu, English or bilingual invoices with automatic totals, Roman Urdu typing, QR codes and PDF or PNG download. No account required.","inLanguage":"en","featureList":[],"publisher":{"@id":"https://write-urdu.com/#publisher"}}]}</script>
 </head>
@@ -38,6 +41,7 @@
                 <h1>Urdu &amp; English Invoice Generator</h1>
                 <p class="inv-lede">Create a beautiful invoice in Urdu, English or both. See every change instantly, then download a PDF — no sign-up needed.</p>
             </div>
+            <button type="button" class="inv-ui-lang" data-invoice-ui-lang data-ui-keep lang="ur">اردو میں دیکھیں</button>
             <p class="inv-privacy"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.6 3 8.4 7 10 4-1.6 7-5.4 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg><span><strong>Free, no sign-up.</strong> Your invoices are kept on your device. <a href="/write-urdu-privacy">Privacy</a></span></p>
         </header>
 
@@ -119,6 +123,7 @@
                     <summary><span class="inv-step">2</span><span class="inv-section-title"><strong>Business and customer</strong><span lang="ur">کاروبار اور گاہک</span></span><span class="inv-section-hint" data-section-hint="parties"></span></summary>
                     <div class="inv-section-body">
                         <div class="input-mode-control inv-input-mode" data-input-mode-control data-input-mode-storage="invoice" data-input-mode-targets="[data-urdu-input]" role="group" aria-label="Urdu typing" hidden><span class="input-mode-title" data-input-mode-title>Urdu typing</span><button type="button" class="input-mode-option" data-input-mode-option="roman" aria-pressed="true">English letters → Urdu</button><button type="button" class="input-mode-option" data-input-mode-option="direct" aria-pressed="false">Type Urdu directly</button><span class="input-mode-note" data-input-mode-note></span></div>
+                        <label class="inv-check inv-google-typing" data-invoice-google-typing-row hidden><input type="checkbox" data-invoice-google-typing> <span>Use Google Input Tools for more word suggestions <span class="inv-opt">sends each word you type to Google</span></span></label>
                         <div class="inv-party-cards">
                             <fieldset class="inv-card">
                                 <legend><span>Your business</span><span lang="ur">آپ کا کاروبار</span></legend>
@@ -168,6 +173,7 @@
                     <summary><span class="inv-step">3</span><span class="inv-section-title"><strong>Items and prices</strong><span lang="ur">اشیاء اور قیمتیں</span></span><span class="inv-section-hint" data-section-hint="items"></span></summary>
                     <div class="inv-section-body">
                         <div class="inv-item-list" data-invoice-items></div>
+                        <datalist id="inv-unit-options"></datalist>
                         <span class="inv-error" data-error-for="items"></span>
                         <div class="inv-items-actions">
                             <button type="button" class="inv-btn inv-btn-add" data-invoice-add-item><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add another item</button>
@@ -181,11 +187,12 @@
                                     <label class="inv-field"><span class="inv-label">Discount value</span><input data-field="discount.value" inputmode="decimal" placeholder="0"></label>
                                 </div>
                                 <div class="inv-adjust">
-                                    <label class="inv-field"><span class="inv-label">Tax</span><select data-field="tax.mode"><option value="disabled">No tax</option><option value="percentage">Percent (%)</option><option value="flat">Fixed amount</option></select></label>
-                                    <label class="inv-field"><span class="inv-label">Tax value</span><input data-field="tax.value" inputmode="decimal" placeholder="Enter your own rate"></label>
+                                    <label class="inv-field"><span class="inv-label">Tax</span><select data-field="tax.mode"><option value="disabled">No tax</option><option value="percentage">Percent (%)</option><option value="flat">Fixed amount</option><option value="per-item">Rate for each item</option></select></label>
+                                    <label class="inv-field" data-tax-value-field><span class="inv-label">Tax value</span><input data-field="tax.value" inputmode="decimal" placeholder="Enter your own rate"></label>
+                                    <p class="inv-help" data-tax-per-item-help hidden>Enter a tax % on each item above. Items without a rate are not taxed.</p>
                                 </div>
                                 <label class="inv-field"><span class="inv-label">Extra charges <span class="inv-opt">delivery, packing, etc.</span></span><input data-field="additionalCharge" inputmode="decimal" placeholder="0"></label>
-                                <p class="inv-help">Discount comes off the subtotal first. Tax is then worked out on the discounted amount, and extra charges are added last. No tax is added unless you enter it.</p>
+                                <p class="inv-help">Discount comes off the subtotal first. Tax is then worked out on the discounted amount (for per-item rates, on each item’s share of it), and extra charges are added last. No tax is added unless you enter it.</p>
                             </div>
                         </details>
                         <div class="inv-summary" data-invoice-summary aria-live="polite"></div>
@@ -316,8 +323,14 @@
         <dialog class="inv-dialog inv-dialog-wide" data-invoice-history-dialog aria-labelledby="inv-history-title">
             <form method="dialog">
                 <div class="inv-dialog-head"><h2 id="inv-history-title">My invoices on this device</h2><button type="submit" value="close" class="inv-icon-btn" aria-label="Close">✕</button></div>
-                <p class="inv-help">Invoices are kept only in this browser. Clearing browser data removes them.</p>
+                <p class="inv-help">Invoices are kept only in this browser. Clearing browser data removes them, so download a backup now and then.</p>
                 <ul class="inv-history" data-invoice-history-list></ul>
+                <div class="inv-history-tools">
+                    <button type="button" class="inv-btn inv-btn-small inv-btn-secondary" data-history-backup><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14"/></svg>Download backup</button>
+                    <label class="inv-btn inv-btn-small inv-btn-secondary inv-file-btn"><input type="file" accept="application/json,.json" data-history-restore><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 19V8m0 0 4 4m-4-4-4 4M5 5h14"/></svg>Restore from backup</label>
+                    <button type="button" class="inv-btn inv-btn-small inv-btn-ghost" data-history-csv><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h14v16H5zM5 10h14M5 15h14M10 4v16"/></svg>Export spreadsheet (CSV)</button>
+                </div>
+                <p class="inv-help inv-history-note">A backup file moves your invoices to another phone or computer. The spreadsheet lists totals and balances for your records.</p>
             </form>
         </dialog>
         <dialog class="inv-dialog" data-invoice-share-dialog aria-labelledby="inv-share-title">
@@ -341,12 +354,13 @@
             <ol class="invoice-howto">
                 <li><strong>Choose a look.</strong> Pick English, Urdu or both, then one of three designs and a colour.</li>
                 <li><strong>Add who it is from and for.</strong> Only your business name and the customer name are required.</li>
-                <li><strong>List items and prices.</strong> Quantities, line amounts and totals update instantly. Long invoices continue onto extra A4 pages.</li>
-                <li><strong>Finish and download.</strong> Add payment details, then download the PDF or share it.</li>
+                <li><strong>List items and prices.</strong> Add a unit such as kg, hours or months, and a tax rate for each item if you need one. Quantities, line amounts and totals update instantly. Long invoices continue onto extra A4 pages.</li>
+                <li><strong>Finish and download.</strong> Add payment details, then download the PDF or share it. Invoice numbers, amounts, account details and English text in the PDF can be copied. For Urdu text you can copy, use Print and choose “Save as PDF”.</li>
+                <li><strong>Keep a backup.</strong> In My invoices, download a backup file to move your invoices to another phone or computer, or export a spreadsheet of totals and balances.</li>
             </ol>
             <div class="invoice-about-grid">
                 <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-sliders-h"></i></span><h3>Show only what you need</h3><p>Optional sections appear only when you use them, so a simple invoice stays compact and bilingual labels remain easy to read.</p></article>
-                <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-language"></i></span><h3>Made for Urdu invoices</h3><p>Choose Urdu or bilingual labels in Nastaliq or Naskh lettering, and type Urdu with English letters in supported fields. Numbers, dates and account details keep their natural left-to-right order.</p></article>
+                <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-language"></i></span><h3>Made for Urdu invoices</h3><p>Choose Urdu or bilingual labels in Nastaliq or Naskh lettering, and type Urdu with English letters: words are converted in your browser as you type, and Google Input Tools is used only if you turn it on. Numbers, dates and account details keep their natural left-to-right order.</p></article>
                 <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-lock"></i></span><h3>Private by default</h3><p>Invoice details, calculations and your logo are kept on your device, so you can return to them later. No account or online invoice library is required.</p></article>
                 <article><span class="wu-icon-badge" aria-hidden="true"><i class="fas fa-external-link-alt"></i></span><h3>Need more invoicing options?</h3><p><a href="https://invoicecraftly.com/">InvoiceCraftly</a> offers a broader privacy-first invoice workspace for freelancers and small businesses, with no account required.</p></article>
             </div>
