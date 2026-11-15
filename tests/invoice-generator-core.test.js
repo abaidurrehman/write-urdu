@@ -119,4 +119,56 @@ assert.equal(partialTotals.taxMinor, 28800, 'Tax applies after the discount');
 assert.equal(partialTotals.grandTotalMinor, 228800, 'Extra charges are added last');
 assert.equal(partialTotals.balanceDueMinor, 128800, 'Balance due subtracts the amount already paid');
 
+// Units are free text kept with each item; per-item tax rates are charged on
+// each line's share of the discounted subtotal.
+const perItem = core.normalizeInvoiceDocument(Object.assign({}, invoice, {
+  items: [
+    { id: 'a', description: 'Cement', quantity: '10', unit: 'bag', unitPrice: '1000', taxRate: '18' },
+    { id: 'b', description: 'Labour', quantity: '2', unit: 'دن', unitPrice: '5000', taxRate: '' }
+  ],
+  discount: { mode: 'percentage', value: '10' }, tax: { mode: 'per-item', value: '99' }
+}));
+assert.equal(perItem.tax.mode, 'per-item', 'Per-item tax mode survives normalisation');
+assert.equal(perItem.tax.value, '', 'Per-item mode ignores an invoice-level tax value');
+assert.equal(perItem.items[1].unit, 'دن', 'Urdu units are kept as typed');
+const perItemTotals = core.calculateInvoiceTotals(perItem);
+assert.equal(perItemTotals.subtotalMinor, 2000000);
+assert.equal(perItemTotals.discountMinor, 200000);
+assert.deepEqual(perItemTotals.lineTaxes, [162000, 0], 'Only taxed lines carry tax, after their share of the discount');
+assert.equal(perItemTotals.taxMinor, 162000);
+assert.equal(perItemTotals.grandTotalMinor, 1962000);
+assert.equal(core.hasItemTax(perItem), true);
+assert.equal(core.normalizeInvoiceDocument({ items: [{ description: 'x', unit: 'a'.repeat(40) }] }).items[0].unit.length, core.MAX_UNIT, 'Units are capped');
+const badRate = core.normalizeInvoiceDocument(perItem); badRate.items[0].taxRate = '140';
+assert.equal(core.validateInvoice(badRate).errors['items.0.taxRate'], 'Tax must be between 0 and 100%.');
+const legacyItem = core.normalizeInvoiceDocument({ items: [{ id: 'old', description: 'Old', quantity: '1', unitPrice: '5' }] }).items[0];
+assert.equal(legacyItem.unit, '', 'Older drafts gain an empty unit');
+assert.equal(legacyItem.taxRate, '', 'Older drafts gain an empty tax rate');
+
+// Backups round-trip through the normaliser and merge by invoice id.
+const older = Object.assign(core.normalizeInvoiceDocument(invoice), { id: 'inv-a', savedAt: '2026-01-01T00:00:00.000Z' });
+const newer = Object.assign(core.normalizeInvoiceDocument(invoice), { id: 'inv-a', invoiceNumber: 'INV-2026-0099', savedAt: '2026-02-01T00:00:00.000Z' });
+const sampleEntry = Object.assign(core.createSampleInvoice('english'), { id: 'sample' });
+const backup = core.createBackup([newer, sampleEntry], { seller: { name: 'Shop' } }, new Date('2026-03-01T00:00:00Z'));
+assert.equal(backup.format, core.BACKUP_FORMAT);
+assert.equal(backup.invoices.length, 1, 'Sample invoices are never written to a backup');
+const parsed = core.parseBackup(JSON.stringify(backup));
+assert.equal(parsed.ok, true);
+assert.equal(parsed.invoices[0].id, 'inv-a', 'Restored invoices keep their id so re-importing does not duplicate them');
+assert.equal(parsed.invoices[0].savedAt, '2026-02-01T00:00:00.000Z');
+assert.equal(parsed.business.seller.name, 'Shop');
+assert.deepEqual(core.parseBackup('{"hello":1}'), { ok: false, error: 'not-backup' });
+assert.deepEqual(core.parseBackup('not json'), { ok: false, error: 'not-backup' });
+assert.equal(core.parseBackup(JSON.stringify(Object.assign({}, backup, { version: 99 }))).error, 'newer-version');
+const hostile = core.parseBackup(JSON.stringify(Object.assign({}, backup, { invoices: [{ id: 'x', seller: { logoDataUrl: 'data:image/png;base64,AAAA")' } }] })));
+assert.equal(hostile.invoices[0].seller.logoDataUrl, '', 'Malformed logo data is dropped on restore');
+const merged = core.mergeHistory([older], parsed.invoices, 25);
+assert.equal(merged.updated, 1, 'A newer backup copy replaces the one on the device');
+assert.equal(merged.list[0].invoiceNumber, 'INV-2026-0099');
+assert.equal(core.mergeHistory(parsed.invoices, [older], 25).updated, 0, 'An older backup copy never overwrites newer work');
+assert.equal(core.mergeHistory([], [newer, Object.assign({}, older, { id: 'inv-b' })], 1).dropped, 1);
+const csv = core.historyToCsv([Object.assign(core.normalizeInvoiceDocument(invoice), { buyer: Object.assign(core.normalizeInvoiceDocument(invoice).buyer, { name: '=SUM(A1), "Ali"' }) })]);
+assert.ok(csv.charCodeAt(0) === 0xfeff, 'CSV starts with a byte-order mark for Excel');
+assert.ok(csv.includes(`"'=SUM(A1), ""Ali"""`), 'Formula-like cells are neutralised and quoted');
+
 console.log('Invoice generator core tests passed.');

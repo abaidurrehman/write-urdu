@@ -100,6 +100,10 @@
 .inv-page.inv-page .inv-items .inv-col-desc .inv-ur { line-height: 1.85; }
 .inv-page.inv-page .inv-items .inv-col-n { width: 34px; color: var(--inv-faint); text-align: center; }
 .inv-page.inv-page .inv-items .inv-col-qty { width: 62px; text-align: center; }
+.inv-page.inv-page .inv-items td.inv-col-qty { white-space: nowrap; }
+.inv-page.inv-page .inv-items .inv-col-qty .inv-unit { color: var(--inv-muted); font-size: 0.92em; }
+.inv-page.inv-page .inv-items .inv-col-tax { width: 54px; text-align: center; white-space: nowrap; }
+.inv-page.inv-page .inv-items .inv-col-tax .inv-muted { color: var(--inv-muted); }
 .inv-page.inv-page .inv-items .inv-col-num { width: 112px; text-align: end; white-space: nowrap; }
 .inv-page.inv-page .inv-items .inv-cur { font-weight: 500; letter-spacing: 0; opacity: .75; }
 .inv-page.inv-page .inv-items thead .inv-col-n { color: var(--inv-accent-ink); }
