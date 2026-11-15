@@ -19,6 +19,12 @@
     var currentInputMode = 'unknown';
     var outcomeHooksInstalled = false;
     var copyWatchToken = 0;
+    // A native copy (Ctrl+C, context menu, long-press) of writer text is a
+    // completion. Count at most one per window, and never while a Copy button
+    // is running, because its selection fallback also fires a copy event.
+    var NATIVE_COPY_WINDOW_MS = 10000;
+    var lastNativeCopyAt = 0;
+    var buttonCopyUntil = 0;
     var trackedOnce = Object.create(null);
     var SHARE_REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
     var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true, urdu_cards: true };
@@ -401,9 +407,20 @@
         if (writerFunnelEligible()) trackOnce('writer-focused', 'writer_focused');
     }
 
+    function trackNativeCopy() {
+        var now = Date.now();
+        if (now < buttonCopyUntil || now - lastNativeCopyAt < NATIVE_COPY_WINDOW_MS) return;
+        if (!textLength()) return;
+        lastNativeCopyAt = now;
+        trackOutcome('copy_completed', { format: 'native', success: true });
+    }
+
     function attachTextarea(node) {
         if (!node) return false;
         editorReader = function () { return node.value; };
+        node.addEventListener('copy', function (event) {
+            if (event.isTrusted) trackNativeCopy();
+        });
         ['input', 'paste', 'change'].forEach(function (name) {
             node.addEventListener(name, function (event) {
                 if (event.isTrusted) markEngaged();
@@ -434,6 +451,7 @@
         editor.on('keyup', noteActivity);
         editor.on('input keyup paste', trackContinuationMeaningfulStart);
         editor.on('focus', noteWriterFocus);
+        editor.on('copy', trackNativeCopy);
         return true;
     }
 
@@ -523,6 +541,7 @@
             if (!closest) return;
 
             if (closest('[data-copy-target], [data-clipboard-target]')) {
+                buttonCopyUntil = Date.now() + 3000;
                 watchCopyConfirmation();
                 noteActivity();
                 return;
@@ -560,8 +579,10 @@
                 return;
             }
 
+            // The font guard cancels the user's click and replays it with
+            // button.click(); count only the trusted click as the attempt.
             var cardExport = closest('[data-card-action="download"], [data-card-action="share"]');
-            var cardRoot = cardExport && closest('[data-card-studio]');
+            var cardRoot = cardExport && event.isTrusted && closest('[data-card-studio]');
             if (cardRoot) {
                 markEngaged();
                 track('card_studio_export_attempted', { card_mode: cardRoot.getAttribute('data-card-ui-mode') || 'quick' });
