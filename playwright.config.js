@@ -53,6 +53,7 @@ module.exports = defineConfig({
     'docx-export.spec.js',
     'draft-restore-position.spec.js',
     'first-use-telemetry-integrity.spec.js',
+    'finish-task-copy.spec.js',
     'greeting-spelling.spec.js',
     'home-first-paint-stability.spec.js'
   ],
