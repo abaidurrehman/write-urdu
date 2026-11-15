@@ -63,19 +63,31 @@
             return;
         }
         var text = typeof target.value === 'string' ? target.value : target.innerText;
-        var copyPromise;
-        if (navigator.clipboard && window.isSecureContext) {
-            copyPromise = navigator.clipboard.writeText(text);
-        } else {
+        // Some browsers (in-app webviews, denied permissions) reject the async
+        // Clipboard API. Fall back to the selection copy before giving up.
+        function selectionCopy() {
             target.focus();
             if (target.select) target.select();
-            copyPromise = document.execCommand('copy') ? Promise.resolve() : Promise.reject();
+            try {
+                return document.execCommand('copy') ? Promise.resolve() : Promise.reject();
+            } catch (error) {
+                return Promise.reject(error);
+            }
+        }
+        var copyPromise;
+        if (navigator.clipboard && window.isSecureContext) {
+            copyPromise = navigator.clipboard.writeText(text).catch(selectionCopy);
+        } else {
+            copyPromise = selectionCopy();
         }
         copyPromise.then(function () {
             notify('Urdu text copied to the clipboard.', 'success');
             document.dispatchEvent(new CustomEvent('write-urdu:copy-completed', { detail: { target: selector } }));
         }).catch(function () {
-            notify('Copy failed. Select the text and press Ctrl+C.', 'error');
+            var touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+            notify(touch
+                ? 'Copy failed. Press and hold the text, then tap Copy.'
+                : 'Copy failed. Select the text and press Ctrl+C.', 'error');
         });
     }
 
