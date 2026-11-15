@@ -65,6 +65,7 @@ jobs:
           tests/journey.spec.js
           tests/continuation-telemetry-honesty.spec.js
           tests/first-use-telemetry-integrity.spec.js
+          tests/finish-task-copy.spec.js
           tests/mobile-editor-activation.spec.js
           tests/home-first-paint-stability.spec.js
           tests/outcome-navigation.spec.js

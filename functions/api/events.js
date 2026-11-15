@@ -89,7 +89,7 @@ const TOOLS = new Set([
 
 const FORMATS = new Set([
     'txt', 'png', 'png_transparent', 'jpeg', 'pdf', 'doc', 'svg',
-    'print', 'clipboard', 'clipboard_image'
+    'print', 'clipboard', 'clipboard_image', 'native'
 ]);
 const LENGTH_BUCKETS = new Set(['0', '1-20', '21-50', '51-100', '101-250', '251-500', '501-1000', '1001-2500', '2500+']);
 const ACTIVE_BUCKETS = new Set(['0-10s', '11-30s', '31-60s', '61-180s', '181-600s', '600s+']);
