@@ -8,6 +8,7 @@ const tests = [
   'tests/roman-urdu-benchmark-contract.test.js',
   'tests/roman-urdu-converter-contract.test.js',
   'tests/batch-transliteration-protected-tokens.test.js',
+  'tests/greeting-spelling-contract.test.js',
   'tests/product-shell-contract.test.js',
   'tests/v2-shell-content-contract.test.js',
   'tests/v2-authority-contract.test.js',

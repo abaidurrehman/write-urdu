@@ -87,6 +87,58 @@
         return { leading: leading, trailing: trailing, core: input.slice(leading.length, end) };
     }
 
+    // Google Input Tools misspells the most common greetings and blessings
+    // (for example `assalam o alaikum` -> اسسلام و علیکم). Each entry pairs a
+    // provider output with its standard spelling. Only whole words are
+    // replaced, and only provider misspellings are listed, so real words such
+    // as اسلام, جما or جامہ are never changed on their own. Word fixes come
+    // first because the phrase fixes after them build on their output.
+    // Arabic-script letters and marks plus Latin word characters. Everything
+    // else, including Urdu punctuation (، ۔ ؟) and digits, is a word edge.
+    var WORD_CHARACTERS = '\\u0610-\\u061A\\u0620-\\u065F\\u066E-\\u06D3\\u06D5-\\u06EF\\u06FA-\\u06FF\\w';
+    var PHRASE_CORRECTIONS = [
+        ['اسسلمالیکم', 'السلام علیکم'],
+        ['سلامالیکم', 'السلام علیکم'],
+        ['والیکمسسلام', 'وعلیکم السلام'],
+        ['اسسلامو', 'السلام'],
+        ['اسسلام', 'السلام'],
+        ['انشاللہ', 'انشاءاللہ'],
+        ['انشااللہ', 'انشاءاللہ'],
+        ['انشا الله', 'انشاءاللہ'],
+        ['انشا اللہ', 'انشاءاللہ'],
+        ['ماشاللہ', 'ماشاءاللہ'],
+        ['ماشااللہ', 'ماشاءاللہ'],
+        ['ماشا الله', 'ماشاءاللہ'],
+        ['ماشا اللہ', 'ماشاءاللہ'],
+        ['الحمدلللہ', 'الحمدللہ'],
+        ['الحمدولللہ', 'الحمدللہ'],
+        ['سبحاناللہ', 'سبحان اللہ'],
+        ['جزاکاللہ', 'جزاک اللہ'],
+        ['جزاکللاہو', 'جزاک اللہ'],
+        ['جزاک الله', 'جزاک اللہ'],
+        ['بسمللہ', 'بسم اللہ'],
+        ['فی امنللہ', 'فی امان اللہ'],
+        ['السلام و علیکم', 'السلام علیکم'],
+        ['اسلام و علیکم', 'السلام علیکم'],
+        ['وہ علیکم', 'وعلیکم'],
+        ['جمّ مبارک', 'جمعہ مبارک'],
+        ['جما مبارک', 'جمعہ مبارک'],
+        ['جامہ مبارک', 'جمعہ مبارک'],
+        ['عید ال فطر', 'عید الفطر'],
+        ['عید ال آدھا', 'عید الاضحیٰ'],
+        ['عید ال اظہا', 'عید الاضحیٰ']
+    ].map(function (pair) {
+        return { pattern: new RegExp('(^|[^' + WORD_CHARACTERS + '])' + pair[0] + '(?=$|[^' + WORD_CHARACTERS + '])', 'g'), value: pair[1] };
+    });
+
+    function correctPhrases(value) {
+        var output = String(value == null ? '' : value);
+        PHRASE_CORRECTIONS.forEach(function (rule) {
+            output = output.replace(rule.pattern, function (match, edge) { return edge + rule.value; });
+        });
+        return output;
+    }
+
     function requestChunk(value) {
         var query = endpoint + '?text=' + encodeURIComponent(value) + '&itc=ur-t-i0-und&num=1&cp=0&cs=1&ie=utf-8&oe=utf-8';
         if (!window.fetch) return Promise.reject(new Error('fetch unavailable'));
@@ -96,8 +148,8 @@
         }).then(function (data) {
             if (!Array.isArray(data) || data[0] !== 'SUCCESS' || !Array.isArray(data[1])) throw new Error('unexpected transliteration response');
             var entries = data[1];
-            if (entries.length === 1 && Array.isArray(entries[0]) && Array.isArray(entries[0][1]) && entries[0][1][0]) return String(entries[0][1][0]);
-            return entries.map(function (entry) { return entry && Array.isArray(entry[1]) && entry[1][0] ? entry[1][0] : entry && entry[0] || ''; }).join(' ').trim();
+            if (entries.length === 1 && Array.isArray(entries[0]) && Array.isArray(entries[0][1]) && entries[0][1][0]) return correctPhrases(String(entries[0][1][0]));
+            return correctPhrases(entries.map(function (entry) { return entry && Array.isArray(entry[1]) && entry[1][0] ? entry[1][0] : entry && entry[0] || ''; }).join(' ').trim());
         });
     }
 
@@ -158,6 +210,51 @@
     // sent until a feature calls this method.
     window.WriteUrduBatchTransliteration = window.WriteUrduBatchTransliteration || {};
     window.WriteUrduBatchTransliteration.transliterate = transliterate;
+    window.WriteUrduBatchTransliteration.correctPhrases = correctPhrases;
+
+    // Word-by-word conversion: the Google control loads one JSONP script per
+    // word and writes the result into the field before the script's `load`
+    // event. Correct the words just written, near the caret, in the focused
+    // field only, so pasted or earlier text is never rewritten.
+    var CORRECTION_REACH = 60;
+    var PROVIDER_REQUEST = /inputtools(\.google\.com\/request|\/request)/;
+    var liveFields = [];
+
+    function correctFieldNearCaret(field) {
+        var value = field.value || '';
+        var caret = typeof field.selectionEnd === 'number' ? field.selectionEnd : value.length;
+        var start = Math.max(0, caret - CORRECTION_REACH);
+        if (start > 0) {
+            var edge = value.slice(start, caret).search(/\s/);
+            if (edge < 0) return;
+            start += edge;
+        }
+        var recent = value.slice(start, caret);
+        var fixed = correctPhrases(recent);
+        if (fixed === recent) return;
+        field.value = value.slice(0, start) + fixed + value.slice(caret);
+        var position = start + fixed.length;
+        if (typeof field.setSelectionRange === 'function') field.setSelectionRange(position, position);
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function correctLiveFields() {
+        liveFields.forEach(function (entry) {
+            if (document.activeElement === entry.field && entry.isRomanMode()) correctFieldNearCaret(entry.field);
+        });
+    }
+
+    function watchWordConversions() {
+        if (!document.head || !window.MutationObserver) return;
+        new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+                    if (!node || node.tagName !== 'SCRIPT' || !PROVIDER_REQUEST.test(node.src || '')) return;
+                    node.addEventListener('load', correctLiveFields);
+                });
+            });
+        }).observe(document.head, { childList: true });
+    }
 
     function dispatchInput(target) {
         if (target.tagName === 'IFRAME') {
@@ -239,6 +336,7 @@
             }
         }
         panel._batchRefresh = refresh;
+        if (target.tagName !== 'IFRAME') liveFields.push({ field: target, isRomanMode: isRomanMode });
         target.addEventListener('input', refresh);
         target.addEventListener('paste', function () { window.setTimeout(refresh, 0); });
         function bindFrameEvents() {
@@ -312,6 +410,7 @@
     }
 
     function start() {
+        watchWordConversions();
         refreshAll();
         if (window.MutationObserver && document.body) {
             targetObserver = new MutationObserver(refreshAll);
