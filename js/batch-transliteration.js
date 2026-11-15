@@ -256,6 +256,88 @@
         }).observe(document.head, { childList: true });
     }
 
+    // Phone keyboards (Gboard, Samsung, SwiftKey) send each word as
+    // composition text with keyCode 229. The Google control converts a word
+    // only on a real Space key press, so on those keyboards Roman Urdu stayed
+    // in English letters. When a space or punctuation mark arrives without a
+    // real key press, convert the English-letter word before it through the
+    // same provider. Real key presses stay with the Google control, so a word
+    // is never converted twice. The field is only rewritten between
+    // compositions, never while the keyboard is still building a word.
+    var COMMITTED_WORD = /(^|[^A-Za-z'])([A-Za-z]+)([\s.,!?;:،؟۔]+)$/;
+    var COMMITTED_INPUT = /^insert(Text|CompositionText|ReplacementText)$/;
+
+    function bindCommittedWords(field, isRomanMode) {
+        if (field.dataset.committedWordsBound) return;
+        field.dataset.committedWordsBound = 'true';
+        var realKey = false;
+        var composing = false;
+        var pending = [];
+        var ready = [];
+
+        function apply(item, urdu) {
+            var value = field.value;
+            var end = item.start + item.word.length;
+            if (!urdu || urdu === item.word || value.slice(item.start, end) !== item.word) return;
+            var delta = urdu.length - item.word.length;
+            var selectionStart = field.selectionStart;
+            var selectionEnd = field.selectionEnd;
+            field.value = value.slice(0, item.start) + urdu + value.slice(end);
+            pending.concat(ready.map(function (entry) { return entry.item; })).forEach(function (other) { if (other.start > item.start) other.start += delta; });
+            var shift = function (position) { return position >= end ? position + delta : position; };
+            if (typeof field.setSelectionRange === 'function') field.setSelectionRange(shift(selectionStart), shift(selectionEnd));
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        function flush() {
+            if (composing) return;
+            // Take one reply at a time so the ones still queued are shifted
+            // when an earlier word changes length.
+            while (ready.length) {
+                var entry = ready.shift();
+                apply(entry.item, entry.urdu);
+            }
+            // Greeting fixes can change lengths too, so run them only once no
+            // word is waiting for its reply.
+            if (!pending.length && document.activeElement === field) correctFieldNearCaret(field);
+        }
+
+        function convertWordBeforeCaret() {
+            if (!isRomanMode() || field.selectionStart !== field.selectionEnd) return;
+            var caret = field.selectionEnd;
+            var match = COMMITTED_WORD.exec(field.value.slice(Math.max(0, caret - 80), caret));
+            if (!match) return;
+            var word = match[2];
+            if (splitProtectedTokens(word).some(function (part) { return part.protected; })) return;
+            var item = { word: word, start: caret - match[0].length + match[1].length };
+            pending.push(item);
+            requestChunk(word).then(function (urdu) {
+                reportAvailability(true);
+                pending.splice(pending.indexOf(item), 1);
+                ready.push({ item: item, urdu: urdu });
+                flush();
+            }, function () {
+                reportAvailability(false);
+                pending.splice(pending.indexOf(item), 1);
+            });
+        }
+
+        field.addEventListener('keydown', function (event) {
+            realKey = !(event.isComposing || event.keyCode === 229 || event.key === 'Unidentified' || event.key === 'Process');
+        }, true);
+        field.addEventListener('compositionstart', function () { composing = true; });
+        field.addEventListener('compositionend', function () {
+            composing = false;
+            window.setTimeout(flush, 0);
+        });
+        field.addEventListener('input', function (event) {
+            var fromRealKey = realKey;
+            realKey = false;
+            if (!event.isTrusted || event.isComposing || fromRealKey || !COMMITTED_INPUT.test(event.inputType || '')) return;
+            convertWordBeforeCaret();
+        });
+    }
+
     function dispatchInput(target) {
         if (target.tagName === 'IFRAME') {
             var editorId = target.id && target.id.replace(/_ifr$/, '');
@@ -336,7 +418,10 @@
             }
         }
         panel._batchRefresh = refresh;
-        if (target.tagName !== 'IFRAME') liveFields.push({ field: target, isRomanMode: isRomanMode });
+        if (target.tagName !== 'IFRAME') {
+            liveFields.push({ field: target, isRomanMode: isRomanMode });
+            bindCommittedWords(target, isRomanMode);
+        }
         target.addEventListener('input', refresh);
         target.addEventListener('paste', function () { window.setTimeout(refresh, 0); });
         function bindFrameEvents() {

@@ -83,6 +83,17 @@
         // selected without changing the document's language semantics.
         target.setAttribute('lang', 'ur');
         target.dataset.inputMode = mode;
+        // Phone keyboards must not auto-correct or capitalise English-letter
+        // Urdu before it is converted; direct typing keeps the defaults.
+        if (mode === 'roman') {
+            target.setAttribute('autocorrect', 'off');
+            target.setAttribute('autocapitalize', 'off');
+            target.setAttribute('spellcheck', 'false');
+        } else {
+            target.removeAttribute('autocorrect');
+            target.removeAttribute('autocapitalize');
+            target.removeAttribute('spellcheck');
+        }
         if (mode === 'roman') {
             target.setAttribute('data-input-mode-placeholder', target.getAttribute('placeholder') || '');
             if (target.id === 'transliterateTextarea' || target.id === 'cardText' || target.id === 'cardCanvasEditor') target.setAttribute('placeholder', locale() === 'ur' ? 'اردو الفاظ انگریزی حروف میں لکھیں…' : 'Type Urdu using English letters…');

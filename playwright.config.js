@@ -55,6 +55,7 @@ module.exports = defineConfig({
     'first-use-telemetry-integrity.spec.js',
     'finish-task-copy.spec.js',
     'greeting-spelling.spec.js',
+    'android-ime-words.spec.js',
     'home-first-paint-stability.spec.js'
   ],
   timeout: 45000,

@@ -67,6 +67,7 @@ jobs:
           tests/first-use-telemetry-integrity.spec.js
           tests/finish-task-copy.spec.js
           tests/greeting-spelling.spec.js
+          tests/android-ime-words.spec.js
           tests/mobile-editor-activation.spec.js
           tests/home-first-paint-stability.spec.js
           tests/outcome-navigation.spec.js
