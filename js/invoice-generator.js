@@ -3,6 +3,9 @@
     var root = document.querySelector('[data-invoice-generator]');
     var core = window.WriteUrduInvoiceCore;
     var renderer = window.WriteUrduInvoiceDocument;
+    var pdfText = window.WriteUrduInvoicePdfText;
+    var romanLocal = window.WriteUrduRomanLocal;
+    var uiText = window.WriteUrduInvoiceUiUrdu;
     if (!root || !core || !renderer) return;
 
     // Storage: the current draft keeps its original key so existing drafts
@@ -12,7 +15,7 @@
     var HISTORY_KEY = 'writeUrdu.invoiceGenerator.history.v1';
     var BUSINESS_KEY = 'writeUrdu.invoiceGenerator.business.v1';
     var PREFS_KEY = 'writeUrdu.invoiceGenerator.prefs.v1';
-    var HISTORY_LIMIT = 12;
+    var HISTORY_LIMIT = 25;
     var PAGE_WIDTH = 794;
     var PAGE_HEIGHT = 1123;
     var PAGE_GAP = 24;
@@ -66,12 +69,121 @@
     }
     function setStatus(message, type) {
         if (!statusNode) return;
-        statusNode.textContent = message;
+        statusNode.textContent = t(message);
         statusNode.classList.toggle('is-error', type === 'error');
         statusNode.classList.toggle('is-ready', type === 'ready');
         statusNode.classList.add('is-visible');
         window.clearTimeout(toastTimer);
         toastTimer = window.setTimeout(function () { statusNode.classList.remove('is-visible'); }, type === 'error' ? 6000 : 3800);
+    }
+
+    /* ---------- Editor language ---------- */
+    // The editor can be shown in Urdu. It follows the invoice language until
+    // the person picks one with the switch, which is then remembered.
+    var UI_ATTRIBUTES = ['placeholder', 'aria-label', 'title'];
+    var translatedNodes = [];
+    var twinElements = [];
+    var uiObserver = null;
+    function uiLang() {
+        if (!uiText) return 'en';
+        var prefs = readJson(PREFS_KEY) || {};
+        if (prefs.uiLang === 'ur' || prefs.uiLang === 'en') return prefs.uiLang;
+        return state.languageMode === 'urdu' ? 'ur' : 'en';
+    }
+    function t(message) {
+        if (uiLang() !== 'ur') return message;
+        var urdu = uiText.translate(message);
+        return urdu === null ? message : urdu;
+    }
+    function keepsEnglish(element) { return !element || Boolean(element.closest('.inv-page, .inv-thumb-pages, .invoice-about, [data-ui-keep], script, style')); }
+    function translateTextNode(node) {
+        var element = node.parentElement;
+        if (keepsEnglish(element) || (node.wuUrdu !== undefined && node.nodeValue === node.wuUrdu)) return;
+        var value = node.nodeValue, trimmed = value.trim();
+        if (!trimmed || !/[A-Za-z]/.test(trimmed)) return;
+        // English text with an Urdu twin beside it ("Edit ترمیم") is hidden
+        // rather than translated, so the Urdu is not shown twice.
+        if (Array.prototype.some.call(element.children, function (child) { return child.getAttribute('lang') === 'ur'; })) {
+            node.wuEnglish = value; node.wuUrdu = ''; node.nodeValue = ''; translatedNodes.push(node); return;
+        }
+        var sibling = element.nextElementSibling || element.previousElementSibling;
+        var urduTwin = sibling && sibling.getAttribute('lang') === 'ur' && !/^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(sibling.tagName) && /[\u0600-ۿ]/.test(sibling.textContent);
+        if (!element.children.length && urduTwin && !/^(BUTTON|LABEL|OPTION|A)$/.test(element.tagName)) {
+            element.setAttribute('data-wu-twin', ''); twinElements.push(element); return;
+        }
+        var urdu = uiText.translate(trimmed);
+        if (urdu === null) return;
+        node.wuEnglish = value;
+        node.wuUrdu = value.match(/^\s*/)[0] + urdu + value.match(/\s*$/)[0];
+        node.nodeValue = node.wuUrdu;
+        translatedNodes.push(node);
+    }
+    // data-wu-en-placeholder keeps the English, data-wu-en-placeholder-ur the Urdu.
+    function attributeKey(name) { return 'wuEn' + name.charAt(0).toUpperCase() + name.slice(1).replace(/-(.)/g, function (m, c) { return c.toUpperCase(); }); }
+    function translateAttributes(element) {
+        if (keepsEnglish(element)) return;
+        UI_ATTRIBUTES.forEach(function (name) {
+            var value = element.getAttribute(name), key = attributeKey(name);
+            if (!value || value === element.dataset[key + 'Ur']) return;
+            var urdu = uiText.translate(value);
+            if (urdu === null) return;
+            element.dataset[key] = value; element.dataset[key + 'Ur'] = urdu;
+            element.setAttribute(name, urdu);
+        });
+    }
+    function translateTree(scope) {
+        if (scope.nodeType === 3) { translateTextNode(scope); return; }
+        if (scope.nodeType !== 1 || keepsEnglish(scope)) return;
+        var walker = document.createTreeWalker(scope, 4, null), node;
+        while ((node = walker.nextNode())) translateTextNode(node);
+        translateAttributes(scope);
+        Array.prototype.forEach.call(scope.querySelectorAll('[placeholder],[aria-label],[title]'), translateAttributes);
+    }
+    function restoreEnglish() {
+        translatedNodes.forEach(function (node) { if (node.nodeValue === node.wuUrdu) node.nodeValue = node.wuEnglish; delete node.wuUrdu; delete node.wuEnglish; });
+        translatedNodes = [];
+        twinElements.forEach(function (element) { element.removeAttribute('data-wu-twin'); });
+        twinElements = [];
+        $$('[data-wu-en-placeholder],[data-wu-en-aria-label],[data-wu-en-title]').forEach(function (element) {
+            UI_ATTRIBUTES.forEach(function (name) {
+                var key = attributeKey(name);
+                if (element.dataset[key] === undefined) return;
+                if (element.getAttribute(name) === element.dataset[key + 'Ur']) element.setAttribute(name, element.dataset[key]);
+                delete element.dataset[key]; delete element.dataset[key + 'Ur'];
+            });
+        });
+    }
+    function applyUiLanguage() {
+        var lang = uiLang();
+        if (root.dataset.uiLang === lang && (lang === 'en' || uiObserver)) return;
+        root.dataset.uiLang = lang;
+        root.setAttribute('dir', lang === 'ur' ? 'rtl' : 'ltr');
+        var about = $('.invoice-about'); if (about) about.setAttribute('dir', 'ltr');
+        var toggle = $('[data-invoice-ui-lang]');
+        if (toggle) { toggle.textContent = lang === 'ur' ? 'View in English' : 'اردو میں دیکھیں'; toggle.setAttribute('lang', lang === 'ur' ? 'en' : 'ur'); }
+        if (lang === 'ur') {
+            translateTree(root);
+            if (!uiObserver && window.MutationObserver) {
+                uiObserver = new MutationObserver(function (records) {
+                    records.forEach(function (record) {
+                        if (record.type === 'childList') Array.prototype.forEach.call(record.addedNodes, translateTree);
+                        else if (record.type === 'characterData') translateTextNode(record.target);
+                        else if (record.type === 'attributes') translateAttributes(record.target);
+                    });
+                });
+                uiObserver.observe(root, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: UI_ATTRIBUTES });
+            }
+        } else {
+            if (uiObserver) { uiObserver.disconnect(); uiObserver = null; }
+            restoreEnglish();
+        }
+    }
+    function toggleUiLanguage() {
+        var prefs = readJson(PREFS_KEY) || {};
+        prefs.uiLang = uiLang() === 'ur' ? 'en' : 'ur';
+        writeJson(PREFS_KEY, prefs);
+        applyUiLanguage();
+        renderAll();
     }
 
     /* ---------- What the preview shows ---------- */
@@ -89,9 +201,15 @@
     /* ---------- Persistence ---------- */
     function prefsFrom(doc) { return { templateId: doc.templateId, languageMode: doc.languageMode, design: clone(doc.design), currency: doc.currency }; }
     function loadHistory() { var list = readJson(HISTORY_KEY); return Array.isArray(list) ? list.filter(function (entry) { return entry && entry.id; }) : []; }
+    // Logos are the largest part of a saved invoice. If storage runs out,
+    // older copies drop their logo first, and only then are the oldest
+    // invoices left out.
     function saveHistory(list) {
         var trimmed = list.slice(0, HISTORY_LIMIT);
+        if (writeJson(HISTORY_KEY, trimmed)) return trimmed.length;
+        trimmed = trimmed.map(function (entry, index) { if (index === 0 || !entry.seller || !entry.seller.logoDataUrl) return entry; var copy = clone(entry); copy.seller.logoDataUrl = ''; return copy; });
         while (trimmed.length && !writeJson(HISTORY_KEY, trimmed)) trimmed = trimmed.slice(0, Math.floor(trimmed.length / 2));
+        return trimmed.length;
     }
     function upsertHistory(doc) {
         var list = loadHistory().filter(function (entry) { return entry.id !== doc.id; });
@@ -132,14 +250,14 @@
     function showBanner(message, actions) {
         var banner = $('[data-invoice-banner]');
         if (!banner) return;
-        $('[data-invoice-banner-copy]').textContent = message;
+        $('[data-invoice-banner-copy]').textContent = t(message);
         var host = $('[data-invoice-banner-actions]');
         host.innerHTML = '';
         (actions || []).forEach(function (action) {
             var button = document.createElement('button');
             button.type = 'button';
             button.className = action.primary ? 'inv-btn inv-btn-small inv-btn-secondary' : 'inv-link';
-            button.textContent = action.label;
+            button.textContent = t(action.label);
             button.addEventListener('click', function () { banner.hidden = true; action.run(); });
             host.appendChild(button);
         });
@@ -176,6 +294,9 @@
         renderLogoControls();
         renderSavedBusiness();
         var inputMode = $('[data-input-mode-control]'); if (inputMode) inputMode.hidden = state.languageMode === 'english';
+        renderTypingEngine();
+        var taxValue = $('[data-tax-value-field]'); if (taxValue) taxValue.hidden = state.tax.mode === 'per-item';
+        var taxHelp = $('[data-tax-per-item-help]'); if (taxHelp) taxHelp.hidden = state.tax.mode !== 'per-item';
         root.dataset.lang = state.languageMode;
     }
     function renderLogoControls() {
@@ -200,7 +321,9 @@
         return '<div class="inv-item" data-item-id="' + esc(item.id) + '" data-item-index="' + index + '">' +
             '<label class="inv-item-desc"><span class="inv-item-label">Item ' + (index + 1) + '</span><input data-item-field="description" data-urdu-input value="' + esc(item.description) + '" maxlength="' + core.MAX_DESCRIPTION + '" placeholder="Item or service" aria-label="Item ' + (index + 1) + ' description" aria-describedby="' + base + '-err"></label>' +
             '<label class="inv-item-qty"><span class="inv-item-label">Qty</span><input data-item-field="quantity" inputmode="decimal" dir="ltr" value="' + esc(item.quantity) + '" aria-label="Item ' + (index + 1) + ' quantity"></label>' +
+            '<label class="inv-item-unit"><span class="inv-item-label">Unit</span><input data-item-field="unit" dir="auto" list="inv-unit-options" maxlength="' + core.MAX_UNIT + '" value="' + esc(item.unit) + '" placeholder="' + (state.languageMode === 'urdu' ? 'عدد' : 'pcs') + '" aria-label="Item ' + (index + 1) + ' unit"></label>' +
             '<label class="inv-item-price"><span class="inv-item-label">Price</span><input data-item-field="unitPrice" inputmode="decimal" dir="ltr" value="' + esc(item.unitPrice) + '" placeholder="0" aria-label="Item ' + (index + 1) + ' price"></label>' +
+            '<label class="inv-item-tax"><span class="inv-item-label">Tax %</span><input data-item-field="taxRate" inputmode="decimal" dir="ltr" value="' + esc(item.taxRate) + '" placeholder="0" aria-label="Item ' + (index + 1) + ' tax rate"></label>' +
             '<output class="inv-item-amount" data-item-amount aria-label="Item ' + (index + 1) + ' amount">' + esc(money(amount)) + '</output>' +
             '<span class="inv-item-tools"><button type="button" class="inv-icon-btn" data-move-item="-1" aria-label="Move item ' + (index + 1) + ' up"' + (index === 0 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button><button type="button" class="inv-icon-btn" data-move-item="1" aria-label="Move item ' + (index + 1) + ' down"' + (index === state.items.length - 1 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><button type="button" class="inv-icon-btn inv-icon-danger" data-remove-item aria-label="Remove item ' + (index + 1) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 12h8l1-12M9 7V4h6v3"/></svg></button></span>' +
             '<span class="inv-error inv-item-error" id="' + base + '-err" data-item-error></span></div>';
@@ -209,9 +332,23 @@
         if (!itemsHost) return;
         var totals = core.calculateInvoiceTotals(state);
         itemsHost.innerHTML = state.items.map(function (item, index) { return itemRowHtml(item, index, totals.lineAmounts[index]); }).join('');
+        itemsHost.classList.toggle('has-item-tax', state.tax.mode === 'per-item');
+        renderUnitOptions();
         var add = $('[data-invoice-add-item]'); if (add) add.disabled = state.items.length >= core.MAX_ITEMS;
         registerUrduFields();
     }
+    // Unit suggestions follow the invoice language; people can still type any unit.
+    function renderUnitOptions() {
+        var list = document.getElementById('inv-unit-options');
+        if (!list) return;
+        var mode = state.languageMode;
+        if (list.dataset.mode === mode) return;
+        list.dataset.mode = mode;
+        list.innerHTML = core.UNITS.map(function (pair) {
+            return mode === 'urdu' ? '<option value="' + esc(pair[1]) + '">' : mode === 'bilingual' ? '<option value="' + esc(pair[0]) + '"><option value="' + esc(pair[1]) + '">' : '<option value="' + esc(pair[0]) + '">';
+        }).join('');
+    }
+    function newItem() { return { id: 'item_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), description: '', quantity: '1', unit: '', unitPrice: '', taxRate: '' }; }
     function updateItemAmounts() {
         var totals = core.calculateInvoiceTotals(state);
         $$('[data-item-amount]').forEach(function (node, index) { node.textContent = money(totals.lineAmounts[index]); });
@@ -346,6 +483,7 @@
         if (path === 'qr.customCaption') state.qr.captionMode = core.hasMeaningfulText(value) ? 'custom' : 'automatic';
         if (path === 'amountPaid') { syncStatusFromPayment(); renderFieldValues(); }
         if (path === 'qr.purpose' || path === 'design.accent') renderFieldValues();
+        if (path === 'tax.mode') { renderFieldValues(); renderItemsEditor(); }
         clearError(path);
         requestRender(); scheduleSave();
     }
@@ -364,7 +502,7 @@
     function addItem(focus) {
         if (state.items.length >= core.MAX_ITEMS) return;
         leaveDemo();
-        state.items.push({ id: 'item_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), description: '', quantity: '1', unitPrice: '' });
+        state.items.push(newItem());
         renderItemsEditor(); requestRender(); scheduleSave();
         if (focus) { var last = itemsHost.lastElementChild; var input = last && last.querySelector('[data-item-field="description"]'); if (input) input.focus(); }
     }
@@ -378,7 +516,7 @@
     function removeItem(index) {
         var item = state.items[index]; if (!item) return;
         state.items.splice(index, 1);
-        if (!state.items.length) state.items.push({ id: 'item_' + Date.now().toString(36), description: '', quantity: '1', unitPrice: '' });
+        if (!state.items.length) state.items.push(newItem());
         renderItemsEditor(); requestRender(); scheduleSave();
         if (core.isMeaningfulItem(item)) setStatus('Item removed.', 'ready');
     }
@@ -386,7 +524,8 @@
         if (state.languageMode === mode) return;
         state.languageMode = mode;
         syncInputMode();
-        renderFieldValues(); requestRender(); scheduleSave();
+        applyUiLanguage();
+        renderFieldValues(); renderItemsEditor(); requestRender(); scheduleSave();
     }
     function setTemplate(id) {
         if (state.templateId === id) return;
@@ -423,9 +562,9 @@
     function confirmAction(title, copy, okLabel) {
         var dialog = document.querySelector('[data-invoice-confirm-dialog]');
         if (!dialog || typeof dialog.showModal !== 'function') return Promise.resolve(window.confirm(title + '\n\n' + copy));
-        dialog.querySelector('[data-confirm-title]').textContent = title;
-        dialog.querySelector('[data-confirm-copy]').textContent = copy;
-        dialog.querySelector('[data-confirm-ok]').textContent = okLabel;
+        dialog.querySelector('[data-confirm-title]').textContent = t(title);
+        dialog.querySelector('[data-confirm-copy]').textContent = t(copy);
+        dialog.querySelector('[data-confirm-ok]').textContent = t(okLabel);
         dialog.returnValue = '';
         return new Promise(function (resolve) {
             dialog.addEventListener('close', function onClose() { dialog.removeEventListener('close', onClose); resolve(dialog.returnValue === 'confirm'); });
@@ -522,6 +661,44 @@
         }
     }
 
+    /* ---------- Backup, restore and spreadsheet ---------- */
+    function fileStamp() { return todayIso(); }
+    function downloadBackup() {
+        if (core.isMeaningfulDraft(state) && !state.isSample) saveNow();
+        var entries = loadHistory();
+        if (!entries.length) { setStatus('There are no saved invoices to back up yet.', 'error'); return; }
+        var backup = core.createBackup(entries, businessProfile());
+        downloadBlob(new Blob([JSON.stringify(backup, null, 1)], { type: 'application/json' }), 'write-urdu-invoices-backup-' + fileStamp() + '.json');
+        setStatus('Backup downloaded with ' + backup.invoices.length + (backup.invoices.length === 1 ? ' invoice.' : ' invoices.'), 'ready');
+    }
+    function downloadCsv() {
+        if (core.isMeaningfulDraft(state) && !state.isSample) saveNow();
+        var entries = loadHistory();
+        if (!entries.length) { setStatus('There are no saved invoices to export yet.', 'error'); return; }
+        downloadBlob(new Blob([core.historyToCsv(entries)], { type: 'text/csv;charset=utf-8' }), 'write-urdu-invoices-' + fileStamp() + '.csv');
+        setStatus('Spreadsheet downloaded.', 'ready');
+    }
+    var BACKUP_ERRORS = { 'not-backup': 'This file is not a Write-Urdu invoice backup.', 'newer-version': 'This backup was made by a newer version of the page. Reload and try again.', 'too-large': 'This file is too large to be an invoice backup.', unreadable: 'The file could not be read.' };
+    function restoreBackup(file) {
+        if (!file) return;
+        if (file.size > 8 * 1024 * 1024) { setStatus(BACKUP_ERRORS['too-large'], 'error'); return; }
+        var reader = new FileReader();
+        reader.onerror = function () { setStatus(BACKUP_ERRORS.unreadable, 'error'); };
+        reader.onload = function () {
+            var parsed = core.parseBackup(String(reader.result || ''));
+            if (!parsed.ok) { setStatus(BACKUP_ERRORS[parsed.error] || BACKUP_ERRORS['not-backup'], 'error'); return; }
+            if (core.isMeaningfulDraft(state) && !state.isSample) saveNow();
+            var merged = core.mergeHistory(loadHistory(), parsed.invoices, HISTORY_LIMIT);
+            var kept = saveHistory(merged.list);
+            if (parsed.business && !businessProfile()) writeJson(BUSINESS_KEY, parsed.business);
+            renderHistory(); renderSavedBusiness();
+            var message = merged.added || merged.updated ? 'Restored ' + merged.added + (merged.added === 1 ? ' invoice' : ' invoices') + (merged.updated ? ' and updated ' + merged.updated : '') + '.' : 'Everything in this backup is already here.';
+            if (merged.dropped || kept < merged.list.length) message += ' Only the newest ' + Math.min(kept, HISTORY_LIMIT) + ' invoices are kept.';
+            setStatus(message, 'ready');
+        };
+        reader.readAsText(file);
+    }
+
     /* ---------- Validation ---------- */
     function clearError(path) {
         var node = root.querySelector('[data-error-for="' + path + '"]'); if (node) node.textContent = '';
@@ -604,7 +781,8 @@
         var host = exportHost(), pages = Array.prototype.slice.call(host.querySelectorAll('.inv-page'));
         return pages.reduce(function (chain, page) {
             return chain.then(function (list) {
-                return window.html2canvas(page, { backgroundColor: getComputedStyle(page).backgroundColor || '#ffffff', scale: 2.5, useCORS: true, logging: false, width: PAGE_WIDTH, height: PAGE_HEIGHT, windowWidth: 1280, scrollX: 0, scrollY: 0 }).then(function (c) { list.push(c); return list; });
+                var runs = pdfText ? pdfText.collectRuns(page) : [];
+                return window.html2canvas(page, { backgroundColor: getComputedStyle(page).backgroundColor || '#ffffff', scale: 2.5, useCORS: true, logging: false, width: PAGE_WIDTH, height: PAGE_HEIGHT, windowWidth: 1280, scrollX: 0, scrollY: 0 }).then(function (c) { c.textRuns = runs; list.push(c); return list; });
             });
         }, Promise.resolve([]));
     }
@@ -612,7 +790,12 @@
         return capturePages().then(function (canvases) {
             if (!window.jspdf || typeof window.jspdf.jsPDF !== 'function') throw new Error('The PDF library did not load. Use Print and choose “Save as PDF”.');
             var pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
-            canvases.forEach(function (c, index) { if (index) pdf.addPage('a4', 'portrait'); pdf.addImage(c.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, 210, 297, undefined, 'FAST'); });
+            canvases.forEach(function (c, index) {
+                if (index) pdf.addPage('a4', 'portrait');
+                pdf.addImage(c.toDataURL('image/jpeg', 0.94), 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+                // Invisible text over the image makes numbers and English text selectable.
+                if (pdfText && c.textRuns && c.textRuns.length) { try { pdfText.addTextLayer(pdf, c.textRuns, PAGE_WIDTH, 210); } catch (error) { /* the image alone is still a complete invoice */ } }
+            });
             pdf.setProperties({ title: 'Invoice ' + state.invoiceNumber, creator: 'Write-Urdu Invoice Generator' });
             return pdf;
         });
@@ -731,22 +914,122 @@
         if (window.WriteUrduInputMode && window.WriteUrduInputMode.refresh) window.WriteUrduInputMode.refresh();
         enforceFieldDirection();
     }
-    function initTransliteration() {
+    /* ---------- On-device English-letter typing ---------- */
+    // English letters become Urdu on this device by default. Google Input
+    // Tools is only loaded when the person turns on its suggestions, because
+    // it sends each typed word to Google.
+    var BOUNDARY = /[\s,!?;)\]،؟]/;
+    var converting = false;
+    var romanUndo = null;
+    function romanEngine() { var prefs = readJson(PREFS_KEY) || {}; return prefs.romanEngine === 'google' ? 'google' : 'local'; }
+    function localTypingActive(field) {
+        return Boolean(romanLocal) && romanEngine() === 'local' && state.languageMode !== 'english' && field && field.matches && field.matches('[data-urdu-input]') && field.dataset.inputMode === 'roman';
+    }
+    // Converts the Latin word that ends `gap` characters before the caret.
+    function convertWordBeforeCaret(field, gap) {
+        var caret = field.selectionStart;
+        if (caret === null || caret !== field.selectionEnd) return false;
+        var value = field.value, end = caret - gap;
+        var match = value.slice(0, end).match(/[A-Za-z]+(?:'[A-Za-z]+)?$/);
+        if (!match) return false;
+        var word = match[0], start = end - word.length;
+        // Part of an email, link, handle or code such as INV-2026 or a.b: leave it.
+        if (/[\w@./:+\-#]/.test(value.charAt(start - 1))) return false;
+        if (field.dataset.romanKeep === start + ':' + word) return false;
+        var urdu = romanLocal.transliterateWord(word);
+        if (!urdu || urdu === word) return false;
+        var boundary = value.slice(end, caret);
+        var mark = romanLocal.PUNCTUATION[boundary] || boundary;
+        converting = true;
+        field.value = value.slice(0, start) + urdu + mark + value.slice(caret);
+        var position = start + urdu.length + mark.length;
+        field.setSelectionRange(position, position);
+        romanUndo = { field: field, start: start, roman: word, typed: boundary, converted: urdu + mark };
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        converting = false;
+        return true;
+    }
+    function onLocalInput(event) {
+        var field = event.target;
+        if (converting || !localTypingActive(field)) return;
+        if (!/^insert/.test(event.inputType || 'insertText')) return;
+        var caret = field.selectionStart;
+        if (caret && BOUNDARY.test(field.value.charAt(caret - 1))) convertWordBeforeCaret(field, 1);
+    }
+    // Backspace straight after a conversion brings back the English letters,
+    // and that word is then left alone.
+    function onLocalBeforeInput(event) {
+        var field = event.target, undo = romanUndo;
+        if (event.inputType !== 'deleteContentBackward') { if (!converting) romanUndo = null; return; }
+        if (!undo || undo.field !== field || !localTypingActive(field)) return;
+        var caret = field.selectionStart;
+        if (caret !== field.selectionEnd || caret !== undo.start + undo.converted.length || field.value.slice(undo.start, caret) !== undo.converted) return;
+        event.preventDefault();
+        romanUndo = null;
+        converting = true;
+        field.value = field.value.slice(0, undo.start) + undo.roman + field.value.slice(caret);
+        var position = undo.start + undo.roman.length;
+        field.setSelectionRange(position, position);
+        field.dataset.romanKeep = undo.start + ':' + undo.roman;
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        converting = false;
+    }
+    function onLocalKeydown(event) {
+        if (event.key === 'Enter' && !event.isComposing && localTypingActive(event.target) && event.target.tagName === 'INPUT') convertWordBeforeCaret(event.target, 0);
+    }
+    // Leaving a field converts a last word that was never followed by a space.
+    function onLocalBlur(event) {
+        var field = event.target;
+        if (!localTypingActive(field)) return;
+        var value = field.value, match = value.match(/([A-Za-z]+(?:'[A-Za-z]+)?)([.!?]*)$/);
+        if (!match) return;
+        var start = value.length - match[0].length;
+        if (/[\w@./:+\-#]/.test(value.charAt(start - 1)) || field.dataset.romanKeep === start + ':' + match[1]) return;
+        var urdu = romanLocal.transliterateWord(match[1]);
+        if (!urdu || urdu === match[1]) return;
+        converting = true;
+        field.value = value.slice(0, start) + urdu + match[2].replace(/\?/g, '؟');
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        converting = false;
+    }
+    function renderTypingEngine() {
+        var row = $('[data-invoice-google-typing-row]'), box = $('[data-invoice-google-typing]');
+        if (row) row.hidden = state.languageMode === 'english' || !romanLocal;
+        if (box) box.checked = romanEngine() === 'google';
+    }
+    function setRomanEngine(engine) {
+        var prefs = readJson(PREFS_KEY) || {};
+        prefs.romanEngine = engine === 'google' ? 'google' : 'local';
+        writeJson(PREFS_KEY, prefs);
+        if (prefs.romanEngine === 'google') {
+            if (transliterationControl) syncInputMode(); else initTransliteration(true);
+            setStatus('Google Input Tools suggestions are on. Each word you type is sent to Google.', 'ready');
+        } else {
+            if (transliterationControl) { try { transliterationControl.disableTransliteration(); } catch (error) { /* already off */ } }
+            setStatus('English letters now turn into Urdu on this device.', 'ready');
+        }
+        renderTypingEngine();
+    }
+
+    function initTransliteration(force) {
+        if (!force && romanLocal && romanEngine() === 'local') return;
         var google = window.google;
         if (!google || typeof google.load !== 'function' || typeof google.setOnLoadCallback !== 'function') return;
+        function ready() {
+            try {
+                var t = google.elements.transliteration;
+                transliterationControl = new t.TransliterationControl({ sourceLanguage: t.LanguageCode.ENGLISH, destinationLanguage: [t.LanguageCode.URDU], shortcutKey: 'ctrl+g', transliterationEnabled: state.languageMode !== 'english' });
+                window.writeUrduTransliterationControl = transliterationControl;
+                registerUrduFields();
+                document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: transliterationControl } }));
+                syncInputMode();
+            } catch (error) { /* optional enhancement */ }
+        }
         try {
-            google.load('elements', '1', { packages: 'transliteration' });
-            google.setOnLoadCallback(function () {
-                try {
-                    var t = google.elements.transliteration;
-                    transliterationControl = new t.TransliterationControl({ sourceLanguage: t.LanguageCode.ENGLISH, destinationLanguage: [t.LanguageCode.URDU], shortcutKey: 'ctrl+g', transliterationEnabled: state.languageMode !== 'english' });
-                    window.writeUrduTransliterationControl = transliterationControl;
-                    registerUrduFields();
-                    document.dispatchEvent(new CustomEvent('write-urdu:transliteration-ready', { detail: { control: transliterationControl } }));
-                    syncInputMode();
-                } catch (error) { /* optional enhancement */ }
-            });
-        } catch (error) { /* optional enhancement */ }
+            // After the page has loaded, the loader only accepts a callback.
+            if (force) google.load('elements', '1', { packages: 'transliteration', callback: ready });
+            else { google.load('elements', '1', { packages: 'transliteration' }); google.setOnLoadCallback(ready); }
+        } catch (error) { setStatus('Google Input Tools could not be loaded. English letters still turn into Urdu on this device.', 'error'); }
     }
 
     /* ---------- Events ---------- */
@@ -754,6 +1037,7 @@
         ['input', 'change', 'keyup'].forEach(function (type) {
             root.addEventListener(type, function (event) {
                 var target = event.target;
+                if (target && target.matches && target.matches('[data-invoice-google-typing]')) { if (type === 'change') setRomanEngine(target.checked ? 'google' : 'local'); return; }
                 if (!target || !target.closest) return;
                 var field = target.closest('[data-field]'); if (field && field.type !== 'file') { onFieldChange(field); return; }
                 var item = target.closest('[data-item-field]'); if (item) { onItemChange(item); return; }
@@ -761,6 +1045,7 @@
                     var section = target.closest('[data-section]');
                     if (section) { leaveDemo(); var key = section.getAttribute('data-section'); state.sections[key].enabled = section.checked; if (key === 'qr') state.qr.enabled = section.checked; renderFieldValues(); requestRender(); scheduleSave(); }
                     if (target.matches('[data-invoice-logo-input]')) { readLogo(target.files && target.files[0]); target.value = ''; }
+                    if (target.matches('[data-history-restore]')) { restoreBackup(target.files && target.files[0]); target.value = ''; }
                     if (target.matches('[data-invoice-remember-business]')) {
                         if (target.checked) { if (core.hasMeaningfulText(state.seller.name)) { rememberBusiness(); setStatus('Business details will be filled in next time on this device.', 'ready'); } else { target.checked = false; setStatus('Add your business name first.', 'error'); focusField('seller.name'); } }
                         else { removeKey(BUSINESS_KEY); setStatus('Saved business details removed from this device.', 'ready'); }
@@ -768,6 +1053,20 @@
                 }
             });
         });
+        root.addEventListener('input', onLocalInput, true);
+        root.addEventListener('beforeinput', onLocalBeforeInput, true);
+        root.addEventListener('keydown', onLocalKeydown, true);
+        root.addEventListener('blur', onLocalBlur, true);
+        // Google's control replaces the word a moment after the key is
+        // released and fires no event, so read the field again shortly after.
+        root.addEventListener('keyup', function (event) {
+            var field = event.target;
+            if (!transliterationControl || romanEngine() !== 'google' || !field.matches || !field.matches('[data-urdu-input]')) return;
+            window.setTimeout(function () { field.dispatchEvent(new Event('input', { bubbles: true })); }, 450);
+        });
+        // Google's control turns itself back on whenever the typing mode
+        // changes, so keep it off while on-device conversion is in use.
+        root.addEventListener('write-urdu:input-mode-change', function () { if (transliterationControl && romanEngine() === 'local') { try { transliterationControl.disableTransliteration(); } catch (error) { /* already off */ } } });
         itemsHost.addEventListener('keydown', function (event) {
             if (event.key !== 'Enter' || !event.target.matches('[data-item-field]')) return;
             event.preventDefault();
@@ -792,6 +1091,9 @@
             else if (target.matches('[data-invoice-start-own]')) startOwn();
             else if (target.matches('[data-invoice-new]')) newInvoice();
             else if (target.matches('[data-invoice-history]')) openHistory();
+            else if (target.matches('[data-invoice-ui-lang]')) toggleUiLanguage();
+            else if (target.matches('[data-history-backup]')) downloadBackup();
+            else if (target.matches('[data-history-csv]')) downloadCsv();
             else if (target.matches('[data-invoice-print]')) printInvoice();
             else if (target.matches('[data-invoice-pdf]')) downloadPdf();
             else if (target.matches('[data-invoice-png]')) downloadPng();
@@ -843,6 +1145,7 @@
             } else renderAll();
         }
         syncInputMode();
+        applyUiLanguage();
         setView('edit');
     }
 

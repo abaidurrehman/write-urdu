@@ -44,7 +44,7 @@
     var URDU_MONTHS = ['جنوری', 'فروری', 'مارچ', 'اپریل', 'مئی', 'جون', 'جولائی', 'اگست', 'ستمبر', 'اکتوبر', 'نومبر', 'دسمبر'];
     var EN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var TEMPLATE_NAMES = { modern: 'Modern Professional', 'classic-urdu': 'Classic Urdu', contemporary: 'Contemporary Business' };
-    var URDU_PATTERN = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
+    var URDU_PATTERN = /[\u0600-ۿݐ-ݿﭐ-﷿ﹰ-\ufeff]/;
 
     function esc(value) {
         return String(value === undefined || value === null ? '' : value).replace(/[&<>"']/g, function (char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]; });
@@ -167,13 +167,24 @@
         return '<div class="inv-parties">' + from + to + status + '</div>';
     }
     function tableHead(doc) {
-        return '<thead><tr><th class="inv-col-n">#</th><th class="inv-col-desc">' + labelFor(doc, 'item', { stack: true }) + '</th><th class="inv-col-qty">' + labelFor(doc, 'qty', { stack: true }) + '</th><th class="inv-col-num">' + labelFor(doc, 'price', { stack: true }) + '</th><th class="inv-col-num">' + labelFor(doc, 'amount', { stack: true }) + ' <span class="inv-cur">(' + esc(doc.currency) + ')</span></th></tr></thead>';
+        var taxColumn = core.hasItemTax(doc) ? '<th class="inv-col-tax">' + labelFor(doc, 'tax', { stack: true }) + '</th>' : '';
+        return '<thead><tr><th class="inv-col-n">#</th><th class="inv-col-desc">' + labelFor(doc, 'item', { stack: true }) + '</th><th class="inv-col-qty">' + labelFor(doc, 'qty', { stack: true }) + '</th><th class="inv-col-num">' + labelFor(doc, 'price', { stack: true }) + '</th>' + taxColumn + '<th class="inv-col-num">' + labelFor(doc, 'amount', { stack: true }) + ' <span class="inv-cur">(' + esc(doc.currency) + ')</span></th></tr></thead>';
+    }
+    // Quantity and its unit read as one phrase ("4 kg", "2 گھنٹہ"); the
+    // number stays left-to-right inside Urdu pages.
+    function quantityHtml(item) {
+        return ltr(item.quantity || '0') + (has(item.unit) ? ' ' + userText(item.unit.trim(), 'span', 'inv-unit') : '');
+    }
+    function taxRateText(item) {
+        var rate = core.itemTaxRate(item);
+        return rate > 0 ? ltr(String(Math.round(rate * 100) / 100) + '%') : '<span class="inv-muted">—</span>';
     }
     function itemRows(doc, view, money) {
         var rows = [];
+        var taxColumn = core.hasItemTax(doc);
         doc.items.forEach(function (item, index) {
             if (!core.isMeaningfulItem(item)) return;
-            rows.push('<tr><td class="inv-col-n">' + ltr(rows.length + 1) + '</td><td class="inv-col-desc">' + (has(item.description) ? userText(item.description) : placeholder('—')) + '</td><td class="inv-col-qty">' + ltr(item.quantity || '0') + '</td><td class="inv-col-num">' + ltr(money.plain(core.minor(item.unitPrice))) + '</td><td class="inv-col-num">' + ltr(money.plain(view.totals.lineAmounts[index])) + '</td></tr>');
+            rows.push('<tr><td class="inv-col-n">' + ltr(rows.length + 1) + '</td><td class="inv-col-desc">' + (has(item.description) ? userText(item.description) : placeholder('—')) + '</td><td class="inv-col-qty">' + quantityHtml(item) + '</td><td class="inv-col-num">' + ltr(money.plain(core.minor(item.unitPrice))) + '</td>' + (taxColumn ? '<td class="inv-col-tax">' + taxRateText(item) + '</td>' : '') + '<td class="inv-col-num">' + ltr(money.plain(view.totals.lineAmounts[index])) + '</td></tr>');
         });
         if (!rows.length) rows.push('<tr class="inv-row-empty"><td class="inv-col-n">' + ltr(1) + '</td><td class="inv-col-desc">' + placeholder(doc.languageMode === 'urdu' ? 'چیز یا خدمت کی تفصیل' : 'Item or service description') + '</td><td class="inv-col-qty">' + ltr(1) + '</td><td class="inv-col-num">' + ltr(money.plain(0)) + '</td><td class="inv-col-num">' + ltr(money.plain(0)) + '</td></tr>');
         return rows;
