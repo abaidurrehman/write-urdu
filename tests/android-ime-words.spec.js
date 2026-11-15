@@ -95,6 +95,45 @@ test.describe('Android keyboard', () => {
     expect(await caretAtEnd(editor)).toBe(true);
   });
 
+  test('replies that arrive together while the next word is composing all land in place', async ({ page }) => {
+    const editor = await openWriter(page, { control: 0, committed: 0 });
+    const held = [];
+    await page.route(/inputtools\.google\.com\/request/, route => { held.push(route); });
+    await imeType(page, ['assalam', 'o']);
+    await expect.poll(() => held.length).toBe(2);
+    // The keyboard is now building the next word when both replies arrive.
+    const cdp = await page.context().newCDPSession(page);
+    const unidentified = { type: 'rawKeyDown', windowsVirtualKeyCode: 229, key: 'Unidentified', code: '' };
+    await cdp.send('Input.dispatchKeyEvent', unidentified);
+    await cdp.send('Input.imeSetComposition', { text: 'ala', selectionStart: 3, selectionEnd: 3 });
+    for (const route of held.splice(0)) {
+      const text = new URL(route.request().url()).searchParams.get('text');
+      await route.fulfill({
+        status: 200,
+        headers: { 'access-control-allow-origin': '*' },
+        contentType: 'application/json',
+        body: JSON.stringify(['SUCCESS', [[text, [PROVIDER[text] || text]]]])
+      });
+    }
+    await page.waitForTimeout(300);
+    await expect(editor).toHaveValue('assalam o ala', { timeout: 1000 });
+    await page.unroute(/inputtools\.google\.com\/request/);
+    await page.route(/inputtools\.google\.com\/request/, route => {
+      const text = new URL(route.request().url()).searchParams.get('text');
+      return route.fulfill({
+        status: 200,
+        headers: { 'access-control-allow-origin': '*' },
+        contentType: 'application/json',
+        body: JSON.stringify(['SUCCESS', [[text, [PROVIDER[text] || text]]]])
+      });
+    });
+    await cdp.send('Input.insertText', { text: 'alaikum' });
+    await cdp.send('Input.dispatchKeyEvent', unidentified);
+    await cdp.send('Input.insertText', { text: ' ' });
+    await expect(editor).toHaveValue('السلام علیکم ');
+    expect(await caretAtEnd(editor)).toBe(true);
+  });
+
   test('direct mode keeps keyboard words exactly as typed', async ({ page }) => {
     const counts = { control: 0, committed: 0 };
     const editor = await openWriter(page, counts);

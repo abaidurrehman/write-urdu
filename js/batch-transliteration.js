@@ -283,18 +283,23 @@
             var selectionStart = field.selectionStart;
             var selectionEnd = field.selectionEnd;
             field.value = value.slice(0, item.start) + urdu + value.slice(end);
-            pending.concat(ready).forEach(function (other) { if (other.start > item.start) other.start += delta; });
+            pending.concat(ready.map(function (entry) { return entry.item; })).forEach(function (other) { if (other.start > item.start) other.start += delta; });
             var shift = function (position) { return position >= end ? position + delta : position; };
             if (typeof field.setSelectionRange === 'function') field.setSelectionRange(shift(selectionStart), shift(selectionEnd));
             field.dispatchEvent(new Event('input', { bubbles: true }));
-            if (document.activeElement === field) correctFieldNearCaret(field);
         }
 
         function flush() {
             if (composing) return;
-            var items = ready;
-            ready = [];
-            items.forEach(function (entry) { apply(entry.item, entry.urdu); });
+            // Take one reply at a time so the ones still queued are shifted
+            // when an earlier word changes length.
+            while (ready.length) {
+                var entry = ready.shift();
+                apply(entry.item, entry.urdu);
+            }
+            // Greeting fixes can change lengths too, so run them only once no
+            // word is waiting for its reply.
+            if (!pending.length && document.activeElement === field) correctFieldNearCaret(field);
         }
 
         function convertWordBeforeCaret() {
