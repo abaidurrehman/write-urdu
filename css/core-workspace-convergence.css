@@ -96,3 +96,34 @@ body[data-wu-taxonomy-synced] #work {
     min-width: max-content;
   }
 }
+
+/* Desktop first viewport (2026-10-18). At 1366x768 only ~234px of the editor
+   was visible: the "Two ways to write Urdu" explainer and the example/Ctrl+G
+   strip repeated the hero lede above it. Phones already drop both
+   (mobile-home-task-first.css); larger screens now match. The idle panel
+   collapses to its working parts, so the long-passage prompt, Convert action
+   and status still appear when batch transliteration needs them. */
+@media (min-width: 768px) {
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel {
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-title],
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-guide],
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-note] {
+    display: none !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-prompt]:not([hidden]) {
+    margin-top: 6px;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-helper {
+    display: none !important;
+  }
+}

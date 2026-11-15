@@ -1,0 +1,77 @@
+name: Actions storage housekeeping
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 4 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cleanup-actions-storage.yml'
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: actions-storage-housekeeping
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Delete temporary artifacts older than 7 days
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rows="$(mktemp)"
+          trap 'rm -f "$rows"' EXIT
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/artifacts?per_page=100" --jq '.artifacts[] | [.id, .created_at, .name] | @tsv' > "$rows"
+          cutoff="$(date -u -d '7 days ago' +%s)"
+          removed=0
+          while IFS=$'\t' read -r artifact_id created_at artifact_name; do
+            [[ -n "$artifact_id" ]] || continue
+            created="$(date -u -d "$created_at" +%s)"
+            if (( created < cutoff )); then
+              echo "Deleting old artifact $artifact_name ($artifact_id)"
+              gh api -X DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/$artifact_id" >/dev/null
+              removed=$((removed + 1))
+            fi
+          done < "$rows"
+          echo "Deleted $removed old artifacts" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Prune old logs while retaining workflow history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rows="$(mktemp)"
+          trap 'rm -f "$rows"' EXIT
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs?per_page=100" --jq '.workflow_runs[] | [.id, .created_at, .status, .conclusion] | @tsv' > "$rows"
+          regular_cutoff="$(date -u -d '7 days ago' +%s)"
+          failure_cutoff="$(date -u -d '14 days ago' +%s)"
+          removed=0
+          attempted=0
+          shard=$(( $(date -u +%s) / 86400 % 20 ))
+          # Rotate through older runs across 20 days to bound API requests.
+          while IFS=$'\t' read -r run_id created_at run_status conclusion; do
+            [[ -n "$run_id" && "$run_status" == "completed" ]] || continue
+            if (( run_id % 20 != shard )); then continue; fi
+            created="$(date -u -d "$created_at" +%s)"
+            cutoff="$regular_cutoff"
+            if [[ "$conclusion" == "failure" ]]; then cutoff="$failure_cutoff"; fi
+            if (( created < cutoff )); then
+              attempted=$((attempted + 1))
+              if gh api -X DELETE "repos/${GITHUB_REPOSITORY}/actions/runs/$run_id/logs" >/dev/null 2>&1; then
+                removed=$((removed + 1))
+              fi
+              if (( attempted >= 250 )); then break; fi
+              sleep 0.35
+            fi
+          done < "$rows"
+          echo "Deleted logs for $removed old workflow runs; recent diagnostics and run records kept" >> "$GITHUB_STEP_SUMMARY"

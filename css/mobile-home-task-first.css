@@ -48,6 +48,28 @@
     margin: 6px 0 6px !important;
   }
 
+  /* The static "Two ways to write Urdu" explainer repeats the hero lede and
+     cost ~107px above the writer. On phones, keep only the panel's working
+     parts: the long-passage prompt, Convert action and status appear inline
+     when batch.js un-hides them; an idle panel collapses to nothing. */
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel {
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-title],
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-guide],
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-note] {
+    display: none !important;
+  }
+
+  body.wu-v2-shell[data-wu-core-workspace="basic"] .batch-transliteration-panel [data-batch-prompt]:not([hidden]) {
+    margin-top: 6px;
+  }
+
   body.wu-v2-shell[data-wu-core-workspace="basic"][data-wu-basic-command-toolbar="true"] .wu-basic-command-toolbar {
     flex-wrap: wrap !important;
     gap: 5px !important;

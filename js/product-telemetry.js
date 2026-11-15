@@ -19,6 +19,12 @@
     var currentInputMode = 'unknown';
     var outcomeHooksInstalled = false;
     var copyWatchToken = 0;
+    // A native copy (Ctrl+C, context menu, long-press) of writer text is a
+    // completion. Count at most one per window, and never while a Copy button
+    // is running, because its selection fallback also fires a copy event.
+    var NATIVE_COPY_WINDOW_MS = 10000;
+    var lastNativeCopyAt = 0;
+    var buttonCopyUntil = 0;
     var trackedOnce = Object.create(null);
     var SHARE_REFERRAL_KEY = 'writeUrdu.shareReferral.v1';
     var REFERRAL_DESTINATION_TOOLS = { basic_editor: true, qr_generator: true, urdu_cards: true };
@@ -362,9 +368,11 @@
 
     function trackWriterFunnel() {
         if (!writerFunnelEligible()) return;
-        trackOnce('writer-first-input', 'writer_first_input');
         var text = textLength() === null ? '' : String(editorReader() || '');
         var trimmedLength = text.trim().length;
+        // First input means text reached the editor. Mode taps, toolbar clicks
+        // and modifier keys on an empty editor are interactions, not input.
+        if (trimmedLength > 0) trackOnce('writer-first-input', 'writer_first_input');
         if (URDU_CHAR_PATTERN.test(text)) {
             var liveInputMode = selectedInputMode();
             trackOnce('writer-first-urdu-success', 'writer_first_urdu_success', {
@@ -399,14 +407,30 @@
         if (writerFunnelEligible()) trackOnce('writer-focused', 'writer_focused');
     }
 
+    function trackNativeCopy() {
+        var now = Date.now();
+        if (now < buttonCopyUntil || now - lastNativeCopyAt < NATIVE_COPY_WINDOW_MS) return;
+        if (!textLength()) return;
+        lastNativeCopyAt = now;
+        trackOutcome('copy_completed', { format: 'native', success: true });
+    }
+
     function attachTextarea(node) {
         if (!node) return false;
         editorReader = function () { return node.value; };
-        ['input', 'keyup', 'paste', 'change'].forEach(function (name) {
+        node.addEventListener('copy', function (event) {
+            if (event.isTrusted) trackNativeCopy();
+        });
+        ['input', 'paste', 'change'].forEach(function (name) {
             node.addEventListener(name, function (event) {
                 if (event.isTrusted) markEngaged();
             }, { passive: true });
         });
+        // A keyup alone (Shift/Alt layout switch, arrows) changes no text: it
+        // keeps an engaged session active but does not start engagement.
+        node.addEventListener('keyup', function (event) {
+            if (event.isTrusted) noteActivity();
+        }, { passive: true });
         node.addEventListener('focus', noteWriterFocus, { passive: true });
         return true;
     }
@@ -423,9 +447,11 @@
         if (!window.tinymce || !window.tinymce.activeEditor) return false;
         var editor = window.tinymce.activeEditor;
         editorReader = function () { return editor.getContent({ format: 'text' }); };
-        editor.on('input change keyup paste', markEngaged);
+        editor.on('input change paste', markEngaged);
+        editor.on('keyup', noteActivity);
         editor.on('input keyup paste', trackContinuationMeaningfulStart);
         editor.on('focus', noteWriterFocus);
+        editor.on('copy', trackNativeCopy);
         return true;
     }
 
@@ -473,6 +499,16 @@
         }
     }
 
+    // A deliberate writer action that is not a completed task (for example
+    // choosing or using Speak Urdu). It engages the session and keeps the
+    // voice input mode for the summary, but never records a writer outcome.
+    function trackInteraction(name, detail) {
+        detail = detail || {};
+        markEngaged();
+        if (detail.input_mode === 'voice') currentInputMode = 'voice';
+        track(name, detail);
+    }
+
     function watchCopyConfirmation() {
         copyWatchToken += 1;
         var token = copyWatchToken;
@@ -505,6 +541,7 @@
             if (!closest) return;
 
             if (closest('[data-copy-target], [data-clipboard-target]')) {
+                buttonCopyUntil = Date.now() + 3000;
                 watchCopyConfirmation();
                 noteActivity();
                 return;
@@ -542,8 +579,10 @@
                 return;
             }
 
+            // The font guard cancels the user's click and replays it with
+            // button.click(); count only the trusted click as the attempt.
             var cardExport = closest('[data-card-action="download"], [data-card-action="share"]');
-            var cardRoot = cardExport && closest('[data-card-studio]');
+            var cardRoot = cardExport && event.isTrusted && closest('[data-card-studio]');
             if (cardRoot) {
                 markEngaged();
                 track('card_studio_export_attempted', { card_mode: cardRoot.getAttribute('data-card-ui-mode') || 'quick' });
@@ -913,6 +952,7 @@
         trackOnce: trackOnce,
         engage: markEngaged,
         trackOutcome: trackOutcome,
+        trackInteraction: trackInteraction,
         trackContinuationPath: trackContinuationPath,
         shareReferralReady: trackShareReferralDestinationReady,
         rememberContinuationContext: rememberContinuationContext,
