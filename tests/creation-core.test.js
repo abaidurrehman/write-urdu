@@ -3,6 +3,7 @@ const cardCore = require('../js/card-studio-core.js');
 const interaction = require('../js/card-studio-interaction-core.js');
 const socialCore = require('../js/social-maker-core.js');
 const templates = require('../js/template-library-core.js');
+const backgrounds = require('../js/card-background-registry.js');
 
 assert.ok(cardCore.PRESETS.length >= 4, 'Card Studio must retain its required output presets');
 assert.ok(cardCore.TEMPLATES.length >= 9, 'Card Studio must retain its core design templates');
@@ -45,6 +46,18 @@ assert.equal(
   'Template category counts must describe the current registry'
 );
 assert.deepEqual(templates.validateRegistry(templates.TEMPLATES), [], 'Template registry must remain internally valid');
+for (const category of ['education', 'business']) {
+  const designs = templates.TEMPLATES.filter((template) => template.category === category);
+  assert.equal(designs.length, 6, `${category} must retain its six templates`);
+  assert.ok(designs.every((template) => template.backgroundId), `${category} templates must use shared designer artwork`);
+  assert.ok(designs.every((template) => backgrounds.getBackgroundById(template.backgroundId)), `${category} templates must resolve registered artwork`);
+  assert.equal(new Set(designs.map((template) => template.backgroundId)).size, 6, `${category} designs must not repeat artwork`);
+  assert.ok(designs.every((template) => template.canvas.width === 1080 && template.canvas.height === 1350), `${category} artwork must use its composed 4:5 canvas`);
+  assert.ok(designs.every((template) => template.recommendedFonts[0] === 'Noto Nastaliq Urdu'), `${category} templates must lead with Nastaliq`);
+  const standalone = templates.applyToCardProject(cardCore, cardCore.createDefaultCardProject(''), designs[0], { useSampleText: true });
+  assert.equal(standalone.libraryBackgroundId, designs[0].backgroundId, `${category} design must reach Card Studio`);
+  assert.equal(standalone.text.value, designs[0].sampleText, `${category} template must open with its Urdu sample`);
+}
 const poetryTemplate = templates.getTemplateBySlug('quiet-morning-verse');
 assert.ok(poetryTemplate, 'Template lookup by slug must keep working');
 

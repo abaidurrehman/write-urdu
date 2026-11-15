@@ -40,7 +40,8 @@
         { id: 'emerald', baseTemplateId: 'emerald', backgroundColor: '#082c1d', gradientId: 'emerald-night', fontFamily: 'Noto Nastaliq Urdu', textColor: '#fffdf2', accent: '#d8f36a', align: 'center', verticalAlign: 'center', lineHeight: 1.8 },
         { id: 'paper', baseTemplateId: 'paper', backgroundColor: '#f5ead7', fontFamily: 'Noto Nastaliq Urdu', textColor: '#3d2b1f', accent: '#a66a36', align: 'right', verticalAlign: 'center', lineHeight: 1.8 },
         { id: 'photo', baseTemplateId: 'photo-quote', backgroundColor: '#263238', fontFamily: 'Noto Naskh Arabic', textColor: '#ffffff', accent: '#ffffff', align: 'center', verticalAlign: 'bottom', lineHeight: 1.6, overlayOpacity: .42 },
-        { id: 'education', baseTemplateId: 'minimal-white', backgroundColor: '#eef7ff', fontFamily: 'Noto Naskh Arabic', textColor: '#163b59', accent: '#1d5d8f', align: 'right', verticalAlign: 'center', lineHeight: 1.5 },
+        { id: 'education', baseTemplateId: 'classic-nastaliq', backgroundColor: '#eef7ff', fontFamily: 'Noto Nastaliq Urdu', textColor: '#163b59', accent: '#1d5d8f', align: 'center', verticalAlign: 'center', lineHeight: 1.75 },
+        { id: 'business', baseTemplateId: 'classic-nastaliq', backgroundColor: '#f4efe4', fontFamily: 'Noto Nastaliq Urdu', textColor: '#203b34', accent: '#b48a3e', align: 'center', verticalAlign: 'center', lineHeight: 1.75 },
         { id: 'sunflower', baseTemplateId: 'sunflower-bloom', backgroundColor: '#fffdf4', fontFamily: 'Noto Nastaliq Urdu', textColor: '#26382b', accent: '#d7a51a', align: 'center', verticalAlign: 'center', lineHeight: 1.8 },
         { id: 'gold', baseTemplateId: 'golden-mandala', backgroundColor: '#f5c84b', fontFamily: 'Noto Naskh Arabic', textColor: '#2d2414', accent: '#3f2e14', align: 'center', verticalAlign: 'center', lineHeight: 1.65 },
         { id: 'botanical', baseTemplateId: 'botanical-frame', backgroundColor: '#f5f2e8', fontFamily: 'Noto Nastaliq Urdu', textColor: '#1d3b2a', accent: '#277044', align: 'right', verticalAlign: 'center', lineHeight: 1.8 }
@@ -92,14 +93,14 @@
             'ایمان دل کو مضبوط بناتا ہے۔', 'ہر موسم اپنے ساتھ برکت لاتا ہے۔'
         ],
         education: [
-            'علم کا سفر جاری رکھیں۔', 'آج کا سبق، کل کی کامیابی۔',
-            'مطالعہ سوچ کو نئی وسعت دیتا ہے۔', 'ایک اچھی کتاب، ایک اچھا دوست۔',
-            'سیکھتے رہیے، آگے بڑھتے رہیے۔', 'اپنا تعلیمی مقصد واضح رکھیے۔'
+            'آج کا سبق، کل کی کامیابی۔', 'کل سائنس کی جماعت میں پانی کے چکر پر گفتگو ہوگی۔',
+            'ہر روز کا تھوڑا سا مطالعہ، بڑی کامیابی کی بنیاد ہے۔', 'آج کی فہرست: ایک سبق، دو کہانیاں، اور بہت سے سوال۔',
+            'اطلاع: سالانہ امتحانات کا نیا شیڈول جاری کر دیا گیا ہے۔', 'اس ہفتے میں روزانہ بیس منٹ مطالعہ کروں گا۔'
         ],
         business: [
-            'نئی سوچ، نئی کامیابی۔', 'اعلان: ایک بہتر کل کی طرف قدم۔',
-            'اچھا کام، مضبوط اعتماد۔', 'آپ کی خدمت ہماری ترجیح ہے۔',
-            'ٹیم ورک سے بڑے خواب حقیقت بنتے ہیں۔', 'سادہ خیال، مضبوط برانڈ۔'
+            'ہماری نئی شاخ کا افتتاح جمعہ کو ہوگا۔', 'اعتماد، مستقل مزاجی اور اچھا کام ہماری پہچان ہیں۔',
+            'پیش ہے ہمارا نیا مجموعہ، سوچ سمجھ کر بنایا گیا—آپ کے لیے۔', 'اب آپ کے آرڈرز کی ترسیل پہلے سے زیادہ تیز اور آسان ہے۔',
+            'ہماری کامیابی، ہر ساتھی کی محنت کا نتیجہ ہے۔', 'سادہ خیال۔ واضح پہچان۔'
         ],
         events: [
             'آپ کی خوشی ہماری خوشی ہے۔', 'خوشیوں بھرا دن آپ کا منتظر ہے۔',
@@ -107,13 +108,32 @@
             'خاندان کے ساتھ ہر لمحہ یادگار ہے۔', 'آپ کو اس خوب صورت موقع پر خوش آمدید۔'
         ]
     };
+    var CATEGORY_DESCRIPTIONS = {
+        education: [
+            'Illuminated paper layout for lesson summaries, class notes and short Urdu explanations.',
+            'A woven Phulkari frame for welcoming classroom notes and school messages.',
+            'Warm sunrise artwork for study reminders, encouragement and learning goals.',
+            'A Lahore journal scene for book lists, reading recommendations and literary notices.',
+            'An asymmetric editorial layout for school dates and announcements that need to scan quickly.',
+            'Soft glass-like colour fields for personal study goals and progress notes.'
+        ],
+        business: [
+            'Black-and-gold stationery for business openings and formal announcements.',
+            'A restrained geometric composition for professional principles and concise quotations.',
+            'Bright celebration artwork for product launches, new arrivals and special offers.',
+            'Minimal cream stationery for clear service notices and customer updates.',
+            'A warm interior composition for team appreciation and workplace messages.',
+            'A bold editorial panel for concise brand statements and company identity.'
+        ]
+    };
     // Designer artwork from the shared card background registry, chosen per template for its
-    // name and mood (WU-CARD-ART-001). Art templates open at the 4:5 size the artwork is
-    // composed for; education and business templates keep their flat layouts and landscape sizes.
+    // name and mood. Every category uses the same 4:5 artwork and editable Card Studio path.
     var DESIGNS = {
         poetry: ['dawn-meadow-sunrise', 'moonlit-poetry-night', 'ink-moon-poetry', 'manuscript-paper-ink', 'rose-garden-blush', 'ink-wash-poetry', 'old-lahore-journal', 'black-gold-classic', 'rain-memory-window', 'ajrak-heritage', 'rose-mist-affection', 'quiet-moon-sky'],
         social: ['editorial-terracotta-block', 'friendship-bright-modern', 'self-respect-black-sand', 'minimal-cream-poetry', 'pastel-glass', 'lantern-sunrise', 'window-light-tea', 'truck-art-modern-bloom'],
         religious: ['eid-morning-gold', 'ramadan-lantern-night', 'jumma-geometry-light', 'emerald-prayer-light', 'moonlit-lakeside', 'jumma-midnight-silhouette', 'jumma-ivory-geometry', 'regal-gold-arabesque'],
+        education: ['manuscript-paper-ink', 'phulkari-bagh-madder', 'dawn-meadow-sunrise', 'old-lahore-journal', 'editorial-terracotta-block', 'pastel-glass'],
+        business: ['black-gold-classic', 'self-respect-black-sand', 'celebration-balloons', 'minimal-cream-poetry', 'family-warm-interior', 'editorial-terracotta-block'],
         events: ['royal-mughal-emerald', 'celebration-balloons', 'warm-paper-reflection', 'maroon-wedding', 'phulkari-bagh-madder', 'peacock-festival']
     };
     var ART_CANVAS = { width: 1080, height: 1350 };
@@ -125,8 +145,8 @@
         poetry: ['cream', 'night', 'clean', 'emerald', 'paper', 'photo', 'sunflower', 'gold', 'botanical'],
         social: ['clean', 'emerald', 'paper', 'photo', 'sunflower', 'gold', 'botanical', 'cream'],
         religious: ['emerald', 'gold', 'night', 'paper', 'sunflower', 'botanical', 'cream', 'photo'],
-        education: ['education', 'education', 'emerald', 'botanical', 'cream', 'night'],
-        business: ['clean', 'emerald', 'night', 'botanical', 'paper', 'gold'],
+        education: ['education', 'education', 'education', 'education', 'education', 'education'],
+        business: ['business', 'business', 'business', 'business', 'business', 'business'],
         events: ['sunflower', 'gold', 'botanical', 'cream', 'night', 'clean']
     };
 
@@ -145,7 +165,8 @@
         var dimension = backgroundId ? ART_CANVAS : findDimension(index, categoryId);
         var name = NAMES[categoryId][index];
         var slug = slugify(name);
-        var description = 'A polished ' + category.label.toLowerCase() + ' design for Urdu writing, sharing and local PNG export.';
+        var categoryDescriptions = CATEGORY_DESCRIPTIONS[categoryId];
+        var description = categoryDescriptions ? categoryDescriptions[index] : 'A polished ' + category.label.toLowerCase() + ' design for Urdu writing, sharing and local PNG export.';
         var layers = [
             { id: 'background', type: 'background', locked: true },
             { id: 'accent', type: 'decoration', locked: true, motif: style.id },
