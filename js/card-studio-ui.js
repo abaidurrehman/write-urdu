@@ -70,14 +70,29 @@
             button.setAttribute('aria-pressed', selected ? 'true' : 'false');
         });
     }
+    // A step tap takes the person to that step: scroll its first visible panel into view and focus its
+    // first control, so on phones the step bar actually reaches the text box (WU-UXR-002 Slice E, CARD-UX-001).
+    function revealStep(step) {
+        var panel = Array.prototype.find.call(root.querySelectorAll('[data-card-step-panel][data-card-step="' + step + '"]'), function (node) {
+            return !node.hidden && node.getClientRects().length > 0;
+        });
+        if (!panel) return;
+        var reduce = Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        if (panel.scrollIntoView) panel.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+        var target = panel.querySelector('[data-card-step-focus]') || Array.prototype.find.call(panel.querySelectorAll('textarea, input, select, button, a[href]'), function (node) {
+            return !node.disabled && node.getClientRects().length > 0;
+        });
+        if (target && target.focus) target.focus({ preventScroll: true });
+    }
     function setStep(step) {
         if (steps.indexOf(step) === -1) return;
         commitEditing();
         if (step !== 'content' && app && app.getState && !String(app.getState().text.value || '').trim()) {
             ui.activeStep = 'content'; syncSteps(); announce('Add card text before moving to the next step.');
-            var text = root.querySelector('#cardText'); if (text) text.focus(); return;
+            revealStep('content'); return;
         }
         ui.activeStep = step; syncSteps(); announce(labels[step] + ' step');
+        revealStep(step);
     }
     function setMode(mode) {
         if (mode !== 'quick' && mode !== 'advanced') return;
@@ -185,6 +200,7 @@
     function bind() {
         root.querySelectorAll('button[data-card-step]').forEach(function (button) { button.addEventListener('click', function () { setStep(button.dataset.cardStep); }); });
         root.querySelectorAll('[data-card-ui-mode]').forEach(function (button) { button.addEventListener('click', function () { setMode(button.dataset.cardUiMode); }); });
+        root.querySelectorAll('.card-studio-skip').forEach(function (link) { link.addEventListener('click', function (event) { event.preventDefault(); setStep('content'); }); });
         root.querySelectorAll('[data-card-use-case]').forEach(function (button) { button.addEventListener('click', selectUseCase); });
         root.querySelectorAll('[data-card-content-action]').forEach(function (button) { button.addEventListener('click', contentAction); });
         root.querySelectorAll('[data-card-ui-action]').forEach(function (button) {
@@ -198,6 +214,8 @@
         });
         document.addEventListener('write-urdu:locale-change', function () { syncSteps(); applyFacebookPresentation(); ownImageShareLabels(); });
         document.addEventListener('write-urdu:card-interaction-state', syncInteractionState);
+        // Panels mounted after start-up (the background collection) must follow the active step too (CARD-UX-009).
+        document.addEventListener('write-urdu:card-studio-panel-mounted', syncSteps);
         if (role === 'facebook') document.addEventListener('write-urdu:card-rendered', enforceFacebookRole);
         syncInteractionState(); syncSteps(); updateHistoryButtons(); ownImageShareLabels();
     }
@@ -218,7 +236,7 @@
         applyFacebookPresentation();
         enforceFacebookRole();
         window.setTimeout(enforceFacebookRole, 180);
-        window.WriteUrduCardStudioUi = { getState: function () { return clone(ui); }, setStep: setStep, setMode: setMode, getRole: function () { return role; } };
+        window.WriteUrduCardStudioUi = { getState: function () { return clone(ui); }, setStep: setStep, setMode: setMode, refresh: syncSteps, getRole: function () { return role; } };
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

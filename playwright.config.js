@@ -42,6 +42,7 @@ module.exports = defineConfig({
     'card-poetry-quality.spec.js',
     'card-bidi-render.spec.js',
     'card-studio-feedback.spec.js',
+    'card-studio-reachability.spec.js',
     'card-studio-recent.spec.js',
     'card-attribution-quality.spec.js',
     'print-quality-pdf.spec.js',

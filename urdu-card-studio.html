@@ -47,6 +47,7 @@
     <nav class="navbar wu-static-site-nav" data-wu-static-shell="nav" aria-label="Primary navigation"><a class="wu-static-brand" href="/">Write Urdu</a><div class="wu-static-nav-groups"><div class="wu-static-nav-group" data-wu-static-nav-group="write"><strong>Write</strong><a href="/">Start writing in Urdu</a><a href="/roman-urdu-transliteration">Convert Roman Urdu to Urdu script</a><a href="/urdu-keyboard">Type directly in Urdu</a><a href="/urdu-editor">Format an assignment or document</a><a href="/tools/urdu-voice-typing">Speak and turn it into Urdu text</a><a href="/urdu-ocr">Extract Urdu text from an image</a><a href="/urdu-text-cleaner">Fix broken or messy Urdu text</a><a href="/tools/inpage-unicode-converter">Convert older InPage Urdu</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="create"><strong>Create</strong><a href="/urdu-cards">Browse ready-made Urdu cards</a><a href="/urdu-card-gallery">Compare your Urdu text across card designs</a><a href="/urdu-card-studio">Make a poetry, quote or announcement image</a><a href="/urdu-whatsapp-status-maker">Create a WhatsApp Status</a><a href="/urdu-instagram-post-maker">Create an Instagram post</a><a href="/urdu-name-art-maker">Make Urdu Name Art or a profile image</a><a href="/stylish-urdu-text-generator">Create stylish copyable Urdu text</a><a href="/urdu-templates">Start from a ready-made design</a><a href="/qr-code-generator">Turn text or a link into a QR code</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="work"><strong>Tools</strong><a href="/urdu-invoice-generator">Create an Urdu or English invoice</a><a href="/urdu-bill-generator">Create a quick shop bill or receipt</a><a href="/urdu-editor">Prepare a formal Urdu document</a><a href="/urdu-wedding-invitation-maker">Build a wedding invitation</a></div><div class="wu-static-nav-group" data-wu-static-nav-group="learn"><strong>Learn</strong><a href="/urdu-typing-practice">Practise Urdu typing and measure your speed</a><a href="/urdu-alphabet">Learn the Urdu alphabet</a><a href="/urdu-fonts-nastaliq-vs-naskh">Choose an Urdu font</a><a href="/english-urdu-typing-tutorial">Learn English-to-Urdu typing</a><a href="/how-to-write-urdu-on-photo">Learn to put Urdu on a photo</a><a href="/how-to-share-urdu-writing-online">Learn to share Urdu writing online</a><a href="/write-urdu-documentation">Use Write Urdu documentation</a><a href="/urdu-faq">Get answers to common questions</a></div></div></nav>
 
     <main class="card-studio-shell" data-card-studio>
+        <a class="card-studio-skip" href="#cardText" data-card-i18n="skipToText">Skip to card text</a>
         <header class="card-studio-topbar">
             <div>
                 <h1 data-card-i18n="title" data-wu-l10n="urdu-card-studio.h1">Urdu Card Studio</h1>
@@ -67,7 +68,7 @@
                     <span class="card-studio-action-group-label">Workspace</span>
                     <div class="card-studio-action-group-buttons">
                         <a class="card-studio-button" href="/urdu-templates">Browse templates</a>
-                        <button class="card-studio-button" type="button" data-card-action="back" data-card-i18n="back">Back to editor</button>
+                        <button class="card-studio-button" type="button" data-card-action="back" data-card-i18n="back">Back to your writing</button>
                     </div>
                 </div>
                 <div class="card-studio-action-group card-studio-action-group-export" role="group" aria-label="Export and share">
@@ -132,7 +133,7 @@
                         <span><strong data-card-i18n="emptyCueTitle">Start here</strong><span data-card-i18n="emptyCueBody"> Type in this field; your words appear on the card preview.</span></span>
                         <button type="button" class="card-studio-empty-cue-dismiss" data-card-empty-cue-dismiss data-card-i18n="emptyCueDismiss">Got it</button>
                     </div>
-                    <textarea class="card-studio-textarea" id="cardText" dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
+                    <textarea class="card-studio-textarea" id="cardText" data-card-step-focus dir="rtl" lang="ur" data-card-field="text.value" placeholder="لکھنا شروع کریں"></textarea>
                     <!-- The convert prompt and button come first, directly under the field (WU-UXR-002 Slice B, CARD-UX-022). -->
                     <div class="batch-transliteration-panel" data-batch-transliteration data-batch-input-mode="card" data-batch-target="#cardText" role="region" aria-labelledby="card-batch-transliteration-title">
                         <strong data-batch-prompt hidden>Long Roman Urdu text detected. Convert this passage to Urdu script?</strong>
