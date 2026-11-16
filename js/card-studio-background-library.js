@@ -315,6 +315,10 @@
         library.appendChild(filters);
         library.appendChild(grid);
         templateSection.parentNode.insertBefore(library, templateSection);
+        // The guided UI may already have synced the steps: make the collection follow the active step,
+        // so it stays out of the Content step (WU-UXR-002 Slice E, CARD-UX-009).
+        if (window.WriteUrduCardStudioUi && typeof window.WriteUrduCardStudioUi.refresh === 'function') window.WriteUrduCardStudioUi.refresh();
+        else document.dispatchEvent(new CustomEvent('write-urdu:card-studio-panel-mounted'));
     }
 
     // A Template Library design opened directly (?template=slug) brings its designer background.

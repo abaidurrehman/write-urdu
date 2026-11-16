@@ -5,8 +5,14 @@ const truckArtCount = backgrounds.filter(background => background.category === '
 
 const blockExternal = page => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?(?:\/|$))/, route => route.abort());
 
-async function openStudio(page, route = '/urdu-card-studio.html') {
+// Card Studio shows the collection on the Format step only (WU-UXR-002 Slice E, CARD-UX-009): it used to
+// sit above the text box on Content. Write something, then open Format, as a person would.
+async function openStudio(page, route = '/urdu-card-studio.html', text = 'محبت') {
   await page.goto(route, { waitUntil: 'domcontentloaded', timeout: 15000 });
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioUi && document.querySelector('[data-card-built-in-library]')), null, { timeout: 15000 });
+  await expect(page.locator('[data-card-built-in-library]')).toBeHidden();
+  await page.locator('#cardText').fill(text);
+  await page.evaluate(() => window.WriteUrduCardStudioUi.setStep('format'));
   await expect(page.locator('[data-card-built-in-library]')).toBeVisible();
 }
 
@@ -30,14 +36,14 @@ test(`collection filters all ${backgroundCount} bilingual background choices`, a
 
 test('background applies through editable local image pipeline and remains exportable', async ({ page }) => {
   await blockExternal(page);
-  await openStudio(page);
-  await page.locator('#cardText').fill('محبت روشنی ہے');
+  await openStudio(page, '/urdu-card-studio.html', 'محبت روشنی ہے');
   await page.locator('[data-card-built-in-background="black-gold-classic"]').click();
   await expect(page.locator('[data-card-built-in-background="black-gold-classic"]')).toHaveAttribute('aria-pressed', 'true');
   await expect.poll(() => page.evaluate(() => {
     const state = window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.getState();
     return state && [state.background.type, state.text.color, state.text.value];
   })).toEqual(['image', '#f3dfac', 'محبت روشنی ہے']);
+  await page.evaluate(() => window.WriteUrduCardStudioUi.setStep('content'));
   await page.locator('#cardText').fill('محبت روشنی ہے\nاور امید زندگی');
   await expect.poll(() => page.evaluate(() => window.WriteUrduCardStudioApp.getState().text.value)).toContain('امید');
   const downloadPromise = page.waitForEvent('download');

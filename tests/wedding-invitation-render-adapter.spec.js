@@ -32,7 +32,9 @@ const blockExternal = (page) => page.route(/^https?:\/\/(?!127\.0\.0\.1(?::\d+)?
 
 async function openStudioAndSeed(page, seed) {
   await page.goto('/urdu-card-studio.html', { waitUntil: 'domcontentloaded', timeout: 15000 });
-  await expect(page.locator('[data-card-built-in-library]')).toBeVisible();
+  // Readiness only: the collection is mounted (it is shown on the Format step, WU-UXR-002 Slice E).
+  await expect(page.locator('[data-card-built-in-library]')).toBeAttached();
+  await page.waitForFunction(() => Boolean(window.WriteUrduCardStudioApp && window.WriteUrduCardStudioApp.replaceState));
   await page.evaluate((project) => {
     window.__renderCount = 0;
     document.addEventListener('write-urdu:card-rendered', () => { window.__renderCount += 1; });

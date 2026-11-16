@@ -102,3 +102,15 @@ html[lang="en"] #cardText[data-input-mode="roman"]::placeholder{font-family:Inte
 .card-studio-recent-label{flex:0 0 auto;color:#147a49;font-size:.72rem;font-weight:700}
 .card-studio-recent-item.is-current{border-color:#147a49;background:#eef8f1;cursor:default}.card-studio-recent-item.is-current .card-studio-recent-label{color:var(--card-muted,#5d6f65);font-weight:600}
 .card-studio-recent .card-studio-help{margin:8px 0 0}
+
+/* WU-UXR-002 Slice E: reachability. Step panels land just below the top when a step is chosen, the skip link
+   leads keyboard users straight to the card text, and on phones the preview and toolbar stay inside the screen. */
+[data-card-step-panel]{scroll-margin-top:12px}
+.card-studio-button[hidden]{display:none!important}
+.card-studio-skip{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.card-studio-skip:focus,.card-studio-skip:focus-visible{position:static;display:inline-block;width:auto;height:auto;margin:0 0 10px;padding:10px 14px;overflow:visible;clip:auto;white-space:normal;border-radius:8px;background:#0f5132;color:#fff;font-weight:700;text-decoration:none;outline:3px solid #9fd8b8;outline-offset:2px}
+@media(max-width:900px){
+  .card-studio-preview{margin:0;max-width:100%;box-sizing:border-box}
+  .card-studio-artboard-wrap{max-width:100%;box-sizing:border-box;margin-inline:auto}
+  .card-studio-action-group .card-studio-button{min-width:auto;overflow:visible;text-overflow:clip;white-space:normal;line-height:1.2}
+}
