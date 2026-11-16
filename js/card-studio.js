@@ -49,8 +49,8 @@
     try { emptyCueDismissed = localStorage.getItem(emptyCueKey) === '1'; } catch (error) {}
 
     var copy = {
-        en: { title:'Urdu Card Studio', subtitle:'Turn your Urdu words into a polished shareable image.', templateFrom:'Template: ', templateApplied:'Library template applied', back:'Back to your writing', skipToText:'Skip to card text', reset:'Reset', share:'Share', download:'Download PNG', sizeHeading:'Canvas', presetLabel:'Output preset', templateHeading:'Template', textHeading:'Content', textLabel:'Card text', emptyCueTitle:'Start here', emptyCueBody:' Type in this field; your words appear on the card preview.', emptyCueDismiss:'Got it', characters:'{n} characters', transliterationLoading:'Roman Urdu input is loading…', transliterationReady:'Roman Urdu input is ready. Press Space after each word, including when editing on the card.', transliterationUnavailable:'Roman Urdu input is unavailable. Check your connection and retry.', retryTransliteration:'Retry transliteration', attributionLabel:'Author or source (optional)', showAttribution:'Show author or source', typographyHeading:'Text style', fontLabel:'Font', autoFit:'Auto-fit text to the card', fontSizeLabel:'Font size', alignmentLabel:'Alignment', verticalLabel:'Vertical', lineHeightLabel:'Line height', textColorLabel:'Text colour', shadowLabel:'Shadow', layoutHeading:'Layout', selectedObjectLabel:'Selected object', mainText:'Main text', authorSource:'Author/source', xPosition:'X position (%)', yPosition:'Y position (%)', textBoxWidth:'Text-box width (%)', centerHorizontally:'Centre horizontally', centerVertically:'Centre vertically', resetLayout:'Reset layout', textSelected:'Text selected', edit:'Edit', left:'Left', centre:'Centre', right:'Right', resetPosition:'Reset position', done:'Done', cancel:'Cancel', backgroundHeading:'Background', backgroundTypeLabel:'Background type', backgroundColorLabel:'Background colour', gradientLabel:'Gradient', uploadLabel:'Upload a local JPG, PNG or WebP', privacy:'Saved only on this device. Nothing is uploaded unless you choose Publish & Share.', removeImage:'Remove image', fitLabel:'Image fit', overlayColorLabel:'Overlay colour', overlayLabel:'Overlay strength', positionXLabel:'Horizontal position', positionYLabel:'Vertical position', brandingHeading:'Branding', watermarkLabel:'Show Write-Urdu.com watermark', watermarkPositionLabel:'Watermark position', saved:'Saved on this device', saving:'Saving…', storageUnavailable:'Your card can still be created, but this browser could not save it locally.', preparing:'Preparing image…', downloaded:'PNG downloaded.', shared:'Share sheet opened.', shareFallback:'Sharing is not supported here. The PNG was downloaded instead.', resetConfirm:'Reset this card and discard its current design?', emptyText:'Add some Urdu text before exporting.', imageError:'This image could not be opened. Choose a JPG, PNG or WebP file smaller than 15 MB.', imageRemoved:'Background image removed.', fitWarning:'This text is larger than the available card area. Reduce the text or switch on auto-fit.', noImage:'Choose a local image to use this background.' },
-        ur: { title:'اردو کارڈ اسٹوڈیو', subtitle:'اپنے اردو الفاظ کو خوب صورت، شیئر کرنے کے قابل تصویر بنائیں۔', templateFrom:'ٹیمپلیٹ: ', templateApplied:'لائبریری ٹیمپلیٹ لاگو ہے', back:'اپنی تحریر پر واپس جائیں', skipToText:'کارڈ کے متن پر جائیں', reset:'دوبارہ ترتیب دیں', share:'شیئر کریں', download:'PNG ڈاؤن لوڈ کریں', sizeHeading:'سائز', presetLabel:'آؤٹ پٹ سائز', templateHeading:'ڈیزائن', textHeading:'متن', textLabel:'کارڈ کا متن', emptyCueTitle:'یہاں سے شروع کریں', emptyCueBody:' اس خانے میں لکھیں؛ آپ کا متن کارڈ کے پیش منظر میں ظاہر ہوگا۔', emptyCueDismiss:'سمجھ گیا', characters:'{n} حروف', transliterationLoading:'رومن اردو کی تحریر تبدیلی لوڈ ہو رہی ہے…', transliterationReady:'رومن اردو ان پٹ تیار ہے۔ ہر لفظ کے بعد Space دبائیں۔', transliterationUnavailable:'رومن اردو ان پٹ دستیاب نہیں۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔', retryTransliteration:'دوبارہ کوشش کریں', attributionLabel:'مصنف یا ماخذ (اختیاری)', showAttribution:'مصنف یا ماخذ دکھائیں', typographyHeading:'خط اور انداز', fontLabel:'فونٹ', autoFit:'متن کو کارڈ کے مطابق خودکار فٹ کریں', fontSizeLabel:'فونٹ کا سائز', alignmentLabel:'سیدھ', verticalLabel:'عمودی جگہ', lineHeightLabel:'سطری فاصلہ', textColorLabel:'متن کا رنگ', shadowLabel:'سایہ', layoutHeading:'ترتیب', selectedObjectLabel:'منتخب جزو', mainText:'مرکزی متن', authorSource:'مصنف یا ماخذ', xPosition:'افقی مقام (%)', yPosition:'عمودی مقام (%)', textBoxWidth:'متن کے خانے کی چوڑائی (%)', centerHorizontally:'افقی مرکز', centerVertically:'عمودی مرکز', resetLayout:'ترتیب دوبارہ بنائیں', textSelected:'متن منتخب ہے', edit:'ترمیم', left:'بائیں', centre:'درمیان', right:'دائیں', resetPosition:'مقام دوبارہ بنائیں', done:'مکمل', cancel:'منسوخ', backgroundHeading:'پس منظر', backgroundTypeLabel:'پس منظر کی قسم', backgroundColorLabel:'پس منظر کا رنگ', gradientLabel:'گریڈینٹ', uploadLabel:'مقامی JPG، PNG یا WebP اپ لوڈ کریں', privacy:'صرف اسی آلے پر محفوظ ہے۔ جب تک آپ شائع اور شیئر نہ کریں، کچھ اپ لوڈ نہیں ہوتا۔', removeImage:'تصویر ہٹائیں', fitLabel:'تصویر کی مطابقت', overlayColorLabel:'اوورلے کا رنگ', overlayLabel:'اوورلے کی شدت', positionXLabel:'افقی جگہ', positionYLabel:'عمودی جگہ', brandingHeading:'برانڈنگ', watermarkLabel:'Write-Urdu.com واٹرمارک دکھائیں', watermarkPositionLabel:'واٹرمارک کی جگہ', saved:'اسی آلے پر محفوظ ہے', saving:'محفوظ کیا جا رہا ہے…', storageUnavailable:'کارڈ بن سکتا ہے، لیکن یہ براؤزر اسے مقامی طور پر محفوظ نہیں کر سکا۔', preparing:'تصویر تیار کی جا رہی ہے…', downloaded:'PNG ڈاؤن لوڈ ہو گیا۔', shared:'شیئر ونڈو کھول دی گئی۔', shareFallback:'یہاں شیئرنگ دستیاب نہیں۔ PNG ڈاؤن لوڈ کر دیا گیا ہے۔', resetConfirm:'کیا اس کارڈ کا موجودہ ڈیزائن ختم کر کے دوبارہ ترتیب دیں؟', emptyText:'برآمد کرنے سے پہلے کچھ اردو متن شامل کریں۔', imageError:'یہ تصویر نہیں کھل سکی۔ 15 MB سے کم JPG، PNG یا WebP فائل منتخب کریں۔', imageRemoved:'پس منظر کی تصویر ہٹا دی گئی۔', fitWarning:'یہ متن کارڈ کے دستیاب حصے سے بڑا ہے۔ متن کم کریں یا خودکار فٹ آن کریں۔', noImage:'اس پس منظر کے لیے مقامی تصویر منتخب کریں۔', templateNames:{'classic-nastaliq':'روایتی نستعلیق', midnight:'آدھی رات', 'minimal-white':'سادہ سفید', emerald:'زمرد', paper:'کاغذ', 'photo-quote':'تصویری اقتباس', 'sunflower-bloom':'سورج مکھی', 'golden-mandala':'سنہری منڈلا', 'botanical-frame':'نباتاتی فریم'} }
+        en: { title:'Urdu Card Studio', subtitle:'Turn your Urdu words into a polished shareable image.', templateFrom:'Template: ', templateApplied:'Library template applied', back:'Back to your writing', skipToText:'Skip to card text', reset:'Reset', share:'Share', download:'Download PNG', sizeHeading:'Canvas', presetLabel:'Output preset', templateHeading:'Template', textHeading:'Content', textLabel:'Card text', emptyCueTitle:'Start here', emptyCueBody:' Type in this field; your words appear on the card preview.', emptyCueDismiss:'Got it', characters:'{n} characters', transliterationLoading:'Roman Urdu input is loading…', transliterationReady:'Roman Urdu input is ready. Press Space after each word, including when editing on the card.', transliterationUnavailable:'Roman Urdu input is unavailable. Check your connection and retry.', retryTransliteration:'Retry transliteration', attributionLabel:'Author or source (optional)', showAttribution:'Show author or source', typographyHeading:'Text style', fontLabel:'Font', autoFit:'Auto-fit text to the card', fontSizeLabel:'Font size', alignmentLabel:'Alignment', verticalLabel:'Vertical', lineHeightLabel:'Line height', textColorLabel:'Text colour', shadowLabel:'Shadow', layoutHeading:'Layout', selectedObjectLabel:'Selected object', mainText:'Main text', authorSource:'Author/source', xPosition:'X position (%)', yPosition:'Y position (%)', textBoxWidth:'Text-box width (%)', centerHorizontally:'Centre horizontally', centerVertically:'Centre vertically', resetLayout:'Reset layout', textSelected:'Text selected', edit:'Edit', left:'Left', centre:'Centre', right:'Right', resetPosition:'Reset position', done:'Done', cancel:'Cancel', backgroundHeading:'Background', backgroundTypeLabel:'Background type', backgroundColorLabel:'Background colour', gradientLabel:'Gradient', uploadLabel:'Upload a local JPG, PNG or WebP', privacy:'Saved only on this device. Nothing is uploaded unless you choose Publish & Share.', removeImage:'Remove image', fitLabel:'Image fit', overlayColorLabel:'Overlay colour', overlayLabel:'Text readability', positionXLabel:'Horizontal position', positionYLabel:'Vertical position', brandingHeading:'Branding', watermarkLabel:'Show Write-Urdu.com watermark', watermarkPositionLabel:'Watermark position', saved:'Saved on this device', saving:'Saving…', storageUnavailable:'Your card can still be created, but this browser could not save it locally.', preparing:'Preparing image…', downloaded:'PNG downloaded.', shared:'Share sheet opened.', shareFallback:'Sharing is not supported here. The PNG was downloaded instead.', resetConfirm:'Reset this card and discard its current design?', resetDone:'Card reset.', undo:'Undo', templatePhotoKept:'Text style applied. Your photo was kept.', useTemplateBackground:'Use template background', emptyText:'Add some Urdu text before exporting.', imageError:'This image could not be opened. Choose a JPG, PNG or WebP file smaller than 15 MB.', imageRemoved:'Background image removed.', fitWarning:'This text is larger than the available card area. Reduce the text or switch on auto-fit.', noImage:'Choose a local image to use this background.' },
+        ur: { title:'اردو کارڈ اسٹوڈیو', subtitle:'اپنے اردو الفاظ کو خوب صورت، شیئر کرنے کے قابل تصویر بنائیں۔', templateFrom:'ٹیمپلیٹ: ', templateApplied:'لائبریری ٹیمپلیٹ لاگو ہے', back:'اپنی تحریر پر واپس جائیں', skipToText:'کارڈ کے متن پر جائیں', reset:'دوبارہ ترتیب دیں', share:'شیئر کریں', download:'PNG ڈاؤن لوڈ کریں', sizeHeading:'سائز', presetLabel:'آؤٹ پٹ سائز', templateHeading:'ڈیزائن', textHeading:'متن', textLabel:'کارڈ کا متن', emptyCueTitle:'یہاں سے شروع کریں', emptyCueBody:' اس خانے میں لکھیں؛ آپ کا متن کارڈ کے پیش منظر میں ظاہر ہوگا۔', emptyCueDismiss:'سمجھ گیا', characters:'{n} حروف', transliterationLoading:'رومن اردو کی تحریر تبدیلی لوڈ ہو رہی ہے…', transliterationReady:'رومن اردو ان پٹ تیار ہے۔ ہر لفظ کے بعد Space دبائیں۔', transliterationUnavailable:'رومن اردو ان پٹ دستیاب نہیں۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔', retryTransliteration:'دوبارہ کوشش کریں', attributionLabel:'مصنف یا ماخذ (اختیاری)', showAttribution:'مصنف یا ماخذ دکھائیں', typographyHeading:'خط اور انداز', fontLabel:'فونٹ', autoFit:'متن کو کارڈ کے مطابق خودکار فٹ کریں', fontSizeLabel:'فونٹ کا سائز', alignmentLabel:'سیدھ', verticalLabel:'عمودی جگہ', lineHeightLabel:'سطری فاصلہ', textColorLabel:'متن کا رنگ', shadowLabel:'سایہ', layoutHeading:'ترتیب', selectedObjectLabel:'منتخب جزو', mainText:'مرکزی متن', authorSource:'مصنف یا ماخذ', xPosition:'افقی مقام (%)', yPosition:'عمودی مقام (%)', textBoxWidth:'متن کے خانے کی چوڑائی (%)', centerHorizontally:'افقی مرکز', centerVertically:'عمودی مرکز', resetLayout:'ترتیب دوبارہ بنائیں', textSelected:'متن منتخب ہے', edit:'ترمیم', left:'بائیں', centre:'درمیان', right:'دائیں', resetPosition:'مقام دوبارہ بنائیں', done:'مکمل', cancel:'منسوخ', backgroundHeading:'پس منظر', backgroundTypeLabel:'پس منظر کی قسم', backgroundColorLabel:'پس منظر کا رنگ', gradientLabel:'گریڈینٹ', uploadLabel:'مقامی JPG، PNG یا WebP اپ لوڈ کریں', privacy:'صرف اسی آلے پر محفوظ ہے۔ جب تک آپ شائع اور شیئر نہ کریں، کچھ اپ لوڈ نہیں ہوتا۔', removeImage:'تصویر ہٹائیں', fitLabel:'تصویر کی مطابقت', overlayColorLabel:'اوورلے کا رنگ', overlayLabel:'متن پڑھنے میں آسانی', positionXLabel:'افقی جگہ', positionYLabel:'عمودی جگہ', brandingHeading:'برانڈنگ', watermarkLabel:'Write-Urdu.com واٹرمارک دکھائیں', watermarkPositionLabel:'واٹرمارک کی جگہ', saved:'اسی آلے پر محفوظ ہے', saving:'محفوظ کیا جا رہا ہے…', storageUnavailable:'کارڈ بن سکتا ہے، لیکن یہ براؤزر اسے مقامی طور پر محفوظ نہیں کر سکا۔', preparing:'تصویر تیار کی جا رہی ہے…', downloaded:'PNG ڈاؤن لوڈ ہو گیا۔', shared:'شیئر ونڈو کھول دی گئی۔', shareFallback:'یہاں شیئرنگ دستیاب نہیں۔ PNG ڈاؤن لوڈ کر دیا گیا ہے۔', resetConfirm:'کیا اس کارڈ کا موجودہ ڈیزائن ختم کر کے دوبارہ ترتیب دیں؟', resetDone:'کارڈ نئے سرے سے شروع ہو گیا۔', undo:'واپس لائیں', templatePhotoKept:'متن کا انداز لگ گیا، آپ کی تصویر وہی رہی۔', useTemplateBackground:'ٹیمپلیٹ کا پس منظر لگائیں', emptyText:'برآمد کرنے سے پہلے کچھ اردو متن شامل کریں۔', imageError:'یہ تصویر نہیں کھل سکی۔ 15 MB سے کم JPG، PNG یا WebP فائل منتخب کریں۔', imageRemoved:'پس منظر کی تصویر ہٹا دی گئی۔', fitWarning:'یہ متن کارڈ کے دستیاب حصے سے بڑا ہے۔ متن کم کریں یا خودکار فٹ آن کریں۔', noImage:'اس پس منظر کے لیے مقامی تصویر منتخب کریں۔', templateNames:{'classic-nastaliq':'روایتی نستعلیق', midnight:'آدھی رات', 'minimal-white':'سادہ سفید', emerald:'زمرد', paper:'کاغذ', 'photo-quote':'تصویری اقتباس', 'sunflower-bloom':'سورج مکھی', 'golden-mandala':'سنہری منڈلا', 'botanical-frame':'نباتاتی فریم'} }
     };
 
     copy.en.subtitle = 'Design, move, edit and export Urdu cards in your browser.';
@@ -294,8 +294,123 @@
         return isFinite(created) && isFinite(updated) && updated > created + 2000;
     }
     function freshProject() { return socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(''), socialConfig.id) : core.createDefaultCardProject(''); }
-    function clearAsset() { currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
-    function clearHistory() { var api = window.WriteUrduCardStudioInteractionApi; if (api && api.clearHistory) api.clearHistory(); }
+    function clearAsset() { currentAsset = null; currentAssetId = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; }
+    function clearHistory() { historyPending = null; window.clearTimeout(historyTimer); var api = window.WriteUrduCardStudioInteractionApi; if (api && api.clearHistory) api.clearHistory(); }
+
+    // --- Undo for every edit (WU-UXR-002 Slice G, CARD-UX-018) ------------------------------------------
+    // Panel fields record one undo step per gesture: typing is grouped until a pause or blur, a slider until
+    // it is let go, and a multi-field change (a designer background) is one batch.
+    var historyPending = null;
+    var historyTimer = 0;
+    var historyBatchDepth = 0;
+    var historyBatchBefore = null;
+    function snapshotState() { return JSON.parse(JSON.stringify(state)); }
+    function commitHistory(before) { var api = window.WriteUrduCardStudioInteractionApi; if (before && api && api.recordHistory) api.recordHistory(before); }
+    function noteFieldEdit(element) {
+        if (historyBatchDepth) return;
+        if (!historyPending) historyPending = snapshotState();
+        window.clearTimeout(historyTimer);
+        var typing = element && (element.tagName === 'TEXTAREA' || element.type === 'text');
+        historyTimer = window.setTimeout(flushHistory, typing ? 1000 : 600);
+    }
+    function flushHistory() { window.clearTimeout(historyTimer); var before = historyPending; historyPending = null; commitHistory(before); }
+    function beginHistoryBatch() { flushHistory(); if (!historyBatchDepth) historyBatchBefore = snapshotState(); historyBatchDepth += 1; }
+    function endHistoryBatch() { if (!historyBatchDepth) return; historyBatchDepth -= 1; if (!historyBatchDepth) { var before = historyBatchBefore; historyBatchBefore = null; commitHistory(before); } }
+
+    // A template restyles the text; the person's own photo stays, with an offer to use the template's background
+    // instead (CARD-UX-019). Designer backgrounds (they carry a safe area) are replaced as before.
+    function applyTemplateChoice(templateId, options) {
+        options = options || {};
+        flushHistory();
+        var before = snapshotState();
+        var keepPhoto = !options.full && core.hasUserPhoto(state);
+        userChanged = true;
+        // applyTemplate changes the project it is given, so keep the photo from the snapshot.
+        state = keepPhoto ? core.keepUserPhoto(before, core.applyTemplate(state, templateId)) : core.applyTemplate(state, templateId);
+        delete state.libraryTemplateId; syncControls(); requestRender(); scheduleSave();
+        commitHistory(before);
+        if (keepPhoto) statusAction(t('templatePhotoKept'), t('useTemplateBackground'), 'data-card-template-background', function () { applyTemplateChoice(templateId, { full: true }); });
+    }
+
+    // A status line with one action button (Undo after Reset, Use template background), removed after a while.
+    function statusAction(message, label, marker, handler, ms) {
+        setStatus(message);
+        var target = root.querySelector('[data-card-status]');
+        if (!target) return;
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'card-studio-status-action';
+        button.setAttribute(marker, '');
+        button.textContent = label;
+        button.addEventListener('click', function () { button.remove(); handler(); });
+        target.appendChild(document.createTextNode(' '));
+        target.appendChild(button);
+        window.setTimeout(function () { button.remove(); }, ms || 8000);
+    }
+
+    // Each upload gets its own stored image, so undo can bring an earlier photo back. Keep a few per card.
+    var ASSETS_PER_CARD = 6;
+    var currentAssetId = null;
+    function newAssetId() { return state.id + '_image_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+    function pruneCardAssets(projectId, keepId) {
+        return openDb().then(function (db) { return new Promise(function (resolve) {
+            var tx = db.transaction('assets', 'readwrite'); var store = tx.objectStore('assets'); var found = [];
+            store.index('projectId').openCursor(IDBKeyRange.only(projectId)).onsuccess = function (event) {
+                var cursor = event.target.result;
+                if (cursor) { found.push({ id: cursor.value.id, at: String(cursor.value.updatedAt || '') }); cursor.continue(); return; }
+                found.sort(function (a, b) { return b.at.localeCompare(a.at); }).slice(ASSETS_PER_CARD).forEach(function (item) { if (item.id !== keepId) store.delete(item.id); });
+            };
+            tx.oncomplete = resolve; tx.onerror = function () { resolve(); }; tx.onabort = function () { resolve(); };
+        }); }).catch(function () {});
+    }
+    // After undo/redo or opening a card, show the photo that state refers to.
+    function syncAssetToState() {
+        var wanted = state.background.type === 'image' ? state.background.imageAssetId : null;
+        if (!wanted || wanted === currentAssetId) return;
+        restoreAsset();
+    }
+
+    // Text on an uploaded photo starts readable: pick light or dark text from the photo under the text box,
+    // and the lightest overlay that gives 4.5:1 (CARD-UX-020). Only while the person has not chosen a colour.
+    var textColorChosen = false;
+    function channelLuminance(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+    function rgbLuminance(rgb) { return 0.2126 * channelLuminance(rgb[0]) + 0.7152 * channelLuminance(rgb[1]) + 0.0722 * channelLuminance(rgb[2]); }
+    function hexRgb(hex) { var v = String(hex || '').replace('#', ''); if (v.length === 3) v = v.replace(/./g, '$&$&'); return [0, 2, 4].map(function (i) { return parseInt(v.slice(i, i + 2), 16) || 0; }); }
+    function contrastRatio(a, b) { var la = rgbLuminance(a), lb = rgbLuminance(b); return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05); }
+    function photoColourUnderText(image) {
+        try {
+            var preset = getPreset(); var scale = 64 / preset.width;
+            var small = document.createElement('canvas'); small.width = 64; small.height = Math.max(1, Math.round(preset.height * scale));
+            var ctx = small.getContext('2d');
+            var placement = core.calculateImagePlacement({ width: image.naturalWidth, height: image.naturalHeight }, preset, state.background.fit, state.background.positionX, state.background.positionY);
+            ctx.drawImage(image, placement.x * scale, placement.y * scale, placement.width * scale, placement.height * scale);
+            var rect = objectRect('text');
+            var x = Math.max(0, Math.floor(rect.x * scale)), y = Math.max(0, Math.floor(rect.y * scale));
+            var w = Math.max(1, Math.min(small.width - x, Math.ceil(rect.width * scale))), h = Math.max(1, Math.min(small.height - y, Math.ceil(rect.height * scale)));
+            var data = ctx.getImageData(x, y, w, h).data; var sum = [0, 0, 0]; var count = 0;
+            for (var i = 0; i < data.length; i += 4) { sum[0] += data[i]; sum[1] += data[i + 1]; sum[2] += data[i + 2]; count += 1; }
+            return count ? sum.map(function (s) { return s / count; }) : null;
+        } catch (error) { return null; }
+    }
+    function makePhotoTextReadable(image) {
+        if (textColorChosen) return;
+        var photo = photoColourUnderText(image);
+        if (!photo) return;
+        var dark = rgbLuminance(photo) < 0.45;
+        var textColour = dark ? '#ffffff' : '#1f2937';
+        var overlay = dark ? '#000000' : '#ffffff';
+        var overlayRgb = hexRgb(overlay); var textRgb = hexRgb(textColour);
+        // Canvas blends in sRGB, so blend the same way when checking contrast.
+        var amount = Math.max(Number(state.background.overlayOpacity) || 0, dark ? 0.28 : 0.18);
+        for (; amount < 0.8; amount += 0.02) {
+            var behind = photo.map(function (c, i) { return c * (1 - amount) + overlayRgb[i] * amount; });
+            if (contrastRatio(textRgb, behind) >= 4.5) break;
+        }
+        state.text.color = textColour;
+        state.attribution.color = textColour;
+        state.background.overlayColor = overlay;
+        state.background.overlayOpacity = Math.round(Math.min(0.8, amount) * 100) / 100;
+    }
     var forkNoticeShown = false;
     function announceFork() { forkNoticeShown = true; setStatus(t('forked')); }
     // The hand-off's own messages (e.g. the designer background) arrive later; say where the old card went last.
@@ -401,7 +516,7 @@
         var gradient = document.getElementById('cardGradient');
         core.GRADIENTS.forEach(function (item) { var option = document.createElement('option'); option.value = item.id; option.textContent = item.name; gradient.appendChild(option); });
         var templates = root.querySelector('[data-card-templates]');
-        core.TEMPLATES.forEach(function (item) { var button = document.createElement('button'); button.type = 'button'; button.className = 'card-template'; button.dataset.template = item.id; button.dataset.cardTemplate = item.id; button.setAttribute('aria-pressed', 'false'); button.textContent = item.name; button.addEventListener('click', function () { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = core.applyTemplate(state, item.id); delete state.libraryTemplateId; syncControls(); requestRender(); scheduleSave(); }); templates.appendChild(button); });
+        core.TEMPLATES.forEach(function (item) { var button = document.createElement('button'); button.type = 'button'; button.className = 'card-template'; button.dataset.template = item.id; button.dataset.cardTemplate = item.id; button.setAttribute('aria-pressed', 'false'); button.textContent = item.name; button.addEventListener('click', function () { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); applyTemplateChoice(item.id); }); templates.appendChild(button); });
     }
 
     function syncControls() {
@@ -601,7 +716,19 @@
             try { localStorage.setItem(emptyCueKey, '1'); } catch (error) {}
             syncEmptyStateGuidance();
         });
-        root.querySelectorAll('[data-card-field]').forEach(function (element) { element.addEventListener('input', function () { userChanged = true; setNested(state, element.dataset.cardField, inputValue(element)); state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }); element.addEventListener('change', function () { userChanged = true; setNested(state, element.dataset.cardField, inputValue(element)); state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave(); }); });
+        root.querySelectorAll('[data-card-field]').forEach(function (element) {
+            var typing = element.tagName === 'TEXTAREA' || element.type === 'text';
+            function apply(event) {
+                noteFieldEdit(element);
+                // Designer backgrounds set the colour inside a history batch; any other colour change is the person's choice.
+                if (!historyBatchDepth && element.dataset.cardField === 'text.color') textColorChosen = true;
+                userChanged = true; setNested(state, element.dataset.cardField, inputValue(element)); state = core.normalizeCardProject(state); requestRender(); syncControls(); scheduleSave();
+            }
+            element.addEventListener('input', apply);
+            // A select, checkbox or released slider is one finished change; typing waits for a pause or blur.
+            element.addEventListener('change', function (event) { apply(event); if (!typing) flushHistory(); });
+            if (typing) element.addEventListener('blur', flushHistory);
+        });
         // Typing an author switches the credit line on, unless the writer has switched it off themselves (CARD-UX-006).
         var attributionField = document.getElementById('cardAttribution');
         var attributionBox = root.querySelector('[data-card-field="attribution.enabled"]');
@@ -612,9 +739,37 @@
         });
         root.querySelector('[data-card-font-auto]').addEventListener('change', function (event) { userChanged = true; state.text.fontMode = event.target.checked ? 'auto' : 'manual'; document.getElementById('cardFontSize').disabled = event.target.checked; requestRender(); scheduleSave(); });
         root.querySelectorAll('[data-card-action="download"]').forEach(function (button) { button.addEventListener('click', function () { exportPng().catch(function () {}); }); }); root.querySelectorAll('[data-card-action="share"]').forEach(function (button) { button.addEventListener('click', shareCard); });
-        root.querySelector('[data-card-action="reset"]').addEventListener('click', function () { if (window.confirm(t('resetConfirm'))) { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = socialConfig && social.applyDefaults ? social.applyDefaults(core, core.createDefaultCardProject(''), socialConfig.id) : core.createDefaultCardProject(''); currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; syncControls(); requestRender(); scheduleSave(); } });
+        // Reset no longer asks first: it can be undone, photo included (CARD-UX-018).
+        root.querySelector('[data-card-action="reset"]').addEventListener('click', function () {
+            if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit();
+            flushHistory();
+            var before = snapshotState();
+            userChanged = true; state = freshProject(); clearAsset(); syncControls(); requestRender(); scheduleSave();
+            commitHistory(before);
+            statusAction(t('resetDone'), t('undo'), 'data-card-reset-undo', function () { var api = window.WriteUrduCardStudioInteractionApi; if (api && api.undo) api.undo(); });
+        });
         document.getElementById('cardPreset').addEventListener('change', function (event) { if (window.WriteUrduCardStudioInteractionApi && window.WriteUrduCardStudioInteractionApi.commit) window.WriteUrduCardStudioInteractionApi.commit(); userChanged = true; state = core.applyPreset(state, event.target.value); syncControls(); requestRender(); scheduleSave(); });
-        document.getElementById('cardImage').addEventListener('change', function (event) { var file = event.target.files && event.target.files[0]; if (!file) return; if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 15 * 1024 * 1024) { refuse(t('imageError')); event.target.value = ''; return; } userChanged = true; var designerSafeArea = event.target.dataset.wuBackgroundSafeArea; delete event.target.dataset.wuBackgroundSafeArea; try { state.background.safeArea = designerSafeArea ? JSON.parse(designerSafeArea) : null; } catch (error) { state.background.safeArea = null; } var url = URL.createObjectURL(file); var image = new Image(); image.onload = function () { if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = url; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight }; state.background.type = 'image'; state.background.imageAssetId = state.id + '_image'; syncControls(); requestRender(); scheduleSave(); dbPut('assets', { id: state.background.imageAssetId, projectId: state.id, blob: file, updatedAt: new Date().toISOString() }).catch(function () {}); }; image.onerror = function () { URL.revokeObjectURL(url); event.target.value = ''; refuse(t('imageError')); }; image.src = url; });
+        document.getElementById('cardImage').addEventListener('change', function (event) {
+            // A designer background arrives inside the library's history batch; a person's own upload is its own undo step.
+            var batched = event.target.dataset.wuHistoryBatch === '1'; delete event.target.dataset.wuHistoryBatch;
+            var file = event.target.files && event.target.files[0]; if (!file) { if (batched) endHistoryBatch(); return; }
+            if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 15 * 1024 * 1024) { if (batched) endHistoryBatch(); refuse(t('imageError')); event.target.value = ''; return; }
+            if (!batched) flushHistory();
+            var before = batched ? null : snapshotState();
+            userChanged = true; var designerSafeArea = event.target.dataset.wuBackgroundSafeArea; delete event.target.dataset.wuBackgroundSafeArea; try { state.background.safeArea = designerSafeArea ? JSON.parse(designerSafeArea) : null; } catch (error) { state.background.safeArea = null; }
+            var url = URL.createObjectURL(file); var image = new Image();
+            image.onload = function () {
+                if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = url; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight };
+                state.background.type = 'image'; state.background.imageAssetId = newAssetId(); currentAssetId = state.background.imageAssetId;
+                if (!designerSafeArea) makePhotoTextReadable(image);
+                state = core.normalizeCardProject(state); syncControls(); requestRender(); scheduleSave();
+                var assetId = state.background.imageAssetId, projectId = state.id;
+                dbPut('assets', { id: assetId, projectId: projectId, blob: file, updatedAt: new Date().toISOString() }).then(function () { return pruneCardAssets(projectId, assetId); }).catch(function () {});
+                if (batched) endHistoryBatch(); else commitHistory(before);
+            };
+            image.onerror = function () { URL.revokeObjectURL(url); event.target.value = ''; if (batched) endHistoryBatch(); refuse(t('imageError')); };
+            image.src = url;
+        });
         root.querySelector('[data-card-action="remove-image"]').addEventListener('click', function () { userChanged = true; var template = core.TEMPLATES.find(function (item) { return item.id === state.templateId; }) || core.TEMPLATES[0]; state.background.type = template.background.type; state.background.color = template.background.color || state.background.color; state.background.gradientId = template.background.gradientId || null; state.background.imageAssetId = null; currentAsset = null; if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl); currentObjectUrl = null; syncControls(); requestRender(); scheduleSave(); setStatus(t('imageRemoved')); });
         root.querySelector('[data-card-transliteration-retry]').addEventListener('click', initialiseTransliteration);
         if (socialConfig) {
@@ -629,12 +784,24 @@
         }
     }
 
-    function restoreAsset() { return dbGetAsset(state.background.imageAssetId).then(function (asset) { if (!asset || !asset.blob) return; var url = URL.createObjectURL(asset.blob); var image = new Image(); image.onload = function () { currentObjectUrl = url; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight }; requestRender(); }; image.src = url; }).catch(function () {}); }
+    function restoreAsset() {
+        var id = state.background.imageAssetId;
+        return dbGetAsset(id).then(function (asset) {
+            if (!asset || !asset.blob || state.background.imageAssetId !== id) return;
+            var url = URL.createObjectURL(asset.blob); var image = new Image();
+            image.onload = function () {
+                if (state.background.imageAssetId !== id) { URL.revokeObjectURL(url); return; }
+                if (currentObjectUrl && currentObjectUrl !== url) URL.revokeObjectURL(currentObjectUrl);
+                currentObjectUrl = url; currentAssetId = id; currentAsset = { image: image, width: image.naturalWidth, height: image.naturalHeight }; requestRender();
+            };
+            image.src = url;
+        }).catch(function () {});
+    }
     function setInteractionState(next) { interactionState = Object.assign({}, interactionState, next || {}); requestRender(); }
     function updateObjectRect(objectId, rect, options) { userChanged = true; setObjectRect(objectId, rect, options); state = core.normalizeCardProject(state); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
     function updateObjectText(objectId, value, options) { userChanged = true; if (objectId === 'attribution') state.attribution.value = String(value == null ? '' : value); else state.text.value = String(value == null ? '' : value); state = core.normalizeCardProject(state); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
     function updateTextStyle(patch, options) { userChanged = true; state.text = Object.assign({}, state.text, patch || {}); state = core.normalizeCardProject(state); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
-    function replaceState(next, options) { userChanged = true; state = core.normalizeCardProject(next); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
+    function replaceState(next, options) { userChanged = true; state = core.normalizeCardProject(next); syncAssetToState(); requestRender(); syncControls(); if (!options || options.save !== false) scheduleSave(); }
     // The background library restyles the credit line to match a designer background; the writer's own bigger size stays.
     function updateAttribution(patch, options) {
         userChanged = true; patch = patch || {};
@@ -674,7 +841,10 @@
             repeatForkNotice: repeatForkNotice,
             ensureFont: ensureFont,
             ensureProjectFonts: ensureProjectFonts,
-            notify: notify
+            notify: notify,
+            flushHistory: flushHistory,
+            beginHistoryBatch: beginHistoryBatch,
+            endHistoryBatch: endHistoryBatch
         };
     }
     function initialise() {

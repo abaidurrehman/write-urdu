@@ -147,11 +147,11 @@ harness p8 locally only. Update checklist/BACKLOG, commit, stop.
 ```
 
 ## Slice G — Safe editing (CARD-UX-018, 019, 020)
-- [ ] History for panel fields (debounced text), batched background apply
-- [ ] Undoable Reset (no `confirm`)
-- [ ] Template keeps user photo + "Use template background" action
-- [ ] Luminance-based text colour/overlay on upload; Text readability slider in Quick
-- [ ] `card-studio-history.spec.js` registered
+- [x] History for panel fields (debounced text), batched background apply
+- [x] Undoable Reset (no `confirm`)
+- [x] Template keeps user photo + "Use template background" action
+- [x] Luminance-based text colour/overlay on upload; Text readability slider in Quick
+- [x] `card-studio-history.spec.js` registered
 
 **Prompt**
 ```text

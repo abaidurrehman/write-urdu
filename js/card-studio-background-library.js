@@ -139,6 +139,14 @@
                 transfer.items.add(file);
                 input.files = transfer.files;
 
+                // The whole apply is one undo step; Card Studio closes the batch once the image has loaded
+                // (WU-UXR-002 Slice G, CARD-UX-018).
+                var historyApp = window.WriteUrduCardStudioApp;
+                if (historyApp && typeof historyApp.beginHistoryBatch === 'function') {
+                    historyApp.beginHistoryBatch();
+                    input.dataset.wuHistoryBatch = '1';
+                }
+
                 dispatchField('background.fit', 'cover');
                 dispatchField('background.positionX', 0.5);
                 dispatchField('background.positionY', 0.5);
@@ -171,6 +179,12 @@
                 return { ok: true, reason: null, background: background };
             })
             .catch(function () {
+                // Never leave an undo batch open if the apply stopped before the image arrived.
+                if (input.dataset.wuHistoryBatch === '1') {
+                    delete input.dataset.wuHistoryBatch;
+                    var historyApp = window.WriteUrduCardStudioApp;
+                    if (historyApp && typeof historyApp.endHistoryBatch === 'function') historyApp.endHistoryBatch();
+                }
                 announce(text('This background could not be loaded. Please try again.', 'یہ پس منظر لوڈ نہیں ہو سکا۔ دوبارہ کوشش کریں۔'), true);
                 return { ok: false, reason: 'background-load-failed', background: background };
             })
