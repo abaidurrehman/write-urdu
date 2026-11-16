@@ -297,8 +297,9 @@
   .wu-v2-shell.template-library-page-body .template-library-guidance{padding:22px 18px}
 }
 @media(max-width:520px){
-  .wu-v2-shell.card-studio-page .card-studio-top-actions{display:flex}
-  .wu-v2-shell.card-studio-page .card-studio-action-group{width:100%}
+  /* Stack the three action groups; unwrapped, each 100%-wide group was crushed into a third of a phone (WU-UXR-002 Slice E). */
+  .wu-v2-shell.card-studio-page .card-studio-top-actions{display:flex;flex-wrap:wrap}
+  .wu-v2-shell.card-studio-page .card-studio-action-group{width:100%;flex:1 1 100%}
   .wu-v2-shell.card-studio-page .card-studio-action-group-buttons{display:flex;flex-wrap:wrap;gap:6px}
   .wu-v2-shell.card-studio-page .card-studio-action-group-buttons>*{flex:1 1 auto}
   .wu-v2-shell.card-studio-page .card-studio-guided-header{padding:8px}

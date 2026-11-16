@@ -107,12 +107,12 @@ green. Standard validation + harness p1/p2 (attach the exported PNGs). Update ch
 ```
 
 ## Slice E — Reachability fixes (CARD-UX-009, 024, 025, 038, 001 step bar)
-- [ ] `WriteUrduCardStudioUi.refresh()` after late mounts; library hidden on Content
-- [ ] Step taps scroll + focus (reduced-motion aware)
-- [ ] No horizontal overflow ≤ 400 px; no truncated toolbar labels
-- [ ] Skip link; Back-to-editor only from the writer
-- [ ] Desktop canvas fits viewport
-- [ ] `card-studio-reachability.spec.js` registered; SW bump
+- [x] `WriteUrduCardStudioUi.refresh()` after late mounts; library hidden on Content
+- [x] Step taps scroll + focus (reduced-motion aware)
+- [x] No horizontal overflow ≤ 400 px; no truncated toolbar labels
+- [x] Skip link; Back-to-editor only from the writer
+- [x] Desktop canvas fits viewport
+- [x] `card-studio-reachability.spec.js` registered; SW bump
 
 **Prompt**
 ```text
