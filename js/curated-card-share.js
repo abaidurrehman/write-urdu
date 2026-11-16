@@ -131,21 +131,99 @@
         });
     }
 
+    // --- Public links (WU-UXR-002 Slice F, CARD-UX-012) -------------------------------------------
+    // A ready-made card becomes public only after the shared one-time consent, the link is remembered so
+    // it can be deleted, and sharing the same words again reuses the link instead of making another page.
+    var CORE_SRC = '/js/share-publish-core.js';
+    var LINK_CACHE_KEY = 'writeUrdu.curatedShareLinks.v1';
+    var LINK_CACHE_LIMIT = 100;
+    var corePromise = null;
+
+    function loadCore() {
+        if (root && root.WriteUrduSharePublishCore) return Promise.resolve(root.WriteUrduSharePublishCore);
+        var document = documentRef();
+        if (!document || !document.head) return Promise.reject(new Error('core_unavailable'));
+        if (corePromise) return corePromise;
+        corePromise = new Promise(function (resolve, reject) {
+            var script = document.createElement('script');
+            script.src = CORE_SRC;
+            script.async = true;
+            script.setAttribute('data-wu-share-publish-core', '');
+            script.onload = function () { root.WriteUrduSharePublishCore ? resolve(root.WriteUrduSharePublishCore) : reject(new Error('core_unavailable')); };
+            script.onerror = function () { corePromise = null; reject(new Error('core_unavailable')); };
+            document.head.appendChild(script);
+        });
+        return corePromise;
+    }
+
+    // FNV-1a: the cache keys a link by card and a hash of its words, so the words never sit in storage.
+    function textHash(value) {
+        var hash = 0x811c9dc5;
+        var text = String(value || '');
+        for (var i = 0; i < text.length; i += 1) {
+            hash ^= text.charCodeAt(i);
+            hash = Math.imul(hash, 0x01000193) >>> 0;
+        }
+        return hash.toString(16);
+    }
+    function linkKey(card) { return String(card.id) + ':' + textHash(card.textUr); }
+    function readLinkCache() {
+        try {
+            var parsed = JSON.parse(root.localStorage.getItem(LINK_CACHE_KEY) || 'null');
+            return parsed && parsed.items && typeof parsed.items === 'object' ? parsed : { items: {} };
+        } catch (error) { return { items: {} }; }
+    }
+    function writeLinkCache(cache) {
+        var keys = Object.keys(cache.items).sort(function (a, b) { return (cache.items[b].at || 0) - (cache.items[a].at || 0); });
+        keys.slice(LINK_CACHE_LIMIT).forEach(function (key) { delete cache.items[key]; });
+        try { root.localStorage.setItem(LINK_CACHE_KEY, JSON.stringify(cache)); } catch (error) {}
+    }
+    function rememberLink(card, result) {
+        var cache = readLinkCache();
+        cache.items[linkKey(card)] = { id: result.id, url: result.url, at: Date.now() };
+        writeLinkCache(cache);
+    }
+    function forgetLink(key) {
+        var cache = readLinkCache();
+        delete cache.items[key];
+        writeLinkCache(cache);
+    }
+
+    // Reuse a link only while this browser still manages it and its page still answers.
+    function reusableLink(card, core) {
+        var key = linkKey(card);
+        var entry = readLinkCache().items[key];
+        if (!entry || !entry.id || !entry.url) return Promise.resolve(null);
+        if (!core.isManaged(entry.id) || typeof root.fetch !== 'function') { forgetLink(key); return Promise.resolve(null); }
+        return root.fetch('/s/' + encodeURIComponent(entry.id), { method: 'HEAD', credentials: 'same-origin', cache: 'no-store' }).then(function (response) {
+            if (response.ok) return entry.url;
+            forgetLink(key);
+            if (response.status === 404 || response.status === 410) core.forgetShare(entry.id);
+            return null;
+        }, function () { return null; });
+    }
+
+    // Ready-made cards are original Write Urdu copy: send a credit only when the card names a real source.
+    function cardAttribution(card) {
+        var source = card && card.source;
+        if (!source || source.type === 'original') return '';
+        return String(source.attribution || '').trim();
+    }
+
     function publishCardShare(card, background) {
         if (!root || typeof root.fetch !== 'function' || typeof root.FormData !== 'function') return Promise.reject(new Error('publish_unavailable'));
-        return buildCardShareImage(card, background).then(function (blob) {
+        return Promise.all([loadCore(), buildCardShareImage(card, background)]).then(function (parts) {
             var form = new root.FormData();
             form.set('source_tool', 'card_studio');
             form.set('public_text', card.textUr);
             form.set('preset', 'ready_made_card');
-            form.set('attribution', background.name + ' · Write Urdu Card');
-            form.set('image', blob, 'write-urdu-card.png');
-            return root.fetch('/api/shares', { method: 'POST', body: form, credentials: 'same-origin', cache: 'no-store' });
-        }).then(function (response) {
-            return response.json().catch(function () { return null; }).then(function (payload) {
-                if (!response.ok || !payload || !payload.ok || !payload.url) throw new Error('publish_failed');
-                return payload.url;
-            });
+            var attribution = cardAttribution(card);
+            if (attribution) form.set('attribution', attribution);
+            form.set('image', parts[1], 'write-urdu-card.png');
+            return parts[0].publish(form);
+        }).then(function (result) {
+            rememberLink(card, result);
+            return result.url;
         });
     }
 
@@ -159,28 +237,46 @@
         });
     }
 
+    function deliver(url, published, options) {
+        var navigator = root && root.navigator;
+        if (navigator && typeof navigator.share === 'function') {
+            return navigator.share({ title: options.title || 'Write Urdu Card', url: url }).then(function () {
+                return { result: 'native_invoked', url: url, published: published };
+            }, function () {
+                return copyLink(url).then(function (result) { result.published = published; return result; });
+            });
+        }
+        return copyLink(url).then(function (result) { result.published = published; return result; });
+    }
+
     function shareCard(card, background, options) {
         options = options || {};
         var onStatus = typeof options.onStatus === 'function' ? options.onStatus : function () {};
-        onStatus('creating');
-        var published = true;
-        return publishCardShare(card, background).catch(function () {
-            published = false;
-            return cardUrl(card, options);
-        }).then(function (url) {
-            var navigator = root && root.navigator;
-            if (navigator && typeof navigator.share === 'function') {
-                return navigator.share({ title: options.title || 'Write Urdu Card', url: url }).then(function () {
-                    return { result: 'native_invoked', url: url, published: published };
-                }, function () {
-                    return copyLink(url).then(function (result) { result.published = published; return result; });
+        return loadCore().then(function (core) {
+            return core.requestConsent().then(function (agreed) {
+                if (!agreed) return { result: 'cancelled', url: null, published: false };
+                onStatus('creating');
+                return reusableLink(card, core).then(function (url) {
+                    if (url) return deliver(url, true, options).then(function (result) { result.reused = true; return result; });
+                    return publishCardShare(card, background).then(function (published) {
+                        return deliver(published, true, options);
+                    }, function () {
+                        return deliver(cardUrl(card, options), false, options);
+                    });
                 });
-            }
-            return copyLink(url).then(function (result) { result.published = published; return result; });
+            });
+        }, function () {
+            // Without the consent dialog nothing is published: share the card's own page instead.
+            onStatus('creating');
+            return deliver(cardUrl(card, options), false, options);
         }).then(function (result) {
             onStatus(result.result, result);
             return result;
         });
+    }
+
+    function manageLinks(options) {
+        return loadCore().then(function (core) { return core.manageDialog(options); });
     }
 
     return {
@@ -189,6 +285,8 @@
         buildCardShareImage: buildCardShareImage,
         publishCardShare: publishCardShare,
         copyLink: copyLink,
-        shareCard: shareCard
+        shareCard: shareCard,
+        manageLinks: manageLinks,
+        loadCore: loadCore
     };
 }));

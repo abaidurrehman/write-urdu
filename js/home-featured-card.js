@@ -100,9 +100,13 @@
         shareButton.addEventListener('click', function () {
             shareButton.disabled = true;
             shareButton.setAttribute('aria-busy', 'true');
-            status.textContent = isUrduLocale() ? 'شیئر کرنے کا لنک تیار ہو رہا ہے…' : 'Creating your shareable link…';
-            sharing.shareCard(card, background, { title: 'Write Urdu Card' }).then(function (result) {
-                if (result.result === 'link_copied') status.textContent = isUrduLocale() ? 'لنک کاپی ہو گیا۔' : 'Link copied.';
+            // The one-time public-link question comes first (WU-UXR-002 Slice F, D-UX2-3).
+            var onStatus = function (state) {
+                if (state === 'creating') status.textContent = isUrduLocale() ? 'شیئر کرنے کا لنک تیار ہو رہا ہے…' : 'Creating your shareable link…';
+            };
+            sharing.shareCard(card, background, { title: 'Write Urdu Card', onStatus: onStatus }).then(function (result) {
+                if (result.result === 'cancelled') status.textContent = isUrduLocale() ? 'کوئی لنک نہیں بنا۔' : 'No link was created.';
+                else if (result.result === 'link_copied') status.textContent = isUrduLocale() ? 'لنک کاپی ہو گیا۔' : 'Link copied.';
                 else if (result.result === 'fallback') status.textContent = result.url;
                 else status.textContent = isUrduLocale() ? 'شیئر مینو کھل گیا۔' : 'Share sheet opened.';
             }).catch(function () {
