@@ -316,6 +316,8 @@ test('personalized card continues to Card Studio with edited text and the select
 
 test('share publishes a real shareable link back to write-urdu.com', async ({ page }) => {
   await openCards(page);
+  // Consent already given (WU-UXR-002 Slice F); the consent dialog itself is covered in curated-share-consent.spec.js.
+  await page.evaluate(() => localStorage.setItem('writeUrdu.sharePublishAcknowledged.v1', '1'));
   let publishedForm = null;
   await page.route('**/api/shares', async route => {
     publishedForm = route.request().postData() || '';
@@ -335,6 +337,8 @@ test('share publishes a real shareable link back to write-urdu.com', async ({ pa
 
 test('share falls back to the card deep link when publishing fails', async ({ page }) => {
   await openCards(page);
+  // Consent already given (WU-UXR-002 Slice F); the consent dialog itself is covered in curated-share-consent.spec.js.
+  await page.evaluate(() => localStorage.setItem('writeUrdu.sharePublishAcknowledged.v1', '1'));
   await page.route('**/api/shares', route => route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'publish_failed' }) }));
   await page.evaluate(() => { navigator.share = () => Promise.reject(new Error('share unavailable')); });
   await page.evaluate(() => {

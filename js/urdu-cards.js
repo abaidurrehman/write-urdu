@@ -43,12 +43,17 @@
             ownCopy: 'Type or paste your Urdu once, then compare it across every card design before you choose.',
             ownCta: 'Use my words',
             personalizeTitle: 'Make this card yours',
-            personalizeCopy: 'Change the Urdu words below. Your edit stays in this browser unless you choose to share the image or continue to Card Studio.',
+            personalizeCopy: 'Change the Urdu words below, then share the picture, make a link, or keep editing in Card Studio.',
             personalizeLabel: 'Your Urdu message',
             personalizeShare: 'Share this image',
+            personalizeLink: 'Get link',
+            personalizeLinkUrl: 'Link to your card',
+            personalizeLinkCopy: 'Copy',
             personalizeAdvanced: 'More editing in Card Studio',
             personalizeClose: 'Close personalization',
-            personalizeEmpty: 'Add some Urdu text before sharing or continuing.'
+            personalizeEmpty: 'Add some Urdu text before sharing or continuing.',
+            linkCancelled: 'No link was created.',
+            manageLinks: 'Manage links'
         },
         ur: {
             cards: ' کارڈز',
@@ -85,12 +90,17 @@
             ownCopy: 'اپنا اردو متن ایک بار لکھیں یا پیسٹ کریں، پھر منتخب کرنے سے پہلے اسے تمام کارڈ ڈیزائنز پر دیکھیں۔',
             ownCta: 'اپنا پیغام استعمال کریں',
             personalizeTitle: 'اس کارڈ کو اپنا بنائیں',
-            personalizeCopy: 'نیچے اردو الفاظ تبدیل کریں۔ جب تک آپ تصویر شیئر یا کارڈ اسٹوڈیو نہ کھولیں، یہ تبدیلی اسی براؤزر میں رہتی ہے۔',
+            personalizeCopy: 'نیچے اردو الفاظ بدلیں، پھر تصویر شیئر کریں، لنک بنائیں یا کارڈ اسٹوڈیو میں مزید ترمیم کریں۔',
             personalizeLabel: 'آپ کا اردو پیغام',
             personalizeShare: 'یہ تصویر شیئر کریں',
+            personalizeLink: 'لنک بنائیں',
+            personalizeLinkUrl: 'آپ کے کارڈ کا لنک',
+            personalizeLinkCopy: 'کاپی کریں',
             personalizeAdvanced: 'کارڈ اسٹوڈیو میں مزید ترمیم',
             personalizeClose: 'ذاتی تبدیلی بند کریں',
-            personalizeEmpty: 'شیئر کرنے یا آگے بڑھنے سے پہلے کچھ اردو متن لکھیں۔'
+            personalizeEmpty: 'شیئر کرنے یا آگے بڑھنے سے پہلے کچھ اردو متن لکھیں۔',
+            linkCancelled: 'کوئی لنک نہیں بنا۔',
+            manageLinks: 'لنکس سنبھالیں'
         }
     };
 
@@ -257,6 +267,7 @@
             if (root.WriteUrduTelemetry && typeof root.WriteUrduTelemetry.trackContinuationPath === 'function') {
                 root.WriteUrduTelemetry.trackContinuationPath('selected', pathDetail);
             }
+            track('tool_handoff', { target_route: '/urdu-card-studio' });
             var result = handoff.transfer({
                 sourceWorkspace: 'urdu-cards',
                 sourceRoute: localizedRoute('/urdu-cards'),
@@ -288,23 +299,56 @@
             root.location.href = root.location.protocol === 'file:' ? 'urdu-card-studio.html' : (result.route || '/urdu-card-studio');
         }
 
+        // Public links ask once, are reused for the same words, and can be deleted here (WU-UXR-002 Slice F).
+        var manageButton = null;
+        function showManageLinks() {
+            if (!manageButton) {
+                manageButton = document.createElement('button');
+                manageButton.type = 'button';
+                manageButton.className = 'urdu-cards-manage-links';
+                manageButton.dataset.urduCardsManageLinks = '';
+                manageButton.addEventListener('click', function () { sharing.manageLinks(); });
+                status.insertAdjacentElement('afterend', manageButton);
+            }
+            manageButton.textContent = copyText('manageLinks');
+            manageButton.hidden = false;
+        }
+
+        // Counted with event names the server already rolls up for this page; no card words are sent.
+        function trackLinkResult(result) {
+            if (!result || !result.published) return;
+            if (!result.reused) track('share_publish_completed', { success: true });
+            if (result.result === 'native_invoked') track('share_completed', { success: true });
+        }
+
+        function shareLink(card, background, output, onDone) {
+            var shareOptions = {
+                route: localizedRoute('/urdu-cards'),
+                title: locale() === 'ur' ? 'رائٹ اردو کارڈ' : 'Write Urdu Card',
+                onStatus: function (state) { if (state === 'creating') output.textContent = copyText('creating'); }
+            };
+            var share = background ? sharing.shareCard(card, background, shareOptions) : Promise.reject(new Error('no_background'));
+            return share.then(function (result) {
+                if (result.result === 'cancelled') output.textContent = copyText('linkCancelled');
+                else if (result.result === 'link_copied') output.textContent = copyText('copied');
+                else if (result.result === 'fallback') output.textContent = result.url;
+                else output.textContent = copyText('shared');
+                trackLinkResult(result);
+                if (result.published) showManageLinks();
+                if (onDone) onDone(result);
+                return result;
+            }).catch(function () {
+                output.textContent = sharing.cardUrl(card, shareOptions);
+            });
+        }
+
         function startShare(card, button) {
             var background = registry.getBackgroundById(card.backgroundId);
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
-            status.textContent = copyText('creating');
-            var shareOptions = { route: localizedRoute('/urdu-cards'), title: locale() === 'ur' ? 'رائٹ اردو کارڈ' : 'Write Urdu Card' };
-            var share = background ? sharing.shareCard(card, background, shareOptions) : Promise.reject(new Error('no_background'));
-            share.then(function (result) {
+            shareLink(card, background, status).then(function () {
                 button.disabled = false;
                 button.removeAttribute('aria-busy');
-                if (result.result === 'link_copied') status.textContent = copyText('copied');
-                else if (result.result === 'fallback') status.textContent = result.url;
-                else status.textContent = copyText('shared');
-            }).catch(function () {
-                button.disabled = false;
-                button.removeAttribute('aria-busy');
-                status.textContent = sharing.cardUrl(card, shareOptions);
             });
         }
 
@@ -326,9 +370,11 @@
                 if (result.result === 'shared') {
                     output.textContent = copyText('imageShared');
                     track('card_image_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'native_share' });
+                    track('share_completed', { success: true });
                 } else if (result.result === 'downloaded') {
                     output.textContent = copyText('imageDownloaded');
                     track('card_image_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'download_fallback' });
+                    track('export_completed', { format: 'png', success: true });
                 } else {
                     output.textContent = copyText('imageCancelled');
                     track('card_image_share_cancelled', { card_id: card.id, background_id: card.backgroundId });
@@ -448,13 +494,41 @@
             shareButton.className = 'urdu-cards-personalizer-share';
             shareButton.dataset.urduCardsPersonalizerShare = card.id;
             shareButton.textContent = copyText('personalizeShare');
+            var linkButton = document.createElement('button');
+            linkButton.type = 'button';
+            linkButton.className = 'urdu-cards-personalizer-link';
+            linkButton.dataset.urduCardsPersonalizerLink = card.id;
+            linkButton.textContent = copyText('personalizeLink');
             var advancedButton = document.createElement('button');
             advancedButton.type = 'button';
             advancedButton.className = 'urdu-cards-personalizer-advanced';
             advancedButton.dataset.urduCardsPersonalizerAdvanced = card.id;
             advancedButton.textContent = copyText('personalizeAdvanced');
             actions.appendChild(shareButton);
+            actions.appendChild(linkButton);
             actions.appendChild(advancedButton);
+
+            // The made link stays visible with Copy, so it is never only in the clipboard (CARD-UX-013).
+            var linkRow = document.createElement('div');
+            linkRow.className = 'urdu-cards-personalizer-link-row';
+            linkRow.hidden = true;
+            var linkField = document.createElement('input');
+            linkField.type = 'text';
+            linkField.readOnly = true;
+            linkField.dir = 'ltr';
+            linkField.dataset.urduCardsPersonalizerUrl = '';
+            linkField.setAttribute('aria-label', copyText('personalizeLinkUrl'));
+            var linkCopy = document.createElement('button');
+            linkCopy.type = 'button';
+            linkCopy.textContent = copyText('personalizeLinkCopy');
+            linkCopy.addEventListener('click', function () {
+                sharing.copyLink(linkField.value).then(function (result) {
+                    if (result.result === 'link_copied') modalStatus.textContent = copyText('copied');
+                    else { linkField.focus(); linkField.select(); }
+                });
+            });
+            linkRow.appendChild(linkField);
+            linkRow.appendChild(linkCopy);
 
             var inputMode = document.createElement('div');
             inputMode.className = 'input-mode-control input-mode-control-card urdu-cards-personalizer-input-mode';
@@ -472,6 +546,7 @@
             form.appendChild(inputMode);
             form.appendChild(textarea);
             form.appendChild(modalStatus);
+            form.appendChild(linkRow);
             form.appendChild(actions);
             body.appendChild(preview);
             body.appendChild(form);
@@ -501,7 +576,8 @@
             }
 
             function onKeydown(event) {
-                if (event.key === 'Escape') close();
+                // Escape belongs to a link dialog opened on top of this one.
+                if (event.key === 'Escape' && !document.querySelector('dialog[open]')) close();
             }
 
             textarea.addEventListener('input', function () {
@@ -509,7 +585,26 @@
                 modalStatus.textContent = '';
                 var empty = !textarea.value.trim();
                 shareButton.disabled = empty;
+                linkButton.disabled = empty;
                 advancedButton.disabled = empty;
+                linkRow.hidden = true;
+            });
+            linkButton.addEventListener('click', function () {
+                var edited = personalizedCard();
+                if (!edited) return;
+                linkButton.disabled = true;
+                linkButton.setAttribute('aria-busy', 'true');
+                shareLink(edited, background, modalStatus, function (result) {
+                    if (result.published && result.url) {
+                        linkField.value = result.url;
+                        linkRow.hidden = false;
+                        // Clipboard unavailable: the field already shows the link, so don't repeat it.
+                        if (result.result === 'fallback') modalStatus.textContent = '';
+                    }
+                }).then(function () {
+                    linkButton.disabled = false;
+                    linkButton.removeAttribute('aria-busy');
+                });
             });
             shareButton.addEventListener('click', function () {
                 var edited = personalizedCard();
@@ -548,9 +643,11 @@
                 if (result.result === 'shared') {
                     status.textContent = copyText('statusShared');
                     track('card_whatsapp_status_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'native_share' });
+                    track('share_completed', { success: true });
                 } else if (result.result === 'downloaded') {
                     status.textContent = copyText('statusDownloaded');
                     track('card_whatsapp_status_share_completed', { card_id: card.id, background_id: card.backgroundId, method: 'download_fallback' });
+                    track('export_completed', { format: 'png', success: true });
                 } else {
                     status.textContent = copyText('statusCancelled');
                     track('card_whatsapp_status_share_cancelled', { card_id: card.id, background_id: card.backgroundId });

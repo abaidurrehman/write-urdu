@@ -142,6 +142,9 @@ test('newest card routes have crawlable Urdu pages and localized runtime control
     navigator.clipboard.writeText = value => { window.__copiedUrduCardUrl = value; return Promise.resolve(); };
   });
   await page.locator('[data-urdu-cards-share]').first().click();
+  // The one-time public-link question comes first, in Urdu (WU-UXR-002 Slice F).
+  await expect(page.locator('dialog[data-wu-share-consent] [data-wu-share-confirm]')).toHaveText('لنک بنائیں');
+  await page.locator('dialog[data-wu-share-consent] [data-wu-share-confirm]').click();
   await expect(page.locator('[data-urdu-cards-status]')).toHaveText('لنک کاپی ہو گیا۔');
   await expect.poll(() => page.evaluate(() => window.__copiedUrduCardUrl)).toMatch(/^https:\/\/write-urdu\.com\/urdu\/urdu-cards#card-/);
 });

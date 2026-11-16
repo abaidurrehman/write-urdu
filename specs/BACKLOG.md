@@ -279,7 +279,7 @@ Human/product gates:
 - [x] Slice D — legible attribution; no template frame on designer backgrounds. Not frozen (output quality, P0.1F lineage). _2026-10-11: the credit follows the design (colour, Nastaliq, ≥ 0.5 size) and sits inside the safe area; no template motif, frame or accent on designer backgrounds; typing an author switches the credit on; author field visible on both makers. Branch `claude/wu-uxr-002d-attribution`, SW v65._
 - [x] Slice E — reachability fixes (step panels sync/scroll, 360 px overflow, skip link). Not frozen (defect/a11y); no hierarchy change. _2026-11-16: the background collection now waits for the Format step, so the text box is the first thing in Content (harness: `#cardText` top 3,102 → 2,060 px on a 360 px phone, visible controls in the workspace 98 → 33); step taps scroll to and focus their panel; no overflow or cut-off toolbar labels at 360–393 px; a skip link reaches the text box; "Back to your writing" shows only when the text came from a writer and returns there. The M-3 rider was already fixed on `main` (fedfe38) and is only guarded by a test here. Branch `claude/wu-uxr-002e-reachability`, SW v76._
 - [ ] Slice-1 gate — re-run personas locally + production subset; 7-day Product Pulse; decide D-UX2-1.
-- [ ] Slice F — consent/manage/dedupe for ready-made "Shareable link" (also homepage featured card: D-UX2-3); personaliser "Get link". Not frozen (privacy).
+- [x] Slice F — consent/manage/dedupe for ready-made "Shareable link" (also homepage featured card: D-UX2-3); personaliser "Get link". Not frozen (privacy). _2026-11-16: a ready-made card asks once per browser (the same answer as Card Studio) before it makes a public page, reuses the link it already made for the same words (checked with HEAD before reuse), lists it under Manage links where it can be deleted, and no longer sends the design name as an author. The personaliser has Get link with the URL and Copy on screen. Homepage featured card asks the same question and keeps its two actions. Rider: `/urdu-cards` picture shares, downloads, links and Card Studio hand-offs are now counted with event names the server already rolls up. `js/share-publish-core.js` is new; Card Studio still keeps its own copy of the same storage keys (follow-up). Branch `claude/wu-uxr-002f-ready-made-consent`, SW v77._
 - [ ] Slice G — undo for all edits and Reset; photo-aware text; template keeps photo. Not frozen.
 - [ ] Slice H — Send sheet (Picture vs Link; WhatsApp/Facebook links). **Decision line required.**
 - [ ] Slice I — lightweight og:image preview. **Needs D-UX2-2.**
@@ -293,7 +293,7 @@ Human/product gates:
 
 **Decision lines** (add one dated line here before starting H, L, M or N):
 
-- _none yet_
+- _2026-11-16 — D-UX2-3 (founder): keep a `/s/` page per ready-made share, with the one-time consent dialog and dedupe, and apply the same rule to the homepage featured card._
 
 ## P0.13 — UX, SEO and AI-discovery initiative (2026-10-15)
 
