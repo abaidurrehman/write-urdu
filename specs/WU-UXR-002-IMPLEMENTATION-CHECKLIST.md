@@ -129,11 +129,11 @@ Standard validation + harness 01-first-impression and resilience (Tab count). Up
 - [ ] 7-day Product Pulse comparison recorded; decision on D-UX2-1
 
 ## Slice F — Consistent publishing for ready-made cards (CARD-UX-012, 013)
-- [ ] D-UX2-3 decided (homepage featured card shares the same curated path)
-- [ ] `js/share-publish-core.js` extracted; Card Studio behaviour identical
-- [ ] Curated share: consent, manage token stored, dedupe, no fake attribution
-- [ ] Personaliser "Get link"
-- [ ] `urdu-cards.spec.js` + `home-featured-card.spec.js` updated; `curated-share-consent.spec.js` registered; SW bump
+- [x] D-UX2-3 decided (homepage featured card shares the same curated path) — 2026-11-16: same one-time consent on the homepage
+- [ ] `js/share-publish-core.js` extracted; Card Studio behaviour identical — _partial: the core exists and owns consent, the token store, publish, delete and Manage links for ready-made sharing; Card Studio still uses its own copy of the same storage keys (follow-up)_
+- [x] Curated share: consent, manage token stored, dedupe, no fake attribution
+- [x] Personaliser "Get link"
+- [x] `urdu-cards.spec.js` + `home-featured-card.spec.js` updated; `curated-share-consent.spec.js` registered; SW bump
 
 **Prompt**
 ```text

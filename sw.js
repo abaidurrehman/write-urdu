@@ -125,6 +125,7 @@ const APP_SHELL = [
   './js/urdu-cards-data.js',
   './js/home-featured-card-selector.js',
   './js/curated-card-share.js',
+  './js/share-publish-core.js',
   './js/home-featured-card.js',
   './js/card-studio-background-library.js',
   './js/card-studio-entry.js',

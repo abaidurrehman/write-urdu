@@ -105,6 +105,8 @@ test('Urdu locale mirror renders the same compact localized feature', async ({ p
 test('homepage Share publishes a real link and preserves fallback', async ({ page }) => {
   await page.route('**/api/shares', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, url: 'https://write-urdu.com/s/home-card-proof' }) }));
   await page.addInitScript(() => {
+    // Consent already given (WU-UXR-002 Slice F, D-UX2-3); covered in curated-share-consent.spec.js.
+    localStorage.setItem('writeUrdu.sharePublishAcknowledged.v1', '1');
     Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
     window.__copied = '';
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: value => { window.__copied = value; return Promise.resolve(); } } });
@@ -118,6 +120,8 @@ test('homepage Share publishes a real link and preserves fallback', async ({ pag
 test('homepage Share falls back to the canonical card link when publishing fails', async ({ page }) => {
   await page.route('**/api/shares', route => route.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }));
   await page.addInitScript(() => {
+    // Consent already given (WU-UXR-002 Slice F, D-UX2-3); covered in curated-share-consent.spec.js.
+    localStorage.setItem('writeUrdu.sharePublishAcknowledged.v1', '1');
     Object.defineProperty(navigator, 'share', { configurable: true, value: undefined });
     window.__copied = '';
     Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: value => { window.__copied = value; return Promise.resolve(); } } });

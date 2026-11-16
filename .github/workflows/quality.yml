@@ -104,6 +104,7 @@ jobs:
           tests/card-studio-reachability.spec.js
           tests/card-studio-recent.spec.js
           tests/card-attribution-quality.spec.js
+          tests/curated-share-consent.spec.js
           tests/card-studio-history.spec.js
           tests/print-quality-pdf.spec.js
           tests/bill-urdu-input.spec.js

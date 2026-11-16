@@ -60,7 +60,10 @@ assert.doesNotMatch(runtime, /[?&#](?:text|urdu)=/i);
 assert.match(adapter, /'home-featured-card': true/);
 assert.ok(journey.get('home-featured-card'));
 assert.ok(journey.action('home-featured-card', 'home-featured-card-to-studio'));
-assert.match(share, /fetch\('\/api\/shares'/);
+// The share layer owns publishing: curated-card-share asks for consent, then publishes through the
+// shared core (WU-UXR-002 Slice F, D-UX2-3).
+assert.match(share, /requestConsent\(\)/);
+assert.match(read('js/share-publish-core.js'), /fetch\('\/api\/shares'/);
 assert.doesNotMatch(runtime, /fetch\('\/api\/shares'/);
 assert.doesNotMatch(runtime, /createElement\('canvas'\)/);
 
