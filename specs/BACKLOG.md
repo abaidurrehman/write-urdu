@@ -284,7 +284,7 @@ Human/product gates:
 - [ ] Slice H — Send sheet (Picture vs Link; WhatsApp/Facebook links). **Decision line required.**
 - [ ] Slice I — lightweight og:image preview. **Needs D-UX2-2.**
 - [ ] Slice J — remix designer backgrounds ("Edit this design"); Your published cards. Not frozen.
-- [ ] Slice K — Urdu UI completeness; focus ring; storage guard; long tokens. Not frozen (a11y).
+- [x] Slice K — Urdu UI completeness; focus ring; storage guard; long tokens. Not frozen (a11y). _2026-11-16: the steps, modes, toolbar groups, use cases, announcements, Publish & Share, its notes and all publish dialogs come from en/ur copy tables and follow a language switch, so `/urdu/urdu-card-studio` shows no English control label (brand and format names aside); every control gets a solid 3 px focus ring and guidance is 14 px on phones; the hand-off layer no longer throws when privacy settings block storage; long links break after / . - _ ? wherever they fall in a line; the fit warning says so honestly when auto-fit is on. Branch `claude/wu-uxr-002k-urdu-a11y`, SW v79._
 - [ ] Slice L — Greeting vs Notice defaults; emphasised first line. **Decision line required.**
 - [ ] Slice M — WhatsApp/Instagram maker parity. **Decision line required.**
 - [ ] Slice N — ready-made tile simplification; Birthday + occasion depth. **Content-owner gates.**

@@ -118,3 +118,8 @@ html[lang="en"] #cardText[data-input-mode="roman"]::placeholder{font-family:Inte
 /* WU-UXR-002 Slice G: one action in the status line (Undo after Reset, Use template background). */
 .card-studio-status-action{display:inline-flex;align-items:center;min-height:36px;margin-inline-start:6px;padding:0 12px;border:1px solid #147a49;border-radius:999px;background:#fff;color:#0f5132;font:inherit;font-weight:700;cursor:pointer}
 .card-studio-status-action:focus-visible{outline:3px solid #9fd8b8;outline-offset:2px}
+
+/* WU-UXR-002 Slice K (CARD-UX-033): one clearly visible focus ring for every control in the workspace and the
+   publish dialogs (the earlier rules removed the outline for a faint shadow), and readable guidance on phones. */
+.card-studio-shell :is(button,a[href],input,select,textarea,summary,[tabindex]):focus-visible,.wu-share-dialog :is(button,a[href],input):focus-visible{outline:3px solid #0b6fc2!important;outline-offset:2px}
+@media(max-width:900px){.card-studio-shell .wu-share-publish-note,.card-studio-shell .card-studio-help{font-size:14px;line-height:1.5}}
