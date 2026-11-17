@@ -34,8 +34,10 @@
 
     function storage(candidate) {
         if (candidate) return candidate;
-        if (!root || !root.sessionStorage) return null;
+        if (!root) return null;
+        // Strict privacy settings make even reading sessionStorage throw (WU-UXR-002 Slice K, CARD-UX-035).
         try {
+            if (!root.sessionStorage) return null;
             var probe = KEY_PREFIX + 'probe';
             root.sessionStorage.setItem(probe, '1');
             root.sessionStorage.removeItem(probe);

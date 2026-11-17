@@ -207,11 +207,11 @@ Update checklist/BACKLOG, commit, stop.
 ```
 
 ## Slice K — Urdu UI & a11y polish (CARD-UX-023, 033, 035, 028)
-- [ ] All workflow labels via copy tables; Urdu verified on `/urdu/urdu-card-studio`
-- [ ] Focus ring + 14 px notes
-- [ ] Storage SecurityError fixed
-- [ ] Long-token wrapping + state-aware fit warning
-- [ ] Specs registered
+- [x] All workflow labels via copy tables; Urdu verified on `/urdu/urdu-card-studio`
+- [x] Focus ring + 14 px notes
+- [x] Storage SecurityError fixed
+- [x] Long-token wrapping + state-aware fit warning
+- [x] Specs registered
 
 **Prompt**
 ```text

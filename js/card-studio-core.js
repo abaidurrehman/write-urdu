@@ -271,24 +271,33 @@
                 lines.push({ text: current, width: measure(current), paragraphIndex: paragraphIndex, isParagraphEnd: !!isEnd });
                 current = '';
             }
+            // A word wider than the box (a link, a long code) breaks after / . - _ ? first, and only then
+            // between characters, wherever it falls in the line (WU-UXR-002 Slice K, CARD-UX-028).
+            function breakLongWord(word) {
+                var pieces = [];
+                var chunk = '';
+                (word.match(/[^\/.\-_?]*[\/.\-_?]*/g) || [word]).filter(Boolean).forEach(function (part) {
+                    if (measure(chunk + part) <= maxWidth) { chunk += part; return; }
+                    if (chunk) { pieces.push(chunk); chunk = ''; }
+                    if (measure(part) <= maxWidth) { chunk = part; return; }
+                    Array.from(part).forEach(function (character) {
+                        var next = chunk + character;
+                        if (chunk && measure(next) > maxWidth) { pieces.push(chunk); chunk = character; } else chunk = next;
+                    });
+                });
+                if (chunk) pieces.push(chunk);
+                return pieces;
+            }
             words.forEach(function (word) {
                 var candidate = current ? current + ' ' + word : word;
-                if (measure(candidate) <= maxWidth || !current) {
-                    if (!current && measure(word) > maxWidth) {
-                        var chunk = '';
-                        Array.from(word).forEach(function (character) {
-                            var next = chunk + character;
-                            if (chunk && measure(next) > maxWidth) {
-                                lines.push({ text: chunk, width: measure(chunk), paragraphIndex: paragraphIndex, isParagraphEnd: false });
-                                chunk = character;
-                            } else chunk = next;
-                        });
-                        current = chunk;
-                    } else current = candidate;
-                } else {
-                    pushCurrent(false);
-                    current = word;
-                }
+                if (current && measure(candidate) <= maxWidth) { current = candidate; return; }
+                if (current) pushCurrent(false);
+                if (measure(word) <= maxWidth) { current = word; return; }
+                var pieces = breakLongWord(word);
+                pieces.slice(0, -1).forEach(function (piece) {
+                    lines.push({ text: piece, width: measure(piece), paragraphIndex: paragraphIndex, isParagraphEnd: false });
+                });
+                current = pieces[pieces.length - 1] || '';
             });
             pushCurrent(true);
         });

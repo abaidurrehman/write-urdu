@@ -18,7 +18,73 @@
         story: { template: 'midnight', preset: 'story' },
         announcement: { template: 'botanical-frame', preset: 'landscape' }
     };
-    var labels = { content: 'Content', format: 'Format', style: 'Style', export: 'Export' };
+    // Workflow labels in both languages (WU-UXR-002 Slice K, CARD-UX-023). The card's own fields keep their
+    // tables in card-studio.js; this layer owns the steps, modes, toolbar groups, use cases and announcements.
+    var UI_COPY = {
+        en: {
+            steps: { content: ['Content', 'Write your text'], format: ['Format', 'Choose a use case'], style: ['Style', 'Refine the look'], export: ['Export', 'Download and share'] },
+            stepAnnounce: '{step} step', needText: 'Add card text before moving to the next step.',
+            modeLabel: 'New to Card Studio?', quick: 'Quick mode', advanced: 'Advanced mode', quickOn: 'Quick mode enabled.', advancedOn: 'Advanced controls revealed.',
+            groupHistory: 'History', groupWorkspace: 'Workspace', groupExport: 'Export',
+            undo: 'Undo', redo: 'Redo', undoTitle: 'Undo last change', redoTitle: 'Redo last change', browseTemplates: 'Browse templates',
+            formatEyebrow: 'Start with a strong direction', formatTitle: 'What are you making?', formatIntro: 'Choose a starting point and we’ll set a useful size, layout and style for you.',
+            useCases: { quote: ['Quote / Poetry', 'Balanced square card'], social: ['Social post', 'Shareable square design'], story: ['Status / Story', 'Tall mobile-first layout'], announcement: ['Greeting / Announcement', 'Clear, readable hierarchy'], facebook: ['Facebook post', '1200 × 630 wide layout'] },
+            useCaseApplied: 'Recommended {name} layout applied.',
+            sample: 'Use sample text', clear: 'Clear text', sampleAdded: 'Sample Urdu text added.', cleared: 'Card text cleared.',
+            shareImageOnly: 'Share image only', shareImageTitle: 'Share the image file without creating a public Write Urdu link'
+        },
+        ur: {
+            steps: { content: ['متن', 'اپنا متن لکھیں'], format: ['سائز', 'کارڈ کی قسم چنیں'], style: ['انداز', 'شکل نکھاریں'], export: ['مکمل', 'ڈاؤن لوڈ اور شیئر'] },
+            stepAnnounce: 'مرحلہ: {step}', needText: 'اگلے مرحلے سے پہلے کارڈ کا متن لکھیں۔',
+            modeLabel: 'کارڈ اسٹوڈیو میں نئے ہیں؟', quick: 'آسان', advanced: 'مزید اختیارات', quickOn: 'آسان انداز کھل گیا۔', advancedOn: 'مزید اختیارات کھل گئے۔',
+            groupHistory: 'تبدیلیاں', groupWorkspace: 'مزید', groupExport: 'محفوظ کریں',
+            undo: 'واپس', redo: 'دوبارہ', undoTitle: 'آخری تبدیلی واپس لیں', redoTitle: 'آخری تبدیلی دوبارہ کریں', browseTemplates: 'ٹیمپلیٹس دیکھیں',
+            formatEyebrow: 'اچھی شروعات', formatTitle: 'آپ کیا بنا رہے ہیں؟', formatIntro: 'ایک انتخاب کریں، سائز، ترتیب اور انداز ہم خود موزوں رکھ دیں گے۔',
+            useCases: { quote: ['اقتباس / شاعری', 'متوازن چوکور کارڈ'], social: ['سوشل پوسٹ', 'شیئر کے لیے چوکور ڈیزائن'], story: ['اسٹیٹس / اسٹوری', 'فون کے لیے لمبا ڈیزائن'], announcement: ['مبارکباد / اعلان', 'صاف اور آسانی سے پڑھا جانے والا'], facebook: ['فیس بک پوسٹ', '1200 × 630 چوڑا ڈیزائن'] },
+            useCaseApplied: '{name} کے لیے موزوں ترتیب لگ گئی۔',
+            sample: 'نمونے کا متن لگائیں', clear: 'متن صاف کریں', sampleAdded: 'نمونے کا اردو متن لگ گیا۔', cleared: 'کارڈ کا متن صاف ہو گیا۔',
+            shareImageOnly: 'صرف تصویر شیئر کریں', shareImageTitle: 'عوامی لنک بنائے بغیر صرف تصویر شیئر کریں'
+        }
+    };
+    function uiLocale() {
+        try { if (window.WriteUrduLocale && typeof window.WriteUrduLocale.get === 'function') return window.WriteUrduLocale.get() === 'ur' ? 'ur' : 'en'; } catch (error) {}
+        return document.documentElement.lang === 'ur' ? 'ur' : 'en';
+    }
+    function tu(key, values) {
+        var value = UI_COPY[uiLocale()][key];
+        if (value == null) value = UI_COPY.en[key];
+        if (typeof value === 'string') Object.keys(values || {}).forEach(function (name) { value = value.split('{' + name + '}').join(values[name]); });
+        return value;
+    }
+    function setText(node, value) { if (node && value != null && node.textContent !== value) node.textContent = value; }
+    function localizeWorkspace() {
+        if (!root) return;
+        var stepCopy = tu('steps');
+        root.querySelectorAll('button[data-card-step]').forEach(function (button) {
+            var copy = stepCopy[button.dataset.cardStep]; if (!copy) return;
+            var strong = button.querySelector('strong'), small = button.querySelector('small');
+            if (strong) { setText(strong, copy[0]); setText(small, copy[1]); }
+            else { var number = button.querySelector('span'); if (number && number.nextSibling) number.nextSibling.textContent = copy[0]; else if (!number) setText(button, copy[0]); }
+        });
+        setText(root.querySelector('.card-studio-mode-label'), tu('modeLabel'));
+        setText(root.querySelector('[data-card-ui-mode="quick"]'), tu('quick'));
+        setText(root.querySelector('[data-card-ui-mode="advanced"]'), tu('advanced'));
+        setText(root.querySelector('.card-studio-history-actions .card-studio-action-group-label'), tu('groupHistory'));
+        var groups = root.querySelectorAll('.card-studio-top-actions .card-studio-action-group');
+        if (groups[1]) setText(groups[1].querySelector('.card-studio-action-group-label'), tu('groupWorkspace'));
+        root.querySelectorAll('[data-card-ui-action="undo"]').forEach(function (button) { setText(button, tu('undo')); button.title = tu('undoTitle'); });
+        root.querySelectorAll('[data-card-ui-action="redo"]').forEach(function (button) { setText(button, tu('redo')); button.title = tu('redoTitle'); });
+        root.querySelectorAll('a.card-studio-button[href$="/urdu-templates"]').forEach(function (link) { setText(link, tu('browseTemplates')); });
+        var intro = root.querySelector('.card-studio-step-intro');
+        if (intro) { setText(intro.querySelector('.card-studio-eyebrow'), tu('formatEyebrow')); setText(intro.querySelector('h2'), tu('formatTitle')); setText(intro.querySelector('p'), tu('formatIntro')); }
+        var useCaseCopy = tu('useCases');
+        root.querySelectorAll('[data-card-use-case], [data-card-role-entry]').forEach(function (button) {
+            var copy = useCaseCopy[button.dataset.cardUseCase || button.dataset.cardRoleEntry]; if (!copy) return;
+            setText(button.querySelector('strong'), copy[0]); setText(button.querySelector('small'), copy[1]);
+        });
+        setText(root.querySelector('[data-card-content-action="sample"]'), tu('sample'));
+        setText(root.querySelector('[data-card-content-action="clear"]'), tu('clear'));
+    }
     var ui = { activeStep: 'content', mode: 'quick', selection: 'none', interactionMode: 'idle', capabilities: { isMobile: false, supportsNativeKeyboard: false } };
 
     function ensureV2CreationStyles() {
@@ -88,16 +154,16 @@
         if (steps.indexOf(step) === -1) return;
         commitEditing();
         if (step !== 'content' && app && app.getState && !String(app.getState().text.value || '').trim()) {
-            ui.activeStep = 'content'; syncSteps(); announce('Add card text before moving to the next step.');
+            ui.activeStep = 'content'; syncSteps(); announce(tu('needText'));
             revealStep('content'); return;
         }
-        ui.activeStep = step; syncSteps(); announce(labels[step] + ' step');
+        ui.activeStep = step; syncSteps(); announce(tu('stepAnnounce', { step: tu('steps')[step][0] }));
         revealStep(step);
     }
     function setMode(mode) {
         if (mode !== 'quick' && mode !== 'advanced') return;
         commitEditing(); ui.mode = mode; syncAdvancedVisibility();
-        announce(mode === 'quick' ? 'Quick mode enabled.' : 'Advanced controls revealed.');
+        announce(mode === 'quick' ? tu('quickOn') : tu('advancedOn'));
     }
     function selectUseCase(event) {
         var button = event.currentTarget;
@@ -121,7 +187,7 @@
         });
         if (app.syncControls) app.syncControls();
         if (app.requestRender) app.requestRender();
-        announce('Recommended ' + button.querySelector('strong').textContent + ' layout applied.');
+        announce(tu('useCaseApplied', { name: button.querySelector('strong').textContent }));
     }
     function updateHistoryButtons() {
         if (!interaction || !interaction.getHistoryState) return;
@@ -139,15 +205,15 @@
         if (action === 'clear') app.updateObjectText('text', '');
         if (app.syncControls) app.syncControls();
         if (app.scheduleSave) app.scheduleSave();
-        announce(action === 'sample' ? 'Sample Urdu text added.' : 'Card text cleared.');
+        announce(action === 'sample' ? tu('sampleAdded') : tu('cleared'));
     }
 
     function ownImageShareLabels() {
         root.querySelectorAll('[data-card-action="share"]').forEach(function (button) {
             button.removeAttribute('data-card-i18n');
             button.removeAttribute('data-wu-i18n-control');
-            if (String(button.textContent || '').trim() !== 'Share image only') button.textContent = 'Share image only';
-            button.title = 'Share the image file without creating a public Write Urdu link';
+            if (String(button.textContent || '').trim() !== tu('shareImageOnly')) button.textContent = tu('shareImageOnly');
+            button.title = tu('shareImageTitle');
         });
     }
 
@@ -214,12 +280,12 @@
                 updateHistoryButtons();
             });
         });
-        document.addEventListener('write-urdu:locale-change', function () { syncSteps(); applyFacebookPresentation(); ownImageShareLabels(); });
+        document.addEventListener('write-urdu:locale-change', function () { syncSteps(); applyFacebookPresentation(); ownImageShareLabels(); localizeWorkspace(); });
         document.addEventListener('write-urdu:card-interaction-state', syncInteractionState);
         // Panels mounted after start-up (the background collection) must follow the active step too (CARD-UX-009).
         document.addEventListener('write-urdu:card-studio-panel-mounted', syncSteps);
         if (role === 'facebook') document.addEventListener('write-urdu:card-rendered', enforceFacebookRole);
-        syncInteractionState(); syncSteps(); updateHistoryButtons(); ownImageShareLabels();
+        syncInteractionState(); syncSteps(); updateHistoryButtons(); ownImageShareLabels(); localizeWorkspace();
     }
     function start() {
         ensureV2CreationStyles();
