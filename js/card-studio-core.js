@@ -371,10 +371,24 @@
         return value || fallback || 'write-urdu-card';
     }
 
+    // A photo the person uploaded (designer backgrounds carry a safe area; uploads do not) (WU-UXR-002 Slice G).
+    function hasUserPhoto(project) {
+        var background = project && project.background;
+        return Boolean(background && background.type === 'image' && background.imageAssetId && !background.safeArea);
+    }
+
+    // Keep the previous project's photo and its overlay on a newly styled project: only the text style changes.
+    function keepUserPhoto(previous, next) {
+        if (!hasUserPhoto(previous)) return next;
+        next = normalizeCardProject(next);
+        next.background = clone(previous.background);
+        return next;
+    }
+
     function validateCardProject(project) {
         project = normalizeCardProject(project);
         return { valid: Boolean(project.text.value.trim()), project: project, errors: project.text.value.trim() ? [] : ['Text is empty.'] };
     }
 
-    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, SUPPORTED_FONTS: SUPPORTED_FONTS, DEFAULT_TEXT: DEFAULT_TEXT, SAMPLE_TEXTS: SAMPLE_TEXTS, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, normalizeFontFamily: normalizeFontFamily, applyTemplate: applyTemplate, applyPreset: applyPreset, isolateBidiRuns: isolateBidiRuns, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
+    return { PRESETS: PRESETS, GRADIENTS: GRADIENTS, TEMPLATES: TEMPLATES, SUPPORTED_FONTS: SUPPORTED_FONTS, DEFAULT_TEXT: DEFAULT_TEXT, SAMPLE_TEXTS: SAMPLE_TEXTS, createDefaultCardProject: createDefaultCardProject, normalizeCardProject: normalizeCardProject, normalizeFontFamily: normalizeFontFamily, applyTemplate: applyTemplate, applyPreset: applyPreset, hasUserPhoto: hasUserPhoto, keepUserPhoto: keepUserPhoto, isolateBidiRuns: isolateBidiRuns, wrapRtlText: wrapRtlText, layoutCardText: layoutCardText, findBestFontSize: findBestFontSize, calculateImagePlacement: calculateImagePlacement, safeFilename: safeFilename, validateCardProject: validateCardProject, defaultTransform: defaultTransform, normaliseTransform: normaliseTransform, transformToRect: transformToRect, rectToTransform: rectToTransform };
 }));

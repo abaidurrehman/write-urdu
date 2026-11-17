@@ -80,7 +80,9 @@
         (result.guides || []).forEach(function (guide) { var line = document.createElement('span'); line.className = 'card-studio-guide ' + (guide.axis === 'x' ? 'vertical' : 'horizontal'); if (guide.axis === 'x') line.style.left = (guide.value * transform().scaleX) + 'px'; else line.style.top = (guide.value * transform().scaleY) + 'px'; line.dataset.label = guide.label || ''; guides.appendChild(line); });
     }
     function snapshot() { return clone(app.getState()); }
-    function historyState() { return { canUndo: history.length > 0 && mode !== 'editing', canRedo: future.length > 0 && mode !== 'editing' }; }
+    function historyState() { return { canUndo: history.length > 0 && mode !== 'editing', canRedo: future.length > 0 && mode !== 'editing', size: history.length }; }
+    // Typing waiting to become an undo step is committed first, so Undo never skips it (WU-UXR-002 Slice G).
+    function flushPending() { if (app.flushHistory) app.flushHistory(); }
     function syncHistoryButtons() {
         var state = historyState();
         root.querySelectorAll('[data-card-ui-action="undo"]').forEach(function (button) { button.disabled = !state.canUndo; });
@@ -88,8 +90,8 @@
     }
     function pushHistory(before) { if (!before) return; var after = snapshot(); if (JSON.stringify(before) === JSON.stringify(after)) return; history.push({ before: before, after: after }); if (history.length > 50) history.shift(); future = []; syncHistoryButtons(); }
     function recordHistory(before) { pushHistory(before); refreshSelection(); }
-    function undo() { if (!history.length || mode === 'editing') return; var item = history.pop(); future.push(item); app.replaceState(item.before); announce('Change undone.'); refreshSelection(); syncHistoryButtons(); }
-    function redo() { if (!future.length || mode === 'editing') return; var item = future.pop(); history.push(item); app.replaceState(item.after); announce('Change redone.'); refreshSelection(); syncHistoryButtons(); }
+    function undo() { flushPending(); if (!history.length || mode === 'editing') return; var item = history.pop(); future.push(item); app.replaceState(item.before); announce('Change undone.'); refreshSelection(); syncHistoryButtons(); }
+    function redo() { flushPending(); if (!future.length || mode === 'editing') return; var item = future.pop(); history.push(item); app.replaceState(item.after); announce('Change redone.'); refreshSelection(); syncHistoryButtons(); }
     function beginGesture(event, type, handle, tapToEdit) {
         if (!selected) return;
         var point = interaction.clientPointToCardPoint({ x: event.clientX, y: event.clientY }, transform());

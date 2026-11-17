@@ -114,3 +114,7 @@ html[lang="en"] #cardText[data-input-mode="roman"]::placeholder{font-family:Inte
   .card-studio-artboard-wrap{max-width:100%;box-sizing:border-box;margin-inline:auto}
   .card-studio-action-group .card-studio-button{min-width:auto;overflow:visible;text-overflow:clip;white-space:normal;line-height:1.2}
 }
+
+/* WU-UXR-002 Slice G: one action in the status line (Undo after Reset, Use template background). */
+.card-studio-status-action{display:inline-flex;align-items:center;min-height:36px;margin-inline-start:6px;padding:0 12px;border:1px solid #147a49;border-radius:999px;background:#fff;color:#0f5132;font:inherit;font-weight:700;cursor:pointer}
+.card-studio-status-action:focus-visible{outline:3px solid #9fd8b8;outline-offset:2px}

@@ -108,6 +108,8 @@
         var before = clone(app.getState());
         var next = clone(app.getState());
         next = core.applyTemplate(next, preset.template);
+        // The person's own photo stays when they pick what they are making (WU-UXR-002 Slice G, CARD-UX-019).
+        if (core.keepUserPhoto) next = core.keepUserPhoto(before, next);
         next = core.applyPreset(next, preset.preset);
         next.useCase = useCase;
         app.replaceState(next);

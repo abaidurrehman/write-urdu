@@ -158,6 +158,7 @@ const tests = [
   'tests/card-studio-recent-contract.test.js',
   'tests/card-attribution-quality-contract.test.js',
   'tests/curated-share-consent-contract.test.js',
+  'tests/card-studio-history-contract.test.js',
   'tests/print-quality-pdf-contract.test.js',
   'tests/unified-urdu-input-fields-contract.test.js'
 ];
