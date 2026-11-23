@@ -16,6 +16,11 @@
     var CAPTURE_WORKSPACES = ['image-to-urdu-text', 'voice-typing', 'inpage-converter'];
     var SHARED_WORKSPACES = ['basic-writer', 'urdu-keyboard', 'rich-editor', 'text-cleaner'].concat(CAPTURE_WORKSPACES);
     var BIND_TIMEOUT_MS = 6000;
+    // WU-PLAT-002H E2 bucket: short text may show Card beside the primary
+    // action. Length is the only signal; the text itself never chooses.
+    var CARD_SHORT_MIN = 20;
+    var CARD_SHORT_MAX = 499;
+    var CARD_PREVIEW_CHARS = 80;
     var OCR_WATCH_ATTEMPTS = 240;
     var cleanupObserver = null;
     var cleanupTimer = null;
@@ -182,23 +187,40 @@
         }, BIND_TIMEOUT_MS);
     }
 
-    function actionMarkup(action, primary) {
-        return '<a class="wu-continue-action' + (primary ? ' is-primary' : '') + '" href="' + action.href + '" data-wu-continuity-target="' + action.target + '" data-wu-next-step-action="' + action.id + '" data-wu-journey="' + action.id + '">' +
-            '<strong>' + action.label + '</strong><small>' + action.technicalLabel + '</small></a>';
+    // Compact (Basic Writer): the primary action, plus Card for short text;
+    // everything else sits behind one disclosure.
+    function compactSplit(model, textLength) {
+        var all = model.visible.concat(model.more);
+        var shown = all.slice(0, 1);
+        var length = Number(textLength) || 0;
+        if (length >= CARD_SHORT_MIN && length <= CARD_SHORT_MAX) {
+            var card = all.slice(1).filter(function (action) { return action.target === 'card-studio'; })[0];
+            if (card) shown.push(card);
+        }
+        return { shown: shown, hidden: all.filter(function (action) { return shown.indexOf(action) < 0; }) };
     }
 
-    function panelMarkup(model, compact) {
-        // Compact: one primary action; everything else sits behind one disclosure.
-        var shown = compact ? model.visible.slice(0, 1) : model.visible;
-        var hidden = compact ? model.visible.slice(1).concat(model.more) : model.more;
-        var visible = shown.map(function (action, index) { return actionMarkup(action, index === 0); }).join('');
+    function actionMarkup(action, primary, withPreview) {
+        // The preview is filled with textContent in render(); never put writing in markup.
+        var preview = withPreview ? '<span class="wu-continue-card-preview" data-wu-card-preview aria-hidden="true" dir="rtl" lang="ur"></span>' : '';
+        return '<a class="wu-continue-action' + (primary ? ' is-primary' : '') + (withPreview ? ' has-card-preview' : '') + '" href="' + action.href + '" data-wu-continuity-target="' + action.target + '" data-wu-next-step-action="' + action.id + '" data-wu-journey="' + action.id + '">' +
+            '<strong>' + action.label + '</strong><small>' + action.technicalLabel + '</small>' + preview + '</a>';
+    }
+
+    function panelMarkup(model, compact, textLength) {
+        var split = compact ? compactSplit(model, textLength) : { shown: model.visible, hidden: model.more };
+        var shown = split.shown;
+        var hidden = split.hidden;
+        var visible = shown.map(function (action, index) {
+            return actionMarkup(action, index === 0, compact && index > 0 && action.target === 'card-studio');
+        }).join('');
         var more = hidden.length ?
             '<details class="wu-continue-more"><summary>' + (compact ? 'More ways to continue' : 'More options') + '</summary><div class="wu-continue-more-actions">' +
             hidden.map(function (action) { return actionMarkup(action, false); }).join('') + '</div></details>' : '';
         return '<p class="wu-continue-eyebrow">Continue with…</p>' +
             '<h2 id="wu-next-step-title">What do you want to do next?</h2>' +
             '<p class="wu-continue-copy">Choose the next workspace for the Urdu text you just prepared.</p>' +
-            '<div class="wu-continue-actions">' + visible + '</div>' + more;
+            '<div class="wu-continue-actions' + (shown.length > 1 && compact ? ' has-two' : '') + '">' + visible + '</div>' + more;
     }
 
     function render() {
@@ -215,10 +237,11 @@
         var mount = mountFor(workspace.id);
         if (!mount || !mount.parentNode) return false;
 
-        var hasContent = Boolean(currentText(workspace.id));
-        var model = buildModel(workspace.id, { hasContent: hasContent });
+        var text = currentText(workspace.id);
+        var model = buildModel(workspace.id, { hasContent: Boolean(text) });
         var compact = workspace.id === 'basic-writer';
-        var signature = modelSignature(workspace.id, model) + (compact ? '|compact' : '');
+        var compactShown = compact ? compactSplit(model, text.length).shown.map(function (action) { return action.id; }).join(',') : '';
+        var signature = modelSignature(workspace.id, model) + (compact ? '|compact:' + compactShown : '');
         var panel = root.document.querySelector('[data-wu-next-step-version="2"]');
         if (!panel) {
             panel = root.document.createElement('section');
@@ -237,8 +260,13 @@
             if (editorCard && panel.previousElementSibling !== editorCard) editorCard.insertAdjacentElement('afterend', panel);
         }
         if (panel.getAttribute('data-wu-next-step-signature') !== signature) {
-            panel.innerHTML = panelMarkup(model, compact);
+            panel.innerHTML = panelMarkup(model, compact, text.length);
             panel.setAttribute('data-wu-next-step-signature', signature);
+        }
+        var preview = panel.querySelector('[data-wu-card-preview]');
+        if (preview) {
+            var excerpt = text.length > CARD_PREVIEW_CHARS ? text.slice(0, CARD_PREVIEW_CHARS) + '…' : text;
+            if (preview.textContent !== excerpt) preview.textContent = excerpt;
         }
         panel.hidden = model.visible.length === 0;
         panel.setAttribute('aria-hidden', panel.hidden ? 'true' : 'false');
@@ -339,6 +367,7 @@
         normalizeRoute: normalizeRoute,
         classifyWorkspace: classifyWorkspace,
         buildModel: buildModel,
+        compactSplit: compactSplit,
         modelSignature: modelSignature,
         currentWorkspace: currentWorkspace,
         currentText: currentText,
