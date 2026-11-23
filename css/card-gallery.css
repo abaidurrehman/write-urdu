@@ -75,3 +75,22 @@ body.card-gallery-page{margin:0;color:var(--gallery-ink);background:radial-gradi
 .card-gallery-compare-row .card-gallery-card-large{width:100%}
 .card-gallery-card-large h3{margin:0;font-size:.95rem}
 @media(max-width:720px){.card-gallery-compare-row,.card-gallery-compare-row[data-count="2"]{grid-template-columns:1fr;max-width:420px}.card-gallery-dialog{width:calc(100% - 12px)}.card-gallery-tools{margin:0 9px 8px}}
+
+/* Arrived with text from another workspace: the text is already here, so the
+   designs come first. Opening the gallery directly keeps the full introduction. */
+[data-card-gallery-prefilled="true"].card-gallery-shell{padding-top:18px}
+[data-card-gallery-prefilled="true"] .card-gallery-hero{display:block;margin-bottom:12px}
+[data-card-gallery-prefilled="true"] .card-gallery-kicker,
+[data-card-gallery-prefilled="true"] .card-gallery-lede,
+[data-card-gallery-prefilled="true"] .card-gallery-privacy{display:none}
+[data-card-gallery-prefilled="true"] .card-gallery-hero h1{font-size:clamp(1.45rem,3vw,2.1rem);letter-spacing:-.03em}
+[data-card-gallery-prefilled="true"] .card-gallery-input{min-height:72px}
+[data-card-gallery-prefilled="true"] .card-gallery-composer [data-input-mode-note],
+[data-card-gallery-prefilled="true"] .card-gallery-composer [data-input-mode-title],
+[data-card-gallery-prefilled="true"] .card-gallery-input-wrap>small{display:none}
+@media(max-width:720px){
+  /* Compare designs without a tall pinned composer covering them. */
+  [data-card-gallery-prefilled="true"] .card-gallery-composer{position:static;margin-bottom:14px}
+  [data-card-gallery-prefilled="true"] .card-gallery-count{display:none}
+  [data-card-gallery-prefilled="true"] .card-gallery-input{min-height:64px}
+}
