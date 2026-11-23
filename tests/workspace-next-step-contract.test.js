@@ -35,6 +35,17 @@ assert.deepStrictEqual(basic.visible.map(action => action.id), ['basic-to-rich',
 assert.strictEqual(basic.more.length, 0, 'Basic Writer should not invent low-value overflow options');
 assert.ok(basic.visible.every(action => action.href && action.technicalLabel), 'Recommendations need crawlable fallbacks and recognizable tool context');
 
+// WU-PLAT-002H E2: short text (20–499 chars) shows Card as a visible second
+// choice; Rich Editor stays first. Below 20 or from 500 chars only Rich shows.
+const ids = list => list.map(action => action.id);
+const shortSplit = NextStep.compactSplit(basic, 40);
+assert.deepStrictEqual(ids(shortSplit.shown), ['basic-to-rich', 'basic-to-card'], 'Short text keeps Rich first and shows Card second');
+assert.deepStrictEqual(ids(shortSplit.hidden), ['basic-to-qr'], 'Short text keeps QR behind More ways to continue');
+assert.deepStrictEqual(ids(NextStep.compactSplit(basic, 19).shown), ['basic-to-rich'], 'Very short text shows only the primary action');
+assert.deepStrictEqual(ids(NextStep.compactSplit(basic, 499).shown), ['basic-to-rich', 'basic-to-card'], 'Card stays visible up to 499 characters');
+assert.deepStrictEqual(ids(NextStep.compactSplit(basic, 500).shown), ['basic-to-rich'], 'Substantial text shows only Rich Editor');
+assert.deepStrictEqual(ids(NextStep.compactSplit(basic, 500).hidden), ['basic-to-card', 'basic-to-qr'], 'Substantial text keeps Card behind the disclosure');
+
 const rich = NextStep.buildModel('rich-editor', { hasContent: true });
 assert.deepStrictEqual(rich.visible.map(action => action.id), ['rich-to-card', 'rich-to-qr'], 'Rich Editor should recommend only true cross-workspace continuations');
 assert.ok(rich.embedded.some(action => action.id === 'rich-export'), 'Rich Editor export must remain an embedded completion action');

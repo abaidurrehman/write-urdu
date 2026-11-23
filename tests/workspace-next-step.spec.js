@@ -9,7 +9,7 @@ async function open(page, route) {
   await page.waitForFunction(() => Boolean(window.WriteUrduWorkspaceNextStep), null, { timeout: 10000 });
 }
 
-test('Basic Writer shows one primary continuation directly under the editor and keeps the others behind More ways to continue', async ({ page }) => {
+test('Basic Writer shows Rich first and, for short text, Card second with a preview; the others stay behind More ways to continue', async ({ page }) => {
   await open(page, '/');
   const panel = page.locator('[data-wu-next-step-version="2"]');
   await expect(panel).toBeAttached();
@@ -17,15 +17,26 @@ test('Basic Writer shows one primary continuation directly under the editor and 
 
   await page.locator('#transliterateTextarea').fill('یہ میرا تیار اردو متن ہے');
   await expect(panel).toBeVisible();
-  await expect(panel.locator('.wu-continue-actions > .wu-continue-action')).toHaveCount(1);
+  const shown = panel.locator('.wu-continue-actions > .wu-continue-action');
+  await expect(shown).toHaveCount(2);
+  await expect(shown.nth(0)).toHaveAttribute('data-wu-next-step-action', 'basic-to-rich');
+  await expect(shown.nth(0)).toHaveClass(/is-primary/);
+  await expect(shown.nth(1)).toHaveAttribute('data-wu-next-step-action', 'basic-to-card');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-rich"] strong')).toHaveText('Format this as a document');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-rich"]')).toHaveAttribute('href', '/urdu-editor');
+  const preview = panel.locator('[data-wu-next-step-action="basic-to-card"] [data-wu-card-preview]');
+  await expect(preview).toBeVisible();
+  await expect(preview).toHaveText('یہ میرا تیار اردو متن ہے');
+  await expect(preview).toHaveAttribute('aria-hidden', 'true');
+  await page.locator('#transliterateTextarea').fill('عید مبارک ہو، آپ سب کو سلام');
+  await expect(preview, 'preview follows the latest text').toHaveText('عید مبارک ہو، آپ سب کو سلام');
   expect(await page.evaluate(() => document.getElementById('demo').nextElementSibling === document.querySelector('[data-wu-next-step-version="2"]'))).toBe(true);
+  await page.locator('#transliterateTextarea').fill('یہ میرا تیار اردو متن ہے');
 
   const more = panel.locator('.wu-continue-more');
   await expect(more).toHaveCount(1);
   await expect(more.locator('summary')).toHaveText('More ways to continue');
-  for (const id of ['basic-to-card', 'basic-to-qr', 'basic-to-templates']) {
+  for (const id of ['basic-to-qr', 'basic-to-templates']) {
     await expect(panel.locator('[data-wu-next-step-action="' + id + '"]')).toBeHidden();
   }
   // The editor resizes on blur, which would move the summary between press and release.
@@ -34,13 +45,23 @@ test('Basic Writer shows one primary continuation directly under the editor and 
   await more.locator('summary').scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
   await more.locator('summary').click();
-  await expect(panel.locator('[data-wu-next-step-action="basic-to-card"] strong')).toHaveText('Create a card with this text');
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-card"] strong')).toHaveText('Create a card');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-qr"] strong')).toHaveText('Make a QR code from this text');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"] strong')).toHaveText('Start from a template');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeVisible();
   await expect(panel.locator('[data-create-stylish],[data-create-name-art]')).toHaveCount(0);
   expect(await page.evaluate(() => getComputedStyle(document.querySelector('[data-wu-next-step-version="2"]')).position)).not.toMatch(/fixed|sticky/);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+test('Basic Writer keeps Card behind the disclosure once the text is substantial', async ({ page }) => {
+  await open(page, '/');
+  const panel = page.locator('[data-wu-next-step-version="2"]');
+  await page.locator('#transliterateTextarea').fill('یہ ایک لمبا اردو مضمون ہے۔ '.repeat(20));
+  await expect(panel).toBeVisible();
+  await expect(panel.locator('.wu-continue-actions > .wu-continue-action')).toHaveCount(1);
+  await expect(panel.locator('.wu-continue-actions > [data-wu-next-step-action="basic-to-rich"]')).toBeVisible();
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-card"]')).toBeHidden();
 });
 
 test('Cleaner uses three visible recommendations and an accessible More options overflow', async ({ page }) => {

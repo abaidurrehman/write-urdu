@@ -8,10 +8,12 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 // v2: `continuation_path_shown` changed meaning (in-viewport instead of present
 // in the DOM) and Basic Writer / Text Cleaner gained destination events.
 // v3: the Basic Writer recommendation moved directly under the editor and
-// collapsed to one primary action plus a disclosure. Each generation must stay
-// separable from earlier data by release marker.
-const CURRENT = 'wu-plat-002h-s1-2026-10-10-v3';
-const PREVIOUS = 'wu-plat-002h-s1-2026-10-09-v2';
+// collapsed to one primary action plus a disclosure.
+// v4: for short text (20–499 chars) Card is shown beside the primary action, so
+// `basic-to-card` shown/selected rows are not comparable with v3. Each
+// generation must stay separable from earlier data by release marker.
+const CURRENT = 'wu-plat-002h-s1-2026-11-23-v4';
+const PREVIOUS = 'wu-plat-002h-s1-2026-10-10-v3';
 const ORIGINAL = 'wu-plat-002h-s1-2026-09-06-v1';
 
 const telemetry = read('js/product-telemetry.js');

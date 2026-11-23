@@ -49,3 +49,7 @@
 ## 2026-08-30 — $5/day remains the commercial outcome, not a fabricated feature KPI
 
 **Decision:** use the current observed AdSense RPM once available. Do not assume a RPM or claim a UX release will directly deliver $5/day.
+
+## 2026-11-23 — Short Basic Writer text shows Card beside Rich
+
+**Decision:** for E2 short text (20–499 trimmed characters) the Basic Writer continuation shows `Create a card with this text` as a visible second action, with a small preview of the user's text, while `Format this as a document` stays primary. This follows §9.3/E2 (one relevant transformation for short text) without assuming every short text is a design job. Text length is the only signal; the text never chooses the recommendation and is never sent. Released under marker `wu-plat-002h-s1-2026-11-23-v4`; compare `basic-to-card` shown → selected → `meaningful_start` against v3 before promoting Card further, and keep the 2026-08-30 Card Studio completion gate in force.
