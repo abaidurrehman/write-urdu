@@ -54,6 +54,41 @@ test(`live Urdu updates reuse ${backgroundCount} DOM previews without canvas or 
   expect(await page.evaluate(() => Math.max(0, ...window.__galleryLongTasks))).toBeLessThan(50);
 });
 
+// Google's English→Urdu control swaps the typed word a moment after the key is
+// released and fires no event. This stub reproduces that timing so the previews
+// must pick up the converted word without a fresh `input` event.
+const googleTransliterationStub = `
+  window.google = {
+    load: function () {},
+    setOnLoadCallback: function (callback) { callback(); },
+    elements: { transliteration: {
+      LanguageCode: { ENGLISH: 'en', URDU: 'ur' },
+      TransliterationControl: function () {
+        this.makeTransliteratable = function (ids) {
+          ids.forEach(function (id) {
+            var field = document.getElementById(id);
+            field.addEventListener('keyup', function (event) {
+              if (event.key !== ' ') return;
+              setTimeout(function () { field.value = field.value.replace('mubarak', 'مبارک'); }, 120);
+            });
+          });
+        };
+        this.enableTransliteration = function () {};
+        this.disableTransliteration = function () {};
+      }
+    } }
+  };`;
+
+test('previews show the converted Urdu word after Google swaps it silently', async ({ page }) => {
+  await page.route('**/google_jsapi.js', route => route.fulfill({ contentType: 'text/javascript', body: googleTransliterationStub }));
+  await openGallery(page);
+  const input = page.locator('[data-card-gallery-input]');
+  await input.click();
+  await page.keyboard.type('mubarak ');
+  await expect(input).toHaveValue('مبارک ');
+  await expect(page.locator('[data-card-gallery-preview]').first().locator('.card-gallery-preview-text')).toHaveText('مبارک');
+});
+
 test('filters remain accessible and preserve text', async ({ page }) => {
   await openGallery(page);
   const input = page.locator('[data-card-gallery-input]');
