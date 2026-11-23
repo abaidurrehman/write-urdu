@@ -181,6 +181,17 @@ test.describe('Basic Writer continuation sits directly under the editor as one p
     expect(layout.height, 'compact panel height').toBeLessThanOrEqual(170);
   });
 
+  test('the two-action panel stays compact with a wide fallback UI font', async ({ page }) => {
+    // Linux CI and many Android phones fall back to wider fonts than Windows'
+    // Segoe UI; Verdana approximates DejaVu Sans so the limit holds everywhere.
+    await captureEvents(page);
+    await openWithText(page);
+    await page.addStyleTag({ content: ':root{--wu-font-ui:Verdana,"DejaVu Sans",sans-serif!important}.wu-continue-panel,.wu-continue-panel *:not([lang="ur"]){font-family:Verdana,"DejaVu Sans",sans-serif!important}' });
+    await page.waitForTimeout(200);
+    const height = await page.locator(panelSelector).evaluate(node => Math.round(node.getBoundingClientRect().height));
+    expect(height, 'compact panel height with a wide font').toBeLessThanOrEqual(170);
+  });
+
   test('for short text the primary action and Card are visible; the others are one disclosure away', async ({ page }) => {
     await captureEvents(page);
     await openWithText(page);

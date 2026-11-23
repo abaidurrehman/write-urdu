@@ -45,7 +45,7 @@ test('Basic Writer shows Rich first and, for short text, Card second with a prev
   await more.locator('summary').scrollIntoViewIfNeeded();
   await page.waitForTimeout(400);
   await more.locator('summary').click();
-  await expect(panel.locator('[data-wu-next-step-action="basic-to-card"] strong')).toHaveText('Create a card with this text');
+  await expect(panel.locator('[data-wu-next-step-action="basic-to-card"] strong')).toHaveText('Create a card');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-qr"] strong')).toHaveText('Make a QR code from this text');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"] strong')).toHaveText('Start from a template');
   await expect(panel.locator('[data-wu-next-step-action="basic-to-templates"]')).toBeVisible();

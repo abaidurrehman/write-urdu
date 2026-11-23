@@ -203,8 +203,10 @@
     function actionMarkup(action, primary, withPreview) {
         // The preview is filled with textContent in render(); never put writing in markup.
         var preview = withPreview ? '<span class="wu-continue-card-preview" data-wu-card-preview aria-hidden="true" dir="rtl" lang="ur"></span>' : '';
+        // The mini card already shows the text, so the short label is enough and fits narrow screens.
+        var label = withPreview ? 'Create a card' : action.label;
         return '<a class="wu-continue-action' + (primary ? ' is-primary' : '') + (withPreview ? ' has-card-preview' : '') + '" href="' + action.href + '" data-wu-continuity-target="' + action.target + '" data-wu-next-step-action="' + action.id + '" data-wu-journey="' + action.id + '">' +
-            '<strong>' + action.label + '</strong><small>' + action.technicalLabel + '</small>' + preview + '</a>';
+            '<strong>' + label + '</strong><small>' + action.technicalLabel + '</small>' + preview + '</a>';
     }
 
     function panelMarkup(model, compact, textLength) {

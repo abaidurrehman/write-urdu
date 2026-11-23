@@ -49,7 +49,7 @@ html[dir="rtl"] .wu-continue-action.has-card-preview{align-items:stretch}
 @media(max-width:760px){.wu-continue-actions,.wu-continue-more-actions{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.wu-continue-panel{margin:18px 0;padding:15px}.rich-editor-page .col-12.col-md-9>.wu-continue-panel{margin-top:12px}.wu-continue-actions,.wu-continue-more-actions{grid-template-columns:1fr}.wu-continue-action{min-height:62px}.wu-continue-more>summary{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.wu-continue-action,.wu-continue-more>summary{transition:none}}
-@media(max-width:520px){.wu-continue-panel.is-compact .wu-continue-actions.has-two .wu-continue-action{padding:8px 10px}.wu-continue-panel.is-compact .wu-continue-actions.has-two .wu-continue-action strong{font-size:.84rem}.wu-continue-action.has-card-preview{column-gap:7px}}
+@media(max-width:520px){.wu-continue-panel.is-compact .wu-continue-actions.has-two .wu-continue-action small{display:none}.wu-continue-panel.is-compact .wu-continue-actions.has-two .wu-continue-action{padding:8px 10px}.wu-continue-panel.is-compact .wu-continue-actions.has-two .wu-continue-action strong{font-size:.84rem}.wu-continue-action.has-card-preview{column-gap:7px}}
 /* Two visible actions: trim the chrome so the panel stays as compact as the one-action version. */
 .wu-continue-panel.is-compact:has(.wu-continue-actions.has-two){padding-top:10px;padding-bottom:10px}
 .wu-continue-panel.is-compact:has(.wu-continue-actions.has-two) h2{margin-bottom:4px}
