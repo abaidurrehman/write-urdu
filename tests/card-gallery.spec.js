@@ -89,6 +89,41 @@ test('previews show the converted Urdu word after Google swaps it silently', asy
   await expect(page.locator('[data-card-gallery-preview]').first().locator('.card-gallery-preview-text')).toHaveText('مبارک');
 });
 
+test('arriving from the writer with text puts the first design on the first screen', async ({ page }) => {
+  await blockExternal(page);
+  const text = 'عید مبارک ہو، آپ سب کو سلام';
+  for (const viewport of [{ width: 375, height: 667 }, { width: 390, height: 844 }, { width: 1280, height: 720 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 15000 });
+    await page.locator('#transliterateTextarea').fill(text);
+    const createCard = page.locator('[data-wu-card-gallery-action]').first();
+    await expect(createCard).toBeEnabled();
+    await createCard.click();
+    await page.waitForURL(/urdu-card-gallery/, { timeout: 10000 });
+    await expect(page.locator('[data-card-gallery-input]')).toHaveValue(text);
+    const firstPreview = page.locator('[data-card-gallery-preview]').first();
+    await expect(firstPreview.locator('.card-gallery-preview-text')).toHaveText(text);
+    await expect(page.locator('[data-card-gallery-status]')).toHaveText('Your text is ready. Choose a design below.');
+    await expect(page.locator('.card-gallery-lede'), 'intro copy steps aside once the text is already here').toBeHidden();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    const position = await firstPreview.evaluate(node => ({ top: node.getBoundingClientRect().top, vh: window.innerHeight, scrollY: window.scrollY }));
+    expect(position.scrollY, 'no automatic scroll jump').toBe(0);
+    expect(position.top, `first design must show at least 120px at ${viewport.width}x${viewport.height}`).toBeLessThanOrEqual(position.vh - 120);
+    // Linux CI and many Android phones fall back to wider UI fonts than Windows;
+    // Verdana approximates DejaVu Sans so the first screen holds everywhere.
+    await page.addStyleTag({ content: ':root{--wu-font-ui:Verdana,"DejaVu Sans",sans-serif!important}body *:not([lang="ur"]):not([dir="rtl"]){font-family:Verdana,"DejaVu Sans",sans-serif!important}' });
+    await page.waitForTimeout(200);
+    const wideTop = await firstPreview.evaluate(node => node.getBoundingClientRect().top);
+    expect(wideTop, `first design must show at least 120px at ${viewport.width}x${viewport.height} with a wide font`).toBeLessThanOrEqual(position.vh - 120);
+  }
+});
+
+test('opening the gallery directly keeps the full introduction', async ({ page }) => {
+  await openGallery(page);
+  await expect(page.locator('.card-gallery-lede')).toBeVisible();
+  await expect(page.locator('.card-gallery-privacy')).toBeVisible();
+});
+
 test('filters remain accessible and preserve text', async ({ page }) => {
   await openGallery(page);
   const input = page.locator('[data-card-gallery-input]');
