@@ -87,6 +87,7 @@ test('previews show the converted Urdu word after Google swaps it silently', asy
   await page.keyboard.type('mubarak ');
   await expect(input).toHaveValue('مبارک ');
   await expect(page.locator('[data-card-gallery-preview]').first().locator('.card-gallery-preview-text')).toHaveText('مبارک');
+});
 
 test('arriving from the writer with text puts the first design on the first screen', async ({ page }) => {
   await blockExternal(page);
