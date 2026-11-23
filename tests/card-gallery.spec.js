@@ -108,6 +108,12 @@ test('arriving from the writer with text puts the first design on the first scre
     const position = await firstPreview.evaluate(node => ({ top: node.getBoundingClientRect().top, vh: window.innerHeight, scrollY: window.scrollY }));
     expect(position.scrollY, 'no automatic scroll jump').toBe(0);
     expect(position.top, `first design must show at least 120px at ${viewport.width}x${viewport.height}`).toBeLessThanOrEqual(position.vh - 120);
+    // Linux CI and many Android phones fall back to wider UI fonts than Windows;
+    // Verdana approximates DejaVu Sans so the first screen holds everywhere.
+    await page.addStyleTag({ content: ':root{--wu-font-ui:Verdana,"DejaVu Sans",sans-serif!important}body *:not([lang="ur"]):not([dir="rtl"]){font-family:Verdana,"DejaVu Sans",sans-serif!important}' });
+    await page.waitForTimeout(200);
+    const wideTop = await firstPreview.evaluate(node => node.getBoundingClientRect().top);
+    expect(wideTop, `first design must show at least 120px at ${viewport.width}x${viewport.height} with a wide font`).toBeLessThanOrEqual(position.vh - 120);
   }
 });
 

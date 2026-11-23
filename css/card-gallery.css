@@ -83,7 +83,7 @@ body.card-gallery-page{margin:0;color:var(--gallery-ink);background:radial-gradi
 [data-card-gallery-prefilled="true"] .card-gallery-kicker,
 [data-card-gallery-prefilled="true"] .card-gallery-lede,
 [data-card-gallery-prefilled="true"] .card-gallery-privacy{display:none}
-[data-card-gallery-prefilled="true"] .card-gallery-hero h1{font-size:clamp(1.45rem,3vw,2.1rem);letter-spacing:-.03em}
+[data-card-gallery-prefilled="true"] .card-gallery-hero h1,[data-card-gallery-prefilled="true"] .card-gallery-hero h1.wu-page-title{font-size:clamp(1.45rem,3vw,2.1rem)!important;letter-spacing:-.03em}
 [data-card-gallery-prefilled="true"] .card-gallery-input{min-height:72px}
 [data-card-gallery-prefilled="true"] .card-gallery-composer [data-input-mode-note],
 [data-card-gallery-prefilled="true"] .card-gallery-composer [data-input-mode-title],
@@ -93,4 +93,10 @@ body.card-gallery-page{margin:0;color:var(--gallery-ink);background:radial-gradi
   [data-card-gallery-prefilled="true"] .card-gallery-composer{position:static;margin-bottom:14px}
   [data-card-gallery-prefilled="true"] .card-gallery-count{display:none}
   [data-card-gallery-prefilled="true"] .card-gallery-input{min-height:64px}
+}
+@media(max-width:720px){
+  /* One row of input choices and a one-line heading, even with wide fallback fonts. */
+  [data-card-gallery-prefilled="true"] .card-gallery-hero h1,[data-card-gallery-prefilled="true"] .card-gallery-hero h1.wu-page-title{font-size:1.25rem!important;letter-spacing:-.02em}
+  [data-card-gallery-prefilled="true"] .card-gallery-composer .input-mode-control{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px}
+  [data-card-gallery-prefilled="true"] .card-gallery-composer .input-mode-option{min-width:0;white-space:normal;line-height:1.2}
 }
