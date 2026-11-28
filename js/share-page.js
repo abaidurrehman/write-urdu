@@ -160,9 +160,62 @@
     return copyValue(text, 'Urdu text copied.');
   }
 
-  async function shareLink() {
+  // Without a share sheet, offer WhatsApp, Facebook and Copy link (WU-UXR-002 Slice H, CARD-UX-014).
+  // Plain links built by the shared helper; no third-party script loads on this page.
+  function shareMenu(button) {
+    var existing = q('[data-share-menu]');
+    if (existing) return existing;
+    var core = window.WriteUrduSharePublishCore;
+    if (!core || typeof core.socialLinks !== 'function') return null;
+    var links = core.socialLinks(publicUrl());
+    var menu = document.createElement('div');
+    menu.className = 'share-menu';
+    menu.id = 'share-menu';
+    menu.setAttribute('data-share-menu', '');
+    menu.setAttribute('role', 'group');
+    menu.setAttribute('aria-label', 'Send this card');
+    menu.hidden = true;
+    [['whatsapp', 'WhatsApp', links.whatsapp], ['facebook', 'Facebook', links.facebook]].forEach(function (item) {
+      var link = document.createElement('a');
+      link.className = 'share-menu-item share-menu-' + item[0];
+      link.setAttribute('data-share-menu-' + item[0], '');
+      link.href = item[2];
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = item[1];
+      link.addEventListener('click', function () { track('share_clicked', { success: true }); closeMenu(); });
+      menu.appendChild(link);
+    });
+    var copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'share-menu-item';
+    copy.setAttribute('data-share-menu-copy', '');
+    copy.textContent = 'Copy link';
+    copy.addEventListener('click', function () { copyLink(); closeMenu(); });
+    menu.appendChild(copy);
+    var host = button.closest('.share-media-actions') || button.parentNode;
+    host.insertAdjacentElement('afterend', menu);
+    button.setAttribute('aria-controls', menu.id);
+    document.addEventListener('keydown', function (event) { if (event.key === 'Escape' && !menu.hidden) { closeMenu(); button.focus(); } });
+    document.addEventListener('click', function (event) { if (!menu.hidden && !menu.contains(event.target) && !button.contains(event.target)) closeMenu(); });
+    return menu;
+  }
+
+  function closeMenu() {
+    var menu = q('[data-share-menu]');
+    var button = q('[data-share-native]');
+    if (menu) menu.hidden = true;
+    if (button) button.setAttribute('aria-expanded', 'false');
+  }
+
+  async function shareLink(event) {
     if (!navigator.share) {
-      await copyLink();
+      var button = event && event.currentTarget || q('[data-share-native]');
+      var menu = button && shareMenu(button);
+      if (!menu) { await copyLink(); return; }
+      menu.hidden = !menu.hidden;
+      button.setAttribute('aria-expanded', menu.hidden ? 'false' : 'true');
+      if (!menu.hidden) track('share_clicked');
       return;
     }
     track('share_clicked');

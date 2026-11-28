@@ -110,8 +110,11 @@ test('Manage links lists the ready-made link and deletes it', async ({ page }) =
   await manage.locator('[data-wu-share-delete="card0001"]').click();
   await expect.poll(() => shares.deletes.length).toBe(1);
   expect(shares.deletes[0]).toMatch(/\/api\/shares\/card0001$/);
-  const managed = await page.evaluate(key => JSON.parse(localStorage.getItem(key) || '{}'), MANAGEMENT_KEY);
-  expect(managed.items.card0001).toBeUndefined();
+  // The token is forgotten when the DELETE response arrives, a moment after the request is sent.
+  await expect.poll(() => page.evaluate(key => {
+    const managed = JSON.parse(localStorage.getItem(key) || '{}');
+    return Boolean(managed.items && managed.items.card0001);
+  }, MANAGEMENT_KEY)).toBe(false);
   // A deleted link is never handed out again.
   await page.keyboard.press('Escape');
   await page.locator('[data-urdu-cards-share="dua-1"]').click();

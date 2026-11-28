@@ -31,7 +31,7 @@
             useCases: { quote: ['Quote / Poetry', 'Balanced square card'], social: ['Social post', 'Shareable square design'], story: ['Status / Story', 'Tall mobile-first layout'], announcement: ['Greeting / Announcement', 'Clear, readable hierarchy'], facebook: ['Facebook post', '1200 × 630 wide layout'] },
             useCaseApplied: 'Recommended {name} layout applied.',
             sample: 'Use sample text', clear: 'Clear text', sampleAdded: 'Sample Urdu text added.', cleared: 'Card text cleared.',
-            shareImageOnly: 'Share image only', shareImageTitle: 'Share the image file without creating a public Write Urdu link'
+            shareImageOnly: 'Send picture', shareImageTitle: 'Send the picture file — no link is created'
         },
         ur: {
             steps: { content: ['متن', 'اپنا متن لکھیں'], format: ['سائز', 'کارڈ کی قسم چنیں'], style: ['انداز', 'شکل نکھاریں'], export: ['مکمل', 'ڈاؤن لوڈ اور شیئر'] },
@@ -43,7 +43,7 @@
             useCases: { quote: ['اقتباس / شاعری', 'متوازن چوکور کارڈ'], social: ['سوشل پوسٹ', 'شیئر کے لیے چوکور ڈیزائن'], story: ['اسٹیٹس / اسٹوری', 'فون کے لیے لمبا ڈیزائن'], announcement: ['مبارکباد / اعلان', 'صاف اور آسانی سے پڑھا جانے والا'], facebook: ['فیس بک پوسٹ', '1200 × 630 چوڑا ڈیزائن'] },
             useCaseApplied: '{name} کے لیے موزوں ترتیب لگ گئی۔',
             sample: 'نمونے کا متن لگائیں', clear: 'متن صاف کریں', sampleAdded: 'نمونے کا اردو متن لگ گیا۔', cleared: 'کارڈ کا متن صاف ہو گیا۔',
-            shareImageOnly: 'صرف تصویر شیئر کریں', shareImageTitle: 'عوامی لنک بنائے بغیر صرف تصویر شیئر کریں'
+            shareImageOnly: 'تصویر بھیجیں', shareImageTitle: 'صرف تصویر کی فائل بھیجیں، کوئی لنک نہیں بنتا'
         }
     };
     function uiLocale() {
@@ -322,7 +322,14 @@
         script.src = '/js/card-studio-publish.js';
         script.defer = true;
         script.setAttribute('data-write-urdu-share-publish', '');
-        document.body.appendChild(script);
+        // The shared link helper (WhatsApp/Facebook routes, WU-UXR-002 Slice H) loads first;
+        // publishing still works if it fails, the dialog then shows only Copy link.
+        if (window.WriteUrduSharePublishCore || document.querySelector('script[data-wu-share-publish-core]')) { document.body.appendChild(script); return; }
+        var core = document.createElement('script');
+        core.src = '/js/share-publish-core.js';
+        core.setAttribute('data-wu-share-publish-core', '');
+        core.onload = core.onerror = function () { document.body.appendChild(script); };
+        document.body.appendChild(core);
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { window.setTimeout(loadPublishLayer, 0); });
     else window.setTimeout(loadPublishLayer, 0);

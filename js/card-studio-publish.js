@@ -58,45 +58,49 @@
   var P_COPY = {
     en: {
       groupLabel: 'Export & share', publish: 'Publish & Share', stepPublishSmall: 'Create a public Write-Urdu.com link', community: 'Submit to Urdu Writers',
-      shareImageOnly: 'Share image only', shareImageTitle: 'Share the image file without creating a public Write Urdu link',
-      note: 'Publishing creates a public Write-Urdu.com link. Download and Share image only stay local.', howPublic: 'How public sharing works', manage: 'Manage published links',
+      shareImageOnly: 'Send picture', shareImageTitle: 'Send the picture file — no link is created',
+      note: 'Publishing creates a public Write-Urdu.com link. Download and Send picture stay on your device.', howPublic: 'How public sharing works', manage: 'Manage published links',
       stepNoteStrong: 'Best for social sharing:', stepNote: 'publish this snapshot to get a short link with the Urdu artwork as its social preview.', howItWorks: 'How it works',
       close: 'Close', cancel: 'Cancel',
       confirmTitle: 'Publish this card as a public link?', confirmIntro: 'This creates a new Write-Urdu.com share page for this snapshot.',
       confirmPublic: 'Public to anyone with the link', confirmWhat: 'Your selected card image, Urdu text and enabled attribution are uploaded. Your other local drafts and project history stay in this browser.',
-      confirmMark: 'The hosted image always carries one small Write-Urdu.com mark.', confirmLocal: 'Download PNG and Share image only still do not create a public page.', confirmDelete: 'You can delete this published link later from this browser.',
+      confirmMark: 'The hosted image always carries one small Write-Urdu.com mark.', confirmLocal: 'Download PNG and Send picture still do not create a public page.', confirmDelete: 'You can delete this published link later from this browser.',
       confirmPrivate: 'Do not publish confidential or private writing. Public share pages are unlisted and marked noindex, but the link can be forwarded.', confirmButton: 'Publish & get link',
       loadingTitle: 'Publishing your Urdu card', loadingIntro: 'Creating the public snapshot and short link…', loadingProgress: 'Preparing the hosted image securely.',
       errorTitle: 'Could not publish this card', errorIntro: 'The local card is unchanged.', retry: 'Try again', downloadPicture: 'Download picture',
       rateLimited: 'Too many publish attempts were made recently. Please wait a few minutes.', tooLarge: 'This published image is too large. Try a smaller card or background image.',
-      successTitle: 'Your public Write Urdu link is ready', successIntro: 'Share the link so people get the visual preview and can continue into Write Urdu.', linkLabel: 'Published Write Urdu link',
-      copyLink: 'Copy link', snapshot: 'This is an immutable snapshot. Editing your local card will not change this published link.', deleteLink: 'Delete published link', openPublic: 'Open public page', shareLink: 'Share link',
+      successTitle: 'Your public Write Urdu link is ready', successIntro: 'Your link is ready. Send it on WhatsApp or Facebook. People who open it see your card and can make their own.', linkLabel: 'Published Write Urdu link',
+      copyLink: 'Copy link', snapshot: 'This link always shows this version. To change it, publish a new version.', deleteLink: 'Delete published link', openPublic: 'Open public page', shareLink: 'Share link',
       deleteConfirm: 'Delete this published Write Urdu link? The local card will not be deleted.', deleteConfirmShort: 'Delete this published Write Urdu link?',
       copied: 'Public link copied.', shareFallback: 'Sharing was unavailable, so the link was copied.', deleted: 'Published link deleted.', deleteFailed: 'Could not delete this published link right now.',
       needText: 'Add your own Urdu text before publishing.', needTextSubmit: 'Add your own Urdu text before submitting.', communityFailed: 'Could not open the community submission form. Please try again.',
       manageTitle: 'Published links from this browser', manageIntro: 'Management tokens stay on this device and are never part of the public URL.', manageEmpty: 'No locally managed public links on this browser.',
-      published: 'Published {date}', publishedLink: 'Published link', open: 'Open', remove: 'Delete'
+      published: 'Published {date}', publishedLink: 'Published link', open: 'Open', remove: 'Delete',
+      sendLabel: 'Send the link', whatsapp: 'WhatsApp', facebook: 'Facebook', socialText: 'Urdu card for you',
+      chooserPicture: 'Picture', chooserPictureHint: 'best for family groups, Status and Instagram', chooserLink: 'Link', chooserLinkHint: 'opens a page where they can make their own'
     },
     ur: {
       groupLabel: 'ڈاؤن لوڈ اور شیئر', publish: 'شائع کریں اور شیئر کریں', stepPublishSmall: 'Write-Urdu.com کا عوامی لنک بنائیں', community: 'اردو لکھاریوں کو بھیجیں',
-      shareImageOnly: 'صرف تصویر شیئر کریں', shareImageTitle: 'عوامی لنک بنائے بغیر صرف تصویر شیئر کریں',
-      note: 'شائع کرنے سے Write-Urdu.com کا عوامی لنک بنتا ہے۔ ڈاؤن لوڈ اور «صرف تصویر شیئر کریں» سے کچھ شائع نہیں ہوتا۔', howPublic: 'عوامی شیئرنگ کیسے کام کرتی ہے', manage: 'شائع شدہ لنکس سنبھالیں',
+      shareImageOnly: 'تصویر بھیجیں', shareImageTitle: 'صرف تصویر کی فائل بھیجیں، کوئی لنک نہیں بنتا',
+      note: 'شائع کرنے سے Write-Urdu.com کا عوامی لنک بنتا ہے۔ ڈاؤن لوڈ اور «تصویر بھیجیں» سے کچھ شائع نہیں ہوتا۔', howPublic: 'عوامی شیئرنگ کیسے کام کرتی ہے', manage: 'شائع شدہ لنکس سنبھالیں',
       stepNoteStrong: 'سوشل میڈیا کے لیے بہترین:', stepNote: 'یہ کارڈ شائع کریں تو ایک مختصر لنک ملے گا جس کے ساتھ آپ کی اردو تصویر پیش منظر میں دکھائی دیتی ہے۔', howItWorks: 'یہ کیسے کام کرتا ہے',
       close: 'بند کریں', cancel: 'رہنے دیں',
       confirmTitle: 'اس کارڈ کا عوامی لنک بنائیں؟', confirmIntro: 'اس کارڈ کی موجودہ شکل کے لیے Write-Urdu.com پر ایک نیا صفحہ بنے گا۔',
       confirmPublic: 'لنک رکھنے والا ہر شخص اسے دیکھ سکتا ہے', confirmWhat: 'صرف کارڈ کی تصویر، اردو متن اور (اگر آن ہو) مصنف کا نام اپ لوڈ ہوتا ہے۔ آپ کے باقی کارڈ اور تبدیلیاں اپ لوڈ نہیں ہوتیں۔',
-      confirmMark: 'شائع شدہ تصویر پر Write-Urdu.com کا ایک چھوٹا سا نشان ہوتا ہے۔', confirmLocal: 'PNG ڈاؤن لوڈ کرنے یا «صرف تصویر شیئر کریں» سے کوئی عوامی صفحہ نہیں بنتا۔', confirmDelete: 'بعد میں آپ یہ لنک اسی براؤزر سے مٹا سکتے ہیں۔',
+      confirmMark: 'شائع شدہ تصویر پر Write-Urdu.com کا ایک چھوٹا سا نشان ہوتا ہے۔', confirmLocal: 'PNG ڈاؤن لوڈ کرنے یا «تصویر بھیجیں» سے کوئی عوامی صفحہ نہیں بنتا۔', confirmDelete: 'بعد میں آپ یہ لنک اسی براؤزر سے مٹا سکتے ہیں۔',
       confirmPrivate: 'نجی یا راز کی تحریر شائع نہ کریں۔ لنک والے صفحے سرچ میں نہیں آتے، مگر لنک آگے بھیجا جا سکتا ہے۔', confirmButton: 'شائع کریں اور لنک لیں',
       loadingTitle: 'آپ کا اردو کارڈ شائع ہو رہا ہے', loadingIntro: 'عوامی صفحہ اور مختصر لنک بن رہا ہے…', loadingProgress: 'تصویر محفوظ طریقے سے تیار ہو رہی ہے۔',
       errorTitle: 'یہ کارڈ شائع نہیں ہو سکا', errorIntro: 'آپ کا کارڈ یہاں جوں کا توں ہے۔', retry: 'دوبارہ کوشش کریں', downloadPicture: 'تصویر ڈاؤن لوڈ کریں',
       rateLimited: 'حال ہی میں بہت بار شائع کرنے کی کوشش ہوئی ہے۔ چند منٹ بعد دوبارہ کوشش کریں۔', tooLarge: 'یہ تصویر شائع کرنے کے لیے بہت بڑی ہے۔ چھوٹا کارڈ یا چھوٹی پس منظر تصویر آزمائیں۔',
-      successTitle: 'آپ کا عوامی لنک تیار ہے', successIntro: 'یہ لنک بھیجیں تاکہ لوگوں کو کارڈ کی تصویر دکھائی دے اور وہ رائٹ اردو پر آ سکیں۔', linkLabel: 'شائع شدہ لنک',
-      copyLink: 'لنک کاپی کریں', snapshot: 'یہ کارڈ کی اسی وقت کی شکل ہے۔ اب کارڈ بدلنے سے یہ لنک نہیں بدلے گا۔', deleteLink: 'لنک مٹائیں', openPublic: 'صفحہ کھولیں', shareLink: 'لنک شیئر کریں',
+      successTitle: 'آپ کا عوامی لنک تیار ہے', successIntro: 'آپ کا لنک تیار ہے۔ اسے واٹس ایپ یا فیس بک پر بھیجیں۔ جو اسے کھولے گا وہ آپ کا کارڈ دیکھے گا اور اپنا کارڈ بھی بنا سکے گا۔', linkLabel: 'شائع شدہ لنک',
+      copyLink: 'لنک کاپی کریں', snapshot: 'یہ لنک ہمیشہ کارڈ کی یہی شکل دکھائے گا۔ بدلنا ہو تو نیا ورژن شائع کریں۔', deleteLink: 'لنک مٹائیں', openPublic: 'صفحہ کھولیں', shareLink: 'لنک شیئر کریں',
       deleteConfirm: 'یہ شائع شدہ لنک مٹا دیں؟ آپ کا کارڈ یہاں رہے گا۔', deleteConfirmShort: 'یہ شائع شدہ لنک مٹا دیں؟',
       copied: 'عوامی لنک کاپی ہو گیا۔', shareFallback: 'شیئر کی سہولت نہیں ملی، اس لیے لنک کاپی کر دیا گیا۔', deleted: 'شائع شدہ لنک مٹا دیا گیا۔', deleteFailed: 'یہ لنک ابھی نہیں مٹ سکا۔',
       needText: 'شائع کرنے سے پہلے اپنا اردو متن لکھیں۔', needTextSubmit: 'بھیجنے سے پہلے اپنا اردو متن لکھیں۔', communityFailed: 'بھیجنے کا فارم نہیں کھل سکا۔ دوبارہ کوشش کریں۔',
       manageTitle: 'اس براؤزر سے شائع کیے گئے لنکس', manageIntro: 'لنک مٹانے کی کنجیاں اسی آلے پر رہتی ہیں اور عوامی لنک میں شامل نہیں ہوتیں۔', manageEmpty: 'اس براؤزر سے کوئی عوامی لنک نہیں بنا۔',
-      published: '{date} کو شائع کیا', publishedLink: 'شائع شدہ لنک', open: 'کھولیں', remove: 'مٹائیں'
+      published: '{date} کو شائع کیا', publishedLink: 'شائع شدہ لنک', open: 'کھولیں', remove: 'مٹائیں',
+      sendLabel: 'لنک بھیجیں', whatsapp: 'واٹس ایپ', facebook: 'فیس بک', socialText: 'آپ کے لیے اردو کارڈ',
+      chooserPicture: 'تصویر', chooserPictureHint: 'فیملی گروپ، اسٹیٹس اور انسٹاگرام کے لیے بہترین', chooserLink: 'لنک', chooserLinkHint: 'ایسا صفحہ کھلتا ہے جہاں وہ اپنا کارڈ بھی بنا سکتے ہیں'
     }
   };
   function pt(key, values) {
@@ -416,16 +420,35 @@
   }
 
   function successDialog(result) {
-    var node = openDialog('<div class="wu-share-dialog-shell"><div class="wu-share-success-mark" aria-hidden="true">✓</div><div class="wu-share-dialog-head"><div><h2>' + pt('successTitle') + '</h2><p>' + pt('successIntro') + '</p></div><button class="wu-share-dialog-close" type="button" aria-label="' + pt('close') + '" data-wu-share-close>×</button></div><div class="wu-share-url"><input type="text" readonly dir="ltr" aria-label="' + pt('linkLabel') + '" data-wu-share-url><button type="button" data-wu-share-copy>' + pt('copyLink') + '</button></div><p class="wu-share-small">' + pt('snapshot') + '</p><div class="wu-share-dialog-actions"><button class="danger" type="button" data-wu-share-delete>' + pt('deleteLink') + '</button><a data-wu-share-open target="_blank" rel="noopener">' + pt('openPublic') + '</a><button class="primary" type="button" data-wu-share-native>' + pt('shareLink') + '</button></div></div>');
+    var node = openDialog('<div class="wu-share-dialog-shell"><div class="wu-share-success-mark" aria-hidden="true">✓</div><div class="wu-share-dialog-head"><div><h2>' + pt('successTitle') + '</h2><p>' + pt('successIntro') + '</p></div><button class="wu-share-dialog-close" type="button" aria-label="' + pt('close') + '" data-wu-share-close>×</button></div><div class="wu-share-url"><input type="text" readonly dir="ltr" aria-label="' + pt('linkLabel') + '" data-wu-share-url></div><div class="wu-share-social" role="group" aria-label="' + pt('sendLabel') + '"><a class="wu-share-social-whatsapp" data-wu-share-whatsapp target="_blank" rel="noopener noreferrer">' + pt('whatsapp') + '</a><a class="wu-share-social-facebook" data-wu-share-facebook target="_blank" rel="noopener noreferrer">' + pt('facebook') + '</a><button type="button" data-wu-share-copy data-wu-share-social-copy>' + pt('copyLink') + '</button></div><p class="wu-share-small">' + pt('snapshot') + '</p><div class="wu-share-dialog-actions"><button class="danger" type="button" data-wu-share-delete>' + pt('deleteLink') + '</button><a data-wu-share-open target="_blank" rel="noopener">' + pt('openPublic') + '</a><button class="primary" type="button" data-wu-share-native>' + pt('shareLink') + '</button></div></div>');
     var input = node.querySelector('[data-wu-share-url]');
     input.value = result.url;
     var open = node.querySelector('[data-wu-share-open]');
     open.href = result.url;
     node.querySelectorAll('[data-wu-share-close]').forEach(function (button) { button.addEventListener('click', closeDialog); });
-    node.querySelector('[data-wu-share-copy]').addEventListener('click', function () {
+    function copyPublished() {
       copyText(result.url).then(function () { track('share_clicked', { tool: 'card_studio', success: true }); toast(pt('copied')); });
-    });
-    node.querySelector('[data-wu-share-native]').addEventListener('click', function () { sharePublicLink(result.url); });
+    }
+    node.querySelector('[data-wu-share-copy]').addEventListener('click', copyPublished);
+    // WhatsApp/Facebook are plain links built by the shared helper (WU-UXR-002 Slice H, CARD-UX-014).
+    var core = window.WriteUrduSharePublishCore;
+    var whatsapp = node.querySelector('[data-wu-share-whatsapp]');
+    var facebook = node.querySelector('[data-wu-share-facebook]');
+    if (core && typeof core.socialLinks === 'function') {
+      var links = core.socialLinks(result.url, pt('socialText'));
+      whatsapp.href = links.whatsapp;
+      facebook.href = links.facebook;
+      [whatsapp, facebook].forEach(function (link) {
+        link.addEventListener('click', function () { track('share_clicked', { tool: 'card_studio', success: true }); });
+      });
+    } else {
+      whatsapp.hidden = true;
+      facebook.hidden = true;
+    }
+    var native = node.querySelector('[data-wu-share-native]');
+    // Without a share sheet the button could only copy, which the row above already does.
+    if (!navigator.share) native.hidden = true;
+    native.addEventListener('click', function () { sharePublicLink(result.url); });
     node.querySelector('[data-wu-share-delete]').addEventListener('click', function () {
       if (!window.confirm(pt('deleteConfirm'))) return;
       deleteShare(result.id, { token: result.manageToken, url: result.url }, function () { closeDialog(); });
@@ -600,6 +623,18 @@
     });
   }
 
+  // One line that tells Picture from Link before the Export buttons (WU-UXR-002 Slice H, CARD-UX-015).
+  function fillChooser(node) {
+    node.textContent = '';
+    [['chooserPicture', 'chooserPictureHint'], ['chooserLink', 'chooserLinkHint']].forEach(function (pair, index) {
+      if (index) node.appendChild(document.createTextNode(' · '));
+      var strong = document.createElement('strong');
+      strong.textContent = pt(pair[0]);
+      node.appendChild(strong);
+      node.appendChild(document.createTextNode(' — ' + pt(pair[1])));
+    });
+  }
+
   function normalizeLocalExportActions(container) {
     if (!container) return;
     var imageShare = container.querySelector('[data-card-action="share"]');
@@ -671,6 +706,13 @@
     var exportActions = exportSection && exportSection.querySelector('.card-studio-export-actions');
     if (exportActions) {
       normalizeLocalExportActions(exportActions);
+      if (!exportSection.querySelector('[data-wu-share-chooser]')) {
+        var chooser = document.createElement('p');
+        chooser.className = 'wu-share-chooser';
+        chooser.setAttribute('data-wu-share-chooser', '');
+        exportActions.parentNode.insertBefore(chooser, exportActions);
+        fillChooser(chooser);
+      }
       stepPublishButton = exportActions.querySelector('[data-wu-share-step-publish]');
       if (!stepPublishButton) {
         stepPublishButton = document.createElement('button');
@@ -703,6 +745,7 @@
     if (!group) return;
     var label = group.querySelector('.card-studio-action-group-label'); if (label) label.textContent = pt('groupLabel');
     root.querySelectorAll('[data-card-action="share"]').forEach(function (button) { button.textContent = pt('shareImageOnly'); button.title = pt('shareImageTitle'); });
+    var chooser = root.querySelector('[data-wu-share-chooser]'); if (chooser) fillChooser(chooser);
     if (publishButton) publishButton.textContent = pt('publish');
     var community = root.querySelector('[data-wu-community-label]'); if (community) community.textContent = pt('community');
     var note = root.querySelector('.wu-share-publish-note'); if (note) note.textContent = pt('note');

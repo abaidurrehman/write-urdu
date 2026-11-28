@@ -161,11 +161,11 @@ history entry per keystroke. Standard validation + harness p6/p7. Update checkli
 ```
 
 ## Slice H — Send sheet (CARD-UX-014, 015 rest) — needs a backlog decision line
-- [ ] Decision recorded in BACKLOG P0.12
-- [ ] WhatsApp/Facebook/Copy row in the success dialog; plain-language copy
-- [ ] "Send picture" rename + fallback copy + Picture vs Link one-liner
-- [ ] Recipient page Share fallback menu
-- [ ] `card-share-sheet.spec.js` registered
+- [x] Decision recorded in BACKLOG P0.12
+- [x] WhatsApp/Facebook/Copy row in the success dialog; plain-language copy
+- [x] "Send picture" rename + fallback copy + Picture vs Link one-liner
+- [x] Recipient page Share fallback menu
+- [x] `card-share-sheet.spec.js` registered
 
 **Prompt**
 ```text

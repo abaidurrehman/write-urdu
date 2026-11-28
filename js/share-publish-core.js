@@ -33,7 +33,8 @@
             removeConfirm: 'Delete this public link? People who open it will see that it was removed.',
             removed: 'Link deleted.',
             removeFailed: 'Could not delete this link right now. Try again later.',
-            published: 'Made {date}'
+            published: 'Made {date}',
+            socialText: 'Urdu card for you'
         },
         ur: {
             consentTitle: 'اس کارڈ کا عوامی لنک بنائیں؟',
@@ -54,7 +55,8 @@
             removeConfirm: 'یہ عوامی لنک مٹا دیں؟ کھولنے والوں کو بتایا جائے گا کہ اسے ہٹا دیا گیا ہے۔',
             removed: 'لنک مٹا دیا گیا۔',
             removeFailed: 'یہ لنک ابھی نہیں مٹ سکا۔ کچھ دیر بعد دوبارہ کوشش کریں۔',
-            published: '{date} کو بنایا'
+            published: '{date} کو بنایا',
+            socialText: 'آپ کے لیے اردو کارڈ'
         }
     };
 
@@ -294,7 +296,19 @@
         });
     }
 
+    // WhatsApp and Facebook share links for a public /s/ URL (WU-UXR-002 Slice H, CARD-UX-014).
+    // Plain links only: no third-party script loads, and Facebook receives the URL, never the words.
+    function socialLinks(url, text) {
+        var message = String(text || COPY.en.socialText);
+        return {
+            whatsapp: 'https://wa.me/?text=' + encodeURIComponent(message + ' ' + url),
+            facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url)
+        };
+    }
+
     return {
+        socialLinks: socialLinks,
+        socialText: function () { return t('socialText'); },
         ACK_KEY: ACK_KEY,
         MANAGEMENT_KEY: MANAGEMENT_KEY,
         hasAcknowledged: hasAcknowledged,

@@ -86,7 +86,7 @@ assert.match(cardUi, /card-studio-publish\.js/, 'Card Studio guided UI must load
 assert.match(cardPublish, /Publish & Share/, 'Card Studio must have an explicit public publishing action');
 assert.match(cardPublish, /data-wu-share-step-publish/, 'Card Studio Step 4 must expose its own primary Publish & Share entry point');
 assert.match(cardPublish, /Create a public Write-Urdu\.com link/, 'Step 4 publishing action must explain what it creates');
-assert.match(cardPublish, /Share image only/, 'Existing file-only sharing must remain visibly distinct from publishing');
+assert.match(cardPublish, /shareImageOnly: 'Send picture'/, 'File-only sharing (Send picture, WU-UXR-002 Slice H) must remain visibly distinct from publishing');
 assert.match(cardPublish, /Download PNG/, 'Publish explanation must preserve the local download concept');
 assert.match(cardPublish, /Public to anyone with the link/, 'First publish must communicate the public boundary');
 assert.match(cardPublish, /Your other local drafts and project history stay in this browser/, 'Publish confirmation must protect the local-first contract');
