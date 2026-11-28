@@ -46,6 +46,7 @@ module.exports = defineConfig({
     'card-studio-recent.spec.js',
     'card-attribution-quality.spec.js',
     'curated-share-consent.spec.js',
+    'card-share-sheet.spec.js',
     'card-studio-history.spec.js',
     'card-studio-urdu-ui.spec.js',
     'card-studio-a11y.spec.js',

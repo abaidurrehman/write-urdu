@@ -68,11 +68,18 @@ const ROMAN = 'Aap sab ko Jumma Mubarak. Allah aap ko hamesha khush rakhe.';
   R.B_success = (await page.locator('dialog.wu-share-dialog').innerText().catch(() => '')).replace(/\s+/g, ' ');
   await shot(page, 'P3-publish-success');
   step(trace, 'Published', { ms: R.B_publishMs, url: R.B_url });
-  // Share link (no Web Share in headless) -> copy fallback
+  // No Web Share in headless: since WU-UXR-002 Slice H the dialog hides "Share link" and offers
+  // WhatsApp / Facebook / Copy link instead (CARD-UX-014). Record the routes, then copy.
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: BASE });
-  await page.locator('[data-wu-share-native]').tap(); await page.waitForTimeout(800);
+  R.B_sendRow = await page.evaluate(() => ({
+    nativeVisible: Boolean(document.querySelector('[data-wu-share-native]') && !document.querySelector('[data-wu-share-native]').hidden),
+    whatsapp: document.querySelector('[data-wu-share-whatsapp]')?.href || null,
+    facebook: document.querySelector('[data-wu-share-facebook]')?.href || null
+  }));
+  step(trace, 'Send row after publishing (Web Share API unavailable)', R.B_sendRow);
+  await page.locator('[data-wu-share-social-copy]').tap(); await page.waitForTimeout(800);
   R.B_shareLink = { toast: await page.locator('.wu-share-toast').innerText().catch(() => null), clipboard: await page.evaluate(() => navigator.clipboard.readText()).catch(e => String(e)) };
-  step(trace, 'Tapped "Share link" (Web Share API unavailable)', R.B_shareLink);
+  step(trace, 'Tapped "Copy link" in the send row', R.B_shareLink);
   R.B_mgmt = await page.evaluate(() => localStorage.getItem('writeUrdu.shareManagement.v1'));
   // Edit after publish: change text and look for indication
   await page.keyboard.press('Escape');

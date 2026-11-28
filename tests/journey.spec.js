@@ -76,7 +76,7 @@ test('contextual Card Studio continuation carries current Urdu and exposes Publi
   await expect(publish).toContainText('Publish & Share');
   await expect(publish).toContainText('Create a public Write-Urdu.com link');
   await expect(page.locator('.card-studio-export-section [data-card-action="download"]')).toContainText('Download PNG');
-  await expect(page.locator('.card-studio-export-section [data-card-action="share"]')).toContainText('Share image only');
+  await expect(page.locator('.card-studio-export-section [data-card-action="share"]')).toContainText('Send picture');
 });
 
 test('homepage assignment continues into Rich Editor without losing an older rich draft', async ({ page }) => {

@@ -105,6 +105,7 @@ jobs:
           tests/card-studio-recent.spec.js
           tests/card-attribution-quality.spec.js
           tests/curated-share-consent.spec.js
+          tests/card-share-sheet.spec.js
           tests/card-studio-history.spec.js
           tests/card-studio-urdu-ui.spec.js
           tests/card-studio-a11y.spec.js

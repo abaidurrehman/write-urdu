@@ -143,6 +143,7 @@ export async function onRequestGet(context) {
   <script src="/js/create-publish-boundaries-registry.js"></script>
   <script src="/js/workspace-handoff.js"></script>
   <script src="/js/share-loop-telemetry.js"></script>
+  <script src="/js/share-publish-core.js"></script>
   <script src="/js/share-page.js"></script>
 </body>
 </html>`;
